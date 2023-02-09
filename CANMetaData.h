@@ -99,5 +99,6 @@ typedef struct {
 
 struct CanLUTEntry {uint8_t idx_used : 1; uint8_t len : 7;};
 
-#endif
+extern const CanLUTEntry CanMetadataLUT[LARGEST_CAN_ID];
 
+#endif
