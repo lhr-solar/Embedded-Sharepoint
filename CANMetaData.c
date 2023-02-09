@@ -13,15 +13,14 @@
 
 /**
  * @brief Lookup table to simplify user-defined packet structs. Contains fields that are always the same for every message of a given ID.
- *        Indexed by CANId_t values. Any changes or additions must be made in parallel with changes made to the CANID_t enum in CANbus.h
+ *        Indexed by CANID_t values. Any changes or additions must be made in parallel with changes made to the CANID_t enum in CANbus.h
  */
-const struct CanLUTEntry CanMetadataLUT[LARGEST_CAN_ID] = {
+const struct CANLUTEntry CanMetadataLUT[LARGEST_CAN_ID] = {
     [DASH_KILL_SWITCH]                                     {.idx_used = 0, .len = 1},
     [BPS_TRIP]                                             {.idx_used = 0, .len = 1},
     [ANY_SYSTEM_FAILURES]                                  {.idx_used = 0, .len = 1},
     [IGNITION]                                             {.idx_used = 0, .len = 1},
     [ANY_SYSTEM_SHUTOFF]                                   {.idx_used = 0, .len = 1},
-    [BPS_TRIP]                                             {.idx_used = 0, .len = 1},
     [BPS_ALL_CLEAR]                                        {.idx_used = 0, .len = 1},
     [BPS_CONTACTOR_STATE]                                  {.idx_used = 0, .len = 1},
     [CURRENT_DATA]                                         {.idx_used = 0, .len = 4},

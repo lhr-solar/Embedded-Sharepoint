@@ -26,6 +26,7 @@ header = """
 
 df = pd.read_excel("CANBusIDs.xlsx") #This generates the enum that assigns a CANID to a hash for the LUT
 df = df.dropna(subset=['Data']) #remove all empty columns
+df = df.drop_duplicates(subset='Data')
 df['Length(bytes)'] = df['Length(bytes)'].astype(int) #convert float to int
 df['Index Used'] = df['Index Used'].astype(int) #convert float to int
 df['Data'] = df['Data'].str.replace(' ', '_').str.upper().str.replace('(','').str.replace(')','').str.replace('/','') #convert variable names to follow coding styles guide
@@ -58,15 +59,15 @@ typedef struct {
 
 // This data type is used to push messages onto the queue
 typedef struct {
-    CANId_t id;
+    CANID_t id;
     CANPayload_t payload;
 } CANMSG_t;
 
 // Used to format the fields in the CAN metadata lookup table
 
-struct CanLUTEntry {uint8_t idx_used : 1; uint8_t len : 7;};
+struct CANLUTEntry {uint8_t idx_used : 1; uint8_t len : 7;};
 
-extern const CanLUTEntry CanMetadataLUT[LARGEST_CAN_ID];
+extern const struct CANLUTEntry CanMetadataLUT[LARGEST_CAN_ID];
 
 #endif
 """
@@ -87,11 +88,11 @@ c_header = """
 
 /**
  * @brief Lookup table to simplify user-defined packet structs. Contains fields that are always the same for every message of a given ID.
- *        Indexed by CANId_t values. Any changes or additions must be made in parallel with changes made to the CANID_t enum in CANbus.h
+ *        Indexed by CANID_t values. Any changes or additions must be made in parallel with changes made to the CANID_t enum in CANbus.h
  */
 """
 
-struct_def = "const struct CanLUTEntry CanMetadataLUT[LARGEST_CAN_ID] = {\n"
+struct_def = "const struct CANLUTEntry CanMetadataLUT[LARGEST_CAN_ID] = {\n"
 for index, row in df.iterrows(): 
     struct_def += ("    [" + row['Data'] + "]").ljust(max_len + 7) + " {.idx_used = " + str(row['Index Used']) + ", .len = " + str(row['Length(bytes)']) + "},\n"
 struct_def = struct_def[:-2] +  "\n};\n"

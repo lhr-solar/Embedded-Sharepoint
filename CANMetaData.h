@@ -25,7 +25,6 @@ typedef enum {
     ANY_SYSTEM_FAILURES                                  = 0x003,
     IGNITION                                             = 0x004,
     ANY_SYSTEM_SHUTOFF                                   = 0x005,
-    BPS_TRIP                                             = 0x002,
     BPS_ALL_CLEAR                                        = 0x101,
     BPS_CONTACTOR_STATE                                  = 0x102,
     CURRENT_DATA                                         = 0x103,
@@ -91,14 +90,14 @@ typedef struct {
 
 // This data type is used to push messages onto the queue
 typedef struct {
-    CANId_t id;
+    CANID_t id;
     CANPayload_t payload;
 } CANMSG_t;
 
 // Used to format the fields in the CAN metadata lookup table
 
-struct CanLUTEntry {uint8_t idx_used : 1; uint8_t len : 7;};
+struct CANLUTEntry {uint8_t idx_used : 1; uint8_t len : 7;};
 
-extern const CanLUTEntry CanMetadataLUT[LARGEST_CAN_ID];
+extern const struct CANLUTEntry CanMetadataLUT[LARGEST_CAN_ID];
 
 #endif
