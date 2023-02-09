@@ -91,7 +91,7 @@ c_header = """
  */
 """
 
-struct_def = "static const struct CanLUTEntry CanMetadataLUT[LARGEST_CAN_ID] = {\n"
+struct_def = "const struct CanLUTEntry CanMetadataLUT[LARGEST_CAN_ID] = {\n"
 for index, row in df.iterrows(): 
     struct_def += ("    [" + row['Data'] + "]").ljust(max_len + 7) + " {.idx_used = " + str(row['Index Used']) + ", .len = " + str(row['Length(bytes)']) + "},\n"
 struct_def = struct_def[:-2] +  "\n};\n"
