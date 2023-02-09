@@ -15,7 +15,7 @@
  * @brief Lookup table to simplify user-defined packet structs. Contains fields that are always the same for every message of a given ID.
  *        Indexed by CANId_t values. Any changes or additions must be made in parallel with changes made to the CANID_t enum in CANbus.h
  */
-static const struct CanLUTEntry CanMetadataLUT[LARGEST_CAN_ID] = {
+const struct CanLUTEntry CanMetadataLUT[LARGEST_CAN_ID] = {
     [DASH_KILL_SWITCH]                                     {.idx_used = 0, .len = 1},
     [BPS_TRIP]                                             {.idx_used = 0, .len = 1},
     [ANY_SYSTEM_FAILURES]                                  {.idx_used = 0, .len = 1},
