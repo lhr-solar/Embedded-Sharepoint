@@ -1,0 +1,29 @@
+---
+Checks: '-*, cert-*, clang-analyzer-core.*, bugprone-*, readability-*, modernize-*, performance-*, misc-*,
+-readability-identifier-length, -readability-uppercase-literal-suffix, -readability-isolate-declaration, 
+-bugprone-reserved-identifier, -bugprone-easily-swappable-parameters'
+WarningsAsErrors: true
+HeaderFilterRegex: '^((?!/RTOS/).)*$'
+AnalyzeTemporaryDtors: false
+FormatStyle:     file
+CheckOptions:
+    - { key: readability-magic-numbers.IgnoredIntegerValues, value: 1;2;100}
+    - { key: readability-magic-numbers.IgnoreAllFloatingPointValues, value: 1}
+    - { key: readability-magic-numbers.IgnorePowersOf2IntegerValues, value: 1}
+    - { key: readability-function-cognitive-complexity.Threshold, value: 30}
+    - { key: readability-identifier-naming.ConstantCase, value: UPPER_CASE}
+    - { key: readability-identifier-naming.ConstantParameterCase, value: UPPER_CASE}
+    - { key: readability-identifier-naming.ConstantPointerParameterCase, value: UPPER_CASE}
+    - { key: readability-identifier-naming.EnumCase, value: CamelCase}
+    - { key: readability-identifier-naming.EnumSuffix, value: _e}
+    - { key: readability-identifier-naming.EnumConstantCase, value: UPPER_CASE}
+    - { key: readability-identifier-naming.GlobalConstantCase, value: CamelCase}
+    - { key: readability-identifier-naming.GlobalConstantPointerCase, value: CamelCase}
+    - { key: readability-identifier-naming.GlobalVariableCase, value: CamelCase}
+    - { key: readability-identifier-naming.GlobalPointerCase, value: CamelCase}
+    - { key: readability-identifier-naming.LocalConstantCase, value: UPPER_CASE}
+    - { key: readability-identifier-naming.LocalConstantPointerCase, value: UPPER_CASE}
+    - { key: readability-identifier-naming.StructCase, value: CamelCase}
+    - { key: readability-identifier-naming.TypedefSuffix, value: _t}
+    - { key: readability-identifier-naming.UnionSuffix, value: _t}
+...
