@@ -79,7 +79,7 @@ function sphinx(){
 }
 
 function print_usage() {
-    echo -e "Usage: ./uninstall.sh [-y] [-h]"
+    echo -e "Usage: ./uninstall.sh [-Yy] [-Hh]"
     exit 0
 }
 

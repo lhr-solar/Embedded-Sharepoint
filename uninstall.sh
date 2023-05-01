@@ -23,7 +23,7 @@ function arm_toolchain(){
 
 function renode_simulator(){
     # For real-time simulation of the microcontroller
-    echo -e "${RED}\nRemoving Arm Toolchain...\n==================================\n${NC}"
+    echo -e "${RED}\nRemoving Renode Simulator...\n==================================\n${NC}"
 
     # Remove symlink
     sudo rm /usr/bin/renode
@@ -33,7 +33,7 @@ function renode_simulator(){
 }
 
 function print_usage() {
-    echo -e "Usage: ./uninstall.sh [-y] [-h]"
+    echo -e "Usage: ./uninstall.sh [-Yy] [-Hh]"
     exit 0
 }
 
