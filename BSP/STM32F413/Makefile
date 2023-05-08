@@ -17,7 +17,7 @@ TARGET ?= leader # default to leader if no target passed in
 
 # top level directory pointer
 # since BSP is in the Embedded-Sharepoint, we need to go three directories up to get to the top level
-TOP_LEVEL = ../../../
+TOP_LEVEL = ../../..
 
 ######################################
 # building variables
@@ -32,39 +32,45 @@ OPT = -Og
 # paths
 #######################################
 # Build path
-BUILD_DIR = $(TOP_LEVEL)/Objects
-OS_DIR := $(TOP_LEVEL)/RTOS
-BSP_DIR = $(TOP_LEVEL)/Embedded-Sharepoint/BSP/STM32F413
-CMSIS_DIR = $(TOP_LEVEL)/Embedded-Sharepoint/CMSIS
+BUILD_DIR := $(TOP_LEVEL)/Objects
+OS_DIR := $(TOP_LEVEL)/RTOS/uCOS-III-STM32F4
+BSP_DIR := $(TOP_LEVEL)/Embedded-Sharepoint/BSP/STM32F413
+CMSIS_DIR := $(TOP_LEVEL)/Embedded-Sharepoint/CMSIS
 
 # Top level modules (these are default, but may be passed in by top level makefile if needed)
 MODULES ?= Tasks Apps Drivers	# Only assign if not already defined
-MODULES := $(addprefix $(MODULES), $(TOP_LEVEL))
+MODULES := $(addprefix $(TOP_LEVEL)/, $(MODULES))
 
 ######################################
 # source
 ######################################
 # OS directory and sources
-OS_SRC_DIRS := \
-$(OS_DIR)/uCOS-III-STM32F4/uCOS-III/Source \
-$(OS_DIR)/uCOS-III-STM32F4/uCOS-III/Ports/ARM-Cortex-M4/Generic/GNU \
-$(OS_DIR)/uCOS-III-STM32F4/uC-CPU \
-$(OS_DIR)/uCOS-III-STM32F4/uC-CPU/ARM-Cortex-M4/GNU \
-$(OS_DIR)/uCOS-III-STM32F4/uC-LIB \
+OS_SRC_DIRS :=  \
+$(OS_DIR)/uCOS-III/Source	\
+$(OS_DIR)/uCOS-III/Ports/ARM-Cortex-M4/Generic/GNU	\
+$(OS_DIR)/uC-CPU	\
+$(OS_DIR)/uC-CPU/ARM-Cortex-M4/GNU	\
+$(OS_DIR)/uC-LIB	\
+$(OS_DIR)/uC-Serial/Driver/ST	\
+$(OS_DIR)/uC-Serial/Line	\
+$(OS_DIR)/uC-Serial/OS	\
+$(OS_DIR)/uC-Serial/OS/uCOS-III	\
+$(OS_DIR)/uC-Serial/Source	\
 
 # C sources
 C_SOURCES :=  \
-$(addsuffix /Src/*.c, $(MODULES)) 							\ # Top level modules (tasks, apps, drivers)
-$(addsuffix /*.c, $(OS_SRC_DIRS)) 							\ # RTOS
-$(BSP_DIR)/Src/*.c 												\ # BSP
-$(BSP_DIR)/STM32F4xx_HAL_Driver/Src/*.c 						\ # HAL
+$(addsuffix /Src/*.c, $(MODULES))	\
+$(addsuffix /*.c, $(OS_SRC_DIRS))	\
+$(BSP_DIR)/Src/*.c	\
+$(BSP_DIR)/STM32F4xx_HAL_Driver/Src/*.c	\
+$(TOP_DIR)/Config/Src/*.c
 
 # Expand wildcards to get each source file individually
 C_SOURCES := $(foreach path, $(C_SOURCES), $(wildcard $(path)))
 
 # If a test file is defined, we want to use that as our main
 ifneq ($(TEST), none)
-TEST_FILE := $(TOP_LEVEL)/Tests/$(TEST).c
+TEST_FILE := $(TOP_LEVEL)/Tests/Test_$(TEST).c
 
 C_SOURCES := $(filter-out $(TOP_LEVEL)/Apps/Src/main.c, $(C_SOURCES)) # Filter out main.c
 C_SOURCES += $(TEST_FILE) # Add test file
@@ -73,8 +79,9 @@ endif
 # ASM sources
 ASM_SOURCES =  \
 $(BSP_DIR)/Src/startup_stm32f413xx.s \
-$(OS_DIR)/uCOS-III-STM32F4/uCOS-III/Ports/ARM-Cortex-M4/Generic/GNU/os_cpu_a.s \
-$(OS_DIR)/uCOS-III-STM32F4/uC-CPU/ARM-Cortex-M4/GNU/cpu_a.s
+$(wildcard $(OS_DIR)/uC-CPU/ARM-Cortex-M4/GNU/*.s) \
+$(wildcard $(OS_DIR)/uC-LIB/Ports/ARM-Cortex-M4/GNU/*.s) \
+$(wildcard $(OS_DIR)/uCOS-III/Ports/ARM-Cortex-M4/Generic/GNU/*.s) \
 
 #######################################
 # binaries
@@ -125,14 +132,14 @@ AS_INCLUDES =
 
 # C includes
 C_INCLUDES :=  \
-$(addsuffix /Inc, $(MODULES)) 				\ # Top level modules (tasks, apps, drivers)
-$(OS_SRC_DIRS)								\ # OS 
-$(TOP_LEVEL)/Config/Inc 					\ # Config
-$(BSP_DIR)/Inc								\ # BSP
-$(CMSIS_DIR)/Device/ST/STM32F4xx/Include 	\ # CMSIS
-$(CMSIS_DIR)/Include						\
-$(BSP_DIR)/STM32F4xx_HAL_Driver/Inc		 	\ # HAL
-$(BSP_DIR)/STM32F4xx_HAL_Driver/Inc/Legacy 	\
+$(addsuffix /Inc, $(MODULES))	\
+$(OS_SRC_DIRS)	\
+$(TOP_LEVEL)/Config/Inc	\
+$(BSP_DIR)/../Inc	\
+$(CMSIS_DIR)/Device/ST/STM32F4xx/Include	\
+$(CMSIS_DIR)/Include	\
+$(BSP_DIR)/STM32F4xx_HAL_Driver/Inc	\
+$(BSP_DIR)/STM32F4xx_HAL_Driver/Inc/Legacy	\
 
 # Add appropriate prefix to all includes
 C_INCLUDES := $(addprefix -I, $(C_INCLUDES))
