@@ -13,9 +13,9 @@ function arm_toolchain(){
     echo -e "${RED}\nInstalling Arm Toolchain...\n==================================\n${NC}"
     wget -c -N --progress=bar ${src} -O /tmp/arm-none-eabi.tar.xz &&
     echo "Extracting tar, this may take a few minutes"
-    sudo tar -xf /tmp/arm-none-eabi.tar.xz --totals -C /usr/share/ &&
-    mv /usr/share/arm-gnu-toolchain-${version}.rel1-x86_64-arm-none-eabi /usr/share/arm-gnu-toolchain &&
-    rm /tmp/arm-none-eabi.tar.xz
+    sudo tar -xf /tmp/arm-none-eabi.tar.xz --totals -C /usr/share/
+    sudo mv /usr/share/arm-gnu-toolchain-${version}.rel1-x86_64-arm-none-eabi /usr/share/arm-gnu-toolchain &&
+    sudo rm /tmp/arm-none-eabi.tar.xz
 
     sudo ln -sf /usr/share/arm-gnu-toolchain/bin/arm-none-eabi-gcc /usr/bin/arm-none-eabi-gcc
     sudo ln -sf /usr/share/arm-gnu-toolchain/bin/arm-none-eabi-g++ /usr/bin/arm-none-eabi-g++
