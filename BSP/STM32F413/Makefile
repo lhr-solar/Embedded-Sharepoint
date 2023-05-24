@@ -58,11 +58,12 @@ $(OS_DIR)/uC-Serial/OS/uCOS-III	\
 $(OS_DIR)/uC-Serial/Source	\
 
 # C sources
-C_SOURCES :=  \
-$(addsuffix /Src/*.c, $(MODULES))	\
-$(addsuffix /*.c, $(OS_SRC_DIRS))	\
+# $(addsuffix /Src/*.c, $(MODULES))	
+# $(addsuffix /*.c, $(OS_SRC_DIRS))	
+C_SOURCES :=	\
 $(BSP_DIR)/Src/*.c	\
 $(BSP_DIR)/STM32F4xx_HAL_Driver/Src/*.c	\
+$(CMSIS_DIR)/Device/ST/STM32F4xx/Include/	\
 $(TOP_DIR)/Config/Src/*.c
 
 # Expand wildcards to get each source file individually
@@ -72,7 +73,7 @@ C_SOURCES := $(foreach path, $(C_SOURCES), $(wildcard $(path)))
 ifneq ($(TEST), none)
 TEST_FILE := $(TOP_LEVEL)/Tests/Test_$(TEST).c
 
-C_SOURCES := $(filter-out $(TOP_LEVEL)/Apps/Src/main.c, $(C_SOURCES)) # Filter out main.c
+C_SOURCES := $(filter-out $(TOP_LEVEL)/*/main.c, $(C_SOURCES)) # Filter out main.c
 C_SOURCES += $(TEST_FILE) # Add test file
 endif
 
@@ -129,17 +130,17 @@ C_DEFS =  \
 
 # AS includes
 AS_INCLUDES = 
-
+#$(addsuffix /Inc, $(MODULES))	
 # C includes
 C_INCLUDES :=  \
-$(addsuffix /Inc, $(MODULES))	\
 $(OS_SRC_DIRS)	\
-$(TOP_LEVEL)/Config/Inc	\
-$(BSP_DIR)/../Inc	\
-$(CMSIS_DIR)/Device/ST/STM32F4xx/Include	\
-$(CMSIS_DIR)/Include	\
-$(BSP_DIR)/STM32F4xx_HAL_Driver/Inc	\
-$(BSP_DIR)/STM32F4xx_HAL_Driver/Inc/Legacy	\
+$(TOP_LEVEL)/Config/Inc/	\
+$(BSP_DIR)/../Inc/	\
+$(BSP_DIR)/Inc/	\
+$(BSP_DIR)/STM32F4xx_HAL_Driver/Inc/	\
+$(BSP_DIR)/STM32F4xx_HAL_Driver/Inc/Legacy/	\
+$(CMSIS_DIR)/Device/ST/STM32F4xx/Include/	\
+$(CMSIS_DIR)/Include/	\
 
 # Add appropriate prefix to all includes
 C_INCLUDES := $(addprefix -I, $(C_INCLUDES))
