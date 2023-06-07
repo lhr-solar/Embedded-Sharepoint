@@ -130,10 +130,10 @@ C_DEFS =  \
 
 # AS includes
 AS_INCLUDES = 
-#$(addsuffix /Inc, $(MODULES))	
 # C includes
 C_INCLUDES :=  \
 $(OS_SRC_DIRS)	\
+$(addsuffix /Inc, $(MODULES))	\
 $(TOP_LEVEL)/Config/Inc/	\
 $(BSP_DIR)/../Inc/	\
 $(BSP_DIR)/Inc/	\
