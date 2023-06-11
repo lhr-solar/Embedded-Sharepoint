@@ -70,6 +70,10 @@ function renode_simulator(){
     sudo mkdir -p /usr/share/renode_portable &&
     sudo tar -xf /tmp/renode-portable.tar.gz --totals -C /usr/share/renode_portable --strip-components=1 &&
     sudo ln -sf /usr/share/renode_portable/renode /usr/bin/renode
+    #TODO: figure out if we should symlink this; it has relative file paths
+    #sudo ln -sf /usr/share/renode_portable/renode-test /usr/bin/renode-test
+    sudo apt install python3-pip
+    pip install -r /usr/share/renode_portable/tests/requirements.txt
 }
 
 function sphinx(){
