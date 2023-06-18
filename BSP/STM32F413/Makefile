@@ -51,38 +51,33 @@ $(OS_DIR)/uCOS-III/Ports/ARM-Cortex-M4/Generic/GNU	\
 $(OS_DIR)/uC-CPU	\
 $(OS_DIR)/uC-CPU/ARM-Cortex-M4/GNU	\
 $(OS_DIR)/uC-LIB	\
-$(OS_DIR)/uC-Serial/Driver/ST	\
-$(OS_DIR)/uC-Serial/Line	\
-$(OS_DIR)/uC-Serial/OS	\
-$(OS_DIR)/uC-Serial/OS/uCOS-III	\
-$(OS_DIR)/uC-Serial/Source	\
+
+# $(addsuffix /Src/*.c, $(MODULES))	\
+$(addsuffix /*.c, $(OS_SRC_DIRS))	
 
 # C sources
-# $(addsuffix /Src/*.c, $(MODULES))	
-# $(addsuffix /*.c, $(OS_SRC_DIRS))	
 C_SOURCES :=	\
 $(BSP_DIR)/Src/*.c	\
 $(BSP_DIR)/STM32F4xx_HAL_Driver/Src/*.c	\
-$(CMSIS_DIR)/Device/ST/STM32F4xx/Include/	\
-$(TOP_DIR)/Config/Src/*.c
+$(TOP_DIR)/Config/Src/*.c	\
 
 # Expand wildcards to get each source file individually
 C_SOURCES := $(foreach path, $(C_SOURCES), $(wildcard $(path)))
 
 # If a test file is defined, we want to use that as our main
 ifneq ($(TEST), none)
-TEST_FILE := $(TOP_LEVEL)/Tests/Test_$(TEST).c
+TEST_FILE := $(TEST).c
 
 C_SOURCES := $(filter-out $(TOP_LEVEL)/*/main.c, $(C_SOURCES)) # Filter out main.c
-C_SOURCES += $(TEST_FILE) # Add test file
+C_SOURCES += $(wildcard $(TOP_LEVEL)/$(TEST_FILE)) # Add test file
 endif
 
 # ASM sources
 ASM_SOURCES =  \
-$(BSP_DIR)/Src/startup_stm32f413xx.s \
-$(wildcard $(OS_DIR)/uC-CPU/ARM-Cortex-M4/GNU/*.s) \
+$(BSP_DIR)/Src/startup_stm32f413xx.s 
+# $(wildcard $(OS_DIR)/uC-CPU/ARM-Cortex-M4/GNU/*.s) \
 $(wildcard $(OS_DIR)/uC-LIB/Ports/ARM-Cortex-M4/GNU/*.s) \
-$(wildcard $(OS_DIR)/uCOS-III/Ports/ARM-Cortex-M4/Generic/GNU/*.s) \
+$(wildcard $(OS_DIR)/uCOS-III/Ports/ARM-Cortex-M4/Generic/GNU/*.s) 
 
 #######################################
 # binaries
@@ -130,17 +125,19 @@ C_DEFS =  \
 
 # AS includes
 AS_INCLUDES = 
+
+# $(addsuffix /Inc, $(MODULES))	\
+$(OS_SRC_DIRS)
+
 # C includes
 C_INCLUDES :=  \
-$(OS_SRC_DIRS)	\
-$(addsuffix /Inc, $(MODULES))	\
 $(TOP_LEVEL)/Config/Inc/	\
 $(BSP_DIR)/../Inc/	\
 $(BSP_DIR)/Inc/	\
 $(BSP_DIR)/STM32F4xx_HAL_Driver/Inc/	\
 $(BSP_DIR)/STM32F4xx_HAL_Driver/Inc/Legacy/	\
-$(CMSIS_DIR)/Device/ST/STM32F4xx/Include/	\
-$(CMSIS_DIR)/Include/	\
+$(CMSIS_DIR)/Device/ST/STM32F4xx/Include/      \
+$(CMSIS_DIR)/Core/Include/	\
 
 # Add appropriate prefix to all includes
 C_INCLUDES := $(addprefix -I, $(C_INCLUDES))
