@@ -35,13 +35,55 @@ extern "C" {
 extern ADC_HandleTypeDef hadc1;
 
 /* USER CODE BEGIN Private defines */
+#define ADC_RANGE_MILLIVOLTS 3300
+#define ADC_PRECISION_BITS 12
 
+typedef enum 
+{
+    Accelerator_ADC, 
+    Brake_ADC,
+    NUMBER_OF_CHANNELS
+} ADC_t;
 /* USER CODE END Private defines */
 
 void MX_ADC1_Init(void);
 
 /* USER CODE BEGIN Prototypes */
+/**
+ * @brief   Initializes the ADC module. This is to measure the hall effect sensors
+ *          on the Current Monitor Board.
+ * @param   None
+ * @return  None
+ */
+void BSP_ADC_Init(void);
 
+/**
+ * @brief   Provides the ADC value of the channel at the specified index
+ * @param   hardwareDevice pedal enum that represents the specific device
+ * @return  Raw ADC value without conversion
+ */ 
+int16_t BSP_ADC_Get_Value(ADC_t hardwareDevice);
+
+/**
+ * @brief   Provides the ADC value in millivolts of the channel at the specified index
+ * @param   hardwareDevice pedal enum that represents the specific device
+ * @return  ADC value in millivolts
+ */ 
+int16_t BSP_ADC_Get_Millivoltage(ADC_t hardwareDevice);
+
+/**
+ * @brief   Gets converted ADC value in units of mV.
+ * @param   None
+ * @return  millivoltage value ADC measurement
+ */
+uint16_t BSP_ADC_High_GetMilliVoltage(void);
+
+/**
+ * @brief   Gets converted ADC value in units of mV.
+ * @param   None
+ * @return  millivoltage value ADC measurement
+ */
+uint16_t BSP_ADC_Low_GetMilliVoltage(void);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

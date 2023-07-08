@@ -21,7 +21,8 @@
 #include "adc.h"
 
 /* USER CODE BEGIN 0 */
-
+static uint16_t ConvertBitsToMilliVoltage(uint16_t data);
+static volatile uint16_t ADC_Data[NUMBER_OF_CHANNELS];
 /* USER CODE END 0 */
 
 ADC_HandleTypeDef hadc1;
@@ -46,13 +47,13 @@ void MX_ADC1_Init(void)
   hadc1.Instance = ADC1;
   hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
   hadc1.Init.Resolution = ADC_RESOLUTION_12B;
-  hadc1.Init.ScanConvMode = DISABLE;
-  hadc1.Init.ContinuousConvMode = DISABLE;
+  hadc1.Init.ScanConvMode = ENABLE;
+  hadc1.Init.ContinuousConvMode = ENABLE;
   hadc1.Init.DiscontinuousConvMode = DISABLE;
   hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
-  hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+  hadc1.Init.ExternalTrigConv = DISABLE;
   hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-  hadc1.Init.NbrOfConversion = 1;
+  hadc1.Init.NbrOfConversion = 2;
   hadc1.Init.DMAContinuousRequests = DISABLE;
   hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
   if (HAL_ADC_Init(&hadc1) != HAL_OK)
@@ -87,6 +88,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
     /* ADC1 clock enable */
     __HAL_RCC_ADC1_CLK_ENABLE();
 
+#ifdef ADC1_PORTC
     __HAL_RCC_GPIOC_CLK_ENABLE();
     /**ADC1 GPIO Configuration
     PC0     ------> ADC1_IN10
@@ -98,6 +100,21 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+#elif ADC1_PORTA
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    /**ADC1 GPIO Configuration
+    PA0     ------> ADC1_IN0
+    PA1     ------> ADC1_IN1
+    PA2     ------> ADC1_IN2
+    PA3     ------> ADC1_IN3
+    */
+    GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3;
+    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+#else
+    while(1){}
+#endif
 
     /* ADC1 DMA Init */
     /* ADC1 Init */
@@ -119,7 +136,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
     __HAL_LINKDMA(adcHandle,DMA_Handle,hdma_adc1);
 
   /* USER CODE BEGIN ADC1_MspInit 1 */
-
+  HAL_ADC_Start_DMA(adcHandle, &ADC_Data, 1);
   /* USER CODE END ADC1_MspInit 1 */
   }
 }
@@ -135,6 +152,7 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
     /* Peripheral clock disable */
     __HAL_RCC_ADC1_CLK_DISABLE();
 
+#if ADC1_PORTC
     /**ADC1 GPIO Configuration
     PC0     ------> ADC1_IN10
     PC1     ------> ADC1_IN11
@@ -142,6 +160,14 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
     PC3     ------> ADC1_IN13
     */
     HAL_GPIO_DeInit(GPIOC, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3);
+#elif ADC1_PORTA
+    /**ADC1 GPIO Configuration
+    PA0     ------> ADC1_IN0
+    PA1     ------> ADC1_IN1
+    PA2     ------> ADC1_IN2
+    PA3     ------> ADC1_IN3
+    */
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3);
 
     /* ADC1 DMA DeInit */
     HAL_DMA_DeInit(adcHandle->DMA_Handle);
@@ -152,5 +178,62 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 }
 
 /* USER CODE BEGIN 1 */
+/**
+ * @brief   Initializes the ADC module. This is to measure the hall effect sensors
+ *          on the Current Monitor Board.
+ * @param   None
+ * @return  None
+ */
+void BSP_ADC_Init(void) {
+  MX_ADC1_Init();
+}
 
+/**
+ * @brief   Gets converted ADC value in units of mV.
+ * @param   None
+ * @return  millivoltage value ADC measurement
+ */
+int16_t BSP_ADC_Get_Value(ADC_t hardwareDevice) {
+
+    // Get ADC raw data
+    return (int16_t) ADC_Data[hardwareDevice];
+}
+
+/**
+ * @brief   Gets converted ADC value in units of mV.
+ * @param   None
+ * @return  millivoltage value ADC measurement
+ */
+int16_t BSP_ADC_Get_Millivoltage(ADC_t hardwareDevice) {
+
+    // Get ADC raw data and convert to millivoltage
+    return (ADC_RANGE_MILLIVOLTS * (int16_t) ADC_Data[hardwareDevice]) >> ADC_PRECISION_BITS;
+}
+
+/**
+ * @brief   Gets converted ADC value in units of mV.
+ * @param   None
+ * @return  millivoltage value ADC measurement
+ */
+uint16_t BSP_ADC_High_GetMilliVoltage(void) {
+
+    // Get ADC raw data and convert to millivoltage
+    return (uint16_t) ConvertBitsToMilliVoltage(ADC_Data[0]);
+}
+
+/**
+ * @brief   Gets converted ADC value in units of mV.
+ * @param   None
+ * @return  millivoltage value ADC measurement
+ */
+uint16_t BSP_ADC_Low_GetMilliVoltage(void) {
+
+    // Get ADC raw data and convert to millivoltage
+    return (uint16_t) ConvertBitsToMilliVoltage(ADC_Data[1]);
+}
+
+static uint16_t ConvertBitsToMilliVoltage(uint16_t data) {
+    // Convert to millivoltage
+    return (data * 3300) >> 12;   // For 12-bit ADCs
+}
 /* USER CODE END 1 */
