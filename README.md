@@ -1,13 +1,19 @@
 # Embedded-Sharepoint
 This repository contains files that can be shared among us, the embedded design teams. 
 
-## Install/Uninstall Script
+## Install Script
 
-These scripts install/remove necessary toolchains for embedded development. install.sh will prompt the user for installation of all necessary packages. uninstall.sh will only uninstall the ARM toolchain and the Renode Simulator, as they require special behavior for uninstallation (the rest can be removed with `apt-get`)
+This script installs/removes necessary packages for embedded development. install.sh will prompt the user for installation or removal of all necessary packages.
 
-Usage: 
-- `./install.sh [-Yy] [-Hh]`     
-- `./uninstall.sh [-Yy] [-Hh]`
+Usage: ./install.sh [-Ii] [-Uu] [-Hh]"
+    For each package, choose between (y/n/r/q) to:"
+        y: yes, install"
+        n: no, don't install"
+        r: remove package"
+        q: quit"
+    [-Ii] install all available packages"
+    [-Uu] remove all available packages"
+    [-Hh] show this help page"
 
 ## copyright_updater.py
 
