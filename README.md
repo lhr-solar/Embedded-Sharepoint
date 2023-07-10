@@ -5,15 +5,17 @@ This repository contains files that can be shared among us, the embedded design 
 
 This script installs/removes necessary packages for embedded development. install.sh will prompt the user for installation or removal of all necessary packages.
 
-Usage: ./install.sh [-Ii] [-Uu] [-Hh]"
-    For each package, choose between (y/n/r/q) to:"
-        y: yes, install"
-        n: no, don't install"
-        r: remove package"
-        q: quit"
-    [-Ii] install all available packages"
-    [-Uu] remove all available packages"
-    [-Hh] show this help page"
+Usage: 
+    
+    ./install.sh [-Ii] [-Uu] [-Hh]
+    For each package, choose between (y/n/r/q) to:
+        y: yes, install
+        n: no, don't install
+        r: remove package
+        q: quit
+    [-Ii] install all available packages
+    [-Uu] remove all available packages
+    [-Hh] show this help page
 
 ## copyright_updater.py
 
