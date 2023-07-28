@@ -38,7 +38,7 @@ BSP_DIR := $(TOP_LEVEL)/Embedded-Sharepoint/BSP/STM32F413
 CMSIS_DIR := $(TOP_LEVEL)/Embedded-Sharepoint/CMSIS
 
 # Top level modules (these are default, but may be passed in by top level makefile if needed)
-MODULES ?= Tasks Apps Drivers	# Only assign if not already defined
+MODULES ?= Tasks Apps Drivers	# Only assign if not already defined (by top level makefile)
 MODULES := $(addprefix $(TOP_LEVEL)/, $(MODULES))
 
 ######################################
@@ -52,14 +52,13 @@ $(OS_DIR)/uC-CPU	\
 $(OS_DIR)/uC-CPU/ARM-Cortex-M4/GNU	\
 $(OS_DIR)/uC-LIB	\
 
-# $(addsuffix /Src/*.c, $(MODULES))	\
-$(addsuffix /*.c, $(OS_SRC_DIRS))	
-
 # C sources
 C_SOURCES :=	\
 $(BSP_DIR)/Src/*.c	\
 $(BSP_DIR)/STM32F4xx_HAL_Driver/Src/*.c	\
 $(TOP_DIR)/Config/Src/*.c	\
+$(addsuffix /Src/*.c, $(MODULES))	\
+$(addsuffix /*.c, $(OS_SRC_DIRS))
 
 # Expand wildcards to get each source file individually
 C_SOURCES := $(foreach path, $(C_SOURCES), $(wildcard $(path)))
@@ -74,8 +73,8 @@ endif
 
 # ASM sources
 ASM_SOURCES =  \
-$(BSP_DIR)/Src/startup_stm32f413xx.s 
-# $(wildcard $(OS_DIR)/uC-CPU/ARM-Cortex-M4/GNU/*.s) \
+$(BSP_DIR)/Src/startup_stm32f413xx.s \
+$(wildcard $(OS_DIR)/uC-CPU/ARM-Cortex-M4/GNU/*.s) \
 $(wildcard $(OS_DIR)/uC-LIB/Ports/ARM-Cortex-M4/GNU/*.s) \
 $(wildcard $(OS_DIR)/uCOS-III/Ports/ARM-Cortex-M4/Generic/GNU/*.s) 
 
@@ -109,7 +108,7 @@ CPU = -mcpu=cortex-m4
 FPU = -mfpu=fpv4-sp-d16
 
 # float-abi
-FLOAT-ABI = -mfloat-abi=hard
+FLOAT-ABI = -mfloat-abi=soft
 
 # mcu
 MCU = $(CPU) -mthumb $(FPU) $(FLOAT-ABI)
@@ -126,21 +125,21 @@ C_DEFS =  \
 # AS includes
 AS_INCLUDES = 
 
-# $(addsuffix /Inc, $(MODULES))	\
-$(OS_SRC_DIRS)
-
 # C includes
 C_INCLUDES :=  \
-$(TOP_LEVEL)/Config/Inc/	\
-$(BSP_DIR)/../Inc/	\
-$(BSP_DIR)/Inc/	\
-$(BSP_DIR)/STM32F4xx_HAL_Driver/Inc/	\
-$(BSP_DIR)/STM32F4xx_HAL_Driver/Inc/Legacy/	\
-$(CMSIS_DIR)/Device/ST/STM32F4xx/Include/      \
-$(CMSIS_DIR)/Core/Include/	\
+$(TOP_LEVEL)/Config/Inc	\
+$(addsuffix /Inc, $(MODULES))	\
+$(OS_SRC_DIRS) \
+$(BSP_DIR)/../Inc \
+$(BSP_DIR)/Inc \
+$(BSP_DIR)/STM32F4xx_HAL_Driver/Inc	\
+$(BSP_DIR)/STM32F4xx_HAL_Driver/Inc/Legacy \
+$(CMSIS_DIR)/Device/ST/STM32F4xx/Include \
+$(CMSIS_DIR)/Core/Include \
 
-# Add appropriate prefix to all includes
+# Add appropriate prefix & suffix to all includes
 C_INCLUDES := $(addprefix -I, $(C_INCLUDES))
+C_INCLUDES := $(addsuffix /, $(C_INCLUDES))
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
@@ -179,23 +178,29 @@ OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(ASM_SOURCES:.s=.o)))
 vpath %.s $(sort $(dir $(ASM_SOURCES)))
 
 $(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR) 
-	$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
+	@echo "CC $(<:../../%=%)"
+	@$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
 
 $(BUILD_DIR)/%.o: %.s Makefile | $(BUILD_DIR)
-	$(AS) -c $(CFLAGS) $< -o $@
+	@echo "AS $(<:../../%=%)"
+	@$(AS) -c $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
-	$(CC) $(OBJECTS) $(LDFLAGS) -o $@
-	$(SZ) $@
+	@echo "LD $(<:../../%=%)"
+	@$(CC) $(OBJECTS) $(LDFLAGS) -o $@
+	@echo "SZ $(<:../../%=%)"
+	@$(SZ) $@
 
 $(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
-	$(HEX) $< $@
+	@echo "HEX $(<:../../%=%)"
+	@$(HEX) $< $@
 	
 $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
-	$(BIN) $< $@	
+	@echo "BIN $(<:../../%=%)"
+	@$(BIN) $< $@
 	
 $(BUILD_DIR):
-	mkdir $@		
+	mkdir $@
 
 #######################################
 # clean up
