@@ -1,10 +1,6 @@
 /* Copyright (c) 2018-2022 UT Longhorn Racing Solar */
 
 #include "BSP_I2C.h"
-#include "stm32f4xx_hal_i2c.h"
-#include "stm32f4xx_hal_rcc.h"
-#include "stm32f4xx_hal_rcc_ex.h"
-#include "stm32f4xx_hal_gpio.h"
 
 #define I2C_CLK_SPD 100000 // must be <= 400kHz
 #define TIMEOUT_THRESHOLD 10
@@ -25,7 +21,7 @@ void BSP_I2C_Init() {
     i2c_struct.OwnAddress1 = 0x50 << 1; // pulled from BPS's I2C.c file
     i2c_struct.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
     i2c_struct.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-    i2c_struct.GeneralCallMode = (1 << 6); // I2C_CR1_ENGC == 1<<6
+    i2c_struct.GeneralCallMode = (1 << 6); // I2C_CR1_ENGC == 1<<6; this is just enable
     i2c_struct.NoStretchMode = I2C_NOSTRETCH_DISABLE;
 
     // gpio config
@@ -62,7 +58,7 @@ I2C_STATUS BSP_I2C_Write(uint8_t deviceAddr, uint16_t regAddr, uint8_t *txData, 
         }
     }
     // DMA? Interrupt? Which kind
-    return (I2C_STATUS)HAL_I2C_Mem_Write(I2C3, deviceAddr, regAddr, sizeof(uint16_t), txData, txLen, 1);
+    return (I2C_STATUS)HAL_I2C_Mem_Write_IT(I2C3, deviceAddr, regAddr, sizeof(uint16_t), txData, txLen, 1);
 }
 
 /**
@@ -83,5 +79,5 @@ I2C_STATUS BSP_I2C_Read(uint8_t deviceAddr, uint16_t regAddr, uint8_t *rxData, u
         }
     }
     // DMA? Interrupt? Which kind
-    return (I2C_STATUS)HAL_I2C_Mem_Read(I2C3, deviceAddr, regAddr, sizeof(uint16_t), rxData, rxLen, 1);
+    return (I2C_STATUS)HAL_I2C_Mem_Read_IT(I2C3, deviceAddr, regAddr, sizeof(uint16_t), rxData, rxLen, 1);
 }

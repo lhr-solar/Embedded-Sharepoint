@@ -6,6 +6,11 @@
 
 #include <stdint.h>
 
+#include "stm32f4xx_hal_i2c.h"
+#include "stm32f4xx_hal_rcc.h"
+#include "stm32f4xx_hal_rcc_ex.h"
+#include "stm32f4xx_hal_gpio.h"
+
 typedef enum {
     OK = 0x0,
     ERROR = 0x1,
