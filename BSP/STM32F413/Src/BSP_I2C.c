@@ -37,7 +37,9 @@ void BSP_I2C_Init() {
     HAL_GPIO_Init(GPIOC, &gpio_struct);
 
     // Now we can init I2C on these pins
-    HAL_I2C_Init(&i2c_struct);
+    if (HAL_I2C_Init(&i2c_struct) != HAL_OK) {
+        // error handler
+    }
 }
 
 /**
