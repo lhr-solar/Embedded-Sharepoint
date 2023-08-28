@@ -34,6 +34,6 @@ char* BSP_UART_ReadLine();
  * @param input The input string
  * @param len Length of input string
  */
-void BSP_UART_WriteLine(char* input, uint32_t len);
+void BSP_UART_WriteLine(const char* input, uint32_t len);
 
 #endif

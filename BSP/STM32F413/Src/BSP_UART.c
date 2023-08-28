@@ -1,7 +1,7 @@
 #include "BSP_UART.h"
 
 static uint8_t tx_buffer[TX_SIZE];
-static uint8_t rx_buffer[RX_SIZE];
+static uint8_t rx_buffer[RX_SIZE + 1];
 
 // Some uart helpers
 static void clear_buffer(uint8_t* buf, uint16_t size) {
@@ -51,9 +51,9 @@ void BSP_UART_Init() {
         // todo: error handler
     }
 
-    __HAL_USART_ENABLE_IT(&for_interrupts, USART_IT_RXNE);
-    __HAL_USART_ENABLE_IT(&for_interrupts, USART_IT_TC);
-    __HAL_USART_ENABLE(&for_interrupts);
+    __HAL_USART_ENABLE_IT(&for_interrupts, USART_IT_RXNE); //rx
+    __HAL_USART_ENABLE_IT(&for_interrupts, USART_IT_TC); //tx
+    __HAL_USART_ENABLE(&for_interrupts); // turn interrupts on
 
     // 2, 0 - usart3_preempt prio, usart3_sub prio
     // custom def'd in BPS repo. Should we do the same here?
@@ -64,18 +64,19 @@ void BSP_UART_Init() {
 /**
  * @brief Reads a line of input from UART into the rx buffer
  * 
- * @return Pointer to the RX buffer
+ * @return Pointer to the data read; ALWAYS null terminated
  */
 char* BSP_UART_ReadLine() {
     clear_buffer(rx_buffer, RX_SIZE);
     // HAL doesnt have USART_ITConfig(usart_handle, USART_IT_RXNE, RESET); that I can find
-    // so lets do this for now.
+    // so we'll toggle interrupts for now.
     __HAL_USART_DISABLE_IT(&for_interrupts, USART_IT_RXNE);
     if (HAL_USART_Receive_IT(USART3, rx_buffer, RX_SIZE) != HAL_OK) {
         // error handler
     }
     __HAL_USART_ENABLE_IT(&for_interrupts, USART_IT_RXNE);
     clear_terminators();
+    rx_buffer[RX_SIZE] = 0; // always end the RX array with a null terminator just in case.
     return rx_buffer;
 }
 
@@ -85,6 +86,11 @@ char* BSP_UART_ReadLine() {
  * @param input 
  * @param len 
  */
-void BSP_UART_WriteLine(char* input, uint32_t len) {
-
+void BSP_UART_WriteLine(const char* input, uint32_t len) {
+    __HAL_USART_DISABLE_IT(&for_interrupts, USART_IT_TC);
+    if (HAL_USART_Transmit_IT(USART3, input, len) != HAL_OK) {
+        // error handler
+    }
+    // re-enable interrupts
+    __HAL_USART_ENABLE_IT(&for_interrupts, USART_IT_RXNE);
 }

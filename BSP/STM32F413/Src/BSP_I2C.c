@@ -60,7 +60,8 @@ I2C_STATUS BSP_I2C_Write(uint8_t deviceAddr, uint16_t regAddr, uint8_t *txData, 
         }
     }
     // DMA? Interrupt? Which kind
-    return (I2C_STATUS)HAL_I2C_Mem_Write_IT(I2C3, deviceAddr, regAddr, sizeof(uint16_t), txData, txLen, 1);
+// TODO: 7bit I2C addrs need to be << by 1 according to spec. Do we do this here?  
+    return (I2C_STATUS)HAL_I2C_Mem_Write_IT(I2C3, deviceAddr, regAddr, sizeof(uint16_t), txData, txLen);
 }
 
 /**
@@ -81,5 +82,5 @@ I2C_STATUS BSP_I2C_Read(uint8_t deviceAddr, uint16_t regAddr, uint8_t *rxData, u
         }
     }
     // DMA? Interrupt? Which kind
-    return (I2C_STATUS)HAL_I2C_Mem_Read_IT(I2C3, deviceAddr, regAddr, sizeof(uint16_t), rxData, rxLen, 1);
+    return (I2C_STATUS)HAL_I2C_Mem_Read_IT(I2C3, deviceAddr, regAddr, sizeof(uint16_t), rxData, rxLen);
 }
