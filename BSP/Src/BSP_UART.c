@@ -26,9 +26,18 @@ void BSP_UART_Init() {
     for_interrupts.Instance = USART3;
 
     // Init clocks to port b, c, and usart3
-    __HAL_RCC_GPIOB_CLK_ENABLE();
-    __HAL_RCC_GPIOC_CLK_ENABLE();
-    __HAL_RCC_USART3_CLK_ENABLE();
+
+    // check if they're disabled
+    // if so, enable
+    if (__HAL_RCC_GPIOB_IS_CLK_DISABLED()) {
+        __HAL_RCC_GPIOB_CLK_ENABLE();
+    }
+    if (__HAL_RCC_GPIOC_IS_CLK_DISABLED()) {
+        __HAL_RCC_GPIOC_CLK_ENABLE();
+    }
+    if (__HAL_RCC_USART3_IS_CLK_DISABLED()) {
+        __HAL_RCC_USART3_CLK_ENABLE();
+    }
 
     // config pins
     gpio_struct.Pin = GPIO_PIN_10;

@@ -10,9 +10,16 @@ void BSP_I2C_Init() {
     I2C_InitTypeDef i2c_struct;
 
     // Instead of RCC_AHB... HAL provides macros for these
-    __HAL_RCC_I2C3_CLK_ENABLE();
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-    __HAL_RCC_GPIOC_CLK_ENABLE();
+    // check if disabled; if so, enabled
+    if (__HAL_RCC_I2C3_IS_CLK_DISABLED()) {
+        __HAL_RCC_I2C3_CLK_ENABLE();
+    }
+    if (__HAL_RCC_GPIOA_IS_CLK_DISABLED()) {
+        __HAL_RCC_GPIOA_CLK_ENABLE();
+    }
+    if (__HAL_RCC_GPIOC_IS_CLK_DISABLED()) {
+        __HAL_RCC_GPIOC_CLK_ENABLE();
+    }
 
     // i2c config
     i2c_struct.ClockSpeed = I2C_CLK_SPD;

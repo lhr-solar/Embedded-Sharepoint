@@ -6,16 +6,17 @@
 
 #include <stdint.h>
 
+#include "stm32f4xx_hal.h"
 #include "stm32f4xx_hal_i2c.h"
 #include "stm32f4xx_hal_rcc.h"
 #include "stm32f4xx_hal_rcc_ex.h"
 #include "stm32f4xx_hal_gpio.h"
 
 typedef enum {
-    OK = 0x0,
-    ERROR = 0x1,
-    BUSY = 0x2,
-    TIMEOUT = 0x3
+    I2C_OK = 0x0,
+    I2C_ERROR = 0x1,
+    I2C_BUSY = 0x2,
+    I2C_TIMEOUT = 0x3
 } I2C_STATUS;
 
 /**
