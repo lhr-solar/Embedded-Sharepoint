@@ -138,6 +138,7 @@ $(BSP_DIR)/STM32F4xx_HAL_Driver/Inc/	\
 $(BSP_DIR)/STM32F4xx_HAL_Driver/Inc/Legacy/	\
 $(CMSIS_DIR)/Device/ST/STM32F4xx/Include/      \
 $(CMSIS_DIR)/Core/Include/	\
+../../Util/Inc/ \
 
 # Add appropriate prefix to all includes
 C_INCLUDES := $(addprefix -I, $(C_INCLUDES))
@@ -163,7 +164,7 @@ LDSCRIPT = $(BSP_DIR)/GCC/STM32F413RHTx_FLASH.ld
 # libraries
 LIBS = -lc -lm -lnosys 
 LIBDIR = 
-LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
+LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,--cref -Wl,--gc-sections
 
 # default action: build all
 all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
