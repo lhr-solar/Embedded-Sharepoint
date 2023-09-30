@@ -13,11 +13,7 @@
 ######################################
 # target (can be passed in/changed)
 ######################################
-TARGET ?= leader # default to leader if no target passed in
-
-# top level directory pointer
-# since BSP is in the Embedded-Sharepoint, we need to go three directories up to get to the top level
-TOP_LEVEL = ../../..
+TARGET ?= output
 
 ######################################
 # building variables
@@ -32,52 +28,31 @@ OPT = -Og
 # paths
 #######################################
 # Build path
-BUILD_DIR := $(TOP_LEVEL)/Objects
-OS_DIR := $(TOP_LEVEL)/RTOS/uCOS-III-STM32F4
-BSP_DIR := $(TOP_LEVEL)/Embedded-Sharepoint/BSP/STM32F413
-CMSIS_DIR := $(TOP_LEVEL)/Embedded-Sharepoint/CMSIS
-
-# Top level modules (these are default, but may be passed in by top level makefile if needed)
-MODULES ?= Tasks Apps Drivers	# Only assign if not already defined
-MODULES := $(addprefix $(TOP_LEVEL)/, $(MODULES))
+BUILD_DIR := $(PROJECT_DIR)/Objects
+BSP_DIR := .
+CMSIS_DIR := ../../CMSIS
 
 ######################################
 # source
 ######################################
-# OS directory and sources
-OS_SRC_DIRS :=  \
-$(OS_DIR)/uCOS-III/Source	\
-$(OS_DIR)/uCOS-III/Ports/ARM-Cortex-M4/Generic/GNU	\
-$(OS_DIR)/uC-CPU	\
-$(OS_DIR)/uC-CPU/ARM-Cortex-M4/GNU	\
-$(OS_DIR)/uC-LIB	\
-
-# $(addsuffix /Src/*.c, $(MODULES))	\
-$(addsuffix /*.c, $(OS_SRC_DIRS))	
-
 # C sources
 C_SOURCES :=	\
 $(BSP_DIR)/Src/*.c	\
 $(BSP_DIR)/STM32F4xx_HAL_Driver/Src/*.c	\
-$(TOP_DIR)/Config/Src/*.c	\
 
 # Expand wildcards to get each source file individually
 C_SOURCES := $(foreach path, $(C_SOURCES), $(wildcard $(path)))
 
-# If a test file is defined, we want to use that as our main
+# If a test file is defined, source the test file instead of main.c
 ifneq ($(TEST), none)
-TEST_FILE := $(TEST).c
-
-C_SOURCES := $(filter-out $(TOP_LEVEL)/*/main.c, $(C_SOURCES)) # Filter out main.c
-C_SOURCES += $(wildcard $(TOP_LEVEL)/$(TEST_FILE)) # Add test file
+C_SOURCES := $(filter-out */main.c, $(C_SOURCES)) # Filter out main.c
+C_SOURCES += $(wildcard $(TEST)) # Add test file
 endif
 
 # ASM sources
 ASM_SOURCES =  \
-$(BSP_DIR)/Src/startup_stm32f413xx.s 
-# $(wildcard $(OS_DIR)/uC-CPU/ARM-Cortex-M4/GNU/*.s) \
-$(wildcard $(OS_DIR)/uC-LIB/Ports/ARM-Cortex-M4/GNU/*.s) \
-$(wildcard $(OS_DIR)/uCOS-III/Ports/ARM-Cortex-M4/Generic/GNU/*.s) 
+$(BSP_DIR)/Src/startup_stm32f413xx.s
+
 
 #######################################
 # binaries
@@ -131,7 +106,6 @@ $(OS_SRC_DIRS)
 
 # C includes
 C_INCLUDES :=  \
-$(TOP_LEVEL)/Config/Inc/	\
 $(BSP_DIR)/../Inc/	\
 $(BSP_DIR)/Inc/	\
 $(BSP_DIR)/STM32F4xx_HAL_Driver/Inc/	\
