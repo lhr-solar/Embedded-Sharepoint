@@ -5,7 +5,7 @@
 #define I2C_CLK_SPD 100000 // must be <= 400kHz
 #define TIMEOUT_THRESHOLD 10
 
-void BSP_I2C_Init() {
+BSP_Status BSP_I2C_Init() {
     GPIO_InitTypeDef gpio_struct;
     I2C_InitTypeDef i2c_struct;
 
@@ -44,9 +44,7 @@ void BSP_I2C_Init() {
     HAL_GPIO_Init(GPIOC, &gpio_struct);
 
     // Now we can init I2C on these pins
-    if (HAL_I2C_Init(&i2c_struct) != HAL_OK) {
-        // error handler
-    }
+    return CONVERT_RETURN(HAL_I2C_Init(&i2c_struct));
 }
 
 /**
@@ -57,7 +55,7 @@ void BSP_I2C_Init() {
  * @param   txLen : the length of the data array.
  * @return  error status, 0 if fail, 1 if success
  */
-I2C_STATUS BSP_I2C_Write(uint8_t deviceAddr, uint16_t regAddr, uint8_t *txData, uint32_t txLen) {
+BSP_Status BSP_I2C_Write(uint8_t deviceAddr, uint16_t regAddr, uint8_t *txData, uint32_t txLen) {
     volatile uint8_t timeout_ctr = 0;
     // spin on busy
     while (HAL_I2C_GetState(I2C3) == I2C_FLAG_BUSY) {
@@ -68,7 +66,7 @@ I2C_STATUS BSP_I2C_Write(uint8_t deviceAddr, uint16_t regAddr, uint8_t *txData, 
     }
     // DMA? Interrupt? Which kind
 // TODO: 7bit I2C addrs need to be << by 1 according to spec. Do we do this here?  
-    return (I2C_STATUS)HAL_I2C_Mem_Write_IT(I2C3, deviceAddr, regAddr, sizeof(uint16_t), txData, txLen);
+    return CONVERT_RETURN(HAL_I2C_Mem_Write_IT(I2C3, deviceAddr, regAddr, sizeof(uint16_t), txData, txLen));
 }
 
 /**
@@ -79,15 +77,15 @@ I2C_STATUS BSP_I2C_Write(uint8_t deviceAddr, uint16_t regAddr, uint8_t *txData, 
  * @param   rxLen : the length of the data array.
  * @return  error status, 0 if fail, 1 if success
  */
-I2C_STATUS BSP_I2C_Read(uint8_t deviceAddr, uint16_t regAddr, uint8_t *rxData, uint32_t rxLen) {
+BSP_Status BSP_I2C_Read(uint8_t deviceAddr, uint16_t regAddr, uint8_t *rxData, uint32_t rxLen) {
     volatile uint8_t timeout_ctr = 0;
     // spin on busy
     while (HAL_I2C_GetState(I2C3) == I2C_FLAG_BUSY) {
         timeout_ctr++;
         if (timeout_ctr > TIMEOUT_THRESHOLD) {
-            return !ERROR;
+            return BSP_ERROR;
         }
     }
     // DMA? Interrupt? Which kind
-    return (I2C_STATUS)HAL_I2C_Mem_Read_IT(I2C3, deviceAddr, regAddr, sizeof(uint16_t), rxData, rxLen);
+    return CONVERT_STATUS(HAL_I2C_Mem_Read_IT(I2C3, deviceAddr, regAddr, sizeof(uint16_t), rxData, rxLen));
 }
