@@ -11,9 +11,12 @@
 # ------------------------------------------------
 
 ######################################
-# target (can be passed in/changed)
+# inputs
 ######################################
-TARGET ?= output
+TARGET ?= $(error TARGET is not set)
+PROJECT_DIR ?= $(error PROJECT_DIR is not set)
+TEST ?= $(error TEST is not set)
+BUILD_DIR ?= $(error BUILD_DIR is not set)
 
 ######################################
 # building variables
@@ -28,7 +31,6 @@ OPT = -Og
 # paths
 #######################################
 # Build path
-BUILD_DIR := $(PROJECT_DIR)/Objects
 BSP_DIR := .
 CMSIS_DIR := ../../CMSIS
 
@@ -42,12 +44,7 @@ $(BSP_DIR)/STM32F4xx_HAL_Driver/Src/*.c	\
 
 # Expand wildcards to get each source file individually
 C_SOURCES := $(foreach path, $(C_SOURCES), $(wildcard $(path)))
-
-# If a test file is defined, source the test file instead of main.c
-ifneq ($(TEST), none)
-C_SOURCES := $(filter-out */main.c, $(C_SOURCES)) # Filter out main.c
 C_SOURCES += $(wildcard $(TEST)) # Add test file
-endif
 
 # ASM sources
 ASM_SOURCES =  \
@@ -171,12 +168,6 @@ $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 $(BUILD_DIR):
 	mkdir $@		
 
-#######################################
-# clean up
-#######################################
-clean:
-	-rm -fR $(BUILD_DIR)
-  
 #######################################
 # dependencies
 #######################################

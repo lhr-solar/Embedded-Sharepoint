@@ -1,11 +1,12 @@
-TEST = none
-
 test:
-ifneq ($(TEST), none)
-	$(MAKE) -C BSP -C STM32F413 -j TARGET=bsp PROJECT_DIR=../.. TEST=../Tests/$(TEST).c
+ifdef test
+	$(MAKE) -C BSP -C STM32F413 -j TARGET=bsp PROJECT_DIR=../.. TEST=../Tests/$(test).c BUILD_DIR=../../Objects
 else
-	@echo "Testfile not found${NC}"
+	$(error test is not set (e.g. make test helloworld))
 endif
 
+flash:
+	-st-flash write Objects/bsp.bin 0x8000000
+
 clean:
-	$(MAKE) -C BSP -C STM32F413 -j clean
+	-rm -fR Objects
