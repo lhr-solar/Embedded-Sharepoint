@@ -15,7 +15,6 @@
 ######################################
 TARGET ?= $(error TARGET is not set)
 PROJECT_DIR ?= $(error PROJECT_DIR is not set)
-TEST ?= $(error TEST is not set)
 BUILD_DIR ?= $(error BUILD_DIR is not set)
 
 ######################################
@@ -44,7 +43,17 @@ $(BSP_DIR)/STM32F4xx_HAL_Driver/Src/*.c	\
 
 # Expand wildcards to get each source file individually
 C_SOURCES := $(foreach path, $(C_SOURCES), $(wildcard $(path)))
+
+# Expand wildcards if project gives more sources
+ifdef PROJECT_C_SOURCES
+C_SOURCES += $(foreach path, $(PROJECT_C_SOURCES), $(wildcard $(path)))
+endif
+
+# If a test file is defined, take out main.c and add in the test to sources
+ifdef TEST
+C_SOURCES := $(filter-out %main.c, $(C_SOURCES)) # Filter out main.c
 C_SOURCES += $(wildcard $(TEST)) # Add test file
+endif
 
 # ASM sources
 ASM_SOURCES =  \
@@ -109,6 +118,11 @@ $(BSP_DIR)/STM32F4xx_HAL_Driver/Inc/	\
 $(BSP_DIR)/STM32F4xx_HAL_Driver/Inc/Legacy/	\
 $(CMSIS_DIR)/Device/ST/STM32F4xx/Include/      \
 $(CMSIS_DIR)/Core/Include/	\
+
+# Expand wildcards if project gives more includes
+ifdef PROJECT_C_INCLUDES
+C_INCLUDES += $(foreach path, $(PROJECT_C_INCLUDES), $(path))
+endif
 
 # Add appropriate prefix to all includes
 C_INCLUDES := $(addprefix -I, $(C_INCLUDES))
