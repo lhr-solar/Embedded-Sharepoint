@@ -7,20 +7,13 @@
  * 
  * Has a struct used for 
  */
-
+#include <stdbool.h>
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx_hal_rcc.h"
 #include "stm32f4xx_hal_gpio.h"
 #include "stm32f4xx_hal_i2c.h"
 #include "stm32f4xx_hal_spi.h"
 #include "stm32f4xx_hal_uart.h"
-
-
-//for pin in pin2periph:
-//    if pin.af == i2c_shit:
-//        i2c_init(pin)
-
-// 
 
 // Possible pins to refer to.
 typedef enum {
@@ -45,11 +38,29 @@ typedef enum {
 // Macro to get HAL GPIO port out from enum value
 #define GET_GPIO(x) ( (( (x) >= BSP_GPIO_PA0 && (x) <= BSP_GPIO_PA15 )) ? GPIOA : \
                     (  (( (x) >= BSP_GPIO_PB0 && (x) <= BSP_GPIO_PB15 )) ? GPIOB : \
-                    (  (( (x) >= BSP_GPIO_PC0 && (x) <= BSP_GPIO_PC13 ))) ? GPIOC : GPIOD ))
+                    (  (( (x) >= BSP_GPIO_PC0 && (x) <= BSP_GPIO_PC13 ))) ? GPIOC : GPIOD )) \
 
-// Returns a HAL GPIO_PIN_XX value given any of our valid pins from the enum
-// inline this?
+/**
+ * @brief Gets GPIO_PIN_XX number from a BSP_PIN enum value
+ * 
+ * @param pin 
+ * @return uint8_t 
+ */
 uint8_t PinFromEnum(BSP_PINS pin);
+/**
+ * @brief Determines if pin AF mapping is correct
+ * 
+ * @param pin 
+ * @param mapped_function 
+ * @return true 
+ * @return false 
+ */
+bool isValidPinMapping(BSP_PINS pin, uint8_t mapped_function);
+/**
+ * @brief Initializes all UC pins' GPIO (and eventually their actual AF config)
+ * 
+ */
+void BSP_Pin_AF_Init();
 
 // Only print BSP configuration once
 // #includes are ignored in false preprocessor statements
@@ -66,9 +77,9 @@ typedef enum {
     BSP_TIMEOUT = 0x4
 } BSP_Status;
 
-// Macro for turning HAL_StatusTypeDef to our BSP error
+// Macros for turning HAL_StatusTypeDef to our BSP error
 #define CONVERT_RETURN(x) (((x) == 0x3U) ? (BSP_TIMEOUT) : (x))
-// Macros for interpreting returns
+// Macros for interpreting BSP returns
 #define HAS_TIMEOUT(x) ((x) & 0x4)
 #define HAS_BUSY(x) ((x) & 0x2)
 #define HAS_ERROR(x) ((x) & 0x1)

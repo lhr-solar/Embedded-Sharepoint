@@ -1,7 +1,11 @@
 #include "BSP.h"
+#include "bsp_config.h"
 #include <stdbool.h>
 
 #define MAX_PIN_AF 8
+
+// see bsp_config.c
+extern const uint8_t* BSP_GPIO_MAPPING;
 
 // LUT for all valid AF pin mappings
 
@@ -85,4 +89,38 @@ bool isValidPinMapping(BSP_PINS pin, uint8_t mapped_function) {
         if (VALID_AF_MAP[pin][i] == mapped_function) return true;
     }
     return false; // didn't match on any of the possible AFs for that pin, so bad mapping
+}
+
+//for pin in pin2periph:
+//    if pin.af == i2c_shit:
+//        i2c_init(pin)
+// per Tianda
+
+/**
+ * TODO: We need a better way of mapping AFs to pins
+ *       besides using the builtin HAL #defines, as
+ *       each AF(X) for 0 to 15 is the same value (i.e., AF4_UART = 4 = AF4_SPI)
+ *       this is fine for GPIO init, but NOT fine for actual periphery initialization
+ *       
+ *       Perhaps (another) custom #define or enum that specifies.
+ *       Edit: yes we DEFINITELY need a custom enum that specifies the AF type instead of just the #defines.
+ *             CAN/Timer AFs share some values, but CAN and I2C need OD while others need PP mode.
+ */
+
+void BSP_Pin_AF_Init() {
+    GPIO_InitTypeDef pinInitStruct;
+
+    for (uint8_t i = 0; i < NUM_BSP_PINS; i++) {
+        // If not valid mapping, crash (crash? how do we notify bad mapping if on board?)
+        if (!isValidPinMapping((BSP_PINS)i, BSP_GPIO_MAPPING[i])) {
+            return;
+        }
+        // I2C has to be open drain
+        // Lucky for us, all the valid I2C peripherals
+        // we can use are on AF4, so check for "4" value
+        pinInitStruct.Mode = (BSP_GPIO_MAPPING[i] != 0) ? GPIO_MODE_AF_PP : GPIO_MODE_OUTPUT_PP;
+        if (BSP_GPIO_MAPPING[i] == 0x4U) {
+            pinInitStruct.Mode = GPIO_MODE_AF_OD;
+        }
+    }
 }

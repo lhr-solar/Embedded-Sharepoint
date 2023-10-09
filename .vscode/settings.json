@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.cpp": "cpp",
+        "*.asm": "asm-intel-x86-generic",
+        "stdbool.h": "c"
+    }
+}
