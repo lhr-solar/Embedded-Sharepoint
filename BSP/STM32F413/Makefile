@@ -122,7 +122,6 @@ $(OS_SRC_DIRS)
 C_INCLUDES :=  \
 $(BSP_DIR)/../Inc/	\
 $(BSP_DIR)/Inc/	\
-$(BSP_DIR)/../../Util/Inc/	\
 $(BSP_DIR)/STM32F4xx_HAL_Driver/Inc/	\
 $(BSP_DIR)/STM32F4xx_HAL_Driver/Inc/Legacy/	\
 $(CMSIS_DIR)/Device/ST/STM32F4xx/Include/      \
@@ -142,7 +141,7 @@ C_INCLUDES := $(addprefix -I, $(C_INCLUDES))
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -Wno-comment -fdata-sections -ffunction-sections
 
-CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
+CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -Wno-comment -fdata-sections -ffunction-sections
 
 ifeq ($(DEBUG), 1)
 CFLAGS += -g -gdwarf-2
