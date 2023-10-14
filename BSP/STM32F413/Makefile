@@ -32,6 +32,8 @@ OPT = -Og
 # Build path
 BSP_DIR := .
 CMSIS_DIR := ../../CMSIS
+FREERTOS_DIR := ../../FreeRTOS-Kernel
+UTIL_DIR := ../../Util
 
 ######################################
 # source
@@ -40,9 +42,16 @@ CMSIS_DIR := ../../CMSIS
 C_SOURCES :=	\
 $(BSP_DIR)/Src/*.c	\
 $(BSP_DIR)/STM32F4xx_HAL_Driver/Src/*.c	\
+$(FREERTOS_DIR)/*.c	\
+$(UTIL_DIR)/Src/*.c	\
+
 
 # Expand wildcards to get each source file individually
 C_SOURCES := $(foreach path, $(C_SOURCES), $(wildcard $(path)))
+
+# Add specific sources
+C_SOURCES += $(FREERTOS_DIR)/portable/GCC/ARM_CM4F/port.cFreeRTOS-Kernel/portable/MemMang/heap_4.c	\
+$(FREERTOS_DIR)/portable/MemMang/heap_4.c	\
 
 # Expand wildcards if project gives more sources
 ifdef PROJECT_C_SOURCES
@@ -118,6 +127,9 @@ $(BSP_DIR)/STM32F4xx_HAL_Driver/Inc/	\
 $(BSP_DIR)/STM32F4xx_HAL_Driver/Inc/Legacy/	\
 $(CMSIS_DIR)/Device/ST/STM32F4xx/Include/      \
 $(CMSIS_DIR)/Core/Include/	\
+$(FREERTOS_DIR)/include	\
+$(FREERTOS_DIR)/portable/GCC/ARM_CM4F	\
+$(UTIL_DIR)/Inc/	\
 
 # Expand wildcards if project gives more includes
 ifdef PROJECT_C_INCLUDES
