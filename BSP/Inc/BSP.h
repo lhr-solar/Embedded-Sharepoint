@@ -23,8 +23,8 @@ extern I2C_HandleTypeDef i2c1_handle;
 extern I2C_HandleTypeDef i2c3_handle;
 extern SPI_HandleTypeDef spi2_handle;
 extern SPI_HandleTypeDef spi3_handle;
-extern CAN_HandleTypeDef can2_handle;
-extern CAN_HandleTypeDef can3_handle;
+extern CAN_HandleTypeDef carcan_handle;
+extern CAN_HandleTypeDef localcan_handle;
 
 // Possible pins to refer to.
 typedef enum {

@@ -131,8 +131,8 @@ void BSP_Init() {
     i2c3_handle.Instance = I2C3;
     spi2_handle.Instance = SPI2;
     spi3_handle.Instance = SPI3;
-    can2_handle.Instance = CAN2;
-    can3_handle.Instance = CAN3;
+    carcan_handle.Instance = CAN2;
+    localcan_handle.Instance = CAN3;
 
 
     GPIO_InitTypeDef gpio;
