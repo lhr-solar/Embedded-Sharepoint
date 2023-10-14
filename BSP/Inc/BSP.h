@@ -24,7 +24,7 @@ typedef enum {
 
     BSP_GPIO_PB0, BSP_GPIO_PB1, BSP_GPIO_PB2, BSP_GPIO_PB3, BSP_GPIO_PB4,
     BSP_GPIO_PB5, BSP_GPIO_PB6, BSP_GPIO_PB7, BSP_GPIO_PB8, BSP_GPIO_PB9,
-    BSP_GPIO_PB10, BSP_GPIO_PB12, BSP_GPIO_PB13, BSP_GPIO_PB14, BSP_GPIO_PB15,
+    BSP_GPIO_PB10, BSP_GPIO_PB11, BSP_GPIO_PB12, BSP_GPIO_PB13, BSP_GPIO_PB14, BSP_GPIO_PB15,
 
     BSP_GPIO_PC0, BSP_GPIO_PC1, BSP_GPIO_PC2, BSP_GPIO_PC3, BSP_GPIO_PC4,
     BSP_GPIO_PC5, BSP_GPIO_PC6, BSP_GPIO_PC7, BSP_GPIO_PC8, BSP_GPIO_PC9, 
@@ -56,11 +56,6 @@ uint8_t PinFromEnum(BSP_PINS pin);
  * @return false 
  */
 bool isValidPinMapping(BSP_PINS pin, uint8_t mapped_function);
-/**
- * @brief Initializes all UC pins' GPIO (and eventually their actual AF config)
- * 
- */
-void BSP_Pin_AF_Init();
 
 // Only print BSP configuration once
 // #includes are ignored in false preprocessor statements

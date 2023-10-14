@@ -2,6 +2,10 @@
     "files.associations": {
         "*.cpp": "cpp",
         "*.asm": "asm-intel-x86-generic",
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "bsp.h": "c",
+        "bsp_config.h": "c",
+        "task.h": "c",
+        "freertos.h": "c"
     }
 }
