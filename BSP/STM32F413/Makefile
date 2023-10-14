@@ -34,7 +34,6 @@ BSP_DIR := .
 CMSIS_DIR := ../../CMSIS
 FREERTOS_DIR := ../../FreeRTOS-Kernel
 UTIL_DIR := ../../Util
-TOP_DIR := ../
 
 ######################################
 # source
