@@ -34,6 +34,7 @@ BSP_DIR := .
 CMSIS_DIR := ../../CMSIS
 FREERTOS_DIR := ../../FreeRTOS-Kernel
 UTIL_DIR := ../../Util
+TOP_DIR := ../
 
 ######################################
 # source
@@ -50,8 +51,7 @@ $(UTIL_DIR)/Src/*.c	\
 C_SOURCES := $(foreach path, $(C_SOURCES), $(wildcard $(path)))
 
 # Add specific sources
-C_SOURCES += $(FREERTOS_DIR)/portable/GCC/ARM_CM4F/port.cFreeRTOS-Kernel/portable/MemMang/heap_4.c	\
-$(FREERTOS_DIR)/portable/MemMang/heap_4.c	\
+C_SOURCES += $(FREERTOS_DIR)/portable/GCC/ARM_CM4F/port.c	\
 
 # Expand wildcards if project gives more sources
 ifdef PROJECT_C_SOURCES
