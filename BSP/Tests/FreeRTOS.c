@@ -7,7 +7,7 @@
 
 /* TODO Add any manufacture supplied header files can be included
 here. */
-#include "hardware.h"
+#include "stm32f4xx_hal.h"
 
 /* Priorities at which the tasks are created.  The event semaphore task is
 given the maximum priority of ( configMAX_PRIORITIES - 1 ) to ensure it runs as
@@ -74,6 +74,19 @@ static volatile uint32_t ulCountOfReceivedSemaphores = 0;
 
 /*-----------------------------------------------------------*/
 
+StaticQueue_t xQueueBuffer;
+uint8_t ucQueueStorage[ mainQUEUE_LENGTH * sizeof( uint32_t )];
+
+StaticSemaphore_t xSemaphoreBuffer;
+
+StaticTask_t pxTaskBufferRx;
+StaticTask_t pxTaskBufferTx;
+StaticTask_t pxTaskBufferSem;
+
+StaticTimer_t pxTimerBuffer;
+
+/*-----------------------------------------------------------*/
+
 int main(void)
 {
 TimerHandle_t xExampleSoftwareTimer = NULL;
@@ -84,21 +97,24 @@ TimerHandle_t xExampleSoftwareTimer = NULL;
 
 
     /* Create the queue used by the queue send and queue receive tasks. */
-    xQueue = xQueueCreate(     /* The number of items the queue can hold. */
+    xQueue = xQueueCreateStatic(     /* The number of items the queue can hold. */
                             mainQUEUE_LENGTH,
                             /* The size of each item the queue holds. */
-                            sizeof( uint32_t ) );
+                            sizeof( uint32_t ),
+                            ucQueueStorage,
+                            /* Buffer for static allocation */
+                            &xQueueBuffer );
 
 
     /* Create the semaphore used by the FreeRTOS tick hook function and the
     event semaphore task.  NOTE: A semaphore is used for example purposes,
     using a direct to task notification will be faster! */
-    xEventSemaphore = xSemaphoreCreateBinary();
+    xEventSemaphore = xSemaphoreCreateBinaryStatic( & xSemaphoreBuffer );
 
 
     /* Create the queue receive task as described in the comments at the top
     of this file. */
-    xTaskCreate(     /* The function that implements the task. */
+    xTaskCreateStatic(     /* The function that implements the task. */
                     prvQueueReceiveTask,
                     /* Text name for the task, just to help debugging. */
                     "Rx",
@@ -114,32 +130,38 @@ TimerHandle_t xExampleSoftwareTimer = NULL;
                     mainQUEUE_RECEIVE_TASK_PRIORITY,
                     /* Used to obtain a handle to the created task.  Not used in
                     this simple demo, so set to NULL. */
-                    NULL );
+                    NULL,
+                    /* Buffer for static allocation */
+                    &pxTaskBufferRx );
 
 
     /* Create the queue send task in exactly the same way.  Again, this is
     described in the comments at the top of the file. */
-    xTaskCreate(     prvQueueSendTask,
+    xTaskCreateStatic(     prvQueueSendTask,
                     "TX",
                     configMINIMAL_STACK_SIZE,
                     NULL,
                     mainQUEUE_SEND_TASK_PRIORITY,
-                    NULL );
+                    NULL ,
+                    /* Buffer for static allocation */
+                    &pxTaskBufferTx );
 
 
     /* Create the task that is synchronised with an interrupt using the
     xEventSemaphore semaphore. */
-    xTaskCreate(     prvEventSemaphoreTask,
+    xTaskCreateStatic(     prvEventSemaphoreTask,
                     "Sem",
                     configMINIMAL_STACK_SIZE,
                     NULL,
                     mainEVENT_SEMAPHORE_TASK_PRIORITY,
-                    NULL );
+                    NULL,
+                    /* Buffer for static allocation */
+                    &pxTaskBufferSem );
 
 
     /* Create the software timer as described in the comments at the top of
     this file. */
-    xExampleSoftwareTimer = xTimerCreate(     /* A text name, purely to help
+    xExampleSoftwareTimer = xTimerCreateStatic(     /* A text name, purely to help
                                             debugging. */
                                             ( const char * ) "LEDTimer",
                                             /* The timer period, in this case
@@ -153,7 +175,9 @@ TimerHandle_t xExampleSoftwareTimer = NULL;
                                             ( void * ) 0,
                                             /* The callback function that switches
                                             the LED off. */
-                                            vExampleTimerCallback
+                                            vExampleTimerCallback,
+                                            /* Buffer for static allocation */
+                                            &pxTimerBuffer
                                         );
 
     /* Start the created timer.  A block time of zero is used as the timer
@@ -338,7 +362,7 @@ static void prvSetupHardware( void )
 {
     /* Ensure all priority bits are assigned as preemption priority bits
     if using a ARM Cortex-M microcontroller. */
-    NVIC_SetPriorityGrouping( 0 );
+    HAL_NVIC_SetPriorityGrouping( 0 );
 
     /* TODO: Setup the clocks, etc. here, if they were not configured before
     main() was called. */
