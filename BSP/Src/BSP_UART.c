@@ -3,6 +3,8 @@
 static uint8_t tx_buffer[TX_SIZE];
 static uint8_t rx_buffer[RX_SIZE + 1];
 
+static USART_TypeDef *handles[NUM_UART] = {USART2, USART3};
+
 // Some uart helpers
 static void clear_buffer(uint8_t* buf, uint16_t size) {
     for (uint16_t i = 0; i < size; i++) {
@@ -73,16 +75,21 @@ BSP_Status BSP_UART_Init() {
 }
 
 /**
- * @brief Reads a line of input from UART into the rx buffer
+ * @brief   Reads a line of input from UART into the rx buffer
  * 
- * @return Pointer to the data read; ALWAYS null terminated
+ * @param   usart : which usart to read from (2 or 3)
+ * 
+ * @return  Pointer to the data read; ALWAYS null terminated
  */
-char* BSP_UART_ReadLine() {
+char* BSP_UART_ReadLine(UART_t usart) {
+    USART_TypeDef *usart_handle = handles[usart];
+
     clear_buffer(rx_buffer, RX_SIZE);
     // HAL doesnt have USART_ITConfig(usart_handle, USART_IT_RXNE, RESET); that I can find
     // so we'll toggle interrupts for now.
     __HAL_USART_DISABLE_IT(&for_interrupts, USART_IT_RXNE);
-    BSP_Status returnInfo = CONVERT_RETURN(HAL_USART_Receive_IT(USART3, rx_buffer, RX_SIZE));
+
+    BSP_Status returnInfo = CONVERT_RETURN(HAL_USART_Receive_IT(usart_handle, rx_buffer, RX_SIZE));
 
     __HAL_USART_ENABLE_IT(&for_interrupts, USART_IT_RXNE);
     clear_terminators();
@@ -94,15 +101,38 @@ char* BSP_UART_ReadLine() {
 }
 
 /**
- * @brief 
+ * @brief   Write a line of input into UART
  * 
- * @param input 
- * @param len 
+ * @param   usart : which usart to write to (2 or 3) 
+ * @param   input : data to write to usart
+ * @param   len : length of data
  */
-BSP_Status BSP_UART_WriteLine(const char* input, uint32_t len) {
+BSP_Status BSP_UART_WriteLine(UART_t usart, const char* input, uint32_t len) {
+    USART_TypeDef *usart_handle = handles[usart];
+   
     __HAL_USART_DISABLE_IT(&for_interrupts, USART_IT_TC);
-    BSP_Status returnInfo = CONVERT_RETURN(HAL_USART_Transmit_IT(USART3, input, len));
+    BSP_Status returnInfo = CONVERT_RETURN(HAL_USART_Transmit_IT(usart_handle, input, len));
     // re-enable interrupts
     __HAL_USART_ENABLE_IT(&for_interrupts, USART_IT_RXNE);
     return returnInfo;
+}
+
+void HAL_UART_IRQHandler(UART_HandleTypeDef *huart) {
+    // TODO Convert these
+    // CPU_SR_ALLOC();
+    // CPU_CRITICAL_ENTER();
+    // OSIntEnter();
+    // CPU_CRITICAL_EXIT();
+    
+    USART_TypeDef *usart_handle;
+    if (huart == handles[UART_2]) {
+        usart_handle = handles[UART_2];
+    }
+    else if (huart == handles[UART_3]) {
+        usart_handle = handles[UART_3];
+    }
+
+    if (__HAL_GET_FLAG(usart_handle, USART_FLAG_RXNE) != 0) {
+        
+    }
 }
