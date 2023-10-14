@@ -2,6 +2,7 @@
     "files.associations": {
         "*.cpp": "cpp",
         "*.asm": "asm-intel-x86-generic",
-        "bsp_i2c.h": "c"
+        "bsp_i2c.h": "c",
+        "freertos.h": "c"
     }
 }
