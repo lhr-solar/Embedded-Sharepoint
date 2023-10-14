@@ -44,6 +44,7 @@ $(BSP_DIR)/Src/*.c	\
 $(BSP_DIR)/STM32F4xx_HAL_Driver/Src/*.c	\
 $(FREERTOS_DIR)/*.c	\
 $(UTIL_DIR)/Src/*.c	\
+$(BSP_DIR)/../Src/*.c 	\
 
 
 # Expand wildcards to get each source file individually
@@ -141,7 +142,7 @@ C_INCLUDES := $(addprefix -I, $(C_INCLUDES))
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -Wno-comment -fdata-sections -ffunction-sections
 
-CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -Wno-comment -fdata-sections -ffunction-sections
+CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -Wno-comment -fdata-sections -ffunction-sections -ftrack-macro-expansion=0 
 
 ifeq ($(DEBUG), 1)
 CFLAGS += -g -gdwarf-2
