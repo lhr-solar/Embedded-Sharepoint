@@ -15,6 +15,17 @@
 #include "stm32f4xx_hal_spi.h"
 #include "stm32f4xx_hal_uart.h"
 
+// Global handles to the possible peripherals
+extern UART_HandleTypeDef uart4_handle;
+extern UART_HandleTypeDef uart5_handle;
+extern TIM_HandleTypeDef tim1_handle, tim2_handle, tim3_handle, tim9_handle;
+extern I2C_HandleTypeDef i2c1_handle;
+extern I2C_HandleTypeDef i2c3_handle;
+extern SPI_HandleTypeDef spi2_handle;
+extern SPI_HandleTypeDef spi3_handle;
+extern CAN_HandleTypeDef can2_handle;
+extern CAN_HandleTypeDef can3_handle;
+
 // Possible pins to refer to.
 typedef enum {
     BSP_GPIO_PA0, BSP_GPIO_PA1, BSP_GPIO_PA2, BSP_GPIO_PA3, BSP_GPIO_PA4,
@@ -56,6 +67,12 @@ uint8_t PinFromEnum(BSP_PINS pin);
  * @return false 
  */
 bool isValidPinMapping(BSP_PINS pin, uint8_t mapped_function);
+
+/**
+ * @brief Configures the BSP layer according to the configuration specified in bsp_config.h
+ * 
+ */
+void BSP_Init();
 
 // Only print BSP configuration once
 // #includes are ignored in false preprocessor statements

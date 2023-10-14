@@ -25,6 +25,58 @@
          \//_/    \_\|______||_____/            
 */
 #include "BSP.h"
+
+#pragma message "Pin PA0_AF set to " ENQUOTE(PA0_ALTERNATE_FUNCTION)
+#pragma message "Pin PA1_AF set to " ENQUOTE(PA1_ALTERNATE_FUNCTION)
+#pragma message "Pin PA2_AF set to " ENQUOTE(PA2_ALTERNATE_FUNCTION)
+#pragma message "Pin PA3_AF set to " ENQUOTE(PA3_ALTERNATE_FUNCTION)
+#pragma message "Pin PA4_AF set to " ENQUOTE(PA4_ALTERNATE_FUNCTION)
+#pragma message "Pin PA5_AF set to " ENQUOTE(PA5_ALTERNATE_FUNCTION)
+#pragma message "Pin PA6_AF set to " ENQUOTE(PA6_ALTERNATE_FUNCTION)
+#pragma message "Pin PA7_AF set to " ENQUOTE(PA7_ALTERNATE_FUNCTION)
+#pragma message "Pin PA8_AF set to " ENQUOTE(PA8_ALTERNATE_FUNCTION)
+#pragma message "Pin PA9_AF set to " ENQUOTE(PA9_ALTERNATE_FUNCTION)
+#pragma message "Pin PA10_AF set to " ENQUOTE(PA10_ALTERNATE_FUNCTION)
+#pragma message "Pin PA11_AF set to " ENQUOTE(PA11_ALTERNATE_FUNCTION)
+#pragma message "Pin PA12_AF set to " ENQUOTE(PA12_ALTERNATE_FUNCTION)
+#pragma message "Pin PA13_AF set to " ENQUOTE(PA13_ALTERNATE_FUNCTION)
+#pragma message "Pin PA14_AF set to " ENQUOTE(PA14_ALTERNATE_FUNCTION)
+#pragma message "Pin PA15_AF set to " ENQUOTE(PA15_ALTERNATE_FUNCTION)
+#pragma message "Pin PB0_AF set to " ENQUOTE(PB0_ALTERNATE_FUNCTION)
+#pragma message "Pin PB1_AF set to " ENQUOTE(PB1_ALTERNATE_FUNCTION)
+#pragma message "Pin PB2_AF set to " ENQUOTE(PB2_ALTERNATE_FUNCTION)
+#pragma message "Pin PB3_AF set to " ENQUOTE(PB3_ALTERNATE_FUNCTION)
+#pragma message "Pin PB4_AF set to " ENQUOTE(PB4_ALTERNATE_FUNCTION)
+#pragma message "Pin PB5_AF set to " ENQUOTE(PB5_ALTERNATE_FUNCTION)
+#pragma message "Pin PB6_AF set to " ENQUOTE(PB6_ALTERNATE_FUNCTION)
+#pragma message "Pin PB7_AF set to " ENQUOTE(PB7_ALTERNATE_FUNCTION)
+#pragma message "Pin PB8_AF set to " ENQUOTE(PB8_ALTERNATE_FUNCTION)
+#pragma message "Pin PB9_AF set to " ENQUOTE(PB9_ALTERNATE_FUNCTION)
+#pragma message "Pin PB10_AF set to " ENQUOTE(PB10_ALTERNATE_FUNCTION)
+#pragma message "Pin PB12_AF set to " ENQUOTE(PB12_ALTERNATE_FUNCTION)
+#pragma message "Pin PB13_AF set to " ENQUOTE(PB13_ALTERNATE_FUNCTION)
+#pragma message "Pin PB14_AF set to " ENQUOTE(PB14_ALTERNATE_FUNCTION)
+#pragma message "Pin PB15_AF set to " ENQUOTE(PB15_ALTERNATE_FUNCTION)
+#pragma message "Pin PC0_AF set to " ENQUOTE(PC0_ALTERNATE_FUNCTION)
+#pragma message "Pin PC1_AF set to " ENQUOTE(PC1_ALTERNATE_FUNCTION)
+#pragma message "Pin PC2_AF set to " ENQUOTE(PC2_ALTERNATE_FUNCTION)
+#pragma message "Pin PC3_AF set to " ENQUOTE(PC3_ALTERNATE_FUNCTION)
+#pragma message "Pin PC4_AF set to " ENQUOTE(PC4_ALTERNATE_FUNCTION)
+#pragma message "Pin PC5_AF set to " ENQUOTE(PC5_ALTERNATE_FUNCTION)
+#pragma message "Pin PC6_AF set to " ENQUOTE(PC6_ALTERNATE_FUNCTION)
+#pragma message "Pin PC7_AF set to " ENQUOTE(PC7_ALTERNATE_FUNCTION)
+#pragma message "Pin PC8_AF set to " ENQUOTE(PC8_ALTERNATE_FUNCTION)
+#pragma message "Pin PC9_AF set to " ENQUOTE(PC9_ALTERNATE_FUNCTION)
+#pragma message "Pin PC10_AF set to " ENQUOTE(PC10_ALTERNATE_FUNCTION)
+#pragma message "Pin PC11_AF set to " ENQUOTE(PC11_ALTERNATE_FUNCTION)
+#pragma message "Pin PC12_AF set to " ENQUOTE(PC12_ALTERNATE_FUNCTION)
+#pragma message "Pin PC13_AF set to " ENQUOTE(PC13_ALTERNATE_FUNCTION)
+#pragma message "Pin PD2_AF set to " ENQUOTE(PD2_ALTERNATE_FUNCTION)
+
+/**
+ * @brief Pin <-> AF mapping lookup table
+ * 
+ */
 const uint8_t BSP_GPIO_MAPPING[NUM_BSP_PINS] = {
     [BSP_GPIO_PA0] = (PA0_ALTERNATE_FUNCTION),
     [BSP_GPIO_PA1] = (PA1_ALTERNATE_FUNCTION),
@@ -73,3 +125,4 @@ const uint8_t BSP_GPIO_MAPPING[NUM_BSP_PINS] = {
     [BSP_GPIO_PC13] = (PC13_ALTERNATE_FUNCTION),
     [BSP_GPIO_PD2] = (PD2_ALTERNATE_FUNCTION),
 };
+

@@ -2,10 +2,26 @@
 #include "bsp_config.h"
 #include <stdbool.h>
 
-#define MAX_PIN_AF 8
+#define MAX_PIN_AF 3
 
 // see bsp_config.c
 extern const uint8_t* BSP_GPIO_MAPPING;
+// remapping
+static const uint8_t remap[NUM_PERIPHS] = {
+	[BSP_GPIO] = 0,
+	[BSP_UART4] = GPIO_AF8_UART4,
+    [BSP_UART5] = GPIO_AF11_UART5,
+	[BSP_TIM1] = GPIO_AF1_TIM1,
+	[BSP_TIM2] = GPIO_AF1_TIM2,
+	[BSP_TIM3] = GPIO_AF2_TIM3,
+	[BSP_TIM9] = GPIO_AF3_TIM9,
+	[BSP_I2C1] = GPIO_AF4_I2C1,
+	[BSP_I2C3] = GPIO_AF4_I2C3,
+	[BSP_SPI2] = GPIO_AF5_SPI2,
+	[BSP_SPI3] = GPIO_AF6_SPI3,
+	[BSP_CAN2] = GPIO_AF9_CAN2,
+	[BSP_CAN3] = GPIO_AF11_CAN3
+};
 
 // LUT for all valid AF pin mappings
 
@@ -69,14 +85,7 @@ uint8_t PinFromEnum(BSP_PINS pin) {
     if (pin_port == GPIOA) {
         final_pin_value = (uint8_t)pin;
     } else if (pin_port == GPIOB) {
-        // we don't have PB11 on our chip so do some edge case handling
-        if (pin <= BSP_GPIO_PB10) {
-            final_pin_value = (uint8_t)pin - BSP_GPIO_PB0;
-        }
-        else {
-            final_pin_value = ((uint8_t)pin - BSP_GPIO_PB0) + 1;
-            // PB12 -> (27) - (16) + 1 = 12, good
-        }
+        final_pin_value = (uint8_t)pin - BSP_GPIO_PB0;
     } else if (pin_port == GPIOC) {
         final_pin_value = (uint8_t)pin - BSP_GPIO_PC0;
     } else if (pin_port == GPIOD || pin == BSP_GPIO_PD2) {
@@ -93,26 +102,86 @@ bool isValidPinMapping(BSP_PINS pin, uint8_t mapped_function) {
     return false; // didn't match on any of the possible AFs for that pin, so bad mapping
 }
 
-//for pin in pin2periph:
-//    if pin.af == i2c_shit:
-//        i2c_init(pin)
-// per Tianda
 
 /**
- * TODO: We need a better way of mapping AFs to pins
- *       besides using the builtin HAL #defines, as
- *       each AF(X) for 0 to 15 is the same value (i.e., AF4_UART = 4 = AF4_SPI)
- *       this is fine for GPIO init, but NOT fine for actual periphery initialization
- *       
- *       Perhaps (another) custom #define or enum that specifies.
- *       Edit: yes we DEFINITELY need a custom enum that specifies the AF type instead of just the #defines.
- *             CAN/Timer AFs share some values, but CAN and I2C need OD while others need PP mode.
+ * @brief Configures the BSP layer according to the configuration specified in bsp_config.h
+ * 
+ * @details This function configures the BSP peripheral functions according to the alternate function
+ * mapping specified in bsp_config.h
+ * 
+ * The validity of your configuration is checked at runtime. Each pin's alternate function value is mapped
+ * into an array in memory, indexed by the pin, with a value of BSP_XXX alternate function value. This returned
+ * value is used as a secondary index into a LUT that translates BSP_XXX alternate function enum value into the 
+ * actual HAL alternate function value, allowing us to loop over the entire array of pins to configure their
+ * GPIO/AF properly, while only requiring modifications to the bsp_config.h file.
+ * 
  */
+void BSP_Init() {
 
-void bsp_init_gpio() {
-    GPIO_InitTypeDef init_struct;
+    // Set up the basic parameters for global handles
+    // These should be referred to when possible and configured
+    // accordingly in the peripheral functions
+    uart4_handle.Instance = UART4;
+    uart5_handle.Instance = UART5;
+    tim1_handle.Instance = TIM1;
+    tim2_handle.Instance = TIM2;
+    tim3_handle.Instance = TIM3;
+    tim9_handle.Instance = TIM9;
+    i2c1_handle.Instance = I2C1;
+    i2c3_handle.Instance = I2C3;
+    spi2_handle.Instance = SPI2;
+    spi3_handle.Instance = SPI3;
+    can2_handle.Instance = CAN2;
+    can3_handle.Instance = CAN3;
+
+
+    GPIO_InitTypeDef gpio;
+    gpio.Speed = GPIO_SPEED_FAST;
+    gpio.Mode = GPIO_MODE_AF_PP;
 
     for (uint8_t i = 0; i < NUM_BSP_PINS; i++) {
         GPIO_TypeDef* port = GET_GPIO(i);
+        uint8_t pin_af = BSP_GPIO_MAPPING[i];
+        // invalid mapping, todo: handle
+        if (!isValidPinMapping((BSP_PINS)i, pin_af)) {
+            return -1; 
+        }
+        gpio.Alternate = remap[pin_af];
+        gpio.Pin = PinFromEnum((BSP_PINS)i);
+        // CAN and I2C use open drain, not push pull
+        if (pin_af == BSP_CAN2 || pin_af == BSP_CAN3 || pin_af == BSP_I2C1 || pin_af == BSP_I2C3) {
+            gpio.Mode = GPIO_MODE_AF_OD;
+        }
+        // init the GPIO pin
+        HAL_GPIO_Init(port, &gpio);
+        // custom peripheral initialization here
+        switch (BSP_GPIO_MAPPING[i]) {
+            case BSP_UART4:
+                break;
+            case BSP_UART5:
+                break;
+            case BSP_TIM1:
+                break;
+            case BSP_TIM2:
+                break;
+            case BSP_TIM3:
+                break;
+            case BSP_TIM9:
+                break;
+            case BSP_I2C1:
+                break;
+            case BSP_I2C3:
+                break;
+            case BSP_SPI2:
+                break;
+            case BSP_SPI3:
+                break;
+            case BSP_CAN2:
+                break;
+            case BSP_CAN3:
+                break;
+        }
+        // reset to push pull
+        gpio.Mode = GPIO_MODE_AF_PP;
     }
 }
