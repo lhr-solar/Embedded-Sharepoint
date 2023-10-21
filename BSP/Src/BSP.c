@@ -102,7 +102,6 @@ bool isValidPinMapping(BSP_PINS pin, uint8_t mapped_function) {
     return false; // didn't match on any of the possible AFs for that pin, so bad mapping
 }
 
-
 /**
  * @brief Configures the BSP layer according to the configuration specified in bsp_config.h
  * 
@@ -133,8 +132,7 @@ void BSP_Init() {
     spi3_handle.Instance = SPI3;
     carcan_handle.Instance = CAN2;
     localcan_handle.Instance = CAN3;
-
-
+    
     GPIO_InitTypeDef gpio;
     gpio.Speed = GPIO_SPEED_FAST;
     gpio.Mode = GPIO_MODE_AF_PP;
@@ -142,7 +140,7 @@ void BSP_Init() {
     for (uint8_t i = 0; i < NUM_BSP_PINS; i++) {
         GPIO_TypeDef* port = GET_GPIO(i);
         uint8_t pin_af = BSP_GPIO_MAPPING[i];
-        // invalid mapping, todo: handle
+        // invalid mapping, todo: error handler?
         if (!isValidPinMapping((BSP_PINS)i, pin_af)) {
             return -1; 
         }
