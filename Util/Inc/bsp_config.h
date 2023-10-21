@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 
-#define PREPROC_COMMA , // preprocessor black magic for default config stuff
 #define STR(x) #x // see below
 #define ENQUOTE(x) STR(x) // preprocessor black magic to print string equivalent of #defines
 
@@ -45,7 +44,29 @@
 hardware selections and configuration at compile-time.
 */
 
-// (BSP_GPIO) is also GPIO
+// a remapping enum for programmatic use
+typedef enum {
+	BSP_GPIO, 
+	BSP_UART4, BSP_UART5,
+	BSP_TIM1, BSP_TIM2, BSP_TIM3, BSP_TIM9,
+	BSP_I2C1, BSP_I2C3, 
+	BSP_SPI2, BSP_SPI3,
+	BSP_CAN2, BSP_CAN3, 
+	NUM_PERIPHS
+} AF_ALIAS;
+
+/**
+ * Example:
+ * 
+
+#define PA0_ALTERNATE_FUNCTION (BSP_GPIO)
+#define PA2_ALTERNATE_FUNCTION (BSP_TIM3)
+
+etc
+See BSP.c for list of valid AF mappings
+
+ * 
+ */
 
 #ifndef PA0_ALTERNATE_FUNCTION
 	#define PA0_ALTERNATE_FUNCTION (BSP_UART4)
@@ -185,16 +206,5 @@ hardware selections and configuration at compile-time.
 #ifndef PD2_ALTERNATE_FUNCTION
 	#define PD2_ALTERNATE_FUNCTION (BSP_GPIO)
 #endif
-
-// a remapping enum for programmatic use
-typedef enum {
-	BSP_GPIO, 
-	BSP_UART4, BSP_UART5,
-	BSP_TIM1, BSP_TIM2, BSP_TIM3, BSP_TIM9,
-	BSP_I2C1, BSP_I2C3, 
-	BSP_SPI2, BSP_SPI3,
-	BSP_CAN2, BSP_CAN3, 
-	NUM_PERIPHS
-} AF_ALIAS;
 
 #endif

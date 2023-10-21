@@ -157,8 +157,10 @@ void BSP_Init() {
         // custom peripheral initialization here
         switch (BSP_GPIO_MAPPING[i]) {
             case BSP_UART4:
+                // UART_Init(UART4 handle)
                 break;
             case BSP_UART5:
+                // UART_Init(UART5 handle)
                 break;
             case BSP_TIM1:
                 break;
