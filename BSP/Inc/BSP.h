@@ -92,9 +92,9 @@ typedef enum {
 // Macros for turning HAL_StatusTypeDef to our BSP error
 #define CONVERT_RETURN(x) (((x) == 0x3U) ? (BSP_TIMEOUT) : (x))
 // Macros for interpreting BSP returns
-#define HAS_TIMEOUT(x) ((x) & 0x4)
-#define HAS_BUSY(x) ((x) & 0x2)
-#define HAS_ERROR(x) ((x) & 0x1)
+#define HAS_TIMEOUT(x) ((x) & BSP_TIMEOUT)
+#define HAS_BUSY(x) ((x) & BSP_BUSY)
+#define HAS_ERROR(x) ((x) & BSP_ERROR)
 #define IS_OK(x) (!(HAS_TIMEOUT(x) || HAS_BUSY(x) || HAS_ERROR(x)))
 
 #endif
