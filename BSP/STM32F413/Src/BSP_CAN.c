@@ -7,8 +7,8 @@
 #define NUM_SPEAKERS 16
 
 /* used for initialization */
-static CAN_HandleTypeDef CarCAN;
-static CAN_HandleTypeDef LocalCAN;
+static CAN_HandleTypeDef CarCAN = (CAN_HandleTypeDef){0};
+static CAN_HandleTypeDef LocalCAN = (CAN_HandleTypeDef){0};
 
 /* array of communicators */
 static Communicator_t CarListeners[NUM_LISTENERS] = {0};
@@ -16,17 +16,107 @@ static Communicator_t LocalListeners[NUM_LISTENERS] = {0};
 static Communicator_t CarSpeakers[NUM_SPEAKERS] = {0};
 static Communicator_t LocalSpeakers[NUM_SPEAKERS] = {0};
 
-// void CAN_Init(CAN_TypeDef *can)
-// {
-//     // init init struct
-//     // init gpio
-//     // HAL_CAN_Start():
-// }
+void CAN_CarCANInit(void)
+{
+    /* init struct */
+    CarCAN.Instance = CarCAN1;
+    CarCAN.Init.Prescaler = 16;
+    CarCAN.Init.Mode = CAN_MODE_NORMAL;
+    CarCAN.Init.SyncJumpWidth = CAN_SJW_1TQ;
+    CarCAN.Init.TimeSeg1 = CAN_BS1_1TQ;
+    CarCAN.Init.TimeSeg2 = CAN_BS2_1TQ;
+    CarCAN.Init.TimeTriggeredMode = DISABLE;
+    CarCAN.Init.AutoBusOff = DISABLE;
+    CarCAN.Init.AutoWakeUp = DISABLE;
+    CarCAN.Init.AutoRetransmission = DISABLE;
+    CarCAN.Init.ReceiveFifoLocked = DISABLE;
+    CarCAN.Init.TransmitFifoPriority = DISABLE;
+
+    /* initialize can perph */
+    if (HAL_CAN_Init(&CarCAN) != HAL_OK)
+    {
+        Error_Handler();
+    }
+
+    /* start can perph */
+    HAL_CAN_Start(&CarCAN);
+}
+
+void CAN_LocalCANInit(void)
+{
+    /* init struct */
+    LocalCAN.Instance = LocalCAN3;
+    LocalCAN.Init.Prescaler = 16;
+    LocalCAN.Init.Mode = CAN_MODE_NORMAL;
+    LocalCAN.Init.SyncJumpWidth = CAN_SJW_1TQ;
+    LocalCAN.Init.TimeSeg1 = CAN_BS1_1TQ;
+    LocalCAN.Init.TimeSeg2 = CAN_BS2_1TQ;
+    LocalCAN.Init.TimeTriggeredMode = DISABLE;
+    LocalCAN.Init.AutoBusOff = DISABLE;
+    LocalCAN.Init.AutoWakeUp = DISABLE;
+    LocalCAN.Init.AutoRetransmission = DISABLE;
+    LocalCAN.Init.ReceiveFifoLocked = DISABLE;
+    LocalCAN.Init.TransmitFifoPriority = DISABLE;
+
+    /* initialize can perph */
+    if (HAL_CAN_Init(&LocalCAN) != HAL_OK)
+    {
+        Error_Handler();
+    }
+
+    /* start can perph */
+    HAL_CAN_Start(&LocalCAN);
+}
+
+void HAL_CAN_MspInit(CAN_HandleTypeDef *canHandle)
+{
+    GPIO_InitTypeDef GPIO_InitStruct = (GPIO_InitTypeDef){0};
+
+    if (canHandle->Instance == CarCAN1)
+    {
+
+        /* CarCAN1 clock enable */
+        __HAL_RCC_CAN1_CLK_ENABLE();
+
+        /* GPIOA clock enable */
+        __HAL_RCC_GPIOA_CLK_ENABLE();
+
+        /**CarCAN1 GPIO Configuration
+        PA11     ------> CAN1_RX
+        PA12     ------> CAN1_TX
+        */
+        GPIO_InitStruct.Pin = GPIO_PIN_11 | GPIO_PIN_12;
+        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+        GPIO_InitStruct.Pull = GPIO_NOPULL;
+        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+        GPIO_InitStruct.Alternate = GPIO_AF9_CAN1;
+        HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+    }
+    else if (canHandle->Instance == LocalCAN3)
+    {
+        /* LocalCAN3 clock enable */
+        __HAL_RCC_CAN3_CLK_ENABLE();
+
+        /* GPIOA clock enable */
+        __HAL_RCC_GPIOA_CLK_ENABLE();
+
+        /**LocalCAN3 GPIO Configuration
+        PA8     ------> CAN3_RX
+        PA15     ------> CAN3_TX
+        */
+        GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_15;
+        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+        GPIO_InitStruct.Pull = GPIO_NOPULL;
+        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+        GPIO_InitStruct.Alternate = GPIO_AF11_CAN3;
+        HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+    }
+}
 
 void CAN_SetSpeaker(CAN_TypeDef *can, CANID_t id, QueueHandle_t *queue)
 {
     /* set speakers depending on bus */
-    Communicator_t speakers[] = can == CAN1 ? CarSpeakers : LocalSpeakers;
+    Communicator_t speakers[] = can == CarCAN1 ? CarSpeakers : LocalSpeakers;
 
     /* find if speaker is already set (linear search) */
     for (int i = 0; i < NUM_SPEAKERS; i++)
@@ -53,7 +143,7 @@ void CAN_SetSpeaker(CAN_TypeDef *can, CANID_t id, QueueHandle_t *queue)
 void CAN_ClearSpeaker(CAN_TypeDef *can, CANID_t id)
 {
     /* set speakers depending on bus */
-    Communicator_t speakers[] = can == CAN1 ? CarSpeakers : LocalSpeakers;
+    Communicator_t speakers[] = can == CarCAN1 ? CarSpeakers : LocalSpeakers;
 
     /* clear speaker if present */
     for (int i = 0; i < NUM_SPEAKERS; i++)
@@ -68,7 +158,7 @@ void CAN_ClearSpeaker(CAN_TypeDef *can, CANID_t id)
 void CAN_SetListener(CAN_TypeDef *can, CANID_t id, QueueHandle_t *queue)
 {
     /* set listeners depending on bus */
-    Communicator_t listeners[] = can == CAN1 ? CarListeners : LocalListeners;
+    Communicator_t listeners[] = can == CarCAN1 ? CarListeners : LocalListeners;
 
     /* find if listener is already set (linear search) */
     for (int i = 0; i < NUM_LISTENERS; i++)
@@ -95,7 +185,7 @@ void CAN_SetListener(CAN_TypeDef *can, CANID_t id, QueueHandle_t *queue)
 void CAN_ClearListener(CAN_TypeDef *can, CANID_t id)
 {
     /* set listeners depending on bus */
-    Communicator_t listeners[] = can == CAN1 ? CarListeners : LocalListeners;
+    Communicator_t listeners[] = can == CarCAN1 ? CarListeners : LocalListeners;
 
     /* clear listener if present */
     for (int i = 0; i < NUM_LISTENERS; i++)
@@ -115,14 +205,14 @@ void CAN1_RX0_IRQHandler(void)
     /* TODO: acknowledge flag? */
 
     /* check for any pending messages */
-    while (HAL_CAN_GetRxFifoFillLevel(CAN1, CAN_RX_FIFO0))
+    while (HAL_CAN_GetRxFifoFillLevel(CarCAN1, CAN_RX_FIFO0))
     {
         /* define data capture */
         CAN_RxHeaderTypeDef pHeader = (CAN_RxHeaderTypeDef){0};
         uint8_t aData[8] = {0};
 
         /* grab data from hardware rx fifo */
-        HAL_CAN_GetRxMessage(CAN1, CAN_RX_FIFO0, &pHeader, aData);
+        HAL_CAN_GetRxMessage(CarCAN1, CAN_RX_FIFO0, &pHeader, aData);
 
         /* define queue to put data into */
         QueueHandle_t *queue = NULL;
@@ -160,14 +250,14 @@ void CAN3_RX0_IRQHandler(void)
     /* TODO: acknowledge flag? */
 
     /* check for any pending messages */
-    while (HAL_CAN_GetRxFifoFillLevel(CAN3, CAN_RX_FIFO0))
+    while (HAL_CAN_GetRxFifoFillLevel(LocalCAN3, CAN_RX_FIFO0))
     {
         /* define data capture */
         CAN_RxHeaderTypeDef pHeader = (CAN_RxHeaderTypeDef){0};
         uint8_t aData[8] = {0};
 
         /* grab data from hardware rx fifo */
-        HAL_CAN_GetRxMessage(CAN3, CAN_RX_FIFO0, &pHeader, aData);
+        HAL_CAN_GetRxMessage(LocalCAN3, CAN_RX_FIFO0, &pHeader, aData);
 
         /* define queue to put data into */
         QueueHandle_t *queue = NULL;
@@ -231,7 +321,7 @@ void CAN1_TX_IRQHandler(void)
         uint32_t pTxMailbox = 0;
 
         /* send message to mailbox */
-        HAL_CAN_AddTxMessage(CAN1, &pHeader, aData, &pTxMailbox);
+        HAL_CAN_AddTxMessage(CarCAN1, &pHeader, aData, &pTxMailbox);
     }
 
     /* enable interrupts */
@@ -272,7 +362,7 @@ void CAN3_TX_IRQHandler(void)
         uint32_t pTxMailbox = 0;
 
         /* send message to mailbox */
-        HAL_CAN_AddTxMessage(CAN3, &pHeader, aData, &pTxMailbox);
+        HAL_CAN_AddTxMessage(LocalCAN3, &pHeader, aData, &pTxMailbox);
     }
 
     /* enable interrupts */
