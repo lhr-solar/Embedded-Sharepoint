@@ -1,9 +1,11 @@
-#include <stdint.h>
-#include "stm32f4xx_hal.h"
+#ifndef __BSP_CAN_H__
+#define __BSP_CAN_H__
 
-/* rename for readability */
-#define CarCAN1 (CAN1)
-#define LocalCAN3 (CAN3)
+#include "common.h"
+#include "stm32f4xx_hal.h"
+#include "FreeRTOS.h"
+#include "queue.h"
+#include "CANMetaData.h"
 
 /* communicators keep track of queues to use for communication*/
 typedef struct Communicator
@@ -12,9 +14,15 @@ typedef struct Communicator
     QueueHandle_t *queue;
 } Communicator_t;
 
+/* handlers */
+extern const CAN_HandleTypeDef *CarCAN;
+extern const CAN_HandleTypeDef *LocalCAN;
+
 void CAN_CarCANInit(void);
 void CAN_LocalCANInit(void);
-void CAN_SetSpeaker(CAN_TypeDef *can, CANID_t id, QueueHandle_t *queue);
-void CAN_ClearSpeaker(CAN_TypeDef *can, CANID_t id);
-void CAN_SetListener(CAN_TypeDef *can, CANID_t id, QueueHandle_t *queue);
-void CAN_ClearListener(CAN_TypeDef *can, CANID_t id);
+void CAN_SetSpeaker(const CAN_HandleTypeDef *can, CANID_t id, QueueHandle_t *queue);
+void CAN_ClearSpeaker(const CAN_HandleTypeDef *can, CANID_t id);
+void CAN_SetListener(const CAN_HandleTypeDef *can, CANID_t id, QueueHandle_t *queue);
+void CAN_ClearListener(const CAN_HandleTypeDef *can, CANID_t id);
+
+#endif /* __BSP_CAN_H__ */

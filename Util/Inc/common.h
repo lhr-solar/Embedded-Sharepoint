@@ -31,5 +31,6 @@
 typedef void (*callback_t)(void);
 
 void print_float(char *str, float f);
+void Error_Handler(void);
 
 #endif
