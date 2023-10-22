@@ -1,4 +1,4 @@
-#include <stdint.h> 
+#include <stdint.h>
 #include "stm32f4xx_hal.h"
 
 /* rename for readability */
@@ -6,7 +6,8 @@
 #define LocalCAN3 (CAN3)
 
 /* communicators keep track of queues to use for communication*/
-typedef struct Communicator {
+typedef struct Communicator
+{
     uint32_t id;
     QueueHandle_t *queue;
 } Communicator_t;

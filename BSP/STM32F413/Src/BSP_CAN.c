@@ -113,6 +113,32 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef *canHandle)
     }
 }
 
+void HAL_CAN_MspDeInit(CAN_HandleTypeDef *canHandle)
+{
+    if (canHandle->Instance == CarCAN1)
+    {
+        /* CarCAN1 clock disable */
+        __HAL_RCC_CAN1_CLK_DISABLE();
+
+        /**CAN1 GPIO Configuration
+        PA11     ------> CAN1_RX
+        PA12     ------> CAN1_TX
+        */
+        HAL_GPIO_DeInit(GPIOA, GPIO_PIN_11 | GPIO_PIN_12);
+    }
+    else if (canHandle->Instance == LocalCAN3)
+    {
+        /* LocalCAN3 clock disable */
+        __HAL_RCC_CAN3_CLK_DISABLE();
+
+        /**CAN3 GPIO Configuration
+        PA8     ------> CAN3_RX
+        PA15     ------> CAN3_TX
+        */
+        HAL_GPIO_DeInit(GPIOA, GPIO_PIN_8 | GPIO_PIN_15);
+    }
+}
+
 void CAN_SetSpeaker(CAN_TypeDef *can, CANID_t id, QueueHandle_t *queue)
 {
     /* set speakers depending on bus */
