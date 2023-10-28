@@ -191,7 +191,7 @@ bool CAN_Send(const CAN_HandleTypeDef *can, CAN_TxPayload_t payload, bool blocki
         }
     }
 
-    /* if can tx is inactive, put payload into mailbox */
+    /* TODO: if can tx is inactive, put payload into mailbox */
 
     return ret;
 }
