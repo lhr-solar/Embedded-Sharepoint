@@ -6,18 +6,19 @@ uint8_t ucQueueStorage[8 * sizeof(char)];
 
 int main(void)
 {
-    /* setup queue */
-    QueueHandle_t xQueue = xQueueCreateStatic(
-        8,
-        sizeof(char),
-        ucQueueStorage,
-        &xQueueBuffer);
+    // /* setup queue */
+    // QueueHandle_t xQueue = xQueueCreateStatic(
+    //     8,
+    //     sizeof(char),
+    //     ucQueueStorage,
+    //     &xQueueBuffer);
 
-    /* init can */
-    CAN_CarCANInit();
+    // /* init can */
+    // CAN_CarCANInit();
 
-    /* set speaker */
-    CAN_SetSpeaker(CarCAN, 0x01, &xQueue);
+    // /* set speaker */
+    // CAN_SetSpeaker(CarCAN, 0x01, &xQueue);
+    return 0;
 }
 
 void Error_Handler(void)

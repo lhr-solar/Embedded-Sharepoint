@@ -1,22 +1,48 @@
 #include "BSP_CAN.h"
 
-#define NUM_LISTENERS 16
-#define NUM_SPEAKERS 16
-
 /* handlers */
 static CAN_HandleTypeDef _CarCAN = (CAN_HandleTypeDef){0};
 static CAN_HandleTypeDef _LocalCAN = (CAN_HandleTypeDef){0};
 const CAN_HandleTypeDef *CarCAN = &_CarCAN;
 const CAN_HandleTypeDef *LocalCAN = &_LocalCAN;
 
-/* array of communicators */
-static Communicator_t CarListeners[NUM_LISTENERS] = {0};
-static Communicator_t LocalListeners[NUM_LISTENERS] = {0};
-static Communicator_t CarSpeakers[NUM_SPEAKERS] = {0};
-static Communicator_t LocalSpeakers[NUM_SPEAKERS] = {0};
+/* communicators keep track of queues to use for communication */
+typedef struct CAN_Listener
+{
+    uint32_t id;
+    QueueHandle_t *queue;
+} CAN_Listener_t;
+
+#define NUM_LISTENERS 16
+
+/* array of listeners */
+static CAN_Listener_t CarListeners[NUM_LISTENERS] = {0};
+static CAN_Listener_t LocalListeners[NUM_LISTENERS] = {0};
+
+/* transmit queues */
+QueueHandle_t CarCANTxQueue = (QueueHandle_t){0};
+QueueHandle_t LocalCANTxQueue = (QueueHandle_t){0};
+
+#define TX_QUEUE_LEN 32
+#define TX_QUEUE_ITEM_SIZE sizeof(CAN_TxPayload_t)
+
+/* queue storage */
+uint8_t CarCANPayloads[TX_QUEUE_LEN * TX_QUEUE_ITEM_SIZE] = {0};
+uint8_t LocalCANPayloads[TX_QUEUE_LEN * TX_QUEUE_ITEM_SIZE] = {0};
+
+/* transmit queue buffers */
+StaticQueue_t CarCANQueueBuffer = (StaticQueue_t){0};
+StaticQueue_t LocalCANQueueBuffer = (StaticQueue_t){0};
 
 void CAN_CarCANInit(void)
 {
+    /* init transmit queue */
+    CarCANTxQueue = xQueueCreateStatic( 
+                        TX_QUEUE_LEN,
+                        TX_QUEUE_ITEM_SIZE,
+                        CarCANPayloads,
+                        &CarCANQueueBuffer);
+
     /* init struct */
     _CarCAN.Instance = CAN1;
     _CarCAN.Init.Prescaler = 16;
@@ -43,6 +69,13 @@ void CAN_CarCANInit(void)
 
 void CAN_LocalCANInit(void)
 {
+    /* init transmit queue */
+    LocalCANTxQueue = xQueueCreateStatic( 
+                            TX_QUEUE_LEN,
+                            TX_QUEUE_ITEM_SIZE,
+                            LocalCANPayloads,
+                            &LocalCANQueueBuffer);
+
     /* init struct */
     _LocalCAN.Instance = CAN3;
     _LocalCAN.Init.Prescaler = 16;
@@ -138,52 +171,35 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef *canHandle)
     }
 }
 
-void CAN_SetSpeaker(const CAN_HandleTypeDef *canHandle, CANID_t id, QueueHandle_t *queue)
+bool CAN_Send(const CAN_HandleTypeDef *can, CAN_TxPayload_t payload, bool blocking)
 {
-    /* set speakers depending on bus */
-    Communicator_t *speakers = (canHandle->Instance == CAN1) ? CarSpeakers : LocalSpeakers;
+    /* return status */
+    int ret = true;
 
-    /* find if speaker is already set (linear search) */
-    for (int i = 0; i < NUM_SPEAKERS; i++)
-    {
-        if (speakers[i].id == id)
+    /* TODO: error check payload */
+
+    if (blocking) {
+        /* add payload to queue and wait till a success */
+        while (!xQueueSend(LocalCANTxQueue, &payload, 0)) {}
+        ret = false;
+    }
+    else {
+        /* add payload to queue and return status */
+        if (!xQueueSend(LocalCANTxQueue, &payload, 0))
         {
-            /* replace if found (don't want duplicate ids) */
-            speakers[i].queue = queue;
-            return;
+            ret = false;
         }
     }
 
-    /* find empty speaker spot (linear search) */
-    for (int i = 0; i < NUM_SPEAKERS; i++)
-    {
-        if (speakers[i].queue == NULL)
-        {
-            /* set if found */
-            speakers[i] = (Communicator_t){.id = id, .queue = queue};
-        }
-    }
+    /* if can tx is inactive, put payload into mailbox */
+
+    return ret;
 }
 
-void CAN_ClearSpeaker(const CAN_HandleTypeDef *canHandle, CANID_t id)
-{
-    /* set speakers depending on bus */
-    Communicator_t *speakers = (canHandle->Instance == CAN1) ? CarSpeakers : LocalSpeakers;
-
-    /* clear speaker if present */
-    for (int i = 0; i < NUM_SPEAKERS; i++)
-    {
-        if (speakers[i].id == id)
-        {
-            speakers[i] = (Communicator_t){0};
-        }
-    }
-}
-
-void CAN_SetListener(const CAN_HandleTypeDef *canHandle, CANID_t id, QueueHandle_t *queue)
+bool CAN_SetListener(const CAN_HandleTypeDef *can, CANID_t id, QueueHandle_t *queue)
 {
     /* set listeners depending on bus */
-    Communicator_t *listeners = (canHandle->Instance == CAN1) ? CarListeners : LocalListeners;
+    CAN_Listener_t *listeners = (can->Instance == CAN1) ? CarListeners : LocalListeners;
 
     /* find if listener is already set (linear search) */
     for (int i = 0; i < NUM_LISTENERS; i++)
@@ -192,7 +208,7 @@ void CAN_SetListener(const CAN_HandleTypeDef *canHandle, CANID_t id, QueueHandle
         {
             /* replace if found (don't want duplicate ids) */
             listeners[i].queue = queue;
-            return;
+            return false;
         }
     }
 
@@ -202,22 +218,25 @@ void CAN_SetListener(const CAN_HandleTypeDef *canHandle, CANID_t id, QueueHandle
         if (listeners[i].queue == NULL)
         {
             /* set if found */
-            listeners[i] = (Communicator_t){.id = id, .queue = queue};
+            listeners[i] = (CAN_Listener_t){.id = id, .queue = queue};
+            return false;
         }
     }
+
+    return true;
 }
 
-void CAN_ClearListener(const CAN_HandleTypeDef *canHandle, CANID_t id)
+void CAN_ClearListener(const CAN_HandleTypeDef *can, CANID_t id)
 {
     /* set listeners depending on bus */
-    Communicator_t *listeners = (canHandle->Instance == CAN1) ? CarListeners : LocalListeners;
+    CAN_Listener_t *listeners = (can->Instance == CAN1) ? CarListeners : LocalListeners;
 
     /* clear listener if present */
     for (int i = 0; i < NUM_LISTENERS; i++)
     {
         if (listeners[i].id == id)
         {
-            listeners[i] = (Communicator_t){0};
+            listeners[i] = (CAN_Listener_t){0};
         }
     }
 }
@@ -232,12 +251,11 @@ void CAN1_RX0_IRQHandler(void)
     /* check for any pending messages */
     while (HAL_CAN_GetRxFifoFillLevel(&_CarCAN, CAN_RX_FIFO0))
     {
-        /* define data capture */
-        CAN_RxHeaderTypeDef pHeader = (CAN_RxHeaderTypeDef){0};
-        uint8_t aData[8] = {0};
+        /* define data payload */
+        CAN_RxPayload_t payload = {0};
 
         /* grab data from hardware rx fifo */
-        HAL_CAN_GetRxMessage(&_CarCAN, CAN_RX_FIFO0, &pHeader, aData);
+        HAL_CAN_GetRxMessage(&_CarCAN, CAN_RX_FIFO0, &payload.header, payload.data);
 
         /* define queue to put data into */
         QueueHandle_t *queue = NULL;
@@ -245,10 +263,10 @@ void CAN1_RX0_IRQHandler(void)
         /* find listener (linear search) */
         for (int i = 0; i < NUM_LISTENERS; i++)
         {
-            if (LocalListeners[i].id == pHeader.StdId)
+            if (CarListeners[i].id == payload.header.StdId)
             {
-                /* If found, then set queue to put data into */
-                queue = LocalListeners[i].queue;
+                /* if found, then set queue to put data into */
+                queue = CarListeners[i].queue;
             }
         }
 
@@ -259,7 +277,7 @@ void CAN1_RX0_IRQHandler(void)
             BaseType_t pxHigherPriorityTaskWoken = 0;
 
             /* send data to queue */
-            xQueueSendFromISR(*queue, &aData, &pxHigherPriorityTaskWoken);
+            xQueueSendFromISR(*queue, &payload, &pxHigherPriorityTaskWoken);
         }
     }
 
@@ -277,12 +295,11 @@ void CAN3_RX0_IRQHandler(void)
     /* check for any pending messages */
     while (HAL_CAN_GetRxFifoFillLevel(&_LocalCAN, CAN_RX_FIFO0))
     {
-        /* define data capture */
-        CAN_RxHeaderTypeDef pHeader = (CAN_RxHeaderTypeDef){0};
-        uint8_t aData[8] = {0};
+        /* define data payload */
+        CAN_RxPayload_t payload = {0};
 
         /* grab data from hardware rx fifo */
-        HAL_CAN_GetRxMessage(&_LocalCAN, CAN_RX_FIFO0, &pHeader, aData);
+        HAL_CAN_GetRxMessage(&_LocalCAN, CAN_RX_FIFO0, &payload.header, payload.data);
 
         /* define queue to put data into */
         QueueHandle_t *queue = NULL;
@@ -290,9 +307,9 @@ void CAN3_RX0_IRQHandler(void)
         /* find listener (linear search) */
         for (int i = 0; i < NUM_LISTENERS; i++)
         {
-            if (LocalListeners[i].id == pHeader.StdId)
+            if (LocalListeners[i].id == payload.header.StdId)
             {
-                /* If found, then set queue to put data into */
+                /* if found, then set queue to put data into */
                 queue = LocalListeners[i].queue;
             }
         }
@@ -304,7 +321,7 @@ void CAN3_RX0_IRQHandler(void)
             BaseType_t pxHigherPriorityTaskWoken = 0;
 
             /* send data to queue */
-            xQueueSendFromISR(*queue, &aData, &pxHigherPriorityTaskWoken);
+            xQueueSendFromISR(*queue, &payload, &pxHigherPriorityTaskWoken);
         }
     }
 
@@ -319,34 +336,15 @@ void CAN1_TX_IRQHandler(void)
 
     /* TODO: acknowledge flag? */
 
-    /* define speaker to send */
-    Communicator_t speaker = {0};
+    /* create payload */
+    CAN_TxPayload_t payload = {0};
+    BaseType_t higherPriorityTaskWoken = 0;
 
-    /* look for a speaker to put into mailbox (linear search) */
-    for (int i = 0; i < NUM_SPEAKERS; i++)
+    /* recieve data from queue */
+    if (!xQueueReceiveFromISR(CarCANTxQueue, &payload, &higherPriorityTaskWoken))
     {
-        if (CarSpeakers[i].id > speaker.id && !xQueueIsQueueEmptyFromISR(*speaker.queue)) /* greater ids have priority, only consider if queue is non-empty */
-        {
-            speaker = CarSpeakers[i];
-        }
-    }
-
-    /* if viable speaker found, send the message to mailbox */
-    if (speaker.queue)
-    {
-        /* define variables to recieve from queue */
-        uint8_t aData[8] = {0};
-        BaseType_t pxHigherPriorityTaskWoken = 0;
-
-        /* recieve data from queue */
-        xQueueReceiveFromISR(*speaker.queue, &aData, &pxHigherPriorityTaskWoken);
-
-        /* define can message structs */
-        CAN_TxHeaderTypeDef pHeader = (CAN_TxHeaderTypeDef){.StdId = speaker.id};
-        uint32_t pTxMailbox = 0;
-
-        /* send message to mailbox */
-        HAL_CAN_AddTxMessage(&_CarCAN, &pHeader, aData, &pTxMailbox);
+        /* if payload to send, add payload to mailbox */
+        HAL_CAN_AddTxMessage(&_CarCAN, &payload.header, payload.data, &payload.mailbox);
     }
 
     /* enable interrupts */
@@ -360,34 +358,15 @@ void CAN3_TX_IRQHandler(void)
 
     /* TODO: acknowledge flag? */
 
-    /* define speaker to send */
-    Communicator_t speaker = {0};
+    /* create payload */
+    CAN_TxPayload_t payload = {0};
+    BaseType_t higherPriorityTaskWoken = 0;
 
-    /* look for a speaker to put into mailbox (linear search) */
-    for (int i = 0; i < NUM_SPEAKERS; i++)
+    /* recieve data from queue */
+    if (!xQueueReceiveFromISR(LocalCANTxQueue, &payload, &higherPriorityTaskWoken))
     {
-        if (CarSpeakers[i].id > speaker.id && !xQueueIsQueueEmptyFromISR(*speaker.queue)) /* greater ids have priority, only consider if queue is non-empty */
-        {
-            speaker = CarSpeakers[i];
-        }
-    }
-
-    /* if viable speaker found, send the message to mailbox */
-    if (speaker.queue)
-    {
-        /* define variables to recieve from queue */
-        uint8_t aData[8] = {0};
-        BaseType_t pxHigherPriorityTaskWoken = 0;
-
-        /* recieve data from queue */
-        xQueueReceiveFromISR(*speaker.queue, &aData, &pxHigherPriorityTaskWoken);
-
-        /* define can message structs */
-        CAN_TxHeaderTypeDef pHeader = (CAN_TxHeaderTypeDef){.StdId = speaker.id};
-        uint32_t pTxMailbox = 0;
-
-        /* send message to mailbox */
-        HAL_CAN_AddTxMessage(&_LocalCAN, &pHeader, aData, &pTxMailbox);
+        /* if payload to send, add payload to mailbox */
+        HAL_CAN_AddTxMessage(&_LocalCAN, &payload.header, payload.data, &payload.mailbox);
     }
 
     /* enable interrupts */
