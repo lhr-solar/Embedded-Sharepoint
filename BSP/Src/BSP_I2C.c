@@ -57,22 +57,13 @@ BSP_Status BSP_I2C_Init() {
     i2c_struct.Init.OwnAddress1 = 0x50 << 1;
     i2c_struct.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
     i2c_struct.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-    i2c_struct.Init.GeneralCallMode = (1 << 6); 
+    i2c_struct.Init.GeneralCallMode = I2C_GENERALCALL_ENABLED; 
     i2c_struct.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+    HAL_I2C_Init(&i2c_struct);
 
-    // gpio config
-    gpio_struct.Pin = GPIO_PIN_8; 
-    gpio_struct.Mode = MODE_AF;
-    gpio_struct.Pull = GPIO_PULLUP;
-    gpio_struct.Speed = GPIO_SPEED_MEDIUM; 
-    gpio_struct.Alternate = GPIO_AF4_I2C3;
-
-    // PA8 is SCL
-    HAL_GPIO_Init(GPIOA, &gpio_struct);
-
-    // PC9 is SDA
-    gpio_struct.Pin = GPIO_PIN_9;
-    HAL_GPIO_Init(GPIOC, &gpio_struct);
+    i2c_struct.Instance = I2C1;
+    HAL_NVIC_SetPriority(I2C1_EV_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
 }
 
 /** 
