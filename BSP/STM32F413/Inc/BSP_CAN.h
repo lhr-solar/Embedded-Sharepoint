@@ -10,15 +10,15 @@
 
 typedef struct CAN_TxPayload
 {
-    CAN_TxHeaderTypeDef header;
-    uint32_t mailbox;
-    uint8_t data[8];
+    CAN_TxHeaderTypeDef header; /* can transmit header info */
+    uint32_t mailbox;           /* has which mailbox used when sent */
+    uint8_t data[8];            /* can data */
 } CAN_TxPayload_t;
 
 typedef struct CAN_RxPayload
 {
-    CAN_RxHeaderTypeDef header;
-    uint8_t data[8];
+    CAN_RxHeaderTypeDef header; /* can recieve header info */
+    uint8_t data[8];            /* can data */
 } CAN_RxPayload_t;
 
 /* handlers */

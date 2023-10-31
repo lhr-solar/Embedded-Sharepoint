@@ -1,103 +1,103 @@
 #include "BSP_CAN.h"
 
 /* handlers */
-static CAN_HandleTypeDef _CarCAN = (CAN_HandleTypeDef){0};
-static CAN_HandleTypeDef _LocalCAN = (CAN_HandleTypeDef){0};
-const CAN_HandleTypeDef *CarCAN = &_CarCAN;
-const CAN_HandleTypeDef *LocalCAN = &_LocalCAN;
+static CAN_HandleTypeDef CarCAN_ = (CAN_HandleTypeDef){0};
+static CAN_HandleTypeDef LocalCAN_ = (CAN_HandleTypeDef){0};
+const CAN_HandleTypeDef *CarCAN = &CarCAN_;
+const CAN_HandleTypeDef *LocalCAN = &LocalCAN_;
 
 /* communicators keep track of queues to use for communication */
 typedef struct CAN_Listener
 {
-    uint32_t id;
-    QueueHandle_t *queue;
+    uint32_t id;            /* can id */
+    QueueHandle_t *queue;   /* queue to wait on */
 } CAN_Listener_t;
 
 #define NUM_LISTENERS 16
 
 /* array of listeners */
-static CAN_Listener_t CarListeners[NUM_LISTENERS] = {0};
-static CAN_Listener_t LocalListeners[NUM_LISTENERS] = {0};
+static CAN_Listener_t CarCAN_Listeners[NUM_LISTENERS] = {0};
+static CAN_Listener_t LocalCAN_Listeners[NUM_LISTENERS] = {0};
 
 /* transmit queues */
-QueueHandle_t CarCANTxQueue = (QueueHandle_t){0};
-QueueHandle_t LocalCANTxQueue = (QueueHandle_t){0};
+QueueHandle_t CarCAN_TxQueue = (QueueHandle_t){0};
+QueueHandle_t LocalCAN_TxQueue = (QueueHandle_t){0};
 
 #define TX_QUEUE_LEN 32
 #define TX_QUEUE_ITEM_SIZE sizeof(CAN_TxPayload_t)
 
 /* queue storage */
-uint8_t CarCANPayloads[TX_QUEUE_LEN * TX_QUEUE_ITEM_SIZE] = {0};
-uint8_t LocalCANPayloads[TX_QUEUE_LEN * TX_QUEUE_ITEM_SIZE] = {0};
+uint8_t CarCAN_Payloads[TX_QUEUE_LEN * TX_QUEUE_ITEM_SIZE] = {0};
+uint8_t LocalCAN_Payloads[TX_QUEUE_LEN * TX_QUEUE_ITEM_SIZE] = {0};
 
 /* transmit queue buffers */
-StaticQueue_t CarCANQueueBuffer = (StaticQueue_t){0};
-StaticQueue_t LocalCANQueueBuffer = (StaticQueue_t){0};
+StaticQueue_t CarCAN_QueueBuffer = (StaticQueue_t){0};
+StaticQueue_t LocalCAN_QueueBuffer = (StaticQueue_t){0};
 
 void CAN_CarCANInit(void)
 {
     /* init transmit queue */
-    CarCANTxQueue = xQueueCreateStatic( 
+    CarCAN_TxQueue = xQueueCreateStatic( 
                         TX_QUEUE_LEN,
                         TX_QUEUE_ITEM_SIZE,
-                        CarCANPayloads,
-                        &CarCANQueueBuffer);
+                        CarCAN_Payloads,
+                        &CarCAN_QueueBuffer);
 
     /* init struct */
-    _CarCAN.Instance = CAN1;
-    _CarCAN.Init.Prescaler = 16;
-    _CarCAN.Init.Mode = CAN_MODE_NORMAL;
-    _CarCAN.Init.SyncJumpWidth = CAN_SJW_1TQ;
-    _CarCAN.Init.TimeSeg1 = CAN_BS1_1TQ;
-    _CarCAN.Init.TimeSeg2 = CAN_BS2_1TQ;
-    _CarCAN.Init.TimeTriggeredMode = DISABLE;
-    _CarCAN.Init.AutoBusOff = DISABLE;
-    _CarCAN.Init.AutoWakeUp = DISABLE;
-    _CarCAN.Init.AutoRetransmission = DISABLE;
-    _CarCAN.Init.ReceiveFifoLocked = DISABLE;
-    _CarCAN.Init.TransmitFifoPriority = DISABLE;
+    CarCAN_.Instance = CAN1;
+    CarCAN_.Init.Prescaler = 16;
+    CarCAN_.Init.Mode = CAN_MODE_NORMAL;
+    CarCAN_.Init.SyncJumpWidth = CAN_SJW_1TQ;
+    CarCAN_.Init.TimeSeg1 = CAN_BS1_1TQ;
+    CarCAN_.Init.TimeSeg2 = CAN_BS2_1TQ;
+    CarCAN_.Init.TimeTriggeredMode = DISABLE;
+    CarCAN_.Init.AutoBusOff = DISABLE;
+    CarCAN_.Init.AutoWakeUp = DISABLE;
+    CarCAN_.Init.AutoRetransmission = DISABLE;
+    CarCAN_.Init.ReceiveFifoLocked = DISABLE;
+    CarCAN_.Init.TransmitFifoPriority = DISABLE;
 
     /* initialize can perph */
-    if (HAL_CAN_Init(&_CarCAN) != HAL_OK)
+    if (HAL_CAN_Init(&CarCAN_) != HAL_OK)
     {
         Error_Handler();
     }
 
     /* start can perph */
-    HAL_CAN_Start(&_CarCAN);
+    HAL_CAN_Start(&CarCAN_);
 }
 
 void CAN_LocalCANInit(void)
 {
     /* init transmit queue */
-    LocalCANTxQueue = xQueueCreateStatic( 
+    LocalCAN_TxQueue = xQueueCreateStatic( 
                             TX_QUEUE_LEN,
                             TX_QUEUE_ITEM_SIZE,
-                            LocalCANPayloads,
-                            &LocalCANQueueBuffer);
+                            LocalCAN_Payloads,
+                            &LocalCAN_QueueBuffer);
 
     /* init struct */
-    _LocalCAN.Instance = CAN3;
-    _LocalCAN.Init.Prescaler = 16;
-    _LocalCAN.Init.Mode = CAN_MODE_NORMAL;
-    _LocalCAN.Init.SyncJumpWidth = CAN_SJW_1TQ;
-    _LocalCAN.Init.TimeSeg1 = CAN_BS1_1TQ;
-    _LocalCAN.Init.TimeSeg2 = CAN_BS2_1TQ;
-    _LocalCAN.Init.TimeTriggeredMode = DISABLE;
-    _LocalCAN.Init.AutoBusOff = DISABLE;
-    _LocalCAN.Init.AutoWakeUp = DISABLE;
-    _LocalCAN.Init.AutoRetransmission = DISABLE;
-    _LocalCAN.Init.ReceiveFifoLocked = DISABLE;
-    _LocalCAN.Init.TransmitFifoPriority = DISABLE;
+    LocalCAN_.Instance = CAN3;
+    LocalCAN_.Init.Prescaler = 16;
+    LocalCAN_.Init.Mode = CAN_MODE_NORMAL;
+    LocalCAN_.Init.SyncJumpWidth = CAN_SJW_1TQ;
+    LocalCAN_.Init.TimeSeg1 = CAN_BS1_1TQ;
+    LocalCAN_.Init.TimeSeg2 = CAN_BS2_1TQ;
+    LocalCAN_.Init.TimeTriggeredMode = DISABLE;
+    LocalCAN_.Init.AutoBusOff = DISABLE;
+    LocalCAN_.Init.AutoWakeUp = DISABLE;
+    LocalCAN_.Init.AutoRetransmission = DISABLE;
+    LocalCAN_.Init.ReceiveFifoLocked = DISABLE;
+    LocalCAN_.Init.TransmitFifoPriority = DISABLE;
 
     /* initialize can perph */
-    if (HAL_CAN_Init(&_LocalCAN) != HAL_OK)
+    if (HAL_CAN_Init(&LocalCAN_) != HAL_OK)
     {
         Error_Handler();
     }
 
     /* start can perph */
-    HAL_CAN_Start(&_LocalCAN);
+    HAL_CAN_Start(&LocalCAN_);
 }
 
 void HAL_CAN_MspInit(CAN_HandleTypeDef *canHandle)
@@ -180,12 +180,12 @@ bool CAN_Send(const CAN_HandleTypeDef *can, CAN_TxPayload_t payload, bool blocki
 
     if (blocking) {
         /* add payload to queue and wait till a success */
-        while (!xQueueSend(LocalCANTxQueue, &payload, 0)) {}
+        while (!xQueueSend(LocalCAN_TxQueue, &payload, 0)) {}
         ret = false;
     }
     else {
         /* add payload to queue and return status */
-        if (!xQueueSend(LocalCANTxQueue, &payload, 0))
+        if (!xQueueSend(LocalCAN_TxQueue, &payload, 0))
         {
             ret = false;
         }
@@ -199,7 +199,7 @@ bool CAN_Send(const CAN_HandleTypeDef *can, CAN_TxPayload_t payload, bool blocki
 bool CAN_SetListener(const CAN_HandleTypeDef *can, CANID_t id, QueueHandle_t *queue)
 {
     /* set listeners depending on bus */
-    CAN_Listener_t *listeners = (can->Instance == CAN1) ? CarListeners : LocalListeners;
+    CAN_Listener_t *listeners = (can->Instance == CAN1) ? CarCAN_Listeners : LocalCAN_Listeners;
 
     /* find if listener is already set (linear search) */
     for (int i = 0; i < NUM_LISTENERS; i++)
@@ -229,7 +229,7 @@ bool CAN_SetListener(const CAN_HandleTypeDef *can, CANID_t id, QueueHandle_t *qu
 void CAN_ClearListener(const CAN_HandleTypeDef *can, CANID_t id)
 {
     /* set listeners depending on bus */
-    CAN_Listener_t *listeners = (can->Instance == CAN1) ? CarListeners : LocalListeners;
+    CAN_Listener_t *listeners = (can->Instance == CAN1) ? CarCAN_Listeners : LocalCAN_Listeners;
 
     /* clear listener if present */
     for (int i = 0; i < NUM_LISTENERS; i++)
@@ -249,13 +249,13 @@ void CAN1_RX0_IRQHandler(void)
     /* TODO: acknowledge flag? */
 
     /* check for any pending messages */
-    while (HAL_CAN_GetRxFifoFillLevel(&_CarCAN, CAN_RX_FIFO0))
+    while (HAL_CAN_GetRxFifoFillLevel(&CarCAN_, CAN_RX_FIFO0))
     {
         /* define data payload */
         CAN_RxPayload_t payload = {0};
 
         /* grab data from hardware rx fifo */
-        HAL_CAN_GetRxMessage(&_CarCAN, CAN_RX_FIFO0, &payload.header, payload.data);
+        HAL_CAN_GetRxMessage(&CarCAN_, CAN_RX_FIFO0, &payload.header, payload.data);
 
         /* define queue to put data into */
         QueueHandle_t *queue = NULL;
@@ -263,10 +263,10 @@ void CAN1_RX0_IRQHandler(void)
         /* find listener (linear search) */
         for (int i = 0; i < NUM_LISTENERS; i++)
         {
-            if (CarListeners[i].id == payload.header.StdId)
+            if (CarCAN_Listeners[i].id == payload.header.StdId)
             {
                 /* if found, then set queue to put data into */
-                queue = CarListeners[i].queue;
+                queue = CarCAN_Listeners[i].queue;
             }
         }
 
@@ -293,13 +293,13 @@ void CAN3_RX0_IRQHandler(void)
     /* TODO: acknowledge flag? */
 
     /* check for any pending messages */
-    while (HAL_CAN_GetRxFifoFillLevel(&_LocalCAN, CAN_RX_FIFO0))
+    while (HAL_CAN_GetRxFifoFillLevel(&LocalCAN_, CAN_RX_FIFO0))
     {
         /* define data payload */
         CAN_RxPayload_t payload = {0};
 
         /* grab data from hardware rx fifo */
-        HAL_CAN_GetRxMessage(&_LocalCAN, CAN_RX_FIFO0, &payload.header, payload.data);
+        HAL_CAN_GetRxMessage(&LocalCAN_, CAN_RX_FIFO0, &payload.header, payload.data);
 
         /* define queue to put data into */
         QueueHandle_t *queue = NULL;
@@ -307,10 +307,10 @@ void CAN3_RX0_IRQHandler(void)
         /* find listener (linear search) */
         for (int i = 0; i < NUM_LISTENERS; i++)
         {
-            if (LocalListeners[i].id == payload.header.StdId)
+            if (LocalCAN_Listeners[i].id == payload.header.StdId)
             {
                 /* if found, then set queue to put data into */
-                queue = LocalListeners[i].queue;
+                queue = LocalCAN_Listeners[i].queue;
             }
         }
 
@@ -341,10 +341,10 @@ void CAN1_TX_IRQHandler(void)
     BaseType_t higherPriorityTaskWoken = 0;
 
     /* recieve data from queue */
-    if (!xQueueReceiveFromISR(CarCANTxQueue, &payload, &higherPriorityTaskWoken))
+    if (!xQueueReceiveFromISR(CarCAN_TxQueue, &payload, &higherPriorityTaskWoken))
     {
         /* if payload to send, add payload to mailbox */
-        HAL_CAN_AddTxMessage(&_CarCAN, &payload.header, payload.data, &payload.mailbox);
+        HAL_CAN_AddTxMessage(&CarCAN_, &payload.header, payload.data, &payload.mailbox);
     }
 
     /* enable interrupts */
@@ -363,10 +363,10 @@ void CAN3_TX_IRQHandler(void)
     BaseType_t higherPriorityTaskWoken = 0;
 
     /* recieve data from queue */
-    if (!xQueueReceiveFromISR(LocalCANTxQueue, &payload, &higherPriorityTaskWoken))
+    if (!xQueueReceiveFromISR(LocalCAN_TxQueue, &payload, &higherPriorityTaskWoken))
     {
         /* if payload to send, add payload to mailbox */
-        HAL_CAN_AddTxMessage(&_LocalCAN, &payload.header, payload.data, &payload.mailbox);
+        HAL_CAN_AddTxMessage(&LocalCAN_, &payload.header, payload.data, &payload.mailbox);
     }
 
     /* enable interrupts */
