@@ -1,27 +1,10 @@
 #include "BSP_UART.h"
 
-static uint8_t tx_buffer[TX_SIZE];
-static uint8_t rx_buffer[RX_SIZE + 1];
-
-static USART_TypeDef *handles[NUM_UART] = {USART2, USART3};
-
-// Some uart helpers
-static void clear_buffer(uint8_t* buf, uint16_t size) {
-    for (uint16_t i = 0; i < size; i++) {
-        buf[i] = 0;
-    }
-}
-static void clear_terminators() {
-    for (uint16_t i = 0; i < RX_SIZE; i++) {
-        if (rx_buffer[i] == '\r' || rx_buffer[i] == '\n') {
-            rx_buffer[i] = 0;
-            break;
-        } else if (rx_buffer[i] == '\0') break;
-    }
-}
+static USART_TypeDef *handles[NUM_UART] = {USART1, USART2, USART3};
 
 static UART_HandleTypeDef for_interrupts;
 
+//TODO This function needs to be reviewed, and queue creation will likely happen here
 BSP_Status BSP_UART_Init() {
     GPIO_InitTypeDef gpio_struct;
     UART_InitTypeDef uart_struct;
@@ -75,64 +58,30 @@ BSP_Status BSP_UART_Init() {
 }
 
 /**
- * @brief   Reads a line of input from UART into the rx buffer
- * 
+ * @brief   Reads a message from the specified UART device
  * @param   usart : which usart to read from (2 or 3)
- * 
- * @return  Pointer to the data read; ALWAYS null terminated
+ * @param   len number of bytes that will be returned
+ * @return  len bytes from the recieve queue
  */
-char* BSP_UART_ReadLine(UART_t usart) {
-    USART_TypeDef *usart_handle = handles[usart];
-
-    clear_buffer(rx_buffer, RX_SIZE);
-    // HAL doesnt have USART_ITConfig(usart_handle, USART_IT_RXNE, RESET); that I can find
-    // so we'll toggle interrupts for now.
-    __HAL_USART_DISABLE_IT(&for_interrupts, USART_IT_RXNE);
-
-    BSP_Status returnInfo = CONVERT_RETURN(HAL_USART_Receive_IT(usart_handle, rx_buffer, RX_SIZE));
-
-    __HAL_USART_ENABLE_IT(&for_interrupts, USART_IT_RXNE);
-    clear_terminators();
-    rx_buffer[RX_SIZE] = 0; // always end the RX array with a null terminator just in case.
-    if (!IS_OK(returnInfo)) {
-        return NULL;
-    }
-    return rx_buffer;
-}
+char* BSP_UART_Read(UART_t device, uint32_t len);
 
 /**
- * @brief   Write a line of input into UART
- * 
- * @param   usart : which usart to write to (2 or 3) 
- * @param   input : data to write to usart
- * @param   len : length of data
+ * @brief   Continues message recieving until recieve queue is full
+ * @param   huart : handle of UART that called the interrupt
  */
-BSP_Status BSP_UART_WriteLine(UART_t usart, const char* input, uint32_t len) {
-    USART_TypeDef *usart_handle = handles[usart];
-   
-    __HAL_USART_DISABLE_IT(&for_interrupts, USART_IT_TC);
-    BSP_Status returnInfo = CONVERT_RETURN(HAL_USART_Transmit_IT(usart_handle, input, len));
-    // re-enable interrupts
-    __HAL_USART_ENABLE_IT(&for_interrupts, USART_IT_RXNE);
-    return returnInfo;
-}
+void HAL_USART_RxCpltCallback(UART_HandleTypeDef *huart);
 
-void HAL_UART_IRQHandler(UART_HandleTypeDef *huart) {
-    // TODO Convert these
-    // CPU_SR_ALLOC();
-    // CPU_CRITICAL_ENTER();
-    // OSIntEnter();
-    // CPU_CRITICAL_EXIT();
-    
-    USART_TypeDef *usart_handle;
-    if (huart == handles[UART_2]) {
-        usart_handle = handles[UART_2];
-    }
-    else if (huart == handles[UART_3]) {
-        usart_handle = handles[UART_3];
-    }
+/**
+ * @brief   Writes a message to the specified UART device
+ * @param   usart : which usart to write to (1-3) 
+ * @param   data pointer to the array containing the message to sned
+ * @param   len length of the message in bytes
+ * @return  Status of write operation (WRITE_SUCCESS OR WRITE_FAIL)
+ */
+Write_Status BSP_UART_Write(UART_t usart, char* data, uint32_t len);
 
-    if (__HAL_GET_FLAG(usart_handle, USART_FLAG_RXNE) != 0) {
-        
-    }
-}
+/**
+ * @brief   Continues message tranmission on UART device until transmit queue is empty
+ * @param   huart : handle of UART that called the interrupt
+ */
+void HAL_USART_TxCpltCallback(UART_HandleTypeDef *huart);
