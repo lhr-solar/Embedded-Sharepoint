@@ -2,18 +2,18 @@
 #define BSP_CONF_H
 
 /**
- * Common features / necessities used on the BSP layer of
- * Embedded Sharepoint
+ * @file BSP.h
+ * @brief This file includes necessities for the BSP layer of Embedded Sharepoint,
+ * including global peripheral handles, pin map definitions, etc. This standard
+ * config is spread across four files: BSP.h (this file), bsp_config.h (in /Util/),
+ * BSP.c (in BSP/Src/), and bsp_config.c (in BSP/Src/).
  * 
- * Has a struct used for 
+ * @copyright Copyright Longhorn Solar Racing (c) 2023
+ * 
  */
+
 #include <stdbool.h>
 #include "stm32f4xx_hal.h"
-#include "stm32f4xx_hal_rcc.h"
-#include "stm32f4xx_hal_gpio.h"
-#include "stm32f4xx_hal_i2c.h"
-#include "stm32f4xx_hal_spi.h"
-#include "stm32f4xx_hal_uart.h"
 
 // Global handles to the possible peripherals
 extern UART_HandleTypeDef uart4_handle;
@@ -86,11 +86,11 @@ typedef enum {
     BSP_OK = 0x0,
     BSP_ERROR = 0x1,
     BSP_BUSY = 0x2,
-    BSP_TIMEOUT = 0x4
+    BSP_TIMEOUT = 0x3
 } BSP_Status;
 
 // Macros for turning HAL_StatusTypeDef to our BSP error
-#define CONVERT_RETURN(x) (((x) == 0x3U) ? (BSP_TIMEOUT) : (x))
+#define CONVERT_RETURN(x) (BSP_Status(x))
 // Macros for interpreting BSP returns
 #define HAS_TIMEOUT(x) ((x) & BSP_TIMEOUT)
 #define HAS_BUSY(x) ((x) & BSP_BUSY)
