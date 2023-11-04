@@ -3,6 +3,7 @@
 #include "BSP.h"
 #include "FreeRTOS.h"
 #include "queue.h"
+#include "semphr.h"
 
 #define I2C_CLOCK_SPEED  100000
 #define I2C_QUEUE_SIZE   64
@@ -17,11 +18,14 @@ uint8_t __MetaBufferStorage[I2C_QUEUE_SIZE * I2C_ITEM_LENGTH * 2];
 uint8_t __ReceiveBufferStorage[I2C_QUEUE_SIZE * I2C_ITEM_LENGTH];
 uint8_t __ReceiveRawData[I2C_QUEUE_SIZE * I2C_ITEM_LENGTH];
 
+SemaphoreHandle_t semaphore = NULL;
+StaticSemaphore_t semaphoreBuffer;
+
 static QueueHandle_t I2C_DataQueue;
-//addresses, registers, and lengths
 
 static QueueHandle_t I2C_DataRegisterQueue;
 
+//addresses, registers, and lengths
 static QueueHandle_t I2C_MetaQueue;
 
 static QueueHandle_t I2C_MetaRegisterQueue;
@@ -36,6 +40,7 @@ BSP_Status BSP_I2C_Init() {
     I2C_MetaRegisterQueue = xQueueCreateStatic(I2C_QUEUE_SIZE * 2, I2C_ITEM_LENGTH, __MetaBufferStorage, &__MetaStaticQueue);
     I2C_ReceiveQueue = xQueueCreateStatic(I2C_QUEUE_SIZE, I2C_ITEM_LENGTH, __ReceiveBufferStorage, &__ReceiveStaticQueue);
 
+    semaphore = xSemaphoreCreateBinaryStatic(&semaphoreBuffer);
 
     GPIO_InitTypeDef gpio_struct;
     I2C_HandleTypeDef i2c_struct;
@@ -50,7 +55,7 @@ BSP_Status BSP_I2C_Init() {
         __HAL_RCC_GPIOC_CLK_ENABLE();
     }
 
-    // i2c config NAHHH NO WAY
+    // i2c config 
     i2c_struct.Init.ClockSpeed = I2C_CLOCK_SPEED;
     i2c_struct.Init.DutyCycle = I2C_DUTYCYCLE_2;
     // 7 bit addr mode
@@ -82,6 +87,7 @@ void BSP_I2C_Write(I2C_HandleTypeDef *hi2c,
         for (uint16_t i = 0; i < len; i++) {
             buffer[i] = pDataBuff[i];
         }
+    xSemaphoreTake(semaphore, 1);
     if (!__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BUSY)) {
         // HAL requires 7b I2C address left shifted
         HAL_I2C_Master_Transmit_IT(hi2c, deviceAdd << 1, buffer, len);
@@ -94,6 +100,7 @@ void BSP_I2C_Write(I2C_HandleTypeDef *hi2c,
             xQueueSend(I2C_MetaQueue, deviceAdd << 1, 0);
             xQueueSend(I2C_MetaQueue, len, 0);
     }
+    xSemaphoreGive(semaphore);
 }
 
 //overwrite this
@@ -131,6 +138,7 @@ void BSP_I2C_RegisterWrite(I2C_HandleTypeDef *hi2c,
         for (uint16_t i = 0; i < len; i++) {
             buffer[i] = pDataBuff[i];
         }
+    xSemaphoreTake(semaphore, 1);
     if (!__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BUSY)) {
         // HAL requires 7b I2C address left shifted
         HAL_I2C_Mem_Write_IT(hi2c, deviceAdd << 1, memoryAdd, memoryAddSize, buffer, len);
@@ -145,6 +153,7 @@ void BSP_I2C_RegisterWrite(I2C_HandleTypeDef *hi2c,
             xQueueSend(I2C_MetaRegisterQueue, memoryAddSize, 0);
             xQueueSend(I2C_MetaRegisterQueue, len, 0);
     }
+    xSemaphoreGive(semaphore);
 }
 
 //register overwrite version
