@@ -61,7 +61,22 @@ UART_Init_Status BSP_UART_Init(USART_HandleTypeDef device) {
  * @param   len number of bytes that will be returned
  * @return  len bytes from the recieve queue
  */
-char* BSP_UART_Read(USART_HandleTypeDef usart, uint32_t len);
+char* BSP_UART_Read(USART_HandleTypeDef usart, uint32_t len) {
+    
+}
+
+
+int USART_Handle_To_Int(USART_HandleTypeDef usart) {
+    if (usart.Instance == USART1) {
+        return 0;
+    } else if (usart.Instance == USART2) {
+        return 1;
+    } else if (usart.Instance == USART3) {
+        return 2;
+    } else {
+        return -1; // Handle is not recognized, send invalid index so code seg faults.
+    }
+}
 
 /**
  * @brief   Continues message recieving until recieve queue is full
