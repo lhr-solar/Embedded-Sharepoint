@@ -1,11 +1,9 @@
 #include "BSP_UART.h"
 
-static USART_TypeDef *handles[NUM_UART] = {USART1, USART2, USART3};
-
 static UART_HandleTypeDef for_interrupts;
 
 //TODO This function needs to be reviewed, and queue creation will likely happen here
-BSP_Status BSP_UART_Init(UART_t device) {
+UART_Init_Status BSP_UART_Init(USART_HandleTypeDef device) {
     GPIO_InitTypeDef gpio_struct;
     UART_InitTypeDef uart_struct;
     for_interrupts.Instance = USART3;
@@ -59,11 +57,11 @@ BSP_Status BSP_UART_Init(UART_t device) {
 
 /**
  * @brief   Reads a message from the specified UART device
- * @param   usart : which usart to read from (2 or 3)
+ * @param   usart which usart to read from (2 or 3)
  * @param   len number of bytes that will be returned
  * @return  len bytes from the recieve queue
  */
-char* BSP_UART_Read(UART_t device, uint32_t len);
+char* BSP_UART_Read(USART_HandleTypeDef usart, uint32_t len);
 
 /**
  * @brief   Continues message recieving until recieve queue is full
@@ -73,15 +71,15 @@ void HAL_USART_RxCpltCallback(UART_HandleTypeDef *huart);
 
 /**
  * @brief   Writes a message to the specified UART device
- * @param   usart : which usart to write to (1-3) 
+ * @param   usart which usart to write to (1-3) 
  * @param   data pointer to the array containing the message to sned
  * @param   len length of the message in bytes
  * @return  Status of write operation (WRITE_SUCCESS OR WRITE_FAIL)
  */
-Write_Status BSP_UART_Write(UART_t usart, char* data, uint32_t len);
+UART_Write_Status BSP_UART_Write(USART_HandleTypeDef usart, char* data, uint32_t len);
 
 /**
  * @brief   Continues message tranmission on UART device until transmit queue is empty
- * @param   huart : handle of UART that called the interrupt
+ * @param   huart handle of UART that called the interrupt
  */
-void HAL_USART_TxCpltCallback(UART_HandleTypeDef *huart);
+void HAL_USART_TxCpltCallback(USART_HandleTypeDef *huart);
