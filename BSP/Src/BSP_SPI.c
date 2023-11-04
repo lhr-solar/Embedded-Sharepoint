@@ -72,7 +72,7 @@ HAL_StatusTypeDef BSP_SPI_SetClock(SPI_HandleTypeDef* spiHandle, BSP_SPI_Speed s
     __HAL_SPI_DISABLE(spiHandle); // Disable the SPI periph while we set clock
     spiHandle->Init.BaudRatePrescaler = _speedLut[speed];
     stat = HAL_SPI_Init(spiHandle);
-    if (IS_OK(stat)) {
+    if (stat == HAL_OK) {
         __HAL_SPI_ENABLE(spiHandle); // Re enable if all ok
     }
     return stat;
@@ -109,10 +109,16 @@ HAL_StatusTypeDef BSP_SPI_Write(SPI_HandleTypeDef* spiHandle, uint8_t* buffer, u
 
     return stat;
 }
-// SPI Interrupt callback to recursively perform writes while we have data to transmit
+
+/**
+ * @brief Automatically called on transmit complete; recursively transmit
+ * SPI messages while we have messages in the tx queue to send.
+ * 
+ * @param hspi 
+ */
 void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi) {
     // This executes whenever a transmit completes
-    // We need this local, second queue of lengths of messages we are sending so we can
+    // We need this static second queue of lengths of messages we are sending so we can
     // pop data in order appropriately.
 
     // If the queue isn't empty...
@@ -148,8 +154,13 @@ HAL_StatusTypeDef BSP_SPI_Read(SPI_HandleTypeDef* spiHandle, uint16_t len) {
     return stat;
 }
 
-// When a read is complete we want to copy all data from 
-// our local buffer into the RX queue the user provides
+/**
+ * @brief Automatically executed when a SPI read is finished; copy
+ * all data from the read buffer in SPI_Read() into the rxQueue passed
+ * in by the init function
+ * 
+ * @param hspi 
+ */
 void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi) {
     if (uxQueueGetQueueLength(localRxMetaQueue) > 0) {
         uint16_t toSend;
@@ -161,11 +172,23 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi) {
 }
 
 /**
- * @brief Set's SPI chip select
+ * @brief Sets SPI chip select
  * 
- * @param spiHandle SPI handle to modify - WIP
+ * This function needs to be updated similar to the BPS version once
+ * the leaderSOM board is finalized and SPI CS is set.
+ * 
+ * @param spiHandle SPI handle to modify
  * @return HAL_StatusTypeDef 
  */
-HAL_StatusTypeDef BSP_SPI_SetStateCS(SPI_HandleTypeDef* spiHandle) {
-
+HAL_StatusTypeDef BSP_SPI_SetStateCS(SPI_HandleTypeDef* spiHandle, uint8_t val) {
+    uint8_t hal_val = (val) ? GPIO_PIN_SET : GPIO_PIN_RESET;
+    HAL_StatusTypeDef stat;
+    if (spiHandle->Instance == SPI2) {
+        // SPI2 NSS is on PA11, AF5
+        stat = HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, hal_val);
+    } else if (spiHandle->Instance == SPI3) {
+        // SPI3 NSS is on PA4, AF6
+        stat = HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, hal_val);
+    }
+    return stat;
 }
