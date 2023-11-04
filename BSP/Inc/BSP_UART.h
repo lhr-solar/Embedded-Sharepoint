@@ -10,6 +10,7 @@
 #include "stm32f4xx_hal_gpio.h"
 #include "stm32f4xx_hal_uart.h"
 #include "stm32f4xx_hal_usart.h"
+#include "FreeRTOS.h"
 #include "queue.h"
 
 #define TX_SIZE 60
