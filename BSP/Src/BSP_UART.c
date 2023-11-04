@@ -5,7 +5,7 @@ static USART_TypeDef *handles[NUM_UART] = {USART1, USART2, USART3};
 static UART_HandleTypeDef for_interrupts;
 
 //TODO This function needs to be reviewed, and queue creation will likely happen here
-BSP_Status BSP_UART_Init() {
+BSP_Status BSP_UART_Init(UART_t device) {
     GPIO_InitTypeDef gpio_struct;
     UART_InitTypeDef uart_struct;
     for_interrupts.Instance = USART3;

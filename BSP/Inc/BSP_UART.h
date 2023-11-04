@@ -21,9 +21,11 @@ typedef enum {UART_1, UART_2, UART_3, NUM_UART} UART_t;
 typedef enum {WRITE_FAIL, WRITE_SUCCESS} Write_Status;
 
 /**
- * @brief Initialize the UART pins as necessary
+ * @brief   Initialize the UART pins as necessary
+ * @param   device the proper UART device to write to defined by the UART_t enum\
+ * @return  Status of init operation
  */
-BSP_Status BSP_UART_Init();
+BSP_Status BSP_UART_Init(UART_t device);
 
 /**
  * @brief   Writes a message to the specified UART device
