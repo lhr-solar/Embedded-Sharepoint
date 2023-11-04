@@ -1,15 +1,16 @@
 #include "BSP_UART.h"
 
-static UART_HandleTypeDef for_interrupts;
+static QueueHandle_t rx_queues[2];
+static QueueHandle_t tx_queues[2];
+
 
 //TODO This function needs to be reviewed, and queue creation will likely happen here
 UART_Init_Status BSP_UART_Init(USART_HandleTypeDef device) {
     GPIO_InitTypeDef gpio_struct;
     UART_InitTypeDef uart_struct;
-    for_interrupts.Instance = USART3;
 
-    BSP_Status returnInfo;
-
+    UART_Init_Status returnInfo;
+    
     // Init clocks to port b, c, and usart3
 
     // check if they're disabled
@@ -43,14 +44,17 @@ UART_Init_Status BSP_UART_Init(USART_HandleTypeDef device) {
     uart_struct.StopBits = UART_STOPBITS_1;
     returnInfo = CONVERT_RETURN(HAL_UART_Init(&uart_struct));
 
-    __HAL_USART_ENABLE_IT(&for_interrupts, USART_IT_RXNE); //rx
-    __HAL_USART_ENABLE_IT(&for_interrupts, USART_IT_TC); //tx
-    __HAL_USART_ENABLE(&for_interrupts); // turn interrupts on
+    __HAL_USART_ENABLE_IT(&device, USART_IT_RXNE); //rx
+    __HAL_USART_ENABLE_IT(&device, USART_IT_TC); //tx
+    __HAL_USART_ENABLE(&device); // turn interrupts on
 
     // 2, 0 - usart3_preempt prio, usart3_sub prio
     // custom def'd in BPS repo. Should we do the same here?
     HAL_NVIC_SetPriority(USART3_IRQn, 2, 0);
     HAL_NVIC_EnableIRQ(USART3_IRQn);
+
+    rx_queues[USART_Handle_To_Int(device)] = xQueueCreate(QUEUE_SIZE, sizeof(uint8_t));
+    tx_queues[USART_Handle_To_Int(device)] = xQueueCreate(QUEUE_SIZE, sizeof(uint8_t));
 
     return returnInfo;
 }
@@ -89,7 +93,7 @@ void HAL_USART_TxCpltCallback(USART_HandleTypeDef *huart);
 
 /**
  * @brief   Convert usart handles to the index in Tx and Rx queue arrays
- * @param   usart the handle to operate on
+ * @param   usart the handle to translate to a number
  * @return  Index of the usart handle in the queue array
  */
 int USART_Handle_To_Int(USART_HandleTypeDef usart) {
