@@ -2,7 +2,7 @@
 #define BSP_CONF_H
 
 /**
- * @file BSP.h
+ * @file
  * @brief This file includes necessities for the BSP layer of Embedded Sharepoint,
  * including global peripheral handles, pin map definitions, etc. This standard
  * config is spread across four files: BSP.h (this file), bsp_config.h (in /Util/),
