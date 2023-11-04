@@ -83,13 +83,41 @@ void HAL_USART_RxCpltCallback(UART_HandleTypeDef *huart);
  * @param   len length of the message in bytes
  * @return  Status of write operation (WRITE_SUCCESS OR WRITE_FAIL)
  */
-UART_Write_Status BSP_UART_Write(USART_HandleTypeDef usart, char* data, uint32_t len);
+UART_Write_Status BSP_UART_Write(USART_HandleTypeDef usart, char* data, uint32_t len) {
+    QueueHandle_t tx_queue = tx_queues[USART_Handle_To_Int(usart)];
+    for(int i = 0; i < len; i++) {
+        BaseType_t queueStatus = xQueueSendToBack(tx_queue, data[i], portMAX_DELAY);
+        if (queueStatus != pdPASS) return WRITE_FAIL;
+    }
+
+    uint8_t packetSize = uxQueueMessagesWaiting < 60 ? uxQueueMessagesWaiting : 60;
+    char bytesToSend[packetSize];
+
+    for (int i = 0; i < packetSize; i++) {
+        xQueueReceive(tx_queue, &bytesToSend[i], portMAX_DELAY);
+    }
+    
+    HAL_USART_Transmit_IT(&usart, &bytesToSend, packetSize);
+}
 
 /**
  * @brief   Continues message tranmission on UART device until transmit queue is empty
  * @param   huart handle of UART that called the interrupt
  */
-void HAL_USART_TxCpltCallback(USART_HandleTypeDef *huart);
+void HAL_USART_TxCpltCallback(USART_HandleTypeDef *huart) {
+    QueueHandle_t tx_queue = tx_queues[USART_Handle_To_Int(*huart)];
+    uint8_t packetSize = uxQueueMessagesWaiting < 60 ? uxQueueMessagesWaiting : 60;
+    
+    if (packetSize == 0) return;
+
+    char bytesToSend[packetSize];
+
+    for (int i = 0; i < packetSize; i++) {
+        xQueueReceive(tx_queue, &bytesToSend[i], portMAX_DELAY);
+    }
+    
+    HAL_USART_Transmit_IT(huart, &bytesToSend, packetSize);
+}
 
 /**
  * @brief   Convert usart handles to the index in Tx and Rx queue arrays
