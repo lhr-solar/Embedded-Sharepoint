@@ -81,20 +81,4 @@ void BSP_Init();
 #include "bsp_config.h"
 #endif
 
-// BSP-level error information and handling
-typedef enum {
-    BSP_OK = 0x0,
-    BSP_ERROR = 0x1,
-    BSP_BUSY = 0x2,
-    BSP_TIMEOUT = 0x3
-} BSP_Status;
-
-// Macros for turning HAL_StatusTypeDef to our BSP error
-#define CONVERT_RETURN(x) (BSP_Status(x))
-// Macros for interpreting BSP returns
-#define HAS_TIMEOUT(x) ((x) & BSP_TIMEOUT)
-#define HAS_BUSY(x) ((x) & BSP_BUSY)
-#define HAS_ERROR(x) ((x) & BSP_ERROR)
-#define IS_OK(x) (!(HAS_TIMEOUT(x) || HAS_BUSY(x) || HAS_ERROR(x)))
-
 #endif
