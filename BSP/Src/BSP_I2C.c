@@ -32,7 +32,7 @@ static QueueHandle_t I2C_MetaRegisterQueue;
 
 static QueueHandle_t I2C_ReceiveQueue; 
 
-BSP_Status BSP_I2C_Init() {
+HAL_StatusTypeDef BSP_I2C_Init() {
     //QUEUES
     I2C_DataQueue = xQueueCreateStatic(I2C_QUEUE_SIZE, I2C_ITEM_LENGTH, __DataBufferStorage, &__DataStaticQueue);
     I2C_DataRegisterQueue = xQueueCreateStatic(I2C_QUEUE_SIZE, I2C_ITEM_LENGTH, __DataBufferStorage, &__DataStaticQueue);
@@ -64,11 +64,13 @@ BSP_Status BSP_I2C_Init() {
     i2c_struct.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
     i2c_struct.Init.GeneralCallMode = I2C_GENERALCALL_ENABLED; 
     i2c_struct.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-    HAL_I2C_Init(&i2c_struct);
+    HAL_StatusTypeDef stat = HAL_I2C_Init(&i2c_struct);
 
     i2c_struct.Instance = I2C1;
     HAL_NVIC_SetPriority(I2C1_EV_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
+
+    return stat;
 }
 
 /** 

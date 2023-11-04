@@ -16,7 +16,7 @@
  * @brief Initialize I2C port for EEPROM interaction
  * 
  */
-BSP_Status BSP_I2C_Init();
+HAL_StatusTypeDef BSP_I2C_Init();
 
 /**
 * @brief   Transmits data onto the I2C bus.
