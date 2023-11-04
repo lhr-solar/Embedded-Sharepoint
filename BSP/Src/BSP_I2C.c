@@ -15,8 +15,8 @@ static StaticQueue_t __ReceiveStaticQueue;
 
 uint8_t __DataBufferStorage[I2C_QUEUE_SIZE * I2C_ITEM_LENGTH];
 uint8_t __MetaBufferStorage[I2C_QUEUE_SIZE * I2C_ITEM_LENGTH * 2];
-uint8_t __ReceiveBufferStorage[I2C_QUEUE_SIZE * I2C_ITEM_LENGTH];
-uint8_t __ReceiveRawData[I2C_QUEUE_SIZE * I2C_ITEM_LENGTH];
+static uint8_t __ReceiveBufferStorage[I2C_QUEUE_SIZE * I2C_ITEM_LENGTH];
+static uint8_t __ReceiveRawData[I2C_QUEUE_SIZE * I2C_ITEM_LENGTH];
 
 SemaphoreHandle_t semaphore = NULL;
 StaticSemaphore_t semaphoreBuffer;
@@ -92,7 +92,7 @@ void BSP_I2C_Write(I2C_HandleTypeDef *hi2c,
         // HAL requires 7b I2C address left shifted
         HAL_I2C_Master_Transmit_IT(hi2c, deviceAdd << 1, buffer, len);
     }
-    else if (uxQueueSpacesAvailable(I2C_DataQueue) > len) {
+    else if (uxQueueSpacesAvailable(I2C_DataQueue) >= len) {
         for (uint32_t i = 0; i < len; i++) {
             xQueueSend(I2C_DataQueue, buffer[i], 0);
         }
@@ -103,7 +103,11 @@ void BSP_I2C_Write(I2C_HandleTypeDef *hi2c,
     xSemaphoreGive(semaphore);
 }
 
-//overwrite this
+/**
+ * @brief Recursively go through to see if there is any more info that needs to be transmitted,
+ * if there is transmit it
+ * @param hi2c I2C handle that interrupted (passed in by IRQ)
+ */
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c) {
     uint8_t buffer[I2C_QUEUE_SIZE * I2C_ITEM_LENGTH];
     if (xQueueIsQueueEmptyFromISR(I2C_MetaQueue) == pdFALSE) {
@@ -143,7 +147,7 @@ void BSP_I2C_RegisterWrite(I2C_HandleTypeDef *hi2c,
         // HAL requires 7b I2C address left shifted
         HAL_I2C_Mem_Write_IT(hi2c, deviceAdd << 1, memoryAdd, memoryAddSize, buffer, len);
     }
-    else if (uxQueueSpacesAvailable(I2C_DataRegisterQueue) > len) {
+    else if (uxQueueSpacesAvailable(I2C_DataRegisterQueue) >= len) {
         for (uint32_t i = 0; i < len; i++) {
             xQueueSend(I2C_DataRegisterQueue, buffer[i], 0);
         }
@@ -156,7 +160,11 @@ void BSP_I2C_RegisterWrite(I2C_HandleTypeDef *hi2c,
     xSemaphoreGive(semaphore);
 }
 
-//register overwrite version
+/**
+ * @brief Recursively go through to see if there is any more info that needs to be transmitted,
+ * if there is transmit it
+ * @param hi2c I2C handle that interrupted (passed in by IRQ)
+ */
 void HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2c) {
     uint8_t buffer[I2C_QUEUE_SIZE * I2C_ITEM_LENGTH];
     if (xQueueIsQueueEmptyFromISR(I2C_MetaRegisterQueue) == pdFALSE) {
@@ -188,7 +196,11 @@ void BSP_I2C_Read(I2C_HandleTypeDef* hi2c,
     HAL_I2C_Mem_Read_IT(hi2c, deviceAdd, memoryAdd, sizeof(uint8_t), __ReceiveRawData, I2C_QUEUE_SIZE * I2C_ITEM_LENGTH);
 }
 
-//overwrite
+/**
+ * @brief When a read is complete we want to copy all data from the local buffer
+ *  into the RX queue the user provides
+ * @param hi2c  I2C handle that interrupted (passed in by IRQ)
+ */
 void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c) {
     uint8_t temp;
     for (uint8_t i = 0; i < I2C_QUEUE_SIZE * I2C_ITEM_LENGTH; i++) {
