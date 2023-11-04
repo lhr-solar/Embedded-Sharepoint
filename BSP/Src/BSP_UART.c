@@ -66,18 +66,6 @@ char* BSP_UART_Read(USART_HandleTypeDef usart, uint32_t len) {
 }
 
 
-int USART_Handle_To_Int(USART_HandleTypeDef usart) {
-    if (usart.Instance == USART1) {
-        return 0;
-    } else if (usart.Instance == USART2) {
-        return 1;
-    } else if (usart.Instance == USART3) {
-        return 2;
-    } else {
-        return -1; // Handle is not recognized, send invalid index so code seg faults.
-    }
-}
-
 /**
  * @brief   Continues message recieving until recieve queue is full
  * @param   huart : handle of UART that called the interrupt
@@ -98,3 +86,20 @@ UART_Write_Status BSP_UART_Write(USART_HandleTypeDef usart, char* data, uint32_t
  * @param   huart handle of UART that called the interrupt
  */
 void HAL_USART_TxCpltCallback(USART_HandleTypeDef *huart);
+
+/**
+ * @brief   Convert usart handles to the index in Tx and Rx queue arrays
+ * @param   usart the handle to operate on
+ * @return  Index of the usart handle in the queue array
+ */
+int USART_Handle_To_Int(USART_HandleTypeDef usart) {
+    if (usart.Instance == USART1) {
+        return 0;
+    } else if (usart.Instance == USART2) {
+        return 1;
+    } else if (usart.Instance == USART3) {
+        return 2;
+    } else {
+        return -1; // Handle is not recognized, send invalid index so code seg faults.
+    }
+}
