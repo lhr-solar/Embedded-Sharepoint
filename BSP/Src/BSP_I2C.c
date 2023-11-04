@@ -74,11 +74,12 @@ HAL_StatusTypeDef BSP_I2C_Init() {
 }
 
 /** 
- * @param    hi2c:            struct with config data
- * @param    deviceAddress :      target device address
- * @param    pDataBuff :      data buffer
- * @param    len :           amount of data   
- * @return       
+ * @brief    preform I2C write
+ * @param    hi2c               struct with config data
+ * @param    deviceAddress      target device address
+ * @param    pDataBuff          data buffer
+ * @param    len                amount of data   
+ * @return   void
  */
 void BSP_I2C_Write(I2C_HandleTypeDef *hi2c, 
               uint32_t deviceAddress, 
@@ -108,7 +109,7 @@ void BSP_I2C_Write(I2C_HandleTypeDef *hi2c,
 /**
  * @brief Recursively go through to see if there is any more info that needs to be transmitted,
  * if there is transmit it
- * @param hi2c I2C handle that interrupted (passed in by IRQ)
+ * @param hi2c                  I2C handle that interrupted (passed in by IRQ)
  */
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c) {
     uint8_t buffer[I2C_QUEUE_SIZE * I2C_ITEM_LENGTH];
@@ -125,13 +126,14 @@ void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c) {
 }
 
 /** 
- * @param    hi2c:            struct with config data
- * @param    deviceAddress :      target device address
- * @param    memoryAddress:      the register address to write to in the IC's memory.
- * @param    memoryAddressSize :  the register address size
- * @param    pDataBuff :      data buffer
- * @param    len :            amount of data   
- * @return       
+ * @brief    preform I2C write accounting for registers
+ * @param    hi2c               struct with config data
+ * @param    deviceAddress      target device address
+ * @param    memoryAddress      the register address to write to in the IC's memory.
+ * @param    memoryAddressSize  the register address size
+ * @param    pDataBuff          data buffer
+ * @param    len                amount of data   
+ * @return   void    
  */
 void BSP_I2C_RegisterWrite(I2C_HandleTypeDef *hi2c, 
               uint32_t deviceAddress, 
@@ -165,7 +167,7 @@ void BSP_I2C_RegisterWrite(I2C_HandleTypeDef *hi2c,
 /**
  * @brief Recursively go through to see if there is any more info that needs to be transmitted,
  * if there is transmit it
- * @param hi2c I2C handle that interrupted (passed in by IRQ)
+ * @param hi2c                  I2C handle that interrupted (passed in by IRQ)
  */
 void HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2c) {
     uint8_t buffer[I2C_QUEUE_SIZE * I2C_ITEM_LENGTH];
@@ -184,11 +186,12 @@ void HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2c) {
 }
 
 /**
- * @brief   Gets the data from a device through the I2C bus.
- * @param    hi2c:            struct with config data
- * @param    deviceAddress :      target device address
- * @param    memoryAddress :      the register address to write to in the IC's memory.
- * @param    memoryAddressSize :  the register address size
+ * @brief    Gets the data from a device through the I2C bus.
+ * @param    hi2c               struct with config data
+ * @param    deviceAddress      target device address
+ * @param    memoryAddress      the register address to write to in the IC's memory.
+ * @param    memoryAddressSize  the register address size
+ * @return   void
  */
 //Register Read
 void BSP_I2C_Read(I2C_HandleTypeDef* hi2c,
