@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include "BSP_UART.h"
 
 static QueueHandle_t rx_queues[2];
@@ -66,7 +67,27 @@ UART_Init_Status BSP_UART_Init(USART_HandleTypeDef device) {
  * @return  len bytes from the recieve queue
  */
 char* BSP_UART_Read(USART_HandleTypeDef usart, uint32_t len) {
+    QueueHandle_t rx_queue = rx_queues[USART_Handle_To_Int(usart)];
+
+    char bytesToRecieve[RX_SIZE];
+    HAL_USART_Receive_IT(&usart, *bytesToRecieve, RX_SIZE);
+
+    if (uxQueueSpacesAvailable(rx_queue) != 0) {
+        for (int i = 0; i < RX_SIZE; i++) {
+            BaseType_t queueStatus = xQueueSendToBack(rx_queue, bytesToRecieve[i], portMAX_DELAY);
+            
+            if (queueStatus != pdPASS) {
+                msgDropped = true;
+            }
+        }
+    }
     
+    char returnArr[len];
+    for (int i = 0; i < len; i++) {
+        xQueueReceive(rx_queue, &returnArr[i], portMAX_DELAY);
+    }
+    
+    return returnArr;
 }
 
 
@@ -74,7 +95,22 @@ char* BSP_UART_Read(USART_HandleTypeDef usart, uint32_t len) {
  * @brief   Continues message recieving until recieve queue is full
  * @param   huart : handle of UART that called the interrupt
  */
-void HAL_USART_RxCpltCallback(UART_HandleTypeDef *huart);
+void HAL_USART_RxCpltCallback(USART_HandleTypeDef *huart) {
+    QueueHandle_t rx_queue = rx_queues[USART_Handle_To_Int(*huart)];
+    uint8_t packetSize = uxQueueMessagesWaiting < RX_SIZE ? uxQueueMessagesWaiting : RX_SIZE;
+    
+    if (uxQueueSpacesAvailable(rx_queue) == 0) {
+        msgDropped = true;
+        return;
+    }
+
+    char recievedBytes[packetSize];
+    HAL_USART_Receive_IT(huart, &recievedBytes, packetSize);
+
+    for (int i = 0; i < packetSize; i++) {
+        xQueueSendToBack(rx_queue, &recievedBytes[i], portMAX_DELAY);
+    }
+}
 
 /**
  * @brief   Writes a message to the specified UART device
@@ -85,12 +121,12 @@ void HAL_USART_RxCpltCallback(UART_HandleTypeDef *huart);
  */
 UART_Write_Status BSP_UART_Write(USART_HandleTypeDef usart, char* data, uint32_t len) {
     QueueHandle_t tx_queue = tx_queues[USART_Handle_To_Int(usart)];
-    for(int i = 0; i < len; i++) {
+    for (int i = 0; i < len; i++) {
         BaseType_t queueStatus = xQueueSendToBack(tx_queue, data[i], portMAX_DELAY);
         if (queueStatus != pdPASS) return WRITE_FAIL;
     }
 
-    uint8_t packetSize = uxQueueMessagesWaiting < 60 ? uxQueueMessagesWaiting : 60;
+    uint8_t packetSize = uxQueueMessagesWaiting(tx_queue) < TX_SIZE ? uxQueueMessagesWaiting(tx_queue) : TX_SIZE;
     char bytesToSend[packetSize];
 
     for (int i = 0; i < packetSize; i++) {
@@ -106,9 +142,11 @@ UART_Write_Status BSP_UART_Write(USART_HandleTypeDef usart, char* data, uint32_t
  */
 void HAL_USART_TxCpltCallback(USART_HandleTypeDef *huart) {
     QueueHandle_t tx_queue = tx_queues[USART_Handle_To_Int(*huart)];
-    uint8_t packetSize = uxQueueMessagesWaiting < 60 ? uxQueueMessagesWaiting : 60;
+    uint8_t packetSize = (uxQueueMessagesWaiting(tx_queue) < TX_SIZE) ? uxQueueMessagesWaiting(tx_queue) : TX_SIZE;
     
-    if (packetSize == 0) return;
+    if (packetSize == 0) {
+        return;
+    }
 
     char bytesToSend[packetSize];
 

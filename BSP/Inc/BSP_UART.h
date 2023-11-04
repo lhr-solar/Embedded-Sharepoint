@@ -5,6 +5,7 @@
 #define BSP_UART_H
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "stm32f4xx_hal.h" 
 #include "stm32f4xx_hal_rcc.h"
 #include "stm32f4xx_hal_gpio.h"
@@ -17,8 +18,11 @@
 #define RX_SIZE 60
 #define QUEUE_SIZE 300
 
+bool msgDropped = false;
+
 typedef enum {UART_OK, UART_ERROR, UART_BUSY, UART_TIMEOUT} UART_Init_Status;
 typedef enum {WRITE_SUCCESS, WRITE_FAIL} UART_Write_Status;
+
 
 /**
  * @brief   Initialize the UART pins as necessary
