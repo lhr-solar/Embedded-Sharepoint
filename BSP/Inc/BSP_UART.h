@@ -20,6 +20,7 @@
 
 bool msgDropped = false;
 
+//TODO Replace with BSP_Status?
 typedef enum {UART_OK, UART_ERROR, UART_BUSY, UART_TIMEOUT} UART_Init_Status;
 typedef enum {WRITE_SUCCESS, WRITE_FAIL} UART_Write_Status;
 

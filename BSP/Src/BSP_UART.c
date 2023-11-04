@@ -4,8 +4,8 @@
 static QueueHandle_t rx_queues[2];
 static QueueHandle_t tx_queues[2];
 
-
-//TODO This function needs to be reviewed, and queue creation will likely happen here
+//TODO needs rewrite after standard config for pins is merged in
+//TODO will need to set different pins based on which UART device is passed in
 UART_Init_Status BSP_UART_Init(USART_HandleTypeDef device) {
     GPIO_InitTypeDef gpio_struct;
     UART_InitTypeDef uart_struct;
