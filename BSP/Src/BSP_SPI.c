@@ -18,34 +18,28 @@ static QueueHandle_t localRxMetaQueue;
 HAL_StatusTypeDef BSP_SPI_Init(SPI_HandleTypeDef* spiHandle, QueueHandle_t* txPtr, QueueHandle_t* rxPtr) {
     HAL_StatusTypeDef stat;
 
+    // assign local pointers
+    // and create metadata queues
     _transmitQueuePtr = txPtr;
     _receiveQueuePtr = rxPtr;
     localTxMetaQueue = xQueueCreateStatic(LOCAL_BUFFER_SIZE, sizeof(uint16_t), localTxMetaBuffer, &localTxMetaStatic);
     localRxMetaQueue = xQueueCreateStatic(LOCAL_BUFFER_SIZE, sizeof(uint16_t), localRxMetaBuffer, &localRxMetaStatic);
-    // We are only allowing SPI1/3 (check this against standard config)
-    if (spiHandle->Instance == SPI1) {
-        if (__HAL_RCC_SPI1_IS_CLK_DISABLED()) {
-            __HAL_RCC_SPI1_CLK_ENABLE();
+    
+    // We are only allowing SPI2/3
+    if (spiHandle->Instance == SPI2) {
+        if (__HAL_RCC_SPI2_IS_CLK_DISABLED()) {
+            __HAL_RCC_SPI2_CLK_ENABLE();
         }
     }
     else if (spiHandle->Instance == SPI3) {
-        if (__HAL_RCC_SPI1_IS_CLK_DISABLED()) {
+        if (__HAL_RCC_SPI3_IS_CLK_DISABLED()) {
             __HAL_RCC_SPI3_CLK_ENABLE();
         }
     }
-
-    spiHandle->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128;
-    spiHandle->Init.CLKPhase = SPI_PHASE_2EDGE;
-    spiHandle->Init.CLKPolarity = SPI_POLARITY_HIGH; // clock idles high
-    spiHandle->Init.CRCPolynomial = 0;
-    spiHandle->Init.DataSize = SPI_DATASIZE_8BIT;
-    spiHandle->Init.Direction = SPI_DIRECTION_2LINES; // duplex
-    spiHandle->Init.FirstBit = SPI_FIRSTBIT_MSB;
-    spiHandle->Init.Mode = SPI_MODE_MASTER;
-    spiHandle->Init.NSS = SPI_NSS_SOFT; // software controlled slave-select (I think)
     
-    stat = HAL_SPI_Init(spiHandle);
-    if (IS_OK(stat)) {
+    stat = HAL_SPI_Init(spiHandle); // pass in global handle from BSP.c
+
+    if (stat == HAL_OK) {
         // Enable the interrupts and priorities
         if (spiHandle->Instance == SPI1) {
             HAL_NVIC_SetPriority(SPI1_IRQn, 0, 0);
@@ -94,17 +88,17 @@ HAL_StatusTypeDef BSP_SPI_Write(SPI_HandleTypeDef* spiHandle, uint8_t* buffer, u
     // AND the queue is empty. Otherwise if the TX queue has items in it we might
     // be in some weird small period between a transmit finishing, but the ISR hasn't kicked off yet.
     if (HAL_SPI_GetState(spiHandle) == HAL_SPI_STATE_READY && spacesLeft == LOCAL_BUFFER_SIZE) {
-        stat = CONVERT_RETURN(HAL_SPI_Transmit_IT(spiHandle, buffer, len));
+        stat = HAL_SPI_Transmit_IT(spiHandle, buffer, len);
     }
     // Add to TX queue if we have room
     else if (HAL_SPI_GetState(spiHandle) == HAL_SPI_STATE_BUSY_TX && spacesLeft >= len) {
-        xQueueSend(localTxMetaQueue, len, 0);
+        xQueueSend(localTxMetaQueue, &len, 0);
         for (uint16_t i = 0; i < len; i++) {
-            xQueueSend(*_transmitQueuePtr, buffer[i], 0);
+            xQueueSend(*_transmitQueuePtr, &(buffer[i]), 0);
         }
         stat = HAL_BUSY;
     } else { // otherwise we didn't have enough room, so inform
-        stat = HAL_TIMEOUT; // should this be error? should we add as many as we can?
+        stat = HAL_ERROR; // should this be error? should we add as many as we can?
     }
 
     return stat;
@@ -146,7 +140,7 @@ HAL_StatusTypeDef BSP_SPI_Read(SPI_HandleTypeDef* spiHandle, uint16_t len) {
     
     if (len <= LOCAL_BUFFER_SIZE) {
         stat = HAL_SPI_Receive_IT(spiHandle, spiRxTempBuffer, len);
-        xQueueSend(localRxMetaQueue, len, 0); // push metadata
+        xQueueSend(localRxMetaQueue, &len, 0); // push metadata
     } else {
         stat = HAL_ERROR;
     }
@@ -161,6 +155,8 @@ HAL_StatusTypeDef BSP_SPI_Read(SPI_HandleTypeDef* spiHandle, uint16_t len) {
  * 
  * @param hspi 
  */
+// This specifically needs review. I think I might have some weird logic between
+// Read() and this callback.
 void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi) {
     if (uxQueueGetQueueLength(localRxMetaQueue) > 0) {
         uint16_t toSend;
@@ -172,10 +168,9 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi) {
 }
 
 /**
- * @brief Sets SPI chip select
+ * @brief Sets SPI chip select.
  * 
- * This function needs to be updated similar to the BPS version once
- * the leaderSOM board is finalized and SPI CS is set.
+ * This function needs to be updated once the leaderSOM board is finalized and SPI CS is set.
  * 
  * @param spiHandle SPI handle to modify
  * @return HAL_StatusTypeDef 
@@ -183,6 +178,7 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi) {
 HAL_StatusTypeDef BSP_SPI_SetStateCS(SPI_HandleTypeDef* spiHandle, uint8_t val) {
     uint8_t hal_val = (val) ? GPIO_PIN_SET : GPIO_PIN_RESET;
     HAL_StatusTypeDef stat;
+    // BSP config only supports SPI2/SPI3
     if (spiHandle->Instance == SPI2) {
         // SPI2 NSS is on PA11, AF5
         stat = HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, hal_val);
