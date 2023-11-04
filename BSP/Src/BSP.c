@@ -103,10 +103,10 @@ bool isValidPinMapping(BSP_PINS pin, uint8_t mapped_function) {
 }
 
 /**
- * @brief Configures the BSP layer according to the configuration specified in bsp_config.h
- * 
- * @details This function configures the BSP peripheral functions according to the alternate function
- * mapping specified in bsp_config.h
+ * @brief Configures the BSP layer global handles and initializes all necessary GPIO.
+ * This function configures the BSP peripheral functions according to the alternate function
+ * mapping and configuration data specified in bsp_config.h. This function MUST be called before you
+ * call any peripheral functions!
  * 
  * The validity of your configuration is checked at runtime. Each pin's alternate function value is mapped
  * into an array in memory, indexed by the pin, with a value of BSP_XXX alternate function value. This returned
@@ -120,19 +120,42 @@ void BSP_Init() {
     // Set up the basic parameters for global handles
     // These should be referred to when possible and configured
     // accordingly in the peripheral functions
+
+    // UART instances and default inits
     uart4_handle.Instance = UART4;
     uart5_handle.Instance = UART5;
+    
+    uart4_handle.Init = UART_DEFAULT_STRUCT;
+    uart5_handle.Init = UART_DEFAULT_STRUCT;
+
+    // Timer instances
     tim1_handle.Instance = TIM1;
     tim2_handle.Instance = TIM2;
     tim3_handle.Instance = TIM3;
     tim9_handle.Instance = TIM9;
+
+    // I2C instances and default inits
     i2c1_handle.Instance = I2C1;
     i2c3_handle.Instance = I2C3;
+
+    i2c1_handle.Init = I2C_DEFAULT_STRUCT(0x50); // default struct for i2c requires "self address" parameter
+    i2c3_handle.Init = I2C_DEFAULT_STRUCT(0x51); // these are dummy values to be configured as needed
+
+    // SPI instances and default inits
     spi2_handle.Instance = SPI2;
     spi3_handle.Instance = SPI3;
+
+    spi2_handle.Init = SPI_DEFAULT_STRUCT;
+    spi3_handle.Init = SPI_DEFAULT_STRUCT;
+
+    // CAN instances and default inits
     carcan_handle.Instance = CAN2;
     localcan_handle.Instance = CAN3;
+
+    carcan_handle.Init = CAN_DEFAULT_STRUCT;
+    localcan_handle.Init = CAN_DEFAULT_STRUCT;
     
+    // GPIO setup info
     GPIO_InitTypeDef gpio;
     gpio.Speed = GPIO_SPEED_FAST;
     gpio.Mode = GPIO_MODE_AF_PP;
@@ -152,36 +175,7 @@ void BSP_Init() {
         }
         // init the GPIO pin
         HAL_GPIO_Init(port, &gpio);
-        // custom peripheral initialization here
-        switch (BSP_GPIO_MAPPING[i]) {
-            case BSP_UART4:
-                // UART_Init(UART4 handle)
-                break;
-            case BSP_UART5:
-                // UART_Init(UART5 handle)
-                break;
-            case BSP_TIM1:
-                break;
-            case BSP_TIM2:
-                break;
-            case BSP_TIM3:
-                break;
-            case BSP_TIM9:
-                break;
-            case BSP_I2C1:
-                break;
-            case BSP_I2C3:
-                break;
-            case BSP_SPI2:
-                break;
-            case BSP_SPI3:
-                break;
-            case BSP_CAN2:
-                break;
-            case BSP_CAN3:
-                break;
-        }
-        // reset to push pull
+        // reset to push pull just in case
         gpio.Mode = GPIO_MODE_AF_PP;
     }
 }

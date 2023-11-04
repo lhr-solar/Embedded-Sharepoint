@@ -207,4 +207,73 @@ See BSP.c for list of valid AF mappings
 	#define PD2_ALTERNATE_FUNCTION (BSP_GPIO)
 #endif
 
+/*
+   _____  _         _             _   _    _                    _  _                 
+  / ____|| |       | |           | | | |  | |                  | || |                
+ | |  __ | |  ___  | |__    __ _ | | | |__| |  __ _  _ __    __| || |  ___           
+ | | |_ || | / _ \ | '_ \  / _` || | |  __  | / _` || '_ \  / _` || | / _ \          
+ | |__| || || (_) || |_) || (_| || | | |  | || (_| || | | || (_| || ||  __/          
+  \_____||_| \___/ |_.__/  \__,_||_| |_|  |_| \__,_||_| |_| \__,_||_| \___|          
+                                                                                     
+                                                                                     
+  _____          __               _  _       _____  _                       _        
+ |  __ \        / _|             | || |     / ____|| |                     | |       
+ | |  | |  ___ | |_  __ _  _   _ | || |_   | (___  | |_  _ __  _   _   ___ | |_  ___ 
+ | |  | | / _ \|  _|/ _` || | | || || __|   \___ \ | __|| '__|| | | | / __|| __|/ __|
+ | |__| ||  __/| | | (_| || |_| || || |_    ____) || |_ | |   | |_| || (__ | |_ \__ \
+ |_____/  \___||_|  \__,_| \__,_||_| \__|  |_____/  \__||_|    \__,_| \___| \__||___/
+
+These defines should be modified as needed to configure the initialization structs
+for each peripheral type. These structs are assigned to the global HandleTypeDefs
+in the BSP.c BSP_INIT() function.
+
+*/
+
+#define I2C_DEFAULT_STRUCT(ADDRESS)	(I2C_InitTypeDef){	\
+	.ClockSpeed = 100000,	\
+	.DutyCycle = I2C_DUTYCYCLE_2,	\
+	.GeneralCallMode = I2C_GENERALCALL_ENABLED,	\
+	.NoStretchMode = I2C_NOSTRETCH_DISABLED,	\
+	.OwnAddress1 = (ADDRESS) << 1,\
+	.DualAddressMode = I2C_DUALADDRESS_DISABLED	\
+}	\
+
+#define SPI_DEFAULT_STRUCT	(SPI_InitTypeDef){	\
+	.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128,	\
+	.CLKPhase = SPI_PHASE_2EDGE,	\
+	.CLKPolarity = SPI_POLARITY_HIGH,	\
+	.CRCPolynomial = 0,		\
+	.DataSize = SPI_DATASIZE_8BIT,	\
+	.Direction = SPI_DIRECTION_2LINES,	\
+	.FirstBit = SPI_FIRSTBIT_MSB,	\
+	.Mode = SPI_MODE_MASTER,	\
+	.NSS = SPI_NSS_SOFT		\
+}	\
+
+#define CAN_DEFAULT_STRUCT	(CAN_InitTypeDef){	\
+    .Prescaler = 16,	\
+    .Mode = CAN_MODE_NORMAL,	\
+    .SyncJumpWidth = CAN_SJW_1TQ,	\
+    .TimeSeg1 = CAN_BS1_1TQ,	\
+    .TimeSeg2 = CAN_BS2_1TQ,	\
+    .TimeTriggeredMode = DISABLE,	\
+    .AutoBusOff = DISABLE,	\
+    .AutoWakeUp = DISABLE,	\
+    .AutoRetransmission = DISABLE,	\
+    .ReceiveFifoLocked = DISABLE,	\
+    .TransmitFifoPriority = DISABLE		\
+}	\
+
+#define UART_DEFAULT_STRUCT  (UART_InitTypeDef){	\
+	.BaudRate = 115200,	\
+	.HwFlowCtl = UART_HWCONTROL_NONE,	\
+	.Mode = UART_MODE_TX_RX,	\
+	.Parity = UART_PARITY_NONE,	\
+	.StopBits = UART_STOPBITS_1,	\
+	.WordLength = UART_WORDLENGTH_8B	\
+}	\
+
+// Timer to be configured as needed. This one is weird.
+#define TIMER_DEFAULT_STRUCT (TIM_Base_InitTypeDef){}
+
 #endif
