@@ -24,7 +24,7 @@ BSP_Status BSP_I2C_Init();
 * @param    deviceAdd :      target device address
 * @param    pDataBuff :      data buffer
 * @param    len :           amount of data   
-* @return   HAL Status    
+* @return       
 */
 void BSP_I2C_Write(I2C_HandleTypeDef *hi2c, 
               uint32_t deviceAdd, 
@@ -38,7 +38,7 @@ void BSP_I2C_Write(I2C_HandleTypeDef *hi2c,
 * @param    memoryAddSize :  the register address size
 * @param    pDataBuff :      data buffer
 * @param    len :            amount of data   
-* @return   HAL Status    
+* @return       
 */
 void BSP_I2C_RegisterWrite(I2C_HandleTypeDef *hi2c, 
               uint32_t deviceAdd, 
