@@ -87,7 +87,6 @@ bool BSP_I2C_Write(I2C_HandleTypeDef *hi2c,
               uint16_t len) {
     xSemaphoreTake(semaphore, 1);
     struct metaInfo meta;
-    struct metaInfo len;
     meta.deviceAddr = deviceAddress; 
     meta.length = len;
     if (!__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BUSY)) {
@@ -111,7 +110,7 @@ bool BSP_I2C_Write(I2C_HandleTypeDef *hi2c,
  * if there is transmit it
  * @param hi2c                  I2C handle that interrupted (passed in by IRQ)
  */
-bool HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c) {
+void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c) {
     if (xQueueIsQueueEmptyFromISR(I2C_MetaQueue) == pdFALSE) {
         uint8_t deviceAddress, len;
         uint8_t* pDataBuff;
@@ -158,7 +157,7 @@ bool BSP_I2C_RegisterWrite(I2C_HandleTypeDef *hi2c,
  * if there is transmit it
  * @param hi2c                  I2C handle that interrupted (passed in by IRQ)
  */
-bool HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2c) {
+void HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2c) {
     if (xQueueIsQueueEmptyFromISR(I2C_MetaRegisterQueue) == pdFALSE) {
         uint8_t deviceAddress, memoryAddress, memoryAddressSize, len;
         uint8_t* pDataBuff;
@@ -192,7 +191,7 @@ void BSP_I2C_Read(I2C_HandleTypeDef* hi2c,
  *  into the RX queue the user provides
  * @param hi2c  I2C handle that interrupted (passed in by IRQ)
  */
-bool HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c) {
+void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c) {
     uint8_t temp;
     for (uint32_t i = 0; i < I2C_QUEUE_SIZE * I2C_ITEM_LENGTH; i++) {
         xQueueSendFromISR(I2C_ReceiveQueue, &(ReceiveRawData[i]), &temp);
