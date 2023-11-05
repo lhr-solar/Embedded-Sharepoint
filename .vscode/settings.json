@@ -6,6 +6,7 @@
         "freertos.h": "c",
         "semaphore.h": "c",
         "semphr.h": "c",
-        "stm32f4xx_hal_i2c.h": "c"
+        "stm32f4xx_hal_i2c.h": "c",
+        "bsp.h": "c"
     }
 }
