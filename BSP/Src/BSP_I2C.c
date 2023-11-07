@@ -17,9 +17,6 @@ uint8_t __MetaBufferStorage[I2C_QUEUE_SIZE * I2C_ITEM_LENGTH * 2];
 static uint8_t ReceiveBufferStorage[I2C_QUEUE_SIZE * I2C_ITEM_LENGTH];
 static uint8_t ReceiveRawData[I2C_QUEUE_SIZE * I2C_ITEM_LENGTH];
 
-SemaphoreHandle_t semaphore = NULL;
-StaticSemaphore_t semaphoreBuffer;
-
 static QueueHandle_t I2C_DataQueue;
 
 static QueueHandle_t I2C_DataRegisterQueue;
@@ -38,8 +35,6 @@ HAL_StatusTypeDef BSP_I2C_Init() {
     I2C_MetaQueue = xQueueCreateStatic(I2C_QUEUE_SIZE * 2, I2C_ITEM_LENGTH, __MetaBufferStorage, &MetaStaticQueue);
     I2C_MetaRegisterQueue = xQueueCreateStatic(I2C_QUEUE_SIZE * 2, I2C_ITEM_LENGTH, __MetaBufferStorage, &MetaStaticQueue);
     I2C_ReceiveQueue = xQueueCreateStatic(I2C_QUEUE_SIZE, I2C_ITEM_LENGTH, ReceiveBufferStorage, &ReceiveStaticQueue);
-
-    semaphore = xSemaphoreCreateBinaryStatic(&semaphoreBuffer);
 
     GPIO_InitTypeDef gpio_struct;
     I2C_HandleTypeDef i2c_struct;
@@ -85,24 +80,16 @@ bool BSP_I2C_Write(I2C_HandleTypeDef *hi2c,
               uint8_t deviceAddress, 
               uint8_t* pDataBuff, 
               uint16_t len) {
-    xSemaphoreTake(semaphore, 1);
-    struct metaInfo meta;
-    meta.deviceAddr = deviceAddress; 
-    meta.length = len;
     if (!__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BUSY)) {
         // HAL requires 7b I2C address left shifted
         HAL_I2C_Master_Transmit_IT(hi2c, deviceAddress << 1, *pDataBuff, len);
     }
     else if (uxQueueSpacesAvailable(I2C_DataQueue) >= len) {
-            //not protected
-                // xQueueSend(I2C_MetaQueue, deviceAddress << 1, 0);
-                // xQueueSend(I2C_MetaQueue, len, 0);
-
+            
             // HAL requires 7b I2C address left shifted
-            xQueueSend(I2C_MetaQueue, meta.deviceAddr << 1, 0);
-            xQueueSend(I2C_MetaQueue, meta.length, 0);
+            struct metaInfo metaData = {.deviceAddr = deviceAddress << 1, .length = len};
+            xQueueSend(I2C_MetaQueue, (void *) &metaData, 0);
     }
-    xSemaphoreGive(semaphore);
 }
 
 /**
@@ -137,19 +124,19 @@ bool BSP_I2C_RegisterWrite(I2C_HandleTypeDef *hi2c,
               uint32_t memoryAddressSize,
               uint8_t* pDataBuff, 
               uint16_t len) {
-    xSemaphoreTake(semaphore, 1);
     if (!__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BUSY)) {
         // HAL requires 7b I2C address left shifted
-        HAL_I2C_Mem_Write_IT(hi2c, deviceAddress << 1, memoryAddress, memoryAddressSize, *pDataBuff, len);
+        HAL_I2C_Mem_Write_IT(hi2c, deviceAddress << 1, memoryAddress, 
+            memoryAddressSize, *pDataBuff, len);
     }
     else if (uxQueueSpacesAvailable(I2C_DataRegisterQueue) >= len) {
             // HAL requires 7b I2C address left shifted
-            xQueueSend(I2C_MetaRegisterQueue, deviceAddress << 1, 0);
-            xQueueSend(I2C_MetaRegisterQueue, memoryAddress, 0);
-            xQueueSend(I2C_MetaRegisterQueue, memoryAddressSize, 0);
-            xQueueSend(I2C_MetaRegisterQueue, len, 0);
+
+            struct metaRegisterInfo metaRegData = {.deviceAddr = deviceAddress << 1, 
+                .memoryAddr = memoryAddress, .memoryAddrSize = memoryAddressSize, 
+                .pDataBuffer = pDataBuff, .length = len};
+            xQueueSend(I2C_MetaRegisterQueue, (void *) &metaRegData, 0);
     }
-    xSemaphoreGive(semaphore);
 }
 
 /**

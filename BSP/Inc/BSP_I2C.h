@@ -20,6 +20,14 @@ struct metaInfo {
     uint16_t length;
 };
 
+struct metaRegisterInfo {
+    uint8_t deviceAddr;
+    uint32_t memoryAddr;
+    uint32_t memoryAddrSize;
+    uint8_t pDataBuffer;
+    uint16_t length;
+};
+
 /**
  * @brief Initialize I2C port for EEPROM interaction
  * 
