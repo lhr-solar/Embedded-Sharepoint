@@ -3,7 +3,7 @@ This repository contains files that can be shared among us, the embedded design 
 
 ## Install Script
 
-This script installs/removes necessary packages for embedded development. install.sh will prompt the user for installation or removal of all necessary packages.
+This script installs/removes necessary packages for embedded development. Running install.sh will prompt the user for installation or removal of all necessary packages.
 
 Usage: 
     
