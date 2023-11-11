@@ -15,14 +15,14 @@
 
 #define I2C_QUEUE_SIZE   128
 
-struct metaInfo {
+typedef struct {
     uint8_t deviceAddr;
     uint8_t memoryAddr;
     uint8_t memoryAddrSize;
     uint8_t pDataBuffer;
     uint16_t length;
     uint8_t temp;
-};
+} MetaInfo_t;
 
 /**
  * @brief Initialize I2C port for EEPROM interaction
