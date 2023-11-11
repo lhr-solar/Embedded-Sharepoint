@@ -6,16 +6,14 @@
 #include "semphr.h"
 #include "stdbool.h"
 
-#define I2C_ITEM_LENGTH   sizeof(uint8_t)
-
 static StaticQueue_t DataStaticQueue;
 static StaticQueue_t MetaStaticQueue;
 static StaticQueue_t ReceiveStaticQueue;
 
-uint8_t __DataBufferStorage[I2C_QUEUE_SIZE * I2C_ITEM_LENGTH];
-uint8_t __MetaBufferStorage[I2C_QUEUE_SIZE * I2C_ITEM_LENGTH * 2];
-static uint8_t ReceiveBufferStorage[I2C_QUEUE_SIZE * I2C_ITEM_LENGTH];
-static uint8_t ReceiveRawData[I2C_QUEUE_SIZE * I2C_ITEM_LENGTH];
+uint8_t __DataBufferStorage[I2C_QUEUE_SIZE * sizeof(struct metaInfo)];
+uint8_t __MetaBufferStorage[I2C_QUEUE_SIZE * sizeof(struct metaInfo) * 2];
+static uint8_t ReceiveBufferStorage[I2C_QUEUE_SIZE * sizeof(struct metaInfo)];
+static uint8_t ReceiveRawData[I2C_QUEUE_SIZE * sizeof(struct metaInfo)];
 
 static QueueHandle_t I2C_DataQueue;
 
@@ -29,12 +27,12 @@ static QueueHandle_t I2C_MetaRegisterQueue;
 static QueueHandle_t I2C_ReceiveQueue; 
 
 HAL_StatusTypeDef BSP_I2C_Init() {
-    //QUEUEs
-    I2C_DataQueue = xQueueCreateStatic(I2C_QUEUE_SIZE, I2C_ITEM_LENGTH, __DataBufferStorage, &DataStaticQueue);
-    I2C_DataRegisterQueue = xQueueCreateStatic(I2C_QUEUE_SIZE, I2C_ITEM_LENGTH, __DataBufferStorage, &DataStaticQueue);
-    I2C_MetaQueue = xQueueCreateStatic(I2C_QUEUE_SIZE * 2, I2C_ITEM_LENGTH, __MetaBufferStorage, &MetaStaticQueue);
-    I2C_MetaRegisterQueue = xQueueCreateStatic(I2C_QUEUE_SIZE * 2, I2C_ITEM_LENGTH, __MetaBufferStorage, &MetaStaticQueue);
-    I2C_ReceiveQueue = xQueueCreateStatic(I2C_QUEUE_SIZE, I2C_ITEM_LENGTH, ReceiveBufferStorage, &ReceiveStaticQueue);
+    //QUEUES
+    I2C_DataQueue = xQueueCreateStatic(I2C_QUEUE_SIZE, sizeof(struct metaInfo), __DataBufferStorage, &DataStaticQueue);
+    I2C_DataRegisterQueue = xQueueCreateStatic(I2C_QUEUE_SIZE, sizeof(struct metaInfo), __DataBufferStorage, &DataStaticQueue);
+    I2C_MetaQueue = xQueueCreateStatic(I2C_QUEUE_SIZE * 2, sizeof(struct metaInfo), __MetaBufferStorage, &MetaStaticQueue);
+    I2C_MetaRegisterQueue = xQueueCreateStatic(I2C_QUEUE_SIZE * 2, sizeof(struct metaInfo), __MetaBufferStorage, &MetaStaticQueue);
+    I2C_ReceiveQueue = xQueueCreateStatic(I2C_QUEUE_SIZE, sizeof(struct metaInfo), ReceiveBufferStorage, &ReceiveStaticQueue);
 
     GPIO_InitTypeDef gpio_struct;
     I2C_HandleTypeDef i2c_struct;
@@ -74,15 +72,16 @@ HAL_StatusTypeDef BSP_I2C_Init() {
  * @param    deviceAddress      target device address
  * @param    pDataBuff          data buffer
  * @param    len                amount of data   
- * @return   void
+ * @return   HAL_StatusTypeDef 
  */
-bool BSP_I2C_Write(I2C_HandleTypeDef *hi2c, 
+HAL_StatusTypeDef BSP_I2C_Write(I2C_HandleTypeDef *hi2c, 
               uint8_t deviceAddress, 
               uint8_t* pDataBuff, 
               uint16_t len) {
+    HAL_StatusTypeDef stat;
     if (!__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BUSY)) {
         // HAL requires 7b I2C address left shifted
-        HAL_I2C_Master_Transmit_IT(hi2c, deviceAddress << 1, *pDataBuff, len);
+        stat = HAL_I2C_Master_Transmit_IT(hi2c, deviceAddress << 1, *pDataBuff, len);
     }
     else if (uxQueueSpacesAvailable(I2C_DataQueue) >= len) {
             
@@ -90,6 +89,7 @@ bool BSP_I2C_Write(I2C_HandleTypeDef *hi2c,
             struct metaInfo metaData = {.deviceAddr = deviceAddress << 1, .length = len};
             xQueueSend(I2C_MetaQueue, (void *) &metaData, 0);
     }
+    return stat;
 }
 
 /**
@@ -99,11 +99,13 @@ bool BSP_I2C_Write(I2C_HandleTypeDef *hi2c,
  */
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c) {
     if (xQueueIsQueueEmptyFromISR(I2C_MetaQueue) == pdFALSE) {
-        uint8_t deviceAddress, len;
+        uint8_t deviceAddress, temp;
         uint8_t* pDataBuff;
-        uint8_t temp;
-        xQueueReceiveFromISR(I2C_MetaQueue, &deviceAddress, &temp);
-        xQueueReceiveFromISR(I2C_MetaQueue, &len, &temp);
+        uint16_t len;
+
+        struct metaInfo metaData = {.deviceAddr = deviceAddress << 1, .pDataBuffer = pDataBuff, 
+            .length = len, .temp = temp};
+        xQueueReceiveFromISR(I2C_MetaQueue, (void *) &metaData, 0);
         HAL_I2C_Master_Transmit_IT(hi2c, deviceAddress << 1, *pDataBuff, len);
     }
 }
@@ -116,27 +118,29 @@ void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c) {
  * @param    memoryAddressSize  the register address size
  * @param    pDataBuff          data buffer
  * @param    len                amount of data   
- * @return   void    
+ * @return   HAL_StatusTypeDef    
  */
-bool BSP_I2C_RegisterWrite(I2C_HandleTypeDef *hi2c, 
+HAL_StatusTypeDef BSP_I2C_RegisterWrite(I2C_HandleTypeDef *hi2c, 
               uint8_t deviceAddress, 
-              uint32_t memoryAddress, //register
-              uint32_t memoryAddressSize,
+              uint8_t memoryAddress, //register
+              uint8_t memoryAddressSize,
               uint8_t* pDataBuff, 
               uint16_t len) {
+    HAL_StatusTypeDef stat;
     if (!__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BUSY)) {
         // HAL requires 7b I2C address left shifted
-        HAL_I2C_Mem_Write_IT(hi2c, deviceAddress << 1, memoryAddress, 
+        stat = HAL_I2C_Mem_Write_IT(hi2c, deviceAddress << 1, memoryAddress, 
             memoryAddressSize, *pDataBuff, len);
     }
     else if (uxQueueSpacesAvailable(I2C_DataRegisterQueue) >= len) {
             // HAL requires 7b I2C address left shifted
 
-            struct metaRegisterInfo metaRegData = {.deviceAddr = deviceAddress << 1, 
+            struct metaInfo metaRegData = {.deviceAddr = deviceAddress << 1, 
                 .memoryAddr = memoryAddress, .memoryAddrSize = memoryAddressSize, 
                 .pDataBuffer = pDataBuff, .length = len};
             xQueueSend(I2C_MetaRegisterQueue, (void *) &metaRegData, 0);
     }
+    return stat;
 }
 
 /**
@@ -146,13 +150,14 @@ bool BSP_I2C_RegisterWrite(I2C_HandleTypeDef *hi2c,
  */
 void HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2c) {
     if (xQueueIsQueueEmptyFromISR(I2C_MetaRegisterQueue) == pdFALSE) {
-        uint8_t deviceAddress, memoryAddress, memoryAddressSize, len;
+        uint8_t deviceAddress, memoryAddress, memoryAddressSize, temp;
         uint8_t* pDataBuff;
-        uint8_t temp;
-        xQueueReceiveFromISR(I2C_MetaRegisterQueue, &deviceAddress, &temp);
-        xQueueReceiveFromISR(I2C_MetaRegisterQueue, &memoryAddress, &temp);
-        xQueueReceiveFromISR(I2C_MetaRegisterQueue, &memoryAddressSize, &temp);
-        xQueueReceiveFromISR(I2C_MetaRegisterQueue, &len, &temp);
+        uint16_t len;
+
+        struct metaInfo metaData = {.deviceAddr = deviceAddress << 1, .memoryAddr = memoryAddress, 
+            .memoryAddrSize = memoryAddressSize, .pDataBuffer = pDataBuff, 
+            .length = len, .temp = temp};
+        xQueueReceiveFromISR(I2C_MetaQueue, (void *) &metaData, 0);
         HAL_I2C_Mem_Write_IT(hi2c, deviceAddress << 1, memoryAddress, memoryAddressSize, *pDataBuff, len);
     }
 }
@@ -163,14 +168,14 @@ void HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2c) {
  * @param    deviceAddress      target device address
  * @param    memoryAddress      the register address to write to in the IC's memory.
  * @param    memoryAddressSize  the register address size
- * @return   void
+ * @return   HAL_StatusTypeDef 
  */
 //Register Read
-void BSP_I2C_Read(I2C_HandleTypeDef* hi2c,
+HAL_StatusTypeDef BSP_I2C_Read(I2C_HandleTypeDef* hi2c,
               uint8_t deviceAddress,
-              uint16_t memoryAddress,
-              uint16_t memoryAddressSize) {
-    HAL_I2C_Mem_Read_IT(hi2c, deviceAddress << 1, memoryAddress, sizeof(uint8_t), ReceiveRawData, I2C_QUEUE_SIZE * I2C_ITEM_LENGTH);
+              uint8_t memoryAddress,
+              uint8_t memoryAddressSize) {
+    return HAL_I2C_Mem_Read_IT(hi2c, deviceAddress << 1, memoryAddress, sizeof(uint8_t), ReceiveRawData, I2C_QUEUE_SIZE * sizeof(struct metaInfo));
 }
 
 /**
@@ -180,7 +185,7 @@ void BSP_I2C_Read(I2C_HandleTypeDef* hi2c,
  */
 void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c) {
     uint8_t temp;
-    for (uint32_t i = 0; i < I2C_QUEUE_SIZE * I2C_ITEM_LENGTH; i++) {
+    for (uint32_t i = 0; i < sizeof(struct metaInfo); i++) {
         xQueueSendFromISR(I2C_ReceiveQueue, &(ReceiveRawData[i]), &temp);
     }
 }

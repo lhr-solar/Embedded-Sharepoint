@@ -13,19 +13,15 @@
 #include "stm32f4xx_hal_gpio.h"
 #include "stdbool.h"
 
-#define I2C_QUEUE_SIZE   64
+#define I2C_QUEUE_SIZE   128
 
 struct metaInfo {
     uint8_t deviceAddr;
-    uint16_t length;
-};
-
-struct metaRegisterInfo {
-    uint8_t deviceAddr;
-    uint32_t memoryAddr;
-    uint32_t memoryAddrSize;
+    uint8_t memoryAddr;
+    uint8_t memoryAddrSize;
     uint8_t pDataBuffer;
     uint16_t length;
+    uint8_t temp;
 };
 
 /**
@@ -40,9 +36,9 @@ HAL_StatusTypeDef BSP_I2C_Init();
 * @param    deviceAdd :      target device address
 * @param    pDataBuff :      data buffer
 * @param    len :            amount of data   
-* @return   void    
+* @return   HAL_StatusTypeDef   
 */
-bool BSP_I2C_Write(I2C_HandleTypeDef *hi2c, 
+HAL_StatusTypeDef BSP_I2C_Write(I2C_HandleTypeDef *hi2c, 
               uint8_t deviceAdd, 
               uint8_t* pDataBuff, 
               uint16_t len);
@@ -54,12 +50,12 @@ bool BSP_I2C_Write(I2C_HandleTypeDef *hi2c,
 * @param    memoryAddSize :  the register address size
 * @param    pDataBuff :      data buffer
 * @param    len :            amount of data   
-* @return   void    
+* @return   HAL_StatusTypeDef   
 */
-bool BSP_I2C_RegisterWrite(I2C_HandleTypeDef *hi2c, 
+HAL_StatusTypeDef BSP_I2C_RegisterWrite(I2C_HandleTypeDef *hi2c, 
               uint8_t deviceAdd, 
-              uint32_t memoryAdd, //register
-              uint32_t memoryAddSize,
+              uint8_t memoryAdd, //register
+              uint8_t memoryAddSize,
               uint8_t* pDataBuff, 
               uint16_t len);
 
@@ -69,12 +65,12 @@ bool BSP_I2C_RegisterWrite(I2C_HandleTypeDef *hi2c,
 * @param    deviceAdd :      target device address
 * @param    memoryAdd :      the register address to write to in the IC's memory.
 * @param    memoryAddSize :  the register address size
-* @return   void
+* @return   HAL_StatusTypeDef 
  */
-void BSP_I2C_Read(I2C_HandleTypeDef* hi2c,
+HAL_StatusTypeDef BSP_I2C_Read(I2C_HandleTypeDef* hi2c,
               uint8_t deviceAdd,
-              uint16_t memoryAdd,
-              uint16_t memoryAddSize);
+              uint8_t memoryAdd,
+              uint8_t memoryAddSize);
 
 
 #endif
