@@ -19,7 +19,7 @@ typedef struct {
     uint8_t deviceAddr;
     uint8_t memoryAddr;
     uint8_t memoryAddrSize;
-    uint8_t pDataBuffer;
+    uint8_t* pDataBuffer;
     uint16_t length;
     uint8_t temp;
 } MetaInfo_t;
@@ -28,7 +28,7 @@ typedef struct {
  * @brief Initialize I2C port for EEPROM interaction
  * 
  */
-HAL_StatusTypeDef BSP_I2C_Init();
+HAL_StatusTypeDef BSP_I2C_Init(I2C_HandleTypeDef *hi2c);
 
 /**
 * @brief    Transmits data onto the I2C bus.
@@ -67,7 +67,7 @@ HAL_StatusTypeDef BSP_I2C_RegisterWrite(I2C_HandleTypeDef *hi2c,
 * @param    memoryAddSize :  the register address size
 * @return   HAL_StatusTypeDef 
  */
-HAL_StatusTypeDef BSP_I2C_Read(I2C_HandleTypeDef* hi2c,
+HAL_StatusTypeDef BSP_I2C_RegisterRead(I2C_HandleTypeDef* hi2c,
               uint8_t deviceAdd,
               uint8_t memoryAdd,
               uint8_t memoryAddSize);
