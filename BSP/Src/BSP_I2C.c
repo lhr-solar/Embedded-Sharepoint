@@ -32,6 +32,8 @@ static QueueHandle_t I2C_MetaRegisterQueue;
 
 static QueueHandle_t I2C_ReceiveQueue; 
 
+QueueHandle_t getQ() { return I2C_ReceiveQueue; }
+
 static SemaphoreHandle_t readMutex;
 
 HAL_StatusTypeDef BSP_I2C_Init(I2C_HandleTypeDef *hi2c) {
@@ -42,7 +44,6 @@ HAL_StatusTypeDef BSP_I2C_Init(I2C_HandleTypeDef *hi2c) {
     I2C_MetaRegisterQueue = xQueueCreateStatic(I2C_QUEUE_SIZE * 2, sizeof(MetaInfo_t), MetaBufferStorage, &MetaStaticQueue);
     I2C_ReceiveQueue = xQueueCreateStatic(I2C_RECIEVE_RAW_SIZE, sizeof(uint8_t), ReceiveBufferStorage, &ReceiveStaticQueue);
     readMutex = xSemaphoreCreateMutexStatic(&ReadMutexStatic);
-
 
     if (hi2c->Instance == I2C1) {
         if (__HAL_RCC_I2C1_CLK_DISABLE()) {
@@ -74,6 +75,7 @@ HAL_StatusTypeDef BSP_I2C_Init(I2C_HandleTypeDef *hi2c) {
     i2c_struct.Init.GeneralCallMode = I2C_GENERALCALL_ENABLED; 
     i2c_struct.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
     */
+
     HAL_StatusTypeDef stat = HAL_I2C_Init(hi2c);
 
     if (hi2c->Instance == I2C1) {
