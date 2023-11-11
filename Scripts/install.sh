@@ -56,7 +56,7 @@ function arm_toolchain(){
 
 function renode_simulator(){
     # For real-time simulation of the microcontroller
-    local version=1.13.3
+    local version=1.14.0
     
     if [[ "$1" = "install" ]]; then
         # Install
