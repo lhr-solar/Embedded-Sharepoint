@@ -158,12 +158,10 @@ HAL_StatusTypeDef BSP_SPI_Read(SPI_HandleTypeDef* spiHandle, uint16_t len) {
 // This specifically needs review. I think I might have some weird logic between
 // Read() and this callback.
 void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi) {
-    if (uxQueueGetQueueLength(localRxMetaQueue) > 0) {
-        uint16_t toSend;
-        xQueueReceiveFromISR(localRxMetaQueue, &toSend, 0);
-        for (uint16_t i = 0; i < toSend; i++) {
-            xQueueSendFromISR(*_receiveQueuePtr, &(spiRxTempBuffer[i]), 0);
-        }
+    uint16_t toSend;
+    xQueueReceiveFromISR(localRxMetaQueue, &toSend, 0);
+    for (uint16_t i = 0; i < toSend; i++) {
+        xQueueSendFromISR(*_receiveQueuePtr, &(spiRxTempBuffer[i]), 0);
     }
 }
 
