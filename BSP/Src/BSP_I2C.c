@@ -9,6 +9,7 @@
 static StaticQueue_t DataStaticQueue;
 static StaticQueue_t MetaStaticQueue;
 static StaticQueue_t ReceiveStaticQueue;
+static StaticQueue_t ReadMutexStatic;
 
 #define I2C_DATA_BUFFER_SIZE (I2C_QUEUE_SIZE * 2)
 #define I2C_META_BUFFER_SIZE (I2C_QUEUE_SIZE * sizeof(MetaInfo_t))
@@ -31,6 +32,8 @@ static QueueHandle_t I2C_MetaRegisterQueue;
 
 static QueueHandle_t I2C_ReceiveQueue; 
 
+static SemaphoreHandle_t readMutex;
+
 HAL_StatusTypeDef BSP_I2C_Init(I2C_HandleTypeDef *hi2c) {
     //QUEUES
     I2C_DataQueue = xQueueCreateStatic(I2C_DATA_BUFFER_SIZE, sizeof(uint8_t), DataBufferStorage, &DataStaticQueue);
@@ -38,6 +41,8 @@ HAL_StatusTypeDef BSP_I2C_Init(I2C_HandleTypeDef *hi2c) {
     I2C_MetaQueue = xQueueCreateStatic(I2C_QUEUE_SIZE, sizeof(MetaInfo_t), MetaBufferStorage, &MetaStaticQueue);
     I2C_MetaRegisterQueue = xQueueCreateStatic(I2C_QUEUE_SIZE * 2, sizeof(MetaInfo_t), MetaBufferStorage, &MetaStaticQueue);
     I2C_ReceiveQueue = xQueueCreateStatic(I2C_RECIEVE_RAW_SIZE, sizeof(uint8_t), ReceiveBufferStorage, &ReceiveStaticQueue);
+    readMutex = xSemaphoreCreateMutexStatic(&ReadMutexStatic);
+
 
     if (hi2c->Instance == I2C1) {
         if (__HAL_RCC_I2C1_CLK_DISABLE()) {
@@ -56,7 +61,7 @@ HAL_StatusTypeDef BSP_I2C_Init(I2C_HandleTypeDef *hi2c) {
     if (HAL_RCC_GPIOC_IS_CLK_DISABLED()) {
         HAL_RCC_GPIOC_CLK_ENABLE();
     }\
-    
+
     /*
     uint32_t I2C_CLOCK_SPEED = 100000;
     // i2c config 
@@ -71,8 +76,14 @@ HAL_StatusTypeDef BSP_I2C_Init(I2C_HandleTypeDef *hi2c) {
     */
     HAL_StatusTypeDef stat = HAL_I2C_Init(hi2c);
 
-    HAL_NVIC_SetPriority(I2C1_EV_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
+    if (hi2c->Instance == I2C1) {
+        HAL_NVIC_SetPriority(I2C1_EV_IRQn, 0, 0);
+        HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
+    }
+    if (hi2c->Instance == I2C3) {
+        HAL_NVIC_SetPriority(I2C3_EV_IRQn, 0, 0);
+        HAL_NVIC_EnableIRQ(I2C3_EV_IRQn);
+    }
 
     return stat;
 }
@@ -89,10 +100,10 @@ HAL_StatusTypeDef BSP_I2C_Write(I2C_HandleTypeDef *hi2c,
               uint8_t deviceAddress, 
               uint8_t* pDataBuff, 
               uint16_t len) {
-    HAL_StatusTypeDef stat;
-    if (!HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BUSY)) {
+    HAL_StatusTypeDef stat = HAL_OK;
+    if (!__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BUSY)) {
         // HAL requires 7b I2C address left shifted
-        stat = HAL_I2C_Master_Transmit_IT(hi2c, deviceAddress << 1, *pDataBuff, len);
+        stat = HAL_I2C_Master_Transmit_IT(hi2c, deviceAddress << 1, pDataBuff, len);
     }
     else if (uxQueueSpacesAvailable(I2C_DataQueue) >= len) {
             
@@ -117,7 +128,7 @@ void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c) {
 }
 
 /** 
- * @brief    preform I2C write accounting for registers
+ * @brief    perform I2C write accounting for registers
  * @param    hi2c               struct with config data
  * @param    deviceAddress      target device address
  * @param    memoryAddress      the register address to write to in the IC's memory.
@@ -132,15 +143,14 @@ HAL_StatusTypeDef BSP_I2C_RegisterWrite(I2C_HandleTypeDef *hi2c,
               uint8_t memoryAddressSize,
               uint8_t* pDataBuff, 
               uint16_t len) {
-    HAL_StatusTypeDef stat;
-    if (!HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BUSY)) {
+    HAL_StatusTypeDef stat = HAL_OK;
+    if (!__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BUSY)) {
         // HAL requires 7b I2C address left shifted
         stat = HAL_I2C_Mem_Write_IT(hi2c, deviceAddress << 1, memoryAddress, 
-            memoryAddressSize, *pDataBuff, len);
+            memoryAddressSize, pDataBuff, len);
     }
     else if (uxQueueSpacesAvailable(I2C_DataRegisterQueue) >= len) {
             // HAL requires 7b I2C address left shifted
-
             MetaInfo_t metaRegData = {.deviceAddr = deviceAddress << 1, 
                 .memoryAddr = memoryAddress, .memoryAddrSize = memoryAddressSize, 
                 .pDataBuffer = pDataBuff, .length = len};
@@ -156,9 +166,8 @@ HAL_StatusTypeDef BSP_I2C_RegisterWrite(I2C_HandleTypeDef *hi2c,
  */
 void HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2c) {
     if (xQueueIsQueueEmptyFromISR(I2C_MetaRegisterQueue) == pdFALSE) {
-
         MetaInfo_t metaData;
-        xQueueReceiveFromISR(I2C_MetaQueue, (void *) &metaData, 0);
+        xQueueReceiveFromISR(I2C_MetaRegisterQueue, (void *) &metaData, 0);
         HAL_I2C_Mem_Write_IT(hi2c, metaData.deviceAddr, metaData.memoryAddr, 
                 metaData.memoryAddrSize, metaData.pDataBuffer, metaData.length);
     }
@@ -172,11 +181,17 @@ void HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2c) {
  * @param    memoryAddressSize  the register address size
  * @return   HAL_StatusTypeDef 
  */
+static uint16_t lenToRead;
 HAL_StatusTypeDef BSP_I2C_RegisterRead(I2C_HandleTypeDef* hi2c,
               uint8_t deviceAddress,
               uint8_t memoryAddress,
-              uint8_t memoryAddressSize) {
-    return HAL_I2C_Mem_Read_IT(hi2c, deviceAddress << 1, memoryAddress, sizeof(uint8_t), ReceiveRawData, I2C_QUEUE_SIZE * sizeof(MetaInfo_t));
+              uint8_t memoryAddressSize,
+              uint16_t len) {
+    
+    xSemaphoreTake(readMutex, 10);
+    lenToRead = len;
+    xSemaphoreGive(readMutex);
+    return HAL_I2C_Mem_Read_IT(hi2c, deviceAddress << 1, memoryAddress, memoryAddressSize, ReceiveRawData, len);
 }
 
 /**
@@ -185,8 +200,12 @@ HAL_StatusTypeDef BSP_I2C_RegisterRead(I2C_HandleTypeDef* hi2c,
  * @param hi2c  I2C handle that interrupted (passed in by IRQ)
  */
 void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c) {
-    uint8_t temp;
-    for (uint8_t i = 0; i < sizeof(MetaInfo_t); i++) {
-        xQueueSendFromISR(I2C_ReceiveQueue, &(ReceiveRawData[i]), &temp);
+    uint16_t temp;
+    if (xSemaphoreTake(readMutex, 0) == pdTRUE) {
+        temp = lenToRead;
+        xSemaphoreGive(readMutex);
+        for (uint8_t i = 0; i < temp; i++) {
+            xQueueSendFromISR(I2C_ReceiveQueue, &(ReceiveRawData[i]), NULL);
+        }
     }
 }

@@ -33,9 +33,9 @@ HAL_StatusTypeDef BSP_I2C_Init(I2C_HandleTypeDef *hi2c);
 /**
 * @brief    Transmits data onto the I2C bus.
 * @param    hi2c:            to structure that has config data
-* @param    deviceAdd :      target device address
-* @param    pDataBuff :      data buffer
-* @param    len :            amount of data   
+* @param    deviceAdd      target device address
+* @param    pDataBuff      data buffer
+* @param    len            amount of data   
 * @return   HAL_StatusTypeDef   
 */
 HAL_StatusTypeDef BSP_I2C_Write(I2C_HandleTypeDef *hi2c, 
@@ -44,12 +44,12 @@ HAL_StatusTypeDef BSP_I2C_Write(I2C_HandleTypeDef *hi2c,
               uint16_t len);
 
 /**
-* @param    hi2c:            to structure that has config data
-* @param    deviceAdd :      target device address
-* @param    memoryAdd :      the register address to write to in the IC's memory.
-* @param    memoryAddSize :  the register address size
-* @param    pDataBuff :      data buffer
-* @param    len :            amount of data   
+* @param    hi2c           to structure that has config data
+* @param    deviceAdd      target device address
+* @param    memoryAdd      the register address to write to in the IC's memory.
+* @param    memoryAddSize  the register address size
+* @param    pDataBuff      data buffer
+* @param    len            amount of data   
 * @return   HAL_StatusTypeDef   
 */
 HAL_StatusTypeDef BSP_I2C_RegisterWrite(I2C_HandleTypeDef *hi2c, 
@@ -61,16 +61,18 @@ HAL_StatusTypeDef BSP_I2C_RegisterWrite(I2C_HandleTypeDef *hi2c,
 
 /**
 * @brief    Gets the data from a device through the I2C bus.
-* @param    hi2c:            to structure that has config data
-* @param    deviceAdd :      target device address
-* @param    memoryAdd :      the register address to write to in the IC's memory.
-* @param    memoryAddSize :  the register address size
+* @param    hi2c           to structure that has config data
+* @param    deviceAdd      target device address
+* @param    memoryAdd      the register address to write to in the IC's memory.
+* @param    memoryAddSize  the register address size
+* @param    len            amount of data
 * @return   HAL_StatusTypeDef 
  */
 HAL_StatusTypeDef BSP_I2C_RegisterRead(I2C_HandleTypeDef* hi2c,
               uint8_t deviceAdd,
               uint8_t memoryAdd,
-              uint8_t memoryAddSize);
+              uint8_t memoryAddSize, 
+              uint16_t len);
 
 
 #endif
