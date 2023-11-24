@@ -6,6 +6,12 @@ static CAN_HandleTypeDef LocalCAN_ = (CAN_HandleTypeDef){0};
 const CAN_HandleTypeDef *CarCAN = &CarCAN_;
 const CAN_HandleTypeDef *LocalCAN = &LocalCAN_;
 
+/* binary semaphores */
+StaticSemaphore_t CarCAN_Semaphore = (StaticSemaphore_t){0};
+StaticSemaphore_t LocalCAN_Semaphore = (StaticSemaphore_t){0};
+SemaphoreHandle_t CarCAN_SemaphoreHandle = (SemaphoreHandle_t){0};
+SemaphoreHandle_t LocalCAN_SemaphoreHandle = (SemaphoreHandle_t){0};
+
 /* communicators keep track of queues to use for communication */
 typedef struct CAN_Listener
 {
@@ -20,8 +26,8 @@ static CAN_Listener_t CarCAN_Listeners[NUM_LISTENERS] = {0};
 static CAN_Listener_t LocalCAN_Listeners[NUM_LISTENERS] = {0};
 
 /* transmit queues */
-QueueHandle_t CarCAN_TxQueue = (QueueHandle_t){0};
-QueueHandle_t LocalCAN_TxQueue = (QueueHandle_t){0};
+QueueHandle_t CarCAN_Queue = (QueueHandle_t){0};
+QueueHandle_t LocalCAN_Queue = (QueueHandle_t){0};
 
 #define TX_QUEUE_LEN 32
 #define TX_QUEUE_ITEM_SIZE sizeof(CAN_TxPayload_t)
@@ -36,8 +42,11 @@ StaticQueue_t LocalCAN_QueueBuffer = (StaticQueue_t){0};
 
 void CAN_CarCANInit(void)
 {
+    /* init semaphore */
+    CarCAN_SemaphoreHandle = xSemaphoreCreateBinaryStatic(&CarCAN_Semaphore);
+
     /* init transmit queue */
-    CarCAN_TxQueue = xQueueCreateStatic( 
+    CarCAN_Queue = xQueueCreateStatic( 
                         TX_QUEUE_LEN,
                         TX_QUEUE_ITEM_SIZE,
                         CarCAN_Payloads,
@@ -63,14 +72,23 @@ void CAN_CarCANInit(void)
         Error_Handler();
     }
 
+    /* enable interrupts */
+    HAL_NVIC_EnableIRQ(CAN1_RX0_IRQn);
+    HAL_NVIC_EnableIRQ(CAN1_TX_IRQn);
+
     /* start can perph */
     HAL_CAN_Start(&CarCAN_);
 }
 
 void CAN_LocalCANInit(void)
 {
+    /* TODO: enable interrupts? */
+
+    /* init semaphore */
+    LocalCAN_SemaphoreHandle = xSemaphoreCreateBinaryStatic(&LocalCAN_Semaphore);
+
     /* init transmit queue */
-    LocalCAN_TxQueue = xQueueCreateStatic( 
+    LocalCAN_Queue = xQueueCreateStatic( 
                             TX_QUEUE_LEN,
                             TX_QUEUE_ITEM_SIZE,
                             LocalCAN_Payloads,
@@ -96,54 +114,58 @@ void CAN_LocalCANInit(void)
         Error_Handler();
     }
 
+    /* enable interrupts */
+    HAL_NVIC_EnableIRQ(CAN3_RX0_IRQn);
+    HAL_NVIC_EnableIRQ(CAN3_TX_IRQn);
+
     /* start can perph */
     HAL_CAN_Start(&LocalCAN_);
 }
 
-void HAL_CAN_MspInit(CAN_HandleTypeDef *canHandle)
-{
-    GPIO_InitTypeDef GPIO_InitStruct = (GPIO_InitTypeDef){0};
+// void HAL_CAN_MspInit(CAN_HandleTypeDef *canHandle)
+// {
+//     GPIO_InitTypeDef GPIO_InitStruct = (GPIO_InitTypeDef){0};
 
-    if (canHandle->Instance == CAN1)
-    {
+//     if (canHandle->Instance == CAN1)
+//     {
 
-        /* CAN1 clock enable */
-        __HAL_RCC_CAN1_CLK_ENABLE();
+//         /* CAN1 clock enable */
+//         __HAL_RCC_CAN1_CLK_ENABLE();
 
-        /* GPIOA clock enable */
-        __HAL_RCC_GPIOA_CLK_ENABLE();
+//         /* GPIOA clock enable */
+//         __HAL_RCC_GPIOA_CLK_ENABLE();
 
-        /**CAN1 GPIO Configuration
-        PA11     ------> CAN1_RX
-        PA12     ------> CAN1_TX
-        */
-        GPIO_InitStruct.Pin = GPIO_PIN_11 | GPIO_PIN_12;
-        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull = GPIO_NOPULL;
-        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-        GPIO_InitStruct.Alternate = GPIO_AF9_CAN1;
-        HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-    }
-    else if (canHandle->Instance == CAN3)
-    {
-        /* CAN3 clock enable */
-        __HAL_RCC_CAN3_CLK_ENABLE();
+//         /**CAN1 GPIO Configuration
+//         PA11     ------> CAN1_RX
+//         PA12     ------> CAN1_TX
+//         */
+//         GPIO_InitStruct.Pin = GPIO_PIN_11 | GPIO_PIN_12;
+//         GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+//         GPIO_InitStruct.Pull = GPIO_NOPULL;
+//         GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+//         GPIO_InitStruct.Alternate = GPIO_AF9_CAN1;
+//         HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+//     }
+//     else if (canHandle->Instance == CAN3)
+//     {
+//         /* CAN3 clock enable */
+//         __HAL_RCC_CAN3_CLK_ENABLE();
 
-        /* GPIOA clock enable */
-        __HAL_RCC_GPIOA_CLK_ENABLE();
+//         /* GPIOA clock enable */
+//         __HAL_RCC_GPIOA_CLK_ENABLE();
 
-        /**CAN3 GPIO Configuration
-        PA8     ------> CAN3_RX
-        PA15     ------> CAN3_TX
-        */
-        GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_15;
-        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull = GPIO_NOPULL;
-        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-        GPIO_InitStruct.Alternate = GPIO_AF11_CAN3;
-        HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-    }
-}
+//         /**CAN3 GPIO Configuration
+//         PA8     ------> CAN3_RX
+//         PA15     ------> CAN3_TX
+//         */
+//         GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_15;
+//         GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+//         GPIO_InitStruct.Pull = GPIO_NOPULL;
+//         GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+//         GPIO_InitStruct.Alternate = GPIO_AF11_CAN3;
+//         HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+//     }
+// }
 
 void HAL_CAN_MspDeInit(CAN_HandleTypeDef *canHandle)
 {
@@ -173,32 +195,69 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef *canHandle)
 
 bool CAN_Send(const CAN_HandleTypeDef *can, CAN_TxPayload_t payload, bool blocking)
 {
-    /* return status */
-    int ret = true;
-
     /* TODO: error check payload */
 
-    if (blocking) {
-        /* add payload to queue and wait till a success */
-        while (!xQueueSend(LocalCAN_TxQueue, &payload, 0)) {}
-        ret = false;
+    /* determine which queue/semaphore to use */
+    QueueHandle_t queue = can == CarCAN ? CarCAN_Queue : LocalCAN_Queue;
+    SemaphoreHandle_t semaphore = can == CarCAN ? CarCAN_SemaphoreHandle : LocalCAN_SemaphoreHandle;
+
+    /* take access of the can bus */
+    if (blocking)
+    {
+        while(xSemaphoreTake(semaphore, portMAX_DELAY)) {}
     }
-    else {
-        /* add payload to queue and return status */
-        if (!xQueueSend(LocalCAN_TxQueue, &payload, 0))
+    else
+    {
+        if (xSemaphoreTake(semaphore, 0))
         {
-            ret = false;
+            return true;
         }
     }
 
-    /* TODO: if can tx is inactive, put payload into mailbox */
+    /* return type */
+    bool ret = true;
+
+    /* if can tx is inactive, put payload into mailbox */
+    if (HAL_CAN_GetTxMailboxesFreeLevel((CAN_HandleTypeDef *)can))
+    {
+        /* check that the queue is actually empty, or else something went wrong in the isr */
+        if (uxQueueMessagesWaiting(queue))
+        {
+            ret = true;
+            goto send_done;
+        }
+
+        /* add payload to mailbox */
+        int result = HAL_CAN_AddTxMessage(&LocalCAN_, &payload.header, payload.data, &payload.mailbox);
+    }
+    /* otherise, put into queue */
+    else
+    {
+        if (blocking) {
+            /* add payload to queue and wait till a success */
+            while (!xQueueSend(LocalCAN_Queue, &payload, portMAX_DELAY)) {}
+            ret = false;
+        }
+        else {
+            /* add payload to queue and return status */
+            if (!xQueueSend(LocalCAN_Queue, &payload, 0))
+            {
+                ret = false;
+            }
+        }
+    }
+
+send_done:
+
+    /* give access to bus */
+    xSemaphoreGive(semaphore);
 
     return ret;
 }
 
 bool CAN_SetListener(const CAN_HandleTypeDef *can, CANID_t id, QueueHandle_t *queue)
 {
-    /* set listeners depending on bus */
+    /* set listeners/semaphore depending on bus */
     CAN_Listener_t *listeners = (can->Instance == CAN1) ? CarCAN_Listeners : LocalCAN_Listeners;
 
     /* find if listener is already set (linear search) */
@@ -341,7 +400,7 @@ void CAN1_TX_IRQHandler(void)
     BaseType_t higherPriorityTaskWoken = 0;
 
     /* recieve data from queue */
-    if (!xQueueReceiveFromISR(CarCAN_TxQueue, &payload, &higherPriorityTaskWoken))
+    if (!xQueueReceiveFromISR(CarCAN_Queue, &payload, &higherPriorityTaskWoken))
     {
         /* if payload to send, add payload to mailbox */
         HAL_CAN_AddTxMessage(&CarCAN_, &payload.header, payload.data, &payload.mailbox);
@@ -363,7 +422,7 @@ void CAN3_TX_IRQHandler(void)
     BaseType_t higherPriorityTaskWoken = 0;
 
     /* recieve data from queue */
-    if (!xQueueReceiveFromISR(LocalCAN_TxQueue, &payload, &higherPriorityTaskWoken))
+    if (!xQueueReceiveFromISR(LocalCAN_Queue, &payload, &higherPriorityTaskWoken))
     {
         /* if payload to send, add payload to mailbox */
         HAL_CAN_AddTxMessage(&LocalCAN_, &payload.header, payload.data, &payload.mailbox);
