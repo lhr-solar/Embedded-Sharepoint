@@ -4,7 +4,7 @@ RED='\033[0;31m'
 ORANGE='\033[0;33m'
 NC='\033[0m'
 distro=$(cat /etc/issue)
-packages=(arm_toolchain build-essential gdb-multiarch openocd stlink-tools renode_simulator documentation_toolset)
+packages=(arm_toolchain build-essential gdb-multiarch openocd stlink-tools renode_simulator documentation_toolset llvm)
 
 function arm_toolchain(){
     # ARM toolchain for compiling/debugging code
@@ -142,6 +142,23 @@ function breathe(){
         # Remove
         echo -e "${RED}\nRemoving breathe...\n==================================\n${NC}"
         pip uninstall breathe
+    fi
+}
+
+function llvm(){
+    # For clang tidy and clang format
+
+    if [[ "$1" = "install" ]]; then
+        # Install
+        wget https://apt.llvm.org/llvm.sh 
+        chmod +x llvm.sh
+        sudo ./llvm.sh 17 all
+        sudo apt-get install gcc-multilib
+        sudo rm llvm.sh
+    
+    elif [[ "$1" = "remove" ]]; then
+        # Remove
+        echo -e "Need to remove manually :("
     fi
 }
 
