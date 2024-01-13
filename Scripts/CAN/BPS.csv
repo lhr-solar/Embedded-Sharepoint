@@ -13,13 +13,13 @@ diagnostics on battery pack or the bps tripped
 Frequency: Only on startup"
 BPS Contactor State,0x102,1,0,,"Precision: 3 bits
 Data: 
-1X1, X11 - All BPS contactors are open
-1X0, X10 - HV Plus/Minus BPS Contactors are open, HV Array Contactor is closed
-001 -      HV Plus/Minus BPS Contactors are closed, HV Array Contactor is open
-000 -      All BPS contactors are closed
+000 - All BPS contactors are open
+011 - HV Plus/Minus BPS Contactors are open, HV Array Contactor is closed
+110 - HV Plus/Minus BPS Contactors is closed, HV Array Contactor is open
+111 - All BPS contactors are closed
 Frequency: Medium - 2 Hz
 Notes: The least significant bit (bit 0) is associated with the Array BPS Contactor, 
-and the bit 1 and 2 are associated with the HV Array Plus and Minus Contactors, respectively."
+and the bit 1 and 2 are associated with the HV Minus and Plus Contactors."
 Current Data,0x103,4,0,,"Type: Fixed Point
 Typical Range: -20000mA to 55000mA (-20000 to 100000mA min/max) 
 Frequency: Medium - periodically sent at certain frequency. Maybe 1-5 Hz"
