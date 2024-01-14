@@ -14,8 +14,8 @@ Frequency: Only on startup"
 BPS Contactor State,0x102,1,0,,"Precision: 3 bits
 Data: 
 000 - All BPS contactors are open
-011 - HV Plus/Minus BPS Contactors are open, HV Array Contactor is closed
-110 - HV Plus/Minus BPS Contactors is closed, HV Array Contactor is open
+001 - HV Plus/Minus BPS Contactors are open, HV Array Contactor is closed
+110 - HV Plus/Minus BPS Contactors are closed, HV Array Contactor is open
 111 - All BPS contactors are closed
 Frequency: Medium - 2 Hz
 Notes: The least significant bit (bit 0) is associated with the Array BPS Contactor, 
