@@ -19,7 +19,7 @@ Data:
 111 - All BPS contactors are closed
 Frequency: Medium - 2 Hz
 Notes: The least significant bit (bit 0) is associated with the Array BPS Contactor, 
-and the bit 1 and 2 are associated with the HV Minus and Plus Contactors."
+and bits 1 and 2 are associated with the HV Minus and Plus Contactors."
 Current Data,0x103,4,0,,"Type: Fixed Point
 Typical Range: -20000mA to 55000mA (-20000 to 100000mA min/max) 
 Frequency: Medium - periodically sent at certain frequency. Maybe 1-5 Hz"
