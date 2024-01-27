@@ -35,15 +35,17 @@ HAL_StatusTypeDef BSP_SPI_Init(SPI_HandleTypeDef* spiHandle, QueueHandle_t* txPt
         if (__HAL_RCC_SPI3_IS_CLK_DISABLED()) {
             __HAL_RCC_SPI3_CLK_ENABLE();
         }
+    } else {
+        return HAL_ERROR;
     }
     
     stat = HAL_SPI_Init(spiHandle); // pass in global handle from BSP.c
 
     if (stat == HAL_OK) {
         // Enable the interrupts and priorities
-        if (spiHandle->Instance == SPI1) {
-            HAL_NVIC_SetPriority(SPI1_IRQn, 0, 0);
-            HAL_NVIC_EnableIRQ(SPI1_IRQn);
+        if (spiHandle->Instance == SPI2) {
+            HAL_NVIC_SetPriority(SPI2_IRQn, 0, 0);
+            HAL_NVIC_EnableIRQ(SPI2_IRQn);
         } else if (spiHandle->Instance == SPI3) {
             HAL_NVIC_SetPriority(SPI3_IRQn, 0, 0);
             HAL_NVIC_EnableIRQ(SPI3_IRQn);
