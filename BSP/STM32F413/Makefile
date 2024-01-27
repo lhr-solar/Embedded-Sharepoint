@@ -44,7 +44,7 @@ $(BSP_DIR)/Src/*.c	\
 $(BSP_DIR)/STM32F4xx_HAL_Driver/Src/*.c	\
 $(FREERTOS_DIR)/*.c	\
 $(UTIL_DIR)/Src/*.c	\
-$(BSP_DIR)/../Src/*.c 	\
+$(BSP_DIR)/../Src/*.c	\
 
 
 # Expand wildcards to get each source file individually
