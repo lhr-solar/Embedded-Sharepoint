@@ -64,6 +64,6 @@ HAL_StatusTypeDef BSP_SPI_Read(SPI_HandleTypeDef* spiHandle, uint8_t* data, uint
  * @param spiHandle SPI handle to modify - WIP
  * @return BSP_Status 
  */
-HAL_StatusTypeDef BSP_SPI_SetStateCS(SPI_HandleTypeDef* spiHandle);
+void BSP_SPI_SetStateCS(SPI_HandleTypeDef* spiHandle);
 
 #endif

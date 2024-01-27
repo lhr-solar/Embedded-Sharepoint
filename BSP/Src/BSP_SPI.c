@@ -173,16 +173,14 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi) {
  * @param spiHandle SPI handle to modify
  * @return HAL_StatusTypeDef 
  */
-HAL_StatusTypeDef BSP_SPI_SetStateCS(SPI_HandleTypeDef* spiHandle, uint8_t val) {
+void BSP_SPI_SetStateCS(SPI_HandleTypeDef* spiHandle, uint8_t val) {
     uint8_t hal_val = (val) ? GPIO_PIN_SET : GPIO_PIN_RESET;
-    HAL_StatusTypeDef stat;
     // BSP config only supports SPI2/SPI3
     if (spiHandle->Instance == SPI2) {
         // SPI2 NSS is on PA11, AF5
-        stat = HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, hal_val);
+        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, hal_val);
     } else if (spiHandle->Instance == SPI3) {
         // SPI3 NSS is on PA4, AF6
-        stat = HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, hal_val);
+        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, hal_val);
     }
-    return stat;
 }
