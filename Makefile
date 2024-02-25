@@ -1,3 +1,4 @@
+.PHONY: bsp_test
 test:
 ifdef test
 	$(MAKE) -C BSP -C STM32F413 -j TARGET=bsp PROJECT_DIR=../.. BUILD_DIR=../../Objects TEST=../Tests/$(test).c
@@ -5,11 +6,14 @@ else
 	$(error test is not set (e.g. make test test=HelloWorld))
 endif
 
-psom_test:
+.PHONY: psom_test
+test:
 ifdef psom_test
-	$(MAKE) -C BSP -C STM32F413 -j TARGET=Tests PROJECT_DIR=../.. BUILD_DIR=../../Objects TEST=../PeripheralSOM/$(psom_test).c
+	$(MAKE) -C BSP -C STM32F413 -j TARGET=Tests PROJECT_DIR=../.. BUILD_DIR=../../Objects TEST=../PeripheralSOM/$(test).c
+
 else
-	$(error PeripheralSOM test is not set (e.g. make psom_test psom_test=Heartbeat))
+	$(error PeripheralSOM test is not set (e.g. make psom_test test=Heartbeat))
+	
 endif
 
 # left commented as an example
