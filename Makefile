@@ -10,7 +10,7 @@ endif
 
 test:
 ifdef test
-	$(MAKE) -C BSP -C STM32F413 -j TARGET=bsp PROJECT_DIR=../.. BUILD_DIR=../../Objects TEST=../Tests/$(test).c
+	$(MAKE) -C BSP -C $(MCU_TARGET) -j TARGET=bsp PROJECT_DIR=../.. BUILD_DIR=../../Objects TEST=../Tests/$(test).c
 else
 	$(error test is not set (e.g. make test test=HelloWorld))
 endif
