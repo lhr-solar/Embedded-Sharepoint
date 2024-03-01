@@ -13,8 +13,9 @@
 ######################################
 # target
 ######################################
-TARGET = GetL4HAL
-
+TARGET ?= $(error TARGET is not set)
+PROJECT_DIR ?= $(error PROJECT_DIR is not set)
+BUILD_DIR ?= $(error BUILD_DIR is not set)
 
 ######################################
 # building variables
@@ -29,42 +30,42 @@ OPT = -Og
 # paths
 #######################################
 # Build path
-BUILD_DIR = build
+BSP_DIR := .
+CMSIS_DIR := ../../CMSIS
+FREERTOS_DIR := ../../FreeRTOS-Kernel
+UTIL_DIR := ../../Util
 
 ######################################
 # source
 ######################################
 # C sources
-C_SOURCES =  \
-Core/Src/main.c \
-Core/Src/stm32l4xx_it.c \
-Core/Src/stm32l4xx_hal_msp.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash_ex.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash_ramfunc.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dma.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dma_ex.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_exti.c \
-Core/Src/system_stm32l4xx.c  
+C_SOURCES :=  \
+$(BSP_DIR)/Src/*.c	\
+$(BSP_DIR)/STM32L4xx_HAL_Driver/Src/*.c	\
+$(FREERTOS_DIR)/*.c	\
+$(UTIL_DIR)/Src/*.c	\
+$(BSP_DIR)/../Src/*.c 	\
+
+# Expand wildcards to get each source file individually
+C_SOURCES := $(foreach path, $(C_SOURCES), $(wildcard $(path)))
+
+# Add specific sources
+C_SOURCES += $(FREERTOS_DIR)/portable/GCC/ARM_CM4F/port.c	\
+
+# Expand wildcards if project gives more sources
+ifdef PROJECT_C_SOURCES
+C_SOURCES += $(foreach path, $(PROJECT_C_SOURCES), $(wildcard $(path)))
+endif
+
+# If a test file is defined, take out main.c and add in the test to sources
+ifdef TEST
+C_SOURCES := $(filter-out %main.c, $(C_SOURCES)) # Filter out main.c
+C_SOURCES += $(wildcard $(TEST)) # Add test file
+endif
 
 # ASM sources
 ASM_SOURCES =  \
-startup_stm32l431xx.s
-
-# ASM sources
-ASMM_SOURCES = 
-
+$(BSP_DIR)/Src/startup_stm32l431xx.s
 
 #######################################
 # binaries
@@ -116,11 +117,23 @@ AS_INCLUDES =
 
 # C includes
 C_INCLUDES =  \
--ICore/Inc \
--IDrivers/STM32L4xx_HAL_Driver/Inc \
--IDrivers/STM32L4xx_HAL_Driver/Inc/Legacy \
--IDrivers/CMSIS/Device/ST/STM32L4xx/Include \
--IDrivers/CMSIS/Include
+$(BSP_DIR)/../Inc/	\
+$(BSP_DIR)/Inc/	\
+$(BSP_DIR)/STM32F4xx_HAL_Driver/Inc/	\
+$(BSP_DIR)/STM32F4xx_HAL_Driver/Inc/Legacy/	\
+$(CMSIS_DIR)/Device/ST/STM32F4xx/Include/      \
+$(CMSIS_DIR)/Core/Include/	\
+$(FREERTOS_DIR)/include	\
+$(FREERTOS_DIR)/portable/GCC/ARM_CM4F	\
+$(UTIL_DIR)/Inc/	\
+
+# Expand wildcards if project gives more includes
+ifdef PROJECT_C_INCLUDES
+C_INCLUDES += $(foreach path, $(PROJECT_C_INCLUDES), $(path))
+endif
+
+# Add appropriate prefix to all includes
+C_INCLUDES := $(addprefix -I, $(C_INCLUDES))
 
 
 # compile gcc flags
