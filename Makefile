@@ -1,5 +1,6 @@
 MCU?=F4
 
+# Used to select the MCU (default is STM32F413)
 ifeq ($(MCU), F4)
     MCU_TARGET = STM32F413
 else ifeq ($(MCU), L4)
