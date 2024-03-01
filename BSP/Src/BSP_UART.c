@@ -4,6 +4,12 @@
 static QueueHandle_t rx_queues[2];
 static QueueHandle_t tx_queues[2];
 
+uint8_t rx_payloads[2][RX_SIZE] = {0};
+uint8_t tx_payloads[2][TX_SIZE] = {0};
+
+StaticQueue_t rx_buffers[2];
+StaticQueue_t tx_buffers[2];
+
 //TODO needs rewrite after standard config for pins is merged in
 //TODO will need to set different pins based on which UART device is passed in
 UART_Init_Status BSP_UART_Init(USART_HandleTypeDef device) {
@@ -54,15 +60,17 @@ UART_Init_Status BSP_UART_Init(USART_HandleTypeDef device) {
     HAL_NVIC_SetPriority(USART3_IRQn, 2, 0);
     HAL_NVIC_EnableIRQ(USART3_IRQn);
 
-    rx_queues[USART_Handle_To_Int(device)] = xQueueCreate(QUEUE_SIZE, sizeof(uint8_t));
-    tx_queues[USART_Handle_To_Int(device)] = xQueueCreate(QUEUE_SIZE, sizeof(uint8_t));
+    int handleAsInt =  USART_Handle_To_Int(device);
+
+    rx_queues[handleAsInt] = xQueueCreateStatic(RX_SIZE, sizeof(uint8_t), rx_payloads[handleAsInt], &rx_buffers[handleAsInt]);
+    tx_queues[handleAsInt] = xQueueCreateStatic(TX_SIZE, sizeof(uint8_t), tx_payloads[handleAsInt], &tx_payloads[handleAsInt]);
 
     return returnInfo;
 }
 
 /**
  * @brief   Reads a message from the specified UART device
- * @param   usart which usart to read from (2 or 3)
+ * @param   usart which usart to readf from (2 or 3)
  * @param   len number of bytes that will be returned
  * @return  len bytes from the recieve queue
  */
