@@ -119,9 +119,9 @@ AS_INCLUDES =
 C_INCLUDES =  \
 $(BSP_DIR)/../Inc/	\
 $(BSP_DIR)/Inc/	\
-$(BSP_DIR)/STM32F4xx_HAL_Driver/Inc/	\
-$(BSP_DIR)/STM32F4xx_HAL_Driver/Inc/Legacy/	\
-$(CMSIS_DIR)/Device/ST/STM32F4xx/Include/      \
+$(BSP_DIR)/STM32L4xx_HAL_Driver/Inc/	\
+$(BSP_DIR)/STM32L4xx_HAL_Driver/Inc/Legacy/	\
+$(CMSIS_DIR)/Device/ST/STM32L4xx/Include/      \
 $(CMSIS_DIR)/Core/Include/	\
 $(FREERTOS_DIR)/include	\
 $(FREERTOS_DIR)/portable/GCC/ARM_CM4F	\
