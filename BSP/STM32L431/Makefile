@@ -11,7 +11,7 @@
 # ------------------------------------------------
 
 ######################################
-# target
+# Inputs
 ######################################
 TARGET ?= $(error TARGET is not set)
 PROJECT_DIR ?= $(error PROJECT_DIR is not set)
