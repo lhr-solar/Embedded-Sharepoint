@@ -1,10 +1,9 @@
 #include <stdio.h>
-#include "stm32f4xx_hal.h" // to do: change to L4
+#include "stm32l4xx_hal.h"
 
 GPIO_InitTypeDef gpio;
 
 int main(void){
-    printf("Hi! helllo there!!");
     HAL_Init();
 
     // Defines Pin A15 on the PeripheralSOM as an output
