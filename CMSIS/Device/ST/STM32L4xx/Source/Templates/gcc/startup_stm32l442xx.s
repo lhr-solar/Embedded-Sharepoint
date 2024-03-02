@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * @file      startup_stm32l431xx.s
+  * @file      startup_stm32l442xx.s
   * @author    MCD Application Team
-  * @brief     STM32L431xx devices vector table for GCC toolchain.
+  * @brief     STM32L442xx devices vector table for GCC toolchain.
   *            This module performs:
   *                - Set the initial SP
   *                - Set the initial PC == Reset_Handler,
@@ -180,13 +180,13 @@ g_pfnVectors:
 	.word	0
 	.word	I2C1_EV_IRQHandler
 	.word	I2C1_ER_IRQHandler
-	.word	I2C2_EV_IRQHandler
-	.word	I2C2_ER_IRQHandler
+	.word	0
+	.word	0
 	.word	SPI1_IRQHandler
-	.word	SPI2_IRQHandler
+	.word	0
 	.word	USART1_IRQHandler
 	.word	USART2_IRQHandler
-	.word	USART3_IRQHandler
+	.word	0
 	.word	EXTI15_10_IRQHandler
 	.word	RTC_Alarm_IRQHandler
 	.word	0
@@ -196,7 +196,7 @@ g_pfnVectors:
 	.word	0
 	.word	0
 	.word	0
-	.word	SDMMC1_IRQHandler
+	.word	0
 	.word	0
 	.word	SPI3_IRQHandler
 	.word	0
@@ -214,7 +214,7 @@ g_pfnVectors:
 	.word	COMP_IRQHandler
 	.word	LPTIM1_IRQHandler
 	.word	LPTIM2_IRQHandler
-	.word	0
+	.word	USB_IRQHandler
 	.word	DMA2_Channel6_IRQHandler
 	.word	DMA2_Channel7_IRQHandler
 	.word	LPUART1_IRQHandler
@@ -226,7 +226,7 @@ g_pfnVectors:
 	.word	SWPMI1_IRQHandler
 	.word	TSC_IRQHandler
 	.word	0
-	.word	0
+	.word	AES_IRQHandler
 	.word	RNG_IRQHandler
 	.word	FPU_IRQHandler
 	.word	CRS_IRQHandler
@@ -360,17 +360,8 @@ g_pfnVectors:
 	.weak	I2C1_ER_IRQHandler
 	.thumb_set I2C1_ER_IRQHandler,Default_Handler
 
-	.weak	I2C2_EV_IRQHandler
-	.thumb_set I2C2_EV_IRQHandler,Default_Handler
-
-	.weak	I2C2_ER_IRQHandler
-	.thumb_set I2C2_ER_IRQHandler,Default_Handler
-
 	.weak	SPI1_IRQHandler
 	.thumb_set SPI1_IRQHandler,Default_Handler
-
-	.weak	SPI2_IRQHandler
-	.thumb_set SPI2_IRQHandler,Default_Handler
 
 	.weak	USART1_IRQHandler
 	.thumb_set USART1_IRQHandler,Default_Handler
@@ -378,17 +369,11 @@ g_pfnVectors:
 	.weak	USART2_IRQHandler
 	.thumb_set USART2_IRQHandler,Default_Handler
 
-	.weak	USART3_IRQHandler
-	.thumb_set USART3_IRQHandler,Default_Handler
-
 	.weak	EXTI15_10_IRQHandler
 	.thumb_set EXTI15_10_IRQHandler,Default_Handler
 
 	.weak	RTC_Alarm_IRQHandler
 	.thumb_set RTC_Alarm_IRQHandler,Default_Handler
-
-	.weak	SDMMC1_IRQHandler
-	.thumb_set SDMMC1_IRQHandler,Default_Handler
 
 	.weak	SPI3_IRQHandler
 	.thumb_set SPI3_IRQHandler,Default_Handler
@@ -423,6 +408,9 @@ g_pfnVectors:
 	.weak	LPTIM2_IRQHandler
 	.thumb_set LPTIM2_IRQHandler,Default_Handler	
 	
+	.weak	USB_IRQHandler
+	.thumb_set USB_IRQHandler,Default_Handler	
+	
 	.weak	DMA2_Channel6_IRQHandler
 	.thumb_set DMA2_Channel6_IRQHandler,Default_Handler	
 	
@@ -449,6 +437,9 @@ g_pfnVectors:
 	
 	.weak	TSC_IRQHandler
 	.thumb_set TSC_IRQHandler,Default_Handler
+	
+	.weak	AES_IRQHandler
+	.thumb_set AES_IRQHandler,Default_Handler
 	
 	.weak	RNG_IRQHandler
 	.thumb_set RNG_IRQHandler,Default_Handler

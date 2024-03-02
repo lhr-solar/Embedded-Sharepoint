@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * @file      startup_stm32l431xx.s
+  * @file      startup_stm32l443xx.s
   * @author    MCD Application Team
-  * @brief     STM32L431xx devices vector table for GCC toolchain.
+  * @brief     STM32L443xx devices vector table for GCC toolchain.
   *            This module performs:
   *                - Set the initial SP
   *                - Set the initial PC == Reset_Handler,
@@ -214,7 +214,7 @@ g_pfnVectors:
 	.word	COMP_IRQHandler
 	.word	LPTIM1_IRQHandler
 	.word	LPTIM2_IRQHandler
-	.word	0
+	.word	USB_IRQHandler
 	.word	DMA2_Channel6_IRQHandler
 	.word	DMA2_Channel7_IRQHandler
 	.word	LPUART1_IRQHandler
@@ -225,8 +225,8 @@ g_pfnVectors:
 	.word	0
 	.word	SWPMI1_IRQHandler
 	.word	TSC_IRQHandler
-	.word	0
-	.word	0
+	.word	LCD_IRQHandler
+	.word	AES_IRQHandler
 	.word	RNG_IRQHandler
 	.word	FPU_IRQHandler
 	.word	CRS_IRQHandler
@@ -423,6 +423,9 @@ g_pfnVectors:
 	.weak	LPTIM2_IRQHandler
 	.thumb_set LPTIM2_IRQHandler,Default_Handler	
 	
+	.weak	USB_IRQHandler
+	.thumb_set USB_IRQHandler,Default_Handler	
+	
 	.weak	DMA2_Channel6_IRQHandler
 	.thumb_set DMA2_Channel6_IRQHandler,Default_Handler	
 	
@@ -449,6 +452,12 @@ g_pfnVectors:
 	
 	.weak	TSC_IRQHandler
 	.thumb_set TSC_IRQHandler,Default_Handler
+	
+	.weak	LCD_IRQHandler
+	.thumb_set LCD_IRQHandler,Default_Handler
+	
+	.weak	AES_IRQHandler
+	.thumb_set AES_IRQHandler,Default_Handler
 	
 	.weak	RNG_IRQHandler
 	.thumb_set RNG_IRQHandler,Default_Handler
