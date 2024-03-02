@@ -20,4 +20,6 @@ int main(void){
         HAL_Delay(500);  // Delay for 500 milliseconds
   }
 
+  return 0;
+
 }

@@ -39,12 +39,13 @@ UTIL_DIR := ../../Util
 # source
 ######################################
 # C sources
-C_SOURCES :=  \
+C_SOURCES :=	\
 $(BSP_DIR)/Src/*.c	\
 $(BSP_DIR)/STM32L4xx_HAL_Driver/Src/*.c	\
 $(FREERTOS_DIR)/*.c	\
 $(UTIL_DIR)/Src/*.c	\
 $(BSP_DIR)/../Src/*.c 	\
+
 
 # Expand wildcards to get each source file individually
 C_SOURCES := $(foreach path, $(C_SOURCES), $(wildcard $(path)))
@@ -66,6 +67,7 @@ endif
 # ASM sources
 ASM_SOURCES =  \
 $(BSP_DIR)/Src/startup_stm32l431xx.s
+
 
 #######################################
 # binaries
@@ -111,12 +113,14 @@ C_DEFS =  \
 -DUSE_HAL_DRIVER \
 -DSTM32L431xx
 
-
 # AS includes
 AS_INCLUDES = 
 
+# $(addsuffix /Inc, $(MODULES))	\
+$(OS_SRC_DIRS)
+
 # C includes
-C_INCLUDES =  \
+C_INCLUDES :=  \
 $(BSP_DIR)/../Inc/	\
 $(BSP_DIR)/Inc/	\
 $(BSP_DIR)/STM32L4xx_HAL_Driver/Inc/	\
@@ -135,26 +139,23 @@ endif
 # Add appropriate prefix to all includes
 C_INCLUDES := $(addprefix -I, $(C_INCLUDES))
 
-
 # compile gcc flags
-ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
+ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -Wno-comment -fdata-sections -ffunction-sections
 
-CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
+CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -Wno-comment -fdata-sections -ffunction-sections
 
 ifeq ($(DEBUG), 1)
 CFLAGS += -g -gdwarf-2
 endif
 
-
 # Generate dependency information
 CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
-
 
 #######################################
 # LDFLAGS
 #######################################
 # link script
-LDSCRIPT = STM32L431CBTx_FLASH.ld
+LDSCRIPT = $(BSP_DIR)/GCC/STM32L431CBTx_FLASH.ld
 
 # libraries
 LIBS = -lc -lm -lnosys 
@@ -163,7 +164,6 @@ LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BU
 
 # default action: build all
 all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
-
 
 #######################################
 # build the application
@@ -174,15 +174,15 @@ vpath %.c $(sort $(dir $(C_SOURCES)))
 # list of ASM program objects
 OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(ASM_SOURCES:.s=.o)))
 vpath %.s $(sort $(dir $(ASM_SOURCES)))
-OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(ASMM_SOURCES:.S=.o)))
-vpath %.S $(sort $(dir $(ASMM_SOURCES)))
+# OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(ASMM_SOURCES:.S=.o)))
+# vpath %.S $(sort $(dir $(ASMM_SOURCES)))
 
 $(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR) 
 	$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
 
 $(BUILD_DIR)/%.o: %.s Makefile | $(BUILD_DIR)
-	$(AS) -c $(CFLAGS) $< -o $@
-$(BUILD_DIR)/%.o: %.S Makefile | $(BUILD_DIR)
+# 	$(AS) -c $(CFLAGS) $< -o $@
+# $(BUILD_DIR)/%.o: %.S Makefile | $(BUILD_DIR)
 	$(AS) -c $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
@@ -197,12 +197,6 @@ $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	
 $(BUILD_DIR):
 	mkdir $@		
-
-#######################################
-# clean up
-#######################################
-clean:
-	-rm -fR $(BUILD_DIR)
   
 #######################################
 # dependencies
