@@ -12,6 +12,7 @@ int main(void){
     gpio.Mode = GPIO_MODE_OUTPUT_PP; 
     gpio.Pull = GPIO_NOPULL;
     gpio.Speed = GPIO_SPEED_FREQ_LOW;
+    
 
     HAL_GPIO_Init(GPIOA, &gpio);
 

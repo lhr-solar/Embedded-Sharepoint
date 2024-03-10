@@ -44,7 +44,11 @@ $(BSP_DIR)/Src/*.c	\
 $(BSP_DIR)/STM32L4xx_HAL_Driver/Src/*.c	\
 $(FREERTOS_DIR)/*.c	\
 $(UTIL_DIR)/Src/*.c	\
-$(BSP_DIR)/../Src/*.c 	\
+
+# Conditionally include $(BSP_DIR)/../Inc/ based on HAL
+ifeq ($(HAL), custom)
+    C_SOURCES += $(BSP_DIR)/../Src/*.c
+endif
 
 
 # Expand wildcards to get each source file individually
@@ -121,7 +125,6 @@ $(OS_SRC_DIRS)
 
 # C includes
 C_INCLUDES :=  \
-$(BSP_DIR)/../Inc/	\
 $(BSP_DIR)/Inc/	\
 $(BSP_DIR)/STM32L4xx_HAL_Driver/Inc/	\
 $(BSP_DIR)/STM32L4xx_HAL_Driver/Inc/Legacy/	\
@@ -130,6 +133,11 @@ $(CMSIS_DIR)/Core/Include/	\
 $(FREERTOS_DIR)/include	\
 $(FREERTOS_DIR)/portable/GCC/ARM_CM4F	\
 $(UTIL_DIR)/Inc/	\
+
+# Conditionally include $(BSP_DIR)/../Inc/ based on HAL
+ifeq ($(HAL), custom)
+    C_INCLUDES += $(BSP_DIR)/../Inc/
+endif
 
 # Expand wildcards if project gives more includes
 ifdef PROJECT_C_INCLUDES
