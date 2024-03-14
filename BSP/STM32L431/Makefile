@@ -45,8 +45,8 @@ $(BSP_DIR)/STM32L4xx_HAL_Driver/Src/*.c	\
 $(FREERTOS_DIR)/*.c	\
 $(UTIL_DIR)/Src/*.c	\
 
-# Conditionally include $(BSP_DIR)/../Inc/ based on HAL
-ifeq ($(HAL), custom)
+# Conditionally include $(BSP_DIR)/../Inc/ based on customBSP
+ifeq ($(customBSP), on)
     C_SOURCES += $(BSP_DIR)/../Src/*.c
 endif
 
