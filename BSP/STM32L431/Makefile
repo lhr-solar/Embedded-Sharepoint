@@ -46,7 +46,7 @@ $(FREERTOS_DIR)/*.c	\
 $(UTIL_DIR)/Src/*.c	\
 
 # Conditionally include $(BSP_DIR)/../Inc/ based on customBSP
-ifeq ($(customBSP), on)
+ifeq ($(BSPConfig), on)
     C_SOURCES += $(BSP_DIR)/../Src/*.c
 endif
 

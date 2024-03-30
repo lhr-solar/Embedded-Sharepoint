@@ -1,5 +1,17 @@
+# COLORS
+RED=\033[0;31m
+GREEN=\033[0;32m
+ORANGE=\033[0;33m
+BLUE=\033[0;34m
+PURPLE=\033[0;35m
+CYAN=\033[0;36m
+LIGHTGRAY=\033[0;37m
+DARKGRAY=\033[1;30m
+YELLOW=\033[0;33m
+NC=\033[0m # No Color
+
 chip?=F4
-customBSP?=off
+BSPConfig?=off
 
 # Used to select the MCU (default is STM32F413)
 ifeq ($(chip), F4)
@@ -7,25 +19,30 @@ ifeq ($(chip), F4)
 else ifeq ($(chip), L4)
     MCU_TARGET = STM32L431
 else
-    $(error Invalid MCU specified (L4 and F4 are the only options))
+    $(error ${RED}Invalid MCU specified ${NC}(L4 and F4 are the only options))
 endif
 
 # to do: this is hella jank and only here since BSP.C is built for the F4 MCU. 
 # Keeping it optional to use BSP.C is nice, but there are cleaner ways we can do it.
 
-# If customBSP = on, we compile BSP.C
-ifeq ($(customBSP), on)
-    customBSP = on
+# If BSPConfig = on, we compile BSP.C
+ifeq ($(BSPConfig), on)
+    BSPConfig = on
 endif
 
-# to do: add functionality to externally call this makefile and compile their relevant STM32
-
-test:
+bsp_test:
 ifdef test
 	$(MAKE) -C BSP -C $(MCU_TARGET) -j TARGET=bsp PROJECT_DIR=../.. BUILD_DIR=../../Objects TEST=../Tests/$(test).c
 else
-	$(error test is not set (e.g. make test test=HelloWorld))
+	@echo -e "${RED}error${NC}test is not set (e.g. make test test=HelloWorld)"
 endif
+
+help:
+	@echo -e "${BLUE}BSP${NC}Tests (BSP/Tests/Src)"
+	@echo -e "	${ORANGE}make ${BLUE}bsp_test ${NC}TEST=${PURPLE}<test name>${NC}"
+	@echo -e "	exclude the .c file extension from the test name"
+	@echo -e "	(e.g) to build a test with ${PURPLE}Heartbeat.c${NC}"
+	@echo -e "		${ORANGE}make ${BLUE}bsp_test ${NC}test=${PURPLE}Heartbeat"
 
 
 # left commented as an example
