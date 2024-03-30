@@ -20,9 +20,10 @@
         - Rebuild all files and flash into memory
         - Run the example
         - watch aADCxConvertedData varaible in debugger live watch
+          - changed this to pring out the value (UART)
 
     * From Main.c, basically warnings so you dont mess up 
-        /* STM32L4xx HAL library initialization:
+        * STM32L4xx HAL library initialization:
             - Configure the Flash prefetch
             - Systick timer is configured by default as source of time base, but user 
                 can eventually implement his proper time base source (a general purpose 
@@ -32,9 +33,13 @@
             - Set NVIC Group Priority to 4
             - Low Level Initialization
             */ 
-    */
 
-
+// ##################################################
+// ##################################################
+// ##################################################
+// ##################################################
+// ##################################################
+// ##################################################
 // Main.h stuff:
 /**
   ******************************************************************************
@@ -54,13 +59,16 @@
   ******************************************************************************
   */
 
+// Dont need these b/c no H file (H and C file are in this file)
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MAIN_H
-#define __MAIN_H
+// #ifndef __MAIN_H   
+// #define __MAIN_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l4xx_hal.h"
-#include "stm32l4xx_nucleo_32.h"
+#include "stm32l4xx_hal_adc.h" // added to define ADC_HandleTypeDef 
+//#include "stm32l4xx_hal_dma.h"             
+//#include "stm32l4xx_nucleo_32.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
@@ -88,10 +96,15 @@
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
 
-#endif /* __MAIN_H */
 
 
 
+// ##################################################
+// ##################################################
+// ##################################################
+// ##################################################
+// ##################################################
+// ##################################################
 // Main.c stuff (w/ some notes):
 /**
   ******************************************************************************
@@ -112,7 +125,8 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
+//#include "main.h"
+#include <stdio.h>
 
 /** @addtogroup STM32L4xx_HAL_Examples
   * @{
@@ -182,7 +196,7 @@ int main(void)
   SystemClock_Config();
 
   /* Configure LED3 */
-  BSP_LED_Init(LED3);
+  //BSP_LED_Init(LED3);
 
   /* ### - 1 - Initialize ADC peripheral #################################### */
   AdcHandle.Instance          = ADCx;             
@@ -316,7 +330,8 @@ void SystemClock_Config(void)
 static void Error_Handler(void)
 {
   /* Turn LED3 on*/
-  BSP_LED_On(LED3);
+  //BSP_LED_On(LED3);
+  printf("Error Occured");
   while (1)
   {
   }
@@ -355,6 +370,13 @@ void assert_failed(uint8_t *file, uint32_t line)
 
 
 
+// ###############################################################
+// ###############################################################
+// ###############################################################
+// ###############################################################
+// ###############################################################
+// ###############################################################
+
 // Testing code (not part of main.c or main.h from STM)
 /**
  * @brief   Gets converted ADC value - not sure what units 
@@ -372,7 +394,8 @@ int16_t BspAdcGetRawValue(void) {
 int16_t BspAdcGetVoltageValue(void) {
     // Get ADC raw data at index 0 of the Buffer 
     uint16_t data = aADCxConvertedData[0];
-    data = (data * 3.3) >> 12; 
+    data = (float)data;
+    data = (uint16_t)(data * 3.3) >> 12; 
         // 12 b/c 12 bits of resolution. We're assuming that the values
         // are 0 to 2^12 
     return (int16_t)data;
@@ -383,7 +406,7 @@ int16_t BspAdcGetVoltageValue(void) {
 int16_t BspAdcGetMiliVoltageValue(void) {
     // Get ADC raw data at index 0 of the Buffer 
     uint16_t data = aADCxConvertedData[0];
-    data = (data * 3.3 * 1000) >> 12;
+    data = (uint16_t)(data * 3.3 * 1000) >> 12;
         // 12 b/c 12 bits of resolution. We're assuming that the values
         // are 0 to 2^12 
     return (int16_t)data;
