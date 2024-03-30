@@ -173,9 +173,15 @@ int main(void)
         counter = 0x00;
     }
 
-    TxData[0] = counter;
-    TxData[1] = 0xFF;
-    
+    TxData[0] = '?';
+    TxData[1] = '?';
+    TxData[2] = '?';
+    TxData[3] = '?';
+    TxData[4] = '?';
+    TxData[5] = '?';
+    TxData[6] = '?';
+    TxData[7] = '?';
+
     /* Start the Transmission process */
     if (HAL_CAN_AddTxMessage(&CanHandle, &TxHeader, TxData, &TxMailbox) != HAL_OK){
         /* Transmission request Error */
