@@ -37,8 +37,12 @@ else
 	@echo -e "${RED}error${NC}test is not set (e.g. make test test=HelloWorld)"
 endif
 
+# to do: currently very ugly
 help:
-	@echo -e "${BLUE}BSP${NC}Tests (BSP/Tests/Src)"
+	@echo -e "MCU selection:"
+	@echo -e "	The ${BLUE}chip${NC}variable selects which MCU is compiled"
+	@echo -e "	${ORANGE}make ${BLUE}chip${NC}=${PURPLE}<chip type>${NC}"
+	@echo -e "BSP Tests"
 	@echo -e "	${ORANGE}make ${BLUE}bsp_test ${NC}TEST=${PURPLE}<test name>${NC}"
 	@echo -e "	exclude the .c file extension from the test name"
 	@echo -e "	(e.g) to build a test with ${PURPLE}Heartbeat.c${NC}"
