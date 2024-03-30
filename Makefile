@@ -48,12 +48,12 @@ endif
 help:
 	@echo -e "MCU selection:"
 	@echo -e "	The ${BLUE}chip${NC}variable selects which MCU is compiled"
-	@echo -e "	${ORANGE}make ${BLUE}chip${NC}=${PURPLE}<chip type>${NC}"
-	@echo -e "BSP Tests"
-	@echo -e "	${ORANGE}make ${BLUE}bsp_test ${NC}TEST=${PURPLE}<test name>${NC}"
-	@echo -e "	exclude the .c file extension from the test name"
-	@echo -e "	(e.g) to build a test with ${PURPLE}Heartbeat.c${NC}"
-	@echo -e "		${ORANGE}make ${BLUE}bsp_test ${NC}test=${PURPLE}Heartbeat"
+	@echo -e "	${ORANGE}make${NC}chip=${PURPLE}<chip type>${NC}"
+	@echo -e "     Setting chip as ${PURPLE}F4${NC}selects the STM32F413 mcu and ${PURPLE}L4${NC}sets it as STM32L431"
+	@echo -e "BSP Tests:"
+	@echo -e "	${ORANGE}make ${BLUE}bsp_test ${NC}TEST=${PURPLE}<test name>${NC} exclude the .c file extension from the test name"
+	@echo -e "	exclude the .c file extension from the test name (e.g) to build a test with ${PURPLE}ADC.c${NC}"
+	@echo -e "	${ORANGE}make ${BLUE}bsp_test ${NC}test=${PURPLE}ADC"
 
 
 # left commented as an example
