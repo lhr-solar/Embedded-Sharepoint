@@ -166,6 +166,11 @@ static uint16_t   volatile aADCxConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE];
 void SystemClock_Config(void);
 static void Error_Handler(void);
 
+// Functions I added
+int16_t BspAdcGetRawValue(void);
+int16_t BspAdcGetVoltageValue(void);
+int16_t BspAdcGetMiliVoltageValue(void);
+
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -263,6 +268,12 @@ int main(void)
   /* Infinite Loop */
   while (1)
   { 
+    // Sample the data (
+    uint16_t raw = BspAdcGetRawValue();
+    uint16_t volt = BspAdcGetVoltageValue();
+    // Print the data 
+    printf("Raw Data: %d", raw);
+    printf("Voltage: %d", volt);
   }
 }
 
