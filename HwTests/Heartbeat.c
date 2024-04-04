@@ -3,21 +3,29 @@
 
 GPIO_InitTypeDef gpio;
 
+/**
+ * PeripheralSOM GPIO pins (Spring 2024)
+ * PB3, PB4, PB5
+ * PA15 
+*/
+
 int main(void){
     HAL_Init();
+   
+    // GPIO clock enables
+    __HAL_RCC_GPIOB_CLK_ENABLE();
 
-    // Defines Pin A15 on the PeripheralSOM as an output
-    GPIO_InitTypeDef gpio;
-    gpio.Pin = GPIO_PIN_15;
+    // Defines Pin B3 on the PeripheralSOM as an output
+    gpio.Pin = GPIO_PIN_3;
     gpio.Mode = GPIO_MODE_OUTPUT_PP; 
     gpio.Pull = GPIO_NOPULL;
     gpio.Speed = GPIO_SPEED_FREQ_LOW;
     
 
-    HAL_GPIO_Init(GPIOA, &gpio);
+    HAL_GPIO_Init(GPIOB, &gpio);
 
     while (1) {
-        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);  // Toggle the LED
+        HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_3);  // Toggle the LED
         HAL_Delay(500);  // Delay for 500 milliseconds
   }
 
