@@ -3,11 +3,6 @@
 
 GPIO_InitTypeDef gpio;
 
-/**
- * PeripheralSOM GPIO pins (Spring 2024)
- * PB3, PB4, PB5
- * PA15 
-*/
 
 int main(void){
     HAL_Init();
