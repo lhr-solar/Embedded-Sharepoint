@@ -53,7 +53,7 @@ help:
 	@echo -e "BSP Tests:"
 	@echo -e "	${ORANGE}make ${BLUE}bsp_test ${NC}TEST=${PURPLE}<test name>${NC} exclude the .c file extension from the test name"
 	@echo -e "	exclude the .c file extension from the test name (e.g) to build a test with ${PURPLE}ADC.c${NC}"
-	@echo -e "	${ORANGE}make ${BLUE}bsp_test ${NC}test=${PURPLE}ADC"
+	@echo -e "	${ORANGE}make ${BLUE}bsp_test ${NC}test=${PURPLE}ADC${NC}"
 
 
 # left commented as an example
