@@ -11,7 +11,7 @@ YELLOW=\033[0;33m
 NC=\033[0m # No Color
 
 chip?=F4
-BSPConfig?=off
+BSPConfig?=off # If BSPConfig = on, we compile BSP.C
 
 # Used to select the MCU (default is STM32F413)
 ifeq ($(chip), F4)
@@ -25,10 +25,6 @@ endif
 # to do: this is hella jank and only here since BSP.C is built for the F4 MCU. 
 # Keeping it optional to use BSP.C is nice, but there are cleaner ways we can do it.
 
-# If BSPConfig = on, we compile BSP.C
-ifeq ($(BSPConfig), on)
-    BSPConfig = on
-endif
 
 bsp_test:
 ifdef test
@@ -40,6 +36,14 @@ endif
 hw_test:
 ifdef test
 	$(MAKE) -C BSP -C $(MCU_TARGET) -j TARGET=bsp PROJECT_DIR=../.. BUILD_DIR=../../Objects TEST=../../HwTests/$(test).c
+else
+	@echo -e "${RED}error${NC}test is not set (e.g. make hw_test test=HelloWorld)"
+endif
+
+# delete later, this is just to test merging the makefiles
+merge_test:
+ifdef test
+	$(MAKE) -C BSP MCU_TARGET=$(MCU_TARGET) -j TARGET=bsp PROJECT_DIR=../ BUILD_DIR=../Objects TEST=../HwTests/$(test).c
 else
 	@echo -e "${RED}error${NC}test is not set (e.g. make hw_test test=HelloWorld)"
 endif
