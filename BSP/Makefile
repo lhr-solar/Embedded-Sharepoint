@@ -89,8 +89,6 @@ C_SOURCES += $(wildcard $(TEST)) # Add test file
 endif
 
 # ASM sources
-CHIP_SERIES_LOWER := $(shell echo $(CHIP_SERIES) | tr '[:upper:]' '[:lower:]')
-
 ASM_SOURCES =  \
 $(BSP_DIR)/Src/startup_$(CHIP_LINE).s
 
