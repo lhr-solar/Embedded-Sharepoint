@@ -28,25 +28,18 @@ endif
 
 bsp_test:
 ifdef test
-	$(MAKE) -C BSP -C $(MCU_TARGET) -j TARGET=bsp PROJECT_DIR=../.. BUILD_DIR=../../Objects TEST=../Tests/$(test).c
+	$(MAKE) -C BSP MCU_TARGET=$(MCU_TARGET) -j TARGET=bsp PROJECT_DIR=../ BUILD_DIR=../Objects TEST=Tests/$(test).c
 else
 	@echo -e "${RED}error${NC}test is not set (e.g. make bsp_test test=HelloWorld)"
 endif
 
 hw_test:
 ifdef test
-	$(MAKE) -C BSP -C $(MCU_TARGET) -j TARGET=bsp PROJECT_DIR=../.. BUILD_DIR=../../Objects TEST=../../HwTests/$(test).c
-else
-	@echo -e "${RED}error${NC}test is not set (e.g. make hw_test test=HelloWorld)"
-endif
-
-# delete later, this is just to test merging the makefiles
-merge_test:
-ifdef test
 	$(MAKE) -C BSP MCU_TARGET=$(MCU_TARGET) -j TARGET=bsp PROJECT_DIR=../ BUILD_DIR=../Objects TEST=../HwTests/$(test).c
 else
 	@echo -e "${RED}error${NC}test is not set (e.g. make hw_test test=HelloWorld)"
 endif
+
 
 # to do: currently very ugly
 help:
