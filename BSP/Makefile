@@ -33,10 +33,14 @@ OPT = -Og
 
 ifeq ($(chip), L4)
 CHIP_SERIES :=STM32L4xx
+
+#CHIP_NAME is used only for the flash ID
 CHIP_NAME := STM32L431CBTx
 else ifeq($(chip), F4)
+
 CHIP_SERIES :=STM32F4xx
 CHIP_NAME := STM32F413RHTx
+
 endif
 
 HAL_PATH = $(CHIP_SERIES)_HAL_Driver
@@ -84,6 +88,8 @@ C_SOURCES += $(wildcard $(TEST)) # Add test file
 endif
 
 # ASM sources
+CHIP_SERIES_LOWER := $(shell echo $(CHIP_SERIES) | tr '[:upper:]' '[:lower:]')
+
 ASM_SOURCES =  \
 $(BSP_DIR)/Src/startup_stm32l431xx.s
 
