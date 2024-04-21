@@ -154,7 +154,7 @@ $(FREERTOS_DIR)/include	\
 $(FREERTOS_DIR)/portable/GCC/ARM_CM4F	\
 $(UTIL_DIR)/Inc/	\
 
-# Conditionally include $(BSP_DIR)/../Inc/ based on HAL
+# Conditionally include $(BSP_DIR)/../Inc/ based on BSPConfig
 ifeq ($(BSPConfig), on)
     C_INCLUDES += $(BSP_DIR)/../Inc/
 endif
