@@ -31,9 +31,13 @@ OPT = -Og
 ######################################
 # Which STM32 is in use
 
+# Parses the series of STM32 (L4 or F4, etc)
 CHIP_SERIES := $(shell echo $(MCU_TARGET) | cut -c1-7)xx
-CHIP_NAME := $(shell echo $(MCU_TARGET) | sed -n 's/\(STM32.*x\).*/\1/p')
+
+# Finds chip line, used for the the BSP directory
 CHIP_LINE :=$(shell echo $(MCU_TARGET) | cut -c1-9)
+
+# Lowercases the chip line, used for finding the startup script
 CHIP_STARTUP := $(shell echo $(MCU_TARGET) | cut -c6-9 | tr '[:upper:]' '[:lower:]' | sed 's/^/stm32/' | sed 's/$$/xx/')
 
 HAL_PATH = $(CHIP_SERIES)_HAL_Driver
@@ -174,7 +178,7 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 # LDFLAGS
 #######################################
 # link script
-LDSCRIPT = $(BSP_DIR)/GCC/$(CHIP_NAME)_FLASH.ld
+LDSCRIPT = $(BSP_DIR)/GCC/$(MCU_TARGET)_FLASH.ld
 
 # libraries
 LIBS = -lc -lm -lnosys 
