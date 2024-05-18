@@ -13,17 +13,14 @@ NC=\033[0m # No Color
 chip?=F4
 BSPConfig?=off # If BSPConfig = on, we compile BSP.C
 
-# Used to select the MCU (default is STM32F413)
+# Used to select the MCU (default is STM32F413RHTx)
 ifeq ($(chip), F4)
-    MCU_TARGET = STM32F413
+    MCU_TARGET = STM32F413RHTx
 else ifeq ($(chip), L4)
-    MCU_TARGET = STM32L431
+    MCU_TARGET = STM32L431CBTx
 else
     $(error ${RED}Invalid MCU specified ${NC}(L4 and F4 are the only options))
 endif
-
-# to do: this is hella jank and only here since BSP.C is built for the F4 MCU. 
-# Keeping it optional to use BSP.C is nice, but there are cleaner ways we can do it.
 
 
 bsp_test:
@@ -40,8 +37,6 @@ else
 	@echo -e "${RED}error${NC}test is not set (e.g. make hw_test test=HelloWorld)"
 endif
 
-
-# to do: currently very ugly
 help:
 	@echo -e "MCU selection:"
 	@echo -e "	The ${BLUE}chip${NC}variable selects which MCU is compiled"

@@ -31,18 +31,10 @@ OPT = -Og
 ######################################
 # Which STM32 is in use
 
-ifeq ($(chip), L4)
-CHIP_SERIES :=STM32L4xx
-# CHIP_NAME is used only for the flash ID
-CHIP_NAME := STM32L431CBTx
-# CHIP_LINE is only used for the startup script
-CHIP_LINE := stm32l431xx
-
-else ifeq($(chip), F4)
-CHIP_SERIES :=STM32F4xx
-CHIP_NAME := STM32F413RHTx
-CHIP_LINE := stm32f413xx
-endif
+CHIP_SERIES := $(shell echo $(MCU_TARGET) | cut -c1-7)xx
+CHIP_NAME := $(shell echo $(MCU_TARGET) | sed -n 's/\(STM32.*x\).*/\1/p')
+CHIP_LINE :=$(shell echo $(MCU_TARGET) | cut -c1-9)
+CHIP_STARTUP := $(shell echo $(MCU_TARGET) | cut -c6-9 | tr '[:upper:]' '[:lower:]' | sed 's/^/stm32/' | sed 's/$$/xx/')
 
 HAL_PATH = $(CHIP_SERIES)_HAL_Driver
 
@@ -50,7 +42,7 @@ HAL_PATH = $(CHIP_SERIES)_HAL_Driver
 # paths
 #######################################
 # Build path
-BSP_DIR := $(MCU_TARGET)
+BSP_DIR := $(CHIP_LINE)
 CMSIS_DIR := ../CMSIS
 FREERTOS_DIR := ../FreeRTOS-Kernel
 UTIL_DIR := ../Util
@@ -90,8 +82,7 @@ endif
 
 # ASM sources
 ASM_SOURCES =  \
-$(BSP_DIR)/Src/startup_$(CHIP_LINE).s
-
+$(BSP_DIR)/Src/startup_$(CHIP_STARTUP).s
 
 #######################################
 # binaries
