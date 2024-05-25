@@ -46,6 +46,8 @@ HAL_PATH = $(CHIP_SERIES)_HAL_Driver
 # paths
 #######################################
 # Build path
+
+# Current directory is in Embedded-Sharepoint/BSP
 BSP_DIR := $(CHIP_LINE)
 CMSIS_DIR := ../CMSIS
 FREERTOS_DIR := ../FreeRTOS-Kernel
@@ -66,6 +68,7 @@ ifeq ($(BSPConfig), on)
     C_SOURCES += $(BSP_DIR)/../Src/*.c
 endif
 
+C_SOURCES += $(FREERTOS_DIR)/portable/GCC/ARM_CM4F/port.c	\
 
 # Expand wildcards to get each source file individually
 C_SOURCES := $(foreach path, $(C_SOURCES), $(wildcard $(path)))
