@@ -68,7 +68,6 @@ ifeq ($(BSPConfig), on)
     C_SOURCES += $(BSP_DIR)/../Src/*.c
 endif
 
-C_SOURCES += $(FREERTOS_DIR)/portable/GCC/ARM_CM4F/port.c	\
 
 # Expand wildcards to get each source file individually
 C_SOURCES := $(foreach path, $(C_SOURCES), $(wildcard $(path)))
