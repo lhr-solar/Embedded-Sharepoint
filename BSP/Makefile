@@ -22,7 +22,7 @@ MCU_TARGET ?=$(error MCU_TARGET is not set)
 # building variables
 ######################################
 # debug build
-DEBUG = 1
+DEBUG ?= 1
 # optimization
 OPT = -Og
 
@@ -65,7 +65,7 @@ $(UTIL_DIR)/Src/*.c	\
 
 # Conditionally include $(BSP_DIR)/../Inc/ based on customBSP
 ifeq ($(BSPConfig), on)
-    C_SOURCES += $(BSP_DIR)/../Src/*.c
+C_SOURCES += $(BSP_DIR)/../Src/*.c
 endif
 
 
@@ -153,7 +153,7 @@ $(UTIL_DIR)/Inc/	\
 
 # Conditionally include $(BSP_DIR)/../Inc/ based on BSPConfig
 ifeq ($(BSPConfig), on)
-    C_INCLUDES += $(BSP_DIR)/../Inc/
+C_INCLUDES += $(BSP_DIR)/../Inc/
 endif
 
 # Expand wildcards if project gives more includes
