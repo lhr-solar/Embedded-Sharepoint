@@ -45,17 +45,11 @@ help:
 	@echo  "     Setting chip as ${PURPLE}F4${NC}selects the STM32F413 mcu and ${PURPLE}L4${NC}sets it as STM32L431"
 	@echo  "BSP Tests:"
 	@echo  "	${ORANGE}make ${BLUE}bsp_test ${NC}TEST=${PURPLE}<test name>${NC} exclude the .c file extension from the test name"
-	@echo  "	exclude the .c file extension from the test name (e.g) to build a test with ${PURPLE}ADC.c${NC}"
 	@echo  "	${ORANGE}make ${BLUE}bsp_test ${NC}test=${PURPLE}ADC${NC}"
 	@echo  "Hardware Tests:"
 	@echo  "	${ORANGE}make ${BLUE}hw_test ${NC}TEST=${PURPLE}<test name>${NC} exclude the .c file extension from the test name"
-	@echo  "	exclude the .c file extension from the test name (e.g) to build a test with ${PURPLE}Heartbeat.c${NC}"
 	@echo  "	${ORANGE}make ${BLUE}hw_test ${NC}test=${PURPLE}Heartbeat${NC}"
 
-
-# left commented as an example
-# project:
-# 	$(MAKE) -C BSP -C STM32F413 -j TARGET=bsp PROJECT_DIR=../.. BUILD_DIR=../../Objects TEST=../Tests/HelloWorld.c PROJECT_C_SOURCES="../../src/*.c ../../dogs/*.c"  PROJECT_C_INCLUDES=../../inc/
 
 flash:
 	-st-flash write Objects/bsp.bin 0x8000000
