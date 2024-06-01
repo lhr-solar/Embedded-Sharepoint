@@ -19,42 +19,37 @@ ifeq ($(chip), F4)
 else ifeq ($(chip), L4)
     MCU_TARGET = STM32L431CBTx
 else
-    $(error ${RED}Invalid MCU specified ${NC}(L4 and F4 are the only options))
+    $(error $(shell echo "${RED}Invalid MCU specified ${NC}(Please choose between L4 and F4)"))
 endif
 
+$(info Compiling for the $(MCU_TARGET))
 
 bsp_test:
 ifdef test
 	$(MAKE) -C BSP MCU_TARGET=$(MCU_TARGET) -j TARGET=bsp PROJECT_DIR=../ BUILD_DIR=../Objects TEST=Tests/$(test).c
 else
-	@echo -e "${RED}error${NC}test is not set (e.g. make bsp_test test=HelloWorld)"
+	$(error $(shell echo  "${RED}error${NC}test is not set (e.g. make bsp_test test=HelloWorld)"))
 endif
 
 hw_test:
 ifdef test
 	$(MAKE) -C BSP MCU_TARGET=$(MCU_TARGET) -j TARGET=bsp PROJECT_DIR=../ BUILD_DIR=../Objects TEST=../HwTests/$(test).c
 else
-	@echo -e "${RED}error${NC}test is not set (e.g. make hw_test test=HelloWorld)"
+	$(error $(shell echo  "${RED}error${NC}test is not set (e.g. make hw_test test=Heartbeat)"))
 endif
 
 help:
-	@echo -e "MCU selection:"
-	@echo -e "	The ${BLUE}chip${NC}variable selects which MCU is compiled"
-	@echo -e "	${ORANGE}make${NC}chip=${PURPLE}<chip type>${NC}"
-	@echo -e "     Setting chip as ${PURPLE}F4${NC}selects the STM32F413 mcu and ${PURPLE}L4${NC}sets it as STM32L431"
-	@echo -e "BSP Tests:"
-	@echo -e "	${ORANGE}make ${BLUE}bsp_test ${NC}TEST=${PURPLE}<test name>${NC} exclude the .c file extension from the test name"
-	@echo -e "	exclude the .c file extension from the test name (e.g) to build a test with ${PURPLE}ADC.c${NC}"
-	@echo -e "	${ORANGE}make ${BLUE}bsp_test ${NC}test=${PURPLE}ADC${NC}"
-	@echo -e "Hardware Tests:"
-	@echo -e "	${ORANGE}make ${BLUE}hw_test ${NC}TEST=${PURPLE}<test name>${NC} exclude the .c file extension from the test name"
-	@echo -e "	exclude the .c file extension from the test name (e.g) to build a test with ${PURPLE}Heartbeat.c${NC}"
-	@echo -e "	${ORANGE}make ${BLUE}hw_test ${NC}test=${PURPLE}Heartbeat${NC}"
+	@echo  "MCU selection:"
+	@echo  "	The ${BLUE}chip${NC}variable selects which MCU is compiled"
+	@echo  "	${ORANGE}make${NC}chip=${PURPLE}<chip type>${NC}"
+	@echo  "     Setting chip as ${PURPLE}F4${NC}selects the STM32F413 mcu and ${PURPLE}L4${NC}sets it as STM32L431"
+	@echo  "BSP Tests:"
+	@echo  "	${ORANGE}make ${BLUE}bsp_test ${NC}TEST=${PURPLE}<test name>${NC} exclude the .c file extension from the test name"
+	@echo  "	${ORANGE}make ${BLUE}bsp_test ${NC}test=${PURPLE}ADC${NC}"
+	@echo  "Hardware Tests:"
+	@echo  "	${ORANGE}make ${BLUE}hw_test ${NC}TEST=${PURPLE}<test name>${NC} exclude the .c file extension from the test name"
+	@echo  "	${ORANGE}make ${BLUE}hw_test ${NC}test=${PURPLE}Heartbeat${NC}"
 
-
-# left commented as an example
-# project:
-# 	$(MAKE) -C BSP -C STM32F413 -j TARGET=bsp PROJECT_DIR=../.. BUILD_DIR=../../Objects TEST=../Tests/HelloWorld.c PROJECT_C_SOURCES="../../src/*.c ../../dogs/*.c"  PROJECT_C_INCLUDES=../../inc/
 
 flash:
 	-st-flash write Objects/bsp.bin 0x8000000
