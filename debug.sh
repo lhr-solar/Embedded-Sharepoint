@@ -43,10 +43,6 @@ case $TARGET in
         ;;
 esac
 
-# Construct the OpenOCD command
-CMD="openocd -f interface/stlink.cfg -f target/$MCU_CONFIG"
-
 # Run the OpenOCD command
-echo "Running OpenOCD for $TARGET..."
-echo $CMD
-eval $CMD
+echo "Running OpenOCD for STM32$TARGET..."
+openocd -f interface/stlink.cfg -f target/$MCU_CONFIG
