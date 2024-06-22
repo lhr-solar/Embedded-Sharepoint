@@ -3,7 +3,7 @@ This repository contains files that can be shared among us, the embedded design 
 
 ## Building
 
-Call ```make bsp_test [test]``` to compile a BSP specific test. ```[test]``` is the file name of the test excluding the file extension.
+Call ```make test [testName]``` to compile a BSP specific test. ```[testName]``` is the file name of the test excluding the file extension.
 
 Add the ```chip``` variable specify which MCU you are building for
 
