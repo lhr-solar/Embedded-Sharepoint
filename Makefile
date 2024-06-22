@@ -11,29 +11,31 @@ YELLOW=\033[0;33m
 NC=\033[0m # No Color
 
 chip?=F4
-BSPConfig?=off
+BSPConfig?=off # If BSPConfig = on, we compile BSP.C
 
-# Used to select the MCU (default is STM32F413)
+# Used to select the MCU (default is STM32F413RHTx)
 ifeq ($(chip), F4)
-    MCU_TARGET = STM32F413
+    MCU_TARGET = STM32F413RHTx
 else ifeq ($(chip), L4)
-    MCU_TARGET = STM32L431
+    MCU_TARGET = STM32L431CBTx
 else
     $(error $(shell echo "${RED}Invalid MCU specified ${NC}(Please choose between L4 and F4)"))
 endif
 
-$(info Compiling for the $(MCU_TARGET))
+# $(info Compiling for the $(MCU_TARGET))
 
 bsp_test:
+	@echo "Compiling for the $(MCU_TARGET)"
 ifdef test
-	$(MAKE) -C BSP -C $(MCU_TARGET) -j TARGET=bsp PROJECT_DIR=../.. BUILD_DIR=../../Objects TEST=../Tests/$(test).c
+	$(MAKE) -C BSP MCU_TARGET=$(MCU_TARGET) -j TARGET=bsp PROJECT_DIR=../ BUILD_DIR=../Objects TEST=Tests/$(test).c
 else
 	$(error $(shell echo  "${RED}error${NC}test is not set (e.g. make bsp_test test=HelloWorld)"))
 endif
 
 hw_test:
+	@echo "Compiling for the $(MCU_TARGET)"
 ifdef test
-	$(MAKE) -C BSP -C $(MCU_TARGET) -j TARGET=bsp PROJECT_DIR=../.. BUILD_DIR=../../Objects TEST=../../HwTests/$(test).c
+	$(MAKE) -C BSP MCU_TARGET=$(MCU_TARGET) -j TARGET=bsp PROJECT_DIR=../ BUILD_DIR=../Objects TEST=../HwTests/$(test).c
 else
 	$(error $(shell echo  "${RED}error${NC}test is not set (e.g. make hw_test test=Heartbeat)"))
 endif

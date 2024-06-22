@@ -16,24 +16,48 @@
 TARGET ?= $(error TARGET is not set)
 PROJECT_DIR ?= $(error PROJECT_DIR is not set)
 BUILD_DIR ?= $(error BUILD_DIR is not set)
+MCU_TARGET ?=$(error MCU_TARGET is not set)
+
+TARGET = $(realpath $(TARGET))
+PROJECT_DIR = $(realpath $(PROJECT_DIR))
+BUILD_DIR = $(realpath $(BUILD_DIR))
+MCU_TARGET = $(realpath $(MCU_TARGET))
 
 ######################################
 # building variables
 ######################################
-# debug build?
-DEBUG = 1
+# debug build
+DEBUG ?= 1
 # optimization
 OPT = -Og
 
+######################################
+# STM32 Targets
+######################################
+# Which STM32 is in use
+
+# Parses the series of STM32 (L4 or F4, etc)
+CHIP_SERIES := $(shell echo $(MCU_TARGET) | cut -c1-7)xx
+
+# Finds chip line, used for the the BSP directory
+CHIP_LINE :=$(shell echo $(MCU_TARGET) | cut -c1-9)
+
+# Lowercases the chip line, used for finding the startup script
+CHIP_STARTUP := $(shell echo $(MCU_TARGET) | cut -c6-9 | tr '[:upper:]' '[:lower:]' | sed 's/^/stm32/' | sed 's/$$/xx/')
+
+HAL_PATH = $(CHIP_SERIES)_HAL_Driver
 
 #######################################
 # paths
 #######################################
 # Build path
-BSP_DIR := .
-CMSIS_DIR := ../../CMSIS
-FREERTOS_DIR := ../../FreeRTOS-Kernel
-UTIL_DIR := ../../Util
+
+# Current directory is in Embedded-Sharepoint/BSP
+BSP_DIR := $(realpath $(CHIP_LINE))
+CMSIS_DIR := $(realpath ../CMSIS)
+FREERTOS_DIR := $(realpath ../FreeRTOS-Kernel)
+UTIL_DIR := $(realpath ../Util)
+
 
 ######################################
 # source
@@ -41,10 +65,14 @@ UTIL_DIR := ../../Util
 # C sources
 C_SOURCES :=	\
 $(BSP_DIR)/Src/*.c	\
-$(BSP_DIR)/STM32F4xx_HAL_Driver/Src/*.c	\
+$(BSP_DIR)/$(HAL_PATH)/Src/*.c	\
 $(FREERTOS_DIR)/*.c	\
 $(UTIL_DIR)/Src/*.c	\
-$(BSP_DIR)/../Src/*.c 	\
+
+# Conditionally include $(BSP_DIR)/../Inc/ based on customBSP
+ifeq ($(BSPConfig), on)
+C_SOURCES += $(BSP_DIR)/../Src/*.c
+endif
 
 
 # Expand wildcards to get each source file individually
@@ -66,8 +94,7 @@ endif
 
 # ASM sources
 ASM_SOURCES =  \
-$(BSP_DIR)/Src/startup_stm32f413xx.s
-
+$(BSP_DIR)/Src/startup_$(CHIP_STARTUP).s
 
 #######################################
 # binaries
@@ -111,7 +138,7 @@ AS_DEFS =
 # C defines
 C_DEFS =  \
 -DUSE_HAL_DRIVER \
--DSTM32F413xx
+-D$(CHIP_SERIES)
 
 # AS includes
 AS_INCLUDES = 
@@ -121,15 +148,19 @@ $(OS_SRC_DIRS)
 
 # C includes
 C_INCLUDES :=  \
-$(BSP_DIR)/../Inc/	\
 $(BSP_DIR)/Inc/	\
-$(BSP_DIR)/STM32F4xx_HAL_Driver/Inc/	\
-$(BSP_DIR)/STM32F4xx_HAL_Driver/Inc/Legacy/	\
-$(CMSIS_DIR)/Device/ST/STM32F4xx/Include/      \
+$(BSP_DIR)/$(HAL_PATH)/Inc/	\
+$(BSP_DIR)/$(HAL_PATH)/Inc/Legacy/	\
+$(CMSIS_DIR)/Device/ST/$(CHIP_SERIES)/Include/      \
 $(CMSIS_DIR)/Core/Include/	\
 $(FREERTOS_DIR)/include	\
 $(FREERTOS_DIR)/portable/GCC/ARM_CM4F	\
 $(UTIL_DIR)/Inc/	\
+
+# Conditionally include $(BSP_DIR)/../Inc/ based on BSPConfig
+ifeq ($(BSPConfig), on)
+C_INCLUDES += $(BSP_DIR)/../Inc/
+endif
 
 # Expand wildcards if project gives more includes
 ifdef PROJECT_C_INCLUDES
@@ -155,7 +186,7 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 # LDFLAGS
 #######################################
 # link script
-LDSCRIPT = $(BSP_DIR)/GCC/STM32F413RHTx_FLASH.ld
+LDSCRIPT = $(BSP_DIR)/GCC/$(MCU_TARGET)_FLASH.ld
 
 # libraries
 LIBS = -lc -lm -lnosys 
