@@ -23,32 +23,26 @@ else
 endif
 
 
-bsp_test:
+# TARGET -> Name of the elf file generated
+# PROJECT_DIR -> Which directory project files are stored in (relative to the Makefile)
+# BUILD_DIR -> Which directory object files are generated in (relative to the Makefile calling it)
+# TEST -> What test is being compiled (optional)
+
+test:
 	@echo  "Compiling for the $(MCU_TARGET)"
 ifdef test
-	$(MAKE) -C BSP -C $(MCU_TARGET) -j TARGET=bsp PROJECT_DIR=../.. BUILD_DIR=../../Objects TEST=../Tests/$(test).c
+	$(MAKE) -C BSP -C $(MCU_TARGET) -j TARGET=bsp PROJECT_DIR=../.. BUILD_DIR=../../Objects TEST=../../Tests/$(test).c
 else
 	$(error $(shell echo  "${RED}error${NC}test is not set (e.g. make bsp_test test=HelloWorld)"))
-endif
-
-hw_test:
-	@echo  "Compiling for the $(MCU_TARGET)"
-ifdef test
-	$(MAKE) -C BSP -C $(MCU_TARGET) -j TARGET=bsp PROJECT_DIR=../.. BUILD_DIR=../../Objects TEST=../../HwTests/$(test).c
-else
-	$(error $(shell echo  "${RED}error${NC}test is not set (e.g. make hw_test test=Heartbeat)"))
 endif
 
 help:
 	@echo  "MCU selection:"
 	@echo  "	The ${BLUE}chip${NC}variable selects which MCU is compiled"
 	@echo  "	${ORANGE}make${NC}chip=${PURPLE}<chip type>${NC}"
-	@echo  "     Setting chip as ${PURPLE}F4${NC}selects the STM32F413 mcu and ${PURPLE}L4${NC}sets it as STM32L431"
-	@echo  "BSP Tests:"
-	@echo  "	${ORANGE}make ${BLUE}bsp_test ${NC}TEST=${PURPLE}<test name>${NC} exclude the .c file extension from the test name"
-	@echo  "	${ORANGE}make ${BLUE}bsp_test ${NC}test=${PURPLE}ADC${NC}"
-	@echo  "Hardware Tests:"
-	@echo  "	${ORANGE}make ${BLUE}hw_test ${NC}TEST=${PURPLE}<test name>${NC} exclude the .c file extension from the test name"
+	@echo  "	Setting chip as ${PURPLE}F4${NC}selects the STM32F413 mcu and ${PURPLE}L4${NC}sets it as STM32L431"
+	@echo  "Tests:"
+	@echo  "	${ORANGE}make ${BLUE}hw_test ${NC}test=${PURPLE}<test name>${NC} exclude the .c file extension from the test name"
 	@echo  "	${ORANGE}make ${BLUE}hw_test ${NC}test=${PURPLE}Heartbeat${NC}"
 
 

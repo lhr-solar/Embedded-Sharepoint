@@ -45,9 +45,9 @@ $(BSP_DIR)/STM32L4xx_HAL_Driver/Src/*.c	\
 $(FREERTOS_DIR)/*.c	\
 $(UTIL_DIR)/Src/*.c	\
 
-# Conditionally include $(BSP_DIR)/../Inc/ based on customBSP
+# Conditionally include $(BSP_DIR)/../Src/
 ifeq ($(BSPConfig), on)
-    C_SOURCES += $(BSP_DIR)/../Src/*.c
+C_SOURCES += $(BSP_DIR)/../Src/*.c
 endif
 
 
@@ -135,8 +135,8 @@ $(FREERTOS_DIR)/portable/GCC/ARM_CM4F	\
 $(UTIL_DIR)/Inc/	\
 
 # Conditionally include $(BSP_DIR)/../Inc/ based on HAL
-ifeq ($(HAL), custom)
-    C_INCLUDES += $(BSP_DIR)/../Inc/
+ifeq ($(BSPConfig), custom)
+C_INCLUDES += $(BSP_DIR)/../Inc/
 endif
 
 # Expand wildcards if project gives more includes
