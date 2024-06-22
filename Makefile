@@ -22,9 +22,10 @@ else
     $(error $(shell echo "${RED}Invalid MCU specified ${NC}(Please choose between L4 and F4)"))
 endif
 
-$(info Compiling for the $(MCU_TARGET))
+# $(info Compiling for the $(MCU_TARGET))
 
 bsp_test:
+	@echo "Compiling for the $(MCU_TARGET)"
 ifdef test
 	$(MAKE) -C BSP MCU_TARGET=$(MCU_TARGET) -j TARGET=bsp PROJECT_DIR=../ BUILD_DIR=../Objects TEST=Tests/$(test).c
 else
@@ -32,6 +33,7 @@ else
 endif
 
 hw_test:
+	@echo "Compiling for the $(MCU_TARGET)"
 ifdef test
 	$(MAKE) -C BSP MCU_TARGET=$(MCU_TARGET) -j TARGET=bsp PROJECT_DIR=../ BUILD_DIR=../Objects TEST=../HwTests/$(test).c
 else

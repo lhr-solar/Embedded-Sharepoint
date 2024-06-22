@@ -18,6 +18,11 @@ PROJECT_DIR ?= $(error PROJECT_DIR is not set)
 BUILD_DIR ?= $(error BUILD_DIR is not set)
 MCU_TARGET ?=$(error MCU_TARGET is not set)
 
+TARGET = $(realpath $(TARGET))
+PROJECT_DIR = $(realpath $(PROJECT_DIR))
+BUILD_DIR = $(realpath $(BUILD_DIR))
+MCU_TARGET = $(realpath $(MCU_TARGET))
+
 ######################################
 # building variables
 ######################################
@@ -48,10 +53,11 @@ HAL_PATH = $(CHIP_SERIES)_HAL_Driver
 # Build path
 
 # Current directory is in Embedded-Sharepoint/BSP
-BSP_DIR := $(CHIP_LINE)
-CMSIS_DIR := ../CMSIS
-FREERTOS_DIR := ../FreeRTOS-Kernel
-UTIL_DIR := ../Util
+BSP_DIR := $(realpath $(CHIP_LINE))
+CMSIS_DIR := $(realpath ../CMSIS)
+FREERTOS_DIR := $(realpath ../FreeRTOS-Kernel)
+UTIL_DIR := $(realpath ../Util)
+
 
 ######################################
 # source
