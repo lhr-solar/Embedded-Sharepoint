@@ -47,3 +47,5 @@ Charging Enabled,0x10C,1,0,,"Precision: 1 bit
 Data: 0 - charging disabled, 1 - charging enabled
 Frequency: Same as Temperature Data Array (1-5 Hz)
 Notes: This is a suggestion to Array and Controls on whether or not they should supply power to the battery. If the suggestion is not followed, the BPS may trip"
+Voltage Summary,0x10D,8,0,,"uint24 pack voltage in mV, uint24 voltage range in mV, uint16 milliseconds since last voltage update: all little endian. 30 Hz"
+Temperature Summary,0x10E,8,0,,"int24 average temp in millicelsius, int24 temp range in millicelsius, uint16 milliseconds since last temp update: all little endian 30 Hz"
