@@ -1,0 +1,104 @@
+site_name: Embedded Sharepoint Documentation
+site_description: Software library shared among LHRS embedded sub-systems
+site_author: LHR - Solar
+
+theme: material
+
+nav:
+  - Home: 'index.md'
+  - Doxygen:
+    - Common:
+      - 'Classes':
+        - 'Overview': 'Common/annotated.md'
+        - 'Details':
+          - 'Class Index': 'Common/classes.md'
+          - 'Class Hierarchy': 'Common/hierarchy.md'
+          - 'Class Members': 'Common/class_members.md'
+          - 'Class Member Functions': 'Common/class_member_functions.md'
+          - 'Class Member Variables': 'Common/class_member_variables.md'
+          - 'Class Member Typedefs': 'Common/class_member_typedefs.md'
+          - 'Class Member Enumerations': 'Common/class_member_enums.md'
+      - 'Functions': 'Common/functions.md'
+      - 'Variables': 'Common/variables.md'
+      - 'Macros': 'Common/macros.md'
+      - 'Files': 'Common/files.md'
+      - 'Modules': 'Common/modules.md'
+    - FreeRTOS_Kernel:
+      - 'Classes':
+        - 'Overview': 'FreeRTOS_Kernel/annotated.md'
+        - 'Details':
+          - 'Class Index': 'FreeRTOS_Kernel/classes.md'
+          - 'Class Hierarchy': 'FreeRTOS_Kernel/hierarchy.md'
+          - 'Class Members': 'FreeRTOS_Kernel/class_members.md'
+          - 'Class Member Functions': 'FreeRTOS_Kernel/class_member_functions.md'
+          - 'Class Member Variables': 'FreeRTOS_Kernel/class_member_variables.md'
+          - 'Class Member Typedefs': 'FreeRTOS_Kernel/class_member_typedefs.md'
+          - 'Class Member Enumerations': 'FreeRTOS_Kernel/class_member_enums.md'
+      - 'Functions': 'FreeRTOS_Kernel/functions.md'
+      - 'Variables': 'FreeRTOS_Kernel/variables.md'
+      - 'Macros': 'FreeRTOS_Kernel/macros.md'
+      - 'Files': 'FreeRTOS_Kernel/files.md'
+      - 'Modules': FreeRTOS_Kernel/modules.md
+    - STM32F4xx_Drivers:
+      - 'Classes':
+        - 'Overview': 'STM32F4xx_Drivers/annotated.md'
+        - 'Details':
+          - 'Class Index': 'STM32F4xx_Drivers/classes.md'
+          - 'Class Hierarchy': 'STM32F4xx_Drivers/hierarchy.md'
+          - 'Class Members': 'STM32F4xx_Drivers/class_members.md'
+          - 'Class Member Functions': 'STM32F4xx_Drivers/class_member_functions.md'
+          - 'Class Member Variables': 'STM32F4xx_Drivers/class_member_variables.md'
+          - 'Class Member Typedefs': 'STM32F4xx_Drivers/class_member_typedefs.md'
+          - 'Class Member Enumerations': 'STM32F4xx_Drivers/class_member_enums.md'
+      - 'Functions': 'STM32F4xx_Drivers/functions.md'
+      - 'Variables': 'STM32F4xx_Drivers/variables.md'
+      - 'Macros': 'STM32F4xx_Drivers/macros.md'
+      - 'Files': 'STM32F4xx_Drivers/files.md'
+      - 'Modules': STM32F4xx_Drivers/modules.md
+    - STM32L4xx_Drivers:
+      - 'Classes':
+        - 'Overview': 'STM32L4xx_Drivers/annotated.md'
+        - 'Details':
+          - 'Class Index': 'STM32L4xx_Drivers/classes.md'
+          - 'Class Hierarchy': 'STM32L4xx_Drivers/hierarchy.md'
+          - 'Class Members': 'STM32L4xx_Drivers/class_members.md'
+          - 'Class Member Functions': 'STM32L4xx_Drivers/class_member_functions.md'
+          - 'Class Member Variables': 'STM32L4xx_Drivers/class_member_variables.md'
+          - 'Class Member Typedefs': 'STM32L4xx_Drivers/class_member_typedefs.md'
+          - 'Class Member Enumerations': 'STM32L4xx_Drivers/class_member_enums.md'
+      - 'Functions': 'STM32L4xx_Drivers/functions.md'
+      - 'Variables': 'STM32L4xx_Drivers/variables.md'
+      - 'Macros': 'STM32L4xx_Drivers/macros.md'
+      - 'Files': 'STM32L4xx_Drivers/files.md'
+      - 'Modules': STM32L4xx_Drivers/modules.md
+
+plugins:
+  - search:
+      prebuild_index: true
+      lang: en
+  - mkdoxy:
+      projects:
+        Common:
+          src-dirs: Drivers/common
+          full-doc: True
+          doxy-cfg:
+            FILE_PATTERNS: "*.c *.h"
+            RECURSIVE: True
+        FreeRTOS_Kernel:
+          src-dirs: Drivers/FreeRTOS-Kernel Drivers/FreeRTOS-Kernel/include Drivers/FreeRTOS-Kernel/portable/GCC/ARM_CM4F
+          full-doc: True
+          doxy-cfg:
+            FILE_PATTERNS: "*.c *.h"
+            RECURSIVE: False
+        STM32F4xx_Drivers:
+          src-dirs: Drivers/stm32f4xx Drivers/stm32f4xx/STM32F4xx_HAL_Driver/Inc Drivers/stm32f4xx/STM32F4xx_HAL_Driver/Src Drivers/stm32f4xx/stm32f413 Drivers/stm32f4xx/stm32f446
+          full-doc: True
+          doxy-cfg:
+            FILE_PATTERNS: "*.c *.h *.s"
+            RECURSIVE: False
+        STM32L4xx_Drivers:
+          src-dirs: Drivers/stm32l4xx Drivers/stm32l4xx/STM32L4xx_HAL_Driver/Inc Drivers/stm32l4xx/STM32L4xx_HAL_Driver/Src Drivers/stm32l4xx/stm32l476
+          full-doc: True
+          doxy-cfg:
+            FILE_PATTERNS: "*.c *.h *.s"
+            RECURSIVE: False
