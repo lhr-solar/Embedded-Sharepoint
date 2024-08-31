@@ -8,7 +8,7 @@ Welcome to the Embedded Sharepoint! This documentation is designed to assist LHR
 - **Modular Design:** Easily integrate with different components and libraries.
 - **Comprehensive Documentation:** Detailed guides and API references for every module.
 
-## Quick Links
+<!-- ## Quick Links -->
 
 <!-- TODO: Add confluence or add documentation -->
 <!-- - [Getting Started](getting-started.md) - Learn how to set up and begin using the library.
@@ -16,6 +16,25 @@ Welcome to the Embedded Sharepoint! This documentation is designed to assist LHR
 - [Examples & Tutorials](examples.md) - Follow step-by-step guides to implement common use cases.
 - [FAQ](faq.md) - Find answers to frequently asked questions. -->
 
-## Who Should Use This Documentation?
+## Scripts
 
-This documentation is intended for embedded developers, firmware engineers, and anyone working on LHR - Solar projects using STM32 devices.
+### Install Script
+
+This script installs/removes necessary packages for embedded development. Running install.sh will prompt the user for installation or removal of all necessary packages.
+
+Usage: 
+    
+    ./install.sh [-Ii] [-Uu] [-Hh]
+    For each package, choose between (y/n/r/q) to:
+        y: yes, install
+        n: no, don't install
+        r: remove package
+        q: quit
+    [-Ii] install all available packages
+    [-Uu] remove all available packages
+    [-Hh] show this help page
+
+### copyright_updater.py
+
+This script updates all the copyright headers on all the files we have written.
+
