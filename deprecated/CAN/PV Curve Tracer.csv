@@ -1,0 +1,7 @@
+Data,CAN ID,Length(bytes),Index Used,IN/OUT,Description
+PV Curve Tracer Profile,0x660,5,0,OUT,"Data:
+[39:27]: Test ID
+[26:24]: Test Regime (CELL|MODULE|ARRAY)
+[23:16]: Start PWM 0 - 100
+[15:8]: End PWM 0 - 100
+[7:0]: PWMResolution (START PWM - END PWM)/250"
