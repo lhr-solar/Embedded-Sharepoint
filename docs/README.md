@@ -20,6 +20,8 @@ Welcome to the Embedded Sharepoint! This documentation is designed to assist LHR
 
 ### Install Script
 
+Note: Install tools for development on Ubuntu 22.04. Newer versions may break when installing Python packages.
+
 This script installs/removes necessary packages for embedded development. Running install.sh will prompt the user for installation or removal of all necessary packages.
 
 Usage: 
@@ -33,8 +35,3 @@ Usage:
     [-Ii] install all available packages
     [-Uu] remove all available packages
     [-Hh] show this help page
-
-### copyright_updater.py
-
-This script updates all the copyright headers on all the files we have written.
-

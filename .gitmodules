@@ -1,3 +1,3 @@
-[submodule "Drivers/FreeRTOS-Kernel"]
-	path = Drivers/FreeRTOS-Kernel
+[submodule "FreeRTOS-Kernel"]
+	path = FreeRTOS-Kernel
 	url = https://github.com/FreeRTOS/FreeRTOS-Kernel.git

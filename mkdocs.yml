@@ -5,7 +5,7 @@ site_author: LHR - Solar
 theme: material
 
 nav:
-  - Home: 'index.md'
+  - Home: 'README.md'
   - Doxygen:
     - Common:
       - 'Classes':
@@ -79,25 +79,25 @@ plugins:
   - mkdoxy:
       projects:
         Common:
-          src-dirs: Drivers/common
+          src-dirs: common
           full-doc: True
           doxy-cfg:
             FILE_PATTERNS: "*.c *.h"
             RECURSIVE: True
         FreeRTOS_Kernel:
-          src-dirs: Drivers/FreeRTOS-Kernel Drivers/FreeRTOS-Kernel/include Drivers/FreeRTOS-Kernel/portable/GCC/ARM_CM4F
+          src-dirs: FreeRTOS-Kernel FreeRTOS-Kernel/include FreeRTOS-Kernel/portable/GCC/ARM_CM4F
           full-doc: True
           doxy-cfg:
             FILE_PATTERNS: "*.c *.h"
             RECURSIVE: False
         STM32F4xx_Drivers:
-          src-dirs: Drivers/stm32f4xx Drivers/stm32f4xx/STM32F4xx_HAL_Driver/Inc Drivers/stm32f4xx/STM32F4xx_HAL_Driver/Src Drivers/stm32f4xx/stm32f413 Drivers/stm32f4xx/stm32f446
+          src-dirs: stm32f4xx stm32f4xx/STM32F4xx_HAL_Driver/Inc stm32f4xx/STM32F4xx_HAL_Driver/Src stm32f4xx/stm32f413 stm32f4xx/stm32f446
           full-doc: True
           doxy-cfg:
             FILE_PATTERNS: "*.c *.h *.s"
             RECURSIVE: False
         STM32L4xx_Drivers:
-          src-dirs: Drivers/stm32l4xx Drivers/stm32l4xx/STM32L4xx_HAL_Driver/Inc Drivers/stm32l4xx/STM32L4xx_HAL_Driver/Src Drivers/stm32l4xx/stm32l476
+          src-dirs: stm32l4xx stm32l4xx/STM32L4xx_HAL_Driver/Inc stm32l4xx/STM32L4xx_HAL_Driver/Src stm32l4xx/stm32l476 stm32l4xx/stm32l431
           full-doc: True
           doxy-cfg:
             FILE_PATTERNS: "*.c *.h *.s"
