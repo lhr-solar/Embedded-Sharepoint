@@ -67,17 +67,17 @@ BUILD_DIR = $(PROJECT_BUILD_DIR)
 # C sources
 C_SOURCES =  \
 $(PROJECT_C_SOURCES) \
-$(filter-out %template.c, $(wildcard $(SERIES_GENERIC)/$(SERIES_GENERIC_CAP)_HAL_Driver/Src/*.c)) \
-$(SERIES_GENERIC)/system_$(SERIES_GENERIC).c \
-$(SERIES_GENERIC)/$(SERIES_GENERIC)_hal_init.c \
-$(SERIES_GENERIC)/$(SERIES_GENERIC)_hal_timebase_tim.c \
+$(filter-out %template.c, $(wildcard stm/$(SERIES_GENERIC)/$(SERIES_GENERIC_CAP)_HAL_Driver/Src/*.c)) \
+stm/$(SERIES_GENERIC)/system_$(SERIES_GENERIC).c \
+stm/$(SERIES_GENERIC)/$(SERIES_GENERIC)_hal_init.c \
+stm/$(SERIES_GENERIC)/$(SERIES_GENERIC)_hal_timebase_tim.c \
 $(wildcard FreeRTOS-Kernel/*.c) \
 FreeRTOS-Kernel/portable/GCC/ARM_CM4F/port.c \
 $(wildcard common/Src/*.c)
 
 # ASM sources
 ASM_SOURCES =  \
-$(SERIES_GENERIC)/$(SERIES_LINE)/startup_$(SERIES_LINE_GENERIC).s
+stm/$(SERIES_GENERIC)/$(SERIES_LINE)/startup_$(SERIES_LINE_GENERIC).s
 
 # ASM sources
 ASMM_SOURCES = 
@@ -136,10 +136,10 @@ AS_INCLUDES =
 # C includes
 C_INCLUDES =  \
 $(PROJECT_C_INCLUDES) \
-$(SERIES_GENERIC)/$(SERIES_GENERIC_CAP)_HAL_Driver/Inc \
-$(SERIES_GENERIC)/$(SERIES_GENERIC_CAP)_HAL_Driver/Inc/Legacy \
-$(SERIES_GENERIC)/CMSIS/Device/ST/$(SERIES_GENERIC_CAP)/Include \
-$(SERIES_GENERIC)/CMSIS/Include \
+stm/$(SERIES_GENERIC)/$(SERIES_GENERIC_CAP)_HAL_Driver/Inc \
+stm/$(SERIES_GENERIC)/$(SERIES_GENERIC_CAP)_HAL_Driver/Inc/Legacy \
+stm/$(SERIES_GENERIC)/CMSIS/Device/ST/$(SERIES_GENERIC_CAP)/Include \
+stm/$(SERIES_GENERIC)/CMSIS/Include \
 FreeRTOS-Kernel/include \
 FreeRTOS-Kernel/portable/GCC/ARM_CM4F \
 common/Inc
@@ -164,7 +164,7 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 # LDFLAGS
 #######################################
 # link script
-LDSCRIPT = $(SERIES_GENERIC)/$(SERIES_LINE)/$(SERIES_LINE_CAP)$(EXTRA_CAP)x_FLASH.ld
+LDSCRIPT = stm/$(SERIES_GENERIC)/$(SERIES_LINE)/$(SERIES_LINE_CAP)$(EXTRA_CAP)x_FLASH.ld
 
 # libraries
 LIBS = -lc -lm -lnosys 
@@ -222,21 +222,6 @@ FLASH_ADDRESS ?= 0x8000000
 
 flash:
 	-st-flash write $(BUILD_DIR)/$(TARGET).bin $(FLASH_ADDRESS)
-
-
-#######################################
-# tidy
-#######################################
-TIDY_CONFIG ?= --config-file=../.clang-tidy
-TIDY_C_FLAGS = $(C_INCLUDES) $(C_DEFS)
-# TIDY_CFLAGS += -m32
-
-tidy:
-	-clang-tidy $(TIDY_CONFIG) $(CLANG_INPUTS) -- $(TIDY_C_FLAGS)
-
-tidy-fix:
-	-clang-tidy $(TIDY_CONFIG) $(CLANG_INPUTS) --fix -- $(TIDY_C_FLAGS)
-
 
 #######################################
 # format
