@@ -1,7 +1,0 @@
-﻿Data,CAN ID,Length(bytes),Index Used,IN/OUT,Description
-,,,0,,
-Dash Kill Switch,0x001,1,0,,
-BPS Trip,0x002,1,0,,
-Any System Failures,0x003,1,0,,
-Ignition,0x004,1,0,,
-Any System Shutoff,0x005,1,0,,
