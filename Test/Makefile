@@ -1,7 +1,7 @@
 # default project configuration
 TEST ?= main
 TARGET_MCU ?= stm32f446ret
-TARGET_NAME ?= $(TARGET_MCU)_test
+TARGET_NAME ?= $(TARGET_MCU)_$(TEST)
 
 # source and include directories
 PROJECT_C_SOURCES = $(wildcard Src/*.c)
