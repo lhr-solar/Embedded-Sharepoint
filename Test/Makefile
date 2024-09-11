@@ -1,6 +1,7 @@
 # default project configuration
 TEST ?= main
-PROJECT_TARGET ?= stm32f446ret
+TARGET_MCU ?= stm32f446ret
+TARGET_NAME ?= $(TARGET_MCU)_test
 
 # source and include directories
 PROJECT_C_SOURCES = $(wildcard Src/*.c)
@@ -17,7 +18,8 @@ PROJECT_C_INCLUDES := $(addprefix $(MAKEFILE_DIR)/, $(PROJECT_C_INCLUDES))
 PROJECT_BUILD_DIR := $(addprefix $(MAKEFILE_DIR)/, $(PROJECT_BUILD_DIR))
 
 # export variables for sub-makes
-export PROJECT_TARGET
+export TARGET_MCU
+export TARGET_NAME
 export PROJECT_C_SOURCES
 export PROJECT_C_INCLUDES
 export PROJECT_BUILD_DIR

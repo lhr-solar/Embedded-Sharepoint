@@ -1,8 +1,8 @@
 ######################################
 # inputs
 ######################################
-ifndef PROJECT_TARGET
-$(error PROJECT_TARGET is not defined. Please provide a target to build for.)
+ifndef TARGET_MCU
+$(error TARGET_MCU is not defined. Please provide a target to build for.)
 endif
 
 ifndef PROJECT_BUILD_DIR
@@ -30,9 +30,9 @@ CLANG_INPUTS := $(filter-out $(IGNORED_CLANG_INPUTS), $(CLANG_INPUTS))
 ######################################
 # target
 ######################################
-SERIES = $(shell echo $(PROJECT_TARGET) | cut -c6-7)
-LINE = $(shell echo $(PROJECT_TARGET) | cut -c8-9)
-EXTRA = $(shell echo $(PROJECT_TARGET) | cut -c10-)
+SERIES = $(shell echo $(TARGET_MCU) | cut -c6-7)
+LINE = $(shell echo $(TARGET_MCU) | cut -c8-9)
+EXTRA = $(shell echo $(TARGET_MCU) | cut -c10-)
 
 SERIES_CAP = $(shell echo $(SERIES) | tr '[:lower:]' '[:upper:]')
 EXTRA_CAP = $(shell echo $(EXTRA) | tr '[:lower:]' '[:upper:]')
@@ -43,7 +43,7 @@ SERIES_LINE_CAP = STM32$(SERIES_CAP)$(LINE)
 SERIES_LINE_GENERIC = $(SERIES_LINE)xx
 SERIES_LINE_GENERIC_CAP = $(SERIES_LINE_CAP)xx
 
-TARGET = $(PROJECT_TARGET)
+TARGET_NAME ?= $(TARGET_MCU)
 
 
 ######################################
@@ -169,10 +169,10 @@ LDSCRIPT = stm/$(SERIES_GENERIC)/$(SERIES_LINE)/$(SERIES_LINE_CAP)$(EXTRA_CAP)x_
 # libraries
 LIBS = -lc -lm -lnosys 
 LIBDIR = 
-LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
+LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET_NAME).map,--cref -Wl,--gc-sections
 
 # default action: build all
-all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
+all: $(BUILD_DIR)/$(TARGET_NAME).elf $(BUILD_DIR)/$(TARGET_NAME).hex $(BUILD_DIR)/$(TARGET_NAME).bin
 
 
 #######################################
@@ -195,7 +195,7 @@ $(BUILD_DIR)/%.o: %.s Makefile | $(BUILD_DIR)
 $(BUILD_DIR)/%.o: %.S Makefile | $(BUILD_DIR)
 	$(AS) -c $(CFLAGS) $< -o $@
 
-$(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
+$(BUILD_DIR)/$(TARGET_NAME).elf: $(OBJECTS) Makefile
 	$(CC) $(OBJECTS) $(LDFLAGS) -o $@
 	$(SZ) $@
 
@@ -221,7 +221,7 @@ clean:
 FLASH_ADDRESS ?= 0x8000000
 
 flash:
-	-st-flash write $(BUILD_DIR)/$(TARGET).bin $(FLASH_ADDRESS)
+	-st-flash write $(BUILD_DIR)/$(TARGET_NAME).bin $(FLASH_ADDRESS)
 
 #######################################
 # format
