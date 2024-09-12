@@ -35,13 +35,16 @@ LINE = $(shell echo $(PROJECT_TARGET) | cut -c8-9)
 EXTRA = $(shell echo $(PROJECT_TARGET) | cut -c10-)
 
 SERIES_CAP = $(shell echo $(SERIES) | tr '[:lower:]' '[:upper:]')
-EXTRA_CAP = $(shell echo $(EXTRA) | tr '[:lower:]' '[:upper:]')
+
+# Capitalize all letters except x
+EXTRA_SEMICAP = $(shell echo "$(EXTRA)" | sed -e 's/[^x]/\U&/g')
+
 SERIES_GENERIC = stm32$(SERIES)xx
 SERIES_GENERIC_CAP = STM32$(SERIES_CAP)xx
 SERIES_LINE = stm32$(SERIES)$(LINE)
 SERIES_LINE_CAP = STM32$(SERIES_CAP)$(LINE)
-SERIES_LINE_GENERIC = $(SERIES_LINE)xx
-SERIES_LINE_GENERIC_CAP = $(SERIES_LINE_CAP)xx
+SERIES_LINE_GENERIC = $(SERIES_LINE)$(EXTRA)
+SERIES_LINE_GENERIC_CAP = $(SERIES_LINE_CAP)$(EXTRA_SEMICAP)
 
 TARGET = $(PROJECT_TARGET)
 
@@ -164,7 +167,7 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 # LDFLAGS
 #######################################
 # link script
-LDSCRIPT = stm/$(SERIES_GENERIC)/$(SERIES_LINE)/$(SERIES_LINE_CAP)$(EXTRA_CAP)x_FLASH.ld
+LDSCRIPT = stm/$(SERIES_GENERIC)/$(SERIES_LINE)/$(SERIES_LINE_CAP)$(EXTRA_SEMICAP)_FLASH.ld
 
 # libraries
 LIBS = -lc -lm -lnosys 
