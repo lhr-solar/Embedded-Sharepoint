@@ -1,8 +1,3 @@
-#include <stdint.h>
-
-#define HAL_GPIO_MODULE_ENABLED
-#define HAL_RCC_MODULE_ENABLED
-
 #include <stm32xx_hal.h>
 
 int main(){
