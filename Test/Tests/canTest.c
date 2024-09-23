@@ -92,7 +92,8 @@ void SystemClock_Config(void) {
 
 void Error_Handler(void) {
 \    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET);
-    while (1);
+    while (1); 
+    //test
 }
 
 int main(void) {

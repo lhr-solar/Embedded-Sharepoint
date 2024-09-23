@@ -24,7 +24,7 @@ int main() {
     // Main loop
     while (1) {
         // Turn PB4 ON
-        HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_5);
+        HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
         HAL_Delay(500);
        
     }
