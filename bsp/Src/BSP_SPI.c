@@ -103,7 +103,7 @@ HAL_StatusTypeDef BSP_SPI_Write(SPI_HandleTypeDef* spiHandle, uint8_t* buffer, u
     // Add to TX queue if we have room
     else if (HAL_SPI_GetState(spiHandle) == HAL_SPI_STATE_BUSY_TX && spacesLeft >= len) {
         xQueueSend(localTxMetaQueue, &len, 0);
-        for (uint16_t i = 0; i < len; i++) {
+        for (uint16_t i = 0; i < len && i < spacesLeft; i++) {
             xQueueSend(*_transmitQueuePtr, &(buffer[i]), 0);
         }
         stat = HAL_BUSY;
@@ -131,7 +131,7 @@ void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi) {
         uint16_t lengthToSend;
         uint8_t temp;
         xQueueReceiveFromISR(localTxMetaQueue, &lengthToSend, NULL); // get # of bytes to keep transmitting
-        for (uint16_t i = 0; i < lengthToSend; i++) {
+        for (uint16_t i = 0; i < lengthToSend && i < LOCAL_BUFFER_SIZE; i++) {
             xQueueReceiveFromISR(*_transmitQueuePtr, &(data_buf[i]), NULL);
         }
         HAL_SPI_Transmit_IT(hspi, data_buf, lengthToSend); // recurse
