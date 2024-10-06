@@ -26,7 +26,7 @@
  * @param config 
  * @return HAL_StatusTypeDef
  */
-HAL_StatusTypeDef BSP_UART_Initi(UART_HandleTypeDef *device);
+HAL_StatusTypeDef BSP_UART_Init(UART_HandleTypeDef *device);
 
 /**
  * @brief Perform a UART write to the specified UART device
