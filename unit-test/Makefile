@@ -22,6 +22,8 @@ export PROJECT_C_SOURCES
 export PROJECT_C_INCLUDES
 export PROJECT_BUILD_DIR
 
+include stm-series.mk
+
 # default target
 default: all
 
@@ -32,7 +34,7 @@ docs:
 
 # recursively build in the drivers directory
 %:
-	$(MAKE) -C $(BUILD_MAKEFILE_DIR) $(MAKECMDGOALS)
+	
 
 # help
 .PHONY: help
