@@ -159,7 +159,8 @@ stm/$(SERIES_GENERIC)/CMSIS/Device/ST/$(SERIES_GENERIC_CAP)/Include \
 stm/$(SERIES_GENERIC)/CMSIS/Include \
 FreeRTOS-Kernel/include \
 FreeRTOS-Kernel/portable/GCC/ARM_CM4F \
-common/Inc
+common/Inc	\
+bsp/Inc
 
 C_INCLUDES := $(addprefix -I,$(C_INCLUDES))
 
