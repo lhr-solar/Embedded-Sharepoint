@@ -236,9 +236,11 @@ clean:
 # flash
 #######################################
 FLASH_ADDRESS ?= 0x8000000
+FLASH_FILE = $(shell find $(BUILD_DIR) -name 'stm*.bin' -exec basename {} \;)
 
-flash:
-	-st-flash write $(BUILD_DIR)/$(TARGET).bin $(FLASH_ADDRESS)
+flash: $(BUILD_DIR)/$(FLASH_FILE)
+	@echo "Flashing $(FLASH_FILE) to $(FLASH_ADDRESS)"
+	-st-flash write $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
 
 #######################################
 # format
