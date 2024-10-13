@@ -1,13 +1,7 @@
 #ifndef BSP_ADC_H
 #define BSP_ADC_H
 
-#include "stm32f4xx.h"
-#include "stm32f4xx_hal.h" 
-#include "stm32f4xx_hal_def.h"
-#include "stm32f4xx_hal_gpio.h"
-#include "stm32f4xx_hal_adc.h"
-#include "stm32f4xx_hal_adc_ex.h"
-#include "sys/queue.h"
+#include "stm32xx.h"
 
 /**
  * @param peripheral:   ADC_HandleTypeDef containing unique indentifiers for ADC peripheral
