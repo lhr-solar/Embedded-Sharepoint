@@ -55,15 +55,23 @@ ENTRY(Reset_Handler)
 /* Highest address of the user mode stack */
 _estack = ORIGIN(RAM) + LENGTH(RAM);    /* end of RAM */
 /* Generate a link error if heap and stack don't fit into RAM */
-_Min_Heap_Size = 0x200;      /* required amount of heap  */
+_Min_Heap_Size = 0x0;      /* required amount of heap  */
 _Min_Stack_Size = 0x400; /* required amount of stack */
 
 /* Specify the memory areas */
 MEMORY
 {
-RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 128K
-FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 512K
+RAM (xrw)      : ORIGIN = 0x20017700, LENGTH = 128K
+BOOTFLASH (rx) : ORIGIN = 0x8000000, LENGTH = 128K
+FLASH (rx)      : ORIGIN = 0x80BB800, LENGTH = 768K
 }
+
+__ram_start__ = ORIGIN(RAM);
+__ram_size__ = LENGTH(RAM);
+__bootflash_start__ = ORIGIN(BOOTFLASH);
+__bootflash_size__ = LENGTH(BOOTFLASH);
+__appflash_start__ = ORIGIN(FLASH);
+__appflash_size__ = LENGTH(FLASH);
 
 /* Define output sections */
 SECTIONS
@@ -74,7 +82,15 @@ SECTIONS
     . = ALIGN(4);
     KEEP(*(.isr_vector)) /* Startup code */
     . = ALIGN(4);
-  } >FLASH
+  } >BOOTFLASH
+
+  .bootloader :
+  {
+    . = ALIGN(4);
+    KEEP (*(.bootloader)) /* bootloader section */
+    KEEP (*(.bootloader*)) /* bootloader* section */
+    . = ALIGN(4);
+  } >BOOTFLASH
 
   /* The program code and other data goes into FLASH */
   .text :

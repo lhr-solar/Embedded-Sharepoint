@@ -81,6 +81,8 @@ BUILD_DIR = $(PROJECT_BUILD_DIR)
 ######################################
 # source
 ######################################
+FREERTOS_ENABLE?=1
+
 # C sources
 C_SOURCES =  \
 $(PROJECT_C_SOURCES) \
@@ -88,9 +90,15 @@ $(filter-out %template.c, $(wildcard stm/$(SERIES_GENERIC)/$(SERIES_GENERIC_CAP)
 stm/$(SERIES_GENERIC)/system_$(SERIES_GENERIC).c \
 stm/$(SERIES_GENERIC)/$(SERIES_GENERIC)_hal_init.c \
 stm/$(SERIES_GENERIC)/$(SERIES_GENERIC)_hal_timebase_tim.c \
+$(filter-out %freertos.c, $(wildcard common/Src/*.c))
+
+# FreeRTOS sources
+ifeq ($(FREERTOS_ENABLE), 1)
+C_SOURCES += \
 $(wildcard FreeRTOS-Kernel/*.c) \
 FreeRTOS-Kernel/portable/GCC/ARM_CM4F/port.c \
-$(wildcard common/Src/*.c)
+common/Src/freertos.c
+endif
 
 # ASM sources
 ASM_SOURCES =  \
@@ -157,9 +165,13 @@ stm/$(SERIES_GENERIC)/$(SERIES_GENERIC_CAP)_HAL_Driver/Inc \
 stm/$(SERIES_GENERIC)/$(SERIES_GENERIC_CAP)_HAL_Driver/Inc/Legacy \
 stm/$(SERIES_GENERIC)/CMSIS/Device/ST/$(SERIES_GENERIC_CAP)/Include \
 stm/$(SERIES_GENERIC)/CMSIS/Include \
-FreeRTOS-Kernel/include \
-FreeRTOS-Kernel/portable/GCC/ARM_CM4F \
 common/Inc
+
+ifeq ($(FREERTOS_ENABLE), 1)
+FREERTOS_INCLUDES = \
+FreeRTOS-Kernel/include \
+FreeRTOS-Kernel/portable/GCC/ARM_CM4F
+endif
 
 C_INCLUDES := $(addprefix -I,$(C_INCLUDES))
 
