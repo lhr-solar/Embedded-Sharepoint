@@ -39,7 +39,7 @@ SECTIONS{
 
         . = ALIGN(4);
         _etext = .;        /* define a global symbols at end of code */
-    } >FLASH
+    } >BOOT
 
     .rodata :
     {
@@ -47,14 +47,14 @@ SECTIONS{
         *(.rodata)         /* .rodata sections (constants, strings, etc.) */
         *(.rodata*)        /* .rodata* sections (constants, strings, etc.) */
         . = ALIGN(4);
-    } >FLASH
+    } >BOOT
 
-    .ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) } >FLASH
+    .ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) } >BOOT
 
     .ARM : {
         __exidx_start = .;
         __exidx_end = .;
-    } >FLASH
+    } >BOOT
 
     _sidata = LOADADDR(.data);
 
@@ -67,7 +67,7 @@ SECTIONS{
 
         . = ALIGN(4);
         _edata = .;
-    } >RAM AT> FLASH
+    } >RAM AT> BOOT
 
     . = ALIGN(4);
     .bss :
