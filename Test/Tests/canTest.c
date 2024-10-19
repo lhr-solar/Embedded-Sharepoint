@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include <stm32l4xx_hal.h> // Adjust based on your STM32 family
+#include <stm32xx_hal.h> // Adjust based on your STM32 family
 
 CAN_HandleTypeDef hcan;
 
@@ -91,7 +91,7 @@ void SystemClock_Config(void) {
 }
 
 void Error_Handler(void) {
-\    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET);
     while (1); 
     //test
 }
