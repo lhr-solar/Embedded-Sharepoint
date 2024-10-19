@@ -69,7 +69,7 @@ TARGET = $(PROJECT_TARGET)
 # debug build?
 DEBUG = 1
 # optimization
-OPT = -Og
+OPT = -O3
 
 
 #######################################
@@ -181,7 +181,8 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 # LDFLAGS
 #######################################
 # link script
-LDSCRIPT = stm/$(SERIES_GENERIC)/$(SERIES_LINE)/$(SERIES_LINE_CAP)$(EXTRA_CAP)x_FLASH.ld
+LD_SUFFIX ?= APP
+LDSCRIPT = stm/$(SERIES_GENERIC)/$(SERIES_LINE)/$(SERIES_LINE_CAP)$(EXTRA_CAP)x_$(LD_SUFFIX).ld
 
 # libraries
 LIBS = -lc -lm -lnosys 
@@ -235,10 +236,10 @@ clean:
 #######################################
 # flash
 #######################################
-FLASH_ADDRESS ?= 0x8000000
+FLASH_ADDRESS ?= 0x8000200
 FLASH_FILE = $(shell find $(BUILD_DIR) -name 'stm*.bin' -exec basename {} \;)
 
-flash: $(BUILD_DIR)/$(FLASH_FILE)
+flash:
 	@echo "Flashing $(FLASH_FILE) to $(FLASH_ADDRESS)"
 	-st-flash write $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
 
