@@ -1,5 +1,4 @@
 .vscode/*
 !.vscode/c_cpp_properties.json
-!.vscode/compile_commands.json
 build
 site
