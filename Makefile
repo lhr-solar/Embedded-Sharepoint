@@ -50,7 +50,7 @@ MCU_MATCHES = $(shell ls stm/$(SERIES_GENERIC)/CMSIS/Device/ST/$(SERIES_GENERIC_
 
 # attempt to find the generic series line by matching against header files in the CMSIS directory
 SERIES_LINE_GENERIC = $(shell for match in $(MCU_MATCHES); do \
-	if [ $${\#match} -eq 11 ] && echo "stm32$(SERIES_LINE)$(EXTRA_CUT)" | grep -qE $$match; then \
+	if [ $${#match} -eq 11 ] && echo "stm32$(SERIES_LINE)$(EXTRA_CUT)" | grep -qE $$match; then \
 		echo $${match//./x}; \
 		break; \
 	fi; \
