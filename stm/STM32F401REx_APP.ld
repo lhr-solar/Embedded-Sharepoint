@@ -11,11 +11,15 @@ _Min_Heap_Size = 0x0;      /* we don't use the heap  */
 _Min_Stack_Size = 0x400;   /* default amount of stack (change if necessary) */
 
 MEMORY{
-    RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 128K
-    VECTOR (rx) : ORIGIN = 0x08000000, LENGTH = 0x200
-    FLASH (rx) : ORIGIN = 0x08000200, LENGTH = 1536K
-    BOOT (rx) : ORIGIN = 0x08000800, LENGTH = 512K
+    RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 96K
+    FLASH (rx) : ORIGIN = 0x08000000, LENGTH = 384K
+    BOOT (rx) : ORIGIN = 0x08060000, LENGTH = 128K
 }
+
+_app_start = ORIGIN(FLASH);
+_app_len = LENGTH(FLASH);
+_boot_start = ORIGIN(BOOT);
+_boot_len = LENGTH(BOOT);
 
 SECTIONS{
     .isr_vector :
@@ -23,7 +27,7 @@ SECTIONS{
         . = ALIGN(4);
         KEEP(*(.isr_vector)) /* Startup code */
         . = ALIGN(4);
-    } >VECTOR
+    } >FLASH
 
     .text :
     {
@@ -39,7 +43,7 @@ SECTIONS{
 
         . = ALIGN(4);
         _etext = .;        /* define a global symbols at end of code */
-    } >BOOT
+    } >FLASH
 
     .rodata :
     {
@@ -47,14 +51,14 @@ SECTIONS{
         *(.rodata)         /* .rodata sections (constants, strings, etc.) */
         *(.rodata*)        /* .rodata* sections (constants, strings, etc.) */
         . = ALIGN(4);
-    } >BOOT
+    } >FLASH
 
-    .ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) } >BOOT
+    .ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) } >FLASH
 
     .ARM : {
         __exidx_start = .;
         __exidx_end = .;
-    } >BOOT
+    } >FLASH
 
     _sidata = LOADADDR(.data);
 
@@ -67,7 +71,7 @@ SECTIONS{
 
         . = ALIGN(4);
         _edata = .;
-    } >RAM AT> BOOT
+    } >RAM AT> FLASH
 
     . = ALIGN(4);
     .bss :

@@ -11,9 +11,9 @@ _Min_Heap_Size = 0x0;      /* we don't use the heap  */
 _Min_Stack_Size = 0x400;   /* default amount of stack (change if necessary) */
 
 MEMORY{
-    RAM (xrw) : ORIGIN = 0x20000000, LENGTH = ${RAM_SIZE}
-    FLASH (rx) : ORIGIN = 0x08000000, LENGTH = ${APP_SIZE}
-    BOOT (rx) : ORIGIN = ${BOOT_OFFSET}, LENGTH = ${BOOT_SIZE}
+    RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 192K
+    FLASH (rx) : ORIGIN = 0x08000000, LENGTH = 1920K
+    BOOT (rx) : ORIGIN = 0x081E0000, LENGTH = 128K
 }
 
 _app_start = ORIGIN(FLASH);
@@ -43,7 +43,7 @@ SECTIONS{
 
         . = ALIGN(4);
         _etext = .;        /* define a global symbols at end of code */
-    } >${FLASH_NAME}
+    } >FLASH
 
     .rodata :
     {
@@ -51,14 +51,14 @@ SECTIONS{
         *(.rodata)         /* .rodata sections (constants, strings, etc.) */
         *(.rodata*)        /* .rodata* sections (constants, strings, etc.) */
         . = ALIGN(4);
-    } >${FLASH_NAME}
+    } >FLASH
 
-    .ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) } >${FLASH_NAME}
+    .ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) } >FLASH
 
     .ARM : {
         __exidx_start = .;
         __exidx_end = .;
-    } >${FLASH_NAME}
+    } >FLASH
 
     _sidata = LOADADDR(.data);
 
@@ -71,7 +71,7 @@ SECTIONS{
 
         . = ALIGN(4);
         _edata = .;
-    } >RAM AT> ${FLASH_NAME}
+    } >RAM AT> FLASH
 
     . = ALIGN(4);
     .bss :
