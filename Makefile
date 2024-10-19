@@ -50,7 +50,7 @@ MCU_MATCHES = $(shell ls stm/$(SERIES_GENERIC)/CMSIS/Device/ST/$(SERIES_GENERIC_
 
 # attempt to find the generic series line by matching against header files in the CMSIS directory
 SERIES_LINE_GENERIC = $(shell for match in $(MCU_MATCHES); do \
-	if [ $${#match} -eq 11 ] && echo "stm32$(SERIES_LINE)$(EXTRA_CUT)" | grep -qE $$match; then \
+	if [ $${\#match} -eq 11 ] && echo "stm32$(SERIES_LINE)$(EXTRA_CUT)" | grep -qE $$match; then \
 		echo $${match//./x}; \
 		break; \
 	fi; \
@@ -90,7 +90,8 @@ stm/$(SERIES_GENERIC)/$(SERIES_GENERIC)_hal_init.c \
 stm/$(SERIES_GENERIC)/$(SERIES_GENERIC)_hal_timebase_tim.c \
 $(wildcard FreeRTOS-Kernel/*.c) \
 FreeRTOS-Kernel/portable/GCC/ARM_CM4F/port.c \
-$(wildcard common/Src/*.c)
+$(wildcard common/Src/*.c) \
+$(wildcard driver/Src/*.c)
 
 # ASM sources
 ASM_SOURCES =  \
@@ -159,7 +160,8 @@ stm/$(SERIES_GENERIC)/CMSIS/Device/ST/$(SERIES_GENERIC_CAP)/Include \
 stm/$(SERIES_GENERIC)/CMSIS/Include \
 FreeRTOS-Kernel/include \
 FreeRTOS-Kernel/portable/GCC/ARM_CM4F \
-common/Inc
+common/Inc \
+driver/Inc
 
 C_INCLUDES := $(addprefix -I,$(C_INCLUDES))
 
@@ -236,9 +238,11 @@ clean:
 # flash
 #######################################
 FLASH_ADDRESS ?= 0x8000000
+FLASH_FILE = $(shell find $(BUILD_DIR) -name 'stm*.bin' -exec basename {} \;)
 
-flash:
-	-st-flash write $(BUILD_DIR)/$(TARGET).bin $(FLASH_ADDRESS)
+flash: $(BUILD_DIR)/$(FLASH_FILE)
+	@echo "Flashing $(FLASH_FILE) to $(FLASH_ADDRESS)"
+	-st-flash write $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
 
 #######################################
 # format
