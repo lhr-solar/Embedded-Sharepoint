@@ -1,16 +1,13 @@
-#include <stm32xx_hal.h>
+#include "stm32xx_hal.h"
 
-void HAL_MspInit(void)
-{
-
-}
 
 int main() {
     HAL_Init(); 
 
     GPIO_InitTypeDef adc_in = {
         .Pin = GPIO_PIN_0,
-        .Mode = GPIO_MODE_INPUT
+        .Mode = GPIO_MODE_ANALOG,
+        .Pull = GPIO_NOPULL
 
     };
 
@@ -18,7 +15,11 @@ int main() {
     
     HAL_GPIO_Init(GPIOA, &adc_in);
     
-    __HAL_RCC_ADC_CLK_ENABLE(); // enable ADC clock
+    #if defined(STM32F4xx)  
+        __HAL_RCC_ADC1_CLK_ENABLE(); 
+    #elif defined(STM32L4xx)
+        __HAL_RCC_ADC_CLK_ENABLE(); // enable ADC clock4
+    #endif
 
     ADC_HandleTypeDef adc;
     HAL_ADC_Init(&adc);
