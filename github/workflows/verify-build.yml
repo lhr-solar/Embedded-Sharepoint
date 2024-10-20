@@ -2,8 +2,7 @@ name: Verify Build
 
 on:
   push:
-    branches:
-    - "build_action"
+  pull_request:
 jobs:
   build:
     runs-on: ubuntu-latest
