@@ -2,6 +2,8 @@ name: Verify Build
 
 on:
   push:
+    branches:
+    - "build_action"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,7 +21,7 @@ jobs:
           cd test/
           make clean
           cd ..
-          
+
        - name: Build tests
          run:
           sudo bash test/makeAllTests.sh
