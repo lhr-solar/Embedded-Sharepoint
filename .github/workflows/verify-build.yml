@@ -24,7 +24,9 @@ jobs:
           cd test/
           make clean
           cd ..
-          
+
        - name: Build tests
          run:
-          sudo bash test/makeAllTests.sh
+          cd test/
+          bash /makeAllTests.sh
+          cd ..
