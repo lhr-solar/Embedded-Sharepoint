@@ -1,0 +1,25 @@
+name: Verify Build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    steps: 
+       - name: Install
+         run: |
+          sudo apt -y update
+          sudo apt -y install gcc-arm-none-eabi
+       - name: Clean
+         run: |
+          cd test/
+          make clean
+          cd ..
+       - name: Build tests
+         run:
+          sudo bash test/makeAllTests.sh
+
+
