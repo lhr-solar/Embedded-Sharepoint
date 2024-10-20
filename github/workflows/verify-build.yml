@@ -2,7 +2,11 @@ name: Verify Build
 
 on:
   push:
+    branches:
+    - "build_action"  # Runs only on pushes to build_action branch
   pull_request:
+    branches:
+    - "build_action"  # Runs only on pushes to build_action branch
 jobs:
   build:
     runs-on: ubuntu-latest
