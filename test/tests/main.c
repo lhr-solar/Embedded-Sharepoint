@@ -3,7 +3,6 @@
 int main(void) {
 
     HAL_MspInit();
-    SystemClock_Config();
 
     int count = 0;
     

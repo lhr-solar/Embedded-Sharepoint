@@ -1,0 +1,32 @@
+name: Verify Build
+
+on:
+  push:
+    branches:
+    - "build_action"
+  pull_request:
+    branches:
+    - "build_action"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps: 
+       - name: Checkout repository
+         uses: actions/checkout@v3
+
+       - name: Install
+         run: |
+          sudo apt -y update
+          sudo apt -y install gcc-arm-none-eabi
+
+       - name: Clean
+         run: |
+          cd test/
+          make clean
+          cd ..
+
+       - name: Build tests
+         run:
+          cd test/
+          bash /makeAllTests.sh
+          cd ..
