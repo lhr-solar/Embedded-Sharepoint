@@ -1,15 +1,21 @@
 #!/bin/bash
 
-for tests_dir in tests/*; do
-    make clean
-    test_name="${tests_dir#tests/}"
-    test_name="${test_name%.c}"
-    echo "Compiling the test - $test_name"
+port_list=("stm32f401re" "stm32f413rht" "stm32f429zit" "stm32f446ret" "stm32l431cbt" "stm32l476rgt")
 
-    if ! make TEST="$test_name" -j; then
-        echo "Errors occurred during testing while testing $test_name.c"
-        exit 1
-    fi
+for port in "${port_list[@]}"; do
+
+    for tests_dir in tests/*; do
+        make clean
+        test_name="${tests_dir#tests/}"
+        test_name="${test_name%.c}"
+        echo "Compiling the test - $test_name for $port"
+
+        if ! make TEST="$test_name" PROJECT_TARGET="$port" -j; then
+            echo "Errors occurred during testing while testing $test_name.c using the $port"
+            exit 1
+        fi
+    done
+
 done
 
 echo "Jolly Good! All tests compiled successfully"
