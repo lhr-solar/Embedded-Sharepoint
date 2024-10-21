@@ -29,4 +29,3 @@ jobs:
          run:
           cd test/
           bash /makeAllTests.sh
-          cd ..
