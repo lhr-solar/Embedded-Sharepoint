@@ -9,3 +9,10 @@ void HAL_MspInit(void);
  * 
  */
 void SystemClock_Config(void);
+
+
+/**
+ * @brief This function is executed in case of error occurrence.
+ * 
+ */
+void Error_Handler(void);
