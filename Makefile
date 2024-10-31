@@ -17,6 +17,8 @@ ifndef PROJECT_C_INCLUDES
 $(error PROJECT_C_INCLUDES is not defined. Please provide a set of C header files.)
 endif
 
+$(info $(PROJECT_C_SOURCES))
+
 # Make sure shell commands run in /bin/bash, not /bin/sh
 SHELL := /bin/bash
 

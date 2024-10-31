@@ -39,6 +39,7 @@ conditional_bear_make:
 ifeq ($(BEAR_INSTALLED),yes)
 	@echo "Bear is installed, running with bear..."
 	bear $(MAKE) -C $(BUILD_MAKEFILE_DIR) all ; \
+	@mkdir -p ../.vscode
 	mv compile_commands.json ../.vscode/compile_commands.json
 else
 	@echo "Bear is not installed, running normal make..."

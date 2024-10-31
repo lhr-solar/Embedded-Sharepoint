@@ -1,0 +1,40 @@
+[
+    {
+        "arguments": [
+            "arm-none-eabi-gcc",
+            "-c",
+            "-x",
+            "assembler-with-cpp",
+            "-mcpu=cortex-m4",
+            "-mthumb",
+            "-mfpu=fpv4-sp-d16",
+            "-mfloat-abi=hard",
+            "-DUSE_HAL_DRIVER",
+            "-DSTM32F446xx",
+            "-DSTM32F4xx",
+            "-I/root/lhrs/Embedded-Sharepoint/test/Inc",
+            "-Istm/stm32f4xx/STM32F4xx_HAL_Driver/Inc",
+            "-Istm/stm32f4xx/STM32F4xx_HAL_Driver/Inc/Legacy",
+            "-Istm/stm32f4xx/CMSIS/Device/ST/STM32F4xx/Include",
+            "-Istm/stm32f4xx/CMSIS/Include",
+            "-IFreeRTOS-Kernel/include",
+            "-IFreeRTOS-Kernel/portable/GCC/ARM_CM4F",
+            "-Icommon/Inc",
+            "-Idriver/Inc",
+            "-Og",
+            "-Wall",
+            "-Werror",
+            "-Wfatal-errors",
+            "-fdata-sections",
+            "-ffunction-sections",
+            "-g",
+            "-gdwarf-2",
+            "-MF/root/lhrs/Embedded-Sharepoint/test/../build/startup_stm32f446xx.d",
+            "-o",
+            "/root/lhrs/Embedded-Sharepoint/test/../build/startup_stm32f446xx.o",
+            "stm/stm32f4xx/stm32f446/startup_stm32f446xx.s"
+        ],
+        "directory": "/root/lhrs/Embedded-Sharepoint",
+        "file": "stm/stm32f4xx/stm32f446/startup_stm32f446xx.s"
+    }
+]
