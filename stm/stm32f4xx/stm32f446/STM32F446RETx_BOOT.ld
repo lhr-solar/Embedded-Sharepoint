@@ -12,8 +12,8 @@ _Min_Stack_Size = 0x400;   /* default amount of stack (change if necessary) */
 
 MEMORY{
     RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 128K
-    FLASH (rx) : ORIGIN = 0x08000200, LENGTH = 384K
-    BOOT (rx) : ORIGIN = 0x08060200, LENGTH = 128K
+    BOOT (rx) : ORIGIN = 0x08000000, LENGTH = 128K
+    FLASH (rx) : ORIGIN = 0x08060000, LENGTH = 384K
 }
 
 _app_start = ORIGIN(FLASH);
@@ -22,6 +22,12 @@ _boot_start = ORIGIN(BOOT);
 _boot_len = LENGTH(BOOT);
 
 SECTIONS{
+    .isr_vector :
+    {
+        . = ALIGN(4);
+        KEEP(*(.isr_vector)) /* Startup code */
+        . = ALIGN(4);
+    } >BOOT
 
     .text :
     {

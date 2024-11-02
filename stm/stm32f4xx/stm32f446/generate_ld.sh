@@ -27,39 +27,56 @@ NC='\033[0m' # No Color
 source "$CFG_FILE"
 
 MCU_NAME_CAP=$(echo "$MCU_NAME" | tr '[:lower:]' '[:upper:]')
+BOOT_SIZE=128
 APP_SIZE=$(($TOTAL_FLASH_SIZE - $BOOT_SIZE))
-BOOT_OFFSET=$(printf "0x0%X" $((0x08000000 + ($APP_SIZE * 1024))))
+APP_OFFSET=$(printf "0x0%X" $((0x08000000 + ($APP_SIZE * 1024))))
 
 LINKER_TEMPLATE="LINKER_TEMPLATE.ld"
+
+LINKER_VARS="_sidata _sdata _edata _sbss _ebss _estack _Min_Heap_Size _Min_Stack_Size"
 
 OUTPUT_FLASH_SCRIPT="${MCU_NAME_CAP}x_APP.ld"
 OUTPUT_BOOT_SCRIPT="${MCU_NAME_CAP}x_BOOT.ld"
 
 echo -e "${GREEN}Generating linker script for $MCU_NAME${NC}"
 echo -e "${YELLOW}RAM size: $RAM_SIZE Kb${NC}"
-echo -e "${YELLOW}Application flash offset: 0x08000200${NC}"
-echo -e "${YELLOW}Application flash size: $APP_SIZE Kb${NC}"
-echo -e "${YELLOW}Boot flash offset: $BOOT_OFFSET${NC}"
+echo -e "${YELLOW}Boot flash offset: 0x08000000${NC}"
 echo -e "${YELLOW}Boot flash size: $BOOT_SIZE Kb${NC}"
+echo -e "${YELLOW}Application flash offset: $APP_OFFSET${NC}"
+echo -e "${YELLOW}Application flash size: $APP_SIZE Kb${NC}"
 
 FLASH_NAME=FLASH
+ENTRY_PT=main # defined as main so that it gets defined immediately after the vector table
 
 sed -e "s/\${RAM_SIZE}/${RAM_SIZE}K/g" \
     -e "s/\${APP_SIZE}/${APP_SIZE}K/g" \
-    -e "s/\${BOOT_OFFSET}/${BOOT_OFFSET}/g" \
+    -e "s/\${APP_OFFSET}/${APP_OFFSET}/g" \
     -e "s/\${BOOT_SIZE}/${BOOT_SIZE}K/g" \
     -e "s/\${FLASH_NAME}/${FLASH_NAME}/g" \
+    -e "s/\${ENTRY_PT}/${ENTRY_PT}/g" \
     "$LINKER_TEMPLATE" > "$OUTPUT_FLASH_SCRIPT"
 
+# for var in $LINKER_VARS
+# do
+#     sed -i "s/${var}/${var}_${FLASH_NAME,,}/g" "$OUTPUT_FLASH_SCRIPT"
+# done
+
 FLASH_NAME=BOOT
+ENTRY_PT=Reset_Handler
 
 sed -e "s/\${RAM_SIZE}/${RAM_SIZE}K/g" \
     -e "s/\${APP_SIZE}/${APP_SIZE}K/g" \
-    -e "s/\${BOOT_OFFSET}/${BOOT_OFFSET}/g" \
+    -e "s/\${APP_OFFSET}/${APP_OFFSET}/g" \
     -e "s/\${BOOT_SIZE}/${BOOT_SIZE}K/g" \
     -e "s/\${FLASH_NAME}/${FLASH_NAME}/g" \
-    -e '/\.isr_vector\s*:/,/}/d' \
+    -e "s/\${ENTRY_PT}/${ENTRY_PT}/g" \
     "$LINKER_TEMPLATE" > "$OUTPUT_BOOT_SCRIPT"
+
+
+# for var in $LINKER_VARS
+# do
+#     sed -i "s/${var}/${var}_${FLASH_NAME,,}/g" "$OUTPUT_BOOT_SCRIPT"
+# done
 
 echo -e "${GREEN}Generated flash script at $OUTPUT_FLASH_SCRIPT${NC}"
 echo -e "${GREEN}Generated boot script at $OUTPUT_BOOT_SCRIPT${NC}"

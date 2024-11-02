@@ -3,7 +3,7 @@
 */
 
 /* Entry Point */
-ENTRY(Reset_Handler)
+ENTRY(${ENTRY_PT})
 
 _estack = ORIGIN(RAM) + LENGTH(RAM);    /* end of RAM */
 
@@ -12,8 +12,8 @@ _Min_Stack_Size = 0x400;   /* default amount of stack (change if necessary) */
 
 MEMORY{
     RAM (xrw) : ORIGIN = 0x20000000, LENGTH = ${RAM_SIZE}
-    FLASH (rx) : ORIGIN = 0x08000000, LENGTH = ${APP_SIZE}
-    BOOT (rx) : ORIGIN = ${BOOT_OFFSET}, LENGTH = ${BOOT_SIZE}
+    BOOT (rx) : ORIGIN = 0x08000000, LENGTH = ${BOOT_SIZE}
+    FLASH (rx) : ORIGIN = ${APP_OFFSET}, LENGTH = ${APP_SIZE}
 }
 
 _app_start = ORIGIN(FLASH);
@@ -27,7 +27,7 @@ SECTIONS{
         . = ALIGN(4);
         KEEP(*(.isr_vector)) /* Startup code */
         . = ALIGN(4);
-    } >FLASH
+    } >${FLASH_NAME}
 
     .text :
     {

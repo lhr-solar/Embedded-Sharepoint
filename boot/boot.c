@@ -1,43 +1,44 @@
 #include "boot.h"
+#include "stm32xx_hal.h"
 
-#ifdef STM32F4xx
-#include "system_stm32f4xx.h"
-#else
-#include "system_stm32l4xx.h"
-#endif
+#include <stdint.h>
 
-#include "cmsis_gcc.h"
+extern void reset();
 
-void Reset_Handler(){
-    __set_MSP((uint32_t)_estack);
+static GPIO_InitTypeDef GPIO_InitStruct = {
+    .Pin = LED_PIN,
+    .Mode = GPIO_MODE_OUTPUT_PP,
+    .Pull = GPIO_NOPULL,
+    .Speed = GPIO_SPEED_FREQ_LOW
+};
 
-    SystemInit();
+void boot_init(){
+    HAL_Init();
 
-    // Copy the data segment initializers from flash to SRAM.
-    uint8_t *pSrc = (uint8_t *)_app_start;
-    uint8_t *pDest = (uint8_t *)_boot_start;
-    for ( ; pDest < _boot_start + _app_len;){
-        *pDest++ = *pSrc++;
-    }
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+    
+    // Turn on LED with HAL
+    HAL_GPIO_WritePin(LED_PORT, GPIO_PIN_5, GPIO_PIN_SET);
+}
 
-    // Zero fill the bss segment.
-    for (pDest = _boot_start; pDest < _boot_start + _boot_len;){
-        *pDest++ = 0;
-    }
+void boot_deinit(){
+    // Turn off LED with HAL
+    HAL_GPIO_WritePin(LED_PORT, GPIO_PIN_5, GPIO_PIN_RESET);
 
-    boot();
+    HAL_GPIO_DeInit(LED_PORT, LED_PIN);
+    __HAL_RCC_GPIOA_CLK_DISABLE();
+
+    HAL_DeInit();
 }
 
 void boot(){
+    // Initialize
+    boot_init();
+
+    // Deinitialize
+    boot_deinit();
+
     // Call the application's entry point.
-    startapp(_app_start, _estack);
-}
-
-void startapp(uint8_t *addr, uint8_t *stack){
-    // Set the stack pointer.
-    __set_MSP((uint32_t)stack);
-
-    // Jump to the application's entry point.
-    void (*app_entry)(void) = (void (*)(void))addr;
-    app_entry();
+    startapp();
 }
