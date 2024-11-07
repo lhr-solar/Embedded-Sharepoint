@@ -53,9 +53,9 @@ defined in linker script */
  * @retval : None
 */
 
-  .section  .text.Reset_Handler
-  .weak  Reset_Handler
-  .type  Reset_Handler, %function
+.section  .text.Reset_Handler
+.weak  Reset_Handler
+.type  Reset_Handler, %function
 Reset_Handler:  /* Call the bootloader's entry point.*/
   /* Load _estack into sp */
   ldr sp, =_estack
@@ -123,7 +123,6 @@ Infinite_Loop:
 *******************************************************************************/
    .section  .isr_vector,"a",%progbits
   .type  g_pfnVectors, %object
-   
    
 g_pfnVectors:
   .word  _estack

@@ -94,8 +94,12 @@ $(wildcard common/Src/*.c) \
 $(wildcard driver/Src/*.c)
 
 # ASM sources
-ASM_SOURCES ?=  \
+ASM_SOURCES =  \
 stm/$(SERIES_GENERIC)/$(SERIES_LINE)/startup_$(SERIES_LINE_GENERIC).s
+
+ifdef PROJECT_ASM_SOURCES
+ASM_SOURCES += $(PROJECT_ASM_SOURCES)
+endif
 
 # ASM sources
 ASMM_SOURCES = 
@@ -166,9 +170,9 @@ driver/Inc
 C_INCLUDES := $(addprefix -I,$(C_INCLUDES))
 
 # compile gcc flags
-ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -Werror -Wfatal-errors -fdata-sections -ffunction-sections -funwind-tables
+ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -Werror -Wfatal-errors -fdata-sections -ffunction-sections
 
-CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -Werror -Wfatal-errors -fdata-sections -ffunction-sections -funwind-tables
+CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -Werror -Wfatal-errors -fdata-sections -ffunction-sections
 
 ifeq ($(DEBUG), 1)
 CFLAGS += -g -gdwarf-2
@@ -239,7 +243,9 @@ clean:
 # flash
 #######################################
 LD_CFG = stm/$(SERIES_GENERIC)/$(SERIES_LINE)/$(SERIES_LINE).cfg
-BOOT_SIZE ?= 128
+
+# Fixed at 128Kb
+BOOT_SIZE ?= 128 
 FLASH_ADDRESS ?= $(shell echo $$((0x08000000 + $(BOOT_SIZE) * 1024)))
 
 FLASH_FILE = $(shell find $(BUILD_DIR) -name 'stm*.bin' -exec basename {} \;)

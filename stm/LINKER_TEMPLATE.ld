@@ -28,10 +28,11 @@ SECTIONS{
         KEEP(*(.isr_vector)) /* Startup code */
         . = ALIGN(4);
     } >${FLASH_NAME}
-
+    
     .text :
     {
         . = ALIGN(4);
+
         *(.text)           /* .text sections (code) */
         *(.text*)          /* .text* sections (code) */
         *(.glue_7)         /* glue arm to thumb code */

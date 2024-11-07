@@ -1,9 +1,7 @@
 #include "boot.h"
 #include "stm32xx_hal.h"
-
+#include "cmsis_gcc.h"
 #include <stdint.h>
-
-extern void reset();
 
 static GPIO_InitTypeDef GPIO_InitStruct = {
     .Pin = LED_PIN,
@@ -13,6 +11,9 @@ static GPIO_InitTypeDef GPIO_InitStruct = {
 };
 
 void boot_init(){
+    // Disable interrupts
+    __disable_irq();
+
     HAL_Init();
 
     __HAL_RCC_GPIOA_CLK_ENABLE();

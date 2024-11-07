@@ -29,7 +29,7 @@ source "$CFG_FILE"
 MCU_NAME_CAP=$(echo "$MCU_NAME" | tr '[:lower:]' '[:upper:]')
 BOOT_SIZE=128
 APP_SIZE=$(($TOTAL_FLASH_SIZE - $BOOT_SIZE))
-APP_OFFSET=$(printf "0x0%X" $((0x08000000 + ($APP_SIZE * 1024))))
+APP_OFFSET=$(printf "0x0%X" $((0x08000000 + ($BOOT_SIZE * 1024))))
 
 LINKER_TEMPLATE="LINKER_TEMPLATE.ld"
 
@@ -46,7 +46,7 @@ echo -e "${YELLOW}Application flash offset: $APP_OFFSET${NC}"
 echo -e "${YELLOW}Application flash size: $APP_SIZE Kb${NC}"
 
 FLASH_NAME=FLASH
-ENTRY_PT=main # defined as main so that it gets defined immediately after the vector table
+ENTRY_PT=Reset_Handler # defined as main so that it gets defined immediately after the vector table
 
 sed -e "s/\${RAM_SIZE}/${RAM_SIZE}K/g" \
     -e "s/\${APP_SIZE}/${APP_SIZE}K/g" \
@@ -71,7 +71,7 @@ sed -e "s/\${RAM_SIZE}/${RAM_SIZE}K/g" \
     -e "s/\${FLASH_NAME}/${FLASH_NAME}/g" \
     -e "s/\${ENTRY_PT}/${ENTRY_PT}/g" \
     "$LINKER_TEMPLATE" > "$OUTPUT_BOOT_SCRIPT"
-
+# -e "/\.reset/,/}/d" \
 
 # for var in $LINKER_VARS
 # do

@@ -13,7 +13,7 @@ _Min_Stack_Size = 0x400;   /* default amount of stack (change if necessary) */
 MEMORY{
     RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 128K
     BOOT (rx) : ORIGIN = 0x08000000, LENGTH = 128K
-    FLASH (rx) : ORIGIN = 0x08060000, LENGTH = 384K
+    FLASH (rx) : ORIGIN = 0x08020000, LENGTH = 384K
 }
 
 _app_start = ORIGIN(FLASH);
@@ -28,10 +28,11 @@ SECTIONS{
         KEEP(*(.isr_vector)) /* Startup code */
         . = ALIGN(4);
     } >FLASH
-
+    
     .text :
     {
         . = ALIGN(4);
+
         *(.text)           /* .text sections (code) */
         *(.text*)          /* .text* sections (code) */
         *(.glue_7)         /* glue arm to thumb code */
