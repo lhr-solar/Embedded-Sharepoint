@@ -4,8 +4,8 @@ SHELL := /bin/bash
 PROJECT_TARGET ?= stm32f446ret
 
 # source and include directories
-PROJECT_C_SOURCES = Src/boot.c
-PROJECT_C_INCLUDES = Inc/
+PROJECT_C_SOURCES = $(wildcard Src/*.c)
+PROJECT_C_INCLUDES = Inc
 PROJECT_ASM_SOURCES = reset.s
 
 # build and driver directories

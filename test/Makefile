@@ -22,6 +22,11 @@ export PROJECT_C_SOURCES
 export PROJECT_C_INCLUDES
 export PROJECT_BUILD_DIR
 
+# colors
+RED = \033[0;31m
+GREEN = \033[0;32m
+NC = \033[0m
+
 # check if bear is installed
 BEAR_INSTALLED := $(shell command -v bear >/dev/null 2>&1 && echo yes || echo no)
 
@@ -37,11 +42,11 @@ endif
 .PHONY: conditional_bear_make
 conditional_bear_make:
 ifeq ($(BEAR_INSTALLED),yes)
-	@echo "Bear is installed, running with bear..."
-	bear $(MAKE) -C $(BUILD_MAKEFILE_DIR) all ; \
+	@echo -e "$(GREEN)Bear is installed, running with bear...$(NC)"
+	bear -- $(MAKE) -C $(BUILD_MAKEFILE_DIR) all || bear $(MAKE) -C $(BUILD_MAKEFILE_DIR) all
 	mv compile_commands.json ../.vscode/compile_commands.json
 else
-	@echo "Bear is not installed, running normal make..."
+	@echo -e "$(RED)Bear is not installed, running normal make...$(NC)"
 	$(MAKE) -C $(BUILD_MAKEFILE_DIR) all
 endif
 
