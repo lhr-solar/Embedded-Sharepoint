@@ -1,6 +1,37 @@
 #include "stm32xx_hal.h"
 #include "CAN.h"
 
+StaticTask_t task_buffer;
+StackType_t taskStack[configMINIMAL_STACK_SIZE];
+
+static void task(void *pvParameters) {
+    // create payload
+    payload_t payload = {0};
+    payload.header.StdId = 0x11;
+    payload.header.RTR = CAN_RTR_DATA;
+    payload.header.IDE = CAN_ID_STD;
+    payload.header.DLC = 2;
+    payload.header.TransmitGlobalTime = DISABLE;
+
+    // send payload
+    payload.data[0] = 0x01;
+    payload.data[1] = 0x00;
+    volatile CAN_Status_e status1 = can_send(can1_handle, &payload.header, payload.data, true);
+    payload.data[0] = 0x02;
+    volatile CAN_Status_e status2 = can_send(can1_handle, &payload.header, payload.data, true);
+    payload.data[0] = 0x03;
+    volatile CAN_Status_e status3 = can_send(can1_handle, &payload.header, payload.data, true);
+    payload.data[0] = 0x04;
+    volatile CAN_Status_e status4 = can_send(can1_handle, &payload.header, payload.data, true);
+
+    (void)status1;
+    (void)status2;
+    (void)status3;
+    (void)status4;
+
+    while(1) {}
+}
+
 int main(void) {
     // initialize the HAL and system clock
     HAL_Init();
@@ -35,36 +66,27 @@ int main(void) {
     // initialize CAN
     can_init(can1_handle, &sFilterConfig);
 
-    // create payload
-    payload_t payload = {0};
-    payload.header.StdId = 0x11;
-    payload.header.RTR = CAN_RTR_DATA;
-    payload.header.IDE = CAN_ID_STD;
-    payload.header.DLC = 2;
-    payload.header.TransmitGlobalTime = DISABLE;
+    xTaskCreateStatic( /* The function that implements the task. */
+                    task,
+                    /* Text name for the task, just to help debugging. */
+                    "task",
+                    /* The size (in words) of the stack that should be created
+                    for the task. */
+                    configMINIMAL_STACK_SIZE,
+                 /* A parameter that can be passed into the task. Not used
+                    in this simple demo. */
+                    NULL,
+                 /* The priority to assign to the task. tskIDLE_PRIORITY
+                    (which is 0) is the lowest priority. configMAX_PRIORITIES - 1
+                    is the highest priority. */
+                    tskIDLE_PRIORITY + 2,
+                 /* Used to obtain a handle to the created task. Not used in
+                    this simple demo, so set to NULL. */
+                    taskStack,
+                    /* Buffer for static allocation */
+                    &task_buffer );
 
-    payload.data[0] = 0x01;
-    payload.data[1] = 0x00;
-
-    // HAL_CAN_Stop(can1_handle);
-
-    // send payload
-    volatile CAN_Status_e status1 = can_send(can1_handle, &payload.header, payload.data, true);
-    payload.data[0] = 0x02;
-    volatile CAN_Status_e status2 = can_send(can1_handle, &payload.header, payload.data, true);
-    payload.data[0] = 0x03;
-    volatile CAN_Status_e status3 = can_send(can1_handle, &payload.header, payload.data, true);
-
-    // for (int i = 0; i < 999999; i++) {}
-    payload.data[0] = 0x04;
-    volatile CAN_Status_e status4 = can_send(can1_handle, &payload.header, payload.data, true);
-
-    (void)status1;
-    (void)status2;
-    (void)status3;
-    (void)status4;
-
-    // HAL_CAN_Start(can1_handle);
+    vTaskStartScheduler();
 
     while(1) {}
 
