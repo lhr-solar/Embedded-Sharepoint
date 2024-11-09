@@ -240,7 +240,7 @@ clean:
 FLASH_ADDRESS ?= 0x8000000
 FLASH_FILE = $(shell find $(BUILD_DIR) -name 'stm*.bin' -exec basename {} \;)
 
-flash: $(BUILD_DIR)/$(FLASH_FILE)
+flash:
 	@echo "Flashing $(FLASH_FILE) to $(FLASH_ADDRESS)"
 	-st-flash write $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
 
