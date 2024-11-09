@@ -1,3 +1,6 @@
+#ifndef STM32xx_HAL_H
+#define STM32xx_HAL_H
+
 // STM32
 #if defined(STM32F4xx)
     #include "stm32f4xx.h"
@@ -20,3 +23,5 @@
 // Standard Library
 #include <stdint.h>
 #include <stdbool.h>
+
+#endif /* STM32xs_HAL_H */
