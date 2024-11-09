@@ -8,6 +8,8 @@
 
 static uint8_t transaction_buf[MAX_BUFFER_SIZE] = {0};
 
+#define INIT_CMD (0xDEADBEEF)
+
 static GPIO_InitTypeDef GPIO_InitCfg = {
     .Pin = LED_PIN,
     .Mode = GPIO_MODE_OUTPUT_PP,
@@ -26,12 +28,12 @@ static UART_HandleTypeDef USART1_Cfg = {
     .Init.OverSampling = UART_OVERSAMPLING_16
 };
 
-void boot_init(){
+bool boot_init(){
     // Disable interrupts
     __disable_irq();
 
     if(HAL_Init() == HAL_ERROR){
-        error_condition();
+        error_condition(BLDR_FAIL_INIT);
     }
 
     __HAL_RCC_GPIOA_CLK_ENABLE();
@@ -42,7 +44,18 @@ void boot_init(){
 
     // UART initialization
     if(HAL_UART_Init(&USART1_Cfg) == HAL_ERROR){
-        error_condition();
+        error_condition(BLDR_FAIL_INIT);
+    }
+
+    // TODO: Maybe put this in the app's reset handler?
+    uint32_t data;
+    if(HAL_UART_Receive(&USART1_Cfg, &data, 4, 0) == HAL_OK){
+        // Check if init cmd is correct
+        if(data == INIT_CMD){
+            return true;
+        } else{
+            return false;
+        }
     }
 }
 
@@ -56,25 +69,25 @@ void boot_deinit(){
     HAL_DeInit();
 }
 
-inline void error_condition(){
+inline void error_condition(error_code_t ec){
     // TODO: record/report the error to the user?
+    uint8_t data;
+    HAL_UART_Transmit(&USART1_Cfg, &data, 1, HAL_MAX_DELAY);
+    
     boot_deinit();
     startapp();
 }
 
 void boot(){
     // Initialize
-    boot_init();
+    if(boot_init() == false){
+        // Deinitialize
+        boot_deinit();
 
-    uint8_t init_cmd;
-    if(HAL_UART_Receive(&USART1_Cfg, &init_cmd, 1, 0)){
-        // Successfully entered bootloader
-        
+        // Call the application's entry point.
+        startapp();
+        return; // Should never get here
     }
 
-    // Deinitialize
-    boot_deinit();
-
-    // Call the application's entry point.
-    startapp();
+    // Start timer
 }
