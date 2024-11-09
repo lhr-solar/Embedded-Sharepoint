@@ -17,24 +17,12 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-// #include "main.h"
+#include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "stm32l4xx.h"
-#include "stm32l4xx_hal.h"
-
-#define B1_Pin GPIO_PIN_13
-#define B1_GPIO_Port GPIOC
-#define LD2_Pin GPIO_PIN_5
-#define LD2_GPIO_Port GPIOA
-#define TMS_Pin GPIO_PIN_13
-#define TMS_GPIO_Port GPIOA
-#define TCK_Pin GPIO_PIN_14
-#define TCK_GPIO_Port GPIOA
-#define SWO_Pin GPIO_PIN_3
-#define SWO_GPIO_Port GPIOB
-
+#include <stdio.h>
+#include "string.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -56,7 +44,8 @@
 UART_HandleTypeDef huart4;
 
 /* USER CODE BEGIN PV */
-uint8_t txdata[30] = "Hello World\n";
+uint8_t txdata[13] = "Hello World\n";
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -64,12 +53,38 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_UART4_Init(void);
 /* USER CODE BEGIN PFP */
-void Error_Handler(void);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+	uint8_t tx_buff[] = {0,1,2,3,4,5,6,7,8,9};
+	uint8_t rx_buff[10];
 
+	uint8_t TxData[10240];
+
+	uint8_t FinalData[20];
+	uint8_t RxData[20];
+	uint8_t temp[2];
+	int indx = 0;
+
+	int isSent = 1;
+	int countloop = 0;
+	int countinterrupt = 0;
+	void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+	{
+		isSent = 1;
+		countinterrupt++;
+	}
+
+	void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+	{
+		memcpy(RxData+indx, temp, 1);
+		if (++indx >= 20) {
+			indx = 0;
+		}
+		HAL_UART_Receive_IT(&huart4, temp, 1);
+	}
 /* USER CODE END 0 */
 
 /**
@@ -102,6 +117,14 @@ int main(void)
   MX_GPIO_Init();
   MX_UART4_Init();
   /* USER CODE BEGIN 2 */
+//  HAL_UART_Receive_IT(&huart2, rx_buff, 10);
+//  HAL_UART_Transmit_IT(&huart2, tx_buff, 10);
+
+  for (uint32_t i=0; i<10240; i++) {
+	  TxData[i] = i&(0xff);
+  }
+
+  HAL_UART_Receive_IT(&huart4, temp, 1);
 
   /* USER CODE END 2 */
 
@@ -109,14 +132,33 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    HAL_UART_Transmit(&huart4, txdata, sizeof(txdata), 1000); // 1000 means timeout duration in milliseconds
-    HAL_UART_Transmit_IT(&huart4, txdata, sizeof(txdata)); // Transmit data over UART4
-    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5); // PA5 (onboard LED) toggle
-    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_4); // PA4 toggle
-    HAL_Delay(2000); //Delay for 0.25 seconds
+
+	  if (isSent == 1){
+		  HAL_UART_Transmit_IT(&huart4, TxData, 10240);
+	  }
+
+//	  HAL_UART_Transmit(&huart4, TxData, 10240, HAL_MAX_DELAY);
+
+//	  HAL_UART_Receive(&huart4, RxData, 13, HAL_MAX_DELAY);
+
+
+	  // HAL_UART_Transmit(&huart4, txdata, sizeof(txdata), 100); // send message "Hello World" to the serial port
+	  // if(temp[0] == '\n')
+	  // {
+		//   memcpy (FinalData, RxData, indx);
+		//   indx = 0;
+	  // }
+
+	  // HAL_UART_Transmit(&huart4, FinalData, sizeof(FinalData), 100);
+
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+	  HAL_Delay(1000); //Delay for 0.5 seconds
+	  countloop++;
+
   }
   /* USER CODE END 3 */
 }
@@ -217,31 +259,21 @@ static void MX_GPIO_Init(void)
 /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4|LD2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : B1_Pin */
-  GPIO_InitStruct.Pin = B1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : PA4 LD2_Pin */
-  GPIO_InitStruct.Pin = GPIO_PIN_4|LD2_Pin;
+  /*Configure GPIO pin : LD2_Pin */
+  GPIO_InitStruct.Pin = LD2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
 }
-
 
 /* USER CODE BEGIN 4 */
 
