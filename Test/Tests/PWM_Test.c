@@ -13,21 +13,27 @@ int main(){
         .Alternate = GPIO_AF1_TIM1
     };
 
-    // GPIO_InitTypeDef led_config = {
-    //     .Mode = GPIO_MODE_OUTPUT_PP,
-    //     .Pull = GPIO_NOPULL,
-    //     .Pin = GPIO_PIN_5,
-    //     .Speed = GPIO_SPEED_FREQ_LOW
-    // };
+    GPIO_InitTypeDef led_config = {
+        .Mode = GPIO_MODE_OUTPUT_PP,
+        .Pull = GPIO_NOPULL,
+        .Pin = GPIO_PIN_5,
+    };
+
+    GPIO_InitTypeDef pin_config = {
+        .Mode = GPIO_MODE_OUTPUT_PP,
+        .Pull = GPIO_NOPULL,
+        .Pin = GPIO_PIN_6,
+    };
 
     
     __HAL_RCC_GPIOA_CLK_ENABLE(); // enable clock for GPIOA
     HAL_GPIO_Init(GPIOA, &pwm_config); // initialize GPIOA with pwm_config
-    // HAL_GPIO_Init(GPIOA, &led_config);
+    HAL_GPIO_Init(GPIOA, &led_config);
+    HAL_GPIO_Init(GPIOA, &pin_config);
 
     TIM_HandleTypeDef htim1;
     htim1.Instance = TIM1;
-    htim1.Init.Prescaler = 8 - 1;
+    htim1.Init.Prescaler = 8-1;
     htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
     htim1.Init.Period = 10000 - 1;
     // htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -43,20 +49,29 @@ int main(){
 
     HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_1);
 
-    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+    HAL_TIM_PWM_Start_IT(&htim1, TIM_CHANNEL_1);
     // TIM1->CCR1 = 500;
     // __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 500);
 
     while(1) {
-        // HAL_Delay(10000);
-        // HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+        HAL_Delay(500);
+        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+
+        HAL_TIM_PWM_Stop_IT(&htim1, TIM_CHANNEL_1); // testing changing duty cycle
+        sConfigOC.Pulse = 2500;
+        HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_1);
+        HAL_TIM_PWM_Start_IT(&htim1, TIM_CHANNEL_1);
+
+        // HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+        // HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
     }
 }
 
-// void HAL_TIM_PWM_IRQHandler(TIM_HandleTypeDef *htim) {
-//     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+// void TIM1_IRQHandler(TIM_HandleTypeDef *htim) {
+//     // HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+//     HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
 // }
 
-// void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim) {
-//     HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-// }
+void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim) {
+    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6); // testing interrupt callback
+}
