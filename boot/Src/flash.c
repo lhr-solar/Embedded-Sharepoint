@@ -15,11 +15,14 @@ bool exec_flash_command(volatile void* buf, flash_cmd_t* cmd){
         case FLASH_WRITE:
             return flash_write(buf, cmd->address, cmd->data_size);
         case FLASH_READ_SINGLE:
-            return flash_read_single(buf, cmd->address);
-        case FLASH_ERASE:
-            return flash_erase(cmd->address);
+            return flash_read_single(buf, cmd->address, cmd->data_size);
         case FLASH_READ_BUF:
             return flash_read_buf(buf, cmd->address, cmd->data_size);
+        case FLASH_ERASE:
+            return flash_erase(cmd->address);
+        case FLASH_MASS_ERASE:
+            return flash_mass_erase();
+        
     }
 
     return false;
@@ -132,6 +135,7 @@ bool flash_read_buf(volatile void* buf, void* address, uint16_t data_size){
 }
 
 bool flash_erase(void* address){
+    
     // Only allow writes to application space
     if(address < 0x08020000){
         return false;
@@ -158,4 +162,8 @@ bool flash_erase(void* address){
     }
 
     return true;
+}
+
+bool flash_mass_erase(){
+    HAL_Lock
 }

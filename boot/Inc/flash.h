@@ -25,9 +25,9 @@ typedef struct {
     uint32_t address : 32;
 } flash_cmd_t;
 
-#define MAX_BUFFER_SIZE
+#define MAX_BUFFER_SIZE (0xFFFF)
 
-bool exec_flash_command(flash_cmd_t *cmd);
+bool exec_flash_command(volatile void* buf, flash_cmd_t *cmd);
 bool init_boot();
 bool flash_write();
 bool flash_read_single();
