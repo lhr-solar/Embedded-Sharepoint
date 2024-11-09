@@ -6,7 +6,7 @@ StackType_t taskStack[configMINIMAL_STACK_SIZE];
 
 static void task(void *pvParameters) {
     // create payload
-    payload_t payload = {0};
+    payload_tx_t payload = {0};
     payload.header.StdId = 0x11;
     payload.header.RTR = CAN_RTR_DATA;
     payload.header.IDE = CAN_ID_STD;
@@ -20,6 +20,7 @@ static void task(void *pvParameters) {
     payload.data[0] = 0x02;
     volatile CAN_Status_e status2 = can_send(can1_handle, &payload.header, payload.data, true);
     payload.data[0] = 0x03;
+    payload.header.StdId = 0x003;
     volatile CAN_Status_e status3 = can_send(can1_handle, &payload.header, payload.data, true);
     payload.data[0] = 0x04;
     volatile CAN_Status_e status4 = can_send(can1_handle, &payload.header, payload.data, true);
@@ -28,6 +29,15 @@ static void task(void *pvParameters) {
     (void)status2;
     (void)status3;
     (void)status4;
+
+    payload_rx_t recv_p = {0};
+
+    can_recv(can1_handle, 0x11, &recv_p, true);
+    can_recv(can1_handle, 0x11, &recv_p, true);
+    can_recv(can1_handle, 0x11, &recv_p, false);
+    can_recv(can1_handle, 0x11, &recv_p, false);
+    can_recv(can1_handle, 0x3, &recv_p, true);
+    can_recv(can1_handle, 0x3, &recv_p, true);
 
     while(1) {}
 }
