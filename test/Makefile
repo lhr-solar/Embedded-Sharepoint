@@ -25,6 +25,8 @@ export PROJECT_BUILD_DIR
 # check if bear is installed
 BEAR_INSTALLED := $(shell command -v bear >/dev/null 2>&1 && echo yes || echo no)
 
+VS_CODE_DIR := $(MAKEFILE_DIR)/../.vscode
+
 ifeq ($(MAKECMDGOALS),)
 default: conditional_bear_make
 else ifeq ($(MAKECMDGOALS),all)
@@ -37,10 +39,10 @@ endif
 .PHONY: conditional_bear_make
 conditional_bear_make:
 ifeq ($(BEAR_INSTALLED),yes)
-	@echo "Bear is installed, running with bear..."
+	echo "Bear is installed, running with bear..."
 	bear $(MAKE) -C $(BUILD_MAKEFILE_DIR) all ; \
-	@mkdir -p ../.vscode
-	mv compile_commands.json ../.vscode/compile_commands.json
+	mkdir -p $(VS_CODE_DIR) ; \
+	if [ -f compile_commands.json ]; then mv compile_commands.json $(VS_CODE_DIR)/compile_commands.json; fi
 else
 	@echo "Bear is not installed, running normal make..."
 	$(MAKE) -C $(BUILD_MAKEFILE_DIR) all
