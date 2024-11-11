@@ -1,5 +1,6 @@
 #ifndef CAN_H
 #define CAN_H
+#ifndef CAN_UNDEFINED
 
 // return code for can driver
 typedef enum {
@@ -19,4 +20,5 @@ can_status_t can_init(CAN_HandleTypeDef* handle, CAN_FilterTypeDef* filter);
 can_status_t can_send(CAN_HandleTypeDef* handle, const CAN_TxHeaderTypeDef* header, const uint8_t data[], bool blocking);
 can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id, CAN_RxHeaderTypeDef* header, uint8_t data[], bool blocking);
 
+#endif /* CAN_UNDEFINED */
 #endif /* CAN_H */
