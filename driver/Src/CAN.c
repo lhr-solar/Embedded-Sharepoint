@@ -205,7 +205,7 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id, CAN_RxHeaderTypeDe
     }
 
     // disable interrupts (don't want to CAN_RX to interrupt here)
-    portENTER_CRITICAL();
+    // portENTER_CRITICAL();
 
     can_status_t status = CAN_RECV;
 
@@ -252,7 +252,7 @@ failed:
     }
     
     // enable interrupts
-    portEXIT_CRITICAL();
+    // portEXIT_CRITICAL();
 
     return status;
 }
