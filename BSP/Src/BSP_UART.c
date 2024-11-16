@@ -129,7 +129,8 @@
 
 		// If not already receiving, then start receiving it
 		if (HAL_UART_GetState(huartPtr) != HAL_UART_STATE_BUSY_RX) {
-			HAL_UART_Receive_IT(huartPtr, (uint8_t*)huartPtr->pRxBuffPtr, 1);
+//			HAL_UART_Receive_IT(huartPtr, (uint8_t*)huartPtr->pRxBuffPtr, 1); // pRxBuffer is the UART transfer buffer and the destination
+			return HAL_UART_Receive_IT(huartPtr, (uint8_t *)data, 13);
 		}
 
 		// Read the data from the user's receive queue and store it in the data buffer
@@ -175,6 +176,10 @@
 		// portYIELD_FROM_ISR(xHigherPriorityTaskWoken); // If a higher priority task is woken, then a context switch is required
 
 	}
+
+//	void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+//
+//	}
 
 
 
