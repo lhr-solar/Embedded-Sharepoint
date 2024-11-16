@@ -130,7 +130,7 @@
 		// If not already receiving, then start receiving it
 		if (HAL_UART_GetState(huartPtr) != HAL_UART_STATE_BUSY_RX) {
 //			HAL_UART_Receive_IT(huartPtr, (uint8_t*)huartPtr->pRxBuffPtr, 1); // pRxBuffer is the UART transfer buffer and the destination
-			return HAL_UART_Receive_IT(huartPtr, (uint8_t *)data, 13);
+			return HAL_UART_Receive_IT(huartPtr, (uint8_t *)data, length);
 		}
 
 		// Read the data from the user's receive queue and store it in the data buffer

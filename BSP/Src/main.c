@@ -106,7 +106,7 @@ void StartUartRxTask(void *argument);
 //	}
 //
 
-	uint8_t rxData[5];
+//	uint8_t rxData[5];
 //	void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 //	{
 ////		memcpy(RxData+indx, temp, 1);
@@ -166,6 +166,7 @@ int main(void)
                              &xStaticRxQueue);
 
 
+  // Initialize the BSP UART
   BSP_UART_Init(&huart4, &xRxQueue);
 
   /* USER CODE END 2 */
@@ -369,9 +370,9 @@ void StartUartTxTask(void *argument)
 {
   /* USER CODE BEGIN 5 */
 
-    const TickType_t xDelay = pdMS_TO_TICKS(500);
+    const TickType_t xDelay = pdMS_TO_TICKS(1000);
 //    char txData[] = TEST_MSG;
-    char txData[] = "Hello World!\n"; // 13 characters long
+    uint8_t txData[] = "Hello World!\n"; // 13 characters long
 
     /* Wait for queues to be created */
     osDelay(100);
@@ -381,13 +382,13 @@ void StartUartTxTask(void *argument)
   for(;;)
   {
 	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-	  BSP_UART_Write(txData, TEST_MSG_LEN, 0); // message length is 13, busId is 0
+//	  BSP_UART_Write(txData, TEST_MSG_LEN, 0); // message length is 13, busId is 0
 
 //      if (BSP_UART_Write(txData, TEST_MSG_LEN, 0) == HAL_OK)
 //      {
 //          HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 //      }
-//	  HAL_UART_Transmit(&huart4, txdata, 13, 100);
+	  HAL_UART_Transmit_IT(&huart4, txData, 13);
 //	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 //	  HAL_Delay(250); //Delay for 0.5 seconds
 
@@ -411,13 +412,35 @@ void StartUartRxTask(void *argument)
 
     uint8_t rxData[20];
 
+
+    BSP_UART_Read((char*)rxData, TEST_MSG_LEN, 0);
+//    BSP_UART_Write((char*)rxData, TEST_MSG_LEN, 0);
+
+
+//    HAL_UART_Receive_IT(&huart4, rxData, 5);
+//    char rxData1[] = "Hello World\n";
+
+//    uint8_t txData[] = "He7lo World!\n"; // 13 characters long
+
+//    HAL_UART_Receive_IT(&huart4, rxData, 5);
+//	HAL_UART_Receive(&huart4, rxData, 5, HAL_MAX_DELAY);
+
+    /* Wait for queues to be created */
+    osDelay(100);
+
   /* Infinite loop */
   for(;;)
   {
 	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 
+//	  HAL_UART_Transmit_IT(&huart4, (uint8_t *)rxData1, 13);
+
+
+//	  HAL_UART_Receive(&huart4, rxData, 5, HAL_MAX_DELAY);
+//	  HAL_UART_Transmit_IT(&huart4, rxData, 5);
 //	  HAL_UART_Receive_IT(&huart4, rxData, 5);
 //	  HAL_UART_Transmit_IT(&huart4, rxData, 5);
+
 //	  HAL_UART_Transmit(&huart4, rxData, 5, HAL_MAX_DELAY);
 //	  uint8_t data[5] = "Hello";
 //	  BSP_UART_Write((char*)data, 5, 0); // busId is 0
@@ -427,8 +450,11 @@ void StartUartRxTask(void *argument)
 //          /* Echo/transmit received data back */
 //          BSP_UART_Write((char*)rxData, TEST_MSG_LEN, 0); // busId is 0
 //      }
-	  BSP_UART_Read((char*)rxData, TEST_MSG_LEN, 0);
-	  BSP_UART_Write((char*)rxData, TEST_MSG_LEN, 0);
+//	  BSP_UART_Read((char*)rxData, TEST_MSG_LEN, 0);
+//	  BSP_UART_Write((char*)rxData, TEST_MSG_LEN, 0);
+
+	  HAL_UART_Transmit_IT(&huart4, rxData, 13);
+
       osDelay(xDelay);
   }
   /* USER CODE END StartUartRxTask */
