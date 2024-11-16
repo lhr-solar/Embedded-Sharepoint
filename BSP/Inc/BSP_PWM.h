@@ -4,6 +4,10 @@
 //figure out #includes
 #include <stdint.h>
 #include "stm32xx_hal.h"
+#include "stm32f4xx_hal.h"
+#include "stm32f4xx.h"
+#include "stm32f4xx_hal_tim.h"
+#include "stm32f4xx_hal_gpio.h"
 
 typedef struct{
     TIM_HandleTypeDef* timHandle; 
@@ -19,7 +23,7 @@ typedef struct{
  * @param config
  * @return HAL_StatusTypeDef
  */
-HAL_StatusTypeDef BSP_PWM_Init(TIM_HandleTypeDef* timHandle, uint32_t channel, QueueHandle_t* TxPtr);
+HAL_StatusTypeDef BSP_PWM_Init(TIM_HandleTypeDef* timHandle, uint32_t channel, QueueHandle_t* txPtr);
 
 /**
  * @brief Set PWM frequency and duty cycle, or adds to transmit queue
