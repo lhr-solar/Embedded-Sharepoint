@@ -219,8 +219,8 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id, CAN_RxHeaderTypeDe
             if (blocking) {
                 while (xQueueReceive(can1_recv_entries[i].queue, &payload, 0) == errQUEUE_EMPTY) {
                     // quickly enable interrupts so maybe next time we can hit
-                    portEXIT_CRITICAL();
-                    portENTER_CRITICAL();
+                    // portEXIT_CRITICAL();
+                    // portENTER_CRITICAL();
                 }
             
             // otherwise, fail on empty
