@@ -3,7 +3,7 @@
 
 //figure out #includes
 #include <stdint.h>
-#include "stm32xx_hal.h"
+// #include "stm32xx_hal.h"
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx.h"
 #include "stm32f4xx_hal_tim.h"
@@ -39,6 +39,6 @@ HAL_StatusTypeDef BSP_PWM_Set(TIM_HandleTypeDef* timHandle, uint32_t channel, ui
  * @param timer handle to get speed from
  * @return HAL_StatusTypeDef
  */
-uint32_t BSP_PWM_GetSpeed(TIM_HandleTypeDef* timHandle, uint32_t channel);
+// uint32_t BSP_PWM_GetSpeed(TIM_HandleTypeDef* timHandle, uint32_t channel);
 
 #endif
