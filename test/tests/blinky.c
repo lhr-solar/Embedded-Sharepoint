@@ -14,7 +14,7 @@ int main(){
 
     while(1){
         HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-        HAL_Delay(500);
+        HAL_Delay(1000);
     }
 
     return 0;
