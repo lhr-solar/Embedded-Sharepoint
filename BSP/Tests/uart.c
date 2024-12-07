@@ -1,131 +1,121 @@
-/* CAN test
-- Setups up CAN1 in loopback mode
-- Send 4 messages (since there are 3 mailboxes, 1 ends up going in the can1 send queue)
-- Recieves the 4 messages and verifies correctness
+/* UART test
+
+- Sets up UART4 
+- Creates a receive queue
+- Sends multiple bytes (some will go in TX queue)
+- Receives bytes and verifies correctness
+- Tests blocking and non-blocking behavior
 - Flashes LED if successful
 */
+
 #include "stm32xx_hal.h"
 #include "UART.h"
 
+// Create static task for FreeRTOS
 StaticTask_t task_buffer;
 StackType_t taskStack[configMINIMAL_STACK_SIZE];
 
+// Create static RX queue
+#define RX_QUEUE_SIZE 32
+static StaticQueue_t rx_queue_buffer;
+static uint8_t rx_queue_storage[RX_QUEUE_SIZE];
+static QueueHandle_t rx_queue;
+
 static void error_handler(void) {
-   while(1) {}
+    while(1) {}
 }
 
 static void success_handler(void) {
-   GPIO_InitTypeDef led_init = {
-      .Mode = GPIO_MODE_OUTPUT_PP,
-      .Pull = GPIO_NOPULL,
-      .Pin = GPIO_PIN_5
-   };
-
+    GPIO_InitTypeDef led_init = {
+        .Mode = GPIO_MODE_OUTPUT_PP,
+        .Pull = GPIO_NOPULL,
+        .Pin = GPIO_PIN_5
+    };
+    
     __HAL_RCC_GPIOA_CLK_ENABLE();
     HAL_GPIO_Init(GPIOA, &led_init);
 
-   while(1){
-      HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-      HAL_Delay(500);
-   }
+    while(1) {
+        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5); // Toggle LED 
+        HAL_Delay(500);
+    }
 }
 
 static void task(void *pvParameters) {
-   // create payload to send
-   CAN_TxHeaderTypeDef tx_header = {0};   
-   tx_header.StdId = 0x1;
-   tx_header.RTR = CAN_RTR_DATA;
-   tx_header.IDE = CAN_ID_STD;
-   tx_header.DLC = 2;
-   tx_header.TransmitGlobalTime = DISABLE;
+    // Create test data
+    const uint8_t tx_data[] = "Hello UART Test!";
+    const uint8_t tx_len = sizeof(tx_data) - 1;  // Don't include null terminator
+    uint8_t rx_data[32] = {0};
+    
+    // Initialize RX queue
+    rx_queue = xQueueCreateStatic(RX_QUEUE_SIZE,
+                                 sizeof(uint8_t),
+                                 rx_queue_storage,
+                                 &rx_queue_buffer);
+                                 
+    // Setup UART init
+    huart4->Init.BaudRate = 115200;
+    huart4->Init.WordLength = UART_WORDLENGTH_8B;
+    huart4->Init.StopBits = UART_STOPBITS_1;
+    huart4->Init.Parity = UART_PARITY_NONE;
+    huart4->Init.Mode = UART_MODE_TX_RX;
+    huart4->Init.HwFlowCtl = UART_HWCONTROL_NONE;
+    huart4->Init.OverSampling = UART_OVERSAMPLING_16;
+    
+    // Initialize UART with RX queue
+    if (uart_init(huart4, &rx_queue) != UART_OK) error_handler();
 
-   // send two payloads to 0x1
-   uint8_t tx_data[8] = {0};
-   tx_data[0] = 0x01;
-   tx_data[1] = 0x00;
-   if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+    // Test 1: Blocking send
+    if (uart_send(huart4, tx_data, tx_len, true) != UART_SENT) error_handler();
+    
+    // Test 2: Blocking receive what we sent
+    if (uart_recv(huart4, rx_data, tx_len, true) != UART_RECV) error_handler();
+    
+    // Verify received data
+    for (int i = 0; i < tx_len; i++) {
+        if (rx_data[i] != tx_data[i]) error_handler();
+    }
+    
+    // Test 3: Non-blocking receive when empty
+    uint8_t single_byte;
+    if (uart_recv(huart4, &single_byte, 1, false) != UART_EMPTY) error_handler();
+    
+    // Test 4: Multiple rapid sends to test queueing
+    const uint8_t rapid_data[] = "12345";
+    const uint8_t rapid_len = sizeof(rapid_data) - 1;
+    
+    for (int i = 0; i < 10; i++) {  // Send enough to fill TX queue
+        if (uart_send(huart4, rapid_data, rapid_len, true) != UART_SENT) error_handler();
+    }
+    
+    // Test 5: Blocking receive multiple queued messages
+    memset(rx_data, 0, sizeof(rx_data));
+    for (int i = 0; i < 10; i++) {
+        if (uart_recv(huart4, rx_data, rapid_len, true) != UART_RECV) error_handler();
+        for (int j = 0; j < rapid_len; j++) {
+            if (rx_data[j] != rapid_data[j]) error_handler();
+        }
+    }
 
-   tx_data[0] = 0x02;
-   if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
-
-   // send two payloads to 0x3
-   tx_data[0] = 0x03;
-   tx_header.StdId = 0x003;
-   if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
-
-   tx_data[0] = 0x04;
-   if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
-
-   // recieve what was sent to 0x1
-   CAN_RxHeaderTypeDef rx_header = {0};
-   uint8_t rx_data[8] = {0};
-   can_status_t status;
-   status = can_recv(hcan1, 0x1, &rx_header, rx_data, true);
-   if (status != CAN_RECV && rx_data[0] != 0x1) error_handler();
-   status = can_recv(hcan1, 0x1, &rx_header, rx_data, true);
-   if (status != CAN_RECV && rx_data[0] != 0x2) error_handler();
-
-   // make sure we don't recieve from wrong ID and nonblocking works
-   status = can_recv(hcan1, 0x1, &rx_header, rx_data, false);
-   if (status != CAN_EMPTY) error_handler();
-   status = can_recv(hcan1, 0x1, &rx_header, rx_data, false);
-   if (status != CAN_EMPTY) error_handler();
-
-   // recieve the rest
-   status = can_recv(hcan1, 0x3, &rx_header, rx_data, true);
-   if (status != CAN_RECV && rx_data[0] != 0x3) error_handler();
-   status = can_recv(hcan1, 0x3, &rx_header, rx_data, true);
-   if (status != CAN_RECV && rx_data[0] != 0x4) error_handler();
-
-   success_handler();
+    success_handler();
 }
 
 int main(void) {
-   // initialize the HAL and system clock
-   if (HAL_Init() != HAL_OK) error_handler();
-   // SystemClock_Config();
-
-   // create filter
-   CAN_FilterTypeDef  sFilterConfig;
-   sFilterConfig.FilterBank = 0;
-   sFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
-   sFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
-   sFilterConfig.FilterIdHigh = 0x0000;
-   sFilterConfig.FilterIdLow = 0x0000;
-   sFilterConfig.FilterMaskIdHigh = 0x0000;
-   sFilterConfig.FilterMaskIdLow = 0x0000;
-   sFilterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
-   sFilterConfig.FilterActivation = ENABLE;
-   sFilterConfig.SlaveStartFilterBank = 14;
-
-   // setup can init
-   hcan1->Init.Prescaler = 5;
-   hcan1->Init.Mode = CAN_MODE_LOOPBACK;
-   hcan1->Init.SyncJumpWidth = CAN_SJW_1TQ;
-   hcan1->Init.TimeSeg1 = CAN_BS1_6TQ;
-   hcan1->Init.TimeSeg2 = CAN_BS2_2TQ;
-   hcan1->Init.TimeTriggeredMode = DISABLE;
-   hcan1->Init.AutoBusOff = DISABLE;
-   hcan1->Init.AutoWakeUp = DISABLE;
-   hcan1->Init.AutoRetransmission = ENABLE;
-   hcan1->Init.ReceiveFifoLocked = DISABLE;
-   hcan1->Init.TransmitFifoPriority = DISABLE;
-
-   // initialize CAN
-   if (can_init(hcan1, &sFilterConfig) != CAN_OK) error_handler();
-
-   xTaskCreateStatic(
-                  task,
-                  "task",
-                  configMINIMAL_STACK_SIZE,
-                  NULL,
-                  tskIDLE_PRIORITY + 2,
-                  taskStack,
-                  &task_buffer);
-
-   vTaskStartScheduler();
-
-   error_handler();
-
-   return 0;
+    // Initialize HAL
+    if (HAL_Init() != HAL_OK) error_handler();
+    // SystemClock_Config();  // Uncomment if needed
+    
+    // Create RTOS task
+    xTaskCreateStatic(task,
+                     "uart_test",
+                     configMINIMAL_STACK_SIZE,
+                     NULL,
+                     tskIDLE_PRIORITY + 2,
+                     taskStack,
+                     &task_buffer);
+    
+    vTaskStartScheduler();
+    
+    error_handler();
+    return 0;
 }
