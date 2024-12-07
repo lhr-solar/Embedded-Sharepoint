@@ -262,6 +262,7 @@ void boot(){
     }
 
     if(uart_init() != BLDR_OK){
+        while(1);
         startapp_with_err(BLDR_FAIL_UART_INIT);
     }
     
