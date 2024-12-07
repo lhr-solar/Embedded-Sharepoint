@@ -1,7 +1,8 @@
+#include "stm32xx_hal.h"
 #include "UART.h"
 
 
-#define QUEUE_LENGTH 128
+#define QUEUE_LENGTH 128 // Allow it to be overwritten
 #define QUEUE_ITEM_SIZE sizeof(uint8_t)
 
 static UART_HandleTypeDef huart4_ = {.Instance = UART4};
@@ -36,9 +37,10 @@ uart_status_t uart_init(UART_HandleTypeDef* handle, QueueHandle_t* rxQueue) {
         return UART_ERR;
     }
 
-    // Setup interrupts
-    HAL_NVIC_SetPriority(UART4_IRQn, 5, 0);
-    HAL_NVIC_EnableIRQ(UART4_IRQn);
+    // actually these should be done the msp
+    // Setup interrupts 
+    // HAL_NVIC_SetPriority(UART4_IRQn, 5, 0);
+    // HAL_NVIC_EnableIRQ(UART4_IRQn);
 
     // Start first reception
     if (HAL_UART_Receive_IT(handle, (uint8_t*)handle->pRxBuffPtr, 1) != HAL_OK) {
@@ -49,7 +51,7 @@ uart_status_t uart_init(UART_HandleTypeDef* handle, QueueHandle_t* rxQueue) {
     return UART_OK;
 }
 
-uart_status_t uart_send(UART_HandleTypeDef* handle, const char* data, uint8_t length, bool blocking) {
+uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t length, bool blocking) {
     if (!initialized || !data || length == 0) {
         return UART_ERR;
     }
@@ -85,7 +87,7 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const char* data, uint8_t le
     return UART_SENT;
 }
 
-uart_status_t uart_recv(UART_HandleTypeDef* handle, char* data, uint8_t length, bool blocking) {
+uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t length, bool blocking) {
     if (!initialized || !data || length == 0 || !rx_queue) {
         return UART_ERR;
     }

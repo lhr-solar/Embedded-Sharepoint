@@ -1,12 +1,18 @@
-#ifndef INC_UART_H_
-#define INC_UART_H_
+#ifndef UART_H_
+#define UART_H_
 
+// FreeRTOS includes
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "timers.h"
+#include "semphr.h"
+
+// Standard Library
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
-#include "FreeRTOS.h"
-#include "semphr.h"
-#include "queue.h"
+
 #include "stm32l4xx_hal.h"
 
 // Return codes for UART operations
@@ -25,7 +31,7 @@ extern UART_HandleTypeDef* huart4;
 
 // Function prototypes with consistent parameters and return types
 uart_status_t uart_init(UART_HandleTypeDef* handle, QueueHandle_t* rxQueue);
-uart_status_t uart_send(UART_HandleTypeDef* handle, const char* data, uint8_t length, bool blocking);
-uart_status_t uart_recv(UART_HandleTypeDef* handle, char* data, uint8_t length, bool blocking);
+uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t length, bool blocking);
+uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t length, bool blocking);
 
 #endif /* INC_UART_H_ */

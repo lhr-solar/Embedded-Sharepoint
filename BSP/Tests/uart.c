@@ -1,0 +1,131 @@
+/* CAN test
+- Setups up CAN1 in loopback mode
+- Send 4 messages (since there are 3 mailboxes, 1 ends up going in the can1 send queue)
+- Recieves the 4 messages and verifies correctness
+- Flashes LED if successful
+*/
+#include "stm32xx_hal.h"
+#include "UART.h"
+
+StaticTask_t task_buffer;
+StackType_t taskStack[configMINIMAL_STACK_SIZE];
+
+static void error_handler(void) {
+   while(1) {}
+}
+
+static void success_handler(void) {
+   GPIO_InitTypeDef led_init = {
+      .Mode = GPIO_MODE_OUTPUT_PP,
+      .Pull = GPIO_NOPULL,
+      .Pin = GPIO_PIN_5
+   };
+
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    HAL_GPIO_Init(GPIOA, &led_init);
+
+   while(1){
+      HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+      HAL_Delay(500);
+   }
+}
+
+static void task(void *pvParameters) {
+   // create payload to send
+   CAN_TxHeaderTypeDef tx_header = {0};   
+   tx_header.StdId = 0x1;
+   tx_header.RTR = CAN_RTR_DATA;
+   tx_header.IDE = CAN_ID_STD;
+   tx_header.DLC = 2;
+   tx_header.TransmitGlobalTime = DISABLE;
+
+   // send two payloads to 0x1
+   uint8_t tx_data[8] = {0};
+   tx_data[0] = 0x01;
+   tx_data[1] = 0x00;
+   if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+
+   tx_data[0] = 0x02;
+   if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+
+   // send two payloads to 0x3
+   tx_data[0] = 0x03;
+   tx_header.StdId = 0x003;
+   if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+
+   tx_data[0] = 0x04;
+   if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+
+   // recieve what was sent to 0x1
+   CAN_RxHeaderTypeDef rx_header = {0};
+   uint8_t rx_data[8] = {0};
+   can_status_t status;
+   status = can_recv(hcan1, 0x1, &rx_header, rx_data, true);
+   if (status != CAN_RECV && rx_data[0] != 0x1) error_handler();
+   status = can_recv(hcan1, 0x1, &rx_header, rx_data, true);
+   if (status != CAN_RECV && rx_data[0] != 0x2) error_handler();
+
+   // make sure we don't recieve from wrong ID and nonblocking works
+   status = can_recv(hcan1, 0x1, &rx_header, rx_data, false);
+   if (status != CAN_EMPTY) error_handler();
+   status = can_recv(hcan1, 0x1, &rx_header, rx_data, false);
+   if (status != CAN_EMPTY) error_handler();
+
+   // recieve the rest
+   status = can_recv(hcan1, 0x3, &rx_header, rx_data, true);
+   if (status != CAN_RECV && rx_data[0] != 0x3) error_handler();
+   status = can_recv(hcan1, 0x3, &rx_header, rx_data, true);
+   if (status != CAN_RECV && rx_data[0] != 0x4) error_handler();
+
+   success_handler();
+}
+
+int main(void) {
+   // initialize the HAL and system clock
+   if (HAL_Init() != HAL_OK) error_handler();
+   // SystemClock_Config();
+
+   // create filter
+   CAN_FilterTypeDef  sFilterConfig;
+   sFilterConfig.FilterBank = 0;
+   sFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
+   sFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
+   sFilterConfig.FilterIdHigh = 0x0000;
+   sFilterConfig.FilterIdLow = 0x0000;
+   sFilterConfig.FilterMaskIdHigh = 0x0000;
+   sFilterConfig.FilterMaskIdLow = 0x0000;
+   sFilterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
+   sFilterConfig.FilterActivation = ENABLE;
+   sFilterConfig.SlaveStartFilterBank = 14;
+
+   // setup can init
+   hcan1->Init.Prescaler = 5;
+   hcan1->Init.Mode = CAN_MODE_LOOPBACK;
+   hcan1->Init.SyncJumpWidth = CAN_SJW_1TQ;
+   hcan1->Init.TimeSeg1 = CAN_BS1_6TQ;
+   hcan1->Init.TimeSeg2 = CAN_BS2_2TQ;
+   hcan1->Init.TimeTriggeredMode = DISABLE;
+   hcan1->Init.AutoBusOff = DISABLE;
+   hcan1->Init.AutoWakeUp = DISABLE;
+   hcan1->Init.AutoRetransmission = ENABLE;
+   hcan1->Init.ReceiveFifoLocked = DISABLE;
+   hcan1->Init.TransmitFifoPriority = DISABLE;
+
+   // initialize CAN
+   if (can_init(hcan1, &sFilterConfig) != CAN_OK) error_handler();
+
+   xTaskCreateStatic(
+                  task,
+                  "task",
+                  configMINIMAL_STACK_SIZE,
+                  NULL,
+                  tskIDLE_PRIORITY + 2,
+                  taskStack,
+                  &task_buffer);
+
+   vTaskStartScheduler();
+
+   error_handler();
+
+   return 0;
+}
