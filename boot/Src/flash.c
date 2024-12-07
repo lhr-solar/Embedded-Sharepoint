@@ -1,12 +1,15 @@
 #include "flash.h"
 #include "stm32xx_hal.h"
+
 #include <string.h>
+#include <stdbool.h>
+#include <stdint.h>
 
 static uint8_t sector_erased_bitmap = 0;
 
-#define HANDLE_HAL_ERROR(x, handler) if((x) == HAL_ERROR){(handler); return false;}
+#define HANDLE_HAL_ERROR(x) if((x) == HAL_ERROR){return false;}
 
-bool exec_flash_command(volatile void* buf, flash_cmd_t* cmd){
+bool exec_flash_command(void* buf, flash_cmd_t* cmd){
     // Error check
     if(cmd->data_size > MAX_BUFFER_SIZE ||
         cmd->id >= NUM_IDS ||
@@ -14,9 +17,9 @@ bool exec_flash_command(volatile void* buf, flash_cmd_t* cmd){
         return false;
     }
 
-    bool ret;
+    bool ret = false;
     
-    HANDLE_HAL_ERROR(HAL_FLASH_Unlock(), NULL);
+    HANDLE_HAL_ERROR(HAL_FLASH_Unlock());
 
     if (cmd->id == FLASH_WRITE) {
         ret = flash_write(buf, cmd->address, cmd->data_size);
@@ -30,7 +33,7 @@ bool exec_flash_command(volatile void* buf, flash_cmd_t* cmd){
         ret = flash_mass_erase();
     }
 
-    HANDLE_HAL_ERROR(HAL_FLASH_Lock(), NULL);
+    HANDLE_HAL_ERROR(HAL_FLASH_Lock());
 
     return ret;
 }
@@ -38,7 +41,7 @@ bool exec_flash_command(volatile void* buf, flash_cmd_t* cmd){
 #define FLASH_SECTOR_MASK (0x00060000)
 #define FLASH_SECTOR(addr) (((((uint32_t)addr) & FLASH_SECTOR_MASK)>>17) + 4)
 
-static bool flash_write_single(uint64_t data, void* address, uint8_t data_size){
+static bool flash_write_single(uint64_t data, uint32_t address, uint8_t data_size){
     uint32_t program_type;
     switch(data_size){
         case 1:
@@ -58,30 +61,26 @@ static bool flash_write_single(uint64_t data, void* address, uint8_t data_size){
     }
 
     // Try programming the data
-    HANDLE_HAL_ERROR(HAL_FLASH_Program(program_type, address, data), NULL);
+    HANDLE_HAL_ERROR(HAL_FLASH_Program(program_type, address, data));
 
     // verify
-    if(memcmp((volatile void*)address, &data, data_size) != 0){
+    if(memcmp((void*)address, &data, data_size) != 0){
         // If the data is not the same, erase the sector and try again
         if(flash_erase(address) == false){
             return false;
         }
 
-        ASSERT(HAL_FLASH_Program(program_type, address, data) == HAL_ERROR, NULL);
+        HANDLE_HAL_ERROR(HAL_FLASH_Program(program_type, address, data) == HAL_ERROR);
 
-        if(memcmp((volatile void*)address, &data, data_size) != 0){
+        if(memcmp((void*)address, &data, data_size) != 0){
             return false;
         }
-    }
-
-    if(flash_erase(address) == false){
-        return false;
     }
 
     return true;
 }
 
-bool flash_write(volatile void* buf, void* address, uint16_t data_size){
+bool flash_write(void* buf, uint32_t address, uint16_t data_size){
     while(data_size > 0){
         uint8_t write_size = 8;
         while((write_size != 0) && ((data_size&write_size) == 0)) write_size>>=1; // shift until we find most sig bit
@@ -102,7 +101,7 @@ bool flash_write(volatile void* buf, void* address, uint16_t data_size){
     return true;
 }
 
-bool flash_read_single(void* data, void* address, uint8_t data_size){
+bool flash_read_single(void* data, uint32_t address, uint16_t data_size){
     switch(data_size){
         case 1:
             *(uint8_t*)data = *(volatile uint8_t*)address;
@@ -123,11 +122,11 @@ bool flash_read_single(void* data, void* address, uint8_t data_size){
     return true;
 }
 
-bool flash_read_buf(volatile void* buf, void* address, uint16_t data_size){
-    return (memcpy(buf, address, data_size) == buf);
+bool flash_read_buf(void* buf, uint32_t address, uint16_t data_size){
+    return (memcpy(buf, (void*)address, data_size) == buf);
 }
 
-bool flash_erase(void* address){
+bool flash_erase(uint32_t address){
     // Only allow writes to application space
     if(address < 0x08020000){
         return false;
@@ -146,7 +145,7 @@ bool flash_erase(void* address){
         };
 
         uint32_t sector_error;
-        HANDLE_HAL_ERROR(HAL_FLASHEx_Erase(&erase_init, &sector_error), NULL);
+        HANDLE_HAL_ERROR(HAL_FLASHEx_Erase(&erase_init, &sector_error));
         
         sector_erased_bitmap |= (1<<sector);
     }
@@ -162,7 +161,7 @@ bool flash_mass_erase(){
     };
 
     uint32_t sector_error;
-    HANDLE_HAL_ERROR(HAL_FLASHEx_Erase(&erase_init, &sector_error), NULL);
+    HANDLE_HAL_ERROR(HAL_FLASHEx_Erase(&erase_init, &sector_error));
 
     return true;
 }

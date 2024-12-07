@@ -69,8 +69,11 @@ TARGET = $(PROJECT_TARGET)
 # debug build?
 DEBUG = 1
 # optimization
+ifdef DEBUG
+OPT = -O0
+else
 OPT = -O3
-
+endif
 
 #######################################
 # paths
@@ -172,7 +175,7 @@ C_INCLUDES := $(addprefix -I,$(C_INCLUDES))
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -Werror -Wfatal-errors -fdata-sections -ffunction-sections
 
-CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -Werror -Wfatal-errors -fdata-sections -ffunction-sections
+CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -Werror -Wfatal-errors -Wno-unused -fdata-sections -ffunction-sections
 
 ifeq ($(DEBUG), 1)
 CFLAGS += -g -gdwarf-2

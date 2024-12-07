@@ -1,8 +1,9 @@
 #ifndef FLASH_H
 #define FLASH_H
 
-#include <stdint.h>
+#include <string.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 typedef enum{
     UART,
@@ -25,13 +26,14 @@ typedef struct {
     uint32_t address : 32;
 } flash_cmd_t;
 
-#define MAX_BUFFER_SIZE (0xFFFF)
+#define MAX_BUFFER_SIZE (0xFF)
 
-bool exec_flash_command(volatile void* buf, flash_cmd_t *cmd);
-bool init_boot();
-bool flash_write();
-bool flash_read_single();
-bool flash_erase();
-bool flash_read_buf();
+bool exec_flash_command(void* buf, flash_cmd_t *cmd);
+bool flash_write(void* buf, uint32_t address, uint16_t data_size);
+bool flash_read_single(void* buf, uint32_t address, uint16_t data_size);
+bool flash_read_buf(void* buf, uint32_t address, uint16_t data_size);
+bool flash_erase(uint32_t address);
+bool flash_mass_erase(void);
+
 
 #endif
