@@ -23,6 +23,7 @@ PROJECT_ASM_SOURCES := $(addprefix $(MAKEFILE_DIR)/, $(PROJECT_ASM_SOURCES))
 BOOT_BUILD_DIR := $(addprefix $(MAKEFILE_DIR)/, $(BOOT_BUILD_DIR))
 LD_SUFFIX = BOOT
 FLASH_ADDRESS = 0x08000000
+USER_DEFINES = USER_VECT_TAB_ADDRESS
 
 # export variables for sub-makes
 export PROJECT_TARGET
@@ -32,6 +33,7 @@ export PROJECT_ASM_SOURCES
 export PROJECT_BUILD_DIR
 export LD_SUFFIX
 export FLASH_ADDRESS
+export USER_DEFINES
 
 # default target
 default: all

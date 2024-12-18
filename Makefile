@@ -155,6 +155,10 @@ $(SERIES_GENERIC_CAP)
 
 C_DEFS := $(addprefix -D,$(C_DEFS))
 
+ifdef USER_DEFINES
+C_DEFS += $(addprefix -D,$(USER_DEFINES))
+endif
+
 # AS includes
 AS_INCLUDES = 
 
