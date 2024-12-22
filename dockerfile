@@ -61,19 +61,6 @@ RUN ln -sf /usr/lib/x86_64-linux-gnu/libncurses.so.6 /usr/lib/x86_64-linux-gnu/l
     && ln -sf /usr/lib/x86_64-linux-gnu/libtinfo.so.6 /usr/lib/x86_64-linux-gnu/libtinfo.so.5
 
 # ------------------------------------------------------------
-# Renode
-# ------------------------------------------------------------
-ARG RENODE_VERSION=1.14.0
-RUN wget -O /tmp/renode-portable.tar.gz "https://github.com/renode/renode/releases/download/v${RENODE_VERSION}/renode-${RENODE_VERSION}.linux-portable.tar.gz" \
-    && mkdir -p /usr/share/renode_portable \
-    && tar -xf /tmp/renode-portable.tar.gz -C /usr/share/renode_portable --strip-components=1 \
-    && ln -sf /usr/share/renode_portable/renode /usr/bin/renode \
-    && rm /tmp/renode-portable.tar.gz
-
-# Renode’s test requirements:
-RUN pip install --no-cache-dir -r /usr/share/renode_portable/tests/requirements.txt
-
-# ------------------------------------------------------------
 # Documentation Toolset
 # ------------------------------------------------------------
 # Sphinx & Sphinx RTD Theme
