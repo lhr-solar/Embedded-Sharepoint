@@ -46,7 +46,6 @@ ARG ARM_GNU_VERSION=12.2
 ARG ARM_GNU_TARBALL_URL="https://developer.arm.com/-/media/Files/downloads/gnu/12.2.rel1/binrel/arm-gnu-toolchain-12.2.rel1-x86_64-arm-none-eabi.tar.xz?rev=7bd049b7a3034e64885fa1a71c12f91d&hash=732D909FA8F68C0E1D0D17D08E057619"
 
 RUN wget -O /tmp/arm-none-eabi.tar.xz "$ARM_GNU_TARBALL_URL" \
-    && mkdir -p /usr/share/arm-gnu-toolchain \
     && tar -xf /tmp/arm-none-eabi.tar.xz -C /usr/share/ \
     && mv /usr/share/arm-gnu-toolchain-${ARM_GNU_VERSION}.rel1-x86_64-arm-none-eabi /usr/share/arm-gnu-toolchain \
     && ln -sf /usr/share/arm-gnu-toolchain/bin/arm-none-eabi-gcc /usr/bin/arm-none-eabi-gcc \
