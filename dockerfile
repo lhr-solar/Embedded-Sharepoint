@@ -80,6 +80,9 @@ RUN wget -O /tmp/doxygen.bin.tar.gz "https://github.com/doxygen/doxygen/releases
     && ln -sf /usr/share/doxygen/bin/doxygen /usr/bin/doxygen \
     && rm /tmp/doxygen.bin.tar.gz
 
+# mkdocs
+RUN pip install --no-cache-dir mkdocs
+
 # ------------------------------------------------------------
 # LLVM/Clang
 # ------------------------------------------------------------
