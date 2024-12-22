@@ -7,6 +7,8 @@
 IMAGE_NAME="embedded-sharepoint"
 WORKDIR_MOUNT="$PWD"
 DOCKERFILE_DIR="$(dirname "$0")"
+DOCKERFILE_PATH="$DOCKERFILE_DIR/Dockerfile"
+HASH_FILE="$DOCKERFILE_DIR/.dockerfile.hash"
 
 echo "====================================================="
 echo " Embedded Sharepoint Setup"
@@ -92,6 +94,28 @@ if [ -z "$IMAGE_EXISTS" ]; then
     docker build -t "$IMAGE_NAME" "$DOCKERFILE_DIR"
 else
     echo "[OK] Docker image '$IMAGE_NAME' already exists."
+fi
+
+###############################################################################
+# dockerfile hash
+###############################################################################
+# 1. Compute current hash of Dockerfile
+CURRENT_HASH="$(md5sum "$DOCKERFILE_PATH" | awk '{print $1}')"
+
+# 2. Compare with stored hash
+if [ -f "$HASH_FILE" ]; then
+    PREV_HASH="$(cat "$HASH_FILE")"
+    if [ "$CURRENT_HASH" != "$PREV_HASH" ]; then
+        echo "[INFO] Dockerfile changed. Rebuilding the image '$IMAGE_NAME'..."
+        docker build -t "$IMAGE_NAME" "$DOCKERFILE_DIR" || exit 1
+        echo "$CURRENT_HASH" > "$HASH_FILE"
+    else
+        echo "[INFO] Dockerfile unchanged. Using existing image '$IMAGE_NAME'."
+    fi
+else
+    echo "[INFO] No cached Dockerfile hash found. Building image '$IMAGE_NAME'..."
+    docker build -t "$IMAGE_NAME" "$DOCKERFILE_DIR" || exit 1
+    echo "$CURRENT_HASH" > "$HASH_FILE"
 fi
 
 ###############################################################################
