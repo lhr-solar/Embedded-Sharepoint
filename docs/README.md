@@ -38,6 +38,8 @@ In PowerShell administrator:
 
 Note: Docker installs tools for development on Ubuntu 22.04.
 
+Note: DO NOT install packages in the docker session. Changes will be lost. Update the Dockerfile instead!
+
 ### VS Code
 
 Install Dev Containers extension
