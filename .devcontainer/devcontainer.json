@@ -1,0 +1,21 @@
+// .devcontainer/devcontainer.json
+{
+  "name": "Embedded Sharepoint",
+  "dockerFile": "../dockerfile",
+  "context": "..",
+  "runArgs": [
+    "--privileged"
+  ],
+  "settings": {
+    // force bash
+    "terminal.integrated.defaultProfile.linux": "bash",
+    // qol
+    "editor.formatOnSave": true
+  },
+  // example : VS Code extensions
+  "extensions": [
+    // Add as needed
+  ],
+  // Optional: If you want to forward any ports to the host
+  // "forwardPorts": [ 8080, 8081 ]
+}
