@@ -46,6 +46,10 @@ Open repository folder in VS Code
 
 (Ctrl + Shift + P) → "Remote-Containers: Open Folder in Container..."
 
+Ensure docker is running
+    
+    sudo systemctl start docker
+
 ### CLI Script
 
 This script sets up a docker container for embedded development.
