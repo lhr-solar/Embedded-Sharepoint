@@ -43,8 +43,8 @@ RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1
 # ------------------------------------------------------------
 # Arm None EABI Toolchain
 # ------------------------------------------------------------
-ARG ARM_GNU_VERSION=12.2
-ARG ARM_GNU_TARBALL_URL="https://developer.arm.com/-/media/Files/downloads/gnu/12.2.rel1/binrel/arm-gnu-toolchain-12.2.rel1-x86_64-arm-none-eabi.tar.xz?rev=7bd049b7a3034e64885fa1a71c12f91d&hash=732D909FA8F68C0E1D0D17D08E057619"
+ARG ARM_GNU_VERSION=14.2
+ARG ARM_GNU_TARBALL_URL="https://developer.arm.com/-/media/Files/downloads/gnu/14.2.rel1/binrel/arm-gnu-toolchain-14.2.rel1-x86_64-arm-none-eabi.tar.xz"
 
 RUN wget -O /tmp/arm-none-eabi.tar.xz "$ARM_GNU_TARBALL_URL" \
     && tar -xf /tmp/arm-none-eabi.tar.xz -C /usr/share/ \
