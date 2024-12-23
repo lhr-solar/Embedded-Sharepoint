@@ -1,13 +1,16 @@
 // .devcontainer/devcontainer.json
 {
   "name": "Embedded Sharepoint",
+
   "build": {
-  "dockerFile": "../Dockerfile",
+  "dockerfile": "../Dockerfile",
   "context": ".."
   },
 
   "runArgs": [
     "--privileged"
+    //"--rm", // handled by VS Code extension
+    //"-it" // handled by VS Code extension
   ],
 
   "settings": {
