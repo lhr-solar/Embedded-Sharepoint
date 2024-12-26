@@ -1,17 +1,9 @@
 // .devcontainer/devcontainer.json
 {
   "name": "Embedded Sharepoint",
-
-  "build": {
-  "dockerfile": "../Dockerfile",
-  "context": ".."
-  },
-
-  "runArgs": [
-    "--privileged"
-    //"--rm", // handled by VS Code extension
-    //"-it" // handled by VS Code extension
-  ],
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "embedded-sharepoint",
+  "workspaceFolder": "/Embedded-Sharepoint",
 
   "settings": {
     "terminal.integrated.defaultProfile.linux": "bash",
@@ -19,10 +11,6 @@
   },
 
   "extensions": [
-      // Any VS code extensions you want included
-  ],
+  ]
 
-  // Optional: 
-  // "forwardPorts": [ 8080, 8081 ]            // If you want to forward any ports to the host
-  // "workspaceFolder": "/Embedded-Sharepoint" // if you need to override the default workspace path
 }

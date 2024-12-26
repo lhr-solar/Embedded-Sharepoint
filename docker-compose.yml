@@ -1,0 +1,16 @@
+services:
+  embedded-sharepoint:
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    # required for device passthrough
+    privileged: true
+
+    volumes:
+      - ./:/Embedded-Sharepoint
+
+    working_dir: /Embedded-Sharepoint
+
+    command: ["/bin/bash", -i]

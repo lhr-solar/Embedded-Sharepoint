@@ -8,7 +8,7 @@ IMAGE_NAME="embedded-sharepoint"
 WORKDIR_MOUNT="$PWD"
 DOCKERFILE_DIR="$(dirname "$0")"
 DOCKERFILE_PATH="$DOCKERFILE_DIR/Dockerfile"
-HASH_FILE="$DOCKERFILE_DIR/.dockerfile.hash"
+DOCKER_COMPOSE_FILE="docker-compose.yml"
 
 echo "====================================================="
 echo " Embedded Sharepoint Setup"
@@ -80,68 +80,14 @@ if ! docker ps &> /dev/null; then
 fi
 
 ###############################################################################
-# Check if the Docker image already exists
-###############################################################################
-# assume that Dockerfile is in the same directory
-echo "[INFO] Checking if the Docker image '$IMAGE_NAME' exists..."
-
-IMAGE_EXISTS=$(docker images -q "$IMAGE_NAME")
-
-if [ -z "$IMAGE_EXISTS" ]; then
-    echo "[INFO] '$IMAGE_NAME' not found. Building image from Dockerfile..."
-    
-    # Build the image
-    docker build -t "$IMAGE_NAME" "$DOCKERFILE_DIR"
-else
-    echo "[OK] Docker image '$IMAGE_NAME' already exists."
-fi
-
-###############################################################################
-# dockerfile hash
-###############################################################################
-# 1. Compute current hash of Dockerfile
-CURRENT_HASH="$(md5sum "$DOCKERFILE_PATH" | awk '{print $1}')"
-
-# 2. Compare with stored hash
-if [ -f "$HASH_FILE" ]; then
-    PREV_HASH="$(cat "$HASH_FILE")"
-    if [ "$CURRENT_HASH" != "$PREV_HASH" ]; then
-        echo "[INFO] Dockerfile changed. Rebuilding the image '$IMAGE_NAME'..."
-        docker build -t "$IMAGE_NAME" "$DOCKERFILE_DIR" || exit 1
-        echo "$CURRENT_HASH" > "$HASH_FILE"
-    else
-        echo "[INFO] Dockerfile unchanged. Using existing image '$IMAGE_NAME'."
-    fi
-else
-    echo "[INFO] No cached Dockerfile hash found. Building image '$IMAGE_NAME'..."
-    docker build -t "$IMAGE_NAME" "$DOCKERFILE_DIR" || exit 1
-    echo "$CURRENT_HASH" > "$HASH_FILE"
-fi
-
-###############################################################################
-# Run the container with:
-#    - USB passthrough 
-#    - Current directory mounted at /Embedded-Sharepoint
-#    - Interactive shell
+# Run the container
 ###############################################################################
 echo "[INFO] Running the Docker container ..."
 echo "      - Image: $IMAGE_NAME"
 echo "      - Mount: $WORKDIR_MOUNT -> /Embedded-Sharepoint"
 echo "-----------------------------------------------------"
 
-# Flags:
-# --rm           : Remove container after it exits
-# -it            : Interactive mode, attach terminal
-# --privileged   : Simplifies USB passthrough on WSL2, 
-# -v $WORKDIR_MOUNT:/Embedded-Sharepoint
-#                : Mount the current directory
-# -w /workdir    : Start in /Embedded-Sharepoint inside the container
-# $IMAGE_NAME    : Docker image tag
-docker run --rm -it \
-    --privileged \
-    -v "${WORKDIR_MOUNT}:/Embedded-Sharepoint" \
-    -w /Embedded-Sharepoint\
-    "${IMAGE_NAME}" \
-    /bin/bash
+docker compose -f "$DOCKER_COMPOSE_FILE" build
+docker compose -f "$DOCKER_COMPOSE_FILE" run --rm embedded-sharepoint
 
 echo "[INFO] Container exited."
