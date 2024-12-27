@@ -1,9 +1,13 @@
 // .devcontainer/devcontainer.json
 {
   "name": "Embedded Sharepoint",
-  "dockerComposeFile": "../docker-compose.yml",
+  "dockerComposeFile": [
+    "../docker-compose.yml"
+  ],
+
   "service": "embedded-sharepoint",
   "workspaceFolder": "/Embedded-Sharepoint",
+  "shutdownAction": "stopCompose",
 
   "settings": {
     "terminal.integrated.defaultProfile.linux": "bash",
@@ -12,5 +16,5 @@
 
   "extensions": [
   ]
-
 }
+

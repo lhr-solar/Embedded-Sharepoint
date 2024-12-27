@@ -1,16 +1,17 @@
+# docker-compose.yml
 services:
   embedded-sharepoint:
-
     build:
       context: .
       dockerfile: Dockerfile
 
-    # required for device passthrough
+    container_name: "embedded-sharepoint"
     privileged: true
 
     volumes:
       - ./:/Embedded-Sharepoint
-
     working_dir: /Embedded-Sharepoint
 
-    command: ["/bin/bash", -i]
+    tty: true
+    stdin_open: true
+    command: ["/bin/bash", "-i"]

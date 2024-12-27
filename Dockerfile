@@ -110,6 +110,3 @@ RUN echo 'export PS1="\[\e[0;33m\]LHRS@\[\e[1;34m\]Embedded-Sharepoint\[\e[0m\]>
     >> /root/.bashrc && \
     echo 'echo -e "${RED}\nFinished! Jolly good!\n${NC}"' \
     >> /root/.bashrc
-
-# Entry point
-CMD ["/bin/bash", "-i"]

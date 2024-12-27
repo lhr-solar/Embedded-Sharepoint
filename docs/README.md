@@ -46,7 +46,7 @@ Install Dev Containers extension
 
 Open repository folder in VS Code
 
-(Ctrl + Shift + P) → "Remote-Containers: Open Folder in Container..."
+F1 → "Dev Containers: Open Folder in Container..."
 
 Ensure docker is running
     
