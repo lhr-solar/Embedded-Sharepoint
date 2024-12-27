@@ -1,0 +1,17 @@
+# docker-compose.yml
+services:
+  embedded-sharepoint:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: "embedded-sharepoint"
+    privileged: true
+
+    volumes:
+      - ./:/Embedded-Sharepoint
+    working_dir: /Embedded-Sharepoint
+
+    tty: true
+    stdin_open: true
+    command: ["/bin/bash", "-i"]
