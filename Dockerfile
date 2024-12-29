@@ -1,5 +1,5 @@
 # Dockerfile for Embedded-Sharepoint
-FROM ubuntu:22.04
+FROM --platform=linux/amd64 ubuntu:22.04
 
 # non-interactive mode for apt-get
 ENV DEBIAN_FRONTEND=noninteractive
