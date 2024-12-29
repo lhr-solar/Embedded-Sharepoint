@@ -12,7 +12,7 @@ jobs:
 
        - name: Install
          run: |
-          docker build -t -f ../../Dockerfile .
+          docker build -t ../../
 
        - name: Clean
          run: |
