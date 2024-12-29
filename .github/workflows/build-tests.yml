@@ -12,8 +12,7 @@ jobs:
 
        - name: Install
          run: |
-          sudo apt -y update
-          sudo apt -y install gcc-arm-none-eabi
+          docker build -t -f ../../Dockerfile .
 
        - name: Clean
          run: |
