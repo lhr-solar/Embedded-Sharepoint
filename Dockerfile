@@ -102,7 +102,7 @@ WORKDIR /Embedded-Sharepoint
 # -----------------------------------------------------------------------------
 # Shell customization
 # -----------------------------------------------------------------------------
-RUN echo 'export PS1="\[\e[0;33m\]LHRS@\[\e[1;34m\]Embedded-Sharepoint\[\e[0m\]> "' \
+RUN echo 'export PS1="\[\e[0;33m\]LHRS@\[\e[1;34m\]\w\[\e[0m\]> "' \
     >> /root/.bashrc && \
     echo 'git config --global --add safe.directory /Embedded-Sharepoint' \
     >> /root/.bashrc && \
