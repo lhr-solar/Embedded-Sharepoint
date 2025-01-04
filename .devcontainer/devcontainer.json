@@ -12,8 +12,7 @@
   "customizations": {
     "vscode": {
       "settings": {
-        "terminal.integrated.defaultProfile.linux": "bash",
-        "editor.formatOnSave": true
+        "terminal.integrated.defaultProfile.linux": "bash"
       },
       "extensions": [
         "ms-vscode.cpptools-extension-pack",
