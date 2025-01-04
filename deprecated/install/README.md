@@ -16,50 +16,22 @@ Welcome to the Embedded Sharepoint! This documentation is designed to assist LHR
 - [Examples & Tutorials](examples.md) - Follow step-by-step guides to implement common use cases.
 - [FAQ](faq.md) - Find answers to frequently asked questions. -->
 
-## WSL
+## Scripts
 
-### USB PassThrough
+### Install Script
 
-#### Install USBIPD (only need to do this the first time)
+Note: Install tools for development on Ubuntu 22.04. Newer versions may break when installing Python packages.
 
-In Powershell administrator:
+This script installs/removes necessary packages for embedded development. Running install.sh will prompt the user for installation or removal of all necessary packages.
+
+Usage: 
     
-    winget install usbipd
-
-#### Pass USB Devices
-
-In PowerShell administrator: 
-
-    usbipd list
-    usbipd bind --busid <busid>
-    usbipd attach --wsl --busid <busid>
-
-## Setup
-
-Note: Docker installs tools for development on Ubuntu 22.04.
-
-Note: DO NOT install packages in the docker session. Changes will be lost. Update the Dockerfile instead!
-
-### VS Code
-
-Install Dev Containers extension
-
-Open repository folder in VS Code
-
-F1 → "Dev Containers: Open Folder in Container..."
-
-Ensure docker is running
-    
-    sudo systemctl start docker
-
-### CLI Script
-
-This script sets up a docker container for embedded development.
-
-Usage:
-
-    ./start.sh
-
-Remove Docker Image:
-
-    docker rmi embedded-sharepoint
+    ./install.sh [-Ii] [-Uu] [-Hh]
+    For each package, choose between (y/n/r/q) to:
+        y: yes, install
+        n: no, don't install
+        r: remove package
+        q: quit
+    [-Ii] install all available packages
+    [-Uu] remove all available packages
+    [-Hh] show this help page
