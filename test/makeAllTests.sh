@@ -4,7 +4,7 @@ port_list=("stm32f401re" "stm32f413rht" "stm32f429zit" "stm32f446ret" "stm32l431
 
 for port in "${port_list[@]}"; do
     
-    make clean
+    make clean   
     for tests_dir in tests/*; do
         test_name="${tests_dir#tests/}"
         test_name="${test_name%.c}"
