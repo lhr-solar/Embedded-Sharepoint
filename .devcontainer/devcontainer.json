@@ -18,7 +18,9 @@
         "ms-vscode.cpptools-extension-pack",
         "ms-python.python",
         "GitHub.vscode-pull-request-github",
-        "ms-vscode.makefile-tools"
+        "ms-vscode.makefile-tools",
+        "thecreativedodo.usbip-connect",
+        "eamodio.gitlens"
       ]
     }
   }
