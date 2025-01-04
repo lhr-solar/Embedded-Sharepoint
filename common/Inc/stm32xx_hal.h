@@ -11,3 +11,5 @@
 #else
     #error "No valid STM32 series defined. Please define either STM32F4xx or STM32L4xx."
 #endif
+
+#endif
