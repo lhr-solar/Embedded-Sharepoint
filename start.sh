@@ -88,6 +88,6 @@ echo "      - Mount: $WORKDIR_MOUNT -> /Embedded-Sharepoint"
 echo "-----------------------------------------------------"
 
 docker compose -f "$DOCKER_COMPOSE_FILE" build
-docker compose -f "$DOCKER_COMPOSE_FILE" run --rm embedded-sharepoint
+docker compose -f "$DOCKER_COMPOSE_FILE" run --rm dev
 
 echo "[INFO] Container exited."

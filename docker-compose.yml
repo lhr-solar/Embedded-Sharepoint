@@ -1,15 +1,18 @@
 # docker-compose.yml
 services:
-  embedded-sharepoint:
+  dev:
     build:
+      platforms:
+      - "linux/amd64"
+      - "linux/x86_64"
       context: .
       dockerfile: Dockerfile
-
     container_name: "embedded-sharepoint"
     privileged: true
 
     volumes:
       - ./:/Embedded-Sharepoint
+      - ~/.ssh:/root/.ssh:ro
     working_dir: /Embedded-Sharepoint
 
     tty: true
