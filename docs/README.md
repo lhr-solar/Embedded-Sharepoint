@@ -62,4 +62,4 @@ Usage:
 
 Remove Docker Image:
 
-    docker rmi embedded-sharepoint
+    docker rmi embedded-sharepoint-dev

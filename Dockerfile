@@ -43,6 +43,7 @@ RUN apt-get install -y --no-install-recommends \
       openssh-client \
       python3.10 \
       python3.10-dev \
+      gh \
     && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1 \
     && rm -rf /var/lib/apt/lists/*
 
