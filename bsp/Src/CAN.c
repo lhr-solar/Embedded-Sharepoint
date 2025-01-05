@@ -265,8 +265,8 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
     return CAN_ERR;
   }
 
-  // disable interrupts (don't want CAN_TX to interrupt here)
-  HAL_CAN_DeactivateNotification(handle, CAN_IT_TX_MAILBOX_EMPTY);
+  // disable interrupts
+  portENTER_CRITICAL();
 
   can_status_t status = CAN_SENT;
 
@@ -295,7 +295,7 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
   }
 
   // enable interrupts
-  HAL_CAN_ActivateNotification(handle, CAN_IT_TX_MAILBOX_EMPTY);
+  portEXIT_CRITICAL();
 
 failed:
   // give semaphore
