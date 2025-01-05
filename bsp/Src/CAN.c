@@ -202,9 +202,6 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
     return CAN_ERR;
   }
 
-  // disable interrupts (don't want to CAN_RX to interrupt here)
-  // portENTER_CRITICAL();
-
   can_status_t status = CAN_RECV;
 
   // recieve from queue matching id
@@ -213,17 +210,13 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
   for (int i = 0; i < can1_recv_entry_count; i++) {
     if (can1_recv_entries[i].id == id) {
       valid_id = true;
-      // if blocking, retry on empty
       if (blocking) {
+        // if blocking, retry on empty
         while (xQueueReceive(can1_recv_entries[i].queue, &payload, 0) ==
                errQUEUE_EMPTY) {
-          // quickly enable interrupts so maybe next time we can hit
-          // portEXIT_CRITICAL();
-          // portENTER_CRITICAL();
         }
-
-        // otherwise, fail on empty
       } else {
+        // otherwise, fail on empty
         if (xQueueReceive(can1_recv_entries[i].queue, &payload, 0) ==
             errQUEUE_EMPTY) {
           status = CAN_EMPTY;
@@ -250,9 +243,6 @@ failed:
     xSemaphoreGive(can1_recv_semaphore);
   }
 
-  // enable interrupts
-  // portEXIT_CRITICAL();
-
   return status;
 }
 
@@ -276,7 +266,7 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
   }
 
   // disable interrupts (don't want CAN_TX to interrupt here)
-  portENTER_CRITICAL();
+  HAL_CAN_DeactivateNotification(handle, CAN_IT_TX_MAILBOX_EMPTY);
 
   can_status_t status = CAN_SENT;
 
@@ -304,14 +294,14 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
     }
   }
 
+  // enable interrupts
+  HAL_CAN_ActivateNotification(handle, CAN_IT_TX_MAILBOX_EMPTY);
+
 failed:
   // give semaphore
   if (handle->Instance == CAN1) {
     xSemaphoreGive(can1_send_semaphore);
   }
-
-  // enable interrupts
-  portEXIT_CRITICAL();
 
   return status;
 }
