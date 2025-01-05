@@ -10,9 +10,11 @@ services:
     container_name: "embedded-sharepoint"
     privileged: true
 
+    environment:
+      - SSH_AUTH_SOCK="${SSH_AUTH_SOCK}"
     volumes:
       - ./:/Embedded-Sharepoint
-      - ~/.ssh:/root/.ssh:ro
+      - ${SSH_AUTH_SOCK}:${SSH_AUTH_SOCK}
     working_dir: /Embedded-Sharepoint
 
     tty: true
