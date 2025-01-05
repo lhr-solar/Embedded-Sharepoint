@@ -2,6 +2,9 @@
 #define CAN_H
 #ifndef CAN_UNDEFINED
 
+#include <stdbool.h>
+#include "stm32xx_hal.h"
+
 // return code for can driver
 typedef enum {
     CAN_ERR,

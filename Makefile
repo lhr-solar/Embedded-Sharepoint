@@ -91,7 +91,7 @@ stm/$(SERIES_GENERIC)/$(SERIES_GENERIC)_hal_timebase_tim.c \
 $(wildcard FreeRTOS-Kernel/*.c) \
 FreeRTOS-Kernel/portable/GCC/ARM_CM4F/port.c \
 $(wildcard common/Src/*.c) \
-$(wildcard driver/Src/*.c)
+$(wildcard bsp/Src/*.c)
 
 # ASM sources
 ASM_SOURCES =  \
@@ -161,7 +161,7 @@ stm/$(SERIES_GENERIC)/CMSIS/Include \
 FreeRTOS-Kernel/include \
 FreeRTOS-Kernel/portable/GCC/ARM_CM4F \
 common/Inc \
-driver/Inc
+bsp/Inc
 
 C_INCLUDES := $(addprefix -I,$(C_INCLUDES))
 
@@ -184,7 +184,7 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 #######################################
 # exclude CAN
 ifeq ($(filter $(SERIES_LINE_GENERIC), stm32f401xe stm32f401xc), $(SERIES_LINE_GENERIC))
-    C_SOURCES := $(filter-out driver/Src/CAN.c, $(C_SOURCES))
+    C_SOURCES := $(filter-out bsp/Src/CAN.c, $(C_SOURCES))
     C_DEFS += -DCAN_UNDEFINED
 endif
 
