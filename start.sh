@@ -103,6 +103,11 @@ echo "      - Image: $IMAGE_NAME"
 echo "      - Mount: $WORKDIR_MOUNT -> /Embedded-Sharepoint"
 echo "-----------------------------------------------------"
 
+# Sets SSH_AUTH_SOCK for macOS
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  export SSH_AUTH_SOCK="/run/host-services/ssh-auth.sock"
+fi
+
 # Start ssh-agent
 # test whether $SSH_AUTH_SOCK is valid
 ssh-add -l 2>/dev/null >/dev/null
