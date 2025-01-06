@@ -36,6 +36,7 @@ RUN apt-get install -y --no-install-recommends \
       libncurses-dev \
       python3-pip \
       git \
+      gh \
       gnupg \
       dirmngr \
       bear \
@@ -43,7 +44,7 @@ RUN apt-get install -y --no-install-recommends \
       openssh-client \
       python3.10 \
       python3.10-dev \
-      gh \
+      usbutils \
     && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1 \
     && rm -rf /var/lib/apt/lists/*
 

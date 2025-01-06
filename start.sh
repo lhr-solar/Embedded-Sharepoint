@@ -103,6 +103,9 @@ echo "      - Image: $IMAGE_NAME"
 echo "      - Mount: $WORKDIR_MOUNT -> /Embedded-Sharepoint"
 echo "-----------------------------------------------------"
 
+# Start ssh-agent
+eval `ssh-agent`
+
 docker compose -f "$DOCKER_COMPOSE_FILE" build
 docker compose -f "$DOCKER_COMPOSE_FILE" run --rm dev
 
