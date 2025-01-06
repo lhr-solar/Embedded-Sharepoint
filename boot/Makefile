@@ -35,6 +35,18 @@ export LD_SUFFIX
 export FLASH_ADDRESS
 export USER_DEFINES
 
+# check if bear is installed
+BEAR_INSTALLED := $(shell command -v bear >/dev/null 2>&1 && echo yes || echo no)
+
+# define VS_CODE_DIR
+VS_CODE_DIR := ../.vscode
+
+BEAR_PREFIX := 
+ifeq ($(BEAR_INSTALLED),yes)
+$(info A wild bear appeared)
+BEAR_PREFIX := bear --output $(VS_CODE_DIR)/compile_commands.json --append --
+endif
+
 # default target
 default: all
 
@@ -44,7 +56,7 @@ docs:
 	cd .. && mkdocs serve
 
 all: $(APP_BUILD_DIR)/$(PROJECT_TARGET).elf $(APP_BUILD_DIR)/$(PROJECT_TARGET).hex $(APP_BUILD_DIR)/$(PROJECT_TARGET).bin
-	$(MAKE) -C $(BUILD_MAKEFILE_DIR) $(MAKECMDGOALS)
+	$(BEAR_PREFIX) $(MAKE) -C $(BUILD_MAKEFILE_DIR) $(MAKECMDGOALS)
 	cp $(BOOT_BUILD_DIR)/$(PROJECT_TARGET).elf $(APP_BUILD_DIR)/$(PROJECT_TARGET)_boot.elf
 
 clean:
@@ -53,7 +65,7 @@ clean:
 
 # recursively build in the drivers directory
 %:
-	$(MAKE) -C $(BUILD_MAKEFILE_DIR) $(MAKECMDGOALS)
+	$(BEAR_PREFIX) $(MAKE) -C $(BUILD_MAKEFILE_DIR) $(MAKECMDGOALS)
 
 # help
 .PHONY: help

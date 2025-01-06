@@ -106,7 +106,7 @@ extern uint32_t _app_start;
 #else
 #define VECT_TAB_BASE_ADDRESS   FLASH_BASE      /*!< Vector Table base address field.
                                                      This value must be a multiple of 0x200. */
-#define VECT_TAB_OFFSET         ((unsigned long)(_app_start - FLASH_BASE))     /*!< Vector Table base offset field.
+#define VECT_TAB_OFFSET         ((unsigned long)(((unsigned long)&_app_start) - FLASH_BASE))     /*!< Vector Table base offset field.
                                                      This value must be a multiple of 0x200. */
 #endif /* VECT_TAB_SRAM */
 #endif /* USER_VECT_TAB_ADDRESS */

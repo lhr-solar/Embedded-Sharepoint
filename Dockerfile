@@ -75,6 +75,7 @@ RUN \
   ln -sf /usr/share/arm-gnu-toolchain/bin/arm-none-eabi-gcc    /usr/bin/arm-none-eabi-gcc && \
   ln -sf /usr/share/arm-gnu-toolchain/bin/arm-none-eabi-g++    /usr/bin/arm-none-eabi-g++ && \
   ln -sf /usr/share/arm-gnu-toolchain/bin/arm-none-eabi-objcopy /usr/bin/arm-none-eabi-objcopy && \
+  ln -sf /usr/share/arm-gnu-toolchain/bin/arm-none-eabi-objdump /usr/bin/arm-none-eabi-objdump && \
   ln -sf /usr/share/arm-gnu-toolchain/bin/arm-none-eabi-size    /usr/bin/arm-none-eabi-size && \
   ln -sf /usr/share/arm-gnu-toolchain/bin/arm-none-eabi-gdb     /usr/bin/arm-none-eabi-gdb && \
   rm /tmp/arm-none-eabi.tar.xz && \
