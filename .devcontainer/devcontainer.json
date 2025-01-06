@@ -5,16 +5,24 @@
     "../docker-compose.yml"
   ],
 
-  "service": "embedded-sharepoint",
+  "service": "dev",
   "workspaceFolder": "/Embedded-Sharepoint",
   "shutdownAction": "stopCompose",
 
-  "settings": {
-    "terminal.integrated.defaultProfile.linux": "bash",
-    "editor.formatOnSave": true
-  },
-
-  "extensions": [
-  ]
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      },
+      "extensions": [
+        "ms-vscode.cpptools-extension-pack",
+        "ms-python.python",
+        "GitHub.vscode-pull-request-github",
+        "ms-vscode.makefile-tools",
+        "thecreativedodo.usbip-connect",
+        "eamodio.gitlens"
+      ]
+    }
+  }
 }
 

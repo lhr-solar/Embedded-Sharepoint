@@ -40,6 +40,8 @@ Note: Docker installs tools for development on Ubuntu 22.04.
 
 Note: DO NOT install packages in the docker session. Changes will be lost. Update the Dockerfile instead!
 
+Note: If USB devices are detected via lsusb but fail to open, try restarting the container with the device plugged in.
+
 ### VS Code
 
 Install Dev Containers extension
@@ -62,4 +64,4 @@ Usage:
 
 Remove Docker Image:
 
-    docker rmi embedded-sharepoint
+    docker rmi embedded-sharepoint-dev

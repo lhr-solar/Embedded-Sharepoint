@@ -1,15 +1,19 @@
 # docker-compose.yml
 services:
-  embedded-sharepoint:
+  dev:
     build:
+      platforms:
+      - "linux/amd64"
       context: .
       dockerfile: Dockerfile
-
     container_name: "embedded-sharepoint"
     privileged: true
 
+    environment:
+      - SSH_AUTH_SOCK=/ssh-agent
     volumes:
       - ./:/Embedded-Sharepoint
+      - ${SSH_AUTH_SOCK:-/run/host-services/ssh-auth.sock}:/ssh-agent
     working_dir: /Embedded-Sharepoint
 
     tty: true
