@@ -1,9 +1,9 @@
 /* CAN test
 
-- Setups up CAN1 in loopback mode
+- Setups up CANs in loopback mode
 - Send 4 messages (since there are 3 mailboxes, 1 ends up going in the can1 send queue)
 - Recieves the 4 messages and verifies correctness
-- Flashes LED if successful
+- Flashes LED if successful on all CANs
 */
 
 #include "stm32xx_hal.h"
@@ -46,38 +46,78 @@ static void task(void *pvParameters) {
    tx_data[0] = 0x01;
    tx_data[1] = 0x00;
    if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+   #ifdef CAN2
+   if (can_send(hcan2, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+   #endif /* CAN2 */
 
    tx_data[0] = 0x02;
    if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+   #ifdef CAN2
+   if (can_send(hcan2, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+   #endif /* CAN2 */
 
    // send two payloads to 0x3
    tx_data[0] = 0x03;
    tx_header.StdId = 0x003;
    if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+   #ifdef CAN2
+   if (can_send(hcan2, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+   #endif /* CAN2 */
 
    tx_data[0] = 0x04;
    if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+   #ifdef CAN2
+   if (can_send(hcan2, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+   #endif /* CAN2 */
 
    // recieve what was sent to 0x1
    CAN_RxHeaderTypeDef rx_header = {0};
    uint8_t rx_data[8] = {0};
    can_status_t status;
+
+   // CAN1
    status = can_recv(hcan1, 0x1, &rx_header, rx_data, true);
    if (status != CAN_RECV && rx_data[0] != 0x1) error_handler();
    status = can_recv(hcan1, 0x1, &rx_header, rx_data, true);
    if (status != CAN_RECV && rx_data[0] != 0x2) error_handler();
 
+   #ifdef CAN2
+   // CAN2
+   status = can_recv(hcan2, 0x1, &rx_header, rx_data, true);
+   if (status != CAN_RECV && rx_data[0] != 0x1) error_handler();
+   status = can_recv(hcan2, 0x1, &rx_header, rx_data, true);
+   if (status != CAN_RECV && rx_data[0] != 0x2) error_handler();
+   #endif /* CAN2 */
+
    // make sure we don't recieve from wrong ID and nonblocking works
+   // CAN1
    status = can_recv(hcan1, 0x1, &rx_header, rx_data, false);
    if (status != CAN_EMPTY) error_handler();
    status = can_recv(hcan1, 0x1, &rx_header, rx_data, false);
    if (status != CAN_EMPTY) error_handler();
 
+   #ifdef CAN2
+   // CAN2
+   status = can_recv(hcan2, 0x1, &rx_header, rx_data, false);
+   if (status != CAN_EMPTY) error_handler();
+   status = can_recv(hcan2, 0x1, &rx_header, rx_data, false);
+   if (status != CAN_EMPTY) error_handler();
+   #endif /* CAN2 */
+
    // recieve the rest
+   // CAN1
    status = can_recv(hcan1, 0x3, &rx_header, rx_data, true);
    if (status != CAN_RECV && rx_data[0] != 0x3) error_handler();
    status = can_recv(hcan1, 0x3, &rx_header, rx_data, true);
    if (status != CAN_RECV && rx_data[0] != 0x4) error_handler();
+
+   #ifdef CAN2
+   // CAN2
+   status = can_recv(hcan2, 0x3, &rx_header, rx_data, true);
+   if (status != CAN_RECV && rx_data[0] != 0x3) error_handler();
+   status = can_recv(hcan2, 0x3, &rx_header, rx_data, true);
+   if (status != CAN_RECV && rx_data[0] != 0x4) error_handler();
+   #endif /* CAN2 */
 
    success_handler();
 }
@@ -100,7 +140,7 @@ int main(void) {
    sFilterConfig.FilterActivation = ENABLE;
    sFilterConfig.SlaveStartFilterBank = 14;
 
-   // setup can init
+   // setup can1 init
    hcan1->Init.Prescaler = 5;
    hcan1->Init.Mode = CAN_MODE_LOOPBACK;
    hcan1->Init.SyncJumpWidth = CAN_SJW_1TQ;
@@ -113,8 +153,27 @@ int main(void) {
    hcan1->Init.ReceiveFifoLocked = DISABLE;
    hcan1->Init.TransmitFifoPriority = DISABLE;
 
-   // initialize CAN
+   // initialize CAN1
    if (can_init(hcan1, &sFilterConfig) != CAN_OK) error_handler();
+
+   #ifdef CAN2
+   // setup can2 init
+   hcan2->Init.Prescaler = 5;
+   hcan2->Init.Mode = CAN_MODE_LOOPBACK;
+   hcan2->Init.SyncJumpWidth = CAN_SJW_1TQ;
+   hcan2->Init.TimeSeg1 = CAN_BS1_6TQ;
+   hcan2->Init.TimeSeg2 = CAN_BS2_2TQ;
+   hcan2->Init.TimeTriggeredMode = DISABLE;
+   hcan2->Init.AutoBusOff = DISABLE;
+   hcan2->Init.AutoWakeUp = DISABLE;
+   hcan2->Init.AutoRetransmission = ENABLE;
+   hcan2->Init.ReceiveFifoLocked = DISABLE;
+   hcan2->Init.TransmitFifoPriority = DISABLE;
+
+   // initialize CAN
+   sFilterConfig.FilterBank = 14;
+   if (can_init(hcan2, &sFilterConfig) != CAN_OK) error_handler();
+   #endif /* CAN2 */
 
    xTaskCreateStatic(
                   task,

@@ -2,7 +2,6 @@
 #define CAN_H
 #ifndef CAN_UNDEFINED
 
-#include <stdbool.h>
 #include "stm32xx_hal.h"
 
 // return code for can driver
@@ -18,6 +17,14 @@ typedef enum {
 #ifdef CAN1
 extern CAN_HandleTypeDef* hcan1;
 #endif /* CAN1 */
+
+#ifdef CAN2
+extern CAN_HandleTypeDef* hcan2;
+#endif /* CAN2 */
+
+#ifdef CAN3
+extern CAN_HandleTypeDef* hcan3;
+#endif /* CAN3 */
 
 can_status_t can_init(CAN_HandleTypeDef* handle, CAN_FilterTypeDef* filter);
 can_status_t can_send(CAN_HandleTypeDef* handle, const CAN_TxHeaderTypeDef* header, const uint8_t data[], bool blocking);
