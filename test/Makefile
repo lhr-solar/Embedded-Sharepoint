@@ -42,9 +42,8 @@ endif
 .PHONY: conditional_bear_make
 conditional_bear_make:
 ifeq ($(BEAR_INSTALLED),yes)
-	@echo -e "$(GREEN)Bear is installed, running with bear...$(NC)"
-	bear -- $(MAKE) -C $(BUILD_MAKEFILE_DIR) all || bear $(MAKE) -C $(BUILD_MAKEFILE_DIR) all
-	mv compile_commands.json ../.vscode/compile_commands.json
+	@echo "Bear is installed, generating compile_commands.json..."; \
+	bear --output $(VS_CODE_DIR)/compile_commands.json --append -- $(MAKE) -C $(BUILD_MAKEFILE_DIR) all;
 else
 	@echo -e "$(RED)Bear is not installed, running normal make...$(NC)"
 	$(MAKE) -C $(BUILD_MAKEFILE_DIR) all

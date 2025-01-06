@@ -11,7 +11,7 @@ for port in "${port_list[@]}"; do
         echo "Compiling the test - $test_name for $port"
 
         if ! make TEST="$test_name" PROJECT_TARGET="$port" -j; then
-            echo "Errors occurred during testing while testing $test_name.c using the $port"
+            echo "Errors occurred while compiling $test_name.c using $port"
             exit 1
         fi
     done
