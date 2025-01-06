@@ -104,7 +104,10 @@ echo "      - Mount: $WORKDIR_MOUNT -> /Embedded-Sharepoint"
 echo "-----------------------------------------------------"
 
 # Start ssh-agent
-eval `ssh-agent`
+# test whether $SSH_AUTH_SOCK is valid
+ssh-add -l 2>/dev/null >/dev/null
+# if not valid, then start ssh-agent using $SSH_AUTH_SOCK
+[ $? -ge 2 ] && ssh-agent -a "$SSH_AUTH_SOCK" >/dev/null
 
 docker compose -f "$DOCKER_COMPOSE_FILE" build
 docker compose -f "$DOCKER_COMPOSE_FILE" run --rm dev
