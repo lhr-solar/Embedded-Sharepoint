@@ -155,7 +155,6 @@ AS_INCLUDES =
 C_INCLUDES =  \
 $(PROJECT_C_INCLUDES) \
 stm/$(SERIES_GENERIC)/$(SERIES_GENERIC_CAP)_HAL_Driver/Inc \
-stm/$(SERIES_GENERIC)/$(SERIES_GENERIC_CAP)_HAL_Driver/Inc/Legacy \
 stm/$(SERIES_GENERIC)/CMSIS/Device/ST/$(SERIES_GENERIC_CAP)/Include \
 stm/$(SERIES_GENERIC)/CMSIS/Include \
 FreeRTOS-Kernel/include \
@@ -241,7 +240,6 @@ $(BUILD_DIR):
 #######################################
 clean:
 	-rm -fR $(BUILD_DIR)
-
 
 #######################################
 # flash

@@ -34,7 +34,23 @@ fi
 
 function install_docker_ubuntu() {
   echo "[INFO] Installing Docker for Ubuntu..."
-  sudo apt-get update && sudo apt-get install -y docker.io
+  
+  # Add Docker's official GPG key:
+  sudo apt-get update
+  sudo apt-get install ca-certificates curl
+  sudo install -m 0755 -d /etc/apt/keyrings
+  sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+  sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+  # Add the repository to Apt sources:
+  echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+    $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  sudo apt-get update
+
+  sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  
   sudo systemctl enable docker
   sudo systemctl start docker
 }
@@ -75,7 +91,7 @@ fi
 
 # Double-check Docker is running properly
 if ! docker ps &> /dev/null; then
-  echo "[ERROR] Docker is installed but not running. Please start Docker (e.g., 'sudo systemctl start docker')."
+  echo "[ERROR] Docker is installed but not running. Please start Docker \(e.g., 'sudo systemctl start docker'\)."
   exit 1
 fi
 
@@ -87,7 +103,18 @@ echo "      - Image: $IMAGE_NAME"
 echo "      - Mount: $WORKDIR_MOUNT -> /Embedded-Sharepoint"
 echo "-----------------------------------------------------"
 
+# Sets SSH_AUTH_SOCK for macOS
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  export SSH_AUTH_SOCK="/run/host-services/ssh-auth.sock"
+fi
+
+# Start ssh-agent
+# test whether $SSH_AUTH_SOCK is valid
+ssh-add -l 2>/dev/null >/dev/null
+# if not valid, then start ssh-agent using $SSH_AUTH_SOCK
+[ $? -ge 2 ] && ssh-agent -a "$SSH_AUTH_SOCK" >/dev/null
+
 docker compose -f "$DOCKER_COMPOSE_FILE" build
-docker compose -f "$DOCKER_COMPOSE_FILE" run --rm embedded-sharepoint
+docker compose -f "$DOCKER_COMPOSE_FILE" run --rm dev
 
 echo "[INFO] Container exited."

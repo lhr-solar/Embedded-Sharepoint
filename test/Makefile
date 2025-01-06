@@ -39,10 +39,8 @@ endif
 .PHONY: conditional_bear_make
 conditional_bear_make:
 ifeq ($(BEAR_INSTALLED),yes)
-	echo "Bear is installed, running with bear..."
-	bear -- $(MAKE) -C $(BUILD_MAKEFILE_DIR) all ; \
-	mkdir -p $(VS_CODE_DIR) ; \
-	if [ -f compile_commands.json ]; then mv compile_commands.json $(VS_CODE_DIR)/compile_commands.json; fi
+	@echo "Bear is installed, generating compile_commands.json..."; \
+	bear --output $(VS_CODE_DIR)/compile_commands.json --append -- $(MAKE) -C $(BUILD_MAKEFILE_DIR) all;
 else
 	@echo "Bear is not installed, running normal make..."
 	$(MAKE) -C $(BUILD_MAKEFILE_DIR) all
