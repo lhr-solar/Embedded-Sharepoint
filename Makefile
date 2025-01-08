@@ -45,16 +45,26 @@ SERIES_GENERIC_CAP = STM32$(SERIES_CAP)xx
 SERIES_LINE = stm32$(SERIES)$(LINE)
 SERIES_LINE_CAP = STM32$(SERIES_CAP)$(LINE)
 
-MCU_MATCHES = $(shell ls stm/$(SERIES_GENERIC)/CMSIS/Device/ST/$(SERIES_GENERIC_CAP)/Include\
-						| sed 's/\.h//g' | sed 's/x/./g')		
+# Generate a list of STM32 variant patterns:
+# 1. Remove the '.h' extension from filenames.
+# 2. Replace 'x' with '.' for regex matching.
+MCU_MATCHES = $(shell ls stm/$(SERIES_GENERIC)/CMSIS/Device/ST/$(SERIES_GENERIC_CAP)/Include \
+                | sed 's/\.h//g; s/x/./g')
 
-# attempt to find the generic series line by matching against header files in the CMSIS directory
-SERIES_LINE_GENERIC = $(shell for match in $(MCU_MATCHES); do \
-	if [ $${#match} -eq 11 ] && echo "stm32$(SERIES_LINE)$(EXTRA_CUT)" | grep -qE $$match; then \
-		echo $${match//./x}; \
-		break; \
-	fi; \
-done)
+# Find the generic STM32 series variant:
+# 1. Iterate over MCU_MATCHES.
+# 2. Check if the entry is exactly 11 characters long.
+# 3. Match it against the pattern 'stm32$(SERIES_LINE)$(EXTRA_CUT)'.
+# 4. Replace '.' with 'x' in the matched entry.
+# 5. Break on the first valid match.
+SERIES_LINE_GENERIC = $(shell \
+    for match in $(MCU_MATCHES); do \
+        if [ $${#match} -eq 11 ] && echo "stm32$(SERIES_LINE)$(EXTRA_CUT)" | grep -qE "$$match"; then \
+            echo "$${match//./x}"; \
+            break; \
+        fi; \
+    done)
+
 SERIES_LINE_GENERIC_CAP = $(shell echo $(SERIES_LINE_GENERIC) | sed 's/[^x]/\U&/g')
 
 ifeq ($(strip $(SERIES_LINE_GENERIC)),)
