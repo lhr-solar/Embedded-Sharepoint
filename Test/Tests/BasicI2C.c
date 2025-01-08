@@ -1,120 +1,251 @@
-#include <stdint.h>
-
+#ifdef 0
+/*
+ * BSP_I2C.c
+ *
+ *  Created on: Nov 2, 2024
+ *      Author: shaun
+ */
+#include "../../bsp/Inc/BSP_I2C.h"
+#include "FreeRTOS.h"
+#include "queue.h"
+#include "semphr.h"
 #include "stdbool.h"
-#include "stm32x4xx_hal_init.h"
-#include "stm32xx_hal.h"
-#include "stm32xx_hal_i2c.h"
+#include "stm32f4xx_it.h"
+#include "task.h"
+#include "assert.h"
 
-I2C_HandleTypeDef hi2c1;
+/* Used Functions */
+static void GPIO_Init(void);
+void Single_I2C_Init(I2C_HandleTypeDef*);
+void Error_Handler(void);
+
+
+typedef struct {
+	I2C_HandleTypeDef *hi2c;
+	uint8_t deviceAdd;
+	uint8_t* pDataBuff;
+	uint16_t len;
+} DataInfo_t;
+
+
+#define I2C_QUEUE_SIZE   128
+#define I2C_DATA_BUFFER_SIZE (I2C_QUEUE_SIZE * sizeof(DataInfo_t))
+static DataInfo_t I2C_DataStore[I2C_QUEUE_SIZE];  // Storage for the queue
+static StaticQueue_t I2C_DataQueue;
+static QueueHandle_t I2C_Queue;
+//static DataPacket_t DataBufferStorage[I2C_QUEUE_SIZE];
+
+I2C_HandleTypeDef *last_hi2c;
 
 /**
- * @brief I2C1 Initialization Function
- * @param None
- * @retval None
+ * @brief   Sets up the I2C ports as described by the
  */
-static void MX_I2C1_Init(void) {
-  hi2c1.Instance = I2C1;
-  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
-  hi2c1.Init.ClockSpeed = 50000;
-  hi2c1.Init.OwnAddress1 = 0x5A;
-  hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
-  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-  //hi2c1.XferOptions = FMPI2C_FIRST_AND_LAST_FRAME;
+HAL_StatusTypeDef BSP_I2C_Init(I2C_HandleTypeDef *hi2c) {
+	//QUEUES
+//	I2C_DataQueue = xQueueCreateStatic(I2C_QUEUE_SIZE, sizeof(DataInfo_t), (uint8_t *)DataBufferStorage, &DataStaticQueue);
+	I2C_Queue = xQueueCreateStatic(I2C_QUEUE_SIZE, sizeof (DataInfo_t), (uint8_t *) I2C_DataStore, &I2C_DataQueue);
+	// Check if the queue was created successfully
+	if (I2C_Queue == NULL) {
+		// Handle queue creation failure
+		return HAL_ERROR;
+	}
 
-  HAL_NVIC_SetPriority(I2C1_EV_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
-  HAL_NVIC_SetPriority(I2C1_ER_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(I2C1_ER_IRQn);
+	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+	HAL_Init();
 
-  //   hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-  //   hi2c1.Init.OwnAddress2 = 0;
-  //   hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-  //   hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+	/* Initialize all configured peripherals */
+	GPIO_Init();
+	Single_I2C_Init(hi2c);
 
-  __I2C1_CLK_ENABLE();
-  __HAL_FMPI2C_ENABLE(&hi2c1);
-  //   __HAL_FMPI2C_ENABLE_IT(&hi2c1, FMP_I2C_IT);
+	last_hi2c = hi2c;
 
-  HAL_I2C_Init(&hi2c1);
-  //   if (HAL_I2C_Init(&hi2c1) != HAL_OK)
-  //   {
-  //     Error_Handler();
-  //   }
-  /* USER CODE BEGIN I2C1_Init 2 */
-
-  /* USER CODE END I2C1_Init 2 */
+	return HAL_OK;
 }
 
 /**
- * @brief GPIO Initialization Function
- * @param None
- * @retval None
- */
-static void MX_GPIO_Init(void) {
-  GPIO_InitTypeDef I2C1_conf1 = {.Pin = GPIO_PIN_8,
-                                 .Mode = GPIO_MODE_AF_OD,
-                                 .Pull = GPIO_NOPULL,
-                                 .Speed = GPIO_SPEED_FREQ_LOW,
-                                 .Alternate = GPIO_AF4_I2C1};
-  // .Alternate = GPIO_AF4_I2C1
-  GPIO_InitTypeDef I2C1_conf2 = {.Pin = GPIO_PIN_9,
-                                 .Mode = GPIO_MODE_AF_OD,
-                                 .Pull = GPIO_NOPULL,
-                                 .Speed = GPIO_SPEED_FREQ_LOW,
-                                 .Alternate = GPIO_AF4_I2C1};
+* @brief    Transmits data onto the I2C bus.
+* @param    hi2c:            to structure that has config data
+* @param    deviceAdd      target device address
+* @param    pDataBuff      data buffer
+* @param    len            amount of data
+* @return   HAL_StatusTypeDef
+*/
+HAL_StatusTypeDef BSP_I2C_TX(I2C_HandleTypeDef *hi2c,
+              uint8_t deviceAdd,
+              uint8_t* pDataBuff,
+              uint16_t len)
+{
+	if(HAL_I2C_GetState(hi2c) == HAL_I2C_STATE_READY)
+	{
+		last_hi2c = hi2c;
+		return HAL_I2C_Master_Transmit_IT(hi2c, deviceAdd, pDataBuff, len);
+	}
+	else
+	{
+		DataInfo_t dataToEnqueue = {
+			.hi2c = hi2c,
+			.deviceAdd = deviceAdd,
+			.pDataBuff = pDataBuff,
+			.len = len
+		};
+
+		if (xQueueSend(I2C_Queue, &dataToEnqueue, portMAX_DELAY) != pdPASS) {
+		    // Handle queue full error
+		}
+	}
+	return HAL_OK;
+}
+
+/**
+* @brief    Receives data from the I2C bus.
+* @param    hi2c:            to structure that has config data
+* @param    deviceAdd      target device address
+* @param    pDataBuff      data buffer
+* @param    len            amount of data
+* @return   HAL_StatusTypeDef
+*/
+HAL_StatusTypeDef BSP_I2C_RX(I2C_HandleTypeDef *hi2c,
+              uint8_t deviceAdd,
+              uint8_t* pDataBuff,
+              uint16_t len)
+{
+	last_hi2c = hi2c;
+    return HAL_I2C_Master_Receive_IT(hi2c, deviceAdd, pDataBuff, len);
+}
+
+
+/**
+  * @brief I2C1 Initialization Function
+  * @param None
+  * @retval None
+  */
+void Single_I2C_Init(I2C_HandleTypeDef *hi2c)
+{
+	/* Initialize the interrupts */
+	// TODO: Make this change based on which I2C is being used
+	IRQn_Type EventIRQ;
+	IRQn_Type ErrorIRQ;
+	if(hi2c->Instance == I2C1)
+	{
+		__HAL_RCC_I2C1_CLK_ENABLE();
+		EventIRQ = I2C1_EV_IRQn;
+		ErrorIRQ = I2C1_ER_IRQn;
+	}
+	// TODO: Remove this line once finished debugging
+	assert(hi2c->Instance == I2C1);
+
+	HAL_NVIC_SetPriority(EventIRQ , 3, 0); // set to priority 5 (not the highest priority) for I2C peripheral's interrupt
+	HAL_NVIC_EnableIRQ(EventIRQ ); // Enable the I2C interrupt
+	HAL_NVIC_SetPriority(ErrorIRQ , 5, 0); // set to priority 5 (not the highest priority) for I2C peripheral's interrupt
+	HAL_NVIC_EnableIRQ(ErrorIRQ ); // Enable the I2C interrupt
+
+	last_hi2c = hi2c;
+	if (HAL_I2C_Init(hi2c) != HAL_OK)
+	{
+		Error_Handler();
+	}
+}
+
+/**
+  * @brief GPIO Initialization Function
+  * @param None
+  * @retval None
+  */
+static void GPIO_Init(void)
+{
+/* USER CODE BEGIN MX_GPIO_Init_1 */
+/* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
-  __GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 
-  HAL_GPIO_Init(GPIOB, &I2C1_conf1);
-  HAL_GPIO_Init(GPIOB, &I2C1_conf2);
+/* USER CODE BEGIN MX_GPIO_Init_2 */
+/* USER CODE END MX_GPIO_Init_2 */
 }
 
-void LED_Init(void) {
-  GPIO_InitTypeDef led_config = {
-      .Mode = GPIO_MODE_OUTPUT_PP, .Pull = GPIO_NOPULL, .Pin = GPIO_PIN_5};
+void QueueSend(void)
+{
+	if (HAL_I2C_GetState(last_hi2c) != HAL_I2C_STATE_READY)
+		return;
 
-  __HAL_RCC_GPIOA_CLK_ENABLE();       // enable clock for GPIOA
-  HAL_GPIO_Init(GPIOA, &led_config);  // initialize GPIOA with led_config
+	DataInfo_t data;
+	if (xQueueReceive(I2C_Queue, &data, portMAX_DELAY) == pdPASS) {
+	    // Process dequeuedData
+		HAL_I2C_Master_Transmit_IT(data.hi2c, data.deviceAdd, data.pDataBuff, data.len);
+	} else {
+	    // Handle queue empty error
+	}
 }
 
-int main() {
-  HAL_Init();
-  // SystemClock_Config();
-  MX_GPIO_Init();
-  MX_I2C1_Init();
-  LED_Init();
+/**
+  * @brief This function handles I2C1 event interrupt.
+  */
+void I2C1_EV_IRQHandler(void)
+{
+	/* USER CODE BEGIN I2C1_EV_IRQn 0 */
+	/* USER CODE BEGIN I2C1_ER_IRQn 0 */
+	if (__HAL_I2C_GET_FLAG(last_hi2c, I2C_FLAG_TXE)) {
+	    // TXE flag: transmit buffer empty, ready for new data
+		;
+	}
 
-  uint8_t daBuff[] = {1, 2, 3, 4};
+	if (__HAL_I2C_GET_FLAG(last_hi2c, I2C_FLAG_BTF)) {
+	    // BTF flag: Byte transfer finished, transmission complete
+		;
+	}
 
-  while (1) {
-    // HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_8 | GPIO_PIN_9);
-    // HAL_I2C_Master_Transmit_IT(&hi2c1, 1 << 1, buffer, 4);
+	if (__HAL_I2C_GET_FLAG(last_hi2c, I2C_FLAG_STOPF)) {
+	    // STOPF flag: stop condition detection, the bus is free
+		HAL_I2C_MasterTxCpltCallback(last_hi2c);; // Clear the stop flag
+	}
+	/* USER CODE END I2C1_EV_IRQn 0 */
+	HAL_I2C_EV_IRQHandler(last_hi2c);
+	/* USER CODE BEGIN I2C1_EV_IRQn 1 */
+	QueueSend();
+	/* USER CODE END I2C1_EV_IRQn 1 */
+}
 
-    // if (!*daBuff && (HAL_I2C_GetState(&hi2c1) == HAL_I2C_STATE_READY)) {
-    //   HAL_Delay(100);
-    //   HAL_I2C_Master_Receive_IT(&hi2c1, 0x5A, daBuff, 1);
-    // }
+/**
+  * @brief This function handles I2C1 error interrupt.
+  */
+void I2C1_ER_IRQHandler(void)
+{
+	/* USER CODE END I2C1_ER_IRQn 0 */
+	if (__HAL_I2C_GET_FLAG(last_hi2c, I2C_FLAG_AF)) {
+		// AF: Acknowledge Failure (NACK received)
+		;
+	}
+	HAL_I2C_ER_IRQHandler(last_hi2c);
+	// The NACK has been acknowledged here and checked that the
+	// peripheral is ready to send a new item.
+	QueueSend();
+	/* USER CODE BEGIN I2C1_ER_IRQn 1 */
 
-    if ((HAL_I2C_GetState(&hi2c1) == HAL_I2C_STATE_READY)) {
-      HAL_I2C_Master_Transmit(&hi2c1, 0x5A, daBuff,
-                                 sizeof(daBuff) / sizeof(*daBuff), 1000);
-      //   daBuff[0] = 0;
-    }
+  /* USER CODE END I2C1_ER_IRQn 1 */
+}
 
-    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-    HAL_Delay(500);
-    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-    // HAL_Delay(100);
+void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
+{
+	;
+}
+
+void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c)
+{
+	;
+}
+
+/**
+  * @brief  This function is executed in case of error occurrence.
+  * @retval None
+  */
+void Error_Handler(void)
+{
+  /* USER CODE BEGIN Error_Handler_Debug */
+  /* User can add his own implementation to report the HAL error return state */
+  __disable_irq();
+  while (1)
+  {
   }
+  /* USER CODE END Error_Handler_Debug */
 }
-
-// void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef* hi2c) {
-//   HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-//   HAL_Delay(500);
-//   __HAL_FMPI2C_CLEAR_FLAG();
-// }
-
-// void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef* hi2c) {
-//   // RX Done .. Do Something!
-// }
+#endif
