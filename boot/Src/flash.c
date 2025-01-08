@@ -9,6 +9,11 @@ static uint8_t sector_erased_bitmap = 0;
 
 #define HANDLE_HAL_ERROR(x) if((x) == HAL_ERROR){return false;}
 
+extern uint8_t _app_start;
+extern uint8_t _app_len;
+#define APP_START_ADDRESS ((unsigned long)&_app_start)
+#define APP_LENGTH ((unsigned long)&_app_len)
+
 bool exec_flash_command(void* buf, flash_cmd_t* cmd){
     // Error check
     if(cmd->data_size > MAX_BUFFER_SIZE ||
@@ -42,6 +47,10 @@ bool exec_flash_command(void* buf, flash_cmd_t* cmd){
 #define FLASH_SECTOR(addr) (((((uint32_t)addr) & FLASH_SECTOR_MASK)>>17) + 4)
 
 static bool flash_write_single(uint64_t data, uint32_t address, uint8_t data_size){
+    if(address < APP_START_ADDRESS || address > APP_START_ADDRESS + APP_LENGTH){
+        return false;
+    }
+    
     uint32_t program_type;
     switch(data_size){
         case 1:
@@ -81,6 +90,10 @@ static bool flash_write_single(uint64_t data, uint32_t address, uint8_t data_siz
 }
 
 bool flash_write(void* buf, uint32_t address, uint16_t data_size){
+    if(address < APP_START_ADDRESS || address > APP_START_ADDRESS + APP_LENGTH){
+        return false;
+    }
+    
     while(data_size > 0){
         uint8_t write_size = 8;
         while((write_size != 0) && ((data_size&write_size) == 0)) write_size>>=1; // shift until we find most sig bit
@@ -127,8 +140,7 @@ bool flash_read_buf(void* buf, uint32_t address, uint16_t data_size){
 }
 
 bool flash_erase(uint32_t address){
-    // Only allow writes to application space
-    if(address < 0x08020000){
+    if(address < APP_START_ADDRESS || address > APP_START_ADDRESS + APP_LENGTH){
         return false;
     }
 

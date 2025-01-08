@@ -13,8 +13,13 @@ typedef enum {
 
     // Bootloader Specific
     BLDR_FAIL_INIT, // Bootloader failed to initialize
-    BLDR_FAIL_UART_INIT, // Bootloader failed to recv UART init msgs
     BLDR_FAIL_STX, // Bootloader failed to receive STX
+    BLDR_FAIL_HDR, // Bootloader failed during header
+    BLDR_FAIL_DATA, // Bootloader failed during data
+    BLDR_FAIL_FLASH, // Bootloader failed to flash
+
+    BLDR_REGULAR_START, // Bootloader does not recognize any incoming command, start application
+    BLDR_START_AFTER_UPDATE, // Bootloader starts application after update
 } error_code_t;
 
 error_code_t boot_init();

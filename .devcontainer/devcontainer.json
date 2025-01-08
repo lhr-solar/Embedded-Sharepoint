@@ -20,7 +20,8 @@
         "GitHub.vscode-pull-request-github",
         "ms-vscode.makefile-tools",
         "thecreativedodo.usbip-connect",
-        "eamodio.gitlens"
+        "eamodio.gitlens",
+        "ms-vscode.hexeditor"
       ]
     }
   }

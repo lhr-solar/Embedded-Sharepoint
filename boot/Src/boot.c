@@ -11,8 +11,6 @@
 
 #define STX (0x02)
 #define ACK (0x06)
-// static uint8_t transaction_buf[MAX_BUFFER_SIZE + 3] = {0}; // Add 3 bytes for STX, HEADER
-// static uint8_t* buf_ptr = transaction_buf;
 
 #define FLASH_CMD_OFFSET (0x5)
 
@@ -57,7 +55,8 @@ static USART_HandleTypeDef USART1_Handle = {
     .Init.WordLength = USART_WORDLENGTH_9B,
     .Init.StopBits = USART_STOPBITS_1,
     .Init.Parity = USART_PARITY_EVEN,
-    .Init.Mode = USART_MODE_TX_RX
+    .Init.Mode = USART_MODE_TX_RX,
+    .State = HAL_USART_STATE_RESET
 };
 
 static inline void startapp_with_err(error_code_t ec){
@@ -67,6 +66,7 @@ static inline void startapp_with_err(error_code_t ec){
 }
 
 /*
+=======================
 CMD Structure:
 Start of Transmission:
 STX (1 byte) RX
@@ -75,11 +75,21 @@ ACK (1 bytes) TX
 Header:
 CMD (1 byte) RX
 DATA_SIZE (1 byte) RX
+ADDRESS (4 bytes) RX
 ACK (1 byte) TX
 
 Data:
 DATA (X bytes) RX
 ACK (1 byte) TX
+
+Response Header:
+DATA_SIZE (1 byte) TX
+ACK (1 byte) RX
+
+Response:
+DATA (X bytes) TX
+ACK (1 byte) RX
+=======================
 */
 
 static inline error_code_t uart_ack(){
@@ -93,64 +103,127 @@ Start of Transmission:
 STX (1 byte) RX
 ACK (1 bytes) TX
 */
-// static error_code_t uart_stx(){
-//     // Get STX (start of text character)
-//     error_code_t ret = HAL_USART_Receive(&USART1_Handle, buf_ptr, 1, INIT_RECV_TIMEOUT);
-//     if(ret == BLDR_OK){
-//         if(buf_ptr[0] == STX){
-//             ret = uart_ack();
-//             if(ret != BLDR_OK) return ret;
-//         } else {
-//             ret = BLDR_FAIL_STX;
-//         }
-//     } else{
-//         return ret;
-//     }
+static error_code_t uart_stx(){
+    uint8_t buf = 0;
 
-//     buf_ptr += 1;
-//     return ret;
-// }
+    // Get STX (start of text character)
+    error_code_t ret = HAL_USART_Receive(&USART1_Handle, &buf, 1, INIT_RECV_TIMEOUT);
+    if(ret == BLDR_OK){
+        if(buf == STX){
+            ret = uart_ack();
+            if(ret != BLDR_OK) return ret;
+        } else {
+            ret = BLDR_FAIL_STX;
+        }
+    } else{
+        return ret;
+    }
+
+    return ret;
+}
 
 /*
 Header:
 CMD (1 byte) RX
 DATA_SIZE (1 byte) RX
+ADDRESS (4 bytes) RX
 ACK (1 byte) TX
 */
-// static error_code_t uart_header(uint8_t *cmd, uint8_t *data_size){
-//     // Get CMD and DATA_SIZE
-//     error_code_t ret = HAL_USART_Receive(&USART1_Handle, buf_ptr, 2, INIT_RECV_TIMEOUT);
-//     if(ret != BLDR_OK) return ret;
+static error_code_t uart_header(uint8_t *cmd, uint8_t *data_size, uint32_t *address){
+    uint8_t buf[6] = {0};
     
-//     *cmd = buf_ptr[0];
-//     *data_size = buf_ptr[1];
+    // Get CMD and DATA_SIZE
+    error_code_t ret = HAL_USART_Receive(&USART1_Handle, buf, 6, INIT_RECV_TIMEOUT);
+    if(ret != BLDR_OK) return ret;
     
-//     ret = uart_ack();
-//     if(ret != BLDR_OK) return ret;
+    *cmd = buf[0];
+    *data_size = buf[1];
+    *address = *((uint32_t*)&buf[2]);
+    
+    ret = uart_ack();
+    if(ret != BLDR_OK) return ret;
 
-//     buf_ptr += 2;
-//     return ret;
-// }
+    return ret;
+}
 
 /*
 Data:
 DATA (X bytes) RX
 ACK (1 byte) TX
 */
-// static error_code_t uart_data(uint8_t *data, uint8_t data_size){
-//     // Get DATA
-//     error_code_t ret = HAL_USART_Receive(&USART1_Handle, buf_ptr, data_size, INIT_RECV_TIMEOUT);
-//     if(ret != BLDR_OK) return ret;
+static error_code_t uart_data(uint8_t *data, uint8_t data_size){
+    uint8_t buf[data_size];
     
-//     memcpy(data, buf_ptr, data_size);
+    // Get DATA
+    error_code_t ret = HAL_USART_Receive(&USART1_Handle, buf, data_size, INIT_RECV_TIMEOUT);
+    if(ret != BLDR_OK) return ret;
     
-//     ret = uart_ack();
-//     if(ret != BLDR_OK) return ret;
+    memcpy(data, buf, data_size);
+    
+    ret = uart_ack();
+    if(ret != BLDR_OK) return ret;
 
-//     buf_ptr += data_size;
-//     return ret;
-// }
+    return ret;
+}
 
+/*
+Response Header:
+DATA_SIZE (1 byte) TX
+ACK (1 byte) RX
+
+Response:
+DATA (X bytes) TX
+ACK (1 byte) RX
+*/
+static error_code_t uart_resp(uint8_t *data, uint8_t data_size){
+    // Header
+    HAL_USART_Transmit(&USART1_Handle, &data_size, 1, INIT_RECV_TIMEOUT);
+
+    // Wait for ack
+    uint8_t ack = 0;
+    error_code_t ret = HAL_USART_Receive(&USART1_Handle, &ack, 1, INIT_RECV_TIMEOUT);
+    if(ret != BLDR_OK) return ret;
+    if(ack != ACK) return BLDR_ERR;
+
+    // Data
+    HAL_USART_Transmit(&USART1_Handle, data, data_size, INIT_RECV_TIMEOUT);
+
+    // Wait for ack
+    ret = HAL_USART_Receive(&USART1_Handle, &ack, 1, INIT_RECV_TIMEOUT);
+    if(ret != BLDR_OK) return ret;
+    if(ack != ACK) return BLDR_ERR;
+
+    return ret;
+}
+
+static error_code_t uart_cmd(){
+    // Wait for STX
+    if(uart_stx() != BLDR_OK) return BLDR_FAIL_STX;
+
+    // Get Header
+    uint8_t cmd, data_size;
+    uint32_t address;
+    if(uart_header(&cmd, &data_size, &address) != BLDR_OK) return BLDR_FAIL_HDR;
+
+    // Get Data
+    uint8_t data[data_size];
+    if(uart_data(data, data_size) != BLDR_OK) return BLDR_FAIL_DATA;
+
+    // Execute command
+    flash_cmd_t flash_cmd = {
+        .id = cmd,
+        .data_size = data_size,
+        .address = 0
+    };
+    if(!exec_flash_command(data, &flash_cmd)) return BLDR_FAIL_FLASH;
+
+    // Send response
+    if(flash_cmd.id == FLASH_READ_SINGLE | flash_cmd.id == FLASH_READ_BUF){
+        if(uart_resp(data, data_size) != BLDR_OK) return BLDR_ERR;
+    }
+
+    return BLDR_OK;
+}
 
 /*
 Init command (special case):
@@ -164,7 +237,6 @@ static error_code_t uart_init(){
     
     // Get init command
     error_code_t ret = HAL_OK;
-    // if(ret != BLDR_OK) return ret;
     
     // Get all 4 packets
     for(bufptr = buf; bufptr<&buf[SIZEOF(buf)-1]; bufptr+=SIZEOF(init_cmd)){
@@ -258,12 +330,49 @@ void boot_deinit(){
 void boot(){
     // Initialize
     if(boot_init() != BLDR_OK){
+        boot_deinit();
         startapp_with_err(BLDR_FAIL_INIT);
     }
 
     if(uart_init() != BLDR_OK){
-        while(1);
-        startapp_with_err(BLDR_FAIL_UART_INIT);
+        boot_deinit();
+        startapp_with_err(BLDR_REGULAR_START);
+    }
+
+    // Locked into the bootloader
+    while(1){
+        
+        // // Get STX
+        // if(uart_stx() != BLDR_OK){
+        //     boot_deinit();
+        //     startapp_with_err(BLDR_FAIL_STX);
+        // }
+
+        // // Get Header
+        // uint8_t cmd, data_size;
+        // if(uart_header(&cmd, &data_size) != BLDR_OK){
+        //     boot_deinit();
+        //     startapp_with_err(BLDR_FAIL_STX);
+        // }
+
+        // // Get Data
+        // uint8_t data[data_size];
+        // if(uart_data(data, data_size) != BLDR_OK){
+        //     boot_deinit();
+        //     startapp_with_err(BLDR_FAIL_STX);
+        // }
+
+        // // Execute command
+        // flash_cmd_t flash_cmd = {
+        //     .id = cmd,
+        //     .data_size = data_size,
+        //     .address = 0
+        // };
+
+        // if(exec_flash_command(data, &flash_cmd) != BLDR_OK){
+        //     boot_deinit();
+        //     startapp_with_err(BLDR_FAIL_STX);
+        // }
     }
     
     HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET);
@@ -273,6 +382,4 @@ void boot(){
     startapp();
     
     return;
-    // Main UART recv loop
-    
 }
