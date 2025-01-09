@@ -661,7 +661,7 @@ failed:
 
   // CAN2
   #ifdef CAN2
-  if (handle->Instance == CAN2) {
+  else if (handle->Instance == CAN2) {
     xSemaphoreGive(can2_send_semaphore);
   }
   #endif /* CAN2 */
