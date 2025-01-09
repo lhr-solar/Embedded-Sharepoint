@@ -668,7 +668,7 @@ failed:
 
   // CAN3
   #ifdef CAN3
-  if (handle->Instance == CAN3) {
+  else if (handle->Instance == CAN3) {
     xSemaphoreGive(can3_send_semaphore);
   }
   #endif /* CAN3 */
