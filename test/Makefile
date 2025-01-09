@@ -25,6 +25,8 @@ export PROJECT_BUILD_DIR
 # check if bear is installed
 BEAR_INSTALLED := $(shell command -v bear >/dev/null 2>&1 && echo yes || echo no)
 
+VS_CODE_DIR := $(MAKEFILE_DIR)/../.vscode
+
 ifeq ($(MAKECMDGOALS),)
 default: conditional_bear_make
 else ifeq ($(MAKECMDGOALS),all)
