@@ -31,6 +31,8 @@ CLANG_INPUTS := $(filter-out $(IGNORED_CLANG_INPUTS), $(CLANG_INPUTS))
 
 ######################################
 # target
+
+
 ######################################
 SERIES = $(shell echo $(PROJECT_TARGET) | cut -c6-7)
 LINE = $(shell echo $(PROJECT_TARGET) | cut -c8-9)
