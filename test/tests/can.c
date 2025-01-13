@@ -155,6 +155,7 @@ int main(void) {
 
    // initialize CAN1
    if (can_init(hcan1, &sFilterConfig) != CAN_OK) error_handler();
+   if (can_start(hcan1) != CAN_OK) error_handler();
 
    #ifdef CAN2
    // setup can2 init
@@ -173,6 +174,7 @@ int main(void) {
    // initialize CAN
    sFilterConfig.FilterBank = 14;
    if (can_init(hcan2, &sFilterConfig) != CAN_OK) error_handler();
+   if (can_start(hcan2) != CAN_OK) error_handler();
    #endif /* CAN2 */
 
    xTaskCreateStatic(
