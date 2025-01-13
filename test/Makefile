@@ -1,12 +1,12 @@
 # default project configuration
-TEST ?= main
+TEST ?= blinky
 PROJECT_TARGET ?= stm32f446ret
 
 # source and include directories
 PROJECT_C_SOURCES = $(wildcard Src/*.c)
 PROJECT_C_INCLUDES = Inc
 
-# build and driver directories
+# build and driver directories	
 PROJECT_BUILD_DIR = ../build
 BUILD_MAKEFILE_DIR = ../
 
