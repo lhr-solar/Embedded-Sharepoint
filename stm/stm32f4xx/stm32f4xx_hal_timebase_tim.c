@@ -25,7 +25,10 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
   /* Get clock configuration */
   HAL_RCC_GetClockConfig(&clkconfig, &pFLatency);
   /* Compute TIM1 clock */
-      uwTimclock = 2*HAL_RCC_GetPCLK2Freq();
+  
+  // Originally had a 2x multiplier, but it caused STM32F446 to take double the time, so changed it
+  uwTimclock = HAL_RCC_GetPCLK2Freq();
+  // uwTimclock = 2*HAL_RCC_GetPCLK2Freq();
 
   /* Compute the prescaler value to have TIM1 counter clock equal to 1MHz */
   uwPrescalerValue = (uint32_t) ((uwTimclock / 1000000U) - 1U);

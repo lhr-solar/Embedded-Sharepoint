@@ -1,0 +1,28 @@
+// .devcontainer/devcontainer.json
+{
+  "name": "Embedded Sharepoint",
+  "dockerComposeFile": [
+    "../docker-compose.yml"
+  ],
+
+  "service": "dev",
+  "workspaceFolder": "/Embedded-Sharepoint",
+  "shutdownAction": "stopCompose",
+
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      },
+      "extensions": [
+        "ms-vscode.cpptools-extension-pack",
+        "ms-python.python",
+        "GitHub.vscode-pull-request-github",
+        "ms-vscode.makefile-tools",
+        "thecreativedodo.usbip-connect",
+        "eamodio.gitlens"
+      ]
+    }
+  }
+}
+

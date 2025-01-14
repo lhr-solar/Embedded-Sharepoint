@@ -12,7 +12,7 @@ BUILD_MAKEFILE_DIR = ../
 
 # ensure all paths are absolute
 MAKEFILE_DIR = $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-PROJECT_C_SOURCES := $(addprefix $(MAKEFILE_DIR)/, $(PROJECT_C_SOURCES) Tests/$(TEST).c)
+PROJECT_C_SOURCES := $(addprefix $(MAKEFILE_DIR)/, $(PROJECT_C_SOURCES) tests/$(TEST).c)
 PROJECT_C_INCLUDES := $(addprefix $(MAKEFILE_DIR)/, $(PROJECT_C_INCLUDES))
 PROJECT_BUILD_DIR := $(addprefix $(MAKEFILE_DIR)/, $(PROJECT_BUILD_DIR))
 
@@ -22,21 +22,30 @@ export PROJECT_C_SOURCES
 export PROJECT_C_INCLUDES
 export PROJECT_BUILD_DIR
 
-# default target
+# check if bear is installed
+BEAR_INSTALLED := $(shell command -v bear >/dev/null 2>&1 && echo yes || echo no)
+
+# define VS_CODE_DIR
+VS_CODE_DIR := $(MAKEFILE_DIR)/../.vscode
+
+BEAR_PREFIX := 
+ifeq ($(BEAR_INSTALLED),yes)
+$(info A wild bear has appeared!)
+BEAR_PREFIX := bear --output $(VS_CODE_DIR)/compile_commands.json --append --
+endif
+
 default: all
+%:
+	$(BEAR_PREFIX) $(MAKE) -C $(BUILD_MAKEFILE_DIR) $(MAKECMDGOALS)
 
 # generate documentation
 .PHONY: docs
 docs:
 	cd .. && mkdocs serve
 
-# recursively build in the drivers directory
-%:
-	$(MAKE) -C $(BUILD_MAKEFILE_DIR) $(MAKECMDGOALS)
-
 # help
 .PHONY: help
 help:
 	@echo "Available targets:"
 	@echo "  docs     - Generate documentation using mkdocs."
-	@$(MAKE) -C $(DRIVERS_DIR) help
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) help
