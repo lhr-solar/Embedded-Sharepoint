@@ -10,7 +10,7 @@ for port in "${port_list[@]}"; do
         test_name="${test_name%.c}"
         
         # Skip the "can" test for stm32f401*e or stm32f401*c
-        if [[ "$port" =~ ^stm32f401.*[ec]$ ]] && [[ "$test_name" == "can" ]]; then
+        if [[ "$port" =~ ^stm32f401.*[ec]$ ]] && ([[ "$test_name" == "can" ]] || [[ "$test_name" == "can_mt" ]]); then
             echo "Skipping the CAN test for $port because it does not support CAN"
             continue
         fi
