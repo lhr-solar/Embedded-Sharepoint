@@ -8,7 +8,6 @@ void Clock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
 void TestTask(void *argument);
-void Error_Handler(void);
 
 /* Private variables ---------------------------------------------------------*/
 I2C_HandleTypeDef hi2c1;
@@ -96,7 +95,7 @@ void Clock_Config(void) {
     RCC_OscInitStruct.PLL.PLLQ = 2;
     RCC_OscInitStruct.PLL.PLLR = 2;
     if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
-    Error_Handler();
+        // Handle Error
     }
 
     /** Initializes the CPU, AHB and APB buses clocks
@@ -109,7 +108,7 @@ void Clock_Config(void) {
     RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
     if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK) {
-    Error_Handler();
+        // Handle Error
     }
     }
 
