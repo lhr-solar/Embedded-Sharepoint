@@ -38,10 +38,6 @@
  interface should recieve on. Look at can1_recv_entries.h
  for an example. Make sure these entries line up with the
  filter config.
- * The driver keeps the state CAN peripheral, meaning if you
- use a function when the state does not make sense (e.g. send
- a message if uninitialized), then you will get an error. Errors
- are not limited to these cases, however.
  */
 
 // return code for can driver

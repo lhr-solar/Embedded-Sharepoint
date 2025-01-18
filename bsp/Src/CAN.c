@@ -3,13 +3,6 @@
 // 8 for now unless extended payload is supported
 #define DATA_SIZE (8)
 
-// can state
-typedef enum {
-  UNINITIALIZED,
-  INACTIVE,
-  ACTIVE
-} can_state_t;
-
 // entries in queues
 typedef struct {
   CAN_TxHeaderTypeDef header;
@@ -31,9 +24,6 @@ typedef struct {
 } recv_entry_t;
 
 #ifdef CAN1
-// can1 state
-can_state_t can1_state = UNINITIALIZED;
-
 // fallback can1 send queue size
 #ifndef CAN1_SEND_QUEUE_SIZE
 #define CAN1_SEND_QUEUE_SIZE (10)
@@ -84,9 +74,6 @@ static const uint32_t can1_recv_entry_count = 0;
 #endif /* CAN1 */
 
 #ifdef CAN2
-// can2 state
-can_state_t can2_state = UNINITIALIZED;
-
 // fallback can2 send queue size
 #ifndef CAN2_SEND_QUEUE_SIZE
 #define CAN2_SEND_QUEUE_SIZE (10)
@@ -137,9 +124,6 @@ static const uint32_t can2_recv_entry_count = 0;
 #endif /* CAN2 */
 
 #ifdef CAN3
-// can3 state
-can_state_t can3_state = UNINITIALIZED;
-
 // fallback can3 send queue size
 #ifndef CAN3_SEND_QUEUE_SIZE
 #define CAN3_SEND_QUEUE_SIZE (10)
@@ -352,11 +336,6 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef* hcan) {
 can_status_t can_init(CAN_HandleTypeDef* handle, CAN_FilterTypeDef* filter) {
   // CAN1
   if (handle->Instance == CAN1) {
-    // check state
-    if (can1_state != UNINITIALIZED) {
-      return CAN_ERR;
-    }
-
     // init queues
     can1_send_queue =
         xQueueCreateStatic(CAN1_SEND_QUEUE_SIZE, sizeof(tx_payload_t),
@@ -371,11 +350,6 @@ can_status_t can_init(CAN_HandleTypeDef* handle, CAN_FilterTypeDef* filter) {
   // CAN2
   #ifdef CAN2
   else if (handle->Instance == CAN2) {
-    // check state
-    if (can2_state != UNINITIALIZED) {
-      return CAN_ERR;
-    }
-
     // init queues
     can2_send_queue =
         xQueueCreateStatic(CAN2_SEND_QUEUE_SIZE, sizeof(tx_payload_t),
@@ -391,11 +365,6 @@ can_status_t can_init(CAN_HandleTypeDef* handle, CAN_FilterTypeDef* filter) {
   // CAN3
   #ifdef CAN3
   else if (handle->Instance == CAN3) {
-    // check state
-    if (can3_state != UNINITIALIZED) {
-      return CAN_ERR;
-    }
-
     // init queues
     can3_send_queue =
         xQueueCreateStatic(CAN3_SEND_QUEUE_SIZE, sizeof(tx_payload_t),
@@ -431,63 +400,10 @@ can_status_t can_init(CAN_HandleTypeDef* handle, CAN_FilterTypeDef* filter) {
     return CAN_ERR;
   }
 
-  // update state
-  // CAN1
-  if (handle->Instance == CAN1) {
-    can1_state = INACTIVE;
-  }
-
-  // CAN2
-  #ifdef CAN2
-  else if (handle->Instance == CAN2) {
-    can2_state = INACTIVE;
-  }
-  #endif /* CAN2 */
-
-  // CAN3
-  #ifdef CAN3
-  else if (handle->Instance == CAN3) {
-    can3_state = INACTIVE;
-  }
-  #endif /* CAN3 */
-
   return CAN_OK;
 }
 
 can_status_t can_deinit(CAN_HandleTypeDef* handle) {
-  // check state
-  // CAN1
-  if (handle->Instance == CAN1) {
-    if (can1_state == UNINITIALIZED ||
-	can1_state == ACTIVE) {
-      return CAN_ERR;
-    }
-  }
-
-  // CAN2
-  #ifdef CAN2
-  else if (handle->Instance == CAN2) {
-    if (can2_state == UNINITIALIZED ||
-	can2_state == ACTIVE) {
-      return CAN_ERR;
-    }
-  }
-  #endif /* CAN2 */
-
-  // CAN3
-  #ifdef CAN3
-  else if (handle->Instance == CAN3) {
-    if (can3_state == UNINITIALIZED ||
-	can3_state == ACTIVE) {
-      return CAN_ERR;
-    }
-  }
-  #endif /* CAN3 */
-
-  else {
-    return CAN_ERR;
-  }
-
   // deinit HAL
   if (HAL_CAN_DeInit(handle) != HAL_OK) {
     return CAN_ERR;
@@ -502,143 +418,21 @@ can_status_t can_deinit(CAN_HandleTypeDef* handle) {
     return CAN_ERR;
   }
 
-  // update state
-  // CAN1
-  if (handle->Instance == CAN1) {
-    can1_state = UNINITIALIZED;
-  }
-
-  // CAN2
-  #ifdef CAN2
-  else if (handle->Instance == CAN2) {
-    can2_state = UNINITIALIZED;
-  }
-  #endif /* CAN2 */
-
-  // CAN3
-  #ifdef CAN3
-  else if (handle->Instance == CAN3) {
-    can3_state = UNINITIALIZED;
-  }
-  #endif /* CAN3 */
-
   return CAN_OK;
 }
 
 can_status_t can_start(CAN_HandleTypeDef* handle) {
-  // check state
-  // CAN1
-  if (handle->Instance == CAN1) {
-    if (can1_state != INACTIVE) {
-      return CAN_ERR;
-    }
-  }
-
-  // CAN2
-  #ifdef CAN2
-  else if (handle->Instance == CAN2) {
-    if (can2_state != INACTIVE) {
-      return CAN_ERR;
-    }
-  }
-  #endif /* CAN2 */
-
-  // CAN3
-  #ifdef CAN3
-  else if (handle->Instance == CAN3) {
-    if (can3_state == INACTIVE) {
-      return CAN_ERR;
-    }
-  }
-  #endif /* CAN3 */
-
-  else {
-    return CAN_ERR;
-  }
-
-  // start CAN
   if (HAL_CAN_Start(handle) != HAL_OK) {
     return CAN_ERR;
   }
-
-  // update state
-  // CAN1
-  if (handle->Instance == CAN1) {
-    can1_state = ACTIVE;
-  }
-
-  // CAN2
-  #ifdef CAN2
-  else if (handle->Instance == CAN2) {
-    can2_state = ACTIVE;
-  }
-  #endif /* CAN2 */
-
-  // CAN3
-  #ifdef CAN3
-  else if (handle->Instance == CAN3) {
-    can3_state = ACTIVE;
-  }
-  #endif /* CAN3 */
 
   return CAN_OK;
 }
 
 can_status_t can_stop(CAN_HandleTypeDef* handle) {
-  // check state
-  // CAN1
-  if (handle->Instance == CAN1) {
-    if (can1_state != ACTIVE) {
-      return CAN_ERR;
-    }
-  }
-
-  // CAN2
-  #ifdef CAN2
-  else if (handle->Instance == CAN2) {
-    if (can2_state != ACTIVE) {
-      return CAN_ERR;
-    }
-  }
-  #endif /* CAN2 */
-
-  // CAN3
-  #ifdef CAN3
-  else if (handle->Instance == CAN3) {
-    if (can3_state != ACTIVE) {
-      return CAN_ERR;
-    }
-  }
-  #endif /* CAN3 */
-
-  else {
-    return CAN_ERR;
-  }
-
-  // stop CAN
   if (HAL_CAN_Stop(handle) != HAL_OK) {
     return CAN_ERR;
   }
-
-  // update state
-  // CAN1
-  if (handle->Instance == CAN1) {
-    can1_state = INACTIVE;
-  }
-
-  // CAN2
-  #ifdef CAN2
-  else if (handle->Instance == CAN2) {
-    can2_state = INACTIVE;
-  }
-  #endif /* CAN2 */
-
-  // CAN3
-  #ifdef CAN3
-  else if (handle->Instance == CAN3) {
-    can3_state = INACTIVE;
-  }
-  #endif /* CAN3 */
 
   return CAN_OK;
 }
@@ -646,38 +440,6 @@ can_status_t can_stop(CAN_HandleTypeDef* handle) {
 can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
                       CAN_RxHeaderTypeDef* header, uint8_t data[],
                       bool blocking) {
-  // check state
-  // CAN1
-  if (handle->Instance == CAN1) {
-    if (can1_state == UNINITIALIZED) {
-      return CAN_ERR;
-    }
-  }
-
-  // CAN2
-  #ifdef CAN2
-  else if (handle->Instance == CAN2) {
-    if (can2_state == UNINITIALIZED) {
-      return CAN_ERR;
-    }
-  }
-  #endif /* CAN2 */
-
-  // CAN3
-  #ifdef CAN3
-  else if (handle->Instance == CAN3) {
-    if (can3_state == UNINITIALIZED) {
-      return CAN_ERR;
-    }
-  }
-  #endif /* CAN3 */
-
-  else {
-    return CAN_ERR;
-  }
-
-  can_status_t status = CAN_RECV;
-
   // recieve from queue matching id
   rx_payload_t payload = {0};
   bool valid_id = false;
@@ -691,11 +453,10 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
           while (xQueueReceive(can1_recv_entries[i].queue, &payload, 0) ==
                  errQUEUE_EMPTY) {}
         } else {
-          // otherwise, fail on empty
+          // otherwise, finish on empty
           if (xQueueReceive(can1_recv_entries[i].queue, &payload, 0) ==
               errQUEUE_EMPTY) {
-            status = CAN_EMPTY;
-            goto failed;
+            return CAN_EMPTY;
           }
         }
   
@@ -715,11 +476,10 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
           while (xQueueReceive(can2_recv_entries[i].queue, &payload, 0) ==
                  errQUEUE_EMPTY) {}
         } else {
-          // otherwise, fail on empty
+          // otherwise, finish on empty
           if (xQueueReceive(can2_recv_entries[i].queue, &payload, 0) ==
               errQUEUE_EMPTY) {
-            status = CAN_EMPTY;
-            goto failed;
+            return CAN_EMPTY;
           }
         }
   
@@ -740,11 +500,10 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
           while (xQueueReceive(can3_recv_entries[i].queue, &payload, 0) ==
                  errQUEUE_EMPTY) {}
         } else {
-          // otherwise, fail on empty
+          // otherwise, finish on empty
           if (xQueueReceive(can3_recv_entries[i].queue, &payload, 0) ==
               errQUEUE_EMPTY) {
-            status = CAN_EMPTY;
-            goto failed;
+            return CAN_EMPTY;
           }
         }
   
@@ -754,74 +513,43 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
   }
   #endif /* CAN3 */
 
-  // decode payload if if is valid and message recieved
+  else {
+    return CAN_ERR;
+  }
+
+  // decode payload if it is valid and message recieved
   if (valid_id) {
     *header = payload.header;
     for (int i = 0; i < DATA_SIZE; i++) {
       data[i] = payload.data[i];
     }
-  } else {
-    status = CAN_ERR;
-    goto failed;
-  }
 
-failed:
-  return status;
+    return CAN_RECV;
+
+  } else {
+    return CAN_ERR;
+  }
 }
 
 can_status_t can_send(CAN_HandleTypeDef* handle,
                       const CAN_TxHeaderTypeDef* header, const uint8_t data[],
                       bool blocking) {
-  // check state
-  // CAN1
-  if (handle->Instance == CAN1) {
-    if (can1_state == UNINITIALIZED) {
-      return CAN_ERR;
-    }
-  }
-
-  // CAN2
-  #ifdef CAN2
-  else if (handle->Instance == CAN2) {
-    if (can2_state == UNINITIALIZED) {
-      return CAN_ERR;
-    }
-  }
-  #endif /* CAN2 */
-
-  // CAN3
-  #ifdef CAN3
-  else if (handle->Instance == CAN3) {
-    if (can3_state == UNINITIALIZED) {
-      return CAN_ERR;
-    }
-  }
-  #endif /* CAN3 */
-  
-  else {
-    return CAN_ERR;
-  }
-
   // determine timeout
   TickType_t timeout = (blocking) ? portMAX_DELAY : 0;
 
-  can_status_t status = CAN_SENT;
-
   // disable interrupts (do not want race conditions
   // on shared resource (mailbox) between threads and
-  // interrupt routines (TxComplete)
+  // interrupt routines (TxComplete))
   portENTER_CRITICAL();
 
   // if transmit is inactive, put payload into mailbox
   if (HAL_CAN_GetTxMailboxesFreeLevel(handle) >= 1) {
     uint32_t mailbox;
     if (HAL_CAN_AddTxMessage(handle, header, data, &mailbox) != HAL_OK) {
-      status = CAN_ERR;
-
       // enable interrupts
       portEXIT_CRITICAL();
 
-      goto failed;
+      return CAN_ERR;
     }
 
     // enable interrupts
@@ -843,8 +571,7 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
     // CAN1
     if (handle->Instance == CAN1) {
       if (xQueueSend(can1_send_queue, &payload, timeout) != pdTRUE) {
-        status = CAN_ERR;
-        goto failed;
+        return CAN_ERR;
       }
     }
 
@@ -852,8 +579,7 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
     #ifdef CAN2
     else if (handle->Instance == CAN2) {
       if (xQueueSend(can2_send_queue, &payload, timeout) != pdTRUE) {
-        status = CAN_ERR;
-        goto failed;
+        return CAN_ERR;
       }
     }
     #endif /* CAN2 */
@@ -862,15 +588,13 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
     #ifdef CAN3
     else if (handle->Instance == CAN3) {
       if (xQueueSend(can3_send_queue, &payload, timeout) != pdTRUE) {
-        status = CAN_ERR;
-        goto failed;
+        return CAN_ERR;
       }
     }
     #endif /* CAN3 */
   }
 
-failed:
-  return status;
+  return CAN_SENT;
 }
 
 static void transmit(CAN_HandleTypeDef* handle) {
