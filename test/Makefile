@@ -25,25 +25,18 @@ export PROJECT_BUILD_DIR
 # check if bear is installed
 BEAR_INSTALLED := $(shell command -v bear >/dev/null 2>&1 && echo yes || echo no)
 
-ifeq ($(MAKECMDGOALS),)
-default: conditional_bear_make
-else ifeq ($(MAKECMDGOALS),all)
-all: conditional_bear_make
-else
-%:
-	$(MAKE) -C $(BUILD_MAKEFILE_DIR) $(MAKECMDGOALS)
+# define VS_CODE_DIR
+VS_CODE_DIR := $(MAKEFILE_DIR)/../.vscode
+
+BEAR_PREFIX := 
+ifeq ($(BEAR_INSTALLED),yes)
+$(info A wild bear has appeared!)
+BEAR_PREFIX := bear --output $(VS_CODE_DIR)/compile_commands.json --append --
 endif
 
-.PHONY: conditional_bear_make
-conditional_bear_make:
-ifeq ($(BEAR_INSTALLED),yes)
-	@echo "Bear is installed, running with bear..."
-	bear $(MAKE) -C $(BUILD_MAKEFILE_DIR) all ; \
-	mv compile_commands.json ../.vscode/compile_commands.json
-else
-	@echo "Bear is not installed, running normal make..."
-	$(MAKE) -C $(BUILD_MAKEFILE_DIR) all
-endif
+default: all
+%:
+	$(BEAR_PREFIX) $(MAKE) -C $(BUILD_MAKEFILE_DIR) $(MAKECMDGOALS)
 
 # generate documentation
 .PHONY: docs
