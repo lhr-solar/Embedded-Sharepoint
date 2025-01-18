@@ -7,12 +7,20 @@
 #define UART4_TX_QUEUE_SIZE 128
 #endif
 
+#define DATA_SIZE 1 
+
 // I don't think a payload is need for UART to the extent that CAN does
 // Only metadata needed for UART would be the busID if we use multiple UART buses
 // Would likely need to account for busIDs in the future, but for now ignored
 
 // #ifdef UART4 
 // UART handle
+
+// Queue entry structure
+typedef struct {
+    uint8_t data; // data to be transmitted, 1 byte
+} tx_payload_t;
+
 static UART_HandleTypeDef huart4_ = {.Instance = UART4};
 UART_HandleTypeDef* huart4 = &huart4_;
 
