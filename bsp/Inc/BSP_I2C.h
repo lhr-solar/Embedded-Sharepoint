@@ -3,7 +3,7 @@
 
 #ifndef BSP_I2C_H
 #define BSP_I2C_H
-
+#if defined(I2C1) || defined(I2C2) ||defined(I2C3)
 #include "stm32xx_hal.h"
 
 /**
@@ -39,10 +39,12 @@ HAL_StatusTypeDef BSP_I2C_RX(I2C_HandleTypeDef *hi2c,
               uint16_t len);
 
 /**
- * @brief Initialize I2C port for communication
- * @param hi2c              structure that has config data
- */
+  * @brief I2C1 Initialization Function
+  * @param None
+  * @retval None
+  */
 void Single_I2C_Init(I2C_HandleTypeDef *hi2c);
 
 
+#endif
 #endif

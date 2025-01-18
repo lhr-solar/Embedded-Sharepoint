@@ -4,7 +4,8 @@
  *  Created on: Nov 2, 2024
  *      Author: shaun
  */
-#include "../Inc/BSP_I2C.h"
+#include "BSP_I2C.h"
+#include "stm32xx_hal.h"
 #include "FreeRTOS.h"
 #include "queue.h"
 #include "semphr.h"
@@ -13,7 +14,6 @@
 #include "assert.h"
 
 /* Used Functions */
-static void GPIO_Init(void);
 void Single_I2C_Init(I2C_HandleTypeDef*);
 
 
@@ -25,100 +25,98 @@ typedef struct {
 } DataInfo_t;
 
 // Define queue sizes for each I2C peripheral if not done so already
-#ifndef I2C1_QUEUE_SIZE
-#define I2C1_QUEUE_SIZE 128
-#endif
-
-#ifndef I2C2_QUEUE_SIZE
-#define I2C2_QUEUE_SIZE 128
-#endif
-
-#ifndef I2C3_QUEUE_SIZE
-#define I2C3_QUEUE_SIZE 128
-#endif
-
-// Define the queues for each I2C peripheral
+#ifdef I2C1
+	#ifndef I2C1_QUEUE_SIZE
+	#define I2C1_QUEUE_SIZE 128
+	#endif
 static DataInfo_t I2C1_DataStore[I2C1_QUEUE_SIZE];
-static DataInfo_t I2C3_DataStore[I2C2_QUEUE_SIZE];
-static DataInfo_t I2C2_DataStore[I2C3_QUEUE_SIZE];
-
-static StaticQueue_t I2C1_DataQueue;
-static StaticQueue_t I2C2_DataQueue;
-static StaticQueue_t I2C3_DataQueue;
-
 static QueueHandle_t I2C1_Queue;
-static QueueHandle_t I2C2_Queue;
-static QueueHandle_t I2C3_Queue;
-
+static StaticQueue_t I2C1_DataQueue;
 I2C_HandleTypeDef *last_hi2c1;
+#endif
+
+#ifdef I2C2
+	#ifndef I2C2_QUEUE_SIZE 
+	#define I2C2_QUEUE_SIZE 128
+	#endif
+static DataInfo_t I2C2_DataStore[I2C2_QUEUE_SIZE];
+static StaticQueue_t I2C2_DataQueue;
+static QueueHandle_t I2C2_Queue;
 I2C_HandleTypeDef *last_hi2c2;
+#endif
+
+#ifdef I2C3
+	#ifndef I2C3_QUEUE_SIZE 
+	#define I2C3_QUEUE_SIZE 128
+	#endif
+static DataInfo_t I2C3_DataStore[I2C3_QUEUE_SIZE];
+static StaticQueue_t I2C3_DataQueue;
+static QueueHandle_t I2C3_Queue;
 I2C_HandleTypeDef *last_hi2c3;
+#endif
+
 
 void updateLatestI2C(I2C_HandleTypeDef *hi2c) {
+	#ifdef I2C1
 	if (hi2c->Instance == I2C1) {
 		last_hi2c1 = hi2c;
+		return;
 	}
-	else if (hi2c->Instance == I2C2) {
+	#endif
+
+	#ifdef I2C2
+	if (hi2c->Instance == I2C2) {
 		last_hi2c2 = hi2c;
+		return;
 	}
-	else if (hi2c->Instance == I2C3) {
+	#endif
+
+	#ifdef I2C3
+	if (hi2c->Instance == I2C3) {
 		last_hi2c3 = hi2c;
+		return;
 	}
-	else
-	{
-		// Handle invalid I2C peripheral
-	}
+	#endif
+	
+	// Handle invalid I2C peripheral under here
 }
 
 /**
  * @brief   Sets up the I2C ports as described by the
  */
-HAL_StatusTypeDef BSP_I2C_Init(I2C_HandleTypeDef *hi2c) {
-	// Update the latest I2C peripheral
-	updateLatestI2C(hi2c);
+HAL_StatusTypeDef BSP_I2C_Init() {
 
 	// Initialize the respective I2C peripheral's queue
-	if (hi2c->Instance == I2C1)
-	{
+	#ifdef I2C1
 		I2C1_Queue = xQueueCreateStatic(I2C1_QUEUE_SIZE, sizeof (DataInfo_t), (uint8_t *) I2C1_DataStore, &I2C1_DataQueue);
 		// Check if the queue was created successfully
 		if (I2C1_Queue == NULL)
-		{
 			// Handle queue creation failure
 			return HAL_ERROR;
-		}
-	}
-	else if (hi2c->Instance == I2C2)
-	{
+	#endif
+
+	#ifdef I2C2
 		I2C2_Queue = xQueueCreateStatic(I2C2_QUEUE_SIZE, sizeof (DataInfo_t), (uint8_t *) I2C2_DataStore, &I2C2_DataQueue);
 		// Check if the queue was created successfully
 		if (I2C2_Queue == NULL)
-		{
 			// Handle queue creation failure
 			return HAL_ERROR;
-		}
-	}
-	else if (hi2c->Instance == I2C3)
-	{
+	#endif
+	
+	#ifdef I2C3
 		I2C3_Queue = xQueueCreateStatic(I2C2_QUEUE_SIZE, sizeof (DataInfo_t), (uint8_t *) I2C3_DataStore, &I2C3_DataQueue);
 		// Check if the queue was created successfully
 		if (I2C3_Queue == NULL)
-		{
 			// Handle queue creation failure
 			return HAL_ERROR;
-		}
-	}
-	else
-	{
-		// Handle invalid I2C peripheral
-	}
+	#endif
 
 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
 	HAL_Init();
 
 	/* Initialize all configured peripherals */
-	GPIO_Init();
-	Single_I2C_Init(hi2c);
+	/* GPIO Ports Clock Enable */
+	__HAL_RCC_GPIOB_CLK_ENABLE();
 
 	return HAL_OK;
 }
@@ -234,9 +232,9 @@ void Single_I2C_Init(I2C_HandleTypeDef *hi2c)
 	}
 
 	HAL_NVIC_SetPriority(EventIRQ , 3, 0); // set to priority 5 (not the highest priority) for I2C peripheral's interrupt
-	HAL_NVIC_EnableIRQ(EventIRQ ); // Enable the I2C interrupt
+	HAL_NVIC_EnableIRQ(EventIRQ); // Enable the I2C interrupt
 	HAL_NVIC_SetPriority(ErrorIRQ , 5, 0); // set to priority 5 (not the highest priority) for I2C peripheral's interrupt
-	HAL_NVIC_EnableIRQ(ErrorIRQ ); // Enable the I2C interrupt
+	HAL_NVIC_EnableIRQ(ErrorIRQ); // Enable the I2C interrupt
 
 	if (HAL_I2C_Init(hi2c) != HAL_OK)
 	{
@@ -245,40 +243,37 @@ void Single_I2C_Init(I2C_HandleTypeDef *hi2c)
 	}
 }
 
-/**
-  * @brief GPIO Initialization Function
-  * @param None
-  * @retval None
-  */
-static void GPIO_Init(void)
-{
-	/* GPIO Ports Clock Enable */
-	__HAL_RCC_GPIOB_CLK_ENABLE();
-}
 
 void QueueSend(I2C_TypeDef *i2c_peripheral)
 {
-	I2C_HandleTypeDef *last_hi2c;
-	QueueHandle_t I2C_Queue;
+	I2C_HandleTypeDef *last_hi2c = NULL;
+	QueueHandle_t I2C_Queue = NULL;
 
+	#ifdef I2C1
 	if (i2c_peripheral == I2C1)
 	{
 		last_hi2c = last_hi2c1;
 		I2C_Queue = I2C1_Queue;
 	}
-	else if (i2c_peripheral == I2C2)
+	#endif
+	#ifdef I2C2
+	if (i2c_peripheral == I2C2)
 	{
 		last_hi2c = last_hi2c2;
 		I2C_Queue = I2C2_Queue;
 	}
-	else if (i2c_peripheral == I2C3)
+	#endif
+	#ifdef I2C3
+	if (i2c_peripheral == I2C3)
 	{
 		last_hi2c = last_hi2c3;
 		I2C_Queue = I2C3_Queue;
 	}
-	else
+	#endif
+
+	if(I2C_Queue == NULL || last_hi2c == NULL)
 	{
-		// Handle invalid I2C peripheral
+		// Invalid I2C peripheral
 		return;
 	}
 
@@ -294,6 +289,7 @@ void QueueSend(I2C_TypeDef *i2c_peripheral)
 	}
 }
 
+#ifdef I2C1
 /**
   * @brief This function handles I2C1 event interrupt.
   */
@@ -311,7 +307,9 @@ void I2C1_ER_IRQHandler(void)
 	HAL_I2C_ER_IRQHandler(last_hi2c1);
 	QueueSend(I2C1);
 }
+#endif
 
+#ifdef I2C2
 /**
   * @brief This function handles I2C1 event interrupt.
   */
@@ -329,7 +327,9 @@ void I2C2_ER_IRQHandler(void)
 	HAL_I2C_ER_IRQHandler(last_hi2c2);
 	QueueSend(I2C2);
 }
+#endif
 
+#ifdef I2C3
 /**
   * @brief This function handles I2C1 event interrupt.
   */
@@ -347,3 +347,4 @@ void I2C3_ER_IRQHandler(void)
 	HAL_I2C_ER_IRQHandler(last_hi2c3);
 	QueueSend(I2C3);
 }
+#endif
