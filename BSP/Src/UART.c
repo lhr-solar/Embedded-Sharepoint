@@ -7,19 +7,26 @@
 #define UART4_TX_QUEUE_SIZE 128
 #endif
 
-#define DATA_SIZE 1 
+
 
 // I don't think a payload is need for UART to the extent that CAN does
 // Only metadata needed for UART would be the busID if we use multiple UART buses
 // Would likely need to account for busIDs in the future, but for now ignored
 
-// #ifdef UART4 
-// UART handle
+
+#define DATA_SIZE (1) // 1 byte of data
+typedef struct {
+    uint8_t data[DATA_SIZE]; // data to be transmitted, 1 byte
+} tx_payload_t;
+
+
+typedef struct {
+    uint8_t data[DATA_SIZE]; // data received, 1 byte
+} rx_paylod_t;
 
 // Queue entry structure
-typedef struct {
-    uint8_t data; // data to be transmitted, 1 byte
-} tx_payload_t;
+
+// UART handle
 
 static UART_HandleTypeDef huart4_ = {.Instance = UART4};
 UART_HandleTypeDef* huart4 = &huart4_;
@@ -139,9 +146,6 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
         return UART_ERR;
     }
 
-    // disable inerrupts as we are in a critical section
-    portENTER_CRITICAL(); // Enter critical section
-
     uart_status_t status = UART_SENT;
 
     // Try direct transmission if possible 
@@ -178,8 +182,6 @@ exit:
         xSemaphoreGive(uart4_send_semaphore); // Give the semaphore back
     }
 
-    // enable interrupts
-    portEXIT_CRITICAL(); // Exit critical section
 
     return status;
 }
@@ -210,32 +212,35 @@ uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t lengt
     return status;
 }
 
+// Transmit Callback occurs after a transmission if complete (depending on how huart is configure)
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
-    if(huart->Instance != UART4) {
+    if(huart->Instance != UART4) { // If not UART4
         return;
     }
 
     uint8_t nextByte;
     BaseType_t higherPriorityTaskWoken = pdFALSE;
 
-    if (xQueueReceiveFromISR(uart4_tx_queue, &nextByte, &higherPriorityTaskWoken) == pdTRUE) {
-        HAL_UART_Transmit_IT(huart, &nextByte, 1);
+    if (xQueueReceiveFromISR(uart4_tx_queue, &nextByte, &higherPriorityTaskWoken) == pdTRUE) { // if data is and can be received from the queue
+        HAL_UART_Transmit_IT(huart, &nextByte, 1); // transmit the next byte received from the queue
     }
     
     portYIELD_FROM_ISR(higherPriorityTaskWoken);
 }
 
+// Receive Callback occurs after a receive is complete
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-    // basic check
-    if(huart->Instance != UART4 || !uart4_rx_queue) { // if not UART4 or rxQueue is NULL
+    // basic sanity check
+    if(huart->Instance != UART4 || !uart4_rx_queue) { // if is not UART4 or rxQueue is NULL
         return;
     }
 
-    uint8_t receivedByte = huart->pRxBuffPtr[0];
-    BaseType_t higherPriorityTaskWoken = pdFALSE;
+    // get the received byte from the handle's receive buffer
+    uint8_t receivedByte = huart->pRxBuffPtr[0];  // assumes that the received message is 1 byte (8 bits)
+    BaseType_t higherPriorityTaskWoken = pdFALSE; 
 
-    xQueueSendFromISR(*uart4_rx_queue, &receivedByte, &higherPriorityTaskWoken);
-    HAL_UART_Receive_IT(huart, (uint8_t*)huart->pRxBuffPtr, 1);
+    xQueueSendFromISR(*uart4_rx_queue, &receivedByte, &higherPriorityTaskWoken); // Send the received byte to the user's queue
+    HAL_UART_Receive_IT(huart, (uint8_t*)huart->pRxBuffPtr, 1); // start next receive
     
     portYIELD_FROM_ISR(higherPriorityTaskWoken);
 }
