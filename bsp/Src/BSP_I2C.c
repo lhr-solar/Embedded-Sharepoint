@@ -104,7 +104,7 @@ HAL_StatusTypeDef BSP_I2C_Init() {
 	#endif
 	
 	#ifdef I2C3
-		I2C3_Queue = xQueueCreateStatic(I2C2_QUEUE_SIZE, sizeof (DataInfo_t), (uint8_t *) I2C3_DataStore, &I2C3_DataQueue);
+		I2C3_Queue = xQueueCreateStatic(I2C3_QUEUE_SIZE, sizeof (DataInfo_t), (uint8_t *) I2C3_DataStore, &I2C3_DataQueue);
 		// Check if the queue was created successfully
 		if (I2C3_Queue == NULL)
 			// Handle queue creation failure
@@ -167,7 +167,7 @@ HAL_StatusTypeDef BSP_I2C_TX(I2C_HandleTypeDef *hi2c,
 		}
 		
 
-		if (xQueueSend(I2C_Queue, &dataToEnqueue, portMAX_DELAY) != pdPASS)
+		if (xQueueSend(I2C_Queue, &dataToEnqueue, 0) != pdPASS)
 		{
 			// Handle queue full error
 			return HAL_ERROR;
@@ -281,7 +281,7 @@ void QueueSend(I2C_TypeDef *i2c_peripheral)
 		return;
 
 	DataInfo_t data;
-	if (xQueueReceive(I2C_Queue, &data, portMAX_DELAY) == pdPASS) {
+	if (xQueueReceive(I2C_Queue, &data, 0) == pdPASS) {
 	    // Process dequeuedData
 		HAL_I2C_Master_Transmit_IT(data.hi2c, data.deviceAddr, data.pDataBuff, data.len);
 	} else {

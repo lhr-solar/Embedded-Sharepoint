@@ -97,11 +97,6 @@ static void MX_I2C1_Init(void) {
   hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
 
   __HAL_RCC_I2C1_CLK_ENABLE();
-
-  HAL_NVIC_SetPriority(I2C1_EV_IRQn , 3, 0); // set to priority 5 (not the highest priority) for I2C peripheral's interrupt
-	HAL_NVIC_EnableIRQ(I2C1_EV_IRQn); // Enable the I2C interrupt
-	HAL_NVIC_SetPriority(I2C1_ER_IRQn , 5, 0); // set to priority 5 (not the highest priority) for I2C peripheral's interrupt
-	HAL_NVIC_EnableIRQ(I2C1_ER_IRQn); // Enable the I2C interrupt
   HAL_I2C_Init(&hi2c1);
 }
 
@@ -125,7 +120,7 @@ static void MX_GPIO_Init(void) {
   GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-  GPIO_InitStruct.Alternate = GPIO_AF4_I2C1;
+    GPIO_InitStruct.Alternate = GPIO_AF4_I2C1;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 }
 
@@ -140,23 +135,7 @@ uint8_t rxBuff[] = {0, 2, 4, 6};
  */
 void TestTask(void *argument) {
   while (1) {
-    HAL_I2C_Master_Transmit_IT(&hi2c1, 0x08, rxBuff, 4);
-    vTaskDelay(pdMS_TO_TICKS(10));  // Delay for 1 second
+    HAL_I2C_Master_Transmit(&hi2c1, 0x08, rxBuff, 4, 1);
+    vTaskDelay(pdMS_TO_TICKS(2));  // Delay for 1 second
   }
-}
-// ERROR: This only works if you undefine these functions in BSP_I2C.c
-/**
-  * @brief This function handles I2C1 event interrupt.
-  */
-void I2C1_EV_IRQHandler(void)
-{
-	HAL_I2C_EV_IRQHandler(&hi2c1);
-}
-
-/**
-  * @brief This function handles I2C1 error interrupt.
-  */
-void I2C1_ER_IRQHandler(void)
-{
-	HAL_I2C_ER_IRQHandler(&hi2c1);
 }

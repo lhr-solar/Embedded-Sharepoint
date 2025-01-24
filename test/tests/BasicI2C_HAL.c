@@ -1,6 +1,7 @@
+#include "stm32f4xx_hal.h"
 #include "FreeRTOS.h"
 #include "task.h"
-#include "stm32xx_hal.h"
+#include "BSP_I2C.h"
 
 /* Private function prototypes -----------------------------------------------*/
 void Clock_Config(void);
@@ -13,16 +14,40 @@ I2C_HandleTypeDef hi2c1;
 StaticTask_t task_buffer;
 StackType_t taskStack[configMINIMAL_STACK_SIZE];
 
+// /* Definitions for defaultTask */
+// osThreadId_t defaultTaskHandle;
+// const osThreadAttr_t defaultTask_attributes = {
+//     .name = "defaultTask",
+//     .stack_size = 128 * 4,
+//     .priority = (osPriority_t)osPriorityNormal,
+// };
+
 /**
  * @brief  The application entry point.
  * @retval int
  */
 int main(void) {
-  
-  HAL_Init();
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick.
+   */
+  BSP_I2C_Init();
+  /* Configure the system clock */
   Clock_Config();
+  /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_I2C1_Init();
+
+  /* Init scheduler */
+  // osKernelInitialize();
+
+  /* Create the thread(s) */
+  /* creation of defaultTask */
+  //   defaultTaskHandle =
+  //       osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+
+  /* Start scheduler */
+  //   osKernelStart();
+
+  /* We should never get here as control is now taken by the scheduler */
 
   // Create the task, passing in a priority level and stack size
   xTaskCreateStatic(&TestTask, "Test", configMINIMAL_STACK_SIZE, NULL,
@@ -95,14 +120,7 @@ static void MX_I2C1_Init(void) {
   hi2c1.Init.OwnAddress2 = 0;
   hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
   hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-
-  __HAL_RCC_I2C1_CLK_ENABLE();
-
-  HAL_NVIC_SetPriority(I2C1_EV_IRQn , 3, 0); // set to priority 5 (not the highest priority) for I2C peripheral's interrupt
-	HAL_NVIC_EnableIRQ(I2C1_EV_IRQn); // Enable the I2C interrupt
-	HAL_NVIC_SetPriority(I2C1_ER_IRQn , 5, 0); // set to priority 5 (not the highest priority) for I2C peripheral's interrupt
-	HAL_NVIC_EnableIRQ(I2C1_ER_IRQn); // Enable the I2C interrupt
-  HAL_I2C_Init(&hi2c1);
+  Single_I2C_Init(&hi2c1);
 }
 
 /**
@@ -140,23 +158,13 @@ uint8_t rxBuff[] = {0, 2, 4, 6};
  */
 void TestTask(void *argument) {
   while (1) {
-    HAL_I2C_Master_Transmit_IT(&hi2c1, 0x08, rxBuff, 4);
-    vTaskDelay(pdMS_TO_TICKS(10));  // Delay for 1 second
+    HAL_StatusTypeDef status = BSP_I2C_TX(&hi2c1, 0x08, rxBuff, 4);
+    if (status != HAL_OK) {
+      // Handle reception error
+    }
+
+    vTaskDelay(
+        pdMS_TO_TICKS(5));  // Delay for 1 second before receiving again
   }
 }
-// ERROR: This only works if you undefine these functions in BSP_I2C.c
-/**
-  * @brief This function handles I2C1 event interrupt.
-  */
-void I2C1_EV_IRQHandler(void)
-{
-	HAL_I2C_EV_IRQHandler(&hi2c1);
-}
 
-/**
-  * @brief This function handles I2C1 error interrupt.
-  */
-void I2C1_ER_IRQHandler(void)
-{
-	HAL_I2C_ER_IRQHandler(&hi2c1);
-}
