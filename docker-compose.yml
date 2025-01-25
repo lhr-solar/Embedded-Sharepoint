@@ -23,4 +23,5 @@ services:
 
     tty: true
     stdin_open: true
-    command: ["/bin/bash", "-i"]
+    command: > 
+      bash -c 'PS1="\[\e[0;33m\]LHRS@\[\e[1;34m\]Embedded-Sharepoint\[\e[0m\]:\[\e[0;32m\]\w\[\e[0m\]> " exec bash --norc --noprofile -i'
