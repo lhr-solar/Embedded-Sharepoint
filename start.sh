@@ -12,7 +12,7 @@ else
 fi
 DOCKERFILE_DIR="$(dirname "$0")"
 DOCKERFILE_PATH="$DOCKERFILE_DIR/Dockerfile"
-DOCKER_COMPOSE_FILE="docker-compose.yml"
+DOCKER_COMPOSE_FILE="$DOCKERFILE_DIR/docker-compose.yml"
 
 echo "====================================================="
 echo " Embedded Sharepoint Setup"
