@@ -189,6 +189,15 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 
 
 #######################################
+# edge case
+#######################################
+# exclude CAN
+ifeq ($(filter $(SERIES_LINE_GENERIC), stm32f401xe stm32f401xc), $(SERIES_LINE_GENERIC))
+    C_SOURCES := $(filter-out bsp/Src/CAN.c, $(C_SOURCES))
+    C_DEFS += -DCAN_UNDEFINED
+endif
+
+#######################################
 # LDFLAGS
 #######################################
 # link script
