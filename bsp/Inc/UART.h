@@ -56,9 +56,7 @@ extern UART_HandleTypeDef* huart5;
 
 // Function prototypes with consistent parameters and return types
 uart_status_t uart_init(UART_HandleTypeDef* handle, QueueHandle_t* rxQueue);
-// uart_status_t uart_deinit(UART_HandleTypeDef* handle);
-// uart_status_t uart_start(UART_HandleTypeDef* handle);
-// uart_status_t uart_stop(UART_HandleTypeDef* handle);
+uart_status_t uart_deinit(UART_HandleTypeDef* handle);
 uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t length, bool blocking);
 uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t length, bool blocking);
 

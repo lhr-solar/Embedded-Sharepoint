@@ -1,33 +1,27 @@
 #include "stm32xx_hal.h" // agnostic to L4 or F4
 #include "UART.h"
 
-
-// Default queue sizes if not defined
-#ifndef UART4_TX_QUEUE_SIZE
-#define UART4_TX_QUEUE_SIZE 128
-#endif
-
-
-
-// I don't think a payload is need for UART to the extent that CAN does
-// Only metadata needed for UART would be the busID if we use multiple UART buses
-// Would likely need to account for busIDs in the future, but for now ignored
-
-
+// Define the size of the data to be transmitted
+// Currently not used, as we send uint8_t directly
+// may need to be configured for support for packets less more than 8 bits
 #define DATA_SIZE (1) // 1 byte of data
 typedef struct {
     uint8_t data[DATA_SIZE]; // data to be transmitted, 1 byte
 } tx_payload_t;
 
-
 typedef struct {
     uint8_t data[DATA_SIZE]; // data received, 1 byte
 } rx_paylod_t;
 
-// Queue entry structure
 
-// UART handle
 
+#ifdef UART4
+
+#ifndef UART4_TX_QUEUE_SIZE
+#define UART4_TX_QUEUE_SIZE 128
+#endif
+
+//UART4 handle
 static UART_HandleTypeDef huart4_ = {.Instance = UART4};
 UART_HandleTypeDef* huart4 = &huart4_;
 
@@ -49,6 +43,31 @@ static uint8_t uart4_tx_queue_storage[UART4_TX_QUEUE_SIZE];
 // User-provided RX queue 
 static QueueHandle_t* uart4_rx_queue;
 // #endif /* UART4 */
+
+
+#ifdef UART5
+
+#ifndef UART5_TX_QUEUE_SIZE
+#define UART5_TX_QUEUE_SIZE 128
+#endif
+
+// UART5 handle
+static UART_HandleTypeDef huart5_ = {.Instance = UART5};
+UART_HandleTypeDef* huart5 = &huart5_;
+
+// UART5 send semaphore
+static SemaphoreHandle_t uart5_send_semaphore = NULL;
+static StaticSemaphore_t uart5_send_semaphore_buffer;
+
+// UART5 TX queue
+static QueueHandle_t uart5_tx_queue = NULL;
+static StaticQueue_t uart5_tx_queue_buffer;
+static uint8_t uart5_tx_queue_storage[UART5_TX_QUEUE_SIZE];
+
+// User-provided RX queue pointer
+static QueueHandle_t* uart5_rx_queue;
+#endif /* UART5 */
+
 
 static bool initialized = false;
 
@@ -121,6 +140,44 @@ uart_status_t uart_init(UART_HandleTypeDef* handle, QueueHandle_t* rxQueue) {
     initialized = true;
     return UART_OK;
 }
+
+/**
+ * @brief Deinitializes the UART peripheral
+ * @param handle pointer to the UART handle
+ * @return uart_status_t
+ */
+
+uart_status_t uart_deinit(UART_HandleTypeDef* handle) {
+    if (!initialized || handle->Instance != UART4) {
+        return UART_ERR;
+    }
+
+    // Stop any ongoing transfers first
+    HAL_UART_Abort(handle);
+
+    // Deinitialize HAL UART
+    if (HAL_UART_DeInit(handle) != HAL_OK) {
+        return UART_ERR;
+    }
+
+    // Clean up RTOS resources
+    if (uart4_send_semaphore != NULL) {
+        vSemaphoreDelete(uart4_send_semaphore);
+        uart4_send_semaphore = NULL;
+    }
+
+    if (uart4_tx_queue != NULL) {
+        vQueueDelete(uart4_tx_queue);
+        uart4_tx_queue = NULL;
+    }
+
+    // Clear RX queue reference
+    uart4_rx_queue = NULL;
+
+    initialized = false;
+    return UART_OK;
+}
+
 
 /**
  * @brief Transmits data over UART. If transmission is in progress, data will be queued in internal TX queue. 
