@@ -14,7 +14,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "stm32l4xx_hal.h" // stm32l4xx HAL library, substituing for the agnostic approach
+#include "stm32xx_hal.h" // stm32l4xx HAL library, substituing for the agnostic approach
 
 
 /* Function Descriptions:
