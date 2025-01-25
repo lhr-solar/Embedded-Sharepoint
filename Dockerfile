@@ -99,16 +99,12 @@ FROM toolchain AS runtime
 # -----------------------------------------------------------------------------
 # Set working directory
 # -----------------------------------------------------------------------------
-WORKDIR /Embedded-Sharepoint
+WORKDIR /workdir
 
 # -----------------------------------------------------------------------------
 # Shell customization
 # -----------------------------------------------------------------------------
-RUN echo 'export PS1="\[\e[0;33m\]LHRS@\[\e[1;34m\]\w\[\e[0m\]> "' \
-    >> /root/.bashrc && \
-    echo 'git config --global --add safe.directory /Embedded-Sharepoint' \
-    >> /root/.bashrc && \
-    echo 'git submodule update --init --recursive' \
-    >> /root/.bashrc && \
-    echo 'echo -e "${RED}\nFinished! Jolly good!\n${NC}"' \
-    >> /root/.bashrc
+# RUN echo 'export PS1="\[\e[0;33m\]LHRS@\[\e[1;34m\]\w\[\e[0m\]> "' \
+#     >> /root/.bashrc && \
+#     echo 'echo -e "${RED}\nFinished! Jolly good!\n${NC}"' \
+#     >> /root/.bashrc

@@ -7,14 +7,19 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: "embedded-sharepoint"
+    user: "${HOST_UID}:${HOST_GID}"
     privileged: true
 
     environment:
       - SSH_AUTH_SOCK=/ssh-agent
+      - UID=${HOST_UID}
+      - GID=${HOST_GID}
     volumes:
-      - ./:/Embedded-Sharepoint
+      - ${WORKDIR_MOUNT}:/workdir
       - ${SSH_AUTH_SOCK:-/run/host-services/ssh-auth.sock}:/ssh-agent
-    working_dir: /Embedded-Sharepoint
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/group:/etc/group:ro
+    working_dir: /workdir
 
     tty: true
     stdin_open: true
