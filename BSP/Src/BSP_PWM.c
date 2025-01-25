@@ -3,28 +3,37 @@
 #include "queue.h"
 #include "semphr.h"
 
-static QueueHandle_t*  pwmTx_queuePtr [5];  // need to add queue for each PWM timer
+#ifndef PWM_SEND_QUEUE_SIZE
+#define PWM_SEND_QUEUE_SIZE (10)
+#endif
+
+static QueueHandle_t pwm1_send_queue;  // need to add queue for each PWM timer
+static StaticQueue_t pwm1_send_queue_buffer;
+static uint8_t pwm1_send_queue_storage[PWM_SEND_QUEUE_SIZE*sizeof(PWM_Info)];
+
+static QueueHandle_t pwm2_send_queue;  // need to add queue for each PWM timer
+static StaticQueue_t pwm2_send_queue_buffer;
+static uint8_t pwm2_send_queue_storage[PWM_SEND_QUEUE_SIZE*sizeof(PWM_Info)];
+
 TIM_OC_InitTypeDef sConfigOC = {0};
 
-HAL_StatusTypeDef BSP_PWM_Init(TIM_HandleTypeDef* timHandle, uint32_t channel, QueueHandle_t* txPtr) {    
+HAL_StatusTypeDef BSP_PWM_TIM_Init(TIM_HandleTypeDef* timHandle) {
     HAL_StatusTypeDef stat;
 
     if( __HAL_RCC_GPIOA_IS_CLK_DISABLED())
          __HAL_RCC_GPIOA_CLK_ENABLE();
 
     if (timHandle->Instance == TIM1) // assign queue for specific timer
-        pwmTx_queuePtr[0] = txPtr;
+        pwm1_send_queue = xQueueCreateStatic(PWM_SEND_QUEUE_SIZE, sizeof(PWM_Info),
+        pwm1_send_queue_storage, &pwm1_send_queue_buffer);
     else if (timHandle->Instance == TIM2)
-        pwmTx_queuePtr[1] = txPtr;
-    else if (timHandle->Instance == TIM3)
-        pwmTx_queuePtr[2] = txPtr;g
-    else if (timHandle->Instance == TIM4)
-        pwmTx_queuePtr[3] = txPtr;
-    else if (timHandle->Instance == TIM5)
-        pwmTx_queuePtr[4] = txPtr;
-    else
-        return HAL_ERROR; // error if not timer that supports PWM, need to check
+        pwm2_send_queue = xQueueCreateStatic(PWM_SEND_QUEUE_SIZE, sizeof(PWM_Info),
+        pwm2_send_queue_storage, &pwm2_send_queue_buffer);
+}
 
+HAL_StatusTypeDef BSP_PWM_Channel_Init(TIM_HandleTypeDef* timHandle, uint32_t channel) {    
+    HAL_StatusTypeDef stat;
+    
     stat = HAL_TIM_PWM_Init(timHandle);
     if(stat == HAL_ERROR) return stat;
 
@@ -41,20 +50,13 @@ HAL_StatusTypeDef BSP_PWM_Init(TIM_HandleTypeDef* timHandle, uint32_t channel, Q
 
 HAL_StatusTypeDef BSP_PWM_Set(TIM_HandleTypeDef* timHandle, uint32_t channel, uint32_t dutyCycle, uint32_t speed) {
     if(dutyCycle <= 100 && dutyCycle >= 0) {
+
         QueueHandle_t* tx_Queue;
         if (timHandle->Instance == TIM1) // get queue for specific timer
-            tx_Queue = pwmTx_queuePtr[0];
+            tx_Queue = &pwm1_send_queue;
         else if (timHandle->Instance == TIM2)
-            tx_Queue = pwmTx_queuePtr[1];
-        else if (timHandle->Instance == TIM3)
-            tx_Queue = pwmTx_queuePtr[2];
-        else if (timHandle->Instance == TIM4)
-            tx_Queue = pwmTx_queuePtr[3];
-        else if (timHandle->Instance == TIM5)
-            tx_Queue = pwmTx_queuePtr[4];
-        else
-            return HAL_ERROR; // error if not timer that supports PWM, need to check
-
+            tx_Queue = &pwm2_send_queue;
+    
         PWM_Info pwmSend = { // for storing PWM info into queue
             .timHandle = timHandle,
             .channel = channel,
@@ -72,19 +74,14 @@ HAL_StatusTypeDef BSP_PWM_Set(TIM_HandleTypeDef* timHandle, uint32_t channel, ui
 }
 
 void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *timHandle) {
+    
     QueueHandle_t* tx_Queue;
     
     if (timHandle->Instance == TIM1)
-        tx_Queue = pwmTx_queuePtr[0];
+        tx_Queue = &pwm1_send_queue;
     else if (timHandle->Instance == TIM2)
-        tx_Queue = pwmTx_queuePtr[1];
-    else if (timHandle->Instance == TIM3)
-        tx_Queue = pwmTx_queuePtr[2];
-    else if (timHandle->Instance == TIM4)
-        tx_Queue = pwmTx_queuePtr[3];
-    else if (timHandle->Instance == TIM5)
-        tx_Queue = pwmTx_queuePtr[4];
-    else return;
+        tx_Queue = &pwm2_send_queue;
+ 
 
     if(!xQueueIsQueueEmptyFromISR(*tx_Queue)) {
         PWM_Info pwmReceive; 
