@@ -42,7 +42,8 @@ static uint8_t uart4_tx_queue_storage[UART4_TX_QUEUE_SIZE];
 
 // User-provided RX queue 
 static QueueHandle_t* uart4_rx_queue;
-// #endif /* UART4 */
+
+#endif /* UART4 */
 
 
 #ifdef UART5
