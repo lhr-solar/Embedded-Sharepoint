@@ -17,8 +17,10 @@ services:
     volumes:
       - ${WORKDIR_MOUNT}:/workdir
       - ${SSH_AUTH_SOCK:-/run/host-services/ssh-auth.sock}:/ssh-agent
+      - ${HOME}/.ssh:/home/${USER}/.ssh:ro
       - /etc/passwd:/etc/passwd:ro
       - /etc/group:/etc/group:ro
+      
     working_dir: /workdir
 
     tty: true
