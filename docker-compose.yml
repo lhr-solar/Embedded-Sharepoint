@@ -1,23 +1,28 @@
 # docker-compose.yml
 services:
   dev:
+    env_file: .env
     build:
       platforms:
       - "linux/amd64"
       context: .
       dockerfile: Dockerfile
+      args:
+        REMOTE_USER: ${REMOTE_USER}
+        REMOTE_UID: ${REMOTE_UID}
+        REMOTE_GID: ${REMOTE_GID}
     container_name: "embedded-sharepoint"
-    user: "${HOST_UID}:${HOST_GID}"
     privileged: true
 
     environment:
       - SSH_AUTH_SOCK=/ssh-agent
-      - UID=${HOST_UID}
-      - GID=${HOST_GID}
+      - REMOTE_USER=${REMOTE_USER}
+      - REMOTE_UID=${REMOTE_UID}
+      - REMOTE_GID=${REMOTE_GID}
+      - WORKDIR_MOUNT=${WORKDIR_MOUNT:-$PWD}
     volumes:
-      - ${WORKDIR_MOUNT}:/workdir
+      - ${WORKDIR_MOUNT:-$PWD}:/workdir
       - ${SSH_AUTH_SOCK:-/run/host-services/ssh-auth.sock}:/ssh-agent
-      - ${HOME}/.ssh:/home/${USER}/.ssh:ro
       - /etc/passwd:/etc/passwd:ro
       - /etc/group:/etc/group:ro
       

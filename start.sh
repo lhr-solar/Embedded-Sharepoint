@@ -118,8 +118,9 @@ ssh-add -l 2>/dev/null >/dev/null
 # if not valid, then start ssh-agent using $SSH_AUTH_SOCK
 [ $? -ge 2 ] && ssh-agent -a "$SSH_AUTH_SOCK" >/dev/null
 
-export HOST_UID=$(id -u)
-export HOST_GID=$(id -g)
+export REMOTE_USER="$USER"
+export REMOTE_UID=$(id -u)
+export REMOTE_GID=$(id -g)
 docker compose -f "$DOCKER_COMPOSE_FILE" build
 docker compose -f "$DOCKER_COMPOSE_FILE" run --rm dev
 
