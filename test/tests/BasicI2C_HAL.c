@@ -1,7 +1,7 @@
 #include "stm32f4xx_hal.h"
 #include "FreeRTOS.h"
 #include "task.h"
-#include "BSP_I2C.h"
+#include "I2C.h"
 
 /* Private function prototypes -----------------------------------------------*/
 void Clock_Config(void);

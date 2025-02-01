@@ -4,7 +4,7 @@
  *  Created on: Nov 2, 2024
  *      Author: shaun
  */
-#include "BSP_I2C.h"
+#include "I2C.h"
 #include "stm32xx_hal.h"
 #include "FreeRTOS.h"
 #include "queue.h"
