@@ -9,6 +9,10 @@
 #include "UART.h"
 #include <string.h>
 
+/* Private defines */
+#define LD2_Pin GPIO_PIN_5
+#define LD2_GPIO_Port GPIOA
+
 /* Private function prototypes */
 void Clock_Config(void);
 static void MX_GPIO_Init(void);
