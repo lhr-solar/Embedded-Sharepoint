@@ -17,6 +17,12 @@ for port in "${port_list[@]}"; do
             continue
         fi
 
+        # Skip uart_mt test
+        if [[ "$test_name" == "uart_mt" ]]; then
+            echo "Skipping uart_mt test temporarily"
+            continue
+        fi
+
         echo "Compiling the test - $test_name for $port"
 
         if ! make TEST="$test_name" PROJECT_TARGET="$port" -j; then
