@@ -95,47 +95,99 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
         HAL_NVIC_SetPriority(UART4_IRQn, 5, 0); // set at priority 5
         HAL_NVIC_EnableIRQ(UART4_IRQn);
     }
+    #ifdef UART5
+    else if (huart->Instance == UART5) {
+        __HAL_RCC_UART5_CLK_ENABLE();
+        __HAL_RCC_GPIOC_CLK_ENABLE();
+        __HAL_RCC_GPIOD_CLK_ENABLE();
+
+        // UART5 GPIO Configuration    
+        // PC12     ------> UART5_TX
+        // PD2     ------> UART5_RX
+        GPIO_InitStruct.Pin = GPIO_PIN_12;
+        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+        GPIO_InitStruct.Pull = GPIO_NOPULL;
+        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+        GPIO_InitStruct.Alternate = GPIO_AF8_UART5;
+        HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+        GPIO_InitStruct.Pin = GPIO_PIN_2;
+        HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+        HAL_NVIC_SetPriority(UART5_IRQn, 5, 0);
+        HAL_NVIC_EnableIRQ(UART5_IRQn);
+    }
+    #endif /* UART5 */
 }
+
 
 void HAL_UART_MspDeInit(UART_HandleTypeDef *huart) {
     if (huart->Instance == UART4) {
-        // disable clocks
-        __HAL_RCC_UART4_CLK_DISABLE();
-
-        // disable gpio
-        HAL_GPIO_DeInit(GPIOA, GPIO_PIN_0|GPIO_PIN_1);
-
-        // disable interrupts
-        HAL_NVIC_DisableIRQ(UART4_IRQn);
+        __HAL_RCC_UART4_CLK_DISABLE();                  // disable clocks
+        HAL_GPIO_DeInit(GPIOA, GPIO_PIN_0|GPIO_PIN_1);  // disable gpio
+        HAL_NVIC_DisableIRQ(UART4_IRQn);                // disable interrupts
     }
+    #ifdef UART5
+    else if (huart->Instance == UART5) {
+        __HAL_RCC_UART5_CLK_DISABLE();          // disable clocks
+        HAL_GPIO_DeInit(GPIOC, GPIO_PIN_12);    // disable gpio C12
+        HAL_GPIO_DeInit(GPIOD, GPIO_PIN_2);     //disable gpio D2
+        HAL_NVIC_DisableIRQ(UART5_IRQn);        //disable interrupts
+    }
+    #endif /* UART5 */
 }
 
-
+/**
+ * @brief Initializes the UART peripheral
+ * @param handle pointer to the UART handle
+ * @param rxQueue pointer to the user-provided RX queue
+ * @return uart_status_t
+ */
 uart_status_t uart_init(UART_HandleTypeDef* handle, QueueHandle_t* rxQueue) {
-    if (handle->Instance != UART4 || !rxQueue) { // if not UART4 or rxQueue is NULL
+    if (!rxQueue) {
         return UART_ERR;
     }
 
-    // Set the user-provided RX queue
-    uart4_rx_queue = rxQueue;
+    // UART4
+    if (handle->Instance == UART4) {
+        uart4_rx_queue = rxQueue;
 
-    // Create semaphores
-    uart4_send_semaphore = xSemaphoreCreateBinaryStatic(&uart4_send_semaphore_buffer); // Create the send semaphore
-    xSemaphoreGive(uart4_send_semaphore); // Give the semaphore to start with 1
-    uart4_recv_semaphore = xSemaphoreCreateBinaryStatic(&uart4_recv_semaphore_buffer); // Create the receive semaphore
-    xSemaphoreGive(uart4_recv_semaphore); // Give the semaphore to start with 1
+        uart4_send_semaphore = xSemaphoreCreateBinaryStatic(&uart4_send_semaphore_buffer);
+        xSemaphoreGive(uart4_send_semaphore);
+        uart4_recv_semaphore = xSemaphoreCreateBinaryStatic(&uart4_recv_semaphore_buffer);
+        xSemaphoreGive(uart4_recv_semaphore);
 
-    // Create TX queue
-    uart4_tx_queue = xQueueCreateStatic(UART4_TX_QUEUE_SIZE, 
-                                        sizeof(uint8_t), 
-                                        uart4_tx_queue_storage, 
-                                        &uart4_tx_queue_buffer);
+        uart4_tx_queue = xQueueCreateStatic(UART4_TX_QUEUE_SIZE, 
+                                          sizeof(tx_payload_t), 
+                                          uart4_tx_queue_storage, 
+                                          &uart4_tx_queue_buffer);
+    }
+    #ifdef UART5
+    else if(handle->Instance == UART5) {
+        uart5_rx_queue = rxQueue;
+
+        uart5_send_semaphore = xSemaphoreCreateBinaryStatic(&uart5_send_semaphore_buffer);
+        xSemaphoreGive(uart5_send_semaphore);
+        uart5_recv_semaphore = xSemaphoreCreateBinaryStatic(&uart5_recv_semaphore_buffer);
+        xSemaphoreGive(uart5_recv_semaphore);
+
+        uart5_tx_queue = xQueueCreateStatic(UART5_TX_QUEUE_SIZE, 
+                                          sizeof(tx_payload_t), 
+                                          uart5_tx_queue_storage, 
+                                          &uart5_tx_queue_buffer);
+    }
+    #endif /* UART5 */
+    else {
+        return UART_ERR;
+    }
     
-    // Init UART hardware
+
+    // init HAL
     if (HAL_UART_Init(handle) != HAL_OK) {
         return UART_ERR;
     }
-    // Start first reception
+
+    // Start reception
     if (HAL_UART_Receive_IT(handle, (uint8_t*)handle->pRxBuffPtr, 1) != HAL_OK) {
         return UART_ERR;
     }
@@ -144,6 +196,7 @@ uart_status_t uart_init(UART_HandleTypeDef* handle, QueueHandle_t* rxQueue) {
     return UART_OK;
 }
 
+
 /**
  * @brief Deinitializes the UART peripheral
  * @param handle pointer to the UART handle
@@ -151,7 +204,7 @@ uart_status_t uart_init(UART_HandleTypeDef* handle, QueueHandle_t* rxQueue) {
  */
 
 uart_status_t uart_deinit(UART_HandleTypeDef* handle) {
-    if (!initialized || handle->Instance != UART4) {
+    if (!initialized) {
         return UART_ERR;
     }
 
@@ -159,23 +212,41 @@ uart_status_t uart_deinit(UART_HandleTypeDef* handle) {
     HAL_UART_Abort(handle);
 
     // Deinitialize HAL UART
-    if (HAL_UART_DeInit(handle) != HAL_OK) {
+    if (handle->Instance == UART4) {
+        if (uart4_send_semaphore != NULL) {
+            vSemaphoreDelete(uart4_send_semaphore);
+            uart4_send_semaphore = NULL;
+        }
+        if (uart4_recv_semaphore != NULL) {
+            vSemaphoreDelete(uart4_recv_semaphore);
+            uart4_recv_semaphore = NULL;
+        }
+        if (uart4_tx_queue != NULL) {
+            vQueueDelete(uart4_tx_queue);
+            uart4_tx_queue = NULL;
+        }
+        uart4_rx_queue = NULL;
+    }
+    #ifdef UART5
+    else if (handle->Instance == UART5) {
+        if (uart5_send_semaphore != NULL) {
+            vSemaphoreDelete(uart5_send_semaphore);
+            uart5_send_semaphore = NULL;
+        }
+        if (uart5_recv_semaphore != NULL) {
+            vSemaphoreDelete(uart5_recv_semaphore);
+            uart5_recv_semaphore = NULL;
+        }
+        if (uart5_tx_queue != NULL) {
+            vQueueDelete(uart5_tx_queue);
+            uart5_tx_queue = NULL;
+        }
+        uart5_rx_queue = NULL;
+    }
+    #endif /* UART5 */
+    else {
         return UART_ERR;
     }
-
-    // Clean up RTOS resources
-    if (uart4_send_semaphore != NULL) {
-        vSemaphoreDelete(uart4_send_semaphore);
-        uart4_send_semaphore = NULL;
-    }
-
-    if (uart4_tx_queue != NULL) {
-        vQueueDelete(uart4_tx_queue);
-        uart4_tx_queue = NULL;
-    }
-
-    // Clear RX queue reference
-    uart4_rx_queue = NULL;
 
     initialized = false;
     return UART_OK;
@@ -194,23 +265,33 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
         return UART_ERR;
     }
 
-    // determine timeout
-    TickType_t timeout = blocking ? portMAX_DELAY : 0;  // Set timeout to max delay if blocking, 0 if non-blocking
+    TickType_t timeout = blocking ? portMAX_DELAY : 0;
+    SemaphoreHandle_t* send_semaphore = NULL;
+    QueueHandle_t* tx_queue = NULL;
 
-    // get semamphore for sending
-    if (handle->Instance == UART4) {
-        if (xSemaphoreTake(uart4_send_semaphore, timeout) != pdTRUE) { // if semaphore cannot be taken, return error
-            return UART_ERR;
-        }
-    } else {
+    if(handle->Instance == UART4) {
+        send_semaphore = &uart4_send_semaphore;
+        tx_queue = &uart4_tx_queue;
+    }
+    #ifdef UART5
+    else if(handle->Instance == UART5) {
+        send_semaphore = &uart5_send_semaphore;
+        tx_queue = &uart5_tx_queue;
+    }
+    #endif /* UART5 */
+    else {
+        return UART_ERR;
+    }
+
+    if (xSemaphoreTake(*send_semaphore, timeout) != pdTRUE) {
         return UART_ERR;
     }
 
     uart_status_t status = UART_SENT;
 
-    // Try direct transmission if possible 
+    // Try direct transmission if possible
     if (HAL_UART_GetState(handle) == HAL_UART_STATE_READY && 
-        uxQueueMessagesWaiting(uart4_tx_queue) == 0) {
+        uxQueueMessagesWaiting(*tx_queue) == 0) {
         if (HAL_UART_Transmit_IT(handle, (uint8_t*)data, length) != HAL_OK) {
             status = UART_ERR;
         }
@@ -219,7 +300,7 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
 
     // Queue the data
     for (uint8_t i = 0; i < length; i++) {
-        if (xQueueSend(uart4_tx_queue, &data[i], timeout) != pdTRUE) { // if data cannot be sent to the queue, return error and exit
+        if (xQueueSend(*tx_queue, &data[i], timeout) != pdTRUE) {
             status = UART_ERR;
             goto exit;
         }
@@ -228,21 +309,16 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
     // Start transmission if needed
     if (HAL_UART_GetState(handle) != HAL_UART_STATE_BUSY_TX) {
         uint8_t byte;
-        if (xQueueReceive(uart4_tx_queue, &byte, 0) == pdTRUE) {
-            if (HAL_UART_Transmit_IT(handle, &byte, 1) != HAL_OK) { // if transmission cannot be started, return error
+        if (xQueueReceive(*tx_queue, &byte, 0) == pdTRUE) {
+            if (HAL_UART_Transmit_IT(handle, &byte, 1) != HAL_OK) {
                 status = UART_ERR;
-                goto exit; 
+                goto exit;
             }
         }
     }
 
 exit:
-    // give semaphore 
-    if (handle->Instance == UART4) {
-        xSemaphoreGive(uart4_send_semaphore); // Give the semaphore back
-    }
-
-
+    xSemaphoreGive(*send_semaphore);
     return status;
 }
 
@@ -253,18 +329,33 @@ exit:
  * @return uart_status_t
  */
 uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t length, bool blocking) {
-    if (!initialized || !data || length == 0 || handle->Instance != UART4 || !uart4_rx_queue) { 
+    if (!initialized || !data || length == 0) {
+        return UART_ERR;
+    }
+
+    QueueHandle_t* rx_queue = NULL;
+    if(handle->Instance == UART4) {
+        rx_queue = uart4_rx_queue;
+    }
+    #ifdef UART5
+    else if(handle->Instance == UART5) {
+        rx_queue = uart5_rx_queue;
+    }
+    #endif /* UART5 */
+    else {
+        return UART_ERR;
+    }
+
+    if (!rx_queue) {
         return UART_ERR;
     }
 
     TickType_t timeout = blocking ? portMAX_DELAY : 0;
-
     uart_status_t status = UART_RECV;
 
-    // Read from queue
     for (uint8_t i = 0; i < length; i++) {
-        if (xQueueReceive(*uart4_rx_queue, &data[i], timeout) != pdTRUE) { // if data cannot be received from the queue, then return status
-            status = blocking ? UART_ERR : UART_EMPTY; // if blocking, return error, else return empty
+        if (xQueueReceive(*rx_queue, &data[i], timeout) != pdTRUE) {
+            status = blocking ? UART_ERR : UART_EMPTY;
             return status;
         }
     }
@@ -274,15 +365,24 @@ uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t lengt
 
 // Transmit Callback occurs after a transmission if complete (depending on how huart is configure)
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
-    if(huart->Instance != UART4) { // If not UART4
+    BaseType_t higherPriorityTaskWoken = pdFALSE;
+    uint8_t nextByte;
+    QueueHandle_t* tx_queue = NULL;
+
+    if(huart->Instance == UART4) {
+        tx_queue = &uart4_tx_queue;
+    }
+    #ifdef UART5
+    else if(huart->Instance == UART5) {
+        tx_queue = &uart5_tx_queue;
+    }
+    #endif /* UART5 */
+    else {
         return;
     }
 
-    uint8_t nextByte;
-    BaseType_t higherPriorityTaskWoken = pdFALSE;
-
-    if (xQueueReceiveFromISR(uart4_tx_queue, &nextByte, &higherPriorityTaskWoken) == pdTRUE) { // if data is and can be received from the queue
-        HAL_UART_Transmit_IT(huart, &nextByte, 1); // transmit the next byte received from the queue
+    if (xQueueReceiveFromISR(*tx_queue, &nextByte, &higherPriorityTaskWoken) == pdTRUE) {
+        HAL_UART_Transmit_IT(huart, &nextByte, 1);
     }
     
     portYIELD_FROM_ISR(higherPriorityTaskWoken);
@@ -290,17 +390,28 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 
 // Receive Callback occurs after a receive is complete
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-    // basic sanity check
-    if(huart->Instance != UART4 || !uart4_rx_queue) { // if is not UART4 or rxQueue is NULL
+    QueueHandle_t* rx_queue = NULL;
+    if(huart->Instance == UART4) {
+        rx_queue = uart4_rx_queue;
+    }
+    #ifdef UART5
+    else if(huart->Instance == UART5) {
+        rx_queue = uart5_rx_queue;
+    }
+    #endif /* UART5 */
+    else {
         return;
     }
 
-    // get the received byte from the handle's receive buffer
-    uint8_t receivedByte = huart->pRxBuffPtr[0];  // assumes that the received message is 1 byte (8 bits)
-    BaseType_t higherPriorityTaskWoken = pdFALSE; 
+    if (!rx_queue) {
+        return;
+    }
 
-    xQueueSendFromISR(*uart4_rx_queue, &receivedByte, &higherPriorityTaskWoken); // Send the received byte to the user's queue
-    HAL_UART_Receive_IT(huart, (uint8_t*)huart->pRxBuffPtr, 1); // start next receive
+    uint8_t receivedByte = huart->pRxBuffPtr[0];
+    BaseType_t higherPriorityTaskWoken = pdFALSE;
+
+    xQueueSendFromISR(*rx_queue, &receivedByte, &higherPriorityTaskWoken);
+    HAL_UART_Receive_IT(huart, (uint8_t*)huart->pRxBuffPtr, 1);
     
     portYIELD_FROM_ISR(higherPriorityTaskWoken);
 }
@@ -308,3 +419,9 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 void UART4_IRQHandler(void) {
     HAL_UART_IRQHandler(huart4);
 }
+
+#ifdef UART5
+void UART5_IRQHandler(void) {
+    HAL_UART_IRQHandler(huart5);
+}
+#endif /* UART5 */
