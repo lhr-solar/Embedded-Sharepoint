@@ -1,7 +1,12 @@
+/* UART test
+
+- Setups up UART loopback mode (the TX line is connected to the RX line)
+- Send messages and verify correctness
+*/
 #include "FreeRTOS.h"
 #include "task.h"
 #include "stm32xx_hal.h"
-#include "uart.h"
+#include "UART.h"
 #include <string.h>
 
 /* Private function prototypes */

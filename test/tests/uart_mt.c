@@ -1,8 +1,13 @@
+/* UART multithreaded test
+
+- Setups up UART loopback mode (the TX line is connected to the RX line)
+- Send messages and verify correctness
+*/
 #include "FreeRTOS.h"
 #include "task.h"
 #include "stm32xx_hal.h"
-#include "uart.h"
 #include <string.h>
+#include "UART.h"
 
 /* Private function prototypes */
 void Clock_Config(void);
