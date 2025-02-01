@@ -11,12 +11,11 @@ typedef struct {
 
 typedef struct {
     uint8_t data[DATA_SIZE]; // data received, 1 byte
-} rx_paylod_t;
+} rx_payload_t;
 
 
 
 #ifdef UART4
-
 #ifndef UART4_TX_QUEUE_SIZE
 #define UART4_TX_QUEUE_SIZE 128
 #endif
@@ -47,7 +46,6 @@ static QueueHandle_t* uart4_rx_queue;
 
 
 #ifdef UART5
-
 #ifndef UART5_TX_QUEUE_SIZE
 #define UART5_TX_QUEUE_SIZE 128
 #endif
@@ -59,6 +57,10 @@ UART_HandleTypeDef* huart5 = &huart5_;
 // UART5 send semaphore
 static SemaphoreHandle_t uart5_send_semaphore = NULL;
 static StaticSemaphore_t uart5_send_semaphore_buffer;
+
+// UART5 receive semaphore
+static SemaphoreHandle_t uart5_recv_semaphore = NULL;
+static StaticSemaphore_t uart5_recv_semaphore_buffer;
 
 // UART5 TX queue
 static QueueHandle_t uart5_tx_queue = NULL;
