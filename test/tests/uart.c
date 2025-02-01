@@ -43,7 +43,7 @@ int main(void) {
                                  &xRxStaticQueue);
     
     // Initialize UART BSP
-    uart_status_t status = uart_init(&huart4, &xRxQueue);
+    uart_status_t status = uart_init(huart4, &xRxQueue);
     if (status != UART_OK) {
         Error_Handler();
     }
@@ -118,7 +118,7 @@ void TxTask(void *argument)
     
     while(1) {
         // Send test message
-        uart_status_t status = uart_send(&huart4, testData, msgLen, true);
+        uart_status_t status = uart_send(huart4, testData, msgLen, true);
         
         if (status == UART_SENT) {
             txCount++;
@@ -138,12 +138,12 @@ void RxTask(void *argument)
     
     while(1) {
         // Try to receive data
-        uart_status_t status = uart_recv(&huart4, rxBuffer, sizeof(rxBuffer), false);
+        uart_status_t status = uart_recv(huart4, rxBuffer, sizeof(rxBuffer), false);
         
         if (status == UART_RECV) {
             rxCount++;
             // Echo received data back
-            uart_send(&huart4, rxBuffer, sizeof(rxBuffer), true);
+            uart_send(huart4, rxBuffer, sizeof(rxBuffer), true);
             
             // Toggle LED to indicate successful reception
             HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
@@ -155,7 +155,7 @@ void RxTask(void *argument)
 
 void UART4_IRQHandler(void)
 {
-    HAL_UART_IRQHandler(&huart4);
+    HAL_UART_IRQHandler(huart4);
 }
 
 void SystemClock_Config(void)
