@@ -16,7 +16,7 @@ typedef struct{
     uint8_t dutyCycle; 
 } PWM_Info;
 
-static void MX_GPIO_Init();
+void MX_GPIO_Init();
 
 HAL_StatusTypeDef BSP_PWM_TIM_Init(TIM_HandleTypeDef* timHandle);
 /**

@@ -14,7 +14,7 @@ static uint8_t pwm2_send_queue_storage[PWM_SEND_QUEUE_SIZE*sizeof(PWM_Info)];
 
 TIM_OC_InitTypeDef sConfigOC = {0};
 
-static void MX_GPIO_Init(){
+void MX_GPIO_Init(){
     GPIO_InitTypeDef pwm_tim1_ch1 = {
         .Mode = GPIO_MODE_AF_PP,
         .Pull = GPIO_NOPULL,
@@ -44,6 +44,10 @@ static void MX_GPIO_Init(){
         .Speed = GPIO_SPEED_FREQ_LOW,
         .Alternate = GPIO_AF1_TIM2
     };
+
+    HAL_GPIO_Init(GPIOA, &pwm_tim1_ch1);
+    HAL_GPIO_Init(GPIOA, &led_config);
+    HAL_GPIO_Init(GPIOA, &pwm_tim2_ch2);
 }
 
 HAL_StatusTypeDef BSP_PWM_TIM_Init(TIM_HandleTypeDef* timHandle) {
