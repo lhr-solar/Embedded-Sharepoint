@@ -1,53 +1,34 @@
-#include "stm32xx_hal.h"
+/**
+ * Test to confirm the bsp_i2c is functional
+ */
 #include "FreeRTOS.h"
-#include "task.h"
 #include "I2C.h"
+#include "stm32xx_hal.h"
+#include "task.h"
 
-/* Private function prototypes -----------------------------------------------*/
+// Functions used by main
 void Clock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
 void TestTask(void *argument);
 
-/* Private variables ---------------------------------------------------------*/
+// Variables required for scheduling i2c_hal
 I2C_HandleTypeDef hi2c1;
 StaticTask_t task_buffer;
 StackType_t taskStack[configMINIMAL_STACK_SIZE];
-
-// /* Definitions for defaultTask */
-// osThreadId_t defaultTaskHandle;
-// const osThreadAttr_t defaultTask_attributes = {
-//     .name = "defaultTask",
-//     .stack_size = 128 * 4,
-//     .priority = (osPriority_t)osPriorityNormal,
-// };
 
 /**
  * @brief  The application entry point.
  * @retval int
  */
 int main(void) {
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick.
-   */
+  // Reset of all peripherals, Initializes the Flash interface and the Systick.
   HAL_Init();
-  /* Configure the system clock */
+  // Configure the system clock
   Clock_Config();
-  /* Initialize all configured peripherals */
+  // Initialize all configured peripherals
   MX_GPIO_Init();
   MX_I2C1_Init();
-
-  /* Init scheduler */
-  // osKernelInitialize();
-
-  /* Create the thread(s) */
-  /* creation of defaultTask */
-  //   defaultTaskHandle =
-  //       osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
-
-  /* Start scheduler */
-  //   osKernelStart();
-
-  /* We should never get here as control is now taken by the scheduler */
 
   // Create the task, passing in a priority level and stack size
   xTaskCreateStatic(&TestTask, "Test", configMINIMAL_STACK_SIZE, NULL,
@@ -69,14 +50,12 @@ void Clock_Config(void) {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
-  /** Configure the main internal regulator output voltage
-   */
+  // Configure the main internal regulator output voltage
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
 
-  /** Initializes the RCC Oscillators according to the specified parameters
-   * in the RCC_OscInitTypeDef structure.
-   */
+  // Initializes the RCC Oscillators according to the specified parameters
+  // in the RCC_OscInitTypeDef structure.
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
@@ -91,8 +70,7 @@ void Clock_Config(void) {
     // Handle Error
   }
 
-  /** Initializes the CPU, AHB and APB buses clocks
-   */
+  // Initializes the CPU, AHB and APB buses clocks
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK |
                                 RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
@@ -129,15 +107,11 @@ static void MX_I2C1_Init(void) {
  * @retval None
  */
 static void MX_GPIO_Init(void) {
-  /* USER CODE BEGIN MX_GPIO_Init_1 */
-  /* USER CODE END MX_GPIO_Init_1 */
-
-  /* GPIO Ports Clock Enable */
+  // GPIO Ports Clock Enable
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
+  // Configure I2C SCL and SDA pins
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-  /* Configure I2C SCL and SDA pins */
   GPIO_InitStruct.Pin =
       GPIO_PIN_8 | GPIO_PIN_9;  // Example for I2C1 SCL and SDA pins on STM32F4
   GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
@@ -147,9 +121,7 @@ static void MX_GPIO_Init(void) {
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 }
 
-/* USER CODE BEGIN 4 */
 uint8_t rxBuff[] = {0, 2, 4, 6};
-/* USER CODE END 4 */
 
 /**
  * @brief  Function implementing the defaultTask thread.
@@ -163,8 +135,6 @@ void TestTask(void *argument) {
       // Handle reception error
     }
 
-    vTaskDelay(
-        pdMS_TO_TICKS(5));  // Delay for 1 second before receiving again
+    vTaskDelay(pdMS_TO_TICKS(5));  // Delay for 1 second before receiving again
   }
 }
-

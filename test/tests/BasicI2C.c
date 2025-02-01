@@ -1,14 +1,14 @@
 #include "FreeRTOS.h"
-#include "task.h"
 #include "stm32xx_hal.h"
+#include "task.h"
 
-/* Private function prototypes -----------------------------------------------*/
+// Functions used by main
 void Clock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
 void TestTask(void *argument);
 
-/* Private variables ---------------------------------------------------------*/
+// Variables required for scheduling i2c_hal
 I2C_HandleTypeDef hi2c1;
 StaticTask_t task_buffer;
 StackType_t taskStack[configMINIMAL_STACK_SIZE];
@@ -18,17 +18,15 @@ StackType_t taskStack[configMINIMAL_STACK_SIZE];
  * @retval int
  */
 int main(void) {
-  
   HAL_Init();
   Clock_Config();
   MX_GPIO_Init();
   MX_I2C1_Init();
 
   // Create the task, passing in a priority level and stack size
+  // Then start the scheduler, which will begin executing tasks
   xTaskCreateStatic(&TestTask, "Test", configMINIMAL_STACK_SIZE, NULL,
                     tskIDLE_PRIORITY + 2, taskStack, &task_buffer);
-
-  // Start the scheduler, which will begin executing tasks
   vTaskStartScheduler();
 
   // If the scheduler starts successfully, code below will not run
@@ -44,14 +42,12 @@ void Clock_Config(void) {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
-  /** Configure the main internal regulator output voltage
-   */
+  // Configure the main internal regulator output voltage
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
 
-  /** Initializes the RCC Oscillators according to the specified parameters
-   * in the RCC_OscInitTypeDef structure.
-   */
+  // Initializes the RCC Oscillators according to the specified parameters
+  // in the RCC_OscInitTypeDef structure.
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
@@ -66,8 +62,7 @@ void Clock_Config(void) {
     // Handle Error
   }
 
-  /** Initializes the CPU, AHB and APB buses clocks
-   */
+  // Initializes the CPU, AHB and APB buses clocks
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK |
                                 RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
@@ -106,27 +101,22 @@ static void MX_I2C1_Init(void) {
  * @retval None
  */
 static void MX_GPIO_Init(void) {
-  /* USER CODE BEGIN MX_GPIO_Init_1 */
-  /* USER CODE END MX_GPIO_Init_1 */
-
-  /* GPIO Ports Clock Enable */
+  // GPIO Ports Clock Enable
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
-  /* Configure I2C SCL and SDA pins */
+  // Configure I2C SCL and SDA pins
   GPIO_InitStruct.Pin =
       GPIO_PIN_8 | GPIO_PIN_9;  // Example for I2C1 SCL and SDA pins on STM32F4
   GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF4_I2C1;
+  GPIO_InitStruct.Alternate = GPIO_AF4_I2C1;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 }
 
-/* USER CODE BEGIN 4 */
 uint8_t rxBuff[] = {0, 2, 4, 6};
-/* USER CODE END 4 */
 
 /**
  * @brief  Function implementing the defaultTask thread.

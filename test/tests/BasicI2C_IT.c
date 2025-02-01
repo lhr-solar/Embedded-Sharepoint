@@ -1,14 +1,18 @@
+/**
+ * Test to confirm i2c_hal interrupt functionality
+ * Requires that the I2C.c class
+ */
 #include "FreeRTOS.h"
-#include "task.h"
 #include "stm32xx_hal.h"
+#include "task.h"
 
-/* Private function prototypes -----------------------------------------------*/
+// Functions used by main
 void Clock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
 void TestTask(void *argument);
 
-/* Private variables ---------------------------------------------------------*/
+// Variables required for scheduling i2c_hal
 I2C_HandleTypeDef hi2c1;
 StaticTask_t task_buffer;
 StackType_t taskStack[configMINIMAL_STACK_SIZE];
@@ -18,7 +22,6 @@ StackType_t taskStack[configMINIMAL_STACK_SIZE];
  * @retval int
  */
 int main(void) {
-  
   HAL_Init();
   Clock_Config();
   MX_GPIO_Init();
@@ -44,14 +47,12 @@ void Clock_Config(void) {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
-  /** Configure the main internal regulator output voltage
-   */
+  // Configure the main internal regulator output voltage
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
 
-  /** Initializes the RCC Oscillators according to the specified parameters
-   * in the RCC_OscInitTypeDef structure.
-   */
+  // Initializes the RCC Oscillators according to the specified parameters
+  // in the RCC_OscInitTypeDef structure.
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
@@ -66,8 +67,7 @@ void Clock_Config(void) {
     // Handle Error
   }
 
-  /** Initializes the CPU, AHB and APB buses clocks
-   */
+  // Initializes the CPU, AHB and APB buses clocks
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK |
                                 RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
@@ -98,10 +98,11 @@ static void MX_I2C1_Init(void) {
 
   __HAL_RCC_I2C1_CLK_ENABLE();
 
-  HAL_NVIC_SetPriority(I2C1_EV_IRQn , 3, 0); // set to priority 5 (not the highest priority) for I2C peripheral's interrupt
-	HAL_NVIC_EnableIRQ(I2C1_EV_IRQn); // Enable the I2C interrupt
-	HAL_NVIC_SetPriority(I2C1_ER_IRQn , 5, 0); // set to priority 5 (not the highest priority) for I2C peripheral's interrupt
-	HAL_NVIC_EnableIRQ(I2C1_ER_IRQn); // Enable the I2C interrupt
+  // set to priority 5 (not the highest priority) for I2C peripheral's interrupt
+  HAL_NVIC_SetPriority(I2C1_EV_IRQn, 3, 0);
+  HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
+  HAL_NVIC_SetPriority(I2C1_ER_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(I2C1_ER_IRQn);
   HAL_I2C_Init(&hi2c1);
 }
 
@@ -111,15 +112,12 @@ static void MX_I2C1_Init(void) {
  * @retval None
  */
 static void MX_GPIO_Init(void) {
-  /* USER CODE BEGIN MX_GPIO_Init_1 */
-  /* USER CODE END MX_GPIO_Init_1 */
-
-  /* GPIO Ports Clock Enable */
+  // GPIO Ports Clock Enable
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
-  /* Configure I2C SCL and SDA pins */
+  // Configure I2C SCL and SDA pins
   GPIO_InitStruct.Pin =
       GPIO_PIN_8 | GPIO_PIN_9;  // Example for I2C1 SCL and SDA pins on STM32F4
   GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
@@ -129,9 +127,7 @@ static void MX_GPIO_Init(void) {
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 }
 
-/* USER CODE BEGIN 4 */
 uint8_t rxBuff[] = {0, 2, 4, 6};
-/* USER CODE END 4 */
 
 /**
  * @brief  Function implementing the defaultTask thread.
@@ -146,17 +142,13 @@ void TestTask(void *argument) {
 }
 // ERROR: This only works if you undefine these functions in BSP_I2C.c
 /**
-  * @brief This function handles I2C1 event interrupt.
-  */
-void I2C1_EV_IRQHandler(void)
-{
-	HAL_I2C_EV_IRQHandler(&hi2c1);
-}
+ * @brief This function handles I2C1 event interrupt. Requires that the function
+ * is undefined in I2C.c
+ */
+void I2C1_EV_IRQHandler(void) { HAL_I2C_EV_IRQHandler(&hi2c1); }
 
 /**
-  * @brief This function handles I2C1 error interrupt.
-  */
-void I2C1_ER_IRQHandler(void)
-{
-	HAL_I2C_ER_IRQHandler(&hi2c1);
-}
+ * @brief This function handles I2C1 error interrupt. Requires that the function
+ * is undefined in I2C.c
+ */
+void I2C1_ER_IRQHandler(void) { HAL_I2C_ER_IRQHandler(&hi2c1); }
