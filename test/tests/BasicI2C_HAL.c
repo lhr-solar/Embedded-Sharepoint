@@ -29,7 +29,7 @@ StackType_t taskStack[configMINIMAL_STACK_SIZE];
 int main(void) {
   /* Reset of all peripherals, Initializes the Flash interface and the Systick.
    */
-  BSP_I2C_Init();
+  HAL_Init();
   /* Configure the system clock */
   Clock_Config();
   /* Initialize all configured peripherals */
@@ -120,7 +120,7 @@ static void MX_I2C1_Init(void) {
   hi2c1.Init.OwnAddress2 = 0;
   hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
   hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-  Single_I2C_Init(&hi2c1);
+  i2c_init(&hi2c1);
 }
 
 /**
@@ -158,7 +158,7 @@ uint8_t rxBuff[] = {0, 2, 4, 6};
  */
 void TestTask(void *argument) {
   while (1) {
-    HAL_StatusTypeDef status = BSP_I2C_TX(&hi2c1, 0x08, rxBuff, 4);
+    HAL_StatusTypeDef status = i2c_send(&hi2c1, 0x08, rxBuff, 4);
     if (status != HAL_OK) {
       // Handle reception error
     }

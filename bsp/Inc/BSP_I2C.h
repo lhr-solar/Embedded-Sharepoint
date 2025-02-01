@@ -9,8 +9,9 @@
 /**
  * @brief Initialize I2C port for EEPROM interaction
  *
+ * @param hi2c Config for the i2c peripheral setup
  */
-HAL_StatusTypeDef BSP_I2C_Init();
+HAL_StatusTypeDef i2c_init(I2C_HandleTypeDef *hi2c);
 
 /**
 * @brief    Transmits data onto the I2C bus.
@@ -20,7 +21,7 @@ HAL_StatusTypeDef BSP_I2C_Init();
 * @param    len            amount of data
 * @return   HAL_StatusTypeDef
 */
-HAL_StatusTypeDef BSP_I2C_TX(I2C_HandleTypeDef *hi2c,
+HAL_StatusTypeDef i2c_send(I2C_HandleTypeDef *hi2c,
               uint8_t deviceAddr,
               uint8_t* pDataBuff,
               uint16_t len);
@@ -33,18 +34,10 @@ HAL_StatusTypeDef BSP_I2C_TX(I2C_HandleTypeDef *hi2c,
 * @param    len            amount of data
 * @return   HAL_StatusTypeDef
 */
-HAL_StatusTypeDef BSP_I2C_RX(I2C_HandleTypeDef *hi2c,
+HAL_StatusTypeDef i2c_recv(I2C_HandleTypeDef *hi2c,
               uint8_t deviceAdd,
               uint8_t* pDataBuff,
               uint16_t len);
-
-/**
-  * @brief I2C1 Initialization Function
-  * @param None
-  * @retval None
-  */
-void Single_I2C_Init(I2C_HandleTypeDef *hi2c);
-
 
 #endif
 #endif
