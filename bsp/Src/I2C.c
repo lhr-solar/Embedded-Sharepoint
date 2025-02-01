@@ -239,28 +239,28 @@ HAL_StatusTypeDef i2c_recv(I2C_HandleTypeDef *hi2c,
 static void queue_send(I2C_TypeDef *i2c_peripheral)
 {
 	I2C_HandleTypeDef *last_hi2c = NULL;
-	QueueHandle_t I2C_Queue = NULL;
+	QueueHandle_t *I2C_Queue = NULL;
 	BaseType_t higherPriorityTaskWoken = pdFALSE;
 
 	#ifdef I2C1
 	if (i2c_peripheral == I2C1)
 	{
 		last_hi2c = last_hi2c1;
-		I2C_Queue = I2C1_Queue;
+		I2C_Queue = &I2C1_Queue;
 	}
 	#endif
 	#ifdef I2C2
 	if (i2c_peripheral == I2C2)
 	{
 		last_hi2c = last_hi2c2;
-		I2C_Queue = I2C2_Queue;
+		I2C_Queue = &I2C2_Queue;
 	}
 	#endif
 	#ifdef I2C3
 	if (i2c_peripheral == I2C3)
 	{
 		last_hi2c = last_hi2c3;
-		I2C_Queue = I2C3_Queue;
+		I2C_Queue = &I2C3_Queue;
 	}
 	#endif
 
@@ -274,7 +274,7 @@ static void queue_send(I2C_TypeDef *i2c_peripheral)
 		return;
 
 	DataInfo_t data;
-	if (xQueueReceiveFromISR(I2C_Queue, &data, &higherPriorityTaskWoken) == pdPASS) {
+	if (xQueueReceiveFromISR(*I2C_Queue, &data, &higherPriorityTaskWoken) == pdPASS) {
 	    // Process dequeuedData
 		HAL_I2C_Master_Transmit_IT(data.hi2c, data.deviceAddr, data.pDataBuff, data.len);
 	} else {
