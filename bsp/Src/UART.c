@@ -325,7 +325,9 @@ exit:
 /**
  * @brief Reads data from the user-provided RX queue
  * @param huart pointer to the UART handle
- * @param rxQueue pointer to the receive queue
+ * @param data pointer to the data buffer that will be read into
+ * @param length of the buffer that will be read
+ * @param blocking if true, function will block until data is received
  * @return uart_status_t
  */
 uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t length, bool blocking) {
@@ -354,7 +356,7 @@ uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t lengt
     uart_status_t status = UART_RECV;
 
     for (uint8_t i = 0; i < length; i++) {
-        if (xQueueReceive(*rx_queue, &data[i], timeout) != pdTRUE) {
+        if (xQueueReceive(*rx_queue, &data[i], timeout) != pdTRUE) { // extract data from the rx queue and store it in data
             status = blocking ? UART_ERR : UART_EMPTY;
             return status;
         }
@@ -411,7 +413,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     BaseType_t higherPriorityTaskWoken = pdFALSE;
 
     xQueueSendFromISR(*rx_queue, &receivedByte, &higherPriorityTaskWoken);
-    HAL_UART_Receive_IT(huart, (uint8_t*)huart->pRxBuffPtr, 1);
+    HAL_UART_Receive_IT(huart, (uint8_t*)huart->pRxBuffPtr, 1); // pRxBufferPtr is a pointer to the buffer that will store the received data
     
     portYIELD_FROM_ISR(higherPriorityTaskWoken);
 }

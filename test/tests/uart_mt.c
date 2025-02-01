@@ -1,13 +1,20 @@
-/* UART multithreaded test
-
-- Setups up UART loopback mode (the TX line is connected to the RX line)
-- Send messages and verify correctness
-*/
+/* UART multithreaded queue test
+ * Tests:
+ * - TX queue functionality under high load
+ * - RX queue functionality when UART is busy
+ * - Queue overflow conditions
+ */
 #include "FreeRTOS.h"
 #include "task.h"
 #include "stm32xx_hal.h"
 #include <string.h>
 #include "UART.h"
+
+/* Private defines */
+#define LD2_Pin GPIO_PIN_5
+#define LD2_GPIO_Port GPIOA
+#define TEST_PATTERN_SIZE 32  // Larger pattern to ensure queue gets filled, pattern size represents a message
+#define TX_BURST_SIZE 100     // Number of messages to send in a burst
 
 /* Private function prototypes */
 void Clock_Config(void);
@@ -15,9 +22,10 @@ static void MX_GPIO_Init(void);
 static void MX_UART4_Init(void);
 void TxTask(void *argument);
 void RxTask(void *argument);
+void Error_Handler(void);
 
 /* Private variables */
-UART_HandleTypeDef huart4;
+extern UART_HandleTypeDef* huart4;
 
 // Static task creation resources
 StaticTask_t txTaskBuffer;
@@ -31,7 +39,7 @@ uint8_t ucRxQueueStorageArea[128];
 QueueHandle_t xRxQueue;
 
 // Test data
-const uint8_t testPattern[] = {0xA5, 0x5A, 0xB4, 0x4B}; // Easily recognizable pattern
+static uint8_t testPattern[TEST_PATTERN_SIZE];
 
 int main(void) {
     HAL_Init();
@@ -39,19 +47,23 @@ int main(void) {
     MX_GPIO_Init();
     MX_UART4_Init();
 
-    // Create the RX queue statically
-    xRxQueue = xQueueCreateStatic(128,
+    // Initialize test pattern
+    for(int i = 0; i < TEST_PATTERN_SIZE; i++) {
+        testPattern[i] = (uint8_t)(i & 0xFF);
+    }
+
+    // Create the RX queue statically - smaller size to test overflow
+    xRxQueue = xQueueCreateStatic(64,   // Could be smaller, like 32, to test overflow
                                  sizeof(uint8_t),
                                  ucRxQueueStorageArea,
                                  &xRxStaticQueue);
     
     // Initialize UART BSP
-    uart_status_t status = uart_init(&huart4, &xRxQueue);
+    uart_status_t status = uart_init(huart4, &xRxQueue);
     if (status != UART_OK) {
         Error_Handler();
     }
 
-    // Create the tasks statically
     xTaskCreateStatic(TxTask, 
                      "TX",
                      configMINIMAL_STACK_SIZE,
@@ -74,86 +86,82 @@ int main(void) {
 
 void TxTask(void *argument)
 {
-    const TickType_t fastDelay = pdMS_TO_TICKS(1);   // 1ms between transmissions
-    const TickType_t slowDelay = pdMS_TO_TICKS(100); // 100ms pause between bursts
+    const TickType_t fastDelay = pdMS_TO_TICKS(1);    // 1ms between transmissions, could be 0 for maximum stress
+    const TickType_t burstDelay = pdMS_TO_TICKS(500); // 500ms between bursts, good for now
     uint32_t txCount = 0;
-    uint32_t successCount = 0;
+    uint32_t queueFullCount = 0;
     
     while(1) {
-        // Send burst of data to test queue
-        for(int i = 0; i < 20; i++) {  // Send enough data to fill queue
-            uart_status_t status = uart_send(&huart4, testPattern, sizeof(testPattern), false);
+        // Rapid burst transmission to test queue
+        for(int i = 0; i < TX_BURST_SIZE; i++) {
+            uart_status_t status = uart_send(huart4, testPattern, TEST_PATTERN_SIZE, false);
             txCount++;
             
-            if(status == UART_SENT) {
-                successCount++;
-                HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+            if(status == UART_ERR) {
+                queueFullCount++;  // Track when queue gets full
+                HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+            } else {
+                HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
             }
             
-            vTaskDelay(fastDelay); // Small delay between sends
+            vTaskDelay(fastDelay);
         }
         
-        // Delay to allow queue to clear
-        vTaskDelay(slowDelay);
-        
-        // Status check every 100 transmissions
-        if(txCount % 100 == 0) {
-            // Could add debug output here if needed
-            HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, (successCount == txCount) ? GPIO_PIN_SET : GPIO_PIN_RESET);
-        }
+        // Allow some time for queue to process
+        vTaskDelay(burstDelay);
     }
 }
 
 void RxTask(void *argument)
 {
-    const TickType_t pollDelay = pdMS_TO_TICKS(10);  // 10ms between queue checks
-    uint8_t rxBuffer[32];  // Larger buffer to test multiple bytes
+    const TickType_t pollDelay = pdMS_TO_TICKS(5);  // 5ms polling rate
+    uint8_t rxBuffer[TEST_PATTERN_SIZE];
     uint32_t rxCount = 0;
-    uint32_t patternCount = 0;
+    uint32_t rxEmptyCount = 0;
+    uint32_t patternMatchCount = 0;
     
     while(1) {
-        uart_status_t status = uart_recv(&huart4, rxBuffer, sizeof(testPattern), false);
+        uart_status_t status = uart_recv(huart4, rxBuffer, TEST_PATTERN_SIZE, false);
         
         if(status == UART_RECV) {
             rxCount++;
             
-            // Check if received data matches test pattern
-            if(memcmp(rxBuffer, testPattern, sizeof(testPattern)) == 0) {
-                patternCount++;
+            // Check pattern match
+            if(memcmp(rxBuffer, testPattern, TEST_PATTERN_SIZE) == 0) {
+                patternMatchCount++;
                 HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
             }
             
-            // Test queue overflow handling by immediately trying to receive more
-            while(uart_recv(&huart4, rxBuffer, sizeof(testPattern), false) == UART_RECV) {
+            // Immediate retry to test queue emptying
+            while(uart_recv(huart4, rxBuffer, TEST_PATTERN_SIZE, false) == UART_RECV) {
                 rxCount++;
             }
         }
-        
-        // Status check every 100 receptions
-        if(rxCount % 100 == 0 && rxCount > 0) {
-            // Could add debug output here if needed
-            HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, (patternCount > 0) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+        else if(status == UART_EMPTY) {
+            rxEmptyCount++;
         }
         
         vTaskDelay(pollDelay);
     }
 }
 
+// Rest of the code (MX_UART4_Init, MX_GPIO_Init, Clock_Config, Error_Handler) same as uart.c
+
 
 static void MX_UART4_Init(void)
 {
-    huart4.Instance = UART4;
-    huart4.Init.BaudRate = 115200;
-    huart4.Init.WordLength = UART_WORDLENGTH_8B;
-    huart4.Init.StopBits = UART_STOPBITS_1;
-    huart4.Init.Parity = UART_PARITY_NONE;
-    huart4.Init.Mode = UART_MODE_TX_RX;
-    huart4.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-    huart4.Init.OverSampling = UART_OVERSAMPLING_16;
-    huart4.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-    huart4.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+    huart4->Instance = UART4;
+    huart4->Init.BaudRate = 115200;
+    huart4->Init.WordLength = UART_WORDLENGTH_8B;
+    huart4->Init.StopBits = UART_STOPBITS_1;
+    huart4->Init.Parity = UART_PARITY_NONE;
+    huart4->Init.Mode = UART_MODE_TX_RX;
+    huart4->Init.HwFlowCtl = UART_HWCONTROL_NONE;
+    huart4->Init.OverSampling = UART_OVERSAMPLING_16;
+    huart4->Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+    huart4->AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
     
-    if (HAL_UART_Init(&huart4) != HAL_OK) {
+    if (HAL_UART_Init(huart4) != HAL_OK) {
         Error_Handler();
     }
 }
@@ -178,12 +186,8 @@ static void MX_GPIO_Init(void)
 
 
 
-void UART4_IRQHandler(void)
-{
-    HAL_UART_IRQHandler(&huart4);
-}
 
-void SystemClock_Config(void)
+void Clock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
