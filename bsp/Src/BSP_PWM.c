@@ -6,11 +6,11 @@
 
 static QueueHandle_t pwm1_send_queue = NULL;  // need to add queue for each PWM timer
 static StaticQueue_t pwm1_send_queue_buffer;
-static uint8_t pwm1_send_queue_storage[PWM_SEND_QUEUE_SIZE*sizeof(PWM_Info)] __attribute__((aligned(4)));;
+static uint8_t pwm1_send_queue_storage[PWM_SEND_QUEUE_SIZE*sizeof(PWM_Info)];
         
 static QueueHandle_t pwm2_send_queue = NULL;  // need to add queue for each PWM timer
 static StaticQueue_t pwm2_send_queue_buffer;
-static uint8_t pwm2_send_queue_storage[PWM_SEND_QUEUE_SIZE*sizeof(PWM_Info)] __attribute__((aligned(4)));;
+static uint8_t pwm2_send_queue_storage[PWM_SEND_QUEUE_SIZE*sizeof(PWM_Info)];
 
 TIM_OC_InitTypeDef sConfigOC = {0};
 

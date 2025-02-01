@@ -4,15 +4,15 @@
 
 #include "stm32xx_hal.h"
 #include "BSP_PWM.h"
-#include 
+#include "PWM_Tasks.h"
 
-StaticTask_t task_init_buffer;
-StackType_t task_init_stack[configMINIMAL_STACK_SIZE];
+StaticTask_t Task_Init_Buffer;
+StackType_t Task_Init_Stack[configMINIMAL_STACK_SIZE];
 
 static void error_handler(void) {
     while(1) {
-        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-        HAL_Delay(1000);
+        // HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+        // HAL_Delay(1000);
     }
 }
 
@@ -21,8 +21,15 @@ int main(void) {
     HAL_Init();
     __HAL_RCC_GPIOA_CLK_ENABLE();
     xTaskCreateStatic(
-        Task_Init
+        Task_Init,
+        "Initialization Task",
+        configMINIMAL_STACK_SIZE,
+        NULL,
+        TASK_INIT_PRIORITY,
+        Task_Init_Stack,
+        &Task_Init_Buffer
     );
+
     vTaskStartScheduler();
 
     error_handler();

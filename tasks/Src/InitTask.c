@@ -62,7 +62,7 @@ void Task_Init() {
         "Toggle Task",
         configMINIMAL_STACK_SIZE,
         NULL,
-        tskIDLE_PRIORITY + 2,
+        TASK_TOGGLE_PRIORITY, //temporary
         Task_Toggle_Stack,
         &Task_Toggle_Buffer
         );
@@ -72,7 +72,7 @@ void Task_Init() {
         "PWM TIM1 Task",
         configMINIMAL_STACK_SIZE,
         NULL,
-        tskIDLE_PRIORITY + 2,
+        TASK_TIM1_PRIORITY, //temporary
         Task_TIM1_Stack,
         &Task_TIM1_Buffer
         );
@@ -82,7 +82,7 @@ void Task_Init() {
         "PWM TIM2 Task",
         configMINIMAL_STACK_SIZE,
         NULL,
-        tskIDLE_PRIORITY + 2,
+        TASK_TIM2_PRIORITY, //temporary
         Task_TIM2_Stack,
         &Task_TIM2_Buffer
         );

@@ -7,6 +7,12 @@
 #include "timers.h" /* Software timer related API prototypes. */
 #include "semphr.h"
 
+
+#define TASK_INIT_PRIORITY      tskIDLE_PRIORITY + 2
+#define TASK_TOGGLE_PRIORITY    tskIDLE_PRIORITY + 2
+#define TASK_TIM1_PRIORITY      tskIDLE_PRIORITY + 2
+#define TASK_TIM2_PRIORITY      tskIDLE_PRIORITY + 2
+
 void Task_Init();
 void Task_Toggle();
 void Task_TIM1();
