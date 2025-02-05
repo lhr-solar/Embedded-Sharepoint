@@ -5,10 +5,14 @@
 # This script automates environment setup for embedded-sharepoint
 
 IMAGE_NAME="embedded-sharepoint"
-WORKDIR_MOUNT="$PWD"
+if [ -z "$1" ]; then
+  export WORKDIR_MOUNT="$PWD"
+else
+  export WORKDIR_MOUNT="$1"
+fi
 DOCKERFILE_DIR="$(dirname "$0")"
 DOCKERFILE_PATH="$DOCKERFILE_DIR/Dockerfile"
-DOCKER_COMPOSE_FILE="docker-compose.yml"
+DOCKER_COMPOSE_FILE="$DOCKERFILE_DIR/docker-compose.yml"
 
 echo "====================================================="
 echo " Embedded Sharepoint Setup"
@@ -114,6 +118,9 @@ ssh-add -l 2>/dev/null >/dev/null
 # if not valid, then start ssh-agent using $SSH_AUTH_SOCK
 [ $? -ge 2 ] && ssh-agent -a "$SSH_AUTH_SOCK" >/dev/null
 
+export REMOTE_USER="$USER"
+export REMOTE_UID=$(id -u)
+export REMOTE_GID=$(id -g)
 docker compose -f "$DOCKER_COMPOSE_FILE" build
 docker compose -f "$DOCKER_COMPOSE_FILE" run --rm dev
 
