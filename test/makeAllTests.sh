@@ -2,8 +2,8 @@
 
 port_list=("stm32f401re" "stm32f413rht" "stm32f429zit" "stm32f446ret" "stm32l431cbt" "stm32l476rgt")
 
-# Boards to skip UART tests for
-skip_uart_ports=("stm32f401re" "stm32f413rht" "stm32f429zit" "stm32l431cbt")
+# Boards that should run UART tests since they support UART4 & UART5
+uart_enabled_ports=("stm32f446ret" "stm32l476rgt")
 
 
 for port in "${port_list[@]}"; do
@@ -19,10 +19,13 @@ for port in "${port_list[@]}"; do
             continue
         fi
 
-        # Skip UART tests for specified boards
-        if [[ " ${skip_uart_ports[@]} " =~ " ${port} " ]] && ([[ "$test_name" == "uart" ]] || [[ "$test_name" == "uart_mt" ]]); then
-            echo "Skipping the UART test for $port because it does not support UART4 & UART5"
-            continue
+        # For UART tests, only run on specified boards
+        if ([[ "$test_name" == "uart" ]] || [[ "$test_name" == "uart_mt" ]]); then
+            # if the port is not in the list of boards that support UART, skip it
+            if [[ ! " ${uart_enabled_ports[@]} " =~ " ${port} " ]]; then
+                echo "Skipping the UART test for $port because it does not support UART"
+                continue
+            fi
         fi
 
 
