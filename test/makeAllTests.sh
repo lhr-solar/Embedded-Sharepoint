@@ -2,7 +2,7 @@
 
 port_list=("stm32f401re" "stm32f413rht" "stm32f429zit" "stm32f446ret" "stm32l431cbt" "stm32l476rgt")
 
-# Boards that should run UART tests since they support UART4 & UART5
+# Boards that should run UART tests since they support UART4 & UART5, will add more boards as they are tested
 uart_enabled_ports=("stm32f446ret" "stm32l476rgt")
 
 for port in "${port_list[@]}"; do
@@ -18,11 +18,9 @@ for port in "${port_list[@]}"; do
         fi
         
         # Skip UART tests for non-UART boards
-        if [[ "$test_name" == "uart" || "$test_name" == "uart_mt" || "$test_name" == "FreeRTOS" || "$test_name" == "blinky" ]]; then
-            if [[ ! " ${uart_enabled_ports[@]} " =~ " ${port} " ]]; then
-                echo "Skipping the UART test for $port because it does not support UART4 & UART5"
-                continue
-            fi
+        if ([[ "$test_name" == "uart" ]] || [[ "$test_name" == "uart_mt" ]]) && [[ ! " ${uart_enabled_ports[@]} " =~ " ${port} " ]]; then
+            echo "Skipping the UART test for $port because it does not support UART4 & UART5"
+            continue
         fi
 
         echo "Compiling the test - $test_name for $port"
