@@ -1,8 +1,10 @@
 #!/bin/bash
 
-# port_list=("stm32f401re" "stm32f413rht" "stm32f429zit" "stm32f446ret" "stm32l431cbt" "stm32l476rgt")
-port_list=("stm32f446ret" "stm32l476rgt") 
-# testing only on stm32l476rgt and stmf446ret for now
+port_list=("stm32f401re" "stm32f413rht" "stm32f429zit" "stm32f446ret" "stm32l431cbt" "stm32l476rgt")
+
+# Boards to skip UART tests for
+skip_uart_ports=("stm32f401re" "stm32f413rht" "stm32f429zit" "stm32l431cbt")
+
 
 for port in "${port_list[@]}"; do
     
@@ -14,6 +16,12 @@ for port in "${port_list[@]}"; do
         # Skip the "can" test for stm32f401*e or stm32f401*c
         if [[ "$port" =~ ^stm32f401.*[ec]$ ]] && ([[ "$test_name" == "can" ]] || [[ "$test_name" == "can_mt" ]]); then
             echo "Skipping the CAN test for $port because it does not support CAN"
+            continue
+        fi
+
+        # Skip UART tests for specified boards
+        if [[ " ${skip_uart_ports[@]} " =~ " ${port} " ]] && ([[ "$test_name" == "uart" ]] || [[ "$test_name" == "uart_mt" ]]); then
+            echo "Skipping the UART test for $port because it does not support UART4 & UART5"
             continue
         fi
 
