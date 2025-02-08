@@ -20,11 +20,14 @@
 static uint8_t init_cmd[4] = {0xDE, 0xAD, 0xBE, 0xEF};
 
 #define USART1_TX_PIN GPIO_PIN_9
-
 #define USART1_TX_PORT GPIOA
-
 #define USART1_RX_PIN GPIO_PIN_10
 #define USART1_RX_PORT GPIOA
+
+#define USART2_TX_PIN GPIO_PIN_2
+#define USART2_TX_PORT GPIOA
+#define USART2_RX_PIN GPIO_PIN_3
+#define USART2_RX_PORT GPIOA
 
 static GPIO_InitTypeDef GPIO_InitCfg = {
     .Pin = LED_PIN,
@@ -34,23 +37,23 @@ static GPIO_InitTypeDef GPIO_InitCfg = {
 };
 
 static GPIO_InitTypeDef USART1_GPIO_TXCfg = {
-    .Pin = USART1_TX_PIN,
+    .Pin = USART2_TX_PIN,
     .Mode = GPIO_MODE_AF_PP,
     .Pull = GPIO_NOPULL,
     .Speed = GPIO_SPEED_FAST,
-    .Alternate = GPIO_AF7_USART1
+    .Alternate = GPIO_AF7_USART2
 };
 
 static GPIO_InitTypeDef USART1_GPIO_RXCfg = {
-    .Pin = USART1_RX_PIN,
+    .Pin = USART2_RX_PIN,
     .Mode = GPIO_MODE_AF_PP,
     .Pull = GPIO_NOPULL,
     .Speed = GPIO_SPEED_FAST,
-    .Alternate = GPIO_AF7_USART1
+    .Alternate = GPIO_AF7_USART2
 };
 
 static USART_HandleTypeDef USART1_Handle = {
-    .Instance = USART1,
+    .Instance = USART2,
     .Init.BaudRate = 9600,
     .Init.WordLength = USART_WORDLENGTH_9B,
     .Init.StopBits = USART_STOPBITS_1,
@@ -64,33 +67,6 @@ static inline void startapp_with_err(error_code_t ec){
     boot_deinit();
     startapp();
 }
-
-/*
-=======================
-CMD Structure:
-Start of Transmission:
-STX (1 byte) RX
-ACK (1 bytes) TX
-
-Header:
-CMD (1 byte) RX
-DATA_SIZE (1 byte) RX
-ADDRESS (4 bytes) RX
-ACK (1 byte) TX
-
-Data:
-DATA (X bytes) RX
-ACK (1 byte) TX
-
-Response Header:
-DATA_SIZE (1 byte) TX
-ACK (1 byte) RX
-
-Response:
-DATA (X bytes) TX
-ACK (1 byte) RX
-=======================
-*/
 
 static inline error_code_t uart_ack(){
     // Acknowledge
@@ -138,7 +114,7 @@ static error_code_t uart_header(uint8_t *cmd, uint8_t *data_size, uint32_t *addr
     
     *cmd = buf[0];
     *data_size = buf[1];
-    *address = *((uint32_t*)&buf[2]);
+    *address = (buf[2] << 24) | (buf[3] << 16) | (buf[4] << 8) | buf[5];
     
     ret = uart_ack();
     if(ret != BLDR_OK) return ret;
@@ -218,7 +194,7 @@ static error_code_t uart_cmd(){
     if(!exec_flash_command(data, &flash_cmd)) return BLDR_FAIL_FLASH;
 
     // Send response
-    if(flash_cmd.id == FLASH_READ_SINGLE | flash_cmd.id == FLASH_READ_BUF){
+    if(flash_cmd.id == FLASH_READ_SINGLE || flash_cmd.id == FLASH_READ_BUF){
         if(uart_resp(data, data_size) != BLDR_OK) return BLDR_ERR;
     }
 
@@ -290,7 +266,8 @@ error_code_t boot_init(){
     HAL_GPIO_Init(USART1_TX_PORT, &USART1_GPIO_TXCfg);
     HAL_GPIO_Init(USART1_RX_PORT, &USART1_GPIO_RXCfg);
     __HAL_USART_ENABLE(&USART1_Handle);
-    __USART1_CLK_ENABLE();
+    __USART2_CLK_ENABLE();
+    // __USART1_CLK_ENABLE();
     if(HAL_USART_Init(&USART1_Handle) == HAL_ERROR){
         startapp_with_err(BLDR_FAIL_INIT);
     }
@@ -327,6 +304,33 @@ void boot_deinit(){
     HAL_DeInit();
 }
 
+/*
+=======================
+CMD Structure:
+Start of Transmission:
+STX (1 byte) RX
+ACK (1 bytes) TX
+
+Header:
+CMD (1 byte) RX
+DATA_SIZE (1 byte) RX
+ADDRESS (4 bytes) RX
+ACK (1 byte) TX
+
+Data:
+DATA (X bytes) RX
+ACK (1 byte) TX
+
+Response Header:
+DATA_SIZE (1 byte) TX
+ACK (1 byte) RX
+
+Response:
+DATA (X bytes) TX
+ACK (1 byte) RX
+=======================
+*/
+
 void boot(){
     // Initialize
     if(boot_init() != BLDR_OK){
@@ -341,33 +345,35 @@ void boot(){
 
     // Locked into the bootloader
     while(1){
-        
-        // // Get STX
-        // if(uart_stx() != BLDR_OK){
-        //     boot_deinit();
-        //     startapp_with_err(BLDR_FAIL_STX);
-        // }
+        // Get STX
+        if(uart_stx() != BLDR_OK){
+            boot_deinit();
+            startapp_with_err(BLDR_FAIL_STX);
+        }
 
-        // // Get Header
-        // uint8_t cmd, data_size;
-        // if(uart_header(&cmd, &data_size) != BLDR_OK){
-        //     boot_deinit();
-        //     startapp_with_err(BLDR_FAIL_STX);
-        // }
+        // Get Header
+        uint8_t cmd, data_size;
+        uint32_t address;
+        if(uart_header(&cmd, &data_size, &address) != BLDR_OK){
+            boot_deinit();
+            startapp_with_err(BLDR_FAIL_STX);
+        }
 
-        // // Get Data
-        // uint8_t data[data_size];
-        // if(uart_data(data, data_size) != BLDR_OK){
-        //     boot_deinit();
-        //     startapp_with_err(BLDR_FAIL_STX);
-        // }
+        // Get Data
+        uint8_t data[data_size];
+        if(uart_data(data, data_size) != BLDR_OK){
+            boot_deinit();
+            startapp_with_err(BLDR_FAIL_STX);
+        }
 
-        // // Execute command
-        // flash_cmd_t flash_cmd = {
-        //     .id = cmd,
-        //     .data_size = data_size,
-        //     .address = 0
-        // };
+        // Execute command
+        flash_cmd_t flash_cmd = {
+            .id = cmd,
+            .data_size = data_size,
+            .address = address
+        };
+
+        volatile int a = 2;
 
         // if(exec_flash_command(data, &flash_cmd) != BLDR_OK){
         //     boot_deinit();
