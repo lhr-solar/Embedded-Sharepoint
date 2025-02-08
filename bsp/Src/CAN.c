@@ -666,8 +666,13 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
     if (hcan->Instance == CAN1) {
       for (int i = 0; i < can1_recv_entry_count; i++) {
         if (can1_recv_entries[i].id == payload.header.StdId) {
-          xQueueSendFromISR(can1_recv_entries[i].queue, &payload,
+          if (can1_recv_entries[i].size == 1){
+            xQueueOverwriteFromISR(can1_recv_entries[i].queue, &payload,
                             &higherPriorityTaskWoken);
+          } else {
+            xQueueSendFromISR(can1_recv_entries[i].queue, &payload,
+                            &higherPriorityTaskWoken);
+          }
 	  break;
         }
       }
@@ -678,8 +683,13 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
     else if (hcan->Instance == CAN2) {
       for (int i = 0; i < can2_recv_entry_count; i++) {
         if (can2_recv_entries[i].id == payload.header.StdId) {
-          xQueueSendFromISR(can2_recv_entries[i].queue, &payload,
+          if (can2_recv_entries[i].size == 1){
+            xQueueOverwriteFromISR(can2_recv_entries[i].queue, &payload,
                             &higherPriorityTaskWoken);
+          } else {
+            xQueueSendFromISR(can2_recv_entries[i].queue, &payload,
+                            &higherPriorityTaskWoken);
+          }
 	  break;
         }
       }
@@ -691,8 +701,13 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
     if (hcan->Instance == CAN3) {
       for (int i = 0; i < can3_recv_entry_count; i++) {
         if (can3_recv_entries[i].id == payload.header.StdId) {
-          xQueueSendFromISR(can3_recv_entries[i].queue, &payload,
+          if (can3_recv_entries[i].size == 1){
+            xQueueOverwriteFromISR(can3_recv_entries[i].queue, &payload,
                             &higherPriorityTaskWoken);
+          } else {
+            xQueueSendFromISR(can3_recv_entries[i].queue, &payload,
+                            &higherPriorityTaskWoken);
+          }
 	  break;
         }
       }
