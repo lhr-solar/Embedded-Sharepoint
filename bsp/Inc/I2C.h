@@ -3,7 +3,7 @@
 
 #ifndef BSP_I2C_H
 #define BSP_I2C_H
-#if defined(I2C1) || defined(I2C2) ||defined(I2C3)
+#if defined(I2C1) || defined(I2C2) || defined(I2C3)
 #include "stm32xx_hal.h"
 
 /**

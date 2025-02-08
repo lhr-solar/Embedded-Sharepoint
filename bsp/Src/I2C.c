@@ -20,8 +20,8 @@ void Single_I2C_Init(I2C_HandleTypeDef*);
 typedef struct {
 	I2C_HandleTypeDef *hi2c;
 	uint8_t deviceAddr;
-	uint8_t* pDataBuff;
-	uint16_t len;
+	uint8_t pDataBuff;
+	uint8_t payloadsLeft;
 } DataInfo_t;
 
 // Define queue sizes for each I2C peripheral if not done so already
@@ -29,6 +29,11 @@ typedef struct {
 #ifndef I2C1_QUEUE_SIZE
 #define I2C1_QUEUE_SIZE 128
 #endif
+
+#ifndef I2C1_MAX_PAYLOADS
+#define I2C1_MAX_PAYLOADS 16
+#endif
+
 static DataInfo_t I2C1_DataStore[I2C1_QUEUE_SIZE];
 static QueueHandle_t I2C1_Queue;
 static StaticQueue_t I2C1_DataQueue;
@@ -39,6 +44,11 @@ I2C_HandleTypeDef *last_hi2c1;
 #ifndef I2C2_QUEUE_SIZE 
 #define I2C2_QUEUE_SIZE 128
 #endif
+
+#ifndef I2C2_MAX_PAYLOADS
+#define I2C2_MAX_PAYLOADS 16
+#endif
+
 static DataInfo_t I2C2_DataStore[I2C2_QUEUE_SIZE];
 static StaticQueue_t I2C2_DataQueue;
 static QueueHandle_t I2C2_Queue;
@@ -49,6 +59,11 @@ I2C_HandleTypeDef *last_hi2c2;
 #ifndef I2C3_QUEUE_SIZE 
 #define I2C3_QUEUE_SIZE 128
 #endif
+
+#ifndef I2C3_MAX_PAYLOADS
+#define I2C3_MAX_PAYLOADS 16
+#endif
+
 static DataInfo_t I2C3_DataStore[I2C3_QUEUE_SIZE];
 static StaticQueue_t I2C3_DataQueue;
 static QueueHandle_t I2C3_Queue;
@@ -169,6 +184,23 @@ HAL_StatusTypeDef i2c_send(I2C_HandleTypeDef *hi2c,
               uint8_t* pDataBuff,
               uint16_t len)
 {
+	// Confirm length is not larger than its designated payload size
+	if(hi2c->Instance == I2C1 && len > I2C1_MAX_PAYLOADS)
+	{
+		// ERROR
+		return HAL_ERROR;
+	}
+	else if(hi2c->Instance == I2C2 && len > I2C2_MAX_PAYLOADS)
+	{
+		// ERROR
+		return HAL_ERROR;
+	}
+	else if(hi2c->Instance == I2C3 && len > I2C3_MAX_PAYLOADS)
+	{
+		// ERROR
+		return HAL_ERROR;
+	}
+
 	// Update the latest I2C peripheral
 	update_last_i2c(hi2c);
 
@@ -178,13 +210,6 @@ HAL_StatusTypeDef i2c_send(I2C_HandleTypeDef *hi2c,
 	}
 	else
 	{
-		DataInfo_t dataToEnqueue = {
-			.hi2c = hi2c,
-			.deviceAddr = deviceAddr,
-			.pDataBuff = pDataBuff,
-			.len = len
-		};
-
 		QueueHandle_t I2C_Queue = I2C1_Queue;
 		if(hi2c->Instance == I2C1) {}
 		else if (hi2c->Instance == I2C2)
@@ -200,12 +225,26 @@ HAL_StatusTypeDef i2c_send(I2C_HandleTypeDef *hi2c,
 			// Handle invalid I2C peripheral
 			return HAL_ERROR;
 		}
-		
 
-		if (xQueueSend(I2C_Queue, &dataToEnqueue, 0) != pdPASS)
+		if (len > uxQueueSpacesAvailable(I2C_Queue))
 		{
-			// Handle queue full error
 			return HAL_ERROR;
+		}
+		
+		for(int packetsLeft = len - 1; packetsLeft >= 0; packetsLeft--)
+		{
+			DataInfo_t dataToEnqueue = {
+				.hi2c = hi2c,
+				.deviceAddr = deviceAddr,
+				.pDataBuff = pDataBuff[len - packetsLeft - 1],
+				.payloadsLeft = packetsLeft
+			};
+
+			if (xQueueSend(I2C_Queue, &dataToEnqueue, 0) != pdPASS)
+			{
+				// Handle queue full error
+				return HAL_ERROR;
+			}
 		}
 	}
 	return HAL_OK;
@@ -276,7 +315,47 @@ static void queue_send(I2C_TypeDef *i2c_peripheral)
 	DataInfo_t data;
 	if (xQueueReceiveFromISR(*I2C_Queue, &data, &higherPriorityTaskWoken) == pdPASS) {
 	    // Process dequeuedData
-		HAL_I2C_Master_Transmit_IT(data.hi2c, data.deviceAddr, data.pDataBuff, data.len);
+		if(i2c_peripheral == I2C1)
+		{
+			uint8_t dataToTransmit[I2C1_MAX_PAYLOADS];
+			uint8_t index = 0;
+			dataToTransmit[index] = data.pDataBuff;
+			while(data.payloadsLeft != 0)
+			{
+				xQueueReceiveFromISR(*I2C_Queue, &data, &higherPriorityTaskWoken);
+				dataToTransmit[++index] = data.pDataBuff;
+			}
+
+			HAL_I2C_Master_Transmit_IT(data.hi2c, data.deviceAddr, dataToTransmit, index + 1);	
+		}
+		else if(i2c_peripheral == I2C2)
+		{
+			uint8_t dataToTransmit[I2C2_MAX_PAYLOADS];
+			uint8_t index = 0;
+			dataToTransmit[index] = data.pDataBuff;
+			while(data.payloadsLeft != 0)
+			{
+				xQueueReceiveFromISR(*I2C_Queue, &data, &higherPriorityTaskWoken);
+				dataToTransmit[++index] = data.pDataBuff;
+			}
+
+			HAL_I2C_Master_Transmit_IT(data.hi2c, data.deviceAddr, dataToTransmit, index + 1);	
+		}
+		else if(i2c_peripheral == I2C3)
+		{
+			uint8_t dataToTransmit[I2C3_MAX_PAYLOADS];
+			uint8_t index = 0;
+			dataToTransmit[index] = data.pDataBuff;
+			while(data.payloadsLeft != 0)
+			{
+				xQueueReceiveFromISR(*I2C_Queue, &data, &higherPriorityTaskWoken);
+				dataToTransmit[++index] = data.pDataBuff;
+			}
+
+			HAL_I2C_Master_Transmit_IT(data.hi2c, data.deviceAddr, dataToTransmit, index + 1);	
+		}
+		
+		// Control should not reach here as only valid I2C should be able to enter the queue
 	} else {
 	    // Handle queue empty error
 	}
