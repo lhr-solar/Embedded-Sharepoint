@@ -28,7 +28,7 @@ for port in "${port_list[@]}"; do
         fi
         
         # Skip UART tests for non-UART boards
-        if [[ "$test_name" == "uart" || "$test_name" == "uart_mt" ]]; then
+        if [[ "$test_name" == "uart" || "$test_name" == "uart_mt" || "$test_name" == "FreeRTOS" ]]; then
             if ! $is_uart_enabled; then
                 echo "Skipping the UART test for $port because it does not support UART4 & UART5"
                 continue
