@@ -42,14 +42,16 @@ void Task_Toggle(void * pvParameters) {
 
 void Task_TIM1(void * pvParameters) {
     while(1) {
-        BSP_PWM_Set(&tim1, 1, 75, 10000 - 1);
+        if(BSP_PWM_Set(&tim1, TIM_CHANNEL_1, 75, 100000 - 1) != HAL_OK)
+            error_handler();
         vTaskDelay(500);
     }
 }
 
 void Task_TIM2(void * pvParameters) {
     while(1) {
-        BSP_PWM_Set(&tim2, 2, 50, 10000 - 1);
+        if(BSP_PWM_Set(&tim2, TIM_CHANNEL_2, 50, 100000 - 1) != HAL_OK)
+            error_handler();
         vTaskDelay(500);
     }
 }
@@ -73,6 +75,8 @@ void Task_Init() {
     if (BSP_PWM_TIM_Init(&tim1) != HAL_OK) error_handler();
     if (BSP_PWM_TIM_Init(&tim2) != HAL_OK) error_handler();
 
+    // BSP_PWM_Channel_Init(&tim1, TIM_CHANNEL_1);
+    // BSP_PWM_Channel_Init(&tim2, TIM_CHANNEL_2);
     if (BSP_PWM_Channel_Init(&tim1, TIM_CHANNEL_1) != HAL_OK) error_handler();
     if (BSP_PWM_Channel_Init(&tim2, TIM_CHANNEL_2) != HAL_OK) error_handler();
 
@@ -113,6 +117,7 @@ int main(void) {
     // if (HAL_Init() != HAL_OK) error_handler();
     HAL_Init();
     __HAL_RCC_GPIOA_CLK_ENABLE();
+    
     xTaskCreateStatic(
         Task_Init,
         "Initialization Task",

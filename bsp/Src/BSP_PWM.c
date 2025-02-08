@@ -1,7 +1,7 @@
-#include "../Inc/BSP_PWM.h"
+#include "BSP_PWM.h"
 
 #ifndef PWM_SEND_QUEUE_SIZE
-#define PWM_SEND_QUEUE_SIZE (1)
+#define PWM_SEND_QUEUE_SIZE (10)
 #endif
 
 static QueueHandle_t pwm1_send_queue = NULL;  // need to add queue for each PWM timer
@@ -56,11 +56,6 @@ HAL_StatusTypeDef BSP_PWM_TIM_Init(TIM_HandleTypeDef* timHandle) {
     if(__HAL_RCC_GPIOA_IS_CLK_DISABLED())
          __HAL_RCC_GPIOA_CLK_ENABLE();
     
-    // stat = HAL_TIM_PWM_Init(timHandle);
-    // return HAL_ERROR;
-    // if(stat == HAL_ERROR) return stat;
-    
-    
     if (timHandle->Instance == TIM1 && pwm1_send_queue == NULL) {// assign queue for specific timer
 
         pwm1_send_queue = xQueueCreateStatic(PWM_SEND_QUEUE_SIZE, sizeof(PWM_Info),
@@ -78,6 +73,9 @@ HAL_StatusTypeDef BSP_PWM_TIM_Init(TIM_HandleTypeDef* timHandle) {
             return HAL_ERROR; 
         }
 
+    stat = HAL_TIM_PWM_Init(timHandle);
+    if(stat == HAL_ERROR) return stat;
+
     return stat;
 }
 
@@ -92,6 +90,7 @@ HAL_StatusTypeDef BSP_PWM_Channel_Init(TIM_HandleTypeDef* timHandle, uint8_t cha
     
     stat = HAL_TIM_PWM_ConfigChannel(timHandle, &sConfigOC, channel);
     if(stat == HAL_ERROR) return stat;
+    // while(timHandle->Channel[])
 
     stat = HAL_TIM_PWM_Start_IT(timHandle, channel); 
     return stat;
@@ -123,7 +122,8 @@ HAL_StatusTypeDef BSP_PWM_Set(TIM_HandleTypeDef* timHandle, uint8_t channel, uin
 }
 
 void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *timHandle) {
-    
+
+    // HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5); // testing interrupt callback
     QueueHandle_t tx_Queue = NULL;
     
     if (timHandle->Instance == TIM1)
