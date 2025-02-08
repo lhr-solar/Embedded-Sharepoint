@@ -120,6 +120,31 @@ static void task(void *pvParameters) {
   if (status != CAN_RECV && rx_data[0] != 0x4) error_handler();
   #endif /* CAN2 */
 
+  // TEST QUEUE OVERWRITE ============================================
+
+  // send one payload to 0x4
+  tx_data[0] = 0x04;
+  tx_header.StdId = 0x004;
+  if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+
+  // receive what was sent to 0x4
+  status = can_recv(hcan1, 0x4, &rx_header, rx_data, true);
+  if (status != CAN_RECV && rx_data[0] != 0x4) error_handler();
+  
+  // send two payloads to 0x4, only the last one should be received
+  tx_data[0] = 0x05;
+  if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+  tx_data[0] = 0x06;
+  if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+
+  // receive what was sent to 0x4
+  status = can_recv(hcan1, 0x4, &rx_header, rx_data, true);
+  if (status != CAN_RECV && rx_data[0] != 0x6) error_handler();
+
+  // try receiving again (since queue size is 1 this should be empty)
+  status = can_recv(hcan1, 0x4, &rx_header, rx_data, false);
+  if (status != CAN_EMPTY) error_handler();
+
   success_handler();
 }
 
