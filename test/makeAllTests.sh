@@ -7,6 +7,16 @@ uart_enabled_ports=("stm32f446ret" "stm32l476rgt")
 
 for port in "${port_list[@]}"; do
     make clean
+    
+    # Check if this is a UART-enabled board
+    is_uart_enabled=false
+    for uart_port in "${uart_enabled_ports[@]}"; do
+        if [[ "$port" == "$uart_port" ]]; then
+            is_uart_enabled=true
+            break
+        fi
+    done
+    
     for tests_dir in tests/*; do
         test_name="${tests_dir#tests/}"
         test_name="${test_name%.c}"
@@ -19,12 +29,12 @@ for port in "${port_list[@]}"; do
         
         # Skip UART tests for non-UART boards
         if [[ "$test_name" == "uart" || "$test_name" == "uart_mt" ]]; then
-            if [[ ! " ${uart_enabled_ports[@]} " =~ " ${port} " ]]; then
+            if ! $is_uart_enabled; then
                 echo "Skipping the UART test for $port because it does not support UART4 & UART5"
                 continue
             fi
         fi
-
+        
         echo "Compiling the test - $test_name for $port"
         
         if ! make TEST="$test_name" PROJECT_TARGET="$port" -j; then
