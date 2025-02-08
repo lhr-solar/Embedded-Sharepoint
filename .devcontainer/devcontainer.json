@@ -6,8 +6,10 @@
   ],
 
   "service": "dev",
-  "workspaceFolder": "/Embedded-Sharepoint",
+  "workspaceFolder": "/workdir",
   "shutdownAction": "stopCompose",
+
+  "initializeCommand": "echo \"WORKDIR_MOUNT=${localWorkspaceFolder}\nREMOTE_USER=$USER\nREMOTE_UID=$(id -u)\nREMOTE_GID=$(id -g)\" > .env",
 
   "customizations": {
     "vscode": {
