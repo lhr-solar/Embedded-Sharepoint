@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+
 port_list=("stm32f401re" "stm32f413rht" "stm32f429zit" "stm32f446ret" "stm32l431cbt" "stm32l476rgt")
 
 for port in "${port_list[@]}"; do
