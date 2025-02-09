@@ -39,7 +39,8 @@ for port in "${port_list[@]}"; do
 
         echo "✅ $test_name compiled successfully for $test_name.c using $port"
 
-        make clean
+        make -C "$makefile_dir" clean -j
+        
     done
 
 done
