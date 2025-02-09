@@ -1,8 +1,10 @@
 #!/bin/bash
 
-# Define paths
-ENV_FILE="Embedded-Sharepoint/.env"
-DOCKER_COMPOSE_FILE="Embedded-Sharepoint/docker-compose.yml"
+# Define paths relative to the script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ENV_FILE="$(dirname "$script_dir")/../.env"
+DOCKER_COMPOSE_FILE="$(dirname "$script_dir")/../docker-compose.yml"
+
 
 # Create .env file with required environment variables
 echo "WORKDIR_MOUNT=${localWorkspaceFolder}" > $ENV_FILE
