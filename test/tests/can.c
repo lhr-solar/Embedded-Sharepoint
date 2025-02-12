@@ -151,7 +151,7 @@ static void task(void *pvParameters) {
 int main(void) {
   // initialize the HAL and system clock
   if (HAL_Init() != HAL_OK) error_handler();
-  // SystemClock_Config();
+  SystemClock_Config();
 
   // create filter
   CAN_FilterTypeDef  sFilterConfig;
