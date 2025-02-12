@@ -454,7 +454,7 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
                  errQUEUE_EMPTY) {}
         } else {
           // otherwise, finish on empty
-          if (xQueueReceive(can1_recv_entries[i].queue, &payload, portMAX_DELAY) ==
+          if (xQueueReceive(can1_recv_entries[i].queue, &payload, 0) ==
               errQUEUE_EMPTY) {
             return CAN_EMPTY;
           }
@@ -477,7 +477,7 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
                  errQUEUE_EMPTY) {}
         } else {
           // otherwise, finish on empty
-          if (xQueueReceive(can2_recv_entries[i].queue, &payload, portMAX_DELAY) ==
+          if (xQueueReceive(can2_recv_entries[i].queue, &payload, 0) ==
               errQUEUE_EMPTY) {
             return CAN_EMPTY;
           }
@@ -501,7 +501,7 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
                  errQUEUE_EMPTY) {}
         } else {
           // otherwise, finish on empty
-          if (xQueueReceive(can3_recv_entries[i].queue, &payload, portMAX_DELAY) ==
+          if (xQueueReceive(can3_recv_entries[i].queue, &payload, 0) ==
               errQUEUE_EMPTY) {
             return CAN_EMPTY;
           }
