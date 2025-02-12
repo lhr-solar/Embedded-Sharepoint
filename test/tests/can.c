@@ -136,14 +136,22 @@ static void task(void *pvParameters) {
   if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
   tx_data[0] = 0x06;
   if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+  tx_data[0] = 0x07;
+  if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+  tx_data[0] = 0x08;
+  if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+  tx_data[0] = 0x09;
+  if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
 
-  // receive what was sent to 0x4
+  // receive the rest in order
   status = can_recv(hcan1, 0x4, &rx_header, rx_data, true);
-  if (status != CAN_RECV && rx_data[0] != 0x6) error_handler();
-
-  // try receiving again (since queue size is 1 this should be empty)
-  status = can_recv(hcan1, 0x4, &rx_header, rx_data, false);
-  if (status != CAN_EMPTY) error_handler();
+  if (status != CAN_RECV || rx_data[0] != 0x6) error_handler();
+  status = can_recv(hcan1, 0x4, &rx_header, rx_data, true);
+  if (status != CAN_RECV || rx_data[0] != 0x7) error_handler();
+  status = can_recv(hcan1, 0x4, &rx_header, rx_data, true);
+  if (status != CAN_RECV || rx_data[0] != 0x8) error_handler();
+  status = can_recv(hcan1, 0x4, &rx_header, rx_data, true);
+  if (status != CAN_RECV || rx_data[0] != 0x9) error_handler();
 
   success_handler();
 }
