@@ -143,6 +143,8 @@ static void task(void *pvParameters) {
   tx_data[0] = 0x09;
   if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
 
+  HAL_Delay(200);
+
   // receive the rest in order
   status = can_recv(hcan1, 0x4, &rx_header, rx_data, true);
   if (status != CAN_RECV || rx_data[0] != 0x6) error_handler();
@@ -185,7 +187,10 @@ int main(void) {
   hcan1->Init.AutoWakeUp = DISABLE;
   hcan1->Init.AutoRetransmission = ENABLE;
   hcan1->Init.ReceiveFifoLocked = DISABLE;
-  hcan1->Init.TransmitFifoPriority = DISABLE;
+
+  // To guarantee order, this must be enabled.
+  // Disable if order of transmission does not matter.
+  hcan1->Init.TransmitFifoPriority = ENABLE;
 
   // initialize CAN1
   if (can_init(hcan1, &sFilterConfig) != CAN_OK) error_handler();

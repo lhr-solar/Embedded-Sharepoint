@@ -551,20 +551,18 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
   if (HAL_CAN_GetTxMailboxesFreeLevel(handle) >= 1) {
     uint32_t mailbox;
     if (HAL_CAN_AddTxMessage(handle, header, data, &mailbox) != HAL_OK) {
-      // enable interrupts
+      // disable interrupts
       portEXIT_CRITICAL();
 
       return CAN_ERR;
     }
 
-    // enable interrupts
+    // disable interrupts
     portEXIT_CRITICAL();
   }
-
-
   // otherwise, put into send queue
   else {
-    // enable interrupts
+    // disable interrupts
     portEXIT_CRITICAL();
     
     tx_payload_t payload = {0};
@@ -672,7 +670,12 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
       for (int i = 0; i < can1_recv_entry_count; i++) {
         if (can1_recv_entries[i].id == payload.header.StdId) {
           if (can1_recv_entries[i].circular){
-            xQueueSendCircularBufferFromISR(can1_recv_entries[i].queue, &payload, &higherPriorityTaskWoken);
+            xQueueSendCircularBufferFromISR(
+              can1_recv_entries[i].queue, 
+              &payload, 
+              &higherPriorityTaskWoken, 
+              sizeof(rx_payload_t)
+            );
           } else {
             xQueueSendFromISR(can1_recv_entries[i].queue, &payload,
                             &higherPriorityTaskWoken);
@@ -688,7 +691,12 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
       for (int i = 0; i < can2_recv_entry_count; i++) {
         if (can2_recv_entries[i].id == payload.header.StdId) {
           if (can2_recv_entries[i].circular){
-            xQueueSendCircularBufferFromISR(can2_recv_entries[i].queue, &payload, &higherPriorityTaskWoken);
+            xQueueSendCircularBufferFromISR(
+              can2_recv_entries[i].queue, 
+              &payload, 
+              &higherPriorityTaskWoken, 
+              sizeof(rx_payload_t)
+            );
           } else {
             xQueueSendFromISR(can2_recv_entries[i].queue, &payload,
                             &higherPriorityTaskWoken);
@@ -705,7 +713,12 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
       for (int i = 0; i < can3_recv_entry_count; i++) {
         if (can3_recv_entries[i].id == payload.header.StdId) {
           if (can3_recv_entries[i].circular){
-            xQueueSendCircularBufferFromISR(can1_recv_entries[i].queue, &payload, &higherPriorityTaskWoken);
+            xQueueSendCircularBufferFromISR(
+              can3_recv_entries[i].queue, 
+              &payload, 
+              &higherPriorityTaskWoken, 
+              sizeof(rx_payload_t)
+            );
           } else {
             xQueueSendFromISR(can3_recv_entries[i].queue, &payload,
                             &higherPriorityTaskWoken);

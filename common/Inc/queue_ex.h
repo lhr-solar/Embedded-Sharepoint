@@ -1,26 +1,27 @@
 #ifndef QUEUE_EX_H
 #define QUEUE_EX_H
 
-#define xQueueSendCircularBuffer( xQueue, pvItemToQueue, xTicksToWait ) \
+#define xQueueSendCircularBuffer( xQueue, pvItemToQueue, xTicksToWait, QUEUE_ITEM_SIZE ) \
     do { \
-        portENTER_CRITICAL(); \
-        if( uxQueueSpacesAvailable( xQueue ) == 0 ) \
+        taskENTER_CRITICAL(); \
+        if (xQueueSend(xQueue, pvItemToQueue, 0) == errQUEUE_FULL) \
         { \
-            xQueueReceive( xQueue, NULL, 0 ); \
+            uint8_t tempBuffer[QUEUE_ITEM_SIZE]; \
+            xQueueReceive(xQueue, tempBuffer, 0); \
+            xQueueSend(xQueue, pvItemToQueue, xTicksToWait); \
         } \
-        xQueueSend( xQueue, pvItemToQueue, xTicksToWait ); \
-        portEXIT_CRITICAL(); \
-    } while(0);
+        taskEXIT_CRITICAL(); \
+    } while(0)
 
-#define xQueueSendCircularBufferFromISR( xQueue, pvItemToQueue, pxHigherPriorityTaskWoken ) \
+#define xQueueSendCircularBufferFromISR( xQueue, pvItemToQueue, pxHigherPriorityTaskWoken, QUEUE_ITEM_SIZE ) \
     do { \
-        portENTER_CRITICAL(); \
-        if( xQueueIsQueueFullFromISR( xQueue ) ) \
-        { \
-            xQueueReceiveFromISR( xQueue, NULL, 0 ); \
-        } \
-        xQueueSendFromISR( xQueue, pvItemToQueue, pxHigherPriorityTaskWoken ); \
-        portEXIT_CRITICAL(); \
-    } while(0);
+        UBaseType_t uxSavedInterruptStatus = taskENTER_CRITICAL_FROM_ISR(); \
+        if (xQueueSendFromISR(xQueue, pvItemToQueue, pxHigherPriorityTaskWoken) == errQUEUE_FULL) { \
+            uint8_t tempBuffer[QUEUE_ITEM_SIZE];    \
+            xQueueReceiveFromISR(xQueue, tempBuffer, NULL); \
+            xQueueSendFromISR(xQueue, pvItemToQueue, pxHigherPriorityTaskWoken);    \
+        }   \
+        taskEXIT_CRITICAL_FROM_ISR(uxSavedInterruptStatus); \
+    } while(0)
 
 #endif
