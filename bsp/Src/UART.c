@@ -32,7 +32,7 @@ static uint8_t uart4_tx_queue_storage[UART4_TX_QUEUE_SIZE * sizeof(tx_payload_t)
 // UART4 RX queue
 static QueueHandle_t uart4_rx_queue = NULL;
 static StaticQueue_t uart4_rx_queue_buffer;
-static uint8_t* uart4_rx_queue_storage = NULL;  // Will be allocated based on queue_size
+static uint8_t* uart4_rx_queue_storage = NULL;  // Will be allocated based on queue_size in uart_init
 
 
 #endif /* UART4 */
@@ -138,23 +138,24 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart) {
  * @return uart_status_t
  */
 uart_status_t uart_init(UART_HandleTypeDef* handle, uint8_t rx_queue_size) {
-    if (!rxQueue) {
-        return UART_ERR;
-    }
 
     #ifdef UART4
     if (handle->Instance == UART4) {
-        uart4_rx_queue = rxQueue;
-
-        uart4_send_semaphore = xSemaphoreCreateBinaryStatic(&uart4_send_semaphore_buffer);
-        xSemaphoreGive(uart4_send_semaphore);
-        uart4_recv_semaphore = xSemaphoreCreateBinaryStatic(&uart4_recv_semaphore_buffer);
-        xSemaphoreGive(uart4_recv_semaphore);
 
         uart4_tx_queue = xQueueCreateStatic(UART4_TX_QUEUE_SIZE, 
                                           sizeof(tx_payload_t), 
                                           uart4_tx_queue_storage, 
                                           &uart4_tx_queue_buffer);
+        
+        // Allocate static storage for RX queue
+        static uint8_t uart4_rx_storage[rx_queue_size * sizeof(rx_payload_t)];
+        uart4_rx_queue_storage = uart4_rx_storage;
+
+        // Create RX queue
+        uart4_rx_queue = xQueueCreateStatic(rx_queue_size,
+            sizeof(rx_payload_t),
+            uart4_rx_queue_storage,
+            &uart4_rx_queue_buffer);
     }
     #endif /* UART4 */
 
@@ -162,15 +163,20 @@ uart_status_t uart_init(UART_HandleTypeDef* handle, uint8_t rx_queue_size) {
     if(handle->Instance == UART5) {
         uart5_rx_queue = rxQueue;
 
-        uart5_send_semaphore = xSemaphoreCreateBinaryStatic(&uart5_send_semaphore_buffer);
-        xSemaphoreGive(uart5_send_semaphore);
-        uart5_recv_semaphore = xSemaphoreCreateBinaryStatic(&uart5_recv_semaphore_buffer);
-        xSemaphoreGive(uart5_recv_semaphore);
-
         uart5_tx_queue = xQueueCreateStatic(rx_queue_size, 
                                           sizeof(tx_payload_t), 
                                           uart5_tx_queue_storage, 
                                           &uart5_tx_queue_buffer);
+
+        // Allocate static storage for RX queue
+        static uint8_t uart5_rx_storage[rx_queue_size * sizeof(rx_payload_t)];
+        uart5_rx_queue_storage = uart5_rx_storage;
+
+        // Create RX queue
+        uart5_rx_queue = xQueueCreateStatic(rx_queue_size,
+                                          sizeof(rx_payload_t),
+                                          uart5_rx_queue_storage,
+                                          &uart5_rx_queue_buffer);
     }
     #endif /* UART5 */
     else {
@@ -382,7 +388,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
     BaseType_t higherPriorityTaskWoken = pdFALSE;
     static uint8_t tx_buffer[32];  // Buffer for collecting bytes to send
     uint8_t count = 0;
-    
+
     QueueHandle_t* tx_queue = NULL;
 
     if(huart->Instance == UART4) {
