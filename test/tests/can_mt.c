@@ -69,9 +69,9 @@ static void task3(void *pvParameters){
     can_status_t status;
 
     // receive what was sent to 0x1
-    status = can_recv(hcan1, 0x1, &rx_header, rx_data, true);
+    status = can_recv(hcan1, 0x1, &rx_header, rx_data, portMAX_DELAY);
     if (status != CAN_RECV && rx_data[0] != 0x1) error_handler();
-    status = can_recv(hcan1, 0x1, &rx_header, rx_data, true);
+    status = can_recv(hcan1, 0x1, &rx_header, rx_data, portMAX_DELAY);
     if (status != CAN_RECV && rx_data[0] != 0x2) error_handler();
 
     vTaskDelay(200);

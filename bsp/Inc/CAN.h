@@ -67,7 +67,7 @@ can_status_t can_deinit(CAN_HandleTypeDef* handle);
 can_status_t can_start(CAN_HandleTypeDef* handle);
 can_status_t can_stop(CAN_HandleTypeDef* handle);
 can_status_t can_send(CAN_HandleTypeDef* handle, const CAN_TxHeaderTypeDef* header, const uint8_t data[], bool blocking);
-can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id, CAN_RxHeaderTypeDef* header, uint8_t data[], bool blocking);
+can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id, CAN_RxHeaderTypeDef* header, uint8_t data[], TickType_t delay_ticks);
 
 #endif /* CAN_UNDEFINED */
 #endif /* CAN_H */

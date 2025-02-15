@@ -77,46 +77,46 @@ static void task(void *pvParameters) {
   can_status_t status;
 
   // CAN1
-  status = can_recv(hcan1, 0x1, &rx_header, rx_data, true);
+  status = can_recv(hcan1, 0x1, &rx_header, rx_data, portMAX_DELAY);
   if (status != CAN_RECV && rx_data[0] != 0x1) error_handler();
-  status = can_recv(hcan1, 0x1, &rx_header, rx_data, true);
+  status = can_recv(hcan1, 0x1, &rx_header, rx_data, portMAX_DELAY);
   if (status != CAN_RECV && rx_data[0] != 0x2) error_handler();
 
   #ifdef CAN2
   // CAN2
-  status = can_recv(hcan2, 0x1, &rx_header, rx_data, true);
+  status = can_recv(hcan2, 0x1, &rx_header, rx_data, portMAX_DELAY);
   if (status != CAN_RECV && rx_data[0] != 0x1) error_handler();
-  status = can_recv(hcan2, 0x1, &rx_header, rx_data, true);
+  status = can_recv(hcan2, 0x1, &rx_header, rx_data, portMAX_DELAY);
   if (status != CAN_RECV && rx_data[0] != 0x2) error_handler();
   #endif /* CAN2 */
 
   // make sure we don't receive from wrong ID and nonblocking works
   // CAN1
-  status = can_recv(hcan1, 0x1, &rx_header, rx_data, false);
+  status = can_recv(hcan1, 0x1, &rx_header, rx_data, 0);
   if (status != CAN_EMPTY) error_handler();
-  status = can_recv(hcan1, 0x1, &rx_header, rx_data, false);
+  status = can_recv(hcan1, 0x1, &rx_header, rx_data, 0);
   if (status != CAN_EMPTY) error_handler();
 
   #ifdef CAN2
   // CAN2
-  status = can_recv(hcan2, 0x1, &rx_header, rx_data, false);
+  status = can_recv(hcan2, 0x1, &rx_header, rx_data, 0);
   if (status != CAN_EMPTY) error_handler();
-  status = can_recv(hcan2, 0x1, &rx_header, rx_data, false);
+  status = can_recv(hcan2, 0x1, &rx_header, rx_data, 0);
   if (status != CAN_EMPTY) error_handler();
   #endif /* CAN2 */
 
   // receive the rest
   // CAN1
-  status = can_recv(hcan1, 0x3, &rx_header, rx_data, true);
+  status = can_recv(hcan1, 0x3, &rx_header, rx_data, portMAX_DELAY);
   if (status != CAN_RECV && rx_data[0] != 0x3) error_handler();
-  status = can_recv(hcan1, 0x3, &rx_header, rx_data, true);
+  status = can_recv(hcan1, 0x3, &rx_header, rx_data, portMAX_DELAY);
   if (status != CAN_RECV && rx_data[0] != 0x4) error_handler();
 
   #ifdef CAN2
   // CAN2
-  status = can_recv(hcan2, 0x3, &rx_header, rx_data, true);
+  status = can_recv(hcan2, 0x3, &rx_header, rx_data, portMAX_DELAY);
   if (status != CAN_RECV && rx_data[0] != 0x3) error_handler();
-  status = can_recv(hcan2, 0x3, &rx_header, rx_data, true);
+  status = can_recv(hcan2, 0x3, &rx_header, rx_data, portMAX_DELAY);
   if (status != CAN_RECV && rx_data[0] != 0x4) error_handler();
   #endif /* CAN2 */
 
