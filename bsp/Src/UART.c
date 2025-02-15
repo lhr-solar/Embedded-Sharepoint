@@ -13,12 +13,16 @@ typedef struct {
 } rx_payload_t;
 
 
-
 #ifdef UART4
+// fallback UART4 TX queue size
 #ifndef UART4_TX_QUEUE_SIZE
-#define UART4_TX_QUEUE_SIZE 128
+#define UART4_TX_QUEUE_SIZE (10)
 #endif
 
+// fallback UART5 RX queue size
+#ifndef UART5_RX_QUEUE_SIZE
+#define UART5_RX_QUEUE_SIZE (10)
+#endif
 //UART4 handle
 static UART_HandleTypeDef huart4_ = {.Instance = UART4};
 UART_HandleTypeDef* huart4 = &huart4_;
@@ -32,7 +36,7 @@ static uint8_t uart4_tx_queue_storage[UART4_TX_QUEUE_SIZE * sizeof(tx_payload_t)
 // UART4 RX queue
 static QueueHandle_t uart4_rx_queue = NULL;
 static StaticQueue_t uart4_rx_queue_buffer;
-static uint8_t* uart4_rx_queue_storage = NULL;  // Will be allocated based on queue_size in uart_init
+static uint8_t* uart4_rx_queue_storage[UART5_RX_QUEUE_SIZE * sizeof(rx_payload_t)];  // Will be allocated based on queue_size in uart_init
 
 
 #endif /* UART4 */
@@ -50,12 +54,12 @@ UART_HandleTypeDef* huart5 = &huart5_;
 // UART5 TX queue
 static QueueHandle_t uart5_tx_queue = NULL;
 static StaticQueue_t uart5_tx_queue_buffer;
-static uint8_t uart5_tx_queue_storage[UART5_TX_QUEUE_SIZE];
+static uint8_t uart5_tx_queue_storage[UART5_TX_QUEUE_SIZE * sizeof(tx_payload_t)];
 
 // UART5 RX queue
 static QueueHandle_t uart5_rx_queue = NULL;
 static StaticQueue_t uart5_rx_queue_buffer;
-static uint8_t* uart5_rx_queue_storage = NULL;  // Will be allocated based on queue_size
+static uint8_t uart5_rx_queue_storage[UART5_RX_QUEUE_SIZE * sizeof(rx_payload_t)];  // Will be allocated based on queue_size
 
 #endif /* UART5 */
 
@@ -137,7 +141,7 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart) {
  * @param rxQueue pointer to the user-provided RX queue
  * @return uart_status_t
  */
-uart_status_t uart_init(UART_HandleTypeDef* handle, uint8_t rx_queue_size) {
+uart_status_t uart_init(UART_HandleTypeDef* handle) {
 
     #ifdef UART4
     if (handle->Instance == UART4) {
