@@ -146,46 +146,37 @@ uart_status_t uart_init(UART_HandleTypeDef* handle) {
     #ifdef UART4
     if (handle->Instance == UART4) {
 
+        // Create TX queue
         uart4_tx_queue = xQueueCreateStatic(UART4_TX_QUEUE_SIZE, 
-                                          sizeof(tx_payload_t), 
-                                          uart4_tx_queue_storage, 
-                                          &uart4_tx_queue_buffer);
+                                            sizeof(tx_payload_t), 
+                                            uart4_tx_queue_storage, 
+                                            &uart4_tx_queue_buffer);
         
-        // Allocate static storage for RX queue
-        static uint8_t uart4_rx_storage[rx_queue_size * sizeof(rx_payload_t)];
-        uart4_rx_queue_storage = uart4_rx_storage;
-
+        
         // Create RX queue
-        uart4_rx_queue = xQueueCreateStatic(rx_queue_size,
-            sizeof(rx_payload_t),
-            uart4_rx_queue_storage,
-            &uart4_rx_queue_buffer);
+        uart4_rx_queue = xQueueCreateStatic(UARRT4_RX_QUEUE_SIZE,
+                                            sizeof(rx_payload_t),
+                                            uart4_rx_queue_storage,
+                                            &uart4_rx_queue_buffer);
     }
     #endif /* UART4 */
 
     #ifdef UART5
     if(handle->Instance == UART5) {
-        uart5_rx_queue = rxQueue;
 
-        uart5_tx_queue = xQueueCreateStatic(rx_queue_size, 
+        // Allocate static storage for TX queue
+        uart5_tx_queue = xQueueCreateStatic(UART5_RX_QUEUE_SIZE, 
                                           sizeof(tx_payload_t), 
                                           uart5_tx_queue_storage, 
                                           &uart5_tx_queue_buffer);
 
-        // Allocate static storage for RX queue
-        static uint8_t uart5_rx_storage[rx_queue_size * sizeof(rx_payload_t)];
-        uart5_rx_queue_storage = uart5_rx_storage;
-
         // Create RX queue
-        uart5_rx_queue = xQueueCreateStatic(rx_queue_size,
+        uart5_rx_queue = xQueueCreateStatic(UART5_RX_QUEUE_SIZE,
                                           sizeof(rx_payload_t),
                                           uart5_rx_queue_storage,
                                           &uart5_rx_queue_buffer);
     }
     #endif /* UART5 */
-    else {
-        return UART_ERR;
-    }
     
 
     // init HAL
