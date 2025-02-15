@@ -36,7 +36,7 @@ static uint8_t uart4_tx_queue_storage[UART4_TX_QUEUE_SIZE * sizeof(tx_payload_t)
 // UART4 RX queue
 static QueueHandle_t uart4_rx_queue = NULL;
 static StaticQueue_t uart4_rx_queue_buffer;
-static uint8_t* uart4_rx_queue_storage[UART4_RX_QUEUE_SIZE * sizeof(rx_payload_t)];  // Will be allocated based on queue_size in uart_init
+static uint8_t uart4_rx_queue_storage[UART4_RX_QUEUE_SIZE * sizeof(rx_payload_t)];  // Will be allocated based on queue_size in uart_init
 
 
 #endif /* UART4 */
@@ -212,7 +212,7 @@ uart_status_t uart_deinit(UART_HandleTypeDef* handle) {
     HAL_UART_Abort(handle);
 
     // Deinitialize HAL
-    if (HAL_UART_DeInit() != HAL_OK) {
+    if (HAL_UART_DeInit(handle) != HAL_OK) {
         return UART_ERR; 
     }
 
@@ -361,12 +361,6 @@ uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t lengt
     #endif /* UART5 */
 
     uart_status_t status = UART_RECV;
-
-    for (uint8_t i = 0; i < length; i++) {
-        if (xQueueReceive(rx_queue, &data[i], timeout) != pdTRUE) {
-            return blocking ? UART_ERR : UART_EMPTY;
-        }
-    }
 
     // Receive all requested bytes
     for (uint8_t i = 0; i < length; i++) {
