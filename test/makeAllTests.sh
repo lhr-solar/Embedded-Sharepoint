@@ -11,7 +11,7 @@ for port in "${port_list[@]}"; do
         test_name="${tests_dir#tests/}"
         test_name="${test_name%.c}"
         
-        # Skip CAN tests for f401
+        # Skip the "can" test for stm32f401*e or stm32f401*c
         if [[ "$port" =~ ^stm32f401.*[ec]$ ]] && ([[ "$test_name" == "can" ]] || [[ "$test_name" == "can_mt" ]]); then
             echo "Skipping the CAN test for $port because it does not support CAN"
             continue
@@ -24,7 +24,6 @@ for port in "${port_list[@]}"; do
         fi
 
         echo "Compiling the test - $test_name for $port"
-        
         if ! make TEST="$test_name" PROJECT_TARGET="$port" -j; then
             echo "Errors occurred while compiling $test_name.c using $port"
             exit 1
