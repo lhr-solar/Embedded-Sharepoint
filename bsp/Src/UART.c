@@ -19,9 +19,9 @@ typedef struct {
 #define UART4_TX_QUEUE_SIZE (10)
 #endif
 
-// fallback UART5 RX queue size
-#ifndef UART5_RX_QUEUE_SIZE
-#define UART5_RX_QUEUE_SIZE (10)
+// fallback UART4 RX queue size
+#ifndef UART4_RX_QUEUE_SIZE
+#define UART4_RX_QUEUE_SIZE (10)
 #endif
 //UART4 handle
 static UART_HandleTypeDef huart4_ = {.Instance = UART4};
@@ -36,15 +36,21 @@ static uint8_t uart4_tx_queue_storage[UART4_TX_QUEUE_SIZE * sizeof(tx_payload_t)
 // UART4 RX queue
 static QueueHandle_t uart4_rx_queue = NULL;
 static StaticQueue_t uart4_rx_queue_buffer;
-static uint8_t* uart4_rx_queue_storage[UART5_RX_QUEUE_SIZE * sizeof(rx_payload_t)];  // Will be allocated based on queue_size in uart_init
+static uint8_t* uart4_rx_queue_storage[UART4_RX_QUEUE_SIZE * sizeof(rx_payload_t)];  // Will be allocated based on queue_size in uart_init
 
 
 #endif /* UART4 */
 
 
 #ifdef UART5
+// fallback UART5 TX queue size
 #ifndef UART5_TX_QUEUE_SIZE
-#define UART5_TX_QUEUE_SIZE 128
+#define UART5_TX_QUEUE_SIZE (10)
+#endif
+
+// fallback UART5 RX queue size
+#ifndef UART5_RX_QUEUE_SIZE
+#define UART5_RX_QUEUE_SIZE (10)
 #endif
 
 // UART5 handle
@@ -165,7 +171,7 @@ uart_status_t uart_init(UART_HandleTypeDef* handle) {
     if(handle->Instance == UART5) {
 
         // Allocate static storage for TX queue
-        uart5_tx_queue = xQueueCreateStatic(UART5_RX_QUEUE_SIZE, 
+        uart5_tx_queue = xQueueCreateStatic(UART5_TX_QUEUE_SIZE, 
                                           sizeof(tx_payload_t), 
                                           uart5_tx_queue_storage, 
                                           &uart5_tx_queue_buffer);
@@ -257,7 +263,7 @@ static uint8_t uart4_tx_buffer[UART4_TX_QUEUE_SIZE];
 
 #ifdef UART5
 // static buffer for UART5 TX
-static uint8_t uart5_tx_buffer[UART5_TX_QUEUE_SIZE];
+static uint8_t uart5_tx_buffer[UART5_TX_QUEUE_SIZE]; // make buffer size same as queue size 
 #endif
 uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t length, bool blocking) {
     if (length == 0) {
@@ -366,10 +372,10 @@ uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t lengt
     for (uint8_t i = 0; i < length; i++) {
         if (blocking) {
             // if blocking, retry on empty
-            while (xQueueReceive(rx_queue, &data[i], 0) == errQUEUE_EMPTY) {} // will block until data is received
+            while (xQueueReceive(rx_queue, &data[i], portMAX_DELAY) == errQUEUE_EMPTY) {} // will block until data is received
         } else {
             // otherwise, finish on empty
-            if (xQueueReceive(rx_queue, &data[i], 0) == errQUEUE_EMPTY) {
+            if (xQueueReceive(rx_queue, &data[i], portMAX_DELAY) == errQUEUE_EMPTY) {
                 return UART_EMPTY;
             }
         }
