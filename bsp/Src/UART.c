@@ -154,7 +154,7 @@ uart_status_t uart_init(UART_HandleTypeDef* handle) {
         
         
         // Create RX queue
-        uart4_rx_queue = xQueueCreateStatic(UARRT4_RX_QUEUE_SIZE,
+        uart4_rx_queue = xQueueCreateStatic(UART4_RX_QUEUE_SIZE,
                                             sizeof(rx_payload_t),
                                             uart4_rx_queue_storage,
                                             &uart4_rx_queue_buffer);
