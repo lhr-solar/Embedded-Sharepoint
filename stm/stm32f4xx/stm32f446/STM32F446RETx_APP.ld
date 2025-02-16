@@ -11,7 +11,7 @@ _Min_Heap_Size = 0x0;      /* we don't use the heap  */
 _Min_Stack_Size = 0x400;   /* default amount of stack (change if necessary) */
 
 MEMORY{
-    RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 128K
+    RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 128K-16
     BOOT (rx) : ORIGIN = 0x08000000, LENGTH = 128K
     FLASH (rx) : ORIGIN = 0x08020000, LENGTH = 384K
 }

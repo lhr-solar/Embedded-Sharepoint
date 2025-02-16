@@ -27,9 +27,9 @@ NC='\033[0m' # No Color
 source "$CFG_FILE"
 
 MCU_NAME_CAP=$(echo "$MCU_NAME" | tr '[:lower:]' '[:upper:]')
-BOOT_SIZE=128
-APP_SIZE=$(($TOTAL_FLASH_SIZE - $BOOT_SIZE))
+BOOT_SIZE=128 #Kb
 APP_OFFSET=$(printf "0x0%X" $((0x08000000 + ($BOOT_SIZE * 1024))))
+APP_SIZE=$(($TOTAL_FLASH_SIZE - $BOOT_SIZE))
 
 LINKER_TEMPLATE="LINKER_TEMPLATE.ld"
 

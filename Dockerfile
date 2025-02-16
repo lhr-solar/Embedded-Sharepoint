@@ -40,6 +40,7 @@ RUN apt-get install -y --no-install-recommends \
       gnupg \
       dirmngr \
       bear \
+      picocom \
       ca-certificates \
       openssh-client \
       python3.10 \
@@ -52,7 +53,8 @@ RUN apt-get install -y --no-install-recommends \
 # Install Python
 # -----------------------------------------------------------------------------
 RUN pip install --no-cache-dir \
-    mkdocs
+    mkdocs \
+    pyserial
 
 FROM dev AS toolchain-cache
 # -----------------------------------------------------------------------------

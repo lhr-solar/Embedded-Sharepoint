@@ -84,11 +84,6 @@ startapp:
     /* Set the stack pointer to _estack */
     ldr sp, =_estack
 
-    @ /* Jump to the application's entry point at _app_main */
-    @ ldr r0, =_app_main
-    @ blx r0
-    @ bx lr
-
     bl SystemInit
     
     /* Trigger a software reset */

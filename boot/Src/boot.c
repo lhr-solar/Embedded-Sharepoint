@@ -7,6 +7,9 @@
 #include "stm32xx_hal.h"
 #include "cmsis_gcc.h"
 
+#define SHARED_MEM_LEN (16)
+static uint8_t* shared_mem = (uint8_t*)0x20020010;
+
 #define SIZEOF(x) (sizeof(x)/sizeof(x[0]))
 
 #define STX (0x02)
@@ -63,7 +66,7 @@ static USART_HandleTypeDef USART1_Handle = {
 };
 
 static inline void startapp_with_err(error_code_t ec){
-    // TODO: record/report the error to the user?
+    shared_mem[0] = ec;
     boot_deinit();
     startapp();
 }
@@ -321,6 +324,7 @@ Data:
 DATA (X bytes) RX
 ACK (1 byte) TX
 
+*if required:*
 Response Header:
 DATA_SIZE (1 byte) TX
 ACK (1 byte) RX
@@ -345,40 +349,12 @@ void boot(){
 
     // Locked into the bootloader
     while(1){
-        // Get STX
-        if(uart_stx() != BLDR_OK){
+        // Process command & execute action
+        error_code_t err = uart_cmd();
+        if(err != BLDR_OK){
             boot_deinit();
-            startapp_with_err(BLDR_FAIL_STX);
+            startapp_with_err(err);
         }
-
-        // Get Header
-        uint8_t cmd, data_size;
-        uint32_t address;
-        if(uart_header(&cmd, &data_size, &address) != BLDR_OK){
-            boot_deinit();
-            startapp_with_err(BLDR_FAIL_STX);
-        }
-
-        // Get Data
-        uint8_t data[data_size];
-        if(uart_data(data, data_size) != BLDR_OK){
-            boot_deinit();
-            startapp_with_err(BLDR_FAIL_STX);
-        }
-
-        // Execute command
-        flash_cmd_t flash_cmd = {
-            .id = cmd,
-            .data_size = data_size,
-            .address = address
-        };
-
-        volatile int a = 2;
-
-        // if(exec_flash_command(data, &flash_cmd) != BLDR_OK){
-        //     boot_deinit();
-        //     startapp_with_err(BLDR_FAIL_STX);
-        // }
     }
     
     HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET);

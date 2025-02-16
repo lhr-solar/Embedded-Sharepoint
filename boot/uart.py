@@ -11,7 +11,7 @@ class Command(Enum):
     FLASH_ERASE = 3
     FLASH_MASS_ERASE = 4
 
-ser = serial.Serial("/dev/ttyACM0", 9600, timeout=0.5, parity=serial.PARITY_EVEN)
+ser = serial.Serial("/dev/ttyACM0", 9600, timeout=None, parity=serial.PARITY_EVEN)
 print(ser.name)
 
 def pend_for_ack(timeout=5):
@@ -41,21 +41,55 @@ def send_cmd(cmd, size, addr, data):
 
     pend_for_ack()
 
-    # WRITE, 10 bytes, address 0x08020000
-    print("Sending WRITE command...")
-    print("\tSize: 10 bytes")
-    print("\tAddress: 0x08020000")
-    ser.write(b'\x00\x0A\x08\x02\x00\x00')
+    # COMMAND, SIZE bytes, ADDRESS addr
+    print(f"Sending {cmd.name} command...")
+    print(f"\tSize: {size} bytes")
+    print(f"\tAddress: 0x{addr:08X}")
+
+    ser.write(Command.FLASH_WRITE.value.to_bytes(1, byteorder='big'))
+    ser.write(size.to_bytes(1, byteorder='big'))
+    ser.write(addr.to_bytes(4, byteorder='big'))
 
     # Read ACK
     pend_for_ack()
 
-    # Send 10 bytes of data
+    # Send SIZE bytes of data
     print("Sending data...")
-    print("\tData: 0x00 0x01 0x02 0x03 0x04 0x05 0x06 0x07 0x08 0x09")
-    ser.write(b'\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09')
+    print(f"\tData: {[f'0x{byte:02X}' for byte in data]}")
+    ser.write(data)
 
     # Read ACK
     pend_for_ack()
 
-boot()
+    # If command is not FLASH_READ_SINGLE and FLASH_READ_BUF, exit
+    if cmd != Command.FLASH_READ_SINGLE and cmd != Command.FLASH_READ_BUF: return
+    
+    # Read response header
+    print("Reading response header...")
+    read_data_size = int.from_bytes(ser.read(1), byteorder='big')
+    print(f"\tData size: {read_data_size} bytes")
+
+    # Send ACK
+    print("Sending ACK...")
+    ser.write(b'\x06')
+
+    # Read response data
+    print("Reading response data...")
+    response_data = ser.read(read_data_size)
+    print(f"\tData: {[f'0x{byte:02X}' for byte in response_data]}")
+
+    # Send ACK
+    print("Sending ACK...")
+    ser.write(b'\x06')
+
+    return response_data
+
+def boot():
+    init()
+    send_cmd(Command.FLASH_WRITE, 10, 0x08020000, b'\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09')
+    resp = send_cmd(Command.FLASH_READ_BUF, 10, 0x08020000, b'\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09')
+
+    print(f"Response: {[f'0x{byte:02X}' for byte in resp]}")
+
+if __name__ == "__main__":
+    boot()

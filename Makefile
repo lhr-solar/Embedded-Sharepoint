@@ -269,7 +269,7 @@ clean:
 LD_CFG = stm/$(SERIES_GENERIC)/$(SERIES_LINE)/$(SERIES_LINE).cfg
 
 # Fixed at 128Kb
-BOOT_SIZE ?= 128 
+BOOT_SIZE ?= 128
 FLASH_ADDRESS ?= $(shell echo $$((0x08000000 + $(BOOT_SIZE) * 1024)))
 
 FLASH_FILE = $(shell find $(BUILD_DIR) -name 'stm*.bin' -exec basename {} \;)
