@@ -46,29 +46,29 @@ static void task(void *pvParameters) {
   uint8_t tx_data[8] = {0};
   tx_data[0] = 0x01;
   tx_data[1] = 0x00;
-  if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+  if (can_send(hcan1, &tx_header, tx_data, portMAX_DELAY) != CAN_SENT) error_handler();
   #ifdef CAN2
-  if (can_send(hcan2, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+  if (can_send(hcan2, &tx_header, tx_data, portMAX_DELAY) != CAN_SENT) error_handler();
   #endif /* CAN2 */
 
   tx_data[0] = 0x02;
-  if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+  if (can_send(hcan1, &tx_header, tx_data, portMAX_DELAY) != CAN_SENT) error_handler();
   #ifdef CAN2
-  if (can_send(hcan2, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+  if (can_send(hcan2, &tx_header, tx_data, portMAX_DELAY) != CAN_SENT) error_handler();
   #endif /* CAN2 */
 
   // send two payloads to 0x3
   tx_data[0] = 0x03;
   tx_header.StdId = 0x003;
-  if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+  if (can_send(hcan1, &tx_header, tx_data, portMAX_DELAY) != CAN_SENT) error_handler();
   #ifdef CAN2
-  if (can_send(hcan2, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+  if (can_send(hcan2, &tx_header, tx_data, portMAX_DELAY) != CAN_SENT) error_handler();
   #endif /* CAN2 */
 
   tx_data[0] = 0x04;
-  if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+  if (can_send(hcan1, &tx_header, tx_data, portMAX_DELAY) != CAN_SENT) error_handler();
   #ifdef CAN2
-  if (can_send(hcan2, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+  if (can_send(hcan2, &tx_header, tx_data, portMAX_DELAY) != CAN_SENT) error_handler();
   #endif /* CAN2 */
 
   // receive what was sent to 0x1

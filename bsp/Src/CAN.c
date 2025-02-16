@@ -521,9 +521,7 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
 
 can_status_t can_send(CAN_HandleTypeDef* handle,
                       const CAN_TxHeaderTypeDef* header, const uint8_t data[],
-                      bool blocking) {
-  // determine timeout
-  TickType_t timeout = (blocking) ? portMAX_DELAY : 0;
+                      TickType_t delay_ticks) {
 
   // disable interrupts (do not want race conditions
   // on shared resource (mailbox) between threads and
@@ -558,7 +556,7 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
 
     // CAN1
     if (handle->Instance == CAN1) {
-      if (xQueueSend(can1_send_queue, &payload, timeout) != pdTRUE) {
+      if (xQueueSend(can1_send_queue, &payload, delay_ticks) != pdTRUE) {
         return CAN_ERR;
       }
     }
@@ -566,7 +564,7 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
     // CAN2
     #ifdef CAN2
     else if (handle->Instance == CAN2) {
-      if (xQueueSend(can2_send_queue, &payload, timeout) != pdTRUE) {
+      if (xQueueSend(can2_send_queue, &payload, delay_ticks) != pdTRUE) {
         return CAN_ERR;
       }
     }
@@ -575,7 +573,7 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
     // CAN3
     #ifdef CAN3
     else if (handle->Instance == CAN3) {
-      if (xQueueSend(can3_send_queue, &payload, timeout) != pdTRUE) {
+      if (xQueueSend(can3_send_queue, &payload, delay_ticks) != pdTRUE) {
         return CAN_ERR;
       }
     }
