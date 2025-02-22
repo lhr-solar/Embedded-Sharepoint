@@ -414,7 +414,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 
 // Receive Callback occurs after a receive is complete
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-    QueueHandle_t* rx_queue = NULL;
+    QueueHandle_t rx_queue = NULL;
     #ifdef UART4
     if(huart->Instance == UART4) {
         rx_queue = uart4_rx_queue;
