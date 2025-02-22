@@ -312,7 +312,7 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
     // put into send queues
     for (uint8_t i = 0; i < length; i++) {
         if (xQueueSend(*tx_queue, &data[i], delay_ticks) != pdTRUE){
-            return UART_ERR
+            return UART_ERR;
         }  //delay_ticks: 0 = no wait, portMAX_DELAY = wait until space is available
     }
     
