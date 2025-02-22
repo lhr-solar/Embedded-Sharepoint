@@ -38,8 +38,8 @@ extern UART_HandleTypeDef* huart5;
 // Function prototypes with consistent parameters and return types
 uart_status_t uart_init(UART_HandleTypeDef* handle); // Create queue at compile time, User passes in the size of the queue they want
 uart_status_t uart_deinit(UART_HandleTypeDef* handle);
-uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t length, bool blocking);
-uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t length, bool blocking);
+uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t length, TickType_t delay_ticks);
+uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t length, TickType_t delay_ticks);
 
 #endif /* UART_UNDEFINED */
 #endif /* UART_H_ */

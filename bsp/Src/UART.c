@@ -3,15 +3,21 @@
 // Define the size of the data to be transmitted
 // Currently not used, as we send uint8_t directly
 // may need to be configured for support for packets less more than 8 bits
-#define DATA_SIZE (1) // 1 byte of data
+#ifndef DATA_SIZE
+#define DATA_SIZE (1) // fallback to 1 byte
+#endif
+
 typedef struct {
     uint8_t data[DATA_SIZE]; // data to be transmitted, 1 byte
 } tx_payload_t;
+
+uint16_t sizeof_tx_payload_t = sizeof(tx_payload_t); // Precompute size of payload
 
 typedef struct {
     uint8_t data[DATA_SIZE]; // data received, 1 byte
 } rx_payload_t;
 
+uint16_t sizeof_rx_payload_t = sizeof(rx_payload_t);
 
 #ifdef UART4
 // fallback UART4 TX queue size
@@ -154,14 +160,14 @@ uart_status_t uart_init(UART_HandleTypeDef* handle) {
 
         // Create TX queue
         uart4_tx_queue = xQueueCreateStatic(UART4_TX_QUEUE_SIZE, 
-                                            sizeof(tx_payload_t), 
+                                            sizeof(sizeof_tx_payload_t), 
                                             uart4_tx_queue_storage, 
                                             &uart4_tx_queue_buffer);
         
         
         // Create RX queue
         uart4_rx_queue = xQueueCreateStatic(UART4_RX_QUEUE_SIZE,
-                                            sizeof(rx_payload_t),
+                                            sizeof(sizeof_rx_payload_t),
                                             uart4_rx_queue_storage,
                                             &uart4_rx_queue_buffer);
     }
@@ -172,13 +178,13 @@ uart_status_t uart_init(UART_HandleTypeDef* handle) {
 
         // Allocate static storage for TX queue
         uart5_tx_queue = xQueueCreateStatic(UART5_TX_QUEUE_SIZE, 
-                                          sizeof(tx_payload_t), 
+                                          sizeof(sizeof_tx_payload_t), 
                                           uart5_tx_queue_storage, 
                                           &uart5_tx_queue_buffer);
 
         // Create RX queue
         uart5_rx_queue = xQueueCreateStatic(UART5_RX_QUEUE_SIZE,
-                                          sizeof(rx_payload_t),
+                                          sizeof(sizeof_rx_payload_t),
                                           uart5_rx_queue_storage,
                                           &uart5_rx_queue_buffer);
     }
@@ -253,7 +259,7 @@ uart_status_t uart_deinit(UART_HandleTypeDef* handle) {
  * @brief Transmits data over UART. If transmission is in progress, data will be queued in internal TX queue. 
  * @param data pointer to the data buffer that will be written/transmitted
  * @param length of the buffer that will be written/transmitted
- * @param blocking if true, function will block until data is sent
+ * @param delay_ticks number of ticks to wait for data to be transmitted
  * @return uart_status_t
  */
 #ifdef UART4
@@ -265,12 +271,11 @@ static uint8_t uart4_tx_buffer[UART4_TX_QUEUE_SIZE];
 // static buffer for UART5 TX
 static uint8_t uart5_tx_buffer[UART5_TX_QUEUE_SIZE]; // make buffer size same as queue size 
 #endif
-uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t length, bool blocking) {
+uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t length, TickType_t delay_ticks) {
     if (length == 0) {
         return UART_OK;
     }
 
-    TickType_t timeout = blocking ? portMAX_DELAY : 0;
     QueueHandle_t* tx_queue = NULL;
     uint8_t* tx_buffer = NULL;
 
@@ -292,7 +297,7 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
     // Try direct transmission if possible
     portENTER_CRITICAL();
     if (HAL_UART_GetState(handle) == HAL_UART_STATE_READY && 
-        uxQueueMessagesWaiting(*tx_queue) == 0) {
+        tx_queue != NULL && uxQueueMessagesWaiting (*tx_queue) == 0 ) {
         // Copy data to static buffer
         memcpy(tx_buffer, data, length);
         if (HAL_UART_Transmit_IT(handle, tx_buffer, length) != HAL_OK) {
@@ -303,19 +308,14 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
     }
     portEXIT_CRITICAL();
 
-    // Queue the data
-    portENTER_CRITICAL();
-    if (uxQueueSpacesAvailable(*tx_queue) < length) { // check if there is enough space in the queue
-        portEXIT_CRITICAL();
-        status = UART_ERR;
-        goto exit;
-    }
 
-    // Now we know we have enough space for all the data
+    // put into send queues
     for (uint8_t i = 0; i < length; i++) {
-        xQueueSend(*tx_queue, &data[i], 0);  // Use 0 timeout since we know we have space
+        if (xQueueSend(*tx_queue, &data[i], delay_ticks) != pdTRUE){
+            return UART_ERR
+        }  //delay_ticks: 0 = no wait, portMAX_DELAY = wait until space is available
     }
-    portEXIT_CRITICAL();
+    
 
     // Start transmission if needed
     portENTER_CRITICAL();
@@ -340,10 +340,10 @@ exit:
  * @param huart pointer to the UART handle
  * @param data pointer to the data buffer that will be read into
  * @param length of the buffer that will be read
- * @param blocking if true, function will block until data is received
+ * @param delay_ticks number of ticks to wait for data to be received
  * @return uart_status_t
  */
-uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t length, bool blocking) {
+uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t length, TickType_t delay_ticks) {
     if (!data || length == 0) {
         return UART_ERR;
     }
@@ -364,16 +364,11 @@ uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t lengt
 
     // Receive all requested bytes
     for (uint8_t i = 0; i < length; i++) {
-        if (blocking) {
-            // if blocking, retry on empty
-            while (xQueueReceive(rx_queue, &data[i], portMAX_DELAY) == errQUEUE_EMPTY) {} // will block until data is received
-        } else {
-            // otherwise, finish on empty
-            if (xQueueReceive(rx_queue, &data[i], portMAX_DELAY) == errQUEUE_EMPTY) {
-                return UART_EMPTY;
-            }
-        }
+        if (xQueueReceive(rx_queue, &data[i], delay_ticks) == errQUEUE_EMPTY) {
+            return UART_EMPTY;
+        } 
     }
+    
 
     return status;
 }
@@ -381,16 +376,18 @@ uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t lengt
 // Transmit Callback occurs after a transmission if complete (depending on how huart is configure)
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
     BaseType_t higherPriorityTaskWoken = pdFALSE;
-    static uint8_t tx_buffer[32];  // Buffer for collecting bytes to send
+    uint8_t tx_buffer[32];  // Buffer for collecting bytes to send
     uint8_t count = 0;
 
     QueueHandle_t* tx_queue = NULL;
 
+    #ifdef UART4
     if(huart->Instance == UART4) {
         tx_queue = &uart4_tx_queue;
     }
+    #endif /* UART4 */
     #ifdef UART5
-    else if(huart->Instance == UART5) {
+    if(huart->Instance == UART5) {
         tx_queue = &uart5_tx_queue;
     }
     #endif /* UART5 */
