@@ -1,4 +1,5 @@
 #include "boot.h"
+#include "boot_config.h"
 
 #include "flash.h"
 
@@ -7,8 +8,9 @@
 #include "stm32xx_hal.h"
 #include "cmsis_gcc.h"
 
-#define SHARED_MEM_LEN (16)
-static uint8_t* shared_mem = (uint8_t*)0x20020010;
+#define SHARED_MEM_LEN (1020)
+extern uint8_t _estack;
+uint8_t* shared_mem;
 
 #define SIZEOF(x) (sizeof(x)/sizeof(x[0]))
 
@@ -39,7 +41,7 @@ static GPIO_InitTypeDef GPIO_InitCfg = {
     .Speed = GPIO_SPEED_FREQ_LOW
 };
 
-static GPIO_InitTypeDef USART1_GPIO_TXCfg = {
+static GPIO_InitTypeDef USART2_GPIO_TxCfg = {
     .Pin = USART2_TX_PIN,
     .Mode = GPIO_MODE_AF_PP,
     .Pull = GPIO_NOPULL,
@@ -47,7 +49,7 @@ static GPIO_InitTypeDef USART1_GPIO_TXCfg = {
     .Alternate = GPIO_AF7_USART2
 };
 
-static GPIO_InitTypeDef USART1_GPIO_RXCfg = {
+static GPIO_InitTypeDef USART2_GPIO_RxCfg = {
     .Pin = USART2_RX_PIN,
     .Mode = GPIO_MODE_AF_PP,
     .Pull = GPIO_NOPULL,
@@ -55,7 +57,7 @@ static GPIO_InitTypeDef USART1_GPIO_RXCfg = {
     .Alternate = GPIO_AF7_USART2
 };
 
-static USART_HandleTypeDef USART1_Handle = {
+static USART_HandleTypeDef USART2_Handle = {
     .Instance = USART2,
     .Init.BaudRate = 9600,
     .Init.WordLength = USART_WORDLENGTH_9B,
@@ -74,7 +76,7 @@ static inline void startapp_with_err(error_code_t ec){
 static inline error_code_t uart_ack(){
     // Acknowledge
     uint8_t ack = ACK;
-    return HAL_USART_Transmit(&USART1_Handle, &ack, 1, INIT_RECV_TIMEOUT);
+    return HAL_USART_Transmit(&USART2_Handle, &ack, 1, INIT_RECV_TIMEOUT);
 }
 
 /*
@@ -86,7 +88,7 @@ static error_code_t uart_stx(){
     uint8_t buf = 0;
 
     // Get STX (start of text character)
-    error_code_t ret = HAL_USART_Receive(&USART1_Handle, &buf, 1, INIT_RECV_TIMEOUT);
+    error_code_t ret = HAL_USART_Receive(&USART2_Handle, &buf, 1, INIT_RECV_TIMEOUT);
     if(ret == BLDR_OK){
         if(buf == STX){
             ret = uart_ack();
@@ -112,7 +114,7 @@ static error_code_t uart_header(uint8_t *cmd, uint8_t *data_size, uint32_t *addr
     uint8_t buf[6] = {0};
     
     // Get CMD and DATA_SIZE
-    error_code_t ret = HAL_USART_Receive(&USART1_Handle, buf, 6, INIT_RECV_TIMEOUT);
+    error_code_t ret = HAL_USART_Receive(&USART2_Handle, buf, 6, INIT_RECV_TIMEOUT);
     if(ret != BLDR_OK) return ret;
     
     *cmd = buf[0];
@@ -134,7 +136,7 @@ static error_code_t uart_data(uint8_t *data, uint8_t data_size){
     uint8_t buf[data_size];
     
     // Get DATA
-    error_code_t ret = HAL_USART_Receive(&USART1_Handle, buf, data_size, INIT_RECV_TIMEOUT);
+    error_code_t ret = HAL_USART_Receive(&USART2_Handle, buf, data_size, INIT_RECV_TIMEOUT);
     if(ret != BLDR_OK) return ret;
     
     memcpy(data, buf, data_size);
@@ -156,19 +158,19 @@ ACK (1 byte) RX
 */
 static error_code_t uart_resp(uint8_t *data, uint8_t data_size){
     // Header
-    HAL_USART_Transmit(&USART1_Handle, &data_size, 1, INIT_RECV_TIMEOUT);
+    HAL_USART_Transmit(&USART2_Handle, &data_size, 1, INIT_RECV_TIMEOUT);
 
     // Wait for ack
     uint8_t ack = 0;
-    error_code_t ret = HAL_USART_Receive(&USART1_Handle, &ack, 1, INIT_RECV_TIMEOUT);
+    error_code_t ret = HAL_USART_Receive(&USART2_Handle, &ack, 1, INIT_RECV_TIMEOUT);
     if(ret != BLDR_OK) return ret;
     if(ack != ACK) return BLDR_ERR;
 
     // Data
-    HAL_USART_Transmit(&USART1_Handle, data, data_size, INIT_RECV_TIMEOUT);
+    HAL_USART_Transmit(&USART2_Handle, data, data_size, INIT_RECV_TIMEOUT);
 
     // Wait for ack
-    ret = HAL_USART_Receive(&USART1_Handle, &ack, 1, INIT_RECV_TIMEOUT);
+    ret = HAL_USART_Receive(&USART2_Handle, &ack, 1, INIT_RECV_TIMEOUT);
     if(ret != BLDR_OK) return ret;
     if(ack != ACK) return BLDR_ERR;
 
@@ -219,7 +221,7 @@ static error_code_t uart_init(){
     
     // Get all 4 packets
     for(bufptr = buf; bufptr<&buf[SIZEOF(buf)-1]; bufptr+=SIZEOF(init_cmd)){
-        ret = HAL_USART_Receive(&USART1_Handle, bufptr, SIZEOF(init_cmd), INIT_RECV_TIMEOUT);
+        ret = HAL_USART_Receive(&USART2_Handle, bufptr, SIZEOF(init_cmd), INIT_RECV_TIMEOUT);
         if(ret != BLDR_OK) return ret;
     }
     
@@ -266,18 +268,21 @@ error_code_t boot_init(){
     HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET);
 
     // USART initialization
-    HAL_GPIO_Init(USART1_TX_PORT, &USART1_GPIO_TXCfg);
-    HAL_GPIO_Init(USART1_RX_PORT, &USART1_GPIO_RXCfg);
-    __HAL_USART_ENABLE(&USART1_Handle);
+    HAL_GPIO_Init(USART2_TX_PORT, &USART2_GPIO_TxCfg);
+    HAL_GPIO_Init(USART2_RX_PORT, &USART2_GPIO_RxCfg);
+    __HAL_USART_ENABLE(&USART2_Handle);
     __USART2_CLK_ENABLE();
     // __USART1_CLK_ENABLE();
-    if(HAL_USART_Init(&USART1_Handle) == HAL_ERROR){
+    if(HAL_USART_Init(&USART2_Handle) == HAL_ERROR){
         startapp_with_err(BLDR_FAIL_INIT);
     }
 
     // Put USART in asynchronous mode
-    USART1_Handle.Instance->CR2 &= ~(USART_CR2_CLKEN);
+    USART2_Handle.Instance->CR2 &= ~(USART_CR2_CLKEN);
     HAL_NVIC_DisableIRQ(USART1_IRQn);
+
+    // Shared memory
+    shared_mem = (uint8_t*)(&_estack) + 4; // Start of shared memory (+4 to avoid stack collision)
 
     // Systick
     HAL_NVIC_EnableIRQ(SysTick_IRQn);
@@ -297,9 +302,9 @@ void boot_deinit(){
     HAL_GPIO_DeInit(LED_PORT, LED_PIN);
     __HAL_RCC_GPIOA_CLK_DISABLE();
 
-    __HAL_USART_DISABLE(&USART1_Handle);
+    __HAL_USART_DISABLE(&USART2_Handle);
     __USART1_CLK_DISABLE();
-    HAL_USART_DeInit(&USART1_Handle);
+    HAL_USART_DeInit(&USART2_Handle);
 
     HAL_NVIC_DisableIRQ(USART1_IRQn);
     HAL_NVIC_DisableIRQ(SysTick_IRQn);

@@ -1,22 +1,45 @@
 #include "stm32xx_hal.h"
 #include "stdint.h"
 #include "stdbool.h"
+#include "stdio.h"
+#include "string.h"
+
+#include "boot_config.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
 
-#define SIZEOF(x) (sizeof(x)/sizeof(x[0]))
-static uint8_t deadbeef[4] = {0xDE, 0xAD, 0xBE, 0xEF};
+#define SHARED_MEM_LEN (1020)
+extern uint8_t _estack;
+uint8_t* shared_mem;
 
-static uint8_t buf[SIZEOF(deadbeef)*4] = {0};
-static uint8_t bufind = 0;
+#define USART1_TX_PIN GPIO_PIN_9
+#define USART1_TX_PORT GPIOA
+#define USART1_RX_PIN GPIO_PIN_10
+#define USART1_RX_PORT GPIOA
 
-static USART_HandleTypeDef USART1_Handle = {
+static GPIO_InitTypeDef USART2_GPIO_TxCfg = {
+    .Pin = USART1_TX_PIN,
+    .Mode = GPIO_MODE_AF_PP,
+    .Pull = GPIO_NOPULL,
+    .Speed = GPIO_SPEED_FAST,
+    .Alternate = GPIO_AF7_USART2
+};
+
+static GPIO_InitTypeDef USART2_GPIO_RxCfg = {
+    .Pin = USART1_RX_PIN,
+    .Mode = GPIO_MODE_AF_PP,
+    .Pull = GPIO_NOPULL,
+    .Speed = GPIO_SPEED_FAST,
+    .Alternate = GPIO_AF7_USART2
+};
+
+static USART_HandleTypeDef USART2_Handle = {
     .Instance = USART1,
     .Init.BaudRate = 9600,
-    .Init.WordLength = USART_WORDLENGTH_9B,
+    .Init.WordLength = USART_WORDLENGTH_8B,
     .Init.StopBits = USART_STOPBITS_1,
-    .Init.Parity = USART_PARITY_EVEN,
+    .Init.Parity = USART_PARITY_NONE,
     .Init.Mode = USART_MODE_TX_RX
 };
 
@@ -39,7 +62,7 @@ void init(){
     SystemClock_Config();
 
     if(HAL_Init() == HAL_ERROR){
-        return; //error
+        while(1){} //error
     }
 
     __HAL_RCC_GPIOA_CLK_ENABLE();
@@ -49,14 +72,16 @@ void init(){
     HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET);
 
     // USART initialization
-    __HAL_USART_ENABLE(&USART1_Handle);
+    HAL_GPIO_Init(USART1_TX_PORT, &USART2_GPIO_TxCfg);
+    HAL_GPIO_Init(USART1_RX_PORT, &USART2_GPIO_RxCfg);
+    __HAL_USART_ENABLE(&USART2_Handle);
     __USART1_CLK_ENABLE();
-    if(HAL_USART_Init(&USART1_Handle) == HAL_ERROR){
-        return; //error 
+    if(HAL_USART_Init(&USART2_Handle) == HAL_ERROR){
+        while(1){} //error
     }
 
     // Put USART in asynchronous mode
-    USART1_Handle.Instance->CR2 &= ~(USART_CR2_CLKEN);
+    USART2_Handle.Instance->CR2 &= ~(USART_CR2_CLKEN);
     HAL_NVIC_DisableIRQ(USART1_IRQn);
 
     // Create tasks
@@ -78,6 +103,8 @@ void init(){
         &uartTaskTCB
     );
 
+    shared_mem = (uint8_t*)(&_estack) + 4; // Start of shared memory (+4 to avoid stack collision)
+
     vTaskStartScheduler();
 
     while(1);
@@ -91,46 +118,20 @@ void blinkyTask(void *pvParameters){
 }
 
 void uartTask(void *pvParameters){
-    bufind = 0;
     while(1){
-        // Receive 4 bytes at a time
-        if(HAL_USART_Receive(&USART1_Handle, &(buf[bufind]), 4, 100) == HAL_OK){
-            bufind += 4;
-        }
+        const char *err_code_label = "Error Code:";
+        const char *endln = "\n\r";
+        char err_code = shared_mem[0] + '0';
 
-        if(bufind == SIZEOF(buf)){
-            // Find the 0xDE
-            for(uint8_t i=0; i<SIZEOF(buf); i++){
-                if(buf[i] == 0xDE){
-                    bufind = i;
-                    break;
-                }
-            }
-
-            if(bufind+(SIZEOF(deadbeef)*3) >= SIZEOF(buf)){
-                // No 0xDE found
-                bufind = 0;
-                continue;
-            }
-
-            bool found_three = true;
-            for(; bufind<SIZEOF(buf); bufind+=SIZEOF(deadbeef)){
-                if(memcmp(&buf[bufind], deadbeef, SIZEOF(deadbeef)) != 0){
-                    found_three = false;
-                }
-            }
-
-            if(found_three){
-                NVIC_SystemReset(); // jump to bootloader
-            }
-            bufind = 0;
-        }
-
-        vTaskDelay(100);
+        HAL_USART_Transmit(&USART2_Handle, (unsigned char *)err_code_label, strlen(err_code_label), portMAX_DELAY);
+        HAL_USART_Transmit(&USART2_Handle, (unsigned char *)&err_code, 1, portMAX_DELAY);
+        HAL_USART_Transmit(&USART2_Handle, (unsigned char *)endln, 2, portMAX_DELAY);
+        vTaskDelay(1000);
     }
 }
 
 int main(){
     init();
+    while(1){}
     return 0;
 }

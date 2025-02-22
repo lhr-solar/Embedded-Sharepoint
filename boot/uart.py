@@ -11,7 +11,7 @@ class Command(Enum):
     FLASH_ERASE = 3
     FLASH_MASS_ERASE = 4
 
-ser = serial.Serial("/dev/ttyACM0", 9600, timeout=None, parity=serial.PARITY_EVEN)
+ser = serial.Serial("/dev/ttyACM0", 9600, timeout=3000, parity=serial.PARITY_EVEN)
 print(ser.name)
 
 def pend_for_ack(timeout=5):

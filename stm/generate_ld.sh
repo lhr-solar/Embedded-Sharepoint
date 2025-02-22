@@ -38,6 +38,8 @@ LINKER_VARS="_sidata _sdata _edata _sbss _ebss _estack _Min_Heap_Size _Min_Stack
 OUTPUT_FLASH_SCRIPT="${MCU_NAME_CAP}x_APP.ld"
 OUTPUT_BOOT_SCRIPT="${MCU_NAME_CAP}x_BOOT.ld"
 
+RAM_SIZE=$(($RAM_SIZE - 1))
+
 echo -e "${GREEN}Generating linker script for $MCU_NAME${NC}"
 echo -e "${YELLOW}RAM size: $RAM_SIZE Kb${NC}"
 echo -e "${YELLOW}Boot flash offset: 0x08000000${NC}"
