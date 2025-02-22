@@ -150,7 +150,6 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart) {
 /**
  * @brief Initializes the UART peripheral
  * @param handle pointer to the UART handle
- * @param rxQueue pointer to the user-provided RX queue
  * @return uart_status_t
  */
 uart_status_t uart_init(UART_HandleTypeDef* handle) {
@@ -233,7 +232,6 @@ uart_status_t uart_deinit(UART_HandleTypeDef* handle) {
             vQueueDelete(uart4_rx_queue);
             uart4_rx_queue = NULL;
         }
-        uart4_rx_queue = NULL;
     }
     #endif /* UART4 */
     #ifdef UART5
@@ -246,7 +244,6 @@ uart_status_t uart_deinit(UART_HandleTypeDef* handle) {
             vQueueDelete(uart5_rx_queue);
             uart5_rx_queue = NULL;
         }
-        uart5_rx_queue = NULL;
     }
     #endif /* UART5 */
 
@@ -379,7 +376,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
     uint8_t tx_buffer[32];  // Buffer for collecting bytes to send
     uint8_t count = 0;
 
-    QueueHandle_t* tx_queue = NULL;
+    QueueHandle_t tx_queue = NULL;
 
     #ifdef UART4
     if(huart->Instance == UART4) {
@@ -431,7 +428,10 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     BaseType_t higherPriorityTaskWoken = pdFALSE;
 
     xQueueSendFromISR(*rx_queue, &receivedByte, &higherPriorityTaskWoken);
+    
+    portENTER_CRITICAL();
     HAL_UART_Receive_IT(huart, (uint8_t*)huart->pRxBuffPtr, 1); // pRxBufferPtr is a pointer to the buffer that will store the received data
+    portEXIT_CRITICAL();
     
     portYIELD_FROM_ISR(higherPriorityTaskWoken);
 }
