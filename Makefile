@@ -90,7 +90,8 @@ stm/$(SERIES_GENERIC)/$(SERIES_GENERIC)_hal_init.c \
 stm/$(SERIES_GENERIC)/$(SERIES_GENERIC)_hal_timebase_tim.c \
 $(wildcard FreeRTOS-Kernel/*.c) \
 FreeRTOS-Kernel/portable/GCC/ARM_CM4F/port.c \
-$(wildcard common/Src/*.c)
+$(wildcard common/Src/*.c) \
+$(wildcard bsp/Src/*.c)
 
 # ASM sources
 ASM_SOURCES =  \
@@ -154,12 +155,12 @@ AS_INCLUDES =
 C_INCLUDES =  \
 $(PROJECT_C_INCLUDES) \
 stm/$(SERIES_GENERIC)/$(SERIES_GENERIC_CAP)_HAL_Driver/Inc \
-stm/$(SERIES_GENERIC)/$(SERIES_GENERIC_CAP)_HAL_Driver/Inc/Legacy \
 stm/$(SERIES_GENERIC)/CMSIS/Device/ST/$(SERIES_GENERIC_CAP)/Include \
 stm/$(SERIES_GENERIC)/CMSIS/Include \
 FreeRTOS-Kernel/include \
 FreeRTOS-Kernel/portable/GCC/ARM_CM4F \
-common/Inc
+common/Inc \
+bsp/Inc
 
 C_INCLUDES := $(addprefix -I,$(C_INCLUDES))
 
@@ -231,14 +232,13 @@ $(BUILD_DIR):
 clean:
 	-rm -fR $(BUILD_DIR)
 
-
 #######################################
 # flash
 #######################################
 FLASH_ADDRESS ?= 0x8000000
 FLASH_FILE = $(shell find $(BUILD_DIR) -name 'stm*.bin' -exec basename {} \;)
 
-flash: $(BUILD_DIR)/$(FLASH_FILE)
+flash:
 	@echo "Flashing $(FLASH_FILE) to $(FLASH_ADDRESS)"
 	-st-flash write $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
 
