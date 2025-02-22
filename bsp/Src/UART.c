@@ -376,7 +376,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
     uint8_t tx_buffer[32];  // Buffer for collecting bytes to send
     uint8_t count = 0;
 
-    QueueHandle_t tx_queue = NULL;
+    QueueHandle_t *tx_queue = NULL;
 
     #ifdef UART4
     if(huart->Instance == UART4) {
@@ -411,16 +411,16 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 
 // Receive Callback occurs after a receive is complete
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-    QueueHandle_t rx_queue = NULL;
+    QueueHandle_t *rx_queue = NULL;
     #ifdef UART4
     if(huart->Instance == UART4) {
-        rx_queue = uart4_rx_queue;
+        rx_queue = &uart4_rx_queue;
     }
     #endif /* UART4 */
 
     #ifdef UART5
     if(huart->Instance == UART5) {
-        rx_queue = uart5_rx_queue;
+        rx_queue = &uart5_rx_queue;
     }
     #endif /* UART5 */
 
