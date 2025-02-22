@@ -53,7 +53,7 @@ int main(void) {
     }
     
     // Initialize UART BSP
-    uart_status_t status = uart_init(huart4,);
+    uart_status_t status = uart_init(huart4);
     if (status != UART_OK) {
         Error_Handler();
     }
