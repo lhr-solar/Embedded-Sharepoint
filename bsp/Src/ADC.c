@@ -1,44 +1,21 @@
-#include "BSP_ADC.h"
+#include "ADC.h"
 
 ADC_HandleTypeDef hadc;
-
-double ADC_RAW_TO_VOLTAGE;  // conversion factor for readings
-
-static SemaphoreHandle_t adc_send_semaphore = NULL;
-static StaticSemaphore_t adc_send_semaphore_buffer;
-
 static QueueHandle_t* adcReadings;
 
-HAL_StatusTypeDef BSP_ADC_Init(ADC_InitTypeDef init, uint8_t bitNum, double Vcc, QueueHandle_t *rxQueue) {
-    
+adc_status_t ADC_Init(ADC_InitTypeDef init, QueueHandle_t* rxQueue) {
     ADC_ChannelConfTypeDef sConfig = {0};
 
-    ADC_RAW_TO_VOLTAGE = 1.0 / Vcc * (float) bitNum; 
-
     adcReadings = rxQueue;
-
-    adc_send_semaphore = xSemaphoreCreateBinaryStatic(&adc_send_semaphore_buffer);
-    xSemaphoreGive(adc_send_semaphore);
 
     hadc.Init = init; // set the init structure to InitTypeDef
     if (HAL_ADC_Init(&hadc) != HAL_OK) Error_Handler();
 }
 
 
-HAL_StatusTypeDef BSP_ADC_OneShotRead(uint32_t channel, uint32_t samplingTime, bool blocking) {
-
-    UBaseType_t space = uxQueueSpacesAvailable(adcReadings);    // check for empty space in the queue
-    if (space != 0) {
-        Error_Handler();
-
-        // could xQueueOverwrite last entry instead
-    }
-    
-    TickType_t timeout = blocking ? portMAX_DELAY : 0; // Set timeout to max delay if blocking, 0 if non-blocking
-
-    // take semphr
-    if (xSemaphoreTake(adc_send_semaphore, timeout) != pdTRUE) {
-        Error_Handler();
+adc_status_t ADC_OneShotRead(uint32_t channel, uint32_t samplingTime, bool blocking) {
+    if (xQueueIsQueueFullFromISR(adcReadings)) {
+        return ADC_QUEUE_FULL;
     }
 
     ADC_ChannelConfTypeDef sConfig = {0}; // resets the channel config
@@ -49,11 +26,13 @@ HAL_StatusTypeDef BSP_ADC_OneShotRead(uint32_t channel, uint32_t samplingTime, b
     sConfig.SamplingTime = samplingTime;
 
     if (HAL_ADC_ConfigChannel(&hadc, &sConfig) != HAL_OK) {
-        Error_Handler();
+        return ADC_CHANNEL_CONFIG_FAIL;
     }
 
     // trigger interrupt to read 
     HAL_ADC_Start_IT(&hadc);   
+
+    return ADC_OK; // not sure if i should actually send an "OK" interrupt b/c the callback is still pending
 }
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *h) {
@@ -64,20 +43,13 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *h) {
 
     if (h == &hadc) {
         int rawVal = HAL_ADC_GetValue(&hadc);
-        double realVal = (double) rawVal * ADC_RAW_TO_VOLTAGE;
-
-        portENTER_Critical();
 
         // push value to q
-        xQueueSendFromISR(adcReadings, &realVal, &higherPriorityTaskWoken);
-
-        // give semphr
-        xSemaphoreGive(adc_send_semaphore);
-
-        portEXIT_Critical();
+        xQueueSendFromISR(adcReadings, &rawVal, &higherPriorityTaskWoken);
 
     } else {
-        Error_Handler();
+        // define a flag in ISR  
+        #define READ_FAILED
     }
 }
 
@@ -150,14 +122,4 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef *hadc) {
     HAL_GPIO_DeInit(GPIOF, GPIO_PIN_4);
 
     HAL_NVIC_DisableIRQ(ADC_IRQn);
-}
-
-
-void Error_Handler(void)
-{
-    // should add comm codes in next PR
-  __disable_irq();
-  while (1)
-  {
-  }
 }
