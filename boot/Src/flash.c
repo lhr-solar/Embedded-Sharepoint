@@ -17,7 +17,7 @@ extern uint8_t _app_len;
 bool exec_flash_command(void* buf, flash_cmd_t* cmd){
     // Error check
     if(cmd->data_size > MAX_BUFFER_SIZE ||
-        cmd->id >= NUM_IDS ||
+        cmd->id >= NUM_FLASH_IDS ||
         cmd->address < 0x08020000 || cmd->address > 0x0807FFFF){
         return false;
     }
@@ -46,7 +46,7 @@ bool exec_flash_command(void* buf, flash_cmd_t* cmd){
 #define FLASH_SECTOR_MASK (0x00060000)
 #define FLASH_SECTOR(addr) (((((uint32_t)addr) & FLASH_SECTOR_MASK)>>17) + 4)
 
-static bool flash_write_single(uint64_t data, uint32_t address, uint8_t data_size){
+static bool flash_write_single(uint32_t data, uint32_t address, uint8_t data_size){
     if(address < APP_START_ADDRESS || address > APP_START_ADDRESS + APP_LENGTH){
         return false;
     }
@@ -61,9 +61,6 @@ static bool flash_write_single(uint64_t data, uint32_t address, uint8_t data_siz
             break;
         case 4:
             program_type = FLASH_TYPEPROGRAM_WORD;
-            break;
-        case 8:
-            program_type = FLASH_TYPEPROGRAM_DOUBLEWORD;
             break;
         default:
             return false;
@@ -95,13 +92,12 @@ bool flash_write(void* buf, uint32_t address, uint16_t data_size){
     }
     
     while(data_size > 0){
-        uint8_t write_size = 8;
+        uint16_t write_size = 0x8000;
         while((write_size != 0) && ((data_size&write_size) == 0)) write_size>>=1; // shift until we find most sig bit
-        if(write_size == 0){
-            return false;
-        }
+        if(write_size == 0) return false;
+        else if(write_size > 4) write_size = 4;
 
-        if(flash_write_single(*(uint64_t*)buf, address, write_size) == false){
+        if(flash_write_single(*(uint32_t*)buf, address, write_size) == false){
             flash_erase(address); // erase the sector the write fails on
             return false;
         }
@@ -124,9 +120,6 @@ bool flash_read_single(void* data, uint32_t address, uint16_t data_size){
             break;
         case 4:
             *(uint32_t*)data = *(volatile uint32_t*)address;
-            break;
-        case 8:
-            *(uint64_t*)data = *(volatile uint64_t*)address;
             break;
         default:
             return false;

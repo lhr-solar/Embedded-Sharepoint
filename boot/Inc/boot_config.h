@@ -2,7 +2,6 @@
 #define BOOT_CONFIG_H
 
 // Meant to be included in both the bootloader and the application
-
 typedef enum {
     // HAL Specific
     BLDR_OK, // HAL_OK
@@ -21,6 +20,8 @@ typedef enum {
     BLDR_START_AFTER_UPDATE, // Bootloader starts application after update
 } error_code_t;
 
-
+#define SHARED_MEM_LEN (1020)
+extern uint8_t _estack;
+#define SHARED_MEM_START ((uint8_t*)(&_estack) + 4) // Start of shared memory (+4 to avoid stack collision)
 
 #endif

@@ -16,7 +16,7 @@ typedef enum {
     FLASH_READ_BUF,
     FLASH_ERASE,
     FLASH_MASS_ERASE,
-    NUM_IDS
+    NUM_FLASH_IDS
 } command_id_t;
 
 typedef struct {

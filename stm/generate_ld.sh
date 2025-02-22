@@ -49,13 +49,14 @@ echo -e "${YELLOW}Application flash size: $APP_SIZE Kb${NC}"
 
 FLASH_NAME=FLASH
 ENTRY_PT=Reset_Handler # defined as main so that it gets defined immediately after the vector table
-
+WRITE_PERM=
 sed -e "s/\${RAM_SIZE}/${RAM_SIZE}K/g" \
     -e "s/\${APP_SIZE}/${APP_SIZE}K/g" \
     -e "s/\${APP_OFFSET}/${APP_OFFSET}/g" \
     -e "s/\${BOOT_SIZE}/${BOOT_SIZE}K/g" \
     -e "s/\${FLASH_NAME}/${FLASH_NAME}/g" \
     -e "s/\${ENTRY_PT}/${ENTRY_PT}/g" \
+    -e "s/\${WRITE_PERM}/${WRITE_PERM}/g" \
     "$LINKER_TEMPLATE" > "$OUTPUT_FLASH_SCRIPT"
 
 # for var in $LINKER_VARS
@@ -65,13 +66,14 @@ sed -e "s/\${RAM_SIZE}/${RAM_SIZE}K/g" \
 
 FLASH_NAME=BOOT
 ENTRY_PT=Reset_Handler
-
+WRITE_PERM=w
 sed -e "s/\${RAM_SIZE}/${RAM_SIZE}K/g" \
     -e "s/\${APP_SIZE}/${APP_SIZE}K/g" \
     -e "s/\${APP_OFFSET}/${APP_OFFSET}/g" \
     -e "s/\${BOOT_SIZE}/${BOOT_SIZE}K/g" \
     -e "s/\${FLASH_NAME}/${FLASH_NAME}/g" \
     -e "s/\${ENTRY_PT}/${ENTRY_PT}/g" \
+    -e "s/\${WRITE_PERM}/${WRITE_PERM}/g" \
     "$LINKER_TEMPLATE" > "$OUTPUT_BOOT_SCRIPT"
 # -e "/\.reset/,/}/d" \
 

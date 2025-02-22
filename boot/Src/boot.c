@@ -17,8 +17,6 @@ uint8_t* shared_mem;
 #define STX (0x02)
 #define ACK (0x06)
 
-#define FLASH_CMD_OFFSET (0x5)
-
 #define INIT_RECV_CT (3) // Number of successful init commands required to start booloader
 #define INIT_RECV_TIMEOUT (HAL_MAX_DELAY) // Number of ticks before timing out of init check
 
@@ -186,6 +184,10 @@ static error_code_t uart_cmd(){
     uint32_t address;
     if(uart_header(&cmd, &data_size, &address) != BLDR_OK) return BLDR_FAIL_HDR;
 
+    if(cmd == CMD_BLDR_START_AFTER_UPDATE){
+        return BLDR_START_AFTER_UPDATE;
+    }
+
     // Get Data
     uint8_t data[data_size];
     if(uart_data(data, data_size) != BLDR_OK) return BLDR_FAIL_DATA;
@@ -194,7 +196,7 @@ static error_code_t uart_cmd(){
     flash_cmd_t flash_cmd = {
         .id = cmd,
         .data_size = data_size,
-        .address = 0
+        .address = address
     };
     if(!exec_flash_command(data, &flash_cmd)) return BLDR_FAIL_FLASH;
 

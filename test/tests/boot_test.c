@@ -9,8 +9,6 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-#define SHARED_MEM_LEN (1020)
-extern uint8_t _estack;
 uint8_t* shared_mem;
 
 #define USART1_TX_PIN GPIO_PIN_9

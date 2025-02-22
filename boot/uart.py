@@ -10,6 +10,7 @@ class Command(Enum):
     FLASH_READ_BUF = 2
     FLASH_ERASE = 3
     FLASH_MASS_ERASE = 4
+    BLDR_START_AFTER_UPDATE = 5
 
 ser = serial.Serial("/dev/ttyACM0", 9600, timeout=3000, parity=serial.PARITY_EVEN)
 print(ser.name)
@@ -46,7 +47,7 @@ def send_cmd(cmd, size, addr, data):
     print(f"\tSize: {size} bytes")
     print(f"\tAddress: 0x{addr:08X}")
 
-    ser.write(Command.FLASH_WRITE.value.to_bytes(1, byteorder='big'))
+    ser.write(cmd.value.to_bytes(1, byteorder='big'))
     ser.write(size.to_bytes(1, byteorder='big'))
     ser.write(addr.to_bytes(4, byteorder='big'))
 
@@ -86,10 +87,18 @@ def send_cmd(cmd, size, addr, data):
 
 def boot():
     init()
-    send_cmd(Command.FLASH_WRITE, 10, 0x08020000, b'\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09')
-    resp = send_cmd(Command.FLASH_READ_BUF, 10, 0x08020000, b'\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09')
+    
+    # Get data from the bin
+    with open("build/stm32f446ret.bin", "rb") as bin_file:
+        ten_bytes = bin_file.read(10)
+
+    send_cmd(Command.FLASH_WRITE, 10, 0x08020000, ten_bytes)
+    resp = send_cmd(Command.FLASH_READ_BUF, 10, 0x08020000, b'\x00' * 10)
 
     print(f"Response: {[f'0x{byte:02X}' for byte in resp]}")
+
+    print(f"Starting application...")
+    send_cmd(Command.BLDR_START_AFTER_UPDATE, 0, 0, b'\x00' * 10)
 
 if __name__ == "__main__":
     boot()
