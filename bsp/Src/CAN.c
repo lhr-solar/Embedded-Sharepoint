@@ -439,7 +439,7 @@ can_status_t can_stop(CAN_HandleTypeDef* handle) {
 
 can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
                       CAN_RxHeaderTypeDef* header, uint8_t data[],
-                      bool blocking) {
+                      TickType_t delay_ticks) {
   // recieve from queue matching id
   rx_payload_t payload = {0};
   bool valid_id = false;
@@ -448,16 +448,12 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
     for (int i = 0; i < can1_recv_entry_count; i++) {
       if (can1_recv_entries[i].id == id) {
         valid_id = true;
-        if (blocking) {
-          // if blocking, retry on empty
-          while (xQueueReceive(can1_recv_entries[i].queue, &payload, 0) ==
-                 errQUEUE_EMPTY) {}
-        } else {
-          // otherwise, finish on empty
-          if (xQueueReceive(can1_recv_entries[i].queue, &payload, 0) ==
-              errQUEUE_EMPTY) {
-            return CAN_EMPTY;
-          }
+
+        // if delay_ticks == portMAX_DELAY thread blocks, 
+        // other values of delay_ticks are delays
+        if (xQueueReceive(can1_recv_entries[i].queue, &payload, delay_ticks) ==
+            errQUEUE_EMPTY) {
+          return CAN_EMPTY;
         }
   
         break;
@@ -471,16 +467,12 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
     for (int i = 0; i < can2_recv_entry_count; i++) {
       if (can2_recv_entries[i].id == id) {
         valid_id = true;
-        if (blocking) {
-          // if blocking, retry on empty
-          while (xQueueReceive(can2_recv_entries[i].queue, &payload, 0) ==
-                 errQUEUE_EMPTY) {}
-        } else {
-          // otherwise, finish on empty
-          if (xQueueReceive(can2_recv_entries[i].queue, &payload, 0) ==
-              errQUEUE_EMPTY) {
-            return CAN_EMPTY;
-          }
+
+        // if delay_ticks == portMAX_DELAY thread blocks, 
+        // other values of delay_ticks are delays
+        if (xQueueReceive(can2_recv_entries[i].queue, &payload, delay_ticks) ==
+            errQUEUE_EMPTY) {
+          return CAN_EMPTY;
         }
   
         break;
@@ -495,16 +487,12 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
     for (int i = 0; i < can3_recv_entry_count; i++) {
       if (can3_recv_entries[i].id == id) {
         valid_id = true;
-        if (blocking) {
-          // if blocking, retry on empty
-          while (xQueueReceive(can3_recv_entries[i].queue, &payload, 0) ==
-                 errQUEUE_EMPTY) {}
-        } else {
-          // otherwise, finish on empty
-          if (xQueueReceive(can3_recv_entries[i].queue, &payload, 0) ==
-              errQUEUE_EMPTY) {
-            return CAN_EMPTY;
-          }
+
+        // if delay_ticks == portMAX_DELAY thread blocks, 
+        // other values of delay_ticks are delays
+        if (xQueueReceive(can3_recv_entries[i].queue, &payload, delay_ticks) ==
+            errQUEUE_EMPTY) {
+          return CAN_EMPTY;
         }
   
         break;
@@ -533,9 +521,7 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
 
 can_status_t can_send(CAN_HandleTypeDef* handle,
                       const CAN_TxHeaderTypeDef* header, const uint8_t data[],
-                      bool blocking) {
-  // determine timeout
-  TickType_t timeout = (blocking) ? portMAX_DELAY : 0;
+                      TickType_t delay_ticks) {
 
   // disable interrupts (do not want race conditions
   // on shared resource (mailbox) between threads and
@@ -570,7 +556,7 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
 
     // CAN1
     if (handle->Instance == CAN1) {
-      if (xQueueSend(can1_send_queue, &payload, timeout) != pdTRUE) {
+      if (xQueueSend(can1_send_queue, &payload, delay_ticks) != pdTRUE) {
         return CAN_ERR;
       }
     }
@@ -578,7 +564,7 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
     // CAN2
     #ifdef CAN2
     else if (handle->Instance == CAN2) {
-      if (xQueueSend(can2_send_queue, &payload, timeout) != pdTRUE) {
+      if (xQueueSend(can2_send_queue, &payload, delay_ticks) != pdTRUE) {
         return CAN_ERR;
       }
     }
@@ -587,7 +573,7 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
     // CAN3
     #ifdef CAN3
     else if (handle->Instance == CAN3) {
-      if (xQueueSend(can3_send_queue, &payload, timeout) != pdTRUE) {
+      if (xQueueSend(can3_send_queue, &payload, delay_ticks) != pdTRUE) {
         return CAN_ERR;
       }
     }
