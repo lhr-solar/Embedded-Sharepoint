@@ -1,5 +1,5 @@
 #include "UART.h"
-
+#include <string.h>
 // Define the size of the data to be transmitted
 // Currently not used, as we send uint8_t directly
 // may need to be configured for support for packets less more than 8 bits
@@ -403,9 +403,11 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
     }
 
     // If we got any bytes, transmit them
+    portENTER_CRITICAL();
     if(count > 0) {
       HAL_UART_Transmit_IT(huart, tx_buffer, count);
     }
+    portEXIT_CRITICAL();
     
     portYIELD_FROM_ISR(higherPriorityTaskWoken);
 }
