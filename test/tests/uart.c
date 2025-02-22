@@ -41,14 +41,9 @@ int main(void) {
     MX_GPIO_Init();
     MX_UART4_Init();
 
-    // Create the RX queue statically
-    xRxQueue = xQueueCreateStatic(128,
-                                 sizeof(uint8_t),
-                                 ucRxQueueStorageArea,
-                                 &xRxStaticQueue);
     
     // Initialize UART BSP
-    uart_status_t status = uart_init(huart4, &xRxQueue);
+    uart_status_t status = uart_init(huart4);
     if (status != UART_OK) {
         Error_Handler();
     }
@@ -126,7 +121,7 @@ void TxTask(void *argument)
     
     while(1) {
         // Send test message
-        uart_status_t status = uart_send(huart4, testData, msgLen, true);
+        uart_status_t status = uart_send(huart4, testData, msgLen, portMAX_DELAY);
         
         if (status == UART_SENT) {
             txCount++;
@@ -146,12 +141,12 @@ void RxTask(void *argument)
     
     while(1) {
         // Try to receive data
-        uart_status_t status = uart_recv(huart4, rxBuffer, sizeof(rxBuffer), false);
+        uart_status_t status = uart_recv(huart4, rxBuffer, sizeof(rxBuffer), 0);
         
         if (status == UART_RECV) {
             rxCount++;
             // Echo received data back
-            uart_send(huart4, rxBuffer, sizeof(rxBuffer), true);
+            uart_send(huart4, rxBuffer, sizeof(rxBuffer), portMAX_DELAY);
             
             // Toggle LED to indicate successful reception
             HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);

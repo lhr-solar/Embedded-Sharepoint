@@ -51,15 +51,9 @@ int main(void) {
     for(int i = 0; i < TEST_PATTERN_SIZE; i++) {
         testPattern[i] = (uint8_t)(i & 0xFF);
     }
-
-    // Create the RX queue statically - smaller size to test overflow
-    xRxQueue = xQueueCreateStatic(64,   // Could be smaller, like 32, to test overflow
-                                 sizeof(uint8_t),
-                                 ucRxQueueStorageArea,
-                                 &xRxStaticQueue);
     
     // Initialize UART BSP
-    uart_status_t status = uart_init(huart4, &xRxQueue);
+    uart_status_t status = uart_init(huart4,);
     if (status != UART_OK) {
         Error_Handler();
     }
@@ -94,7 +88,7 @@ void TxTask(void *argument)
     while(1) {
         // Rapid burst transmission to test queue
         for(int i = 0; i < TX_BURST_SIZE; i++) {
-            uart_status_t status = uart_send(huart4, testPattern, TEST_PATTERN_SIZE, false);
+            uart_status_t status = uart_send(huart4, testPattern, TEST_PATTERN_SIZE, 0);
             txCount++;
             
             if(status == UART_ERR) {
@@ -121,7 +115,7 @@ void RxTask(void *argument)
     uint32_t patternMatchCount = 0;
     
     while(1) {
-        uart_status_t status = uart_recv(huart4, rxBuffer, TEST_PATTERN_SIZE, false);
+        uart_status_t status = uart_recv(huart4, rxBuffer, TEST_PATTERN_SIZE, 0);
         
         if(status == UART_RECV) {
             rxCount++;
@@ -133,7 +127,7 @@ void RxTask(void *argument)
             }
             
             // Immediate retry to test queue emptying
-            while(uart_recv(huart4, rxBuffer, TEST_PATTERN_SIZE, false) == UART_RECV) {
+            while(uart_recv(huart4, rxBuffer, TEST_PATTERN_SIZE, 0) == UART_RECV) {
                 rxCount++;
             }
         }
