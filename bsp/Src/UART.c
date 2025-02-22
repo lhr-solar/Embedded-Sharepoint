@@ -398,7 +398,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 
     // Get as many bytes as we can from queue (up to buffer size)
     while(count < sizeof(tx_buffer) && 
-        xQueueReceiveFromISR(tx_queue, &tx_buffer[count], &higherPriorityTaskWoken) == pdTRUE) {
+        xQueueReceiveFromISR(*tx_queue, &tx_buffer[count], &higherPriorityTaskWoken) == pdTRUE) {
         count++;
     }
 
