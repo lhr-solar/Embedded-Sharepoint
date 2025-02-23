@@ -9,7 +9,7 @@
   "workspaceFolder": "/workdir",
   "shutdownAction": "stopCompose",
 
-  "initializeCommand": "echo \"WORKDIR_MOUNT=${localWorkspaceFolder}\nREMOTE_USER=$USER\nREMOTE_UID=$(id -u)\nREMOTE_GID=$(id -g)\" > .env",
+  "initializeCommand":"/bin/bash -c \"$(realpath ../scripts/dockerInitialize.sh)\"",
 
   "customizations": {
     "vscode": {
