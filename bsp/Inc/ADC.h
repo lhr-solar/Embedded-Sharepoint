@@ -7,8 +7,6 @@
 #include "queue.h"
 #include "semphr.h"
 
-ADC_HandleTypeDef* hadc;
-
 typedef enum {
     ADC_OK,
     ADC_INIT_FAIL,

@@ -1,5 +1,10 @@
 #include "ADC.h"
 
+#ifdef ADC1
+static ADC_HandleTypeDef hadc_ = {.Instance = ADC1};
+ADC_HandleTypeDef* hadc = &hadc_;
+#endif
+
 static QueueHandle_t* adcReadings;
 
 volatile bool read_failed = 0;
