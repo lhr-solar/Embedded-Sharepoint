@@ -8,7 +8,7 @@ adc_status_t ADC_Init(ADC_InitTypeDef init, QueueHandle_t* rxQueue) {
     adcReadings = rxQueue;
 
     hadc->Init = init; // set the init structure to InitTypeDef
-    if (HAL_ADC_Init(&hadc) != HAL_OK) return ADC_INIT_FAIL;
+    if (HAL_ADC_Init(hadc) != HAL_OK) return ADC_INIT_FAIL;
     
     return ADC_OK;
 }
@@ -26,12 +26,12 @@ adc_status_t ADC_OneShotRead(uint32_t channel, uint32_t samplingTime, bool block
     sConfig.Rank = 1;
     sConfig.SamplingTime = samplingTime;
 
-    if (HAL_ADC_ConfigChannel(&hadc, &sConfig) != HAL_OK) {
+    if (HAL_ADC_ConfigChannel(hadc, &sConfig) != HAL_OK) {
         return ADC_CHANNEL_CONFIG_FAIL;
     }
 
     // trigger interrupt to read 
-    HAL_ADC_Start_IT(&hadc);   
+    HAL_ADC_Start_IT(hadc);   
 
     return ADC_OK; // not sure if i should actually send an "OK" interrupt b/c the callback is still pending
 }
@@ -42,8 +42,8 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *h) {
     */
    BaseType_t higherPriorityTaskWoken = pdFALSE;
 
-    if (h == &hadc) {
-        int rawVal = HAL_ADC_GetValue(&hadc);
+    if (h == hadc) {
+        int rawVal = HAL_ADC_GetValue(hadc);
 
         // push value to q
         xQueueSendFromISR(*adcReadings, &rawVal, &higherPriorityTaskWoken);
