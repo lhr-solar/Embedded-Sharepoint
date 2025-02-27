@@ -37,10 +37,6 @@ static void success_handler(void) {
   }
 
 void vTask(void *pvParameters) {
-    #ifdef ADC1
-    hadc->Instance = ADC1;
-    #endif
-
     uint32_t reading;
 
     // read once
