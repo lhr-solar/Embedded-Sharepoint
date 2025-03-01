@@ -18,7 +18,9 @@ uint8_t* shared_mem;
 #define ACK (0x06)
 
 #define INIT_RECV_CT (3) // Number of successful init commands required to start booloader
-#define INIT_RECV_TIMEOUT (HAL_MAX_DELAY) // Number of ticks before timing out of init check
+#define INIT_RECV_TIMEOUT (pdMS_TO_TICKS(10000)) // Number of ticks before timing out of init check
+#define RX_TIMEOUT (HAL_MAX_DELAY) // Number of ticks before timing out of command
+#define TX_TIMEOUT (pdMS_TO_TICKS(1000))
 
 static uint8_t init_cmd[4] = {0xDE, 0xAD, 0xBE, 0xEF};
 
@@ -74,7 +76,7 @@ static inline void startapp_with_err(error_code_t ec){
 static inline error_code_t uart_ack(){
     // Acknowledge
     uint8_t ack = ACK;
-    return HAL_USART_Transmit(&USART2_Handle, &ack, 1, INIT_RECV_TIMEOUT);
+    return HAL_USART_Transmit(&USART2_Handle, &ack, 1, TX_TIMEOUT);
 }
 
 /*
@@ -86,7 +88,7 @@ static error_code_t uart_stx(){
     uint8_t buf = 0;
 
     // Get STX (start of text character)
-    error_code_t ret = HAL_USART_Receive(&USART2_Handle, &buf, 1, INIT_RECV_TIMEOUT);
+    error_code_t ret = HAL_USART_Receive(&USART2_Handle, &buf, 1, RX_TIMEOUT);
     if(ret == BLDR_OK){
         if(buf == STX){
             ret = uart_ack();
@@ -104,20 +106,20 @@ static error_code_t uart_stx(){
 /*
 Header:
 CMD (1 byte) RX
-DATA_SIZE (1 byte) RX
+DATA_SIZE (2 bytes) RX
 ADDRESS (4 bytes) RX
 ACK (1 byte) TX
 */
-static error_code_t uart_header(uint8_t *cmd, uint8_t *data_size, uint32_t *address){
-    uint8_t buf[6] = {0};
+static error_code_t uart_header(uint8_t *cmd, uint16_t *data_size, uint32_t *address){
+    uint8_t buf[7] = {0};
     
     // Get CMD and DATA_SIZE
-    error_code_t ret = HAL_USART_Receive(&USART2_Handle, buf, 6, INIT_RECV_TIMEOUT);
+    error_code_t ret = HAL_USART_Receive(&USART2_Handle, buf, 7, RX_TIMEOUT);
     if(ret != BLDR_OK) return ret;
     
     *cmd = buf[0];
-    *data_size = buf[1];
-    *address = (buf[2] << 24) | (buf[3] << 16) | (buf[4] << 8) | buf[5];
+    *data_size = (buf[1] << 8) | buf[2];
+    *address = (buf[3] << 24) | (buf[4] << 16) | (buf[5] << 8) | buf[6];
     
     ret = uart_ack();
     if(ret != BLDR_OK) return ret;
@@ -130,11 +132,11 @@ Data:
 DATA (X bytes) RX
 ACK (1 byte) TX
 */
-static error_code_t uart_data(uint8_t *data, uint8_t data_size){
+static error_code_t uart_data(uint8_t *data, uint16_t data_size){
     uint8_t buf[data_size];
     
     // Get DATA
-    error_code_t ret = HAL_USART_Receive(&USART2_Handle, buf, data_size, INIT_RECV_TIMEOUT);
+    error_code_t ret = HAL_USART_Receive(&USART2_Handle, buf, data_size, RX_TIMEOUT);
     if(ret != BLDR_OK) return ret;
     
     memcpy(data, buf, data_size);
@@ -147,28 +149,28 @@ static error_code_t uart_data(uint8_t *data, uint8_t data_size){
 
 /*
 Response Header:
-DATA_SIZE (1 byte) TX
+DATA_SIZE (2 byte) TX
 ACK (1 byte) RX
 
 Response:
 DATA (X bytes) TX
 ACK (1 byte) RX
 */
-static error_code_t uart_resp(uint8_t *data, uint8_t data_size){
+static error_code_t uart_resp(uint8_t *data, uint16_t data_size){
     // Header
-    HAL_USART_Transmit(&USART2_Handle, &data_size, 1, INIT_RECV_TIMEOUT);
+    HAL_USART_Transmit(&USART2_Handle, (const uint8_t*) &data_size, 2, TX_TIMEOUT);
 
     // Wait for ack
     uint8_t ack = 0;
-    error_code_t ret = HAL_USART_Receive(&USART2_Handle, &ack, 1, INIT_RECV_TIMEOUT);
+    error_code_t ret = HAL_USART_Receive(&USART2_Handle, &ack, 1, RX_TIMEOUT);
     if(ret != BLDR_OK) return ret;
     if(ack != ACK) return BLDR_ERR;
 
     // Data
-    HAL_USART_Transmit(&USART2_Handle, data, data_size, INIT_RECV_TIMEOUT);
+    HAL_USART_Transmit(&USART2_Handle, data, data_size, TX_TIMEOUT);
 
     // Wait for ack
-    ret = HAL_USART_Receive(&USART2_Handle, &ack, 1, INIT_RECV_TIMEOUT);
+    ret = HAL_USART_Receive(&USART2_Handle, &ack, 1, RX_TIMEOUT);
     if(ret != BLDR_OK) return ret;
     if(ack != ACK) return BLDR_ERR;
 
@@ -180,17 +182,18 @@ static error_code_t uart_cmd(){
     if(uart_stx() != BLDR_OK) return BLDR_FAIL_STX;
 
     // Get Header
-    uint8_t cmd, data_size;
+    uint8_t cmd;
+    uint16_t data_size;
     uint32_t address;
     if(uart_header(&cmd, &data_size, &address) != BLDR_OK) return BLDR_FAIL_HDR;
-
-    if(cmd == CMD_BLDR_START_AFTER_UPDATE){
-        return BLDR_START_AFTER_UPDATE;
-    }
 
     // Get Data
     uint8_t data[data_size];
     if(uart_data(data, data_size) != BLDR_OK) return BLDR_FAIL_DATA;
+
+    if(cmd == CMD_BLDR_START_AFTER_UPDATE){
+        return BLDR_START_AFTER_UPDATE;
+    }
 
     // Execute command
     flash_cmd_t flash_cmd = {
@@ -323,7 +326,7 @@ ACK (1 bytes) TX
 
 Header:
 CMD (1 byte) RX
-DATA_SIZE (1 byte) RX
+DATA_SIZE (2 bytes) RX
 ADDRESS (4 bytes) RX
 ACK (1 byte) TX
 
@@ -333,7 +336,7 @@ ACK (1 byte) TX
 
 *if required:*
 Response Header:
-DATA_SIZE (1 byte) TX
+DATA_SIZE (2 byte) TX
 ACK (1 byte) RX
 
 Response:

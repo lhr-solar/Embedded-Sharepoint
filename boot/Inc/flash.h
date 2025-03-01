@@ -22,11 +22,11 @@ typedef enum {
 typedef struct {
     // Three byte header
     command_id_t id : 8; // command id
-    uint8_t data_size : 8; // data size (bytes)
+    uint16_t data_size : 16; // data size (bytes)
     uint32_t address : 32;
 } flash_cmd_t;
 
-#define MAX_BUFFER_SIZE (0xFF)
+#define MAX_BUFFER_SIZE (0xFFFF)
 
 bool exec_flash_command(void* buf, flash_cmd_t *cmd);
 bool flash_write(void* buf, uint32_t address, uint16_t data_size);
