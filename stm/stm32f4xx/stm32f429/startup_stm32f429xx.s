@@ -125,7 +125,7 @@ Infinite_Loop:
    
 g_pfnVectors:
   .word  _estack
-  .word  Reset_Handler
+  .word  0x08060000
 
   .word  NMI_Handler
   .word  HardFault_Handler

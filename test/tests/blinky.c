@@ -1,6 +1,9 @@
 #include "stm32xx_hal.h"
 
 int main(){
+    __disable_irq();
+
+    SystemClock_Config();
     HAL_Init();
 
     GPIO_InitTypeDef led_config = {
@@ -11,6 +14,10 @@ int main(){
     
     __HAL_RCC_GPIOA_CLK_ENABLE(); // enable clock for GPIOA
     HAL_GPIO_Init(GPIOA, &led_config); // initialize GPIOA with led_config
+    
+    // Systick
+    HAL_NVIC_EnableIRQ(SysTick_IRQn);
+    __enable_irq();
 
     while(1){
         HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);

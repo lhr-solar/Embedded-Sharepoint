@@ -1,0 +1,191 @@
+#!/usr/bin/env python3
+
+import serial
+import time
+import threading
+
+from enum import Enum
+import argparse
+
+class Command(Enum):
+    FLASH_WRITE = 0
+    FLASH_READ_SINGLE = 1
+    FLASH_READ_BUF = 2
+    FLASH_ERASE = 3
+    FLASH_MASS_ERASE = 4
+    BLDR_START_AFTER_UPDATE = 5
+
+ser = serial.Serial("/dev/ttyACM0", 9600, timeout=3000, parity=serial.PARITY_EVEN)
+print(ser.name)
+
+def pend_for_ack(timeout=5):
+    ack = None
+    start_time = time.time()
+    while ack != b'\x06':
+        ack = ser.read(1)
+        if time.time() - start_time > timeout:  # 5 seconds timeout
+            print("Timeout waiting for ACK")
+            return False
+    return True
+
+def init():
+    print("Initializing...")
+    
+    # Send 0xDEADBEEF command 4 times
+    for i in range(4):
+        print("Sending 0xDEADBEEF...")
+        ser.write(b'\xDE\xAD\xBE\xEF')
+
+    pend_for_ack()
+
+def send_cmd(cmd, size, addr, data):
+    # Send STX
+    print("Sending STX...")
+    ser.write(b'\x02')
+
+    pend_for_ack()
+
+    # COMMAND, SIZE bytes, ADDRESS addr
+    print(f"Sending {cmd.name} command...")
+    print(f"\tSize: {size} bytes")
+    print(f"\tAddress: 0x{addr:08X}")
+
+    ser.write(cmd.value.to_bytes(1, byteorder='big'))
+    ser.write(size.to_bytes(2, byteorder='big'))
+    ser.write(addr.to_bytes(4, byteorder='big'))
+
+    # Read ACK
+    pend_for_ack()
+
+    # Send SIZE bytes of data
+    print("Sending data...")
+    print(f"\tData: {[f'0x{byte:02X}' for byte in data]}")
+    ser.write(data)
+
+    # Read ACK
+    pend_for_ack()
+
+    # If command is not FLASH_READ_SINGLE and not FLASH_READ_BUF, exit
+    if cmd != Command.FLASH_READ_SINGLE and cmd != Command.FLASH_READ_BUF: return
+    
+    # Read response header
+    print("Reading response header...")
+    read_data_size = int.from_bytes(ser.read(1), byteorder='big')
+    print(f"\tData size: {read_data_size} bytes")
+
+    # Send ACK
+    print("Sending ACK...")
+    ser.write(b'\x06')
+
+    # Read response data
+    print("Reading response data...")
+    response_data = ser.read(read_data_size)
+    print(f"\tData: {[f'0x{byte:02X}' for byte in response_data]}")
+
+    # Send ACK
+    print("Sending ACK...")
+    ser.write(b'\x06')
+
+    return response_data
+
+# def boot(command, bin_file_path=None, address=0x08020000):
+#     init()
+    
+#     if command == "write":
+#         if not bin_file_path:
+#             print("Error: bin_file_path is required for write command")
+#             return
+        
+#         # Get data from the bin
+#         with open(bin_file_path, "rb") as bin_file:
+#             addr = address
+#             while True:
+#                 chunk = bin_file.read(256)
+#                 if not chunk:
+#                     break
+#                 print(f"Writing to address 0x{addr:08X}...")
+#                 send_cmd(Command.FLASH_WRITE, len(chunk), addr, chunk)
+#                 addr += len(chunk)
+
+#     elif command == "read":
+#         total_size = address - 0x08020000
+#         read_addr = 0x08020000
+#         resp = b''
+
+#         while total_size > 0:
+#             read_size = min(256, total_size)
+#             print(f"Reading {read_size} bytes from address 0x{read_addr:08X}...")
+#             resp += send_cmd(Command.FLASH_READ_BUF, read_size, read_addr, b'\x00' * read_size)
+#             read_addr += read_size
+#             total_size -= read_size
+
+#         print(f"Response: {[f'0x{byte:02X}' for byte in resp]}")
+
+#     elif command == "start":
+#         print(f"Starting application...")
+#         send_cmd(Command.BLDR_START_AFTER_UPDATE, 0, 0, b'\x00' * 10)
+
+#     else:
+#         print(f"Unknown command: {command}")
+
+def read(bin_file_path, address=0x08020000, size=0x1000):
+    total_size = size
+    read_addr = address
+    resp = b''
+
+    while total_size > 0:
+        read_size = min(256, total_size)
+        print(f"Reading {read_size} bytes from address 0x{read_addr:08X}...")
+        resp += send_cmd(Command.FLASH_READ_BUF, read_size, read_addr, b'\x00' * read_size)
+        read_addr += read_size
+        total_size -= read_size
+
+    with open(bin_file_path, "wb") as bin_file:
+        bin_file.write(resp)
+
+def write(bin_file_path, address=0x08020000):
+    print(f"Writing {bin_file_path} to flash at 0x{address:08X}...")
+    with open(bin_file_path, "rb") as bin_file:
+        addr = address
+        while True:
+            chunk = bin_file.read(256)
+            if not chunk:
+                break
+            print(f"Writing to address 0x{addr:08X}...")
+            send_cmd(Command.FLASH_WRITE, len(chunk), addr, chunk)
+            addr += len(chunk)
+
+def start():
+    print(f"Starting application...")
+    send_cmd(Command.BLDR_START_AFTER_UPDATE, 0, 0, b'\x00' * 10)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="UART Bootloader")
+    
+    subparsers = parser.add_subparsers(dest="command")
+
+    init_parser = subparsers.add_parser("init", help="Initialize bootloader")
+
+    write_parser = subparsers.add_parser("write", help="Write binary file to flash")
+    write_parser.add_argument("bin_file_path", type=str, help="Path to the binary file")
+    write_parser.add_argument("address", type=lambda x: int(x, 16), default=0x08020000, help="Start address to write to (default: 0x08020000)")
+
+    read_parser = subparsers.add_parser("read", help="Read flash to binary file")
+    read_parser.add_argument("bin_file_path", type=str, help="Path to save the binary file")
+    read_parser.add_argument("address", type=lambda x: int(x, 16), default=0x08020000, help="Start address to read from (default: 0x08020000)")
+    read_parser.add_argument("size", type=lambda x: int(x, 0), default=0x1000, help="Size of data to read (default: 0x1000)")
+
+    start_parser = subparsers.add_parser("start", help="Start application after update")
+
+    args = parser.parse_args()
+    
+    if args.command == "init":
+        init()
+    elif args.command == "write":
+        write(args.bin_file_path, args.address)
+    elif args.command == "read":
+        read(args.bin_file_path, args.address, args.size)
+    elif args.command == "start":
+        start()
+    else:
+        print(f"Unknown command: {args.command}")
