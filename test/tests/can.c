@@ -120,13 +120,48 @@ static void task(void *pvParameters) {
   if (status != CAN_RECV && rx_data[0] != 0x4) error_handler();
   #endif /* CAN2 */
 
+  // TEST QUEUE OVERWRITE ============================================
+
+  // send one payload to 0x4
+  tx_data[0] = 0x04;
+  tx_header.StdId = 0x004;
+  if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+
+  // receive what was sent to 0x4
+  status = can_recv(hcan1, 0x4, &rx_header, rx_data, true);
+  if (status != CAN_RECV && rx_data[0] != 0x4) error_handler();
+  
+  // send two payloads to 0x4, only the last one should be received
+  tx_data[0] = 0x05;
+  if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+  tx_data[0] = 0x06;
+  if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+  tx_data[0] = 0x07;
+  if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+  tx_data[0] = 0x08;
+  if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+  tx_data[0] = 0x09;
+  if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) error_handler();
+
+  HAL_Delay(200);
+
+  // receive the rest in order
+  status = can_recv(hcan1, 0x4, &rx_header, rx_data, true);
+  if (status != CAN_RECV || rx_data[0] != 0x6) error_handler();
+  status = can_recv(hcan1, 0x4, &rx_header, rx_data, true);
+  if (status != CAN_RECV || rx_data[0] != 0x7) error_handler();
+  status = can_recv(hcan1, 0x4, &rx_header, rx_data, true);
+  if (status != CAN_RECV || rx_data[0] != 0x8) error_handler();
+  status = can_recv(hcan1, 0x4, &rx_header, rx_data, true);
+  if (status != CAN_RECV || rx_data[0] != 0x9) error_handler();
+
   success_handler();
 }
 
 int main(void) {
   // initialize the HAL and system clock
   if (HAL_Init() != HAL_OK) error_handler();
-  // SystemClock_Config();
+  SystemClock_Config();
 
   // create filter
   CAN_FilterTypeDef  sFilterConfig;
@@ -152,7 +187,10 @@ int main(void) {
   hcan1->Init.AutoWakeUp = DISABLE;
   hcan1->Init.AutoRetransmission = ENABLE;
   hcan1->Init.ReceiveFifoLocked = DISABLE;
-  hcan1->Init.TransmitFifoPriority = DISABLE;
+
+  // If TransmitFifoPriority is disabled, the hardware selects the mailbox based on the message ID priority. 
+  // If enabled, the hardware uses a FIFO mechanism to select the mailbox based on the order of transmission requests.
+  hcan1->Init.TransmitFifoPriority = ENABLE;
 
   // initialize CAN1
   if (can_init(hcan1, &sFilterConfig) != CAN_OK) error_handler();
