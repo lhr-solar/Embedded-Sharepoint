@@ -188,8 +188,8 @@ int main(void) {
   hcan1->Init.AutoRetransmission = ENABLE;
   hcan1->Init.ReceiveFifoLocked = DISABLE;
 
-  // To guarantee order, this must be enabled.
-  // Disable if order of transmission does not matter.
+  // If TransmitFifoPriority is disabled, the hardware selects the mailbox based on the message ID priority. 
+  // If enabled, the hardware uses a FIFO mechanism to select the mailbox based on the order of transmission requests.
   hcan1->Init.TransmitFifoPriority = ENABLE;
 
   // initialize CAN1
