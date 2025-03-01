@@ -3,6 +3,7 @@
 # start.sh
 #
 # This script automates environment setup for embedded-sharepoint
+# Use this for development in a containerized environment
 
 IMAGE_NAME="embedded-sharepoint"
 if [ -z "$1" ]; then
