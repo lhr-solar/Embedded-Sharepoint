@@ -76,7 +76,11 @@ static uint8_t uart5_rx_queue_storage[UART5_RX_QUEUE_SIZE * sizeof(rx_payload_t)
 #endif /* UART5 */
 
 
-static bool initialized = false;
+bool is_uart_initialized(UART_HandleTypeDef* handle) {
+    // Check if the UART is in a valid state
+    // HAL_UART_STATE_RESET indicates the UART is not initialized
+    return (handle->gState != HAL_UART_STATE_RESET);
+}
 
 // HAL UART MSP init 
 void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
@@ -196,11 +200,10 @@ uart_status_t uart_init(UART_HandleTypeDef* handle) {
     }
 
     // Start reception
-    if (HAL_UART_Receive_IT(handle, (uint8_t*)handle->pRxBuffPtr, 1) != HAL_OK) {
+    if (HAL_UART_Receive_IT(handle, (uint8_t*)handle->pRxBuffPtr, DATA_SIZE) != HAL_OK) {
         return UART_ERR;
     }
 
-    initialized = true;
     return UART_OK;
 }
 
@@ -237,17 +240,15 @@ uart_status_t uart_deinit(UART_HandleTypeDef* handle) {
     #ifdef UART5
     if (handle->Instance == UART5) {
         if (uart5_tx_queue != NULL) {
-            vQueueDelete(uart5_tx_queue);
             uart5_tx_queue = NULL;
         }
         if (uart5_rx_queue != NULL) {
-            vQueueDelete(uart5_rx_queue);
             uart5_rx_queue = NULL;
         }
     }
     #endif /* UART5 */
 
-    initialized = false;
+
     return UART_OK;
 }
 
@@ -269,8 +270,8 @@ static uint8_t uart4_tx_buffer[UART4_TX_QUEUE_SIZE];
 static uint8_t uart5_tx_buffer[UART5_TX_QUEUE_SIZE]; // make buffer size same as queue size 
 #endif
 uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t length, TickType_t delay_ticks) {
-    if (length == 0) {
-        return UART_OK;
+    if (length == 0 || !is_uart_initialized(handle)) { // check if UART is initialized and data length is not 0
+        return UART_ERR;
     }
 
     QueueHandle_t* tx_queue = NULL;
@@ -294,7 +295,7 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
     // Try direct transmission if possible
     portENTER_CRITICAL();
     if (HAL_UART_GetState(handle) == HAL_UART_STATE_READY && 
-        tx_queue != NULL && uxQueueMessagesWaiting (*tx_queue) == 0 ) {
+        tx_queue != NULL && uxQueueMessagesWaiting (*tx_queue) == 0 ) { // check if UART is ready and queue is empty
         // Copy data to static buffer
         memcpy(tx_buffer, data, length);
         if (HAL_UART_Transmit_IT(handle, tx_buffer, length) != HAL_OK) {
@@ -341,7 +342,7 @@ exit:
  * @return uart_status_t
  */
 uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t length, TickType_t delay_ticks) {
-    if (!data || length == 0) {
+    if (!data || length == 0 || !is_uart_initialized(handle)) { // check if data is not null, length is not 0 and UART is initialized
         return UART_ERR;
     }
 
@@ -424,21 +425,29 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     }
     #endif /* UART5 */
 
-    uint8_t receivedByte = huart->pRxBuffPtr[0];
+
+    rx_payload_t receivedData;
+
+    for (int i = 0; i < DATA_SIZE; i++) {
+        receivedData.data[i] = huart->pRxBuffPtr[i];
+    }
+
     BaseType_t higherPriorityTaskWoken = pdFALSE;
 
-    xQueueSendFromISR(*rx_queue, &receivedByte, &higherPriorityTaskWoken);
+    xQueueSendFromISR(*rx_queue, &receivedData, &higherPriorityTaskWoken); // Send data from &receivedData(pRxBuffPtr) to rx_queue
     
     portENTER_CRITICAL();
-    HAL_UART_Receive_IT(huart, (uint8_t*)huart->pRxBuffPtr, 1); // pRxBufferPtr is a pointer to the buffer that will store the received data
+    HAL_UART_Receive_IT(huart, (uint8_t*)huart->pRxBuffPtr, DATA_SIZE);// pRxBufferPtr is a pointer to the buffer that will store the received data
     portEXIT_CRITICAL();
     
     portYIELD_FROM_ISR(higherPriorityTaskWoken);
 }
 
+#ifdef UART4
 void UART4_IRQHandler(void) {
     HAL_UART_IRQHandler(huart4);
 }
+#endif /* UART4 */
 
 #ifdef UART5
 void UART5_IRQHandler(void) {
