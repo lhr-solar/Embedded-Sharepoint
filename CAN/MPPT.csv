@@ -1,3 +1,4 @@
 Data,CAN ID,Length(bytes),Index Used,IN/OUT,Description
+MPPT Status,0x201,4,,OUT,
 Boost Enable,0x209,1,0,IN,"1 - Enable MPPT to start boosting
 0 - Disable MPPT to stop boosting"
