@@ -315,19 +315,6 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
     }
     
 
-    // Start transmission if needed
-    portENTER_CRITICAL();
-    if (HAL_UART_GetState(handle) != HAL_UART_STATE_BUSY_TX) {
-        uint8_t byte;
-        if (xQueueReceive(*tx_queue, &byte, 0) == pdTRUE) {
-            if (HAL_UART_Transmit_IT(handle, &byte, 1) != HAL_OK) {
-                status = UART_ERR;
-                portEXIT_CRITICAL();
-                goto exit;
-            }
-        }
-    }
-    portEXIT_CRITICAL();
 
 exit:
     return status;
