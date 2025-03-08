@@ -89,12 +89,12 @@ static uint8_t usart2_rx_queue_storage[USART2_RX_QUEUE_SIZE * sizeof(rx_payload_
 
 // USART3 handle
 static USART_HandleTypeDef husart3_ = {.Instance = USART3};
-USART_HandleTypeDef* husart2 = &husart3_;
+USART_HandleTypeDef* husart3 = &husart3_;
 
 // USART3 TX queue
 static QueueHandle_t usart3_tx_queue = NULL;
 static StaticQueue_t usart3_tx_queue_buffer;
-static uint8_t usart2_tx_queue_storage[USART3_TX_QUEUE_SIZE * sizeof(tx_payload_t)];
+static uint8_t usart3_tx_queue_storage[USART3_TX_QUEUE_SIZE * sizeof(tx_payload_t)];
 
 // USART3 RX queue
 static QueueHandle_t usart3_rx_queue = NULL;
@@ -108,7 +108,7 @@ static uint8_t usart3_rx_queue_storage[USART3_RX_QUEUE_SIZE * sizeof(rx_payload_
 bool is_usart_initialized(USART_HandleTypeDef* handle) {
     // Check if the USART is in a valid state
     // HAL_USART_STATE_RESET indicates the USART is not initialized
-    return (handle->State != HAL_USART_STATE_RESET);
+    return (handle->State != HAL_USART_STATE_RESET); 
 }
 
 // HAL USART MSP init 
