@@ -36,6 +36,15 @@ df = df.drop_duplicates(subset='Data')
 df['Length(bytes)'] = pd.to_numeric(df['Length(bytes)'], errors='coerce').fillna(0).astype(int) # convert to numeric, fill NaN with 0, and convert to int
 df['Index Used'] = pd.to_numeric(df['Index Used'], errors='coerce').fillna(0).astype(int) # convert to numeric, fill NaN with 0, and convert to int
 df['Data'] = df['Data'].str.replace(' ', '_').str.upper().str.replace('(','').str.replace(')','').str.replace('/','') # convert variable names to follow coding styles guide
+
+# Filter out rows where 'Length(bytes)' is not a positive integer
+invalid_rows = df[df['Length(bytes)'] <= 0]
+if not invalid_rows.empty:
+    print("Excluding the following rows due to invalid 'Length(bytes)':")
+    print(invalid_rows[['CAN ID', 'Data', 'Length(bytes)']])
+
+df = df[df['Length(bytes)'] > 0]
+
 df = df.sort_values(by='CAN ID') # ensure IDs are in ascending order
 
 # Generate the enum definition
