@@ -15,7 +15,7 @@ class Command(Enum):
     FLASH_MASS_ERASE = 4
     BLDR_START_AFTER_UPDATE = 5
 
-ser = serial.Serial("/dev/ttyACM0", 9600, timeout=3000, parity=serial.PARITY_EVEN)
+ser = serial.Serial("/dev/ttyUSB0", 9600, timeout=3000, parity=serial.PARITY_EVEN)
 print(ser.name)
 
 def pend_for_ack(timeout=5):
@@ -88,46 +88,6 @@ def send_cmd(cmd, size, addr, data):
 
     return response_data
 
-# def boot(command, bin_file_path=None, address=0x08020000):
-#     init()
-    
-#     if command == "write":
-#         if not bin_file_path:
-#             print("Error: bin_file_path is required for write command")
-#             return
-        
-#         # Get data from the bin
-#         with open(bin_file_path, "rb") as bin_file:
-#             addr = address
-#             while True:
-#                 chunk = bin_file.read(256)
-#                 if not chunk:
-#                     break
-#                 print(f"Writing to address 0x{addr:08X}...")
-#                 send_cmd(Command.FLASH_WRITE, len(chunk), addr, chunk)
-#                 addr += len(chunk)
-
-#     elif command == "read":
-#         total_size = address - 0x08020000
-#         read_addr = 0x08020000
-#         resp = b''
-
-#         while total_size > 0:
-#             read_size = min(256, total_size)
-#             print(f"Reading {read_size} bytes from address 0x{read_addr:08X}...")
-#             resp += send_cmd(Command.FLASH_READ_BUF, read_size, read_addr, b'\x00' * read_size)
-#             read_addr += read_size
-#             total_size -= read_size
-
-#         print(f"Response: {[f'0x{byte:02X}' for byte in resp]}")
-
-#     elif command == "start":
-#         print(f"Starting application...")
-#         send_cmd(Command.BLDR_START_AFTER_UPDATE, 0, 0, b'\x00' * 10)
-
-#     else:
-#         print(f"Unknown command: {command}")
-
 def read(bin_file_path, address=0x08020000, size=0x1000):
     total_size = size
     read_addr = address
@@ -139,7 +99,7 @@ def read(bin_file_path, address=0x08020000, size=0x1000):
         resp += send_cmd(Command.FLASH_READ_BUF, read_size, read_addr, b'\x00' * read_size)
         read_addr += read_size
         total_size -= read_size
-
+    
     with open(bin_file_path, "wb") as bin_file:
         bin_file.write(resp)
 
@@ -157,7 +117,7 @@ def write(bin_file_path, address=0x08020000):
 
 def start():
     print(f"Starting application...")
-    send_cmd(Command.BLDR_START_AFTER_UPDATE, 0, 0, b'\x00' * 10)
+    send_cmd(Command.BLDR_START_AFTER_UPDATE, 10, 0x0, b'\x00' * 10)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="UART Bootloader")

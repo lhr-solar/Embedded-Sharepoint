@@ -12,6 +12,9 @@
         #include "stm32f401xe.h"
     #elif defined(STM32F413xx)
         #include "stm32f413xx.h"
+
+        #define LED_PIN GPIO_PIN_7
+        #define LED_PORT GPIOB
     #elif defined(STM32F446xx)
         #include "stm32f446xx.h"
         

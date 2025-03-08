@@ -77,7 +77,7 @@ TARGET = $(PROJECT_TARGET)
 # building variables
 ######################################
 # debug build?
-DEBUG = 1
+DEBUG ?= 1
 # optimization
 ifdef DEBUG
 OPT = -O0
