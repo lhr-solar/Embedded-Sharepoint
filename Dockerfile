@@ -40,6 +40,7 @@ RUN apt-get install -y --no-install-recommends \
       gnupg \
       dirmngr \
       bear \
+      picocom \
       ca-certificates \
       openssh-client \
       python3.10 \
