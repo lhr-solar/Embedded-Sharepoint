@@ -22,6 +22,11 @@ export PROJECT_C_SOURCES
 export PROJECT_C_INCLUDES
 export PROJECT_BUILD_DIR
 
+# colors
+RED = \033[0;31m
+GREEN = \033[0;32m
+NC = \033[0m
+
 # check if bear is installed
 BEAR_INSTALLED := $(shell command -v bear >/dev/null 2>&1 && echo yes || echo no)
 
