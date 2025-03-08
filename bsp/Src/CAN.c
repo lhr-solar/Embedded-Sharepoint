@@ -1,4 +1,5 @@
 #include "CAN.h"
+#include "queue_ex.h"
 
 // 8 for now unless extended payload is supported
 #define DATA_SIZE (8)
@@ -20,6 +21,7 @@ typedef struct {
   uint16_t size;
   QueueHandle_t queue;
   uint8_t* storage;
+  bool circular;
   StaticQueue_t buffer;
 } recv_entry_t;
 
@@ -41,7 +43,7 @@ static uint8_t
 
 #if __has_include("can1_recv_entries.h")
 // create can1 recv queue storage
-#define CAN_RECV_ENTRY(ID_, SIZE_) \
+#define CAN_RECV_ENTRY(ID_, SIZE_, CIRCULAR_) \
   static uint8_t can1_recv_queue_storage_##ID_[SIZE_ * sizeof(rx_payload_t)];
 
 #include "can1_recv_entries.h"
@@ -49,11 +51,12 @@ static uint8_t
 #undef CAN_RECV_ENTRY
 
 // create can1 recv queue array
-#define CAN_RECV_ENTRY(ID_, SIZE_)      \
+#define CAN_RECV_ENTRY(ID_, SIZE_, CIRCULAR_)      \
   {.id = (ID_),                         \
    .size = (SIZE_),                     \
    .queue = NULL,                       \
    .storage = can1_recv_queue_storage_##ID_, \
+   .circular = (CIRCULAR_), \
    .buffer = {{0}}},
 
 static recv_entry_t can1_recv_entries[] = {
@@ -91,7 +94,7 @@ static uint8_t
 
 #if __has_include("can2_recv_entries.h")
 // create can2 recv queue storage
-#define CAN_RECV_ENTRY(ID_, SIZE_) \
+#define CAN_RECV_ENTRY(ID_, SIZE_, CIRCULAR_) \
   static uint8_t can2_recv_queue_storage_##ID_[SIZE_ * sizeof(rx_payload_t)];
 
 #include "can2_recv_entries.h"
@@ -99,11 +102,12 @@ static uint8_t
 #undef CAN_RECV_ENTRY
 
 // create can2 recv queue array
-#define CAN_RECV_ENTRY(ID_, SIZE_)      \
+#define CAN_RECV_ENTRY(ID_, SIZE_, CIRCULAR_)      \
   {.id = (ID_),                         \
    .size = (SIZE_),                     \
    .queue = NULL,                       \
    .storage = can2_recv_queue_storage_##ID_, \
+   .circular = (CIRCULAR_), \
    .buffer = {{0}}},
 
 static recv_entry_t can2_recv_entries[] = {
@@ -141,7 +145,7 @@ static uint8_t
 
 #if __has_include("can3_recv_entries.h")
 // create recv queue storage
-#define CAN_RECV_ENTRY(ID_, SIZE_) \
+#define CAN_RECV_ENTRY(ID_, SIZE_, CIRCULAR_) \
   static uint8_t recv_queue_storage_##ID_[SIZE_ * sizeof(rx_payload_t)];
 
 #include "can3_recv_entries.h"
@@ -149,11 +153,12 @@ static uint8_t
 #undef CAN_RECV_ENTRY
 
 // create can3 recv queue array
-#define CAN_RECV_ENTRY(ID_, SIZE_)      \
+#define CAN_RECV_ENTRY(ID_, SIZE_, CIRCULAR_)      \
   {.id = (ID_),                         \
    .size = (SIZE_),                     \
    .queue = NULL,                       \
    .storage = recv_queue_storage_##ID_, \
+   .circular = (CIRCULAR_), \
    .buffer = {{0}}},
 
 static recv_entry_t can3_recv_entries[] = {
@@ -532,20 +537,18 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
   if (HAL_CAN_GetTxMailboxesFreeLevel(handle) >= 1) {
     uint32_t mailbox;
     if (HAL_CAN_AddTxMessage(handle, header, data, &mailbox) != HAL_OK) {
-      // enable interrupts
+      // disable interrupts
       portEXIT_CRITICAL();
 
       return CAN_ERR;
     }
 
-    // enable interrupts
+    // disable interrupts
     portEXIT_CRITICAL();
   }
-
-
   // otherwise, put into send queue
   else {
-    // enable interrupts
+    // disable interrupts
     portEXIT_CRITICAL();
     
     tx_payload_t payload = {0};
@@ -652,8 +655,17 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
     if (hcan->Instance == CAN1) {
       for (int i = 0; i < can1_recv_entry_count; i++) {
         if (can1_recv_entries[i].id == payload.header.StdId) {
-          xQueueSendFromISR(can1_recv_entries[i].queue, &payload,
+          if (can1_recv_entries[i].circular){
+            xQueueSendCircularBufferFromISR(
+              can1_recv_entries[i].queue, 
+              &payload, 
+              &higherPriorityTaskWoken, 
+              sizeof(rx_payload_t)
+            );
+          } else {
+            xQueueSendFromISR(can1_recv_entries[i].queue, &payload,
                             &higherPriorityTaskWoken);
+          }
 	  break;
         }
       }
@@ -664,8 +676,17 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
     else if (hcan->Instance == CAN2) {
       for (int i = 0; i < can2_recv_entry_count; i++) {
         if (can2_recv_entries[i].id == payload.header.StdId) {
-          xQueueSendFromISR(can2_recv_entries[i].queue, &payload,
+          if (can2_recv_entries[i].circular){
+            xQueueSendCircularBufferFromISR(
+              can2_recv_entries[i].queue, 
+              &payload, 
+              &higherPriorityTaskWoken, 
+              sizeof(rx_payload_t)
+            );
+          } else {
+            xQueueSendFromISR(can2_recv_entries[i].queue, &payload,
                             &higherPriorityTaskWoken);
+          }
 	  break;
         }
       }
@@ -677,8 +698,17 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
     if (hcan->Instance == CAN3) {
       for (int i = 0; i < can3_recv_entry_count; i++) {
         if (can3_recv_entries[i].id == payload.header.StdId) {
-          xQueueSendFromISR(can3_recv_entries[i].queue, &payload,
+          if (can3_recv_entries[i].circular){
+            xQueueSendCircularBufferFromISR(
+              can3_recv_entries[i].queue, 
+              &payload, 
+              &higherPriorityTaskWoken, 
+              sizeof(rx_payload_t)
+            );
+          } else {
+            xQueueSendFromISR(can3_recv_entries[i].queue, &payload,
                             &higherPriorityTaskWoken);
+          }
 	  break;
         }
       }
