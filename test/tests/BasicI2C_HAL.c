@@ -2,8 +2,8 @@
  * Test to confirm the bsp_i2c is functional
  */
 #include "FreeRTOS.h"
-#include "I2C.h"
 #include "stm32xx_hal.h"
+#include "I2C.h"
 #include "task.h"
 
 // Functions used by main
