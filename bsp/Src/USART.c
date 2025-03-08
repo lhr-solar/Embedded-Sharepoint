@@ -108,7 +108,7 @@ static uint8_t usart3_rx_queue_storage[USART3_RX_QUEUE_SIZE * sizeof(rx_payload_
 bool is_usart_initialized(USART_HandleTypeDef* handle) {
     // Check if the USART is in a valid state
     // HAL_USART_STATE_RESET indicates the USART is not initialized
-    return (handle->gState != HAL_USART_STATE_RESET);
+    return (handle->State != HAL_USART_STATE_RESET);
 }
 
 // HAL USART MSP init 
