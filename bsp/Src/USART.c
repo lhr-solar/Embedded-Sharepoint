@@ -121,9 +121,9 @@ void HAL_USART_MspInit(USART_HandleTypeDef *husart) {
         __HAL_RCC_GPIOA_CLK_ENABLE();
 
         // USART1 GPIO Configuration    
-        // PA0     ------> USART1_TX
-        // PA1     ------> USART1_RX
-        GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
+        // PA9     ------> USART1_TX
+        // PA10    ------> USART1_RX
+        GPIO_InitStruct.Pin = GPIO_PIN_9|GPIO_PIN_10;
         GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
         GPIO_InitStruct.Pull = GPIO_NOPULL;
         GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
@@ -138,47 +138,39 @@ void HAL_USART_MspInit(USART_HandleTypeDef *husart) {
     #ifdef USART2
     if (husart->Instance == USART2) {
         __HAL_RCC_USART2_CLK_ENABLE();
-        __HAL_RCC_GPIOC_CLK_ENABLE();
-        __HAL_RCC_GPIOD_CLK_ENABLE();
+        __HAL_RCC_GPIOA_CLK_ENABLE();
 
-        // USART2 GPIO Configuration    
-        // PC12     ------> USART2_TX
-        // PD2     ------> USART2_RX
-        GPIO_InitStruct.Pin = GPIO_PIN_12;
+        // USART1 GPIO Configuration    
+        // PA2     ------> USART2_TX
+        // PA3     ------> USART2_RX
+        GPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_3;
         GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
         GPIO_InitStruct.Pull = GPIO_NOPULL;
         GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
         GPIO_InitStruct.Alternate = GPIO_AF8_USART2;
-        HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+        HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-        GPIO_InitStruct.Pin = GPIO_PIN_2;
-        HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
-        HAL_NVIC_SetPriority(USART2_IRQn, 5, 0);
+        HAL_NVIC_SetPriority(USART2_IRQn, 5, 0); 
         HAL_NVIC_EnableIRQ(USART2_IRQn);
     }
     #endif /* USART2 */
 
     #ifdef USART3
     if (husart->Instance == USART3) {
-        __HAL_RCC_USART3_CLK_ENABLE();
-        __HAL_RCC_GPIOC_CLK_ENABLE();
-        __HAL_RCC_GPIOD_CLK_ENABLE();
+        __HAL_RCC_USART1_CLK_ENABLE();
+        __HAL_RCC_GPIOA_CLK_ENABLE();
 
-        // USART2 GPIO Configuration    
-        // PC12     ------> USART3_TX
-        // PD2     ------> USART3_RX
-        GPIO_InitStruct.Pin = GPIO_PIN_12;
+        // USART1 GPIO Configuration    
+        // PC4     ------> USART3_TX
+        // PC5     ------> USART3_RX
+        GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5;
         GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
         GPIO_InitStruct.Pull = GPIO_NOPULL;
         GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-        GPIO_InitStruct.Alternate = GPIO_AF8_USART2;
+        GPIO_InitStruct.Alternate = GPIO_AF8_USART3;
         HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-        GPIO_InitStruct.Pin = GPIO_PIN_2;
-        HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
-        HAL_NVIC_SetPriority(USART3_IRQn, 5, 0);
+        HAL_NVIC_SetPriority(USART3_IRQn, 5, 0); 
         HAL_NVIC_EnableIRQ(USART3_IRQn);
     }
     #endif /* USART3 */
