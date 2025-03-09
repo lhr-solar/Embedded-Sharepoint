@@ -1,5 +1,5 @@
 Data,CAN ID,Length(bytes),Index Used,IN/OUT,Description,,
-Contactor Sense,0x200,2,,OUT,"[8:6] Array Precharge Sense Fault
+Contactor Sense,0x400,2,,OUT,"[8:6] Array Precharge Sense Fault
 [8]: 1 indicates Array precharge sense fault happened
 [7]: Expected array precharge sense value
 [6]: Actual array precharge sense value
@@ -11,5 +11,5 @@ Contactor Sense,0x200,2,,OUT,"[8:6] Array Precharge Sense Fault
 [2]: 1 indicates Motor sense fault happened
 [1]: Expected motor sense value
 [0]: Actual motor sense value",,
-Precharge Timeout ,0x201,1,,OUT,"[1]: Array precharge timeout
+Precharge Timeout ,0x401,1,,OUT,"[1]: Array precharge timeout
 [0]: Motor precharge timeout",,
