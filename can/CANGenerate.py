@@ -45,6 +45,13 @@ df = df.dropna(subset=['CAN ID'])
 # Validate CAN IDs
 df['CAN ID'].apply(validate_can_id)
 
+# Check for duplicate CAN IDs
+duplicate_can_ids = df[df.duplicated(subset=['CAN ID'], keep=False)]
+if not duplicate_can_ids.empty:
+    print("Error: Duplicate CAN IDs found:")
+    print(duplicate_can_ids[['CAN ID', 'Data']])
+    sys.exit(1)
+
 # Process the DataFrame
 df = df.dropna(subset=['Data']) # remove all empty columns
 df = df.drop_duplicates(subset='Data')

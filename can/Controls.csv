@@ -3,13 +3,12 @@ CONTROL_MODE,0x580,1,0,,"Precision: 8 bits
 Data: 
 [7:0]: State.name (int enum)
 Frequency: 100ms",,
-Motor Precharge Enable,,1,0,OUT,"Data:
+Motor Precharge Enable,0x582,1,0,OUT,"Data:
 [1]: Controls wants to turn on motor precharge Contactor
 [0]: Controls wants to turn off motor precharge Contactor",,
-IO_STATE,0x581,4,0,,"Precision: 32 bits
+IO_STATE,0x581,3,0,OUT,"Precision 32 bits
 Data: 
-[31:24] : Contactor Bitmap and Array on/off for BPS (bit 2 is if the array contactor should be on/off, bit 1 is MOTOR_CONTROLLER_BYPASS_PRECHARGE_CONTACTOR, and bit 0 is ARRAY_BYPASS_PRECHARGE_CONTACTOR)
-[23: 16] : Switch Bitmap (from bit 7 to 0; BRAKELIGHT, CRUZ_ST, CRUZ_EN, REV_SW, FOR_SW, REGEN_SW, IGN_2, IGN_1)
+[23: 16] : Switch Bitmap (from bit 7 to 0; BRAKELIGHT, CRUZ_ST, CRUZ_EN, REV_SW, FOR_SW, REGEN_SW, IGN_2_Motor, IGN_1_Array)
 [15:8] : Brake Pedal 
 [7: 0] : Accel Pedal
 Frequency: 250ms",,
