@@ -3,6 +3,9 @@ CONTROL_MODE,0x580,1,0,,"Precision: 8 bits
 Data: 
 [7:0]: State.name (int enum)
 Frequency: 100ms",,
+Motor Precharge Enable,,1,0,OUT,"Data:
+[1]: Controls wants to turn on motor precharge Contactor
+[0]: Controls wants to turn off motor precharge Contactor",,
 IO_STATE,0x581,4,0,,"Precision: 32 bits
 Data: 
 [31:24] : Contactor Bitmap and Array on/off for BPS (bit 2 is if the array contactor should be on/off, bit 1 is MOTOR_CONTROLLER_BYPASS_PRECHARGE_CONTACTOR, and bit 0 is ARRAY_BYPASS_PRECHARGE_CONTACTOR)

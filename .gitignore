@@ -5,4 +5,4 @@ site
 .dockerfile.hash
 .env
 
-/CAN/CANMetaData.*
+/can/CANMetaData.*

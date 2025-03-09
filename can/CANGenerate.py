@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import sys
 
 ##########################The following code will be written to a header file##########################
 header = """
@@ -25,10 +26,24 @@ header = """
 // IDs must be listed in strictly increasing order!
 """
 
+def validate_can_id(can_id):
+    if not can_id:
+        print("Error: No CAN ID provided.")
+        sys.exit(1)
+    if not str(can_id).startswith("0x"):
+        print(f"Error: CAN ID '{can_id}' must start with '0x'.")
+        sys.exit(1)
+
 # Read all CSV files in the directory and concatenate them into a single DataFrame
 csv_files = [f for f in os.listdir('.') if f.endswith('.csv')]
 df_list = [pd.read_csv(f) for f in csv_files]
 df = pd.concat(df_list, ignore_index=True)
+
+# Drop rows with NaN values in 'CAN ID' column
+df = df.dropna(subset=['CAN ID'])
+
+# Validate CAN IDs
+df['CAN ID'].apply(validate_can_id)
 
 # Process the DataFrame
 df = df.dropna(subset=['Data']) # remove all empty columns
