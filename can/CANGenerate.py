@@ -27,7 +27,7 @@ header = """
 """
 
 def validate_can_id(can_id):
-    if not can_id:
+    if pd.isna(can_id) or not can_id:
         print("Error: No CAN ID provided.")
         sys.exit(1)
     if not str(can_id).startswith("0x"):
