@@ -34,8 +34,16 @@ def validate_can_id(can_id):
         print(f"Error: CAN ID '{can_id}' must start with '0x'.")
         sys.exit(1)
 
-# Read all CSV files in the directory and concatenate them into a single DataFrame
-csv_files = [f for f in os.listdir('.') if f.endswith('.csv')]
+# List of CSV files to read
+csv_files = [
+    'BPS.csv',
+    'Contactor.csv',
+    'Controls.csv',
+    'Shared.csv',
+    'TPEE.csv'
+]
+
+# Read the provided CSV files and concatenate them into a single DataFrame
 df_list = [pd.read_csv(f) for f in csv_files]
 df = pd.concat(df_list, ignore_index=True)
 
