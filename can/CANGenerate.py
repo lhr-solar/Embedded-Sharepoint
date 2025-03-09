@@ -26,12 +26,14 @@ header = """
 // IDs must be listed in strictly increasing order!
 """
 
-def validate_can_id(can_id):
+def validate_can_id(row):
+    can_id = row['CAN ID']
+    data_field = row['Data']
     if pd.isna(can_id) or not can_id:
-        print("Error: No CAN ID provided.")
+        print(f"Error: No CAN ID provided for data field '{data_field}'.")
         sys.exit(1)
     if not str(can_id).startswith("0x"):
-        print(f"Error: CAN ID '{can_id}' must start with '0x'.")
+        print(f"Error: CAN ID '{can_id}' for data field '{data_field}' must start with '0x'.")
         sys.exit(1)
 
 # List of CSV files to read
@@ -47,11 +49,12 @@ csv_files = [
 df_list = [pd.read_csv(f) for f in csv_files]
 df = pd.concat(df_list, ignore_index=True)
 
-# Drop rows with NaN values in 'CAN ID' column
-df = df.dropna(subset=['CAN ID'])
-
 # Validate CAN IDs
-df['CAN ID'].apply(validate_can_id)
+df.apply(validate_can_id, axis=1)
+
+# Drop rows with NaN values in 'CAN ID' column
+# Shouldn't do anything since we already validated the IDs
+df = df.dropna(subset=['CAN ID'])
 
 # Check for duplicate CAN IDs
 duplicate_can_ids = df[df.duplicated(subset=['CAN ID'], keep=False)]
@@ -119,10 +122,12 @@ extern const struct CANLUTEntry CanMetadataLUT[LARGEST_CAN_ID];
 
 #endif
 """
-with open("CANMetaData.h", "w") as file: file.write(header + enum_def + header_data)
+with open("CANMetaData.h", "w") as file: 
+    file.write(header + enum_def + header_data)
+
 ##########################The following code will be written to a c file##########################
 c_header = """
-/* Copyright (c) 2018-2022 UT Longhorn Racing Solar */
+/* Copyright (c) 2018-2025 UT Longhorn Racing Solar */
 /**
  * @file CANMetaData.c
  * @brief CAN MetaData Definitions
@@ -145,4 +150,7 @@ for index, row in df.iterrows():
     struct_def += ("    [" + row['Data'] + "]").ljust(max_len + 7) + " {.idx_used = " + str(row['Index Used']) + ", .len = " + str(row['Length(bytes)']) + "},\n"
 struct_def = struct_def[:-2] +  "\n};\n"
 
-with open("CANMetaData.c", "w") as file: file.write(c_header + struct_def)
+with open("CANMetaData.c", "w") as file: 
+    file.write(c_header + struct_def)
+
+print("Files CANMetaData.h and CANMetaData.c created with no errors!")
