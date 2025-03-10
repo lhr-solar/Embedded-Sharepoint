@@ -1,0 +1,74 @@
+VERSION ""
+
+
+NS_ : 
+    NS_DESC_
+    CM_
+    BA_DEF_
+    BA_
+    VAL_
+    CAT_DEF_
+    CAT_
+    FILTER
+    BA_DEF_DEF_
+    EV_DATA_
+    ENVVAR_DATA_
+    SGTYPE_
+    SGTYPE_VAL_
+    BA_DEF_SGTYPE_
+    BA_SGTYPE_
+    SIG_TYPE_REF_
+    VAL_TABLE_
+    SIG_GROUP_
+    SIG_VALTYPE_
+    SIGTYPE_VALTYPE_
+    BO_TX_BU_
+    BA_DEF_REL_
+    BA_REL_
+    BA_DEF_DEF_REL_
+    BU_SG_REL_
+    BU_EV_REL_
+    BU_BO_REL_
+    SG_MUL_VAL_
+
+BS_:
+
+BU_:
+
+
+BO_ 1979 BatteryAndTemp: 54 Vector__XXX
+ SG_ SoC m1 : 279|24@0+ (0.0001,0) [0|0] "%" Vector__XXX
+ SG_ BatPackTemp1 m4 : 40|8@1+ (1,0) [0|0] "%" Vector__XXX
+ SG_ BatPackTemp2 m4 : 64|8@1+ (1,0) [0|0] "%" Vector__XXX
+ SG_ BatPackTemp4 m4 : 112|8@1+ (1,0) [0|0] "%" Vector__XXX
+ SG_ R m97M : 16|8@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ S M : 8|8@1+ (1,0) [0|0] "" Vector__XXX
+
+
+
+BA_DEF_ SG_  "SignalIgnore" INT 0 1;
+BA_DEF_ BO_  "VFrameFormat" ENUM  "StandardCAN","ExtendedCAN","StandardCAN_FD","ExtendedCAN_FD","J1939PG";
+BA_DEF_ BO_  "MessageIgnore" INT 0 1;
+BA_DEF_ BO_  "TransportProtocolType" STRING ;
+BA_DEF_  "BusType" STRING ;
+BA_DEF_  "ProtocolType" STRING ;
+BA_DEF_  "DatabaseCompiler" STRING ;
+BA_DEF_DEF_  "SignalIgnore" 0;
+BA_DEF_DEF_  "VFrameFormat" "";
+BA_DEF_DEF_  "MessageIgnore" 0;
+BA_DEF_DEF_  "TransportProtocolType" "";
+BA_DEF_DEF_  "BusType" "";
+BA_DEF_DEF_  "ProtocolType" "";
+BA_DEF_DEF_  "DatabaseCompiler" "CSS Electronics (wwww.csselectronics.com)";
+BA_ "BusType" "CAN";
+BA_ "ProtocolType" "OBD";
+BA_ "VFrameFormat" BO_ 1979 0;
+BA_ "SignalIgnore" SG_ 1979 R 1;
+BA_ "SignalIgnore" SG_ 1979 S 1;
+BA_ "TransportProtocolType" BO_ 1979 "ISOTP";
+
+SG_MUL_VAL_ 1979 SoC R 1-1;
+SG_MUL_VAL_ 1979 BatPackTemp1 R 4-4;
+SG_MUL_VAL_ 1979 BatPackTemp2 R 4-4;
+SG_MUL_VAL_ 1979 BatPackTemp4 R 4-4;
+SG_MUL_VAL_ 1979 R S 97-97;
