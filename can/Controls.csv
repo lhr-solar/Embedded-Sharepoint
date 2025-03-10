@@ -73,12 +73,12 @@ Data:
 [63:32] : Real component (always 0V by definition)
 [31:0] : Peak of phase to neutral motor voltage (V)
 Frequency: 200ms",,
-15V Voltage Rail,0x248,8,0,,"Precision: 64 bits
+Low Voltage Rail Measurement,0x248,8,0,,"Precision: 64 bits
 Data:
 [63:32] : Actual voltage of 15V rail
 [31:0] : Reserved
 Frequency: 1000ms",,
-3.3V and 1.9V Voltage Rail Measurement,0x249,8,0,,"Precision: 64 bits
+DSP Voltage Rail Measurement,0x249,8,0,,"Precision: 64 bits
 Data:
 [63:32] : Actual voltage of 3.3V rail
 [31:0] : Actual voltage of 1.9V DSP power rail
