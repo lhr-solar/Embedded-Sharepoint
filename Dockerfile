@@ -116,6 +116,7 @@ ENV HOME /home/${REMOTE_USER}
 
 USER ${REMOTE_USER}
 
+RUN pip install --no-cache-dir -r requirements.txt
 # -----------------------------------------------------------------------------
 # Shell customization
 # -----------------------------------------------------------------------------
