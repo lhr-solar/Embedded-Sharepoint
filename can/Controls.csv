@@ -4,8 +4,8 @@ Data:
 [7:0]: State.name (int enum)
 Frequency: 100ms",,
 Motor Precharge Enable,0x582,1,0,OUT,"Data:
-[1]: Controls wants to turn on motor precharge Contactor
-[0]: Controls wants to turn off motor precharge Contactor",,
+ 1 means Controls wants to turn on motor precharge Contactor
+0 means Controls wants to turn off motor precharge Contactor",,
 IO_STATE,0x581,3,0,OUT,"Precision 32 bits
 Data: 
 [23: 16] : Switch Bitmap (from bit 7 to 0; BRAKELIGHT, CRUZ_ST, CRUZ_EN, REV_SW, FOR_SW, REGEN_SW, IGN_2_Motor, IGN_1_Array)
