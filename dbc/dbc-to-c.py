@@ -29,23 +29,9 @@ def WarningMessage(msg):
     print(msg)
     sys.exit()
 
-def DBC_Verify(db):
-    """Returns duplicate CAN IDs in file"""
-    all_ids = []
-    dups = []
-    for msg in db.messages:
-        id = hex(msg.frame_id)
-        if id in all_ids:
-            dups += id,
-
-    return len(dups), dups
-
 def DBC_Parse(db, bus, size, dir):
     """Generates headers according to DBC files"""
     # GENERATE can1_recv_entries.h
-    dups, _ = DBC_Verify(db)
-    if dups:
-        ErrorMessage("Invalid DBC ... run with --verify for more info")
         
     # Convert hexstring to int
     if type(bus) == str: 
@@ -115,17 +101,6 @@ def DBC_Parse(db, bus, size, dir):
         f.write(utils_string)
 
 parser = argparse.ArgumentParser()
-group = parser.add_mutually_exclusive_group()
-
-##### VERIFY #####
-# Usage: python3 dbc-to-c.py --verify <dbc_file_path>
-# 
-# Args (1):
-#   dbc_file_path: Path to DBC file
-#
-# Verifies that DBC file does NOT contain repeated CAN IDs
-##################
-group.add_argument("-v", "--verify", action="store_true")
 
 ##### PARSE #####
 # Usage: python3 dbc-to-c.py --parse <dbc_file_path> <bus> <buff_size> <write_dir>
@@ -142,10 +117,10 @@ group.add_argument("-v", "--verify", action="store_true")
 #   [2] canX_utils.h
 #       --- Contains #define macros mapping CAN message names to frame IDs
 ##################
-group.add_argument("-p", "--parse", action="store_true")
+parser.add_argument("-p", "--parse", action="store_true")
 
 parser.add_argument("dbc_file_path")
-parser.add_argument("bus", nargs='?', const="") # Default bus arg so no conflicts between -v and -p
+parser.add_argument("bus") 
 parser.add_argument("buff_size", nargs='?', const=DEFAULT_Q_SIZE)
 parser.add_argument("write_dir", nargs='?', const=".")
 
@@ -161,21 +136,7 @@ if not Path(path).exists():
 
 db = cantools.database.load_file(path)
 
-if args.verify:
-    # Verify    
-    cnt, dups = DBC_Verify(db)
-    
-    if not cnt:
-        print(f"{GREEN}{BOLD}Valid DBC!{END}{END} --- no duplicate CAN IDs")
-
-    else:
-        print(f"{RED}{BOLD}Invalid DBC!{END}{END}, found {cnt} duplicates:")
-        for d in dups:
-            print(f"{BOLD}-->{END} {d}")
-        
 if args.parse:
-    if not args.bus:
-        ErrorMessage("No <bus> parameter passed to parse command")
     if args.write_dir == ".":
         WarningMessage("No output dir specified ... using current dir")
 
