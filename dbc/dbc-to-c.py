@@ -19,19 +19,22 @@ END = "\033[0m"
 
 def ErrorMessage(msg):
     """Formats and error message in red and bold text"""
-    print(f"{RED}{BOLD}Err{END}{END}", end=": ")
+    print(f"{RED}{BOLD}Fatal Err{END}{END}", end=": ")
     print(msg)
     sys.exit()
 
 def WarningMessage(msg):
     """Formats and error message in red and bold text"""
-    print(f"{YELLOW}{BOLD}Err{END}{END}", end=": ")
+    print(f"{YELLOW}{BOLD}Warning{END}{END}", end=": ")
     print(msg)
-    sys.exit()
 
 def DBC_Parse(db, bus, size, dir):
     """Generates headers according to DBC files"""
-    # GENERATE can1_recv_entries.h
+    # GENERATE canX_recv_entries.h
+
+    if not (Path(dir)).exists():
+        WarningMessage(f"{BOLD}{dir}{END} not found ... making it")
+        os.mkdir(dir)
         
     # Convert hexstring to int
     if type(bus) == str: 
@@ -40,7 +43,7 @@ def DBC_Parse(db, bus, size, dir):
     recv_string = ""
 
     for msg in db.messages:
-        id = msg.frame_id
+        id = hex(msg.frame_id)
         name = msg.name
 
         recv_string += f"CAN_RECV_ENTRY({id}, {size}, false) // {name}\n"
@@ -52,10 +55,9 @@ def DBC_Parse(db, bus, size, dir):
     utils_string = ""
 
     for msg in db.messages:
-        id = msg.id
+        id = hex(msg.frame_id)
         name = msg.name
         length = msg.length
-        msg_endian = msg.byte_order
 
         utils_string += f"#define {name} {id}\n\n"
 
@@ -67,35 +69,33 @@ def DBC_Parse(db, bus, size, dir):
             sig_start = s.start
             sig_length = s.length
 
-            bin_string = "0b" + ("0" * (length * 8)) # all 0's
+            bin_string = list(("0" * (length * 8))) # all 0's
 
             if sig_endian == "big_endian":
-                bin_string[sig_start:sig_start+sig_length] = "1" * sig_length
+                bin_string[sig_start:sig_start+sig_length] = list("1" * sig_length)
             else:
-                bin_string[sig_start-sig_length:sig_start] = "1" * sig_length
-            
-            if msg_endian == "little_endian":
-                bin_string = bin_string[::-1] # reverse
+                bin_string[sig_start-sig_length:sig_start] = list("1" * sig_length)
+                
+            bin_string = "0b" + "".join(bin_string) # make string
 
-            mask = hex(bin_string)
+            mask = hex(eval(bin_string))
             # calc trailing 0's
             shift_length = 0
             for i in bin_string[::-1]:
                 if i == "1": break
                 shift_length += 1
             
-            utils_string += "#define Parse_{sig_name}(d) (d & {mask}) >> {shift_length}\n"
+            utils_string += f"#define Parse_{sig_name}(d) ((d & {mask}) >> {shift_length})\n"
 
             # --- GEN ENUMS ---
-            utils_string += "\nenum {s}_VALUES { "
             if s.choices:
-                idx = 0
-                for c in s.choices:
-                    utils_string += "{s.choices[idx]} = {c},\n"
+                keys = sorted(s.choices.keys())
+                utils_string += f"\nenum {sig_name}_Values {{ \n"
 
-                    idx += 1
+                for k in keys:
+                    utils_string += f"  {s.choices[k]} = {k},\n"
             
-            utils_string = utils_string[:-2] + " }" # trim ".\n" off the last entry
+                utils_string = utils_string[:-2] + "\n };\n\n" # trim ".\n" off the last entry
 
     with open(f"{dir}/can_utils.h", "w+") as f:
         f.write(utils_string)
@@ -121,8 +121,8 @@ parser.add_argument("-p", "--parse", action="store_true")
 
 parser.add_argument("dbc_file_path")
 parser.add_argument("bus") 
-parser.add_argument("buff_size", nargs='?', const=DEFAULT_Q_SIZE)
-parser.add_argument("write_dir", nargs='?', const=".")
+parser.add_argument("buff_size", nargs='?', const=1, default=DEFAULT_Q_SIZE, type=int)
+parser.add_argument("write_dir", nargs='?', const=1, default=".", type=str)
 
 args = parser.parse_args()
 
@@ -132,7 +132,7 @@ path = args.dbc_file_path
 if not path.endswith(".dbc"):
     ErrorMessage("DBC file path must end with .dbc")
 if not Path(path).exists():
-    ErrorMessage(f"{path} is not a valid path")
+    ErrorMessage(f"{BOLD}{path}{END} is not a valid DBC file path")
 
 db = cantools.database.load_file(path)
 
