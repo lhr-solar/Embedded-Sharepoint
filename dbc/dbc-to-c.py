@@ -62,39 +62,56 @@ def DBC_Parse(db, bus, size, dir):
     with open(f"{dir}/can{bus}_recv_entries.h", "w+") as f:
         f.write(recv_string)
 
-    # GENERATE canX_utils.h
+    # GENERATE can_utils.h
     utils_string = ""
-    buses = [] # placeholder --- let it be the buses
 
-    for b in buses:
-        messages = [] # placeholder --- let it be the messages in the bus
+    for msg in db.messages:
+        id = msg.id
+        name = msg.name
+        length = msg.length
+        msg_endian = msg.byte_order
 
-        for msg in messages:
-            id = msg.id
-            name = msg.name
-            length = msg.length
+        utils_string += f"#define {name} {id}\n\n"
 
-            utils_string += f"#define {name} {id}\n\n"
+        signals = msg.signals
+        for s in signals:
+            # --- GEN MASKS ---
+            sig_name = s.name
+            sig_endian = s.byte_order
+            sig_start = s.start
+            sig_length = s.length
 
-            signals = msg.signals
-            for s in signals:
-                #bin_string = "0b" + ("0" * (length * 8)) # all 0's
-             
-                #utils_string += "#define {s} {mask}\n"
-                # ^^ need to figure out reading w/ endianness
+            bin_string = "0b" + ("0" * (length * 8)) # all 0's
 
-                utils_string += "\nenum {s}_VALUES { "
-                if s.choices:
-                    idx = 0
-                    for c in s.choices:
-                        utils_string += "{s.choices[idx]} = {c},\n"
+            if sig_endian == "big_endian":
+                bin_string[sig_start:sig_start+sig_length] = "1" * sig_length
+            else:
+                bin_string[sig_start-sig_length:sig_start] = "1" * sig_length
+            
+            if msg_endian == "little_endian":
+                bin_string = bin_string[::-1] # reverse
 
-                        idx += 1
-                
-                utils_string = utils_string[:-2] + " }" # trim ".\n" off the last entry
+            mask = hex(bin_string)
+            # calc trailing 0's
+            shift_length = 0
+            for i in bin_string[::-1]:
+                if i == "1": break
+                shift_length += 1
+            
+            utils_string += "#define Parse_{sig_name}(d) (d & {mask}) >> {shift_length}\n"
 
+            # --- GEN ENUMS ---
+            utils_string += "\nenum {s}_VALUES { "
+            if s.choices:
+                idx = 0
+                for c in s.choices:
+                    utils_string += "{s.choices[idx]} = {c},\n"
 
-    with open(f"{dir}/can{bus}_utils.h", "w+") as f:
+                    idx += 1
+            
+            utils_string = utils_string[:-2] + " }" # trim ".\n" off the last entry
+
+    with open(f"{dir}/can_utils.h", "w+") as f:
         f.write(utils_string)
 
 parser = argparse.ArgumentParser()
@@ -149,10 +166,10 @@ if args.verify:
     cnt, dups = DBC_Verify(db)
     
     if not cnt:
-        print(f"{GREEN}Valid DBC{END} --- no duplicate CAN IDs")
+        print(f"{GREEN}{BOLD}Valid DBC!{END}{END} --- no duplicate CAN IDs")
 
     else:
-        print(f"{RED}Invalid DBC{END}, found {cnt} duplicates:")
+        print(f"{RED}{BOLD}Invalid DBC!{END}{END}, found {cnt} duplicates:")
         for d in dups:
             print(f"{BOLD}-->{END} {d}")
         

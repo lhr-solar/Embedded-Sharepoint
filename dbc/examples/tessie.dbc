@@ -63,6 +63,12 @@ BO_ 12 ID00CUI_status: 8 VehicleBus
  SG_ UI_wifiActive : 6|1@1+ (1,0) [0|1] ""  Receiver
  SG_ UI_wifiConnected : 7|1@1+ (1,0) [0|1] ""  Receiver
 
+BO_ 12 ID00CUI_status: 8 VehicleBus
+ SG_ UI_audioActive : 1|1@1+ (1,0) [0|1] ""  Receiver
+ SG_ UI_autopilotTrial : 12|2@1+ (1,0) [0|3] ""  Receiver
+ SG_ UI_bluetoothActive : 2|1@1+ (1,0) [0|1] ""  Receiver
+
+
 BO_ 851 ID353UI_status: 8 VehicleBus
  SG_ UI_audioActive : 1|1@1+ (1,0) [0|1] ""  Receiver
  SG_ UI_autopilotTrial : 12|2@1+ (1,0) [0|3] ""  Receiver
