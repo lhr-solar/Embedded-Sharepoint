@@ -23,7 +23,7 @@
  */
 
 /**
- * @def CANUTIL_GET_VALUE_[signal_name]
+ * @def CANUTIL_GET_VALUE_[signal_name](*can_msg_arr)
  * @brief Signal Extraction Macros
  * 
  * Extracts the signal value from an 8-byte CAN message. Requires a pointer
