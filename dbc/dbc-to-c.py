@@ -7,6 +7,22 @@ from pathlib import Path
 # CAN Parsing
 import cantools
 
+##### PARSE #####
+# Usage: python3 dbc-to-c.py --parse <dbc_file_path> <bus> <buff_size> <write_dir>
+# 
+# Args(4):
+#   dbc_file_path: Path to DBC file
+#   bus: CAN bus number
+#   buff_size: Default size of recv queue (default: 10)
+#   write_dir: Path to write parsed headers to (default: current_dir)
+#
+# Generates (2) files:
+#   [1] canX_recv_entries.h
+#       -- Contains CAN_RECV_ENTRY lines parsed from DBC
+#   [2] canX_utils.h
+#       --- Contains #define macros mapping CAN message names to frame IDs
+##################
+
 # User defaults
 DEFAULT_Q_SIZE = 10
 
@@ -41,6 +57,8 @@ def DBC_Parse(db, bus, size, dir):
         bus = eval(bus)
     
     recv_string = ""
+    with open("docs/recv.txt", "r") as f:
+        recv_string = f.read().format(num=bus)
 
     for msg in db.messages:
         id = hex(msg.frame_id)
@@ -53,13 +71,15 @@ def DBC_Parse(db, bus, size, dir):
 
     # GENERATE can_utils.h
     utils_string = ""
+    with open("docs/utils.txt", "r") as f:
+        utils_string = f.read()
 
     for msg in db.messages:
         id = hex(msg.frame_id)
         name = msg.name
         length = msg.length
 
-        utils_string += f"#define {name} {id}\n\n"
+        utils_string += f"#define CANUTIL_{name} {id}\n\n"
 
         signals = msg.signals
         for s in signals:
@@ -85,38 +105,23 @@ def DBC_Parse(db, bus, size, dir):
                 if i == "1": break
                 shift_length += 1
             
-            utils_string += f"#define Parse_{sig_name}(d) ((d & {mask}) >> {shift_length})\n"
+            utils_string += f"#define CANUTIL_GET_VALUE_{sig_name}(d) ((*( (uint64_t *) d ) & {mask}) >> {shift_length})\n"
 
             # --- GEN ENUMS ---
             if s.choices:
                 keys = sorted(s.choices.keys())
-                utils_string += f"\nenum {sig_name}_Values {{ \n"
+                utils_string += f"\ntypedef enum {{ \n"
 
                 for k in keys:
                     utils_string += f"  {s.choices[k]} = {k},\n"
             
-                utils_string = utils_string[:-2] + "\n };\n\n" # trim ".\n" off the last entry
+                utils_string = utils_string[:-2] + f"\n }} canutil_{sig_name}_vals;\n\n" # trim ".\n" off the last entry
 
     with open(f"{dir}/can_utils.h", "w+") as f:
         f.write(utils_string)
 
 parser = argparse.ArgumentParser()
 
-##### PARSE #####
-# Usage: python3 dbc-to-c.py --parse <dbc_file_path> <bus> <buff_size> <write_dir>
-# 
-# Args(4):
-#   dbc_file_path: Path to DBC file
-#   bus: CAN bus number
-#   buff_size: Default size of recv queue (default: 10)
-#   write_dir: Path to write parsed headers to (default: current_dir)
-#
-# Generates (2) files:
-#   [1] canX_recv_entries.h
-#       -- Contains CAN_RECV_ENTRY lines parsed from DBC
-#   [2] canX_utils.h
-#       --- Contains #define macros mapping CAN message names to frame IDs
-##################
 parser.add_argument("-p", "--parse", action="store_true")
 
 parser.add_argument("dbc_file_path")
@@ -133,6 +138,10 @@ if not path.endswith(".dbc"):
     ErrorMessage("DBC file path must end with .dbc")
 if not Path(path).exists():
     ErrorMessage(f"{BOLD}{path}{END} is not a valid DBC file path")
+
+# Check if documentation files exist
+if not Path("docs/recv.txt").exists() or not Path("docs/utils.txt").exists():
+    ErrorMessage(f"Make sure to include {BOLD}'docs'{END} folder in current directory containing {BOLD}recv.txt{END} and {BOLD}utils.txt{END}.")
 
 db = cantools.database.load_file(path)
 

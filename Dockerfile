@@ -54,6 +54,7 @@ RUN apt-get install -y --no-install-recommends \
 # -----------------------------------------------------------------------------
 RUN pip install --no-cache-dir \
     mkdocs
+    cantools==40.2.1
 
 FROM dev AS toolchain-cache
 # -----------------------------------------------------------------------------
