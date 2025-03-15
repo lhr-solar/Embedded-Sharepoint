@@ -16,7 +16,6 @@ DISTRO=""
 case $ID in
     ubuntu|debian) DISTRO="ubuntu" ;;
     fedora) DISTRO="fedora" ;;
-    arch) DISTRO="arch" ;;
     *) echo "Unsupported distribution"; exit 1 ;;
 esac
 
@@ -24,7 +23,6 @@ function install_gh() {
     echo -e "${RED}\nInstalling GitHub CLI...\n==================================\n${NC}"
     case $DISTRO in
         ubuntu)
-            # Official GH CLI installation for Debian/Ubuntu
             apt-get install -y wget
             mkdir -p -m 755 /etc/apt/keyrings
             wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | \
@@ -38,7 +36,6 @@ function install_gh() {
             ;;
 
         fedora)
-            # Official GH CLI installation for Fedora
             if dnf --version | grep -q 'dnf5'; then
                 dnf install -y dnf5-plugins
                 dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
@@ -47,11 +44,6 @@ function install_gh() {
                 dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
             fi
             dnf install -y gh --repo gh-cli
-            ;;
-
-        arch)
-            # Official GH CLI package for Arch
-            pacman -Sy --noconfirm github-cli
             ;;
     esac
 }
@@ -71,7 +63,7 @@ function install_packages() {
             pip3 install mkdocs pyserial
             wget https://apt.llvm.org/llvm.sh -O /tmp/llvm.sh
             chmod +x /tmp/llvm.sh
-            /tmp/llvm.sh 17
+            /tmp/llvm.sh 17 all  # Modified line
             apt-get install -y gcc-multilib
             rm /tmp/llvm.sh
             ;;
@@ -85,15 +77,6 @@ function install_packages() {
             pip3 install mkdocs pyserial
             dnf install -y clang clang-tools-extra lld
             dnf install -y gcc-multilib
-            ;;
-
-        arch)
-            pacman -Sy --noconfirm vim wget base-devel gdb openocd stlink ncurses \
-                python-pip git gnupg bear picocom ca-certificates openssh usbutils
-            pip3 install mkdocs pyserial
-            pacman -Sy --noconfirm clang lldb lld
-            sed -i '/^#\[multilib\]/{s/^#//;n;s/^#//}' /etc/pacman.conf
-            pacman -Sy --noconfirm gcc-multilib
             ;;
     esac
 }
@@ -113,35 +96,27 @@ function arm_toolchain() {
                 mv "/usr/share/arm-gnu-toolchain-${version}.rel1-x86_64-arm-none-eabi" /usr/share/arm-gnu-toolchain
                 rm /tmp/arm-none-eabi.tar.xz
 
-                ln -sf /usr/share/arm-gnu-toolchain/bin/arm-none-eabi-{gcc,g++,objcopy,size,gdb} /usr/bin/
+                # Modified symlinks
+                ln -sf /usr/share/arm-gnu-toolchain/bin/arm-none-eabi-{gcc,g++,objcopy,objdump,size,gdb} /usr/bin/
 
                 echo -e "${RED}\nInstalling dependencies...\n==================================\n${NC}"
+                local libdir
                 if [[ "$DISTRO" == "ubuntu" ]]; then
                     apt-get install -y libncurses-dev python3.8
-                    ln -sf /usr/lib/x86_64-linux-gnu/libncurses.so.6 /usr/lib/x86_64-linux-gnu/libncurses.so.5
-                    ln -sf /usr/lib/x86_64-linux-gnu/libncursesw.so.6 /usr/lib/x86_64-linux-gnu/libncursesw.so.5
-                    ln -sf /usr/lib/x86_64-linux-gnu/libtinfo.so.6 /usr/lib/x86_64-linux-gnu/libtinfo.so.5
+                    libdir="/usr/lib/x86_64-linux-gnu"
                 elif [[ "$DISTRO" == "fedora" ]]; then
                     dnf install -y ncurses-devel python3.8
-                    ln -sf /usr/lib64/libncurses.so.6 /usr/lib64/libncurses.so.5
-                    ln -sf /usr/lib64/libncursesw.so.6 /usr/lib64/libncursesw.so.5
-                    ln -sf /usr/lib64/libtinfo.so.6 /usr/lib64/libtinfo.so.5
+                    libdir="/usr/lib64"
                 fi
+
+                ln -sf "$libdir"/libncurses.so.6 "$libdir"/libncurses.so.5
+                ln -sf "$libdir"/libncursesw.so.6 "$libdir"/libncursesw.so.5
+                ln -sf "$libdir"/libtinfo.so.6 "$libdir"/libtinfo.so.5
 
             elif [[ "$action" == "remove" ]]; then
                 echo -e "${RED}\nRemoving ARM Toolchain...\n==================================\n${NC}"
-                rm -f /usr/bin/arm-none-eabi-{gcc,g++,objcopy,size,gdb}
+                rm -f /usr/bin/arm-none-eabi-{gcc,g++,objcopy,objdump,size,gdb}
                 rm -rf /usr/share/arm-gnu-toolchain
-            fi
-            ;;
-
-        arch)
-            if [[ "$action" == "install" ]]; then
-                echo -e "${RED}\nInstalling ARM Toolchain for Arch...\n==================================\n${NC}"
-                pacman -Sy --noconfirm gcc-arm-none-eabi-bin
-                pacman -Sy --noconfirm gcc-multilib
-            elif [[ "$action" == "remove" ]]; then
-                pacman -Rns --noconfirm gcc-arm-none-eabi-bin gcc-multilib
             fi
             ;;
     esac
