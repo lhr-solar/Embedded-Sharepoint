@@ -53,7 +53,8 @@ RUN apt-get install -y --no-install-recommends \
 # Install Python
 # -----------------------------------------------------------------------------
 RUN pip install --no-cache-dir \
-    mkdocs
+    mkdocs \
+    cantools==40.2.1
 
 FROM dev AS toolchain-cache
 # -----------------------------------------------------------------------------
