@@ -41,7 +41,6 @@ RUN apt-get install -y --no-install-recommends \
       dirmngr \
       bear \
       picocom \
-      picocom \
       ca-certificates \
       openssh-client \
       python3.10 \
