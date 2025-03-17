@@ -34,13 +34,13 @@ BOLD = "\033[1m"
 END = "\033[0m"
 
 def ErrorMessage(msg):
-    """Formats and error message in red and bold text"""
+    """Formats an error message in red and bold text"""
     print(f"{RED}{BOLD}Fatal Err{END}{END}", end=": ")
     print(msg)
     sys.exit()
 
 def WarningMessage(msg):
-    """Formats and error message in red and bold text"""
+    """Formats a warning message in yellow and bold text"""
     print(f"{YELLOW}{BOLD}Warning{END}{END}", end=": ")
     print(msg)
 
@@ -122,8 +122,6 @@ def DBC_Parse(db, bus, size, dir):
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-p", "--parse", action="store_true")
-
 parser.add_argument("dbc_file_path")
 parser.add_argument("bus") 
 parser.add_argument("buff_size", nargs='?', const=1, default=DEFAULT_Q_SIZE, type=int)
@@ -145,8 +143,7 @@ if not Path("docs/recv.txt").exists() or not Path("docs/utils.txt").exists():
 
 db = cantools.database.load_file(path)
 
-if args.parse:
-    if args.write_dir == ".":
-        WarningMessage("No output dir specified ... using current dir")
+if args.write_dir == ".":
+    WarningMessage("No output dir specified ... using current dir")
 
-    DBC_Parse(db, args.bus, args.buff_size, args.write_dir)
+DBC_Parse(db, args.bus, args.buff_size, args.write_dir)
