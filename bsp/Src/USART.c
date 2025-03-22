@@ -370,6 +370,12 @@ usart_status_t usart_send(USART_HandleTypeDef* handle, const uint8_t* data, uint
         tx_queue = &usart2_tx_queue;
     }
     #endif /* USART2 */
+    #ifdef USART3
+    if(handle->Instance == USART3) {
+        tx_buffer = usart3_tx_buffer;
+        tx_queue = &usart3_tx_queue;
+    }
+    #endif /* USART3 */
 
     usart_status_t status = USART_SENT;
 
