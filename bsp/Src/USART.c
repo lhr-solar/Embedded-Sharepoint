@@ -11,13 +11,13 @@ typedef struct {
     uint8_t data[DATA_SIZE]; // data to be transmitted, 1 byte
 } tx_payload_t;
 
-uint16_t sizeof_tx_payload_t = sizeof(tx_payload_t); // Precompute size of payload
+static uint16_t sizeof_tx_payload_t = sizeof(tx_payload_t); // Precompute size of payload
 
 typedef struct {
     uint8_t data[DATA_SIZE]; // data received, 1 byte
 } rx_payload_t;
 
-uint16_t sizeof_rx_payload_t = sizeof(rx_payload_t);
+static uint16_t sizeof_rx_payload_t = sizeof(rx_payload_t);
 
 #ifdef USART1
 // fallback USART1 TX queue size
