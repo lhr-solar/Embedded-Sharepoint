@@ -41,10 +41,10 @@ extern USART_HandleTypeDef* husart3;
 
 
 // Function prototypes with consistent parameters and return types
-usart_status_t USART_init(USART_HandleTypeDef* handle); // Create queue at compile time, User passes in the size of the queue they want
-usart_status_t USART_deinit(USART_HandleTypeDef* handle);
-usart_status_t USART_send(USART_HandleTypeDef* handle, const uint8_t* data, uint8_t length, TickType_t delay_ticks);
-usart_status_t USART_recv(USART_HandleTypeDef* handle, uint8_t* data, uint8_t length, TickType_t delay_ticks);
+usart_status_t usart_init(USART_HandleTypeDef* handle); // Create queue at compile time, User passes in the size of the queue they want
+usart_status_t usart_deinit(USART_HandleTypeDef* handle);
+usart_status_t usart_send(USART_HandleTypeDef* handle, const uint8_t* data, uint8_t length, TickType_t delay_ticks);
+usart_status_t usart_recv(USART_HandleTypeDef* handle, uint8_t* data, uint8_t length, TickType_t delay_ticks);
 
 #endif /* USART_UNDEFINED */
 #endif /* USART_H_ */
