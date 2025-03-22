@@ -39,15 +39,11 @@ static QueueHandle_t usart1_tx_queue = NULL;
 static StaticQueue_t usart1_tx_queue_buffer;
 static uint8_t usart1_tx_queue_storage[USART1_TX_QUEUE_SIZE * sizeof(tx_payload_t)]; 
 
-
 // USART1 RX queue
 static QueueHandle_t usart1_rx_queue = NULL;
 static StaticQueue_t usart1_rx_queue_buffer;
 static uint8_t usart1_rx_queue_storage[USART1_RX_QUEUE_SIZE * sizeof(rx_payload_t)];  // Will be allocated based on queue_size in usart_init
-
-
 #endif /* USART1 */
-
 
 #ifdef USART2
 // fallback USART2 TX queue size
@@ -73,8 +69,7 @@ static uint8_t usart2_tx_queue_storage[USART2_TX_QUEUE_SIZE * sizeof(tx_payload_
 static QueueHandle_t usart2_rx_queue = NULL;
 static StaticQueue_t usart2_rx_queue_buffer;
 static uint8_t usart2_rx_queue_storage[USART2_RX_QUEUE_SIZE * sizeof(rx_payload_t)];  // Will be allocated based on queue_size
-
-#endif /* USART3 */
+#endif /* USART2 */
 
 #ifdef USART3
 // fallback USART3 TX queue size
@@ -100,7 +95,6 @@ static uint8_t usart3_tx_queue_storage[USART3_TX_QUEUE_SIZE * sizeof(tx_payload_
 static QueueHandle_t usart3_rx_queue = NULL;
 static StaticQueue_t usart3_rx_queue_buffer;
 static uint8_t usart3_rx_queue_storage[USART3_RX_QUEUE_SIZE * sizeof(rx_payload_t)];  // Will be allocated based on queue_size
-
 #endif /* USART3 */
 
 
@@ -349,12 +343,13 @@ static uint8_t usart1_tx_buffer[USART1_TX_QUEUE_SIZE];
 #ifdef USART2
 // static buffer for USART2 TX
 static uint8_t usart2_tx_buffer[USART2_TX_QUEUE_SIZE]; // make buffer size same as queue size 
+#endif
 
 #ifdef USART3
 // static buffer for USART3 TX
 static uint8_t usart3_tx_buffer[USART3_TX_QUEUE_SIZE]; // make buffer size same as queue size 
-
 #endif
+
 usart_status_t usart_send(USART_HandleTypeDef* handle, const uint8_t* data, uint8_t length, TickType_t delay_ticks) {
     if (length == 0 || !is_usart_initialized(handle)) { // check if USART is initialized and data length is not 0
         return USART_ERR;
