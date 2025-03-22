@@ -47,13 +47,13 @@ int main(void) {
     }
 
     // Create the tasks statically
-    xTaskCreateStatic(TxTask, 
-                     "TX",
-                     configMINIMAL_STACK_SIZE,
-                     NULL,
-                     tskIDLE_PRIORITY + 2,
-                     txTaskStack,
-                     &txTaskBuffer);
+    // xTaskCreateStatic(TxTask, 
+    //                  "TX",
+    //                  configMINIMAL_STACK_SIZE,
+    //                  NULL,
+    //                  tskIDLE_PRIORITY + 2,
+    //                  txTaskStack,
+    //                  &txTaskBuffer);
 
     xTaskCreateStatic(RxTask,
                      "RX", 

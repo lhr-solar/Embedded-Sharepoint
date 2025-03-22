@@ -11,13 +11,9 @@ typedef struct {
     uint8_t data[DATA_SIZE]; // data to be transmitted, 1 byte
 } tx_payload_t;
 
-static uint16_t sizeof_tx_payload_t = sizeof(tx_payload_t); // Precompute size of payload
-
 typedef struct {
     uint8_t data[DATA_SIZE]; // data received, 1 byte
 } rx_payload_t;
-
-static uint16_t sizeof_rx_payload_t = sizeof(rx_payload_t);
 
 #ifdef USART1
 // fallback USART1 TX queue size
@@ -43,6 +39,11 @@ static uint8_t usart1_tx_queue_storage[USART1_TX_QUEUE_SIZE * sizeof(tx_payload_
 static QueueHandle_t usart1_rx_queue = NULL;
 static StaticQueue_t usart1_rx_queue_buffer;
 static uint8_t usart1_rx_queue_storage[USART1_RX_QUEUE_SIZE * sizeof(rx_payload_t)];  // Will be allocated based on queue_size in usart_init
+
+// USART1 RX buffer
+// An intermediate buffer of DATA_SIZE bytes to store received data before it is copied to the queue
+static rx_payload_t usart1_rx_buffer;
+
 #endif /* USART1 */
 
 #ifdef USART2
@@ -69,6 +70,11 @@ static uint8_t usart2_tx_queue_storage[USART2_TX_QUEUE_SIZE * sizeof(tx_payload_
 static QueueHandle_t usart2_rx_queue = NULL;
 static StaticQueue_t usart2_rx_queue_buffer;
 static uint8_t usart2_rx_queue_storage[USART2_RX_QUEUE_SIZE * sizeof(rx_payload_t)];  // Will be allocated based on queue_size
+
+// USART2 RX buffer
+// An intermediate buffer of DATA_SIZE bytes to store received data before it is copied to the queue
+static rx_payload_t usart2_rx_buffer;
+
 #endif /* USART2 */
 
 #ifdef USART3
@@ -95,6 +101,11 @@ static uint8_t usart3_tx_queue_storage[USART3_TX_QUEUE_SIZE * sizeof(tx_payload_
 static QueueHandle_t usart3_rx_queue = NULL;
 static StaticQueue_t usart3_rx_queue_buffer;
 static uint8_t usart3_rx_queue_storage[USART3_RX_QUEUE_SIZE * sizeof(rx_payload_t)];  // Will be allocated based on queue_size
+
+// USART3 RX buffer
+// An intermediate buffer of DATA_SIZE bytes to store received data before it is copied to the queue
+static rx_payload_t usart3_rx_buffer;
+
 #endif /* USART3 */
 
 
@@ -206,21 +217,25 @@ void HAL_USART_MspDeInit(USART_HandleTypeDef *husart) {
  */
 usart_status_t usart_init(USART_HandleTypeDef* handle) {
 
+    uint8_t *rx_buffer = NULL;
+
     #ifdef USART1
     if (handle->Instance == USART1) {
 
         // Create TX queue
         usart1_tx_queue = xQueueCreateStatic(USART1_TX_QUEUE_SIZE, 
-                                            sizeof(sizeof_tx_payload_t), 
+                                            sizeof(tx_payload_t), 
                                             usart1_tx_queue_storage, 
                                             &usart1_tx_queue_buffer);
         
         
         // Create RX queue
         usart1_rx_queue = xQueueCreateStatic(USART1_RX_QUEUE_SIZE,
-                                            sizeof(sizeof_rx_payload_t),
+                                            sizeof(rx_payload_t),
                                             usart1_rx_queue_storage,
                                             &usart1_rx_queue_buffer);
+
+        rx_buffer = usart1_rx_buffer.data;
     }
     #endif /* USART1 */
 
@@ -229,15 +244,17 @@ usart_status_t usart_init(USART_HandleTypeDef* handle) {
 
         // Allocate static storage for TX queue
         usart2_tx_queue = xQueueCreateStatic(USART2_TX_QUEUE_SIZE, 
-                                          sizeof(sizeof_tx_payload_t), 
+                                          sizeof(tx_payload_t), 
                                           usart2_tx_queue_storage, 
                                           &usart2_tx_queue_buffer);
 
         // Create RX queue
         usart2_rx_queue = xQueueCreateStatic(USART2_RX_QUEUE_SIZE,
-                                          sizeof(sizeof_rx_payload_t),
+                                          sizeof(rx_payload_t),
                                           usart2_rx_queue_storage,
                                           &usart2_rx_queue_buffer);
+
+        rx_buffer = usart2_rx_buffer.data;
     }
     #endif /* USART2 */
 
@@ -246,15 +263,17 @@ usart_status_t usart_init(USART_HandleTypeDef* handle) {
 
         // Allocate static storage for TX queue
         usart3_tx_queue = xQueueCreateStatic(USART3_TX_QUEUE_SIZE, 
-                                          sizeof(sizeof_tx_payload_t), 
+                                          sizeof(tx_payload_t), 
                                           usart3_tx_queue_storage, 
                                           &usart3_tx_queue_buffer);
 
         // Create RX queue
         usart3_rx_queue = xQueueCreateStatic(USART3_RX_QUEUE_SIZE,
-                                          sizeof(sizeof_rx_payload_t),
+                                          sizeof(rx_payload_t),
                                           usart3_rx_queue_storage,
                                           &usart3_rx_queue_buffer);
+
+        rx_buffer = usart3_rx_buffer.data;
     }
     #endif /* USART3 */
     
@@ -265,9 +284,9 @@ usart_status_t usart_init(USART_HandleTypeDef* handle) {
     }
 
     // Start reception
-    if (HAL_USART_Receive_IT(handle, (uint8_t*)handle->pRxBuffPtr, DATA_SIZE) != HAL_OK) {
-        return USART_ERR;
-    }
+    // if (HAL_USART_Receive_IT(handle, rx_buffer, DATA_SIZE) != HAL_OK) {
+    //     return USART_ERR;
+    // }
 
     return USART_OK;
 }
@@ -393,7 +412,6 @@ usart_status_t usart_send(USART_HandleTypeDef* handle, const uint8_t* data, uint
     }
     portEXIT_CRITICAL();
 
-
     // put into send queues
     for (uint8_t i = 0; i < length; i++) {
         if (xQueueSend(*tx_queue, &data[i], delay_ticks) != pdTRUE){
@@ -401,8 +419,6 @@ usart_status_t usart_send(USART_HandleTypeDef* handle, const uint8_t* data, uint
         }  //delay_ticks: 0 = no wait, portMAX_DELAY = wait until space is available
     }
     
-
-
 exit:
     return status;
 }
@@ -526,9 +542,9 @@ void HAL_USART_RxCpltCallback(USART_HandleTypeDef *husart) {
 
     xQueueSendFromISR(*rx_queue, &receivedData, &higherPriorityTaskWoken); // Send data from &receivedData(pRxBuffPtr) to rx_queue
     
-    portENTER_CRITICAL();
-    HAL_USART_Receive_IT(husart, (uint8_t*)husart->pRxBuffPtr, DATA_SIZE);// pRxBufferPtr is a pointer to the buffer that will store the received data
-    portEXIT_CRITICAL();
+    // portENTER_CRITICAL();
+    // HAL_USART_Receive_IT(husart, (uint8_t*)husart->pRxBuffPtr, DATA_SIZE);// pRxBufferPtr is a pointer to the buffer that will store the received data
+    // portEXIT_CRITICAL();
     
     portYIELD_FROM_ISR(higherPriorityTaskWoken);
 }
