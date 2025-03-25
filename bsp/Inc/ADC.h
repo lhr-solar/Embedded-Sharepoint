@@ -2,7 +2,6 @@
 #define _ADC_H
 
 #include "stm32xx_hal.h"
-#include "stm32f4xx_hal_adc.h"
 
 #include "FreeRTOS.h"
 #include "queue.h"

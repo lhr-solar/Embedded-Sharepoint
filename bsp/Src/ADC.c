@@ -60,3 +60,7 @@ adc_status_t ADC_OneShotRead(uint32_t channel, uint32_t samplingTime, bool block
 
     return ADC_OK; // not sure if i should actually send an "OK" interrupt b/c the callback is still pending
 }
+
+void ADC_IRQHandler() {
+    HAL_ADC_IRQHandler(hadc);
+}
