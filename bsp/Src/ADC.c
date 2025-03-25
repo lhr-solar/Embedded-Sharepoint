@@ -1,13 +1,33 @@
 #include "ADC.h"
 
-#ifdef ADC1
 static ADC_HandleTypeDef hadc_ = {.Instance = ADC1};
 ADC_HandleTypeDef* hadc = &hadc_;
-#endif
 
 static QueueHandle_t* adcReadings;
 
 volatile bool read_failed = 0;
+
+void hi() {
+    int a = 2;
+    a += 0;
+}
+
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *h) {
+    /*
+    Interrupt triggers this callback when the conversion is complete
+    */
+   BaseType_t higherPriorityTaskWoken = pdFALSE;
+
+    if (h == hadc) {
+        int rawVal = HAL_ADC_GetValue(hadc);
+
+        // push value to q
+        xQueueSendFromISR(*adcReadings, &rawVal, &higherPriorityTaskWoken);
+
+    } else {
+        read_failed = 1; 
+    }
+}
 
 adc_status_t ADC_Init(ADC_InitTypeDef init, QueueHandle_t* rxQueue) {
     adcReadings = rxQueue;
@@ -39,21 +59,4 @@ adc_status_t ADC_OneShotRead(uint32_t channel, uint32_t samplingTime, bool block
     HAL_ADC_Start_IT(hadc);   
 
     return ADC_OK; // not sure if i should actually send an "OK" interrupt b/c the callback is still pending
-}
-
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *h) {
-    /*
-    Interrupt triggers this callback when the conversion is complete
-    */
-   BaseType_t higherPriorityTaskWoken = pdFALSE;
-
-    if (h == hadc) {
-        int rawVal = HAL_ADC_GetValue(hadc);
-
-        // push value to q
-        xQueueSendFromISR(*adcReadings, &rawVal, &higherPriorityTaskWoken);
-
-    } else {
-        read_failed = 1; 
-    }
 }
