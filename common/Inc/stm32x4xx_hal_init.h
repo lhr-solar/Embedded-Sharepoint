@@ -1,3 +1,6 @@
+#ifndef STM32x4xx_HAL_INIT_H
+#define STM32x4xx_HAL_INIT_H
+
 /**
  * @brief Initializes the Global MSP.
  * 
@@ -10,9 +13,4 @@ void HAL_MspInit(void);
  */
 void SystemClock_Config(void);
 
-
-/**
- * @brief This function is executed in case of error occurrence.
- * 
- */
-void Error_Handler(void);
+#endif /* STM32x4xx_HAL_INIT_H */

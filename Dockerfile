@@ -36,10 +36,10 @@ RUN apt-get install -y --no-install-recommends \
       libncurses-dev \
       python3-pip \
       git \
-      gh \
       gnupg \
       dirmngr \
       bear \
+      picocom \
       ca-certificates \
       openssh-client \
       python3.10 \
@@ -52,7 +52,8 @@ RUN apt-get install -y --no-install-recommends \
 # Install Python
 # -----------------------------------------------------------------------------
 RUN pip install --no-cache-dir \
-    mkdocs
+    mkdocs \
+    pyserial
 
 FROM dev AS toolchain-cache
 # -----------------------------------------------------------------------------
@@ -75,6 +76,7 @@ RUN \
   ln -sf /usr/share/arm-gnu-toolchain/bin/arm-none-eabi-gcc    /usr/bin/arm-none-eabi-gcc && \
   ln -sf /usr/share/arm-gnu-toolchain/bin/arm-none-eabi-g++    /usr/bin/arm-none-eabi-g++ && \
   ln -sf /usr/share/arm-gnu-toolchain/bin/arm-none-eabi-objcopy /usr/bin/arm-none-eabi-objcopy && \
+  ln -sf /usr/share/arm-gnu-toolchain/bin/arm-none-eabi-objdump /usr/bin/arm-none-eabi-objdump && \
   ln -sf /usr/share/arm-gnu-toolchain/bin/arm-none-eabi-size    /usr/bin/arm-none-eabi-size && \
   ln -sf /usr/share/arm-gnu-toolchain/bin/arm-none-eabi-gdb     /usr/bin/arm-none-eabi-gdb && \
   rm /tmp/arm-none-eabi.tar.xz && \
@@ -99,16 +101,26 @@ FROM toolchain AS runtime
 # -----------------------------------------------------------------------------
 # Set working directory
 # -----------------------------------------------------------------------------
-WORKDIR /Embedded-Sharepoint
+WORKDIR /workdir
+
+# -----------------------------------------------------------------------------
+# Create a non-root user
+# -----------------------------------------------------------------------------
+ARG REMOTE_USER=dev
+ARG REMOTE_UID=1000
+ARG REMOTE_GID=1000
+
+RUN addgroup --gid ${REMOTE_GID} ${REMOTE_USER} && \
+    adduser --disabled-password --gecos "" --uid ${REMOTE_UID} --gid ${REMOTE_GID} ${REMOTE_USER}
+
+ENV HOME /home/${REMOTE_USER}
+
+USER ${REMOTE_USER}
 
 # -----------------------------------------------------------------------------
 # Shell customization
 # -----------------------------------------------------------------------------
 RUN echo 'export PS1="\[\e[0;33m\]LHRS@\[\e[1;34m\]\w\[\e[0m\]> "' \
-    >> /root/.bashrc && \
-    echo 'git config --global --add safe.directory /Embedded-Sharepoint' \
-    >> /root/.bashrc && \
-    echo 'git submodule update --init --recursive' \
-    >> /root/.bashrc && \
+    >> /home/${REMOTE_USER}/.bashrc && \
     echo 'echo -e "${RED}\nFinished! Jolly good!\n${NC}"' \
-    >> /root/.bashrc
+    >> /home/${REMOTE_USER}/.bashrc
