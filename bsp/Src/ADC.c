@@ -1,21 +1,51 @@
 #include "ADC.h"
 
-static ADC_HandleTypeDef hadc_ = {.Instance = ADC1};
-ADC_HandleTypeDef* hadc = &hadc_;
+// Define Queue Handles
+#ifdef ADC1
+static ADC_HandleTypeDef hadc1_ = {.Instance = ADC1};
+ADC_HandleTypeDef* hadc1 = &hadc1_;
+#endif
 
-static QueueHandle_t* adcReadings;
+#ifdef ADC2
+static ADC_HandleTypeDef hadc2_ = {.Instance = ADC2};
+ADC_HandleTypeDef* hadc2 = &hadc2_;
+#endif
 
-volatile bool read_failed = 0;
+#ifdef ADC3
+static ADC_HandleTypeDef hadc3_ = {.Instance = ADC3};
+ADC_HandleTypeDef* hadc3 = &hadc3_;
+#endif
 
-adc_status_t ADC_Init(ADC_InitTypeDef init, QueueHandle_t* rxQueue) {
-    __HAL_RCC_ADC1_CLK_ENABLE();
+// Stores queue to push val to
+QueueHandle_t* adc1_q;
+QueueHandle_t* adc2_q;
+QueueHandle_t* adc3_q;
 
-    adcReadings = rxQueue;
+adc_status_t ADC_Init(ADC_InitTypeDef init, uint8_t adcNum) {
+    // Power ADC clocks and set configs
+    switch (adcNum) {
+        case 1:
+            __HAL_RCC_ADC1_CLK_ENABLE();
+            hadc1->Init = init;
+            if (HAL_ADC_Init(hadc1) != HAL_OK) return ADC_INIT_FAIL;
+            break;
+        case 2:
+            __HAL_RCC_ADC2_CLK_ENABLE();
+            hadc2->Init = init;
+            if (HAL_ADC_Init(hadc2) != HAL_OK) return ADC_INIT_FAIL;
+            break;
+        case 3:
+            __HAL_RCC_ADC3_CLK_ENABLE();
+            hadc3->Init = init;
+            if (HAL_ADC_Init(hadc3) != HAL_OK) return ADC_INIT_FAIL;
+            break;
+        default:
+            // Couldn't initalize any ADC
+            return ADC_INIT_FAIL;
+            break;
+    }
 
-    hadc->Init = init; // set the init structure to InitTypeDef
-    if (HAL_ADC_Init(hadc) != HAL_OK) return ADC_INIT_FAIL;
-
-    // set nvic and interrupt priorities
+    // Configure NVIC
     HAL_NVIC_SetPriority(ADC_IRQn, 5, 0);
     HAL_NVIC_EnableIRQ(ADC_IRQn);
     
@@ -23,53 +53,111 @@ adc_status_t ADC_Init(ADC_InitTypeDef init, QueueHandle_t* rxQueue) {
 }
 
 
-adc_status_t ADC_OneShotRead(uint32_t channel, uint32_t samplingTime, bool blocking) {
-    if (xQueueIsQueueFullFromISR(*adcReadings)) {
+adc_status_t ADC_OneShotRead(uint32_t channel, uint32_t samplingTime, uint8_t adcNum, QueueHandle_t* q) {
+    if (xQueueIsQueueFullFromISR(*q)) {
         return ADC_QUEUE_FULL;
     }
 
-    ADC_ChannelConfTypeDef sConfig = {0}; // resets the channel config
+    // Reset channel config for only one channel
+    ADC_ChannelConfTypeDef sConfig = {
+        .Channel = channel,
+        .Rank = 1,
+        .SamplingTime = samplingTime
+    }; 
+    
+    // --- Config channel
+    // --- Start ADC Interrupt
+    switch (adcNum) {
+        case 1: 
+            adc1_q = q;
 
-    // configure only one channel
-    sConfig.Channel = channel;
-    sConfig.Rank = 1;
-    sConfig.SamplingTime = samplingTime;
+            if (HAL_ADC_ConfigChannel(hadc1, &sConfig) != HAL_OK) {
+                return ADC_CHANNEL_CONFIG_FAIL;
+            }
 
-    if (HAL_ADC_ConfigChannel(hadc, &sConfig) != HAL_OK) {
-        return ADC_CHANNEL_CONFIG_FAIL;
+            if (HAL_ADC_Start_IT(hadc1) != HAL_OK) {
+                return ADC_INTERRUPT_FAIL;
+            }
+
+            break;
+        case 2:
+            adc2_q = q;
+
+            if (HAL_ADC_ConfigChannel(hadc2, &sConfig) != HAL_OK) {
+                return ADC_CHANNEL_CONFIG_FAIL;
+            }
+
+            if (HAL_ADC_Start_IT(hadc2) != HAL_OK) {
+                return ADC_INTERRUPT_FAIL;
+            }
+
+            break;
+        case 3: 
+            adc3_q = q;
+            
+            if (HAL_ADC_ConfigChannel(hadc3, &sConfig) != HAL_OK) {
+                return ADC_CHANNEL_CONFIG_FAIL;
+            }
+            
+            if (HAL_ADC_Start_IT(hadc3) != HAL_OK) {
+                return ADC_INTERRUPT_FAIL;
+            }
+
+            break;
+        default:
+            // ADC out of range
+            return ADC_CHANNEL_CONFIG_FAIL;
     }
-
-    // trigger interrupt to read 
-    if (HAL_ADC_Start_IT(hadc) != HAL_OK) {
-        return ADC_INTERRUPT_FAIL;
-    }
-
-    return ADC_OK; // not sure if i should actually send an "OK" interrupt b/c the callback is still pending
+    
+    return ADC_OK; 
 }
 
-void HAL_ADC_ErrorCallback(ADC_HandleTypeDef *h) {
-    // in case of error
-
-}
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *h) {
     /*
     Interrupt triggers this callback when the conversion is complete
     */ 
-
    BaseType_t higherPriorityTaskWoken = pdFALSE;
+   int rawVal;
 
-    if (h == hadc) {
-        int rawVal = HAL_ADC_GetValue(hadc);
+    if (h == hadc1) {
+        rawVal = HAL_ADC_GetValue(hadc1);
 
-        // push value to q
-        xQueueSendFromISR(*adcReadings, &rawVal, &higherPriorityTaskWoken);
+        xQueueSendFromISR(*adc1_q, &rawVal, &higherPriorityTaskWoken);
 
-    } else {
-        read_failed = 1; 
+    } else if (h == hadc2) {
+        rawVal = HAL_ADC_GetValue(hadc1);
+        xQueueSendFromISR(*adc2_q, &rawVal, &higherPriorityTaskWoken);
+    
+    } else if (h == hadc3) {
+        rawVal = HAL_ADC_GetValue(hadc1);
+        xQueueSendFromISR(*adc3_q, &rawVal, &higherPriorityTaskWoken);
+        
     }
 }
 
 void ADC_IRQHandler() {
-    HAL_ADC_IRQHandler(hadc);
+    // Arbitrate between ADCs
+    #ifdef ADC1
+    if (ADC_FLAG_EOC & ADC1->SR) {
+        HAL_ADC_IRQHandler(hadc1);
+    }
+    #endif
+
+    #ifdef ADC2
+    if (ADC_FLAG_EOC & ADC2->SR) {
+        HAL_ADC_IRQHandler(hadc2);
+    }
+    #endif
+
+    #ifdef ADC1
+    if (ADC_FLAG_EOC & ADC3->SR) {
+        HAL_ADC_IRQHandler(hadc3);
+    }
+    #endif
+}
+
+void HAL_ADC_ErrorCallback(ADC_HandleTypeDef *h) {
+    // in case of error
+
 }

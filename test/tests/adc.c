@@ -18,7 +18,7 @@ static void error_handler() {
 }
   
 static void success_handler(void) {
-    // toggle output of LED
+    // blinky
 
     GPIO_InitTypeDef led_config = {
         .Mode = GPIO_MODE_OUTPUT_PP,
