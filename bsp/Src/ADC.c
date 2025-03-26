@@ -7,33 +7,17 @@ static QueueHandle_t* adcReadings;
 
 volatile bool read_failed = 0;
 
-void hi() {
-    int a = 2;
-    a += 0;
-}
-
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *h) {
-    /*
-    Interrupt triggers this callback when the conversion is complete
-    */
-   BaseType_t higherPriorityTaskWoken = pdFALSE;
-
-    if (h == hadc) {
-        int rawVal = HAL_ADC_GetValue(hadc);
-
-        // push value to q
-        xQueueSendFromISR(*adcReadings, &rawVal, &higherPriorityTaskWoken);
-
-    } else {
-        read_failed = 1; 
-    }
-}
-
 adc_status_t ADC_Init(ADC_InitTypeDef init, QueueHandle_t* rxQueue) {
+    __HAL_RCC_ADC1_CLK_ENABLE();
+
     adcReadings = rxQueue;
 
     hadc->Init = init; // set the init structure to InitTypeDef
     if (HAL_ADC_Init(hadc) != HAL_OK) return ADC_INIT_FAIL;
+
+    // set nvic and interrupt priorities
+    HAL_NVIC_SetPriority(ADC_IRQn, 5, 0);
+    HAL_NVIC_EnableIRQ(ADC_IRQn);
     
     return ADC_OK;
 }
@@ -56,9 +40,34 @@ adc_status_t ADC_OneShotRead(uint32_t channel, uint32_t samplingTime, bool block
     }
 
     // trigger interrupt to read 
-    HAL_ADC_Start_IT(hadc);   
+    if (HAL_ADC_Start_IT(hadc) != HAL_OK) {
+        return ADC_INTERRUPT_FAIL;
+    }
 
     return ADC_OK; // not sure if i should actually send an "OK" interrupt b/c the callback is still pending
+}
+
+void HAL_ADC_ErrorCallback(ADC_HandleTypeDef *h) {
+    // in case of error
+
+}
+
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *h) {
+    /*
+    Interrupt triggers this callback when the conversion is complete
+    */ 
+
+   BaseType_t higherPriorityTaskWoken = pdFALSE;
+
+    if (h == hadc) {
+        int rawVal = HAL_ADC_GetValue(hadc);
+
+        // push value to q
+        xQueueSendFromISR(*adcReadings, &rawVal, &higherPriorityTaskWoken);
+
+    } else {
+        read_failed = 1; 
+    }
 }
 
 void ADC_IRQHandler() {

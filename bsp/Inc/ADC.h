@@ -11,10 +11,10 @@ typedef enum {
     ADC_OK,
     ADC_INIT_FAIL,
     ADC_CHANNEL_CONFIG_FAIL,
+    ADC_INTERRUPT_FAIL,
     ADC_QUEUE_FULL,
 
 } adc_status_t;
-
 
 adc_status_t ADC_Init(ADC_InitTypeDef init, QueueHandle_t *rxQueue);
 /** 
