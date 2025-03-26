@@ -48,6 +48,14 @@ void vTask(void *pvParameters) {
 int main() {
     __HAL_RCC_GPIOA_CLK_ENABLE();
 
+    GPIO_InitTypeDef input =  {
+        .Pin = GPIO_PIN_0,
+        .Mode = GPIO_MODE_ANALOG,
+        .Pull = GPIO_NOPULL,
+    };
+
+    HAL_GPIO_Init(GPIOA, &input);
+
     // 10 elem queue
     xReadings = xQueueCreateStatic(QUEUE_LENGTH, ITEM_SIZE, qStorage, &xStaticQueue);
 
