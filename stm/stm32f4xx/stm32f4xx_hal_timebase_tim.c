@@ -1,4 +1,5 @@
 #include "stm32f4xx_hal.h"
+#include "PWM.h"
 
 TIM_HandleTypeDef htim1;
 
@@ -112,6 +113,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   if (htim->Instance == TIM1) {
     HAL_IncTick();
+  }
+  else if (htim->Instance == TIM2 || htim ->Instance == TIM3) {
+    PWM_PeriodElapsed(htim); 
   }
 }
 
