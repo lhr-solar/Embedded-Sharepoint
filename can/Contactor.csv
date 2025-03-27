@@ -3,7 +3,7 @@ Contactor Sense,0x400,2,,OUT,"[8:6] Array Precharge Sense Fault
 [8]: 1 indicates Array precharge sense fault happened
 [7]: Expected array precharge sense value
 [6]: Actual array precharge sense value
-[5:3] 1 indicates Motor Precharge Sense Fault
+[5:3] Motor Precharge Fault
 [5]: Motor precharge sense fault happened
 [4]: Expected motor precharge sense value
 [3]: Actual motor precharge sense value
