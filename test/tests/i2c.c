@@ -19,7 +19,6 @@ StackType_t taskStack[configMINIMAL_STACK_SIZE];
  */
 int main(void) {
   HAL_Init();
-  Clock_Config();
   MX_GPIO_Init();
   MX_I2C1_Init();
 
@@ -32,18 +31,6 @@ int main(void) {
   // If the scheduler starts successfully, code below will not run
   while (1) {
   }
-}
-
-/**
- * @brief System Clock Configuration
- * @retval None
- */
-void Clock_Config(void) {
-  // Configure the main internal regulator output voltage
-  __HAL_RCC_PWR_CLK_ENABLE();
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
-
-  SystemClock_Config();
 }
 
 /**
