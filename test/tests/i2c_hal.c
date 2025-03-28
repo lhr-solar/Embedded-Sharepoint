@@ -51,11 +51,11 @@ static void MX_I2C1_Init(void) {
   #if (PCLK1_FREQ == 16000000)  // 16 MHz
     #define I2C_TIMING  0x10909CEC  
   #elif (PCLK1_FREQ == 32000000)  // 32 MHz
-      #define I2C_TIMING  0x20D09DE7  
+    #define I2C_TIMING  0x20D09DE7  
   #elif (PCLK1_FREQ == 48000000)  // 48 MHz
-      #define I2C_TIMING  0x30F0A8E3  
+    #define I2C_TIMING  0x30F0A8E3  
   #else
-      #error "Unsupported PCLK1 frequency! Define a timing value."
+    #error "Unsupported PCLK1 frequency! Define a timing value."
   #endif
   hi2c1.Init.Timing = 100000;
   #endif
