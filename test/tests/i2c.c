@@ -40,8 +40,22 @@ int main(void) {
  */
 static void MX_I2C1_Init(void) {
   hi2c1.Instance = I2C1;
+  #ifdef STM32L4xx_HAL_SMBUS_H
+  #if (PCLK1_FREQ == 16000000)  // 16 MHz
+    #define I2C_TIMING  0x10909CEC  
+  #elif (PCLK1_FREQ == 32000000)  // 32 MHz
+      #define I2C_TIMING  0x20D09DE7  
+  #elif (PCLK1_FREQ == 48000000)  // 48 MHz
+      #define I2C_TIMING  0x30F0A8E3  
+  #else
+      #error "Unsupported PCLK1 frequency! Define a timing value."
+  #endif
+  hi2c1.Init.Timing = 100000;
+  #endif
+  #ifdef STM32F4xx_HAL_SMBUS_H
   hi2c1.Init.ClockSpeed = 100000;
   hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
+  #endif
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
