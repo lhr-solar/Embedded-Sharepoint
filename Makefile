@@ -209,6 +209,12 @@ ifeq ($(filter $(SERIES_LINE_GENERIC), stm32f401xe stm32f401xc), $(SERIES_LINE_G
     C_DEFS += -DCAN_UNDEFINED
 endif
 
+# exclude UART4/5 for unsupported boards
+ifneq ($(filter $(PROJECT_TARGET), stm32f401re stm32f413rht stm32f429zit stm32l431cbt),)
+    C_SOURCES := $(filter-out bsp/Src/UART.c, $(C_SOURCES))
+    C_DEFS += -DUART_UNDEFINED
+endif
+
 #######################################
 # LDFLAGS
 #######################################

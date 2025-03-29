@@ -36,7 +36,6 @@ RUN apt-get install -y --no-install-recommends \
       libncurses-dev \
       python3-pip \
       git \
-      gh \
       gnupg \
       dirmngr \
       bear \
