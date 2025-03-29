@@ -24,4 +24,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+// Init function prototypes
+void Error_Handler(void);
+void HAL_MspInit(void);
+void SystemClock_Config(void);
+
 #endif /* STM32xs_HAL_H */

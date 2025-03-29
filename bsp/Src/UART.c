@@ -85,8 +85,9 @@ bool is_uart_initialized(UART_HandleTypeDef* handle) {
 // HAL UART MSP init 
 void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
     GPIO_InitTypeDef GPIO_InitStruct = {0};
+    (void) GPIO_InitStruct;
 
-    #ifdef UART4
+    #if defined(UART4)
     if(huart->Instance == UART4) {
         __HAL_RCC_UART4_CLK_ENABLE();
         __HAL_RCC_GPIOA_CLK_ENABLE();
@@ -106,7 +107,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
     }
     #endif /* UART4 */
 
-    #ifdef UART5
+    #if defined(UART5)
     if (huart->Instance == UART5) {
         __HAL_RCC_UART5_CLK_ENABLE();
         __HAL_RCC_GPIOC_CLK_ENABLE();
@@ -376,10 +377,6 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
         tx_queue = &uart5_tx_queue;
     }
     #endif /* UART5 */
-    else {
-        return;
-    }
-
 
     // Get as many bytes as we can from queue (up to buffer size)
     while(count < sizeof(tx_buffer) && 

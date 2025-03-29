@@ -3,11 +3,10 @@
 - Setups up UART loopback mode (the TX line is connected to the RX line)
 - Send messages and verify correctness
 */
-#include "FreeRTOS.h"
-#include "task.h"
 #include "stm32xx_hal.h"
 #include "UART.h"
-#include <string.h>
+
+#if defined(UART4)
 
 /* Private defines */
 #define LD2_Pin GPIO_PIN_5
@@ -19,7 +18,6 @@ static void MX_GPIO_Init(void);
 static void MX_UART4_Init(void);
 void TxTask(void *argument);
 void RxTask(void *argument);
-void Error_Handler(void);  // Add this line
 
 /* Private variables */
 extern UART_HandleTypeDef* huart4;
@@ -34,44 +32,6 @@ StackType_t rxTaskStack[configMINIMAL_STACK_SIZE];
 StaticQueue_t xRxStaticQueue;
 uint8_t ucRxQueueStorageArea[128];
 QueueHandle_t xRxQueue;
-
-int main(void) {
-    HAL_Init();
-    Clock_Config();
-    MX_GPIO_Init();
-    MX_UART4_Init();
-
-    
-    // Initialize UART BSP
-    uart_status_t status = uart_init(huart4);
-    if (status != UART_OK) {
-        Error_Handler();
-    }
-
-    // Create the tasks statically
-    xTaskCreateStatic(TxTask, 
-                     "TX",
-                     configMINIMAL_STACK_SIZE,
-                     NULL,
-                     tskIDLE_PRIORITY + 2,
-                     txTaskStack,
-                     &txTaskBuffer);
-
-    xTaskCreateStatic(RxTask,
-                     "RX", 
-                     configMINIMAL_STACK_SIZE,
-                     NULL,
-                     tskIDLE_PRIORITY + 2,
-                     rxTaskStack,
-                     &rxTaskBuffer);
-
-    // Start the scheduler
-    vTaskStartScheduler();
-
-    while (1) {
-        // Should never get here
-    }
-}
 
 static void MX_UART4_Init(void)
 {
@@ -224,10 +184,43 @@ void Clock_Config(void)
     Error_Handler();
   }
 }
+#endif
 
-void Error_Handler(void)
-{
-    __disable_irq();
-    while (1) {
-    }
+int main(void) {
+  #if defined(UART4)
+  HAL_Init();
+  Clock_Config();
+  MX_GPIO_Init();
+  MX_UART4_Init();
+
+  
+  // Initialize UART BSP
+  uart_status_t status = uart_init(huart4);
+  if (status != UART_OK) {
+      Error_Handler();
+  }
+
+  // Create the tasks statically
+  xTaskCreateStatic(TxTask, 
+                   "TX",
+                   configMINIMAL_STACK_SIZE,
+                   NULL,
+                   tskIDLE_PRIORITY + 2,
+                   txTaskStack,
+                   &txTaskBuffer);
+
+  xTaskCreateStatic(RxTask,
+                   "RX", 
+                   configMINIMAL_STACK_SIZE,
+                   NULL,
+                   tskIDLE_PRIORITY + 2,
+                   rxTaskStack,
+                   &rxTaskBuffer);
+
+  // Start the scheduler
+  vTaskStartScheduler();
+  #endif
+
+  Error_Handler();
+  return 0;
 }

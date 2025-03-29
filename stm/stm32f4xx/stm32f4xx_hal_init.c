@@ -4,7 +4,7 @@
  * @brief This function is executed in case of error occurrence.
  *
  */
-static void Error_Handler(void) {
+__attribute__((weak)) void Error_Handler(void) {
   __disable_irq();
   while (1) {
   }
