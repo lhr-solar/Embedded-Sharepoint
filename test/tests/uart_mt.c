@@ -4,11 +4,12 @@
  * - RX queue functionality when UART is busy
  * - Queue overflow conditions
  */
-#include "FreeRTOS.h"
-#include "task.h"
 #include "stm32xx_hal.h"
-#include <string.h>
 #include "UART.h"
+
+#if defined(UART4)
+// Test data
+static uint8_t testPattern[TEST_PATTERN_SIZE];
 
 /* Private defines */
 #define LD2_Pin GPIO_PIN_5
@@ -22,7 +23,6 @@ static void MX_GPIO_Init(void);
 static void MX_UART4_Init(void);
 void TxTask(void *argument);
 void RxTask(void *argument);
-void Error_Handler(void);
 
 /* Private variables */
 extern UART_HandleTypeDef* huart4;
@@ -37,46 +37,6 @@ StackType_t rxTaskStack[configMINIMAL_STACK_SIZE];
 StaticQueue_t xRxStaticQueue;
 uint8_t ucRxQueueStorageArea[128];
 QueueHandle_t xRxQueue;
-
-// Test data
-static uint8_t testPattern[TEST_PATTERN_SIZE];
-
-int main(void) {
-    HAL_Init();
-    Clock_Config();
-    MX_GPIO_Init();
-    MX_UART4_Init();
-
-    // Initialize test pattern
-    for(int i = 0; i < TEST_PATTERN_SIZE; i++) {
-        testPattern[i] = (uint8_t)(i & 0xFF);
-    }
-    
-    // Initialize UART BSP
-    uart_status_t status = uart_init(huart4);
-    if (status != UART_OK) {
-        Error_Handler();
-    }
-
-    xTaskCreateStatic(TxTask, 
-                     "TX",
-                     configMINIMAL_STACK_SIZE,
-                     NULL,
-                     tskIDLE_PRIORITY + 2,
-                     txTaskStack,
-                     &txTaskBuffer);
-
-    xTaskCreateStatic(RxTask,
-                     "RX", 
-                     configMINIMAL_STACK_SIZE,
-                     NULL,
-                     tskIDLE_PRIORITY + 2,
-                     rxTaskStack,
-                     &rxTaskBuffer);
-
-    vTaskStartScheduler();
-    while(1);
-}
 
 void TxTask(void *argument)
 {
@@ -250,9 +210,45 @@ void Clock_Config(void)
     Error_Handler();
   }
 }
-void Error_Handler(void)
-{
-    __disable_irq();
-    while (1) {
+
+#endif
+
+int main(void) {
+    #if defined(UART4)
+    HAL_Init();
+    Clock_Config();
+    MX_GPIO_Init();
+    MX_UART4_Init();
+
+    // Initialize test pattern
+    for(int i = 0; i < TEST_PATTERN_SIZE; i++) {
+        testPattern[i] = (uint8_t)(i & 0xFF);
     }
+    
+    // Initialize UART BSP
+    uart_status_t status = uart_init(huart4);
+    if (status != UART_OK) {
+        Error_Handler();
+    }
+
+    xTaskCreateStatic(TxTask, 
+                     "TX",
+                     configMINIMAL_STACK_SIZE,
+                     NULL,
+                     tskIDLE_PRIORITY + 2,
+                     txTaskStack,
+                     &txTaskBuffer);
+
+    xTaskCreateStatic(RxTask,
+                     "RX", 
+                     configMINIMAL_STACK_SIZE,
+                     NULL,
+                     tskIDLE_PRIORITY + 2,
+                     rxTaskStack,
+                     &rxTaskBuffer);
+
+    vTaskStartScheduler();
+    #endif
+    Error_Handler();
+    return 0;
 }

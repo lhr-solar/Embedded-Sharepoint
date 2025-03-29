@@ -1,7 +1,18 @@
 #!/bin/bash
 
-port_list=("stm32f401re" "stm32f413rht" "stm32f429zit" "stm32f446ret" "stm32l431cbt" "stm32l476rgt")
+# Find all .cfg files in ../stm and extract their base names
+port_list=()
+while IFS= read -r -d '' cfg_file; do
+    port_list+=("$(basename "${cfg_file%.cfg}")")
+done < <(find ../stm -type f -name "*.cfg" -print0)
 
+echo "Compiling all tests for the following ports:"
+for port in "${port_list[@]}"; do
+    echo "$port"
+done
+echo "----------------------------------------"
+
+# Compile tests for each port
 for port in "${port_list[@]}"; do
     make clean
     for tests_dir in tests/*; do
