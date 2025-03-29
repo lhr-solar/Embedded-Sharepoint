@@ -16,7 +16,17 @@ typedef enum {
 
 } adc_status_t;
 
-adc_status_t ADC_Init(ADC_InitTypeDef init, QueueHandle_t *rxQueue);
+#ifdef ADC1
+extern ADC_HandleTypeDef* hadc1;
+#endif /* ADC1 */
+#ifdef ADC2
+extern ADC_HandleTypeDef* hadc2;
+#endif /* ADC2 */
+#ifdef ADC3
+extern ADC_HandleTypeDef* hadc3;
+#endif /* ADC3 */
+
+adc_status_t ADC_Init(ADC_InitTypeDef init, ADC_HandleTypeDef* hadc);
 /** 
  * init             ADC_InitTypeDef 
  * bitNum           uint8_t         number of bits in ADC
@@ -25,7 +35,7 @@ adc_status_t ADC_Init(ADC_InitTypeDef init, QueueHandle_t *rxQueue);
 */
 
 
-adc_status_t ADC_OneShotRead(uint32_t channel, uint32_t samplingTime, bool blocking); 
+adc_status_t ADC_OneShotRead(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef *h, QueueHandle_t *q); 
 /**
  *   channel        uint32_t        channel to read
  *   samplingTime   uint32_t        ADC sampling time
