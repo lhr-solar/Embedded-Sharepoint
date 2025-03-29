@@ -37,6 +37,7 @@ static void success_handler(void) {
     }
   }
 
+#ifdef ADC_SAMPLETIME_3CYCLES
 void TestQueueFull(void *pvParameters) {
     // Set bkpt in error_handler();
     uint32_t reading = 0;
@@ -54,7 +55,7 @@ void TestQueueFull(void *pvParameters) {
     xQueueReceive(xReadings, &reading, 0);
     success_handler();
 }
-
+#endif
 
 void TestADC1(void *pvParameters) {
     // Set bkpt in error_handler();
@@ -62,7 +63,11 @@ void TestADC1(void *pvParameters) {
 
     // read once
     for (int i = 0; i < 10; i++) {
+        #ifdef ADC_SAMPLETIME_3CYCLES
         adc_status_t stat = ADC_OneShotRead(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc1, &xReadings);
+        #else
+        adc_status_t stat = ADC_OneShotRead(ADC_CHANNEL_0,  ADC_SAMPLETIME_2CYCLES_5, hadc1, &xReadings);
+        #endif
         
         if (stat != ADC_OK) {
             error_handler(stat);
@@ -84,7 +89,11 @@ void TestADC2(void *pvParameters) {
 
     // read once
     for (int i = 0; i < 10; i++) {
+        #ifdef ADC_SAMPLETIME_3CYCLES
         adc_status_t stat = ADC_OneShotRead(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc2, &xReadings);
+        #else
+        adc_status_t stat = ADC_OneShotRead(ADC_CHANNEL_0,  ADC_SAMPLETIME_2CYCLES_5, hadc2, &xReadings);
+        #endif
         
         if (stat != ADC_OK) {
             error_handler(stat);
@@ -106,7 +115,11 @@ void TestADC3(void *pvParameters) {
 
     // read once
     for (int i = 0; i < 10; i++) {
+        #ifdef ADC_SAMPLETIME_3CYCLES
         adc_status_t stat = ADC_OneShotRead(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc3, &xReadings);
+        #else
+        adc_status_t stat = ADC_OneShotRead(ADC_CHANNEL_0,  ADC_SAMPLETIME_2CYCLES_5, hadc3, &xReadings);
+        #endif
         
         if (stat != ADC_OK) {
             error_handler(stat);
@@ -150,6 +163,10 @@ int main() {
     adc_init_1.DMAContinuousRequests = DISABLE;
     adc_init_1.EOCSelection = ADC_EOC_SINGLE_CONV;
 
+    
+    if (ADC_Init(adc_init_1, hadc1) != ADC_OK) error_handler(ADC_INIT_FAIL);
+
+    #ifdef ADC2
     ADC_InitTypeDef adc_init_2 = {0};
 
     adc_init_2.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
@@ -164,6 +181,9 @@ int main() {
     adc_init_2.DMAContinuousRequests = DISABLE;
     adc_init_2.EOCSelection = ADC_EOC_SINGLE_CONV;
 
+    if (ADC_Init(adc_init_2, hadc2) != ADC_OK) error_handler(ADC_INIT_FAIL);
+    #endif
+    #ifdef ADC3
     ADC_InitTypeDef adc_init_3 = {0};
 
     adc_init_3.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
@@ -178,10 +198,8 @@ int main() {
     adc_init_3.DMAContinuousRequests = DISABLE;
     adc_init_3.EOCSelection = ADC_EOC_SINGLE_CONV;
 
-    // for each ADC ur using
-    if (ADC_Init(adc_init_1, hadc1) != ADC_OK) error_handler(ADC_INIT_FAIL);
-    if (ADC_Init(adc_init_2, hadc2) != ADC_OK) error_handler(ADC_INIT_FAIL);
     if (ADC_Init(adc_init_3, hadc3) != ADC_OK) error_handler(ADC_INIT_FAIL);
+    #endif
 
     // Task Creation
 

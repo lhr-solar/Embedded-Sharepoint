@@ -22,27 +22,56 @@ QueueHandle_t* adc3_q;
 // Hardware ADC error code
 uint32_t ADC_ERR_CODE = 0;
 
-adc_status_t ADC_Init(ADC_InitTypeDef init, ADC_HandleTypeDef* hadc) {
+adc_status_t ADC_Init(ADC_InitTypeDef init, ADC_HandleTypeDef* h) {
     // Power ADC clocks and set configs
-    #ifdef ADC3
-    __HAL_RCC_ADC1_CLK_ENABLE();
-    hadc1->Init = init;
-    if (HAL_ADC_Init(hadc1) != HAL_OK) return ADC_INIT_FAIL;
+    // L4 
+    #ifdef STM32L4xx
+    __HAL_RCC_ADC_CLK_ENABLE();
+    #endif
+
+    #ifdef ADC1
+    if (h->Instance == ADC1) {
+        #ifdef STM32F4xx
+        __HAL_RCC_ADC1_CLK_ENABLE();
+        #endif
+        hadc1->Init = init;
+        if (HAL_ADC_Init(hadc1) != HAL_OK) return ADC_INIT_FAIL;
+    }
     #endif
     #ifdef ADC2
-    __HAL_RCC_ADC2_CLK_ENABLE();
-    hadc2->Init = init;
-    if (HAL_ADC_Init(hadc2) != HAL_OK) return ADC_INIT_FAIL;
+    if (h->Instance == ADC2) {
+        #ifdef STM32F4xx
+        __HAL_RCC_ADC2_CLK_ENABLE();
+        #endif
+        hadc2->Init = init;
+        if (HAL_ADC_Init(hadc2) != HAL_OK) return ADC_INIT_FAIL;
+    }
     #endif
     #ifdef ADC3
-    __HAL_RCC_ADC3_CLK_ENABLE();
-    hadc3->Init = init;
-    if (HAL_ADC_Init(hadc3) != HAL_OK) return ADC_INIT_FAIL;
+    if (h->Instance == ADC3) {
+        #ifdef STM32F4xx
+        __HAL_RCC_ADC3_CLK_ENABLE();
+        #endif
+        hadc3->Init = init;
+        if (HAL_ADC_Init(hadc3) != HAL_OK) return ADC_INIT_FAIL;
+    }
     #endif
 
     // Configure NVIC
+    // if l4 with only 1 adc
+    #if defined(STM32L4xx) && (!defined(ADC2) && !defined(ADC3)) 
+    HAL_NVIC_SetPriority(ADC1_IRQn, 5, 0);
+    HAL_NVIC_EnableIRQ(ADC1_IRQn);
+    #elif defined(STM32L4xx) && defined(ADC2)
+    HAL_NVIC_SetPriority(ADC1_2_IRQn, 5, 0);
+    HAL_NVIC_EnableIRQ(ADC1_2_IRQn);
+    #elif defined(STM32L4xx) && defined(ADC3)
+    HAL_NVIC_SetPriority(ADC3_IRQn, 5, 0);
+    HAL_NVIC_EnableIRQ(ADC3_IRQn);
+    #else
     HAL_NVIC_SetPriority(ADC_IRQn, 5, 0);
     HAL_NVIC_EnableIRQ(ADC_IRQn);
+    #endif
     
     return ADC_OK;
 }
@@ -142,21 +171,39 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *h) {
 void ADC_IRQHandler() {
     // Arbitrate between ADCs
     #ifdef ADC1
+    #if defined(STM32L4xx) 
+    if (ADC_FLAG_EOC & ADC1->ISR) {
+        HAL_ADC_IRQHandler(hadc1);
+    }
+    #else
     if (ADC_FLAG_EOC & ADC1->SR) {
         HAL_ADC_IRQHandler(hadc1);
     }
     #endif
+    #endif
 
     #ifdef ADC2
+    #if defined(STM32L4xx) 
+    if (ADC_FLAG_EOC & ADC2->ISR) {
+        HAL_ADC_IRQHandler(hadc2);
+    }
+    #else
     if (ADC_FLAG_EOC & ADC2->SR) {
         HAL_ADC_IRQHandler(hadc2);
     }
     #endif
+    #endif
 
     #ifdef ADC3
+    #if defined(STM32L4xx) 
+    if (ADC_FLAG_EOC & ADC3->ISR) {
+        HAL_ADC_IRQHandler(hadc3);
+    }
+    #else
     if (ADC_FLAG_EOC & ADC3->SR) {
         HAL_ADC_IRQHandler(hadc3);
     }
+    #endif
     #endif
 }
 
