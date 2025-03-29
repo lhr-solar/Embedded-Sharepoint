@@ -9,6 +9,7 @@
 #include "stm32xx_hal.h"
 #include "CAN.h"
 
+#if defined(CAN1)
 StaticTask_t task1_buffer;
 StackType_t task1_stack[configMINIMAL_STACK_SIZE];
 
@@ -17,10 +18,6 @@ StackType_t task2_stack[configMINIMAL_STACK_SIZE];
 
 StaticTask_t task3_buffer;
 StackType_t task3_stack[configMINIMAL_STACK_SIZE];
-
-static void error_handler(void) {
-  while(1) {}
-}
 
 static void task1(void *pvParameters){
   while(1){
@@ -36,7 +33,7 @@ static void task1(void *pvParameters){
     uint8_t tx_data[8] = {0};
     tx_data[0] = 0xDE;
     tx_data[1] = 0xAD;
-    if (can_send(hcan1, &tx_header, tx_data, portMAX_DELAY) != CAN_SENT) error_handler();  
+    if (can_send(hcan1, &tx_header, tx_data, portMAX_DELAY) != CAN_SENT) Error_Handler();  
 
     vTaskDelay(400);
   }
@@ -56,7 +53,7 @@ static void task2(void *pvParameters){
     uint8_t tx_data[8] = {0};
     tx_data[0] = 0xBE;
     tx_data[1] = 0xEF;
-    if (can_send(hcan1, &tx_header, tx_data, portMAX_DELAY) != CAN_SENT) error_handler();  
+    if (can_send(hcan1, &tx_header, tx_data, portMAX_DELAY) != CAN_SENT) Error_Handler();  
 
     vTaskDelay(400);
   }
@@ -70,17 +67,19 @@ static void task3(void *pvParameters){
 
     // receive what was sent to 0x1
     status = can_recv(hcan1, 0x1, &rx_header, rx_data, portMAX_DELAY);
-    if (status != CAN_RECV && rx_data[0] != 0x1) error_handler();
+    if (status != CAN_RECV && rx_data[0] != 0x1) Error_Handler();
     status = can_recv(hcan1, 0x1, &rx_header, rx_data, portMAX_DELAY);
-    if (status != CAN_RECV && rx_data[0] != 0x2) error_handler();
+    if (status != CAN_RECV && rx_data[0] != 0x2) Error_Handler();
 
     vTaskDelay(200);
   }
 }
+#endif
 
 int main(void){
+  #if defined(CAN1)
   // initialize the HAL and system clock
-  if (HAL_Init() != HAL_OK) error_handler();
+  if (HAL_Init() != HAL_OK) Error_Handler();
   // SystemClock_Config();
 
   // create filter
@@ -110,8 +109,8 @@ int main(void){
   hcan1->Init.TransmitFifoPriority = DISABLE;
 
   // initialize CAN1
-  if (can_init(hcan1, &sFilterConfig) != CAN_OK) error_handler();
-  if (can_start(hcan1) != CAN_OK) error_handler();
+  if (can_init(hcan1, &sFilterConfig) != CAN_OK) Error_Handler();
+  if (can_start(hcan1) != CAN_OK) Error_Handler();
 
   xTaskCreateStatic(
     task1,
@@ -142,6 +141,8 @@ int main(void){
 
 
   vTaskStartScheduler();
+  #endif
 
-  error_handler();
+  Error_Handler();
+  return 0;
 }

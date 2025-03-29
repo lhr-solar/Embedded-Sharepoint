@@ -6,13 +6,6 @@
 #include "stm32xx_hal.h"
 #include "UART.h"
 
-void Error_Handler(void)
-{
-    __disable_irq();
-    while (1) {
-    }
-}
-
 #if defined(UART4)
 
 /* Private defines */
@@ -25,7 +18,6 @@ static void MX_GPIO_Init(void);
 static void MX_UART4_Init(void);
 void TxTask(void *argument);
 void RxTask(void *argument);
-void Error_Handler(void);  // Add this line
 
 /* Private variables */
 extern UART_HandleTypeDef* huart4;
