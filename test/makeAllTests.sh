@@ -12,16 +12,16 @@ for port in "${port_list[@]}"; do
         test_name="${test_name%.c}"
         
         # Skip the "can" test for stm32f401*e or stm32f401*c
-        if [[ "$port" =~ ^stm32f401.*[ec]$ ]] && ([[ "$test_name" == "can" ]] || [[ "$test_name" == "can_mt" ]]); then
-            echo "Skipping the CAN test for $port because it does not support CAN"
-            continue
-        fi
+        # if [[ "$port" =~ ^stm32f401.*[ec]$ ]] && ([[ "$test_name" == "can" ]] || [[ "$test_name" == "can_mt" ]]); then
+        #     echo "Skipping the CAN test for $port because it does not support CAN"
+        #     continue
+        # fi
         
         # Skip UART tests for non-UART boards
-        if ([[ "$test_name" == "uart" ]] || [[ "$test_name" == "uart_mt" ]]) && [[ ! " ${uart_enabled_ports[@]} " =~ " ${port} " ]]; then
-            echo "Skipping the UART test for $port because it does not support UART4 & UART5"
-            continue
-        fi
+        # if ([[ "$test_name" == "uart" ]] || [[ "$test_name" == "uart_mt" ]]) && [[ ! " ${uart_enabled_ports[@]} " =~ " ${port} " ]]; then
+        #     echo "Skipping the UART test for $port because it does not support UART4 & UART5"
+        #     continue
+        # fi
 
         echo "Compiling the test - $test_name for $port"
         if ! make TEST="$test_name" PROJECT_TARGET="$port" -j; then

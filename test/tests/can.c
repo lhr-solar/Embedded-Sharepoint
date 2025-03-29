@@ -6,16 +6,16 @@
 - Flashes LED if successful on all CANs
 
 */
-
 #include "stm32xx_hal.h"
 #include "CAN.h"
-
-StaticTask_t task_buffer;
-StackType_t task_stack[configMINIMAL_STACK_SIZE];
 
 static void error_handler(void) {
   while(1) {}
 }
+
+#if defined(CAN1)
+StaticTask_t task_buffer;
+StackType_t task_stack[configMINIMAL_STACK_SIZE];
 
 static void success_handler(void) {
   GPIO_InitTypeDef led_init = {
@@ -157,8 +157,10 @@ static void task(void *pvParameters) {
 
   success_handler();
 }
+#endif
 
 int main(void) {
+  #if defined(CAN1)
   // initialize the HAL and system clock
   if (HAL_Init() != HAL_OK) error_handler();
   SystemClock_Config();
@@ -226,6 +228,7 @@ int main(void) {
                 &task_buffer);
 
   vTaskStartScheduler();
+  #endif
 
   error_handler();
 
