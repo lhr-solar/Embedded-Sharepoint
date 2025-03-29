@@ -33,10 +33,6 @@ StaticTask_t rxTaskBuffer;
 StackType_t txTaskStack[configMINIMAL_STACK_SIZE];
 StackType_t rxTaskStack[configMINIMAL_STACK_SIZE];
 
-// Static queue creation resources
-StaticQueue_t xRxStaticQueue;
-uint8_t ucRxQueueStorageArea[128];
-QueueHandle_t xRxQueue;
 
 // Test data
 static uint8_t testPattern[TEST_PATTERN_SIZE];
