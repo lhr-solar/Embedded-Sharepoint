@@ -5,11 +5,10 @@
             "includePath": [
                 "${workspaceFolder}/**"
             ],
-            "defines": [],
+            "defines": ["STM32F4xx", "STM32L4xx", "STM32xx"],
             "cStandard": "c99",
             "cppStandard": "${default}",
-            "intelliSenseMode": "linux-gcc-arm",
-            "compileCommands": "${workspaceFolder}/.vscode/compile_commands.json"
+            "intelliSenseMode": "linux-gcc-arm"
         }
     ],
     "version": 4

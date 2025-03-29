@@ -250,6 +250,7 @@ void Clock_Config(void)
     Error_Handler();
   }
 }
+
 void Error_Handler(void)
 {
     __disable_irq();
