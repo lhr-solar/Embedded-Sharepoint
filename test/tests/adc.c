@@ -55,6 +55,7 @@ void TestQueueFull(void *pvParameters) {
     success_handler();
 }
 
+
 void TestADC1(void *pvParameters) {
     // Set bkpt in error_handler();
     uint32_t reading = 0;
@@ -75,6 +76,8 @@ void TestADC1(void *pvParameters) {
     success_handler();
 }
 
+
+#ifdef ADC2
 void TestADC2(void *pvParameters) {
     // Set bkpt in error_handler();
     uint32_t reading = 0;
@@ -94,7 +97,9 @@ void TestADC2(void *pvParameters) {
     
     success_handler();
 }
+#endif
 
+#ifdef ADC3
 void TestADC3(void *pvParameters) {
     // Set bkpt in error_handler();
     uint32_t reading = 0;
@@ -114,7 +119,7 @@ void TestADC3(void *pvParameters) {
     
     success_handler();
 }
-
+#endif
 
 int main() {
     __HAL_RCC_GPIOA_CLK_ENABLE();
@@ -180,7 +185,7 @@ int main() {
 
     // Task Creation
 
-    xTaskCreateStatic(TestADC3,
+    xTaskCreateStatic(TestADC1,
                     "ADC Test",
                     configMINIMAL_STACK_SIZE,
                     (void*) 1,
