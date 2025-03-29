@@ -79,7 +79,7 @@ static rx_payload_t uart5_rx_buffer;
 #endif /* UART5 */
 
 
-bool is_uart_initialized(UART_HandleTypeDef* handle) {
+static bool is_uart_initialized(UART_HandleTypeDef* handle) {
     // Check if the UART is in a valid state
     // HAL_UART_STATE_RESET indicates the UART is not initialized
     return (handle->gState != HAL_UART_STATE_RESET);
