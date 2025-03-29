@@ -166,6 +166,8 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *h) {
         
     }
     #endif
+
+    portYIELD_FROM_ISR(higherPriorityTaskWoken);
 }
 
 void ADC_IRQHandler() {
