@@ -69,8 +69,5 @@ can_status_t can_stop(CAN_HandleTypeDef* handle);
 can_status_t can_send(CAN_HandleTypeDef* handle, const CAN_TxHeaderTypeDef* header, const uint8_t data[], TickType_t delay_ticks);
 can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id, CAN_RxHeaderTypeDef* header, uint8_t data[], TickType_t delay_ticks);
 
-void HAL_CAN_MSP_L4Init(CAN_HandleTypeDef* hcan);
-void HAL_CAN_MSP_F4Init(CAN_HandleTypeDef* hcan);
-
 #endif /* CAN_UNDEFINED */
 #endif /* CAN_H */

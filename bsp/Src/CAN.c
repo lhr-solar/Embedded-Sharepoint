@@ -178,7 +178,8 @@ static const uint32_t can3_recv_entry_count = 0;
 #endif /* can3_recv_entries.h */
 #endif /* CAN3 */
 
-void HAL_CAN_MSP_F4Init(CAN_HandleTypeDef* hcan){
+static inline void HAL_CAN_MspF4Init(CAN_HandleTypeDef* hcan);
+inline void HAL_CAN_MspF4Init(CAN_HandleTypeDef* hcan){
   GPIO_InitTypeDef init = {0};
   
   // CAN1
@@ -277,10 +278,10 @@ void HAL_CAN_MSP_F4Init(CAN_HandleTypeDef* hcan){
     HAL_NVIC_EnableIRQ(CAN3_RX0_IRQn);
   }
   #endif /* CAN3 */
-
 }
 
-void HAL_CAN_MSP_L4Init(CAN_HandleTypeDef* hcan){
+static inline void HAL_CAN_MspL4Init(CAN_HandleTypeDef* hcan);
+static inline void HAL_CAN_MspL4Init(CAN_HandleTypeDef* hcan){
   GPIO_InitTypeDef init = {0};
   // CAN1
   if (hcan->Instance == CAN1) {
@@ -317,9 +318,9 @@ void HAL_CAN_MSP_L4Init(CAN_HandleTypeDef* hcan){
 // CAN MSP init
 void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan) {
   #if defined(STM32F4xx)
-  HAL_CAN_MSP_F4Init(hcan);
+  HAL_CAN_MspF4Init(hcan);
   #elif defined(STM32L4xx)
-  HAL_CAN_MSP_L4Init(hcan);
+  HAL_CAN_MspL4Init(hcan);
   #endif
 }
 
