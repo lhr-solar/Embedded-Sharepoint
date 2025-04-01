@@ -10,8 +10,10 @@
 typedef enum {
     ADC_OK,
     ADC_INIT_FAIL,
+    ADC_DEINIT_FAIL,
     ADC_CHANNEL_CONFIG_FAIL,
-    ADC_INTERRUPT_FAIL,
+    ADC_INTERRUPT_BUSY,
+    ADC_INTERRUPT_TIMEOUT,
     ADC_QUEUE_FULL,
 
 } adc_status_t;
@@ -35,11 +37,13 @@ adc_status_t ADC_Init(ADC_InitTypeDef init, ADC_HandleTypeDef* hadc);
 */
 
 
-adc_status_t ADC_OneShotRead(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef *h, QueueHandle_t *q); 
+adc_status_t ADC_Read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef *h, QueueHandle_t *q); 
 /**
  *   channel        uint32_t        channel to read
  *   samplingTime   uint32_t        ADC sampling time
  *   blocking       bool            whether the process is blocking
 */
+
+adc_status_t ADC_DeInit(ADC_HandleTypeDef *h);
 
 #endif
