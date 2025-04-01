@@ -4,8 +4,7 @@
  * @brief This function is executed in case of error occurrence.
  *
  */
-void Error_Handler(void)
-{
+static void Error_Handler(void) {
   __disable_irq();
   while (1) {
   }
