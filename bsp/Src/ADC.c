@@ -42,7 +42,7 @@ QueueHandle_t* adc3_q;
 // Hardware ADC error code
 uint32_t adc_err_code = 0;
 
-adc_status_t ADC_Init(ADC_InitTypeDef init, ADC_HandleTypeDef* h) {
+adc_status_t adc_init(ADC_InitTypeDef init, ADC_HandleTypeDef* h) {
     // Initalize ADC
     h->Init = init;
     if (HAL_ADC_Init(h) != HAL_OK) return ADC_INIT_FAIL;
@@ -50,7 +50,7 @@ adc_status_t ADC_Init(ADC_InitTypeDef init, ADC_HandleTypeDef* h) {
     return ADC_OK;
 }
 
-adc_status_t ADC_DeInit(ADC_HandleTypeDef *h) {
+adc_status_t adc_deinit(ADC_HandleTypeDef *h) {
     // Deinit ADC at specific handle
     if (HAL_ADC_DeInit(h) != HAL_OK) return ADC_DEINIT_FAIL;
 
@@ -58,7 +58,7 @@ adc_status_t ADC_DeInit(ADC_HandleTypeDef *h) {
 } 
 
 
-adc_status_t ADC_Read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef *h, QueueHandle_t *q) {
+adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef *h, QueueHandle_t *q) {
     ADC_ChannelConfTypeDef sConfig = {
         .Channel = channel,
         .Rank = 1,

@@ -29,7 +29,7 @@ extern ADC_HandleTypeDef* hadc2;
 extern ADC_HandleTypeDef* hadc3;
 #endif /* ADC3 */
 
-adc_status_t ADC_Init(ADC_InitTypeDef init, ADC_HandleTypeDef* hadc);
+adc_status_t adc_init(ADC_InitTypeDef init, ADC_HandleTypeDef* hadc);
 /** 
  * init             ADC_InitTypeDef 
  * bitNum           uint8_t         number of bits in ADC
@@ -38,13 +38,13 @@ adc_status_t ADC_Init(ADC_InitTypeDef init, ADC_HandleTypeDef* hadc);
 */
 
 
-adc_status_t ADC_Read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef *h, QueueHandle_t *q); 
+adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef *h, QueueHandle_t *q); 
 /**
  *   channel        uint32_t        channel to read
  *   samplingTime   uint32_t        ADC sampling time
  *   blocking       bool            whether the process is blocking
 */
 
-adc_status_t ADC_DeInit(ADC_HandleTypeDef *h);
+adc_status_t adc_deinit(ADC_HandleTypeDef *h);
 
 #endif

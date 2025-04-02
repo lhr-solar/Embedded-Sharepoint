@@ -44,7 +44,7 @@ void TestQueueFull(void *pvParameters) {
 
     // read once
     for (int i = 0; i < 11; i++) {
-        adc_status_t stat = ADC_Read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc1, &xReadings);
+        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc1, &xReadings);
         
         if (stat != ADC_OK) {
             error_handler(stat);
@@ -64,9 +64,9 @@ void TestADC1(void *pvParameters) {
     // read once
     for (int i = 0; i < 10; i++) {
         #ifdef ADC_SAMPLETIME_3CYCLES
-        adc_status_t stat = ADC_Read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc1, &xReadings);
+        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc1, &xReadings);
         #else
-        adc_status_t stat = ADC_Read(ADC_CHANNEL_0,  ADC_SAMPLETIME_2CYCLES_5, hadc1, &xReadings);
+        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_2CYCLES_5, hadc1, &xReadings);
         #endif
         
         if (stat != ADC_OK) {
@@ -90,9 +90,9 @@ void TestADC2(void *pvParameters) {
     // read once
     for (int i = 0; i < 10; i++) {
         #ifdef ADC_SAMPLETIME_3CYCLES
-        adc_status_t stat = ADC_Read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc2, &xReadings);
+        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc2, &xReadings);
         #else
-        adc_status_t stat = ADC_Read(ADC_CHANNEL_0,  ADC_SAMPLETIME_2CYCLES_5, hadc2, &xReadings);
+        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_2CYCLES_5, hadc2, &xReadings);
         #endif
         
         if (stat != ADC_OK) {
@@ -116,9 +116,9 @@ void TestADC3(void *pvParameters) {
     // read once
     for (int i = 0; i < 10; i++) {
         #ifdef ADC_SAMPLETIME_3CYCLES
-        adc_status_t stat = ADC_Read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc3, &xReadings);
+        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc3, &xReadings);
         #else
-        adc_status_t stat = ADC_Read(ADC_CHANNEL_0,  ADC_SAMPLETIME_2CYCLES_5, hadc3, &xReadings);
+        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_2CYCLES_5, hadc3, &xReadings);
         #endif
         
         if (stat != ADC_OK) {
@@ -151,9 +151,9 @@ int main() {
     // init ADC
     ADC_InitTypeDef adc_init_1 = {0};
 
-    adc_init_1.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
-    adc_init_1.Resolution = ADC_RESOLUTION_12B;
-    adc_init_1.ScanConvMode = DISABLE;
+    adc_init_1.ClockPrescaler = 42423;
+    adc_init_1.Resolution = 432242;
+    adc_init_1.ScanConvMode = 43234;
     adc_init_1.ContinuousConvMode = DISABLE;
     adc_init_1.DiscontinuousConvMode = DISABLE;
     adc_init_1.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
@@ -163,8 +163,9 @@ int main() {
     adc_init_1.DMAContinuousRequests = DISABLE;
     adc_init_1.EOCSelection = ADC_EOC_SINGLE_CONV;
 
-    
-    if (ADC_Init(adc_init_1, hadc1) != ADC_OK) error_handler(ADC_INIT_FAIL);
+    volatile adc_status_t s = adc_init(adc_init_1, hadc1);
+    s+=0;
+    if (adc_init(adc_init_1, hadc1) != ADC_OK) error_handler(ADC_INIT_FAIL);
 
     #ifdef ADC2
     ADC_InitTypeDef adc_init_2 = {0};
@@ -181,7 +182,7 @@ int main() {
     adc_init_2.DMAContinuousRequests = DISABLE;
     adc_init_2.EOCSelection = ADC_EOC_SINGLE_CONV;
 
-    if (ADC_Init(adc_init_2, hadc2) != ADC_OK) error_handler(ADC_INIT_FAIL);
+    if (adc_init(adc_init_2, hadc2) != ADC_OK) error_handler(ADC_INIT_FAIL);
     #endif
     #ifdef ADC3
     ADC_InitTypeDef adc_init_3 = {0};
@@ -198,7 +199,7 @@ int main() {
     adc_init_3.DMAContinuousRequests = DISABLE;
     adc_init_3.EOCSelection = ADC_EOC_SINGLE_CONV;
 
-    if (ADC_Init(adc_init_3, hadc3) != ADC_OK) error_handler(ADC_INIT_FAIL);
+    if (adc_init(adc_init_3, hadc3) != ADC_OK) error_handler(ADC_INIT_FAIL);
     #endif
 
     // Task Creation
