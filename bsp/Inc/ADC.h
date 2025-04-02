@@ -14,6 +14,7 @@ typedef enum {
     ADC_CHANNEL_CONFIG_FAIL,
     ADC_INTERRUPT_BUSY,
     ADC_INTERRUPT_TIMEOUT,
+    ADC_INTERRUPT_ERROR,
     ADC_QUEUE_FULL,
 
 } adc_status_t;
