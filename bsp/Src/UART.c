@@ -302,7 +302,7 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
 
     // Try direct transmission if possible
     portENTER_CRITICAL();
-    if (HAL_UART_GetState(handle) == HAL_UART_STATE_READY && 
+    if ((HAL_UART_GetState(handle) & HAL_UART_STATE_BUSY_TX) != HAL_UART_STATE_BUSY_TX && 
         tx_queue != NULL && uxQueueMessagesWaiting (*tx_queue) == 0 ) { // check if UART is ready and queue is empty
         // Copy data to static buffer
         memcpy(tx_buffer, data, length);
