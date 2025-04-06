@@ -57,7 +57,7 @@ compile_test() {
 export -f compile_test
 
 # Use GNU Parallel to run compilations in parallel
-if ! parallel --bar --halt now,fail=1 -j $(nproc) compile_test \
+if ! parallel --halt now,fail=1 -j $(nproc) compile_test \
     ::: "${port_list[@]}" \
     ::: "${test_list[@]}"; then
     echo -e "${RED}[ERROR] Error: Some builds failed${NC}"
