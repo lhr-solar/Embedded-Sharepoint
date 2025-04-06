@@ -186,25 +186,28 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan) {
   if (hcan->Instance == CAN1) {
     // enable clocks
     __HAL_RCC_CAN1_CLK_ENABLE();
-    __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
 
     /* enable gpio
     PA11 -> CAN1_RX
     PA12 -> CAN1_TX
+
+    PB8 -> CAN1_RX
+    PB9 -> CAN1_TX
     */
-    init.Pin = GPIO_PIN_11;
+    init.Pin = GPIO_PIN_8;
     init.Mode = GPIO_MODE_AF_PP;
     init.Pull = GPIO_PULLUP;
     init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    init.Alternate = GPIO_AF9_CAN1;
-    HAL_GPIO_Init(GPIOA, &init);
+    init.Alternate = GPIO_AF8_CAN1;
+    HAL_GPIO_Init(GPIOB, &init);
 
-    init.Pin = GPIO_PIN_12;
+    init.Pin = GPIO_PIN_9;
     init.Mode = GPIO_MODE_AF_PP;
     init.Pull = GPIO_NOPULL;
     init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    init.Alternate = GPIO_AF9_CAN1;
-    HAL_GPIO_Init(GPIOA, &init);
+    init.Alternate = GPIO_AF8_CAN1;
+    HAL_GPIO_Init(GPIOB, &init);
 
     // enable interrupts
     HAL_NVIC_SetPriority(CAN1_TX_IRQn, 5, 0);
@@ -291,8 +294,8 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef* hcan) {
     PA11 -> CAN1_RX
     PA12 -> CAN1_TX
     */
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_11);
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_12);
+    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_8);
+    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_9);
 
     // disable interrupts
     HAL_NVIC_DisableIRQ(CAN1_TX_IRQn);
