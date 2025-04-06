@@ -7,15 +7,17 @@
 #include "stm32xx_hal.h"
 #include "UART.h"
 
-#if defined(UART4)
-// Test data
-static uint8_t testPattern[TEST_PATTERN_SIZE];
+#include <string.h>
 
+#if defined(UART4)
 /* Private defines */
 #define LD2_Pin GPIO_PIN_5
 #define LD2_GPIO_Port GPIOA
 #define TEST_PATTERN_SIZE 32  // Larger pattern to ensure queue gets filled, pattern size represents a message
 #define TX_BURST_SIZE 100     // Number of messages to send in a burst
+
+// Test data
+static uint8_t testPattern[TEST_PATTERN_SIZE];
 
 /* Private function prototypes */
 void Clock_Config(void);
@@ -177,7 +179,13 @@ void Clock_Config(void)
   RCC_OscInitStruct.PLL.PLLN = 336;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
   RCC_OscInitStruct.PLL.PLLQ = 2;
+  
+  // Field is only defined on this subset of processors
+  #if defined(STM32F410Tx) || defined(STM32F410Cx) || defined(STM32F410Rx) || defined(STM32F446xx) || defined(STM32F469xx) ||\
+    defined(STM32F479xx) || defined(STM32F412Zx) || defined(STM32F412Vx) || defined(STM32F412Rx) || defined(STM32F412Cx) ||\
+    defined(STM32F413xx) || defined(STM32F423xx)
   RCC_OscInitStruct.PLL.PLLR = 2;
+  #endif
 #endif
 
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)

@@ -139,6 +139,11 @@ CAN_HandleTypeDef* hcan3 = &hcan3_;
 
 // can3 send queue
 static QueueHandle_t can3_send_queue = NULL;
+#ifndef CAN1
+#define CAN_HandleTypeDef void
+#define CAN_TxHeaderTypeDef void
+#define CAN_FilterTypeDef void
+#endif /* CAN1 */
 static StaticQueue_t can3_send_queue_buffer;
 static uint8_t
     can3_send_queue_storage[CAN3_SEND_QUEUE_SIZE * sizeof(tx_payload_t)];

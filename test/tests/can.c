@@ -9,7 +9,10 @@
 #include "stm32xx_hal.h"
 #include "CAN.h"
 
-#if defined(CAN1)
+#if !defined(CAN1)
+  #error "[CONFIG] CAN not enabled on this chip."
+#endif /* CAN1 */
+
 StaticTask_t task_buffer;
 StackType_t task_stack[configMINIMAL_STACK_SIZE];
 
@@ -153,7 +156,6 @@ static void task(void *pvParameters) {
 
   success_handler();
 }
-#endif
 
 int main(void) {
   #if defined(CAN1)
