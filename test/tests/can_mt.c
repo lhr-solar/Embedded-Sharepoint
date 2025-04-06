@@ -9,7 +9,6 @@
 #include "stm32xx_hal.h"
 #include "CAN.h"
 
-#if defined(CAN1)
 StaticTask_t task1_buffer;
 StackType_t task1_stack[configMINIMAL_STACK_SIZE];
 
@@ -74,10 +73,8 @@ static void task3(void *pvParameters){
     vTaskDelay(200);
   }
 }
-#endif
 
 int main(void){
-  #if defined(CAN1)
   // initialize the HAL and system clock
   if (HAL_Init() != HAL_OK) Error_Handler();
   // SystemClock_Config();
@@ -141,7 +138,6 @@ int main(void){
 
 
   vTaskStartScheduler();
-  #endif
 
   Error_Handler();
   return 0;

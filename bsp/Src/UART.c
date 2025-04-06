@@ -88,7 +88,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
     GPIO_InitTypeDef GPIO_InitStruct = {0};
     (void) GPIO_InitStruct;
 
-    #if defined(UART4)
+    #ifdef UART4
     if(huart->Instance == UART4) {
         __HAL_RCC_UART4_CLK_ENABLE();
         __HAL_RCC_GPIOA_CLK_ENABLE();
@@ -108,7 +108,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
     }
     #endif /* UART4 */
 
-    #if defined(UART5)
+    #ifdef UART5
     if (huart->Instance == UART5) {
         __HAL_RCC_UART5_CLK_ENABLE();
         __HAL_RCC_GPIOC_CLK_ENABLE();
