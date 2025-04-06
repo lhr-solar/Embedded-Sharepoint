@@ -6,12 +6,6 @@
  */
 #include "I2C.h"
 #include "stm32xx_hal.h"
-#include "FreeRTOS.h"
-#include "queue.h"
-#include "semphr.h"
-#include "stdbool.h"
-#include "task.h"
-#include "assert.h"
 
 /* Used Functions */
 void Single_I2C_Init(I2C_HandleTypeDef*);
@@ -32,9 +26,17 @@ typedef struct {
 
 #ifndef I2C1_MAX_PAYLOADS
 #define I2C1_MAX_PAYLOADS 16
+#endif 
+
+#ifndef I2C1PRIO
+#define I2C1PRIO 5
+#endif 
+
+#ifndef I2C1SPRIO
+#define I2C1SPRIO 0
 #endif
 
-static DataInfo_t I2C1_DataStore[I2C1_QUEUE_SIZE];
+static uint8_t I2C1_DataStore[I2C1_QUEUE_SIZE * sizeof(DataInfo_t)];
 static QueueHandle_t I2C1_Queue;
 static StaticQueue_t I2C1_DataQueue;
 I2C_HandleTypeDef *last_hi2c1;
@@ -49,7 +51,15 @@ I2C_HandleTypeDef *last_hi2c1;
 #define I2C2_MAX_PAYLOADS 16
 #endif
 
-static DataInfo_t I2C2_DataStore[I2C2_QUEUE_SIZE];
+#ifndef I2C2PRIO
+#define I2C2PRIO 5
+#endif 
+
+#ifndef I2C2SPRIO
+#define I2C2SPRIO 0
+#endif
+
+static uint8_t I2C2_DataStore[I2C2_QUEUE_SIZE * sizeof(DataInfo_t)];
 static StaticQueue_t I2C2_DataQueue;
 static QueueHandle_t I2C2_Queue;
 I2C_HandleTypeDef *last_hi2c2;
@@ -64,7 +74,15 @@ I2C_HandleTypeDef *last_hi2c2;
 #define I2C3_MAX_PAYLOADS 16
 #endif
 
-static DataInfo_t I2C3_DataStore[I2C3_QUEUE_SIZE];
+#ifndef I2C3PRIO
+#define I2C3PRIO 5
+#endif 
+
+#ifndef I2C3SPRIO
+#define I2C3SPRIO 0
+#endif
+
+static uint8_t I2C3_DataStore[I2C3_QUEUE_SIZE * sizeof(DataInfo_t)];
 static StaticQueue_t I2C3_DataQueue;
 static QueueHandle_t I2C3_Queue;
 I2C_HandleTypeDef *last_hi2c3;
@@ -106,15 +124,15 @@ HAL_StatusTypeDef i2c_init(I2C_HandleTypeDef *hi2c) {
 	if(hi2c->Instance == I2C1)
 	{
 		__HAL_RCC_I2C1_CLK_ENABLE();
-		I2C1_Queue = xQueueCreateStatic(I2C1_QUEUE_SIZE, sizeof (DataInfo_t), (uint8_t *) I2C1_DataStore, &I2C1_DataQueue);
+		I2C1_Queue = xQueueCreateStatic(I2C1_QUEUE_SIZE, sizeof(uint8_t), I2C1_DataStore, &I2C1_DataQueue);
 		// Check if the queue was created successfully
 		if (I2C1_Queue == NULL)
 			// Handle queue creation failure
 			return HAL_ERROR;
 
-		HAL_NVIC_SetPriority(I2C1_EV_IRQn , 5, 0); // set to priority 5 (not the highest priority) for I2C peripheral's interrupt
+		HAL_NVIC_SetPriority(I2C1_EV_IRQn , I2C1PRIO, I2C1SPRIO); // set to priority (default 5) (not the highest priority) for I2C peripheral's interrupt
 		HAL_NVIC_EnableIRQ(I2C1_EV_IRQn); // Enable the I2C interrupt
-		HAL_NVIC_SetPriority(I2C1_ER_IRQn , 5, 0); // set to priority 5 (not the highest priority) for I2C peripheral's interrupt
+		HAL_NVIC_SetPriority(I2C1_ER_IRQn , I2C1PRIO, I2C1SPRIO); // set to priority (default 5) (not the highest priority) for I2C peripheral's interrupt
 		HAL_NVIC_EnableIRQ(I2C1_ER_IRQn); // Enable the I2C interrupt
 		if (HAL_I2C_Init(hi2c) != HAL_OK)
 		{
@@ -128,15 +146,15 @@ HAL_StatusTypeDef i2c_init(I2C_HandleTypeDef *hi2c) {
 	else if(hi2c->Instance == I2C2)
 	{
 		__HAL_RCC_I2C2_CLK_ENABLE();
-		I2C2_Queue = xQueueCreateStatic(I2C2_QUEUE_SIZE, sizeof (DataInfo_t), (uint8_t *) I2C2_DataStore, &I2C2_DataQueue);
+		I2C2_Queue = xQueueCreateStatic(I2C2_QUEUE_SIZE, sizeof(uint8_t), I2C2_DataStore, &I2C2_DataQueue);
 		// Check if the queue was created successfully
 		if (I2C2_Queue == NULL)
 			// Handle queue creation failure
 			return HAL_ERROR;
 
-		HAL_NVIC_SetPriority(I2C2_EV_IRQn , 5, 0); // set to priority 5 (not the highest priority) for I2C peripheral's interrupt
+		HAL_NVIC_SetPriority(I2C2_EV_IRQn , I2C2PRIO, I2C2SPRIO); // set to priority (default 5) (not the highest priority) for I2C peripheral's interrupt
 		HAL_NVIC_EnableIRQ(I2C2_EV_IRQn); // Enable the I2C interrupt
-		HAL_NVIC_SetPriority(I2C2_ER_IRQn , 5, 0); // set to priority 5 (not the highest priority) for I2C peripheral's interrupt
+		HAL_NVIC_SetPriority(I2C2_ER_IRQn , I2C2PRIO, I2C2SPRIO); // set to priority (default 5) (not the highest priority) for I2C peripheral's interrupt
 		HAL_NVIC_EnableIRQ(I2C2_ER_IRQn); // Enable the I2C interrupt
 		if (HAL_I2C_Init(hi2c) != HAL_OK)
 		{
@@ -150,15 +168,15 @@ HAL_StatusTypeDef i2c_init(I2C_HandleTypeDef *hi2c) {
 	else if(hi2c->Instance == I2C3)
 	{
 		__HAL_RCC_I2C3_CLK_ENABLE();
-		I2C3_Queue = xQueueCreateStatic(I2C3_QUEUE_SIZE, sizeof (DataInfo_t), (uint8_t *) I2C3_DataStore, &I2C3_DataQueue);
+		I2C3_Queue = xQueueCreateStatic(I2C3_QUEUE_SIZE, sizeof(uint8_t), I2C3_DataStore, &I2C3_DataQueue);
 		// Check if the queue was created successfully
 		if (I2C3_Queue == NULL)
 			// Handle queue creation failure
 			return HAL_ERROR;
 
-		HAL_NVIC_SetPriority(I2C3_EV_IRQn , 5, 0); // set to priority 5 (not the highest priority) for I2C peripheral's interrupt
+		HAL_NVIC_SetPriority(I2C3_EV_IRQn , I2C3PRIO, I2C3SPRIO); // set to priority (default 5) (not the highest priority) for I2C peripheral's interrupt
 		HAL_NVIC_EnableIRQ(I2C3_EV_IRQn); // Enable the I2C interrupt
-		HAL_NVIC_SetPriority(I2C3_ER_IRQn , 5, 0); // set to priority 5 (not the highest priority) for I2C peripheral's interrupt
+		HAL_NVIC_SetPriority(I2C3_ER_IRQn , I2C3PRIO, I2C3SPRIO); // set to priority (default 5) (not the highest priority) for I2C peripheral's interrupt
 		HAL_NVIC_EnableIRQ(I2C3_ER_IRQn); // Enable the I2C interrupt
 		if (HAL_I2C_Init(hi2c) != HAL_OK)
 		{
@@ -208,45 +226,44 @@ HAL_StatusTypeDef i2c_send(I2C_HandleTypeDef *hi2c,
 	{
 		return HAL_I2C_Master_Transmit_IT(hi2c, deviceAddr, pDataBuff, len);
 	}
+	
+	QueueHandle_t I2C_Queue = I2C1_Queue;
+	if(hi2c->Instance == I2C1) {}
+	else if (hi2c->Instance == I2C2)
+	{
+		I2C_Queue = I2C2_Queue;
+	}
+	else if (hi2c->Instance == I2C3)
+	{
+		I2C_Queue = I2C3_Queue;
+	}
 	else
 	{
-		QueueHandle_t I2C_Queue = I2C1_Queue;
-		if(hi2c->Instance == I2C1) {}
-		else if (hi2c->Instance == I2C2)
-		{
-			I2C_Queue = I2C2_Queue;
-		}
-		else if (hi2c->Instance == I2C3)
-		{
-			I2C_Queue = I2C3_Queue;
-		}
-		else
-		{
-			// Handle invalid I2C peripheral
-			return HAL_ERROR;
-		}
+		// Handle invalid I2C peripheral
+		return HAL_ERROR;
+	}
 
-		if (len > uxQueueSpacesAvailable(I2C_Queue))
-		{
-			return HAL_ERROR;
-		}
-		
-		for(int packetsLeft = len - 1; packetsLeft >= 0; packetsLeft--)
-		{
-			DataInfo_t dataToEnqueue = {
-				.hi2c = hi2c,
-				.deviceAddr = deviceAddr,
-				.pDataBuff = pDataBuff[len - packetsLeft - 1],
-				.payloadsLeft = packetsLeft
-			};
+	if (len > uxQueueSpacesAvailable(I2C_Queue))
+	{
+		return HAL_ERROR;
+	}
+	
+	for(int packetsLeft = len - 1; packetsLeft >= 0; packetsLeft--)
+	{
+		DataInfo_t dataToEnqueue = {
+			.hi2c = hi2c,
+			.deviceAddr = deviceAddr,
+			.pDataBuff = pDataBuff[len - packetsLeft - 1],
+			.payloadsLeft = packetsLeft
+		};
 
-			if (xQueueSend(I2C_Queue, &dataToEnqueue, 0) != pdPASS)
-			{
-				// Handle queue full error
-				return HAL_ERROR;
-			}
+		if (xQueueSend(I2C_Queue, &dataToEnqueue, 0) != pdPASS)
+		{
+			// Handle queue full error
+			return HAL_ERROR;
 		}
 	}
+
 	return HAL_OK;
 }
 
