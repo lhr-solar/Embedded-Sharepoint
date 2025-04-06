@@ -1,4 +1,5 @@
 #include "stm32xx_hal.h"
+//#include "SevenSegmentHeader.h"
 
 #define NUMBER_SEVEN_SEGMENTS 2
 #define NUMBER_SEGMENTS 7
@@ -45,7 +46,7 @@ void SevenSegment_Init(){ //IOMUX -> SECCFG.PINCM[PB10INDEX]=(uint32_t) 0x000000
     __HAL_RCC_GPIOC_CLK_ENABLE(); // enable clock for GPIOC
 
     for (uint8_t i = 0; i < 2; i++) {
-        for (uint8_t j = 0; j < 6; j++){
+        for (uint8_t j = 0; j < 7; j++){
             if (led[i][j].Port == GPIOA){
                 led_configA.Pin = (led[i][j].Pin | led_configA.Pin);   
             }
@@ -70,26 +71,34 @@ void SevenSegment_Init(){ //IOMUX -> SECCFG.PINCM[PB10INDEX]=(uint32_t) 0x000000
 void displayNum_SevenSegment(uint32_t display, uint32_t number){ //display is 0 or 1
     
     switch (number){
-        case 0:
-            for (uint8_t i = 0; i <= 5; i++){
-               HAL_GPIO_TogglePin(led[display][i].Port, led[display][i].Pin);
+         case 0:
+            HAL_GPIO_WritePin(led[display][6].Port, led[display][6].Pin, 1);
+            for (uint8_t i = 0; i < 6; i++){
+                HAL_GPIO_WritePin(led[display][i].Port, led[display][i].Pin, 0);
             }
-
+           
             //On:LED1 PB10, LED2 PB1, LED3 PB14, LED4 PB2, LED5 PB0, LED6 PC5
             //On:LED8 PC6, LED9 PC7, LED10 PB15, LED11 PA15, LED12 PC10, LED13 PC11
             break;
-        case 1:
-            for (uint8_t i = 1; i <= 2; i++){
-                HAL_GPIO_TogglePin(led[display][i].Port, led[display][i].Pin);
-            }
-
-            //On: LED2 PB1, LED3 PB14
-            //On: LED9 PC7, LED10 PB15
-            break;
+         case 1:
+             for (uint8_t i = 0; i <= 6; i++){
+                if (i !=4 && i !=5){
+                    HAL_GPIO_WritePin(led[display][i].Port, led[display][i].Pin, 1);
+                }
+                else{
+                    HAL_GPIO_WritePin(led[display][i].Port, led[display][i].Pin, 0);
+                }
+             }
+             //On: LED2 PB1, LED3 PB14
+             //On: LED9 PC7, LED10 PB15
+             break;
         case 2:
             for (uint8_t i = 0; i <= 6; i++){
-                if ((i != 2) && (i != 5)) {
-                    HAL_GPIO_TogglePin(led[display][i].Port, led[display][i].Pin);
+                if ((i == 2) || (i == 5)) {
+                    HAL_GPIO_WritePin(led[display][i].Port, led[display][i].Pin, 1);
+                }
+                else{
+                    HAL_GPIO_WritePin(led[display][i].Port, led[display][i].Pin, 0);
                 }
             }
 
@@ -98,8 +107,11 @@ void displayNum_SevenSegment(uint32_t display, uint32_t number){ //display is 0 
             break;
         case 3:
             for (uint8_t i = 0; i <= 6; i++){ 
-                if ((i <= 3) || (i == 6)) {
-                    HAL_GPIO_TogglePin(led[display][i].Port, led[display][i].Pin);
+                if (i == 2 || i == 1) {
+                    HAL_GPIO_WritePin(led[display][i].Port, led[display][i].Pin, 1);
+                }
+                else{
+                    HAL_GPIO_WritePin(led[display][i].Port, led[display][i].Pin, 0);
                 }
             }
     
@@ -107,9 +119,12 @@ void displayNum_SevenSegment(uint32_t display, uint32_t number){ //display is 0 
             //On:LED8 PC6, LED9 PC7, LED10 PB15, LED11 PA15, LED14 PC12
             break;
         case 4:
-            for (uint8_t i = 1; i <= 6; i++){ 
-                if ((i <= 2) || (i >=5)) {
-                    HAL_GPIO_TogglePin(led[display][i].Port, led[display][i].Pin);
+            for (uint8_t i = 0; i <= 6; i++){ 
+                if ((i <= 1) || (i == 3)) {
+                    HAL_GPIO_WritePin(led[display][i].Port, led[display][i].Pin, 1);
+                }
+                else{
+                    HAL_GPIO_WritePin(led[display][i].Port, led[display][i].Pin, 0);
                 }
             }
            
@@ -118,8 +133,11 @@ void displayNum_SevenSegment(uint32_t display, uint32_t number){ //display is 0 
             break;
         case 5:
             for (uint8_t i = 0; i <= 6; i++){ 
-                if ((i != 1) && (i != 4)) {
-                    HAL_GPIO_TogglePin(led[display][i].Port, led[display][i].Pin);
+                if ((i == 1) || (i == 4)) {
+                    HAL_GPIO_WritePin(led[display][i].Port, led[display][i].Pin, 1);
+                }
+                else{
+                    HAL_GPIO_WritePin(led[display][i].Port, led[display][i].Pin, 0);
                 }
             }
             
@@ -128,8 +146,11 @@ void displayNum_SevenSegment(uint32_t display, uint32_t number){ //display is 0 
             break;
         case 6:
             for (uint8_t i = 0; i <= 6; i++){ 
-                if (i != 1) {
-                    HAL_GPIO_TogglePin(led[display][i].Port, led[display][i].Pin);
+                if (i == 4) {
+                    HAL_GPIO_WritePin(led[display][i].Port, led[display][i].Pin, 1);
+                }
+                else{
+                    HAL_GPIO_WritePin(led[display][i].Port, led[display][i].Pin, 0);
                 }
             }
     
@@ -137,27 +158,35 @@ void displayNum_SevenSegment(uint32_t display, uint32_t number){ //display is 0 
             //On:LED8 PC6, LED10 PB15, LED11 PA15, LED12 PC10, LED13 PC11, LED14 PC12
             break;
         case 7:
-            for (uint8_t i = 0; i <= 2; i++){ 
-                HAL_GPIO_TogglePin(led[display][i].Port, led[display][i].Pin);
+            for (uint8_t i = 0; i <= 6; i++){ 
+                if ((i <= 2) || i == 6){
+                    HAL_GPIO_WritePin(led[display][i].Port, led[display][i].Pin, 1);
+                }
+                else{
+                    HAL_GPIO_WritePin(led[display][i].Port, led[display][i].Pin, 0);
+                }
             }
             
             //On:LED1 PB10, LED2 PB1, LED3 PB14
             //On:LED8 PC6, LED9 PC7, LED10 PB15
             break;
         case 8:
-            for (uint8_t i = 0; i <= 6; i++){ 
-                HAL_GPIO_TogglePin(led[display][i].Port, led[display][i].Pin);
-            }
-            
+            for (uint8_t i = 0; i <= 6; i++){
+                HAL_GPIO_WritePin(led[display][i].Port, led[display][i].Pin, 0);
+            } 
             //On:LED1 PB10, LED2 PB1, LED3 PB14, LED4 PB2, LED5 PB0, LED6 PC5, LED7 PC4
             //On:LED8 PC6, LED9 PC7, LED10 PB15, LED11 PA15, LED12 PC10, LED13 PC11, LED14 PC12
             break;
         case 9:
             for (uint8_t i = 0; i <= 6; i++){ 
-                if (i != 4){
-                    HAL_GPIO_TogglePin(led[display][i].Port, led[display][i].Pin);
+                if (i == 1){
+                    HAL_GPIO_WritePin(led[display][i].Port, led[display][i].Pin, 1);
+                }
+                else{
+                    HAL_GPIO_WritePin(led[display][i].Port, led[display][i].Pin, 0);
                 }
             }
+            
             //On:LED1 PB10, LED2 PB1, LED3 PB14, LED4 PB2, LED6 PC5, LED7 PC4
             //On:LED8 PC6, LED9 PC7, LED10 PB15, LED11 PA15, LED13 PC11, LED14 PC12
             break;
@@ -166,11 +195,24 @@ void displayNum_SevenSegment(uint32_t display, uint32_t number){ //display is 0 
 
 // This function turns off the LEDs in one or both displays. Display 1 input = 0, Display 2 input = 1, Both = 2
 void off_SevenSegment(uint32_t display){
-    if (display == 0 || display == 2){
-        //HAL
+    if (display == 0){
+        for (uint8_t i = 0; i <= 6; i++){
+            HAL_GPIO_WritePin(led[display][i].Port, led[display][i].Pin, 1);
+        }
     }
-    if (display == 1 || display == 2){
-
+    if (display == 1){
+        for (uint8_t i = 0; i <= 6; i++){
+            HAL_GPIO_WritePin(led[display][i].Port, led[display][i].Pin, 1);
+        }   
+    }
+    if (display == 2){
+        for (uint8_t i = 0; i <= 6; i++){
+            HAL_GPIO_WritePin(led[0][i].Port, led[0][i].Pin, 1);
+        }  
+        for (uint8_t i = 0; i <= 6; i++){
+            HAL_GPIO_WritePin(led[1][i].Port, led[1][i].Pin, 1);
+        } 
     }
 
 }
+
