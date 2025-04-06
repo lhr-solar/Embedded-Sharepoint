@@ -247,7 +247,7 @@ I2C_StatusTypeDef i2c_send(I2C_HandleTypeDef *hi2c,
 
 	if (len > uxQueueSpacesAvailable(I2C_Queue))
 	{
-		return I2C_QEMPTY;
+		return I2C_QFULL;
 	}
 	
 	for(int packetsLeft = len - 1; packetsLeft >= 0; packetsLeft--)

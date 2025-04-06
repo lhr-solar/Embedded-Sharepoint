@@ -10,10 +10,9 @@ typedef enum {
     I2C_SENT        = 0x01U,
     I2C_QFAIL       = 0x02U,    // Queue failure
     I2C_QFULL       = 0x03U,    // Queue full
-    I2C_QEMPTY      = 0x04U,    // Queue empty
-    I2C_IFAIL       = 0x05U,    // Init failure
-    I2C_BADSIZE     = 0x06U,    // Incorrect payload size
-    I2C_BADINST     = 0x07U,    // Invalid I2C instance
+    I2C_IFAIL       = 0x04U,    // Init failure
+    I2C_BADSIZE     = 0x05U,    // Incorrect payload size
+    I2C_BADINST     = 0x06U,    // Invalid I2C instance
 
     /* Conversions for defalt HAL transmit */
     I2C_HAL_OK      = I2C_HAL_OFFSET + 0x00U,
