@@ -20,7 +20,8 @@ static void MX_GPIO_Init(void);
 static void MX_UART4_Init(void);
 void TxTask(void *argument);
 void RxTask(void *argument);
-void Error_Handler(void);  // Add this line
+void Error_Handler(void);  
+void LoopbackTask(void *argument);
 
 /* Private variables */
 extern UART_HandleTypeDef* huart4;

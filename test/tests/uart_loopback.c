@@ -21,7 +21,8 @@ static void MX_GPIO_Init(void);
 static void MX_UART4_Init(void);
 void TxTask(void *argument);
 void RxTask(void *argument);
-void Error_Handler(void);  // Add this line
+void Error_Handler(void);  
+void LoopbackTask(void *argument);
 
 /* Private variables */
 extern UART_HandleTypeDef* huart4;
@@ -101,12 +102,13 @@ static void MX_GPIO_Init(void)
     HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
 }
 
-void LoopBackTask(void *argument)
+void LoopbackTask(void *argument)
 {
     // Initial LED blink
 
+    uint8_t rxBuffer[32];
     uint8_t testMessage[8] = "Test123\0";
-    uint msgLen = 8; // Including the null terminator, strlen(testMessage) would be 7
+    uint8_t msgLen = 8; // Including the null terminator, strlen(testMessage) would be 7
     HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
     vTaskDelay(pdMS_TO_TICKS(500));
     HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
