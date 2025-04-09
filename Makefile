@@ -86,6 +86,8 @@ OPT = -Og
 #######################################
 # Build path
 BUILD_DIR = $(PROJECT_BUILD_DIR)
+$(info BUILD_DIR: $(BUILD_DIR))
+$(info PROJECT_BUILD_DIR: $(PROJECT_BUILD_DIR))
 
 ######################################
 # source
