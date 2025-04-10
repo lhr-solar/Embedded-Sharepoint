@@ -125,7 +125,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
         HAL_GPIO_Init(GPIOC, &GPIO_UART5_InitStruct);
 
         GPIO_UART5_InitStruct.Pin = GPIO_PIN_2;
-        HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+        HAL_GPIO_Init(GPIOD, &GPIO_UART5_InitStruct);
 
         HAL_NVIC_SetPriority(UART5_IRQn, 5, 0);
         HAL_NVIC_EnableIRQ(UART5_IRQn);
