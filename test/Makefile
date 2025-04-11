@@ -26,17 +26,17 @@ export PROJECT_BUILD_DIR
 BEAR_INSTALLED := $(shell command -v bear >/dev/null 2>&1 && echo yes || echo no)
 
 # define VS_CODE_DIR
-VS_CODE_DIR := $(MAKEFILE_DIR)/../.vscode
+# VS_CODE_DIR := $(MAKEFILE_DIR)/../.vscode
 
-BEAR_PREFIX := 
-ifeq ($(BEAR_INSTALLED),yes)
-$(info A wild bear has appeared!)
-BEAR_PREFIX := bear --output $(VS_CODE_DIR)/compile_commands.json --append --
-endif
+# BEAR_PREFIX := 
+# ifeq ($(BEAR_INSTALLED),yes)
+# $(info A wild bear has appeared!)
+# BEAR_PREFIX := bear --output $(VS_CODE_DIR)/compile_commands.json --append --
+# endif
 
 default: all
 %:
-	$(BEAR_PREFIX) $(MAKE) -C $(BUILD_MAKEFILE_DIR) $(MAKECMDGOALS)
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) $(MAKECMDGOALS)
 
 # generate documentation
 .PHONY: docs
