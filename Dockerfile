@@ -53,7 +53,8 @@ RUN apt-get install -y --no-install-recommends \
 # -----------------------------------------------------------------------------
 RUN pip install --no-cache-dir \
     mkdocs \
-    pyserial
+    pyserial \
+    numba
 
 FROM dev AS toolchain-cache
 # -----------------------------------------------------------------------------

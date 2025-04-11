@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-
 import sys
 import os
 import json
 import shutil
+from numba import njit,jit
 
 def parse_compile_command(compile_command):
     compile_args = compile_command.split()
@@ -20,15 +20,23 @@ def parse_compile_command(compile_command):
 
     return compile_args, output_file, source_file
 
+@jit
 def load_compile_commands(file_path):
     if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
         with open(file_path, "r") as f:
             return json.load(f)
     return []
 
+@jit
 def save_compile_commands(file_path, compile_commands):
     with open(file_path, "w") as f:
         json.dump(compile_commands, f, indent=2)
+
+@jit
+def update_compile_commands(compile_commands_path, new_entry):
+    compile_commands = load_compile_commands(compile_commands_path)
+    compile_commands.append(new_entry)
+    save_compile_commands(compile_commands_path, compile_commands)
 
 def main():
     if len(sys.argv) < 2:
@@ -52,9 +60,7 @@ def main():
     }
 
     compile_commands_path = os.path.join(vscode_dir, "compile_commands.json")
-    compile_commands = load_compile_commands(compile_commands_path)
-    compile_commands.append(new_entry)
-    save_compile_commands(compile_commands_path, compile_commands)
+    
 
 if __name__ == "__main__":
     main()
