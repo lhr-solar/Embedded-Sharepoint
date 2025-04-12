@@ -16,8 +16,6 @@
 /* Private function prototypes */
 static void MX_GPIO_Init(void); // Initialize LED gpio
 static void MX_UART4_Init(void); // Initalize UART settings, buad rate, parity bits, etc. 
-void TxTask(void *argument);
-void RxTask(void *argument);
 void Error_Handler(void);  
 void SendTask(void *argument);
 
