@@ -396,7 +396,7 @@ uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t lengt
 // Transmit Callback occurs after a transmission if complete (depending on how huart is configure)
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
     BaseType_t higherPriorityTaskWoken = pdFALSE;
-    uint8_t tx_buffer[32];  // Buffer for collecting bytes to send, though still unsure if this is completely safe, since it is local on the stack, may need a static buffer for each UART instance?
+    uint8_t tx_buffer[32];  // Buffer for collecting bytes to send
     uint8_t count = 0;
 
     QueueHandle_t *tx_queue = NULL;

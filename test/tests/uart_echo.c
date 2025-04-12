@@ -15,7 +15,6 @@
 #define LD2_GPIO_Port GPIOA
 
 /* Private function prototypes */
-void Clock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_UART4_Init(void);
 void TxTask(void *argument);
@@ -33,7 +32,7 @@ StackType_t loopbackTaskStack[configMINIMAL_STACK_SIZE];
 
 int main(void) {
     HAL_Init();
-    Clock_Config();
+    SystemClock_Config();
     MX_GPIO_Init();
     MX_UART4_Init();
 
