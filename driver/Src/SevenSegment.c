@@ -94,7 +94,8 @@ int32_t displayNum_SevenSegment(display_t display, uint8_t number){ //display is
                 break;
         }
         if ((digit == 0) && i == 0){
-            digit = number
+            digit = number;
+            i++;
         }
     switch (digit){
          case 0:
