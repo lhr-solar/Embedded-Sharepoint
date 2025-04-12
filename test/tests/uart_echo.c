@@ -20,23 +20,21 @@ static void MX_UART4_Init(void);
 void TxTask(void *argument);
 void RxTask(void *argument);
 void Error_Handler(void);  
-void LoopbackTask(void *argument);
+void EchoTask(void *argument);
 
 /* Private variables */
 extern UART_HandleTypeDef* huart4;
 
 // Static task creation resources
-StaticTask_t loopbackTaskBuffer;
-StackType_t loopbackTaskStack[configMINIMAL_STACK_SIZE];
+StaticTask_t echoTaskBuffer;
+StackType_t echoTaskStack[configMINIMAL_STACK_SIZE];
 
 
 int main(void) {
     HAL_Init();
     SystemClock_Config();
-    MX_GPIO_Init();
-    MX_UART4_Init();
-
-    
+    MX_GPIO_Init(); // Initialize LED gpio
+    MX_UART4_Init(); // Initalize UART settings, buad rate, parity bits, etc. 
     // Initialize UART BSP
     uart_status_t status = uart_init(huart4);
     if (status != UART_OK) {
@@ -45,13 +43,13 @@ int main(void) {
 
     // Create the tasks statically
     xTaskCreateStatic(
-        LoopbackTask,
-        "Loopback",
+        EchoTask,
+        "Echo",
         configMINIMAL_STACK_SIZE,
         NULL,
         tskIDLE_PRIORITY + 2,
-        loopbackTaskStack,
-        &loopbackTaskBuffer
+        echoTaskStack,
+        &echoTaskBuffer
     );
 
     // Start the scheduler
@@ -101,7 +99,7 @@ static void MX_GPIO_Init(void)
     HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
 }
 
-void LoopbackTask(void *argument) {
+void EchoTask(void *argument) {
   uint8_t rxBuffer[32]; // Buffer to store received data
 
   // Initial LED blink to indicate startup

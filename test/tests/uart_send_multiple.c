@@ -14,19 +14,19 @@
 #define LD2_GPIO_Port GPIOA
 
 /* Private function prototypes */
-static void MX_GPIO_Init(void);
-static void MX_UART4_Init(void);
+static void MX_GPIO_Init(void); // Initialize LED gpio
+static void MX_UART4_Init(void); // Initalize UART settings, buad rate, parity bits, etc. 
 void TxTask(void *argument);
 void RxTask(void *argument);
 void Error_Handler(void);  
-void LoopbackTask(void *argument);
+void SendTask(void *argument);
 
 /* Private variables */
 extern UART_HandleTypeDef* huart4;
 
 // Static task creation resources
-StaticTask_t loopbackTaskBuffer;
-StackType_t loopbackTaskStack[configMINIMAL_STACK_SIZE];
+StaticTask_t sendTaskBuffer;
+StackType_t sendTaskStack[configMINIMAL_STACK_SIZE];
 
 
 int main(void) {
@@ -44,13 +44,13 @@ int main(void) {
 
     // Create the tasks statically
     xTaskCreateStatic(
-        LoopbackTask,
-        "Loopback",
+        SendTask,
+        "Send",
         configMINIMAL_STACK_SIZE,
         NULL,
         tskIDLE_PRIORITY + 2,
-        loopbackTaskStack,
-        &loopbackTaskBuffer
+        sendTaskStack,
+        &sendTaskBuffer
     );
 
     // Start the scheduler
@@ -100,7 +100,7 @@ static void MX_GPIO_Init(void)
     HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
 }
 
-void LoopbackTask(void *argument) {
+void SendTask(void *argument) {
   // uint8_t rxBuffer[32]; // Buffer to store received data
 
   // Initial LED blink to indicate startup
