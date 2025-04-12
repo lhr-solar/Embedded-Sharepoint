@@ -112,14 +112,14 @@ static inline void HAL_UART_MspF4Init(UART_HandleTypeDef * huart) {
     // UART5
     #ifdef UART5
     if (huart->Instance == UART5) {
-        GPIO_InitTypeDef GPIO_UART5_InitStruct = {0};
+        GPIO_InitTypeDef init = {0};
         __HAL_RCC_UART5_CLK_ENABLE();
         __HAL_RCC_GPIOC_CLK_ENABLE();
         __HAL_RCC_GPIOD_CLK_ENABLE();
 
         /* enable UART5 gpio   
-        // PC12 -> UART5_TX
-        // PD2 -> UART5_RX
+        PC12 -> UART5_TX
+        PD2 -> UART5_RX
         */
         init.Pin = GPIO_PIN_12;
         init.Mode = GPIO_MODE_AF_PP;
@@ -140,7 +140,6 @@ static inline void HAL_UART_MspL4Init(UART_HandleTypeDef * huart) {
     // UART4
     #ifdef UART4
     if(huart->Instance == UART4) {
-        GPIO_InitTypeDef GPIO_UART4_InitStruct = {0};
         __HAL_RCC_UART4_CLK_ENABLE();
         __HAL_RCC_GPIOA_CLK_ENABLE();
 
@@ -161,15 +160,13 @@ static inline void HAL_UART_MspL4Init(UART_HandleTypeDef * huart) {
     // UART5
     #ifdef UART5
     if (huart->Instance == UART5) {
-        GPIO_InitTypeDef GPIO_UART5_InitStruct = {0};
         __HAL_RCC_UART5_CLK_ENABLE();
         __HAL_RCC_GPIOC_CLK_ENABLE();
         __HAL_RCC_GPIOD_CLK_ENABLE();
 
         /* enable UART5 gpio   
-        // PC12     ------> UART5_TX
-        // PD2     ------> UART5_RX
-
+        PC12 -> UART5_TX
+        PD2 -> UART5_RX
         */
         init.Pin = GPIO_PIN_12;
         init.Mode = GPIO_MODE_AF_PP;
@@ -355,7 +352,6 @@ uart_status_t uart_deinit(UART_HandleTypeDef* handle) {
     }
     #endif /* UART5 */
 
-
     return UART_OK;
 }
 
@@ -390,6 +386,7 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
         tx_queue = &uart4_tx_queue;  // for queuing
     }
     #endif /* UART 4*/
+
     #ifdef UART5
     if(handle->Instance == UART5) {
         tx_buffer = uart5_tx_buffer;
@@ -434,8 +431,6 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
                 return UART_ERR;
             } //delay_ticks: 0 = no wait, portMAX_DELAY = wait until space is available
         }
-
-
 
 exit:
     return status;
@@ -510,7 +505,6 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
     }
     #endif /* UART5 */
 
-
     // Pull as many bytes as we can fit in the buffer
     tx_payload_t payload;
     while(count + DATA_SIZE <= sizeof(tx_buffer) && xQueueReceiveFromISR(*tx_queue, &payload, &higherPriorityTaskWoken) == pdTRUE) {
@@ -522,7 +516,6 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
     if(tx_queue == NULL) {
         return; // No valid uart tx queue found
     }
-
 
     // Get as many bytes as we can from queue (up to buffer size)
     while(count < sizeof(tx_buffer) && 
@@ -561,7 +554,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     for (int i = 0; i < DATA_SIZE; i++) {
         receivedData.data[i] = rx_buffer[i]; //uartN_rx_buffer.data
     }
-
 
     BaseType_t higherPriorityTaskWoken = pdFALSE;
 
