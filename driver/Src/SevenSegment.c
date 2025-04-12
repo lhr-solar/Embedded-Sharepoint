@@ -55,6 +55,7 @@ void SevenSegment_Init(){
  and number is the number 0-99 that the LEDs will display. 
  If the number is larger than 10, display input does not matter since it will use both displays. 
  Returns 1 for success and 0 for failure.*/
+
  uint8_t displayNum_SevenSegment(display_t display, uint8_t number){ //display is 0 or 1
     uint8_t digit = 0;
     if (number > MAX_NUM){
@@ -200,6 +201,10 @@ void SevenSegment_Init(){
     return 1;
 }
 
+//Displays a 2 number input and returns 0 for failure and 1 for success
+uint8_t displayTwoNum_SevenSegment(uint8_t number){
+    return uint8_t = display_numSevenSegment(0, number);
+ }
 
 /* This function turns off the LEDs in one or both displays. 
 Input is display_0, display_1, or display_off */
