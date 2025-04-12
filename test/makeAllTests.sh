@@ -18,7 +18,7 @@ for port in "${port_list[@]}"; do
         fi
         
         # Skip UART tests for non-UART boards
-        if ([[ "$test_name" == "uart" ]] || [[ "$test_name" == "uart_mt" ]]) && [[ ! " ${uart_enabled_ports[@]} " =~ " ${port} " ]]; then
+        if ([[ "$test_name" == "uart" ]] || [[ "$test_name" == "uart_mt" ]] || [[ "$test_name" == "uart_echo" ]] || [[ "$test_name" == "uart_loopback" ]] || [[ "$test_name" == "uart_send_multiple" ]]) && [[ ! " ${uart_enabled_ports[@]} " =~ " ${port} " ]]; then
             echo "Skipping the UART test for $port because it does not support UART4 & UART5"
             continue
         fi
