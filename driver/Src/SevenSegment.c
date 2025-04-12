@@ -1,5 +1,5 @@
 #include "stm32xx_hal.h"
-#include "SevenSegmentHeader.h"
+#include "SevenSegment.h"
 
 static GPIO_InitTypeDef led_configA = {
     .Mode = GPIO_MODE_OUTPUT_PP,
@@ -203,7 +203,7 @@ void SevenSegment_Init(){
 
 //Displays a 2 number input and returns 0 for failure and 1 for success
 uint8_t displayTwoNum_SevenSegment(uint8_t number){
-    return uint8_t = display_numSevenSegment(0, number);
+    return displayNum_SevenSegment(0, number);
  }
 
 /* This function turns off the LEDs in one or both displays. 
