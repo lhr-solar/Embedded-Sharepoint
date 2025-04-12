@@ -111,6 +111,7 @@ static inline void HAL_UART_MspF4Init(UART_HandleTypeDef * huart) {
     // UART5
     #ifdef UART5
     if (huart->Instance == UART5) {
+        GPIO_InitTypeDef GPIO_UART5_InitStruct = {0};
         __HAL_RCC_UART5_CLK_ENABLE();
         __HAL_RCC_GPIOC_CLK_ENABLE();
         __HAL_RCC_GPIOD_CLK_ENABLE();
@@ -502,6 +503,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
         tx_queue = &uart5_tx_queue;
     }
     #endif /* UART5 */
+<<<<<<< HEAD
 
     // Pull as many bytes as we can fit in the buffer
     tx_payload_t payload;
@@ -509,6 +511,10 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
         // Safely copy the data from the payload into the tx_buffer
     	memcpy(&tx_buffer[count], payload.data, DATA_SIZE);
         count += DATA_SIZE;
+=======
+    if(tx_queue == NULL) {
+        return; // No valid uart tx queue found
+>>>>>>> b72a900 (UART hot fix (#119))
     }
 
     // 	If we got any bytes, transmit them
