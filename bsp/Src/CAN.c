@@ -178,10 +178,10 @@ static const uint32_t can3_recv_entry_count = 0;
 #endif /* can3_recv_entries.h */
 #endif /* CAN3 */
 
-static inline void HAL_CAN_MspF4Init(CAN_HandleTypeDef* hcan){
+__weak void HAL_CAN_MspGPIOInit(CAN_HandleTypeDef* hcan) {
   GPIO_InitTypeDef init = {0};
-  
   // CAN1
+  #ifdef CAN1
   if (hcan->Instance == CAN1) {
     // enable clocks
     __HAL_RCC_GPIOA_CLK_ENABLE();
@@ -203,11 +203,13 @@ static inline void HAL_CAN_MspF4Init(CAN_HandleTypeDef* hcan){
     init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     init.Alternate = GPIO_AF9_CAN1;
     HAL_GPIO_Init(GPIOA, &init);
+    return;
   }
+  #endif
 
   // CAN2
   #ifdef CAN2
-  else if (hcan->Instance == CAN2) {
+  if (hcan->Instance == CAN2) {
     // enable clocks
     __HAL_RCC_GPIOB_CLK_ENABLE();
 
@@ -228,12 +230,13 @@ static inline void HAL_CAN_MspF4Init(CAN_HandleTypeDef* hcan){
     init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     init.Alternate = GPIO_AF9_CAN2;
     HAL_GPIO_Init(GPIOB, &init);
+    return;
   }
   #endif /* CAN2 */
-
+  
   // CAN3
   #ifdef CAN3
-  else if (hcan->Instance == CAN3) {
+  if (hcan->Instance == CAN3) {
     // enable clocks
     __HAL_RCC_GPIOA_CLK_ENABLE();
 
@@ -254,92 +257,55 @@ static inline void HAL_CAN_MspF4Init(CAN_HandleTypeDef* hcan){
     init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     init.Alternate = GPIO_AF11_CAN3;
     HAL_GPIO_Init(GPIOA, &init);
+    return;
   }
   #endif /* CAN3 */
 }
 
+__weak void HAL_CAN_MspGPIODeInit(CAN_HandleTypeDef* hcan){
+  return;
+}
+
 // CAN MSP deinit
 void HAL_CAN_MspDeInit(CAN_HandleTypeDef* hcan) {
+  IRQn_Type txIRQ = 0;
+  IRQn_Type rxIRQ = 0;
   // CAN1
   if (hcan->Instance == CAN1) {
     // disable clocks
     __HAL_RCC_CAN1_CLK_DISABLE();
-
-    /* disable gpio
-    PA11 -> CAN1_RX
-    PA12 -> CAN1_TX
-    */
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_11);
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_12);
-
-    // disable interrupts
-    HAL_NVIC_DisableIRQ(CAN1_TX_IRQn);
-    HAL_NVIC_DisableIRQ(CAN1_RX0_IRQn);
+    txIRQ = CAN1_TX_IRQn;
+    rxIRQ = CAN1_RX0_IRQn;
   }
 
   // CAN2
   #ifdef CAN2
-  else if (hcan->Instance == CAN2) {
+  if (hcan->Instance == CAN2) {
     // disable clocks
     __HAL_RCC_CAN2_CLK_DISABLE();
-
-    /* disable gpio
-    PB12 -> CAN2_RX
-    PB13 -> CAN2_TX
-    */
-    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_12);
-    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_13);
-
-    // disable interrupts
-    HAL_NVIC_DisableIRQ(CAN2_TX_IRQn);
-    HAL_NVIC_DisableIRQ(CAN2_RX0_IRQn);
+    txIRQ = CAN2_TX_IRQn;
+    rxIRQ = CAN2_RX0_IRQn;
   }
   #endif /* CAN2 */
 
   // CAN3
   #ifdef CAN3
-  else if (hcan->Instance == CAN3) {
+  if (hcan->Instance == CAN3) {
     // disable clocks
     __HAL_RCC_CAN3_CLK_DISABLE();
+    txIRQ = CAN3_TX_IRQn;
+    rxIRQ = CAN3_RX0_IRQn;
 
-    /* disable gpio
-    PA8  -> CAN3_RX
-    PB15 -> CAN3_TX
-    */
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_8);
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_15);
-
-    // disable interrupts
-    HAL_NVIC_DisableIRQ(CAN3_TX_IRQn);
-    HAL_NVIC_DisableIRQ(CAN3_RX0_IRQn);
   }
   #endif /* CAN3 */
-}
 
-static inline void HAL_CAN_MspL4Init(CAN_HandleTypeDef* hcan){
-  GPIO_InitTypeDef init = {0};
-  // CAN1
-  if (hcan->Instance == CAN1) {
-    // enable clocks
-    __HAL_RCC_GPIOA_CLK_ENABLE();
+  if(txIRQ != 0 && rxIRQ != 0){
+    // disable GPIO
+    HAL_CAN_MspGPIODeInit(hcan);
 
-    /* enable gpio
-    PA11 -> CAN1_RX
-    PA12 -> CAN1_TX
-    */
-    init.Pin = GPIO_PIN_11;
-    init.Mode = GPIO_MODE_AF_PP;
-    init.Pull = GPIO_PULLUP;
-    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    init.Alternate = GPIO_AF9_CAN1;
-    HAL_GPIO_Init(GPIOA, &init);
-
-    init.Pin = GPIO_PIN_12;
-    init.Mode = GPIO_MODE_AF_PP;
-    init.Pull = GPIO_NOPULL;
-    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    init.Alternate = GPIO_AF9_CAN1;
-    HAL_GPIO_Init(GPIOA, &init);
+    // disable interrupts
+    HAL_NVIC_DisableIRQ(txIRQ);
+    HAL_NVIC_DisableIRQ(rxIRQ);
   }
 }
     
@@ -368,11 +334,7 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan) {
   #endif
 
   // configure GPIO pins for CAN
-  #if defined(STM32F4xx)
-  HAL_CAN_MspF4Init(hcan);
-  #elif defined(STM32L4xx)
-  HAL_CAN_MspL4Init(hcan);
-  #endif
+  HAL_CAN_MspGPIOInit(hcan);
 
   // enable can interrupts
   if(txIRQ !=0 && rxIRQ !=0){
