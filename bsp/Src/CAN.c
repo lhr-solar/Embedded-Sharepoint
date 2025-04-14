@@ -317,29 +317,21 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef* hcan) {
 }
 
 static inline void HAL_CAN_MspL4Init(CAN_HandleTypeDef* hcan){
-  GPIO_InitTypeDef init = {0};
   // CAN1
   if (hcan->Instance == CAN1) {
-    // enable clocks
-    __HAL_RCC_GPIOA_CLK_ENABLE();
 
-    /* enable gpio
-    PA11 -> CAN1_RX
-    PA12 -> CAN1_TX
+    GPIO_InitTypeDef init = {0};
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+    /**CAN1 GPIO Configuration
+    PB8     ------> CAN1_RX
+    PB9     ------> CAN1_TX
     */
-    init.Pin = GPIO_PIN_11;
-    init.Mode = GPIO_MODE_AF_PP;
-    init.Pull = GPIO_PULLUP;
-    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    init.Alternate = GPIO_AF9_CAN1;
-    HAL_GPIO_Init(GPIOA, &init);
-
-    init.Pin = GPIO_PIN_12;
+    init.Pin = GPIO_PIN_8|GPIO_PIN_9;
     init.Mode = GPIO_MODE_AF_PP;
     init.Pull = GPIO_NOPULL;
     init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     init.Alternate = GPIO_AF9_CAN1;
-    HAL_GPIO_Init(GPIOA, &init);
+    HAL_GPIO_Init(GPIOB, &init);
   }
 }
     
