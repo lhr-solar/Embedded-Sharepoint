@@ -178,6 +178,7 @@ static const uint32_t can3_recv_entry_count = 0;
 #endif /* can3_recv_entries.h */
 #endif /* CAN3 */
 
+// CAN GPIO init, can be overridden by user
 __weak void HAL_CAN_MspGPIOInit(CAN_HandleTypeDef* hcan) {
   GPIO_InitTypeDef init = {0};
   // CAN1
@@ -190,16 +191,9 @@ __weak void HAL_CAN_MspGPIOInit(CAN_HandleTypeDef* hcan) {
     PA11 -> CAN1_RX
     PA12 -> CAN1_TX
     */
-    init.Pin = GPIO_PIN_11;
+    init.Pin = GPIO_PIN_11 | GPIO_PIN_12;
     init.Mode = GPIO_MODE_AF_PP;
     init.Pull = GPIO_PULLUP;
-    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    init.Alternate = GPIO_AF9_CAN1;
-    HAL_GPIO_Init(GPIOA, &init);
-
-    init.Pin = GPIO_PIN_12;
-    init.Mode = GPIO_MODE_AF_PP;
-    init.Pull = GPIO_NOPULL;
     init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     init.Alternate = GPIO_AF9_CAN1;
     HAL_GPIO_Init(GPIOA, &init);
@@ -217,16 +211,9 @@ __weak void HAL_CAN_MspGPIOInit(CAN_HandleTypeDef* hcan) {
     PB12 -> CAN2_RX
     PB13 -> CAN2_TX
     */
-    init.Pin = GPIO_PIN_12;
+    init.Pin = GPIO_PIN_12 | GPIO_PIN_13;
     init.Mode = GPIO_MODE_AF_PP;
     init.Pull = GPIO_PULLUP;
-    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    init.Alternate = GPIO_AF9_CAN2;
-    HAL_GPIO_Init(GPIOB, &init);
-
-    init.Pin = GPIO_PIN_13;
-    init.Mode = GPIO_MODE_AF_PP;
-    init.Pull = GPIO_NOPULL;
     init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     init.Alternate = GPIO_AF9_CAN2;
     HAL_GPIO_Init(GPIOB, &init);
@@ -244,16 +231,9 @@ __weak void HAL_CAN_MspGPIOInit(CAN_HandleTypeDef* hcan) {
     PA8  -> CAN3_RX
     PA15 -> CAN3_TX
     */
-    init.Pin = GPIO_PIN_8;
+    init.Pin = GPIO_PIN_8 | GPIO_PIN_15;
     init.Mode = GPIO_MODE_AF_PP;
     init.Pull = GPIO_PULLUP;
-    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    init.Alternate = GPIO_AF11_CAN3;
-    HAL_GPIO_Init(GPIOA, &init);
-
-    init.Pin = GPIO_PIN_15;
-    init.Mode = GPIO_MODE_AF_PP;
-    init.Pull = GPIO_NOPULL;
     init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     init.Alternate = GPIO_AF11_CAN3;
     HAL_GPIO_Init(GPIOA, &init);
@@ -262,6 +242,7 @@ __weak void HAL_CAN_MspGPIOInit(CAN_HandleTypeDef* hcan) {
   #endif /* CAN3 */
 }
 
+// CAN GPIO deinit, can be overridden by user
 __weak void HAL_CAN_MspGPIODeInit(CAN_HandleTypeDef* hcan){
   return;
 }
