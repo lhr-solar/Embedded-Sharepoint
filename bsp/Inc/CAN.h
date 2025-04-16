@@ -19,6 +19,7 @@
  *
  * How to Use This Driver:
  * Init to initialize the CAN peripheral
+    ** Define a HAL_CAN_MspGPIOInit function to init your GPIO pins, there is a default implementation in the driver
  * Start to activate the CAN peripheral
  * Send, Recv, Stop, Start
  * DeInit to deinitialize
@@ -52,34 +53,14 @@ typedef enum {
 // can handlers
 #ifdef CAN1
 extern CAN_HandleTypeDef* hcan1;
-#ifndef CAN1_TX_PRIO
-#define CAN1_TX_PRIO 5
-#endif /* CAN1_TX_PRIO */
-#ifndef CAN1_RX_PRIO
-#define CAN1_RX_PRIO 5
-#endif /* CAN1_RX_PRIO */
-
 #endif /* CAN1 */
 
 #ifdef CAN2
 extern CAN_HandleTypeDef* hcan2;
-#ifndef CAN2_TX_PRIO
-#define CAN2_TX_PRIO 5
-#endif /* CAN2_TX_PRIO */
-#ifndef CAN2_RX_PRIO
-#define CAN2_RX_PRIO 5
-#endif /* CAN2_RX_PRIO */
-
 #endif /* CAN2 */
 
 #ifdef CAN3
 extern CAN_HandleTypeDef* hcan3;
-#ifndef CAN3_TX_PRIO
-#define CAN3_TX_PRIO 5
-#endif /* CAN3_TX_PRIO */
-#ifndef CAN3_RX_PRIO
-#define CAN3_RX_PRIO 5
-#endif /* CAN3_RX_PRIO */
 
 #endif /* CAN3 */
 
