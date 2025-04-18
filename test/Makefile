@@ -22,19 +22,23 @@ export PROJECT_C_SOURCES
 export PROJECT_C_INCLUDES
 export PROJECT_BUILD_DIR
 
-# check if bear is installed
-# BEAR_INSTALLED := $(shell command -v bear >/dev/null 2>&1 && echo yes || echo no)
-
 # define VS_CODE_DIR
 VS_CODE_DIR := $(MAKEFILE_DIR)/../.vscode
 
-COMPILE_COMMANDS_TXT := $(VS_CODE_DIR)/compile_commands.txt
-COMPILE_COMMANDS_JSON := $(VS_CODE_DIR)/compile_commands.json
+COMPILE_COMMANDS_ENABLED := 1
+ifeq ($(COMPILE_COMMANDS_ENABLED), 1)
+	COMPILE_COMMANDS_TXT := $(VS_CODE_DIR)/compile_commands.txt
+	COMPILE_COMMANDS_JSON := $(VS_CODE_DIR)/compile_commands.json
+	VERBOSE := 1
+else
+	VERBOSE := 0
+endif
+export VERBOSE
 
 default: all
 all:
 	$(MAKE) -C $(BUILD_MAKEFILE_DIR) all | tee -a $(COMPILE_COMMANDS_TXT)
-	$(BUILD_MAKEFILE_DIR)/bear.py $(COMPILE_COMMANDS_TXT) $(COMPILE_COMMANDS_JSON) > /dev/null 2> /dev/null
+	$(BUILD_MAKEFILE_DIR)/bear.py $(COMPILE_COMMANDS_TXT) $(COMPILE_COMMANDS_JSON) > /dev/null 2>&1
 
 .PHONY: clean
 clean:

@@ -80,7 +80,8 @@ TARGET = $(PROJECT_TARGET)
 DEBUG = 1
 # optimization
 OPT = -Og
-
+# verbose
+VERBOSE ?= 0
 
 #######################################
 # paths
@@ -228,23 +229,53 @@ OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(ASMM_SOURCES:.S=.o)))
 vpath %.S $(sort $(dir $(ASMM_SOURCES)))
 
 $(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR) 
+ifeq ($(VERBOSE), 1)
 	$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
+else
+	@$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
+	@echo "CC $< -> $@"
+endif
 
 $(BUILD_DIR)/%.o: %.s Makefile | $(BUILD_DIR)
+ifeq ($(VERBOSE), 1)
 	$(AS) -c $(CFLAGS) $< -o $@
+else
+	@$(AS) -c $(CFLAGS) $< -o $@
+	@echo "AS $< -> $@"
+endif
 
 $(BUILD_DIR)/%.o: %.S Makefile | $(BUILD_DIR)
+ifeq ($(VERBOSE), 1)
 	$(AS) -c $(CFLAGS) $< -o $@
+else
+	@$(AS) -c $(CFLAGS) $< -o $@
+	@echo "AS $< -> $@"
+endif
 
 $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
+ifeq ($(VERBOSE), 1)
 	$(CC) $(OBJECTS) $(LDFLAGS) -o $@
-	$(SZ) $@
+else
+	@$(CC) $(OBJECTS) $(LDFLAGS) -o $@
+	@echo "LD $@"
+endif
+	@$(SZ) $@
 
 $(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
+ifeq ($(VERBOSE), 1)
 	$(HEX) $< $@
+else
+	@$(HEX) $< $@
+	@echo "HEX $< -> $@"
+endif
 	
 $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
-	$(BIN) $< $@	
+ifeq ($(VERBOSE), 1)
+	$(BIN) $< $@
+else
+	@$(BIN) $< $@
+	@echo "BIN $< -> $@"
+endif
 	
 $(BUILD_DIR):
 	mkdir -p $@
