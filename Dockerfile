@@ -52,9 +52,8 @@ RUN apt-get install -y --no-install-recommends \
 # -----------------------------------------------------------------------------
 # Install Python
 # -----------------------------------------------------------------------------
-RUN pip install --no-cache-dir \
-    mkdocs \
-    pyserial
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
 FROM dev AS toolchain-cache
 # -----------------------------------------------------------------------------
