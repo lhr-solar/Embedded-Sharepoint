@@ -38,12 +38,16 @@ export VERBOSE
 default: all
 all:
 	$(MAKE) -C $(BUILD_MAKEFILE_DIR) all | tee -a $(COMPILE_COMMANDS_TXT)
+ifeq ($(COMPILE_COMMANDS_ENABLED), 1)
 	$(BUILD_MAKEFILE_DIR)/bear.py $(COMPILE_COMMANDS_TXT) $(COMPILE_COMMANDS_JSON) > /dev/null 2>&1
+endif
 
 .PHONY: clean
 clean:
 	$(MAKE) -C $(BUILD_MAKEFILE_DIR) clean
-	-rm $(COMPILE_COMMANDS_JSON) $(COMPILE_COMMANDS_TXT)
+ifeq ($(COMPILE_COMMANDS_ENABLED), 1)
+	-rm -f $(COMPILE_COMMANDS_JSON) $(COMPILE_COMMANDS_TXT)
+endif
 
 # generate documentation
 .PHONY: docs
