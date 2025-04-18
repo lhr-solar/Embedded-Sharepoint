@@ -54,7 +54,8 @@ RUN apt-get install -y --no-install-recommends \
 RUN pip install --no-cache-dir \
     mkdocs \
     pyserial \
-    numba
+    numba \
+    jq
 
 FROM dev AS toolchain-cache
 # -----------------------------------------------------------------------------

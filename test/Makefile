@@ -23,20 +23,23 @@ export PROJECT_C_INCLUDES
 export PROJECT_BUILD_DIR
 
 # check if bear is installed
-BEAR_INSTALLED := $(shell command -v bear >/dev/null 2>&1 && echo yes || echo no)
+# BEAR_INSTALLED := $(shell command -v bear >/dev/null 2>&1 && echo yes || echo no)
 
 # define VS_CODE_DIR
-# VS_CODE_DIR := $(MAKEFILE_DIR)/../.vscode
+VS_CODE_DIR := $(MAKEFILE_DIR)/../.vscode
 
-# BEAR_PREFIX := 
-# ifeq ($(BEAR_INSTALLED),yes)
-# $(info A wild bear has appeared!)
-# BEAR_PREFIX := bear --output $(VS_CODE_DIR)/compile_commands.json --append --
-# endif
+COMPILE_COMMANDS_TXT := $(VS_CODE_DIR)/compile_commands.txt
+COMPILE_COMMANDS_JSON := $(VS_CODE_DIR)/compile_commands.json
 
 default: all
-%:
-	$(MAKE) -C $(BUILD_MAKEFILE_DIR) $(MAKECMDGOALS)
+all:
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) all | tee -a $(COMPILE_COMMANDS_TXT)
+	$(BUILD_MAKEFILE_DIR)/bear.py $(COMPILE_COMMANDS_TXT) $(COMPILE_COMMANDS_JSON) > /dev/null 2> /dev/null
+
+.PHONY: clean
+clean:
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) clean
+	-rm $(COMPILE_COMMANDS_JSON) $(COMPILE_COMMANDS_TXT)
 
 # generate documentation
 .PHONY: docs
