@@ -4,7 +4,7 @@ Data:
 [7:0]: State.name (int enum)
 Frequency: 100ms",,
 Motor Precharge Enable,0x582,1,0,OUT,"Data:
- 1 means Controls wants to turn on motor precharge Contactor
+1 means Controls wants to turn on motor precharge Contactor
 0 means Controls wants to turn off motor precharge Contactor",,
 IO_STATE,0x581,3,0,OUT,"Precision 32 bits
 Data: 
@@ -12,7 +12,7 @@ Data:
 [15:8] : Brake Pedal 
 [7: 0] : Accel Pedal
 Frequency: 250ms",,
-Controls_Fault,0x582,1,0,,"Data:
+Controls_Fault,0x583,1,0,,"Data:
 0 indicates no fault, 1 indicates a fault
 [7]: It's Lakshay's Fault
 [6]: OS Fault
