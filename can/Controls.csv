@@ -14,7 +14,7 @@ Data:
 Frequency: 250ms",,
 Controls_Fault,0x583,1,0,,"Data:
 0 indicates no fault, 1 indicates a fault
-[7]: It's Lakshay's Fault
+[7]: Lakshay Fault
 [6]: OS Fault
 [5]: Motor Controller Fault
 [4]: CarCANFault
