@@ -46,7 +46,7 @@ I2C_StatusTypeDef i2c_init(I2C_HandleTypeDef *hi2c);
  * @param hi2c Config for the i2c peripheral deinit
  * @return I2C_StatusTypeDef
  */
-I2C_StatusTypeDef i2c_deinit(I2C_HandleTypeDef *hi2c)
+I2C_StatusTypeDef i2c_deinit(I2C_HandleTypeDef *hi2c);
 
 /**
 * @brief    Transmits data onto the I2C bus.
