@@ -23,6 +23,13 @@ typedef enum {
 
 
 #if defined(I2C1) || defined(I2C2) || defined(I2C3)
+#if defined(I2C3) && (!defined(I2C2) || !defined(I2C1))
+  #error "I2C3 requires I2C2 and I2C1 to be defined"
+#endif
+
+#if defined(I2C2) && !defined(I2C1)
+  #error "I2C2 requires I2C1 to be defined"
+#endif
 #include "stm32xx_hal.h"
 
 /**
@@ -32,6 +39,14 @@ typedef enum {
  * @return I2C_StatusTypeDef
  */
 I2C_StatusTypeDef i2c_init(I2C_HandleTypeDef *hi2c);
+
+/**
+ * @brief Initialize I2C port for EEPROM interaction
+ *
+ * @param hi2c Config for the i2c peripheral deinit
+ * @return I2C_StatusTypeDef
+ */
+I2C_StatusTypeDef i2c_deinit(I2C_HandleTypeDef *hi2c)
 
 /**
 * @brief    Transmits data onto the I2C bus.

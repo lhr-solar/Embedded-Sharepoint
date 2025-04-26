@@ -8,7 +8,6 @@
 
 // Functions used by main
 void Clock_Config(void);
-static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
 void TestTask(void *argument);
 
@@ -25,7 +24,6 @@ int main(void) {
   // Reset of all peripherals, Initializes the Flash interface and the Systick.
   HAL_Init();
   // Initialize all configured peripherals
-  MX_GPIO_Init();
   MX_I2C1_Init();
 
   // Create the task, passing in a priority level and stack size
@@ -71,26 +69,6 @@ static void MX_I2C1_Init(void) {
 
   __HAL_RCC_I2C1_CLK_ENABLE();
   HAL_I2C_Init(&hi2c1);
-}
-
-/**
- * @brief GPIO Initialization Function
- * @param None
- * @retval None
- */
-static void MX_GPIO_Init(void) {
-  // GPIO Ports Clock Enable
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-
-  // Configure I2C SCL and SDA pins
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
-  GPIO_InitStruct.Pin =
-      GPIO_PIN_8 | GPIO_PIN_9;  // Example for I2C1 SCL and SDA pins on STM32F4
-  GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-  GPIO_InitStruct.Alternate = GPIO_AF4_I2C1;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 }
 
 uint8_t rxBuff[] = {0, 1, 2, 3};
