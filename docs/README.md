@@ -65,3 +65,13 @@ Usage:
 Remove Docker Image:
 
     docker rmi embedded-sharepoint-dev
+
+## GDB Macros
+
+Add the following to your `~/.gdbinit` file:
+
+```gdb
+set auto-load safe-path /
+```
+
+This allows GDB to load scripts from the current directory, which is necessary for the macros to work properly.
