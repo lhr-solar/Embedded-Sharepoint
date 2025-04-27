@@ -231,14 +231,7 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef *h) {
 }
 
 #if defined(STM32L4xx)
-void ADC1_IRQHandler() {
-    // L4 IRQ Handler
-
-    if (ADC_FLAG_EOC & ADC1->ISR) {
-        HAL_ADC_IRQHandler(hadc1);
-    }
-}
-
+#ifdef ADC1_2_IRQHandler
 void ADC1_2_IRQHandler() {
     if (ADC_FLAG_EOC & ADC1->ISR) {
         HAL_ADC_IRQHandler(hadc1);
@@ -249,6 +242,17 @@ void ADC1_2_IRQHandler() {
     }
     #endif
 }
+#endif
+
+#ifdef ADC1_IRQHandler
+void ADC1_IRQHandler() {
+    // L4 IRQ Handler
+
+    if (ADC_FLAG_EOC & ADC1->ISR) {
+        HAL_ADC_IRQHandler(hadc1);
+    }
+}
+#endif
 
 #ifdef ADC3
 void ADC3_IRQHandler() {
