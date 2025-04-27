@@ -1,6 +1,6 @@
 # default project configuration
 TEST ?= main
-PROJECT_TARGET ?= stm32f446ret
+PROJECT_TARGET ?= stm32l432kcu
 
 # source and include directories
 PROJECT_C_SOURCES = $(wildcard Src/*.c)

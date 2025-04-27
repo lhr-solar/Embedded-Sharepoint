@@ -230,41 +230,54 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef *h) {
     #endif
 }
 
-void ADC_IRQHandler() {
-    #if defined(STM32L4xx) 
+#if defined(STM32L4xx)
+void ADC1_IRQHandler() {
+    // L4 IRQ Handler
+
     if (ADC_FLAG_EOC & ADC1->ISR) {
         HAL_ADC_IRQHandler(hadc1);
     }
-    #else
-    if (ADC_FLAG_EOC & ADC1->SR) {
+}
+
+void ADC1_2_IRQHandler() {
+    if (ADC_FLAG_EOC & ADC1->ISR) {
         HAL_ADC_IRQHandler(hadc1);
     }
-    #endif
-
     #ifdef ADC2
-    #if defined(STM32L4xx) 
-    if (ADC_FLAG_EOC & ADC2->ISR) {
-        HAL_ADC_IRQHandler(hadc2);
-    }
-    #else
-    if (ADC_FLAG_EOC & ADC2->SR) {
+    else if (ADC_FLAG_EOC & ADC2->ISR) {
         HAL_ADC_IRQHandler(hadc2);
     }
     #endif
-    #endif
+}
 
-    #ifdef ADC3
-    #if defined(STM32L4xx) 
+#ifdef ADC3
+void ADC3_IRQHandler() {
     if (ADC_FLAG_EOC & ADC3->ISR) {
         HAL_ADC_IRQHandler(hadc3);
     }
-    #else
-    if (ADC_FLAG_EOC & ADC3->SR) {
+}
+#endif
+#endif
+
+#if defined(STMF4xx)
+void ADC_IRQHandler() {
+    // F4 IRQ Handler 
+
+    if (ADC_FLAG_EOC & ADC1->SR) {
+        HAL_ADC_IRQHandler(hadc1);
+    }
+    #ifdef ADC2
+    else if (ADC_FLAG_EOC & ADC2->SR) {
+        HAL_ADC_IRQHandler(hadc2);
+    }
+    #endif
+    #ifdef ADC3
+    else if (ADC_FLAG_EOC & ADC3->SR) {
         HAL_ADC_IRQHandler(hadc3);
     }
     #endif
-    #endif
 }
+#endif
 
 void HAL_ADC_ErrorCallback(ADC_HandleTypeDef *h) {
     adc_err_code = HAL_ADC_GetError(h);

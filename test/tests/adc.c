@@ -151,9 +151,9 @@ int main() {
     // init ADC
     ADC_InitTypeDef adc_init_1 = {0};
 
-    adc_init_1.ClockPrescaler = 42423;
-    adc_init_1.Resolution = 432242;
-    adc_init_1.ScanConvMode = 43234;
+    adc_init_1.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
+    adc_init_1.Resolution = ADC_RESOLUTION_12B;
+    adc_init_1.ScanConvMode = DISABLE;
     adc_init_1.ContinuousConvMode = DISABLE;
     adc_init_1.DiscontinuousConvMode = DISABLE;
     adc_init_1.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
@@ -218,3 +218,23 @@ int main() {
 
     return 0;
 }
+
+// void MemManage_Handler() {
+    
+// }
+
+// void BusFault_Handler() {
+
+// }
+
+// void UsageFault_Handler() {
+
+// }
+
+// void Reset_Handler() {
+
+// }
+
+// void NMI_Handler() {
+
+// }
