@@ -127,7 +127,6 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *h) {
     portYIELD_FROM_ISR(higherPriorityTaskWoken);
 }
 
-#ifdef STM32L4xx
 static inline void HAL_ADC_MspL4Init(ADC_HandleTypeDef *h) {
     // L4 Clock
     __HAL_RCC_ADC_CLK_ENABLE();
@@ -149,9 +148,7 @@ static inline void HAL_ADC_MspL4Init(ADC_HandleTypeDef *h) {
 
     #endif
 }
-#endif
 
-#ifdef STM32F4xx
 static inline void HAL_ADC_MspF4Init(ADC_HandleTypeDef *h) {
     // F4 Clock
     if (h->Instance == ADC1) __HAL_RCC_ADC1_CLK_ENABLE();
@@ -167,9 +164,7 @@ static inline void HAL_ADC_MspF4Init(ADC_HandleTypeDef *h) {
     HAL_NVIC_SetPriority(ADC_IRQn, ADC_PRIO, 0);
     HAL_NVIC_EnableIRQ(ADC_IRQn);
 }
-#endif
 
-#ifdef STM32L4xx
 static inline void HAL_ADC_MspL4DeInit(ADC_HandleTypeDef *h) {
     // L4 Clock
     __HAL_RCC_ADC_CLK_DISABLE();
@@ -188,9 +183,7 @@ static inline void HAL_ADC_MspL4DeInit(ADC_HandleTypeDef *h) {
 
     #endif
 }
-#endif
 
-#ifdef STM32F4xx
 static inline void HAL_ADC_MspF4DeInit(ADC_HandleTypeDef *h) {
     if (h->Instance == ADC1) __HAL_RCC_ADC1_CLK_DISABLE();
 
@@ -204,7 +197,6 @@ static inline void HAL_ADC_MspF4DeInit(ADC_HandleTypeDef *h) {
 
     HAL_NVIC_DisableIRQ(ADC_IRQn);
 }
-#endif
 
 void HAL_ADC_MspInit(ADC_HandleTypeDef *h) {
     // L4
@@ -276,7 +268,7 @@ void ADC_IRQHandler() {
     }
     #endif
     #ifdef ADC3
-    else if (ADC_FLAG_EOC & ADC3->SR) {
+    if (ADC_FLAG_EOC & ADC3->SR) {
         HAL_ADC_IRQHandler(hadc3);
     }
     #endif
