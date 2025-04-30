@@ -1,3 +1,20 @@
+/**
+ * @file adc_test.c
+ * @brief ADC test file for verifying ADC read behavior with FreeRTOS queues.
+ * 
+ * ---------------------
+ * CONFIGURATION NOTE:
+ * ---------------------
+ * To change the GPIO pin used for a given ADC channel, override the function:
+ *
+ *      void HAL_ADC_MspGPIOInit(ADC_HandleTypeDef* hadc)
+ *
+ * This function is weakly defined in `ADC.c`. You can redefine it in this file 
+ * or another user file to change pin configurations (e.g., port, pin, alternate function).
+ *
+ * Refer to the `ADC.c` file for the default implementation.
+ */
+
 #include "ADC.h"
 
 #define STACK_SIZE 200
@@ -56,6 +73,8 @@ void TestQueueFull(void *pvParameters) {
     success_handler();
 }
 #endif
+
+
 
 void TestADC1(void *pvParameters) {
     // Set bkpt in error_handler();
@@ -135,17 +154,6 @@ void TestADC3(void *pvParameters) {
 #endif
 
 int main() {
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-
-    GPIO_InitTypeDef input =  {
-        .Pin = GPIO_PIN_3,
-        .Mode = GPIO_MODE_ANALOG,
-        .Pull = GPIO_NOPULL,
-    };
-
-    HAL_GPIO_Init(GPIOA, &input);
-
-    // 10 elem queue
     xReadings = xQueueCreateStatic(QUEUE_LENGTH, ITEM_SIZE, qStorage, &xStaticQueue);
 
     // init ADC
@@ -203,6 +211,7 @@ int main() {
     #endif
 
     // Task Creation
+    
 
     xTaskCreateStatic(TestADC1,
                     "ADC Test",
@@ -218,23 +227,3 @@ int main() {
 
     return 0;
 }
-
-// void MemManage_Handler() {
-    
-// }
-
-// void BusFault_Handler() {
-
-// }
-
-// void UsageFault_Handler() {
-
-// }
-
-// void Reset_Handler() {
-
-// }
-
-// void NMI_Handler() {
-
-// }

@@ -1,3 +1,30 @@
+/**
+ * @brief File that shows how to initialize and read from ADCs using static queues and FreeRTOS tasks.
+ * 
+ * ---------------------
+ * USAGE INSTRUCTIONS:
+ * ---------------------
+ * 1. **ADC Initialization**:
+ *    - Call `adc_init(adc_init_struct, hadcX)` to initialize a specific ADC instance.
+ *    - Parameters:
+ *        - `adc_init_struct` : A fully configured `ADC_InitTypeDef` structure.
+ *        - `hadcX`           : The ADC handle (`hadc1`, `hadc2`, or `hadc3`).
+ *    - Returns `ADC_OK` on success, or an error status on failure.
+ *
+ * 2. **ADC Reading**:
+ *    - Call `adc_read(channel, sample_time, hadcX, &queue)` to perform a read.
+ *    - Parameters:
+ *        - `channel`     : ADC input channel (e.g., `ADC_CHANNEL_0`, `ADC_CHANNEL_3`).
+ *        - `sample_time` : Sampling time macro.
+ *        - `hadcX`       : The ADC handle corresponding to the ADC you want to use.
+ *        - `&queue`      : Pointer to a FreeRTOS queue (`QueueHandle_t`) to store the reading.
+ *    - Returns `ADC_OK` on success, or an error status on failure.
+ *
+ * 3. **Queue Retrieval**:
+ *    - Use `xQueueReceive(queue, &reading, timeout)` to retrieve the ADC reading.
+ *    - Set `timeout` to 0 for non-blocking behavior.
+ */
+
 #ifndef _ADC_H
 #define _ADC_H
 
