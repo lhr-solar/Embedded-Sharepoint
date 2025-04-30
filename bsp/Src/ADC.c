@@ -263,7 +263,7 @@ void ADC3_IRQHandler() {
 #endif
 #endif
 
-#if defined(STMF4xx)
+#if defined(STM32F4xx)
 void ADC_IRQHandler() {
     // F4 IRQ Handler 
 
