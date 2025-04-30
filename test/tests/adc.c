@@ -64,9 +64,9 @@ void TestADC1(void *pvParameters) {
     // read once
     for (int i = 0; i < 10; i++) {
         #ifdef ADC_SAMPLETIME_3CYCLES
-        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc1, &xReadings);
+        adc_status_t stat = adc_read(ADC_CHANNEL_3,  ADC_SAMPLETIME_3CYCLES, hadc1, &xReadings);
         #else
-        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_2CYCLES_5, hadc1, &xReadings);
+        adc_status_t stat = adc_read(ADC_CHANNEL_3,  ADC_SAMPLETIME_2CYCLES_5, hadc1, &xReadings);
         #endif
         
         if (stat != ADC_OK) {
@@ -138,7 +138,7 @@ int main() {
     __HAL_RCC_GPIOA_CLK_ENABLE();
 
     GPIO_InitTypeDef input =  {
-        .Pin = GPIO_PIN_0,
+        .Pin = GPIO_PIN_3,
         .Mode = GPIO_MODE_ANALOG,
         .Pull = GPIO_NOPULL,
     };
