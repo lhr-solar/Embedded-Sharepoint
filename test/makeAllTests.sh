@@ -1,6 +1,6 @@
 #!/bin/bash
 
-port_list=("stm32f401re" "stm32f413rht" "stm32f429zit" "stm32f446ret" "stm32l431cbt" "stm32l476rgt")
+port_list=("stm32f401re" "stm32f413rht" "stm32f429zit" "stm32f446ret" "stm32l431cbt" "stm32l476rgt" "stm32l432kcu")
 
 # Boards that should run UART tests since they support UART4 & UART5, will add more boards as they are tested
 uart_enabled_ports=("stm32f446ret" "stm32l476rgt")
