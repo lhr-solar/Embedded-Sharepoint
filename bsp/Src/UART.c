@@ -1,6 +1,8 @@
 #include "UART.h"
 #include <string.h>
 #include "FreeRTOS.h"
+#include <stdint.h>
+
 // Define the size of the data to be transmitted
 // Currently not used, as we send uint8_t directly
 // may need to be configured for support for packets less more than 8 bits
@@ -86,11 +88,10 @@ static bool is_uart_initialized(UART_HandleTypeDef* handle) {
     return (handle->gState != HAL_UART_STATE_RESET);
 }
 
-
-static inline void HAL_UART_MspF4Init(UART_HandleTypeDef * huart) {
+// Redefine me!
+__weak void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){ 
     GPIO_InitTypeDef init = {0};
-
-    // UART4
+    // Same sets of pins for L4/F4
     #ifdef UART4
     if(huart->Instance == UART4) {
         //enable port A clock
@@ -108,12 +109,9 @@ static inline void HAL_UART_MspF4Init(UART_HandleTypeDef * huart) {
         HAL_GPIO_Init(GPIOA, &init);
     }
     #endif /* UART4 */
-
-    // UART5
+    
     #ifdef UART5
     if (huart->Instance == UART5) {
-        GPIO_InitTypeDef init = {0};
-        __HAL_RCC_UART5_CLK_ENABLE();
         __HAL_RCC_GPIOC_CLK_ENABLE();
         __HAL_RCC_GPIOD_CLK_ENABLE();
 
@@ -134,55 +132,6 @@ static inline void HAL_UART_MspF4Init(UART_HandleTypeDef * huart) {
     #endif /* UART5 */
 }
 
-static inline void HAL_UART_MspL4Init(UART_HandleTypeDef * huart) {
-    GPIO_InitTypeDef init = {0};
-
-    // UART4
-    #ifdef UART4
-    if(huart->Instance == UART4) {
-        __HAL_RCC_UART4_CLK_ENABLE();
-        __HAL_RCC_GPIOA_CLK_ENABLE();
-
-
-        /* enable UART4 gpio
-        PA0 -> UART4_TX
-        PA1 -> UART4_RX    
-        */
-        init.Pin = GPIO_PIN_0|GPIO_PIN_1;
-        init.Mode = GPIO_MODE_AF_PP;
-        init.Pull = GPIO_NOPULL;
-        init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-        init.Alternate = GPIO_AF8_UART4;
-        HAL_GPIO_Init(GPIOA, &init);
-    }
-    #endif /* UART4 */
-
-    // UART5
-    #ifdef UART5
-    if (huart->Instance == UART5) {
-        __HAL_RCC_UART5_CLK_ENABLE();
-        __HAL_RCC_GPIOC_CLK_ENABLE();
-        __HAL_RCC_GPIOD_CLK_ENABLE();
-
-        /* enable UART5 gpio   
-        PC12 -> UART5_TX
-        PD2 -> UART5_RX
-        */
-        init.Pin = GPIO_PIN_12;
-        init.Mode = GPIO_MODE_AF_PP;
-        init.Pull = GPIO_NOPULL;
-        init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-        init.Alternate = GPIO_AF8_UART5;
-        HAL_GPIO_Init(GPIOC, &init);
-
-        init.Pin = GPIO_PIN_2;
-        HAL_GPIO_Init(GPIOD, &init);
-
-    }
-    #endif /* UART5 */
-}
-
-// HAL UART MSP init 
 void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
     IRQn_Type uart_IRQ = NonMaskableInt_IRQn; // IRQn_Type for UART interrupts
 
@@ -192,6 +141,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
         uart_IRQ = UART4_IRQn;
     }
     #endif /* UART4 */
+    
     #ifdef UART5
     if (huart->Instance == UART5) {
         __HAL_RCC_UART5_CLK_ENABLE(); // enable UART5 clock
@@ -199,19 +149,31 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
     }
     #endif /* UART5 */
 
-
     // configure GPIO pins for UART
-    #if defined(STM32F4xx)
-    HAL_UART_MspF4Init(huart);
-    #elif defined(STM32L4xx)
-    HAL_UART_MspL4Init(huart);
-    #endif
+    HAL_UART_MspGPIOInit(huart); 
 
     // enable uart interrupts
     HAL_NVIC_SetPriority(uart_IRQ, 5, 0);
     HAL_NVIC_EnableIRQ(uart_IRQ); 
 }
 
+// Redefine me!
+__weak void HAL_UART_MspGPIODeInit(UART_HandleTypeDef *huart){ 
+    // Same sets of pins for L4/F4
+    #ifdef UART4
+    if(huart->Instance == UART4) {
+	HAL_GPIO_DeInit(GPIOA, GPIO_PIN_0);
+	HAL_GPIO_DeInit(GPIOA, GPIO_PIN_1);
+    }
+    #endif /* UART4 */
+    
+    #ifdef UART5
+    if (huart->Instance == UART5) {
+	HAL_GPIO_DeInit(GPIOC, GPIO_PIN_12);
+	HAL_GPIO_DeInit(GPIOD, GPIO_PIN_2);
+    }
+    #endif /* UART5 */
+}
 
 void HAL_UART_MspDeInit(UART_HandleTypeDef *huart) {
     // UART4
@@ -219,12 +181,6 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart) {
     if (huart->Instance == UART4) {
         //disable clocks
         __HAL_RCC_UART4_CLK_DISABLE();
-
-        /* disable gpio
-        PA0 -> UART4_TX
-        PA1 -> UART4_RX    
-        */
-        HAL_GPIO_DeInit(GPIOA, GPIO_PIN_0|GPIO_PIN_1);
 
         // disable interrupts
         HAL_NVIC_DisableIRQ(UART4_IRQn);
@@ -236,18 +192,13 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart) {
     if (huart->Instance == UART5) {
         // disable clocks
         __HAL_RCC_UART5_CLK_DISABLE();
-
-        /* disable gpio
-        PC12 -> UART5_TX
-        PD2 -> UART5_RX
-         */
-        HAL_GPIO_DeInit(GPIOC, GPIO_PIN_12);
-        HAL_GPIO_DeInit(GPIOD, GPIO_PIN_2);
-        
+    
         // disable interrupts
         HAL_NVIC_DisableIRQ(UART5_IRQn);        //disable interrupts
     }
     #endif /* UART5 */
+
+    HAL_UART_MspGPIODeInit(huart);
 }
 
 /**
@@ -299,7 +250,9 @@ uart_status_t uart_init(UART_HandleTypeDef* handle) {
     
 
     // init HAL
-    if (HAL_UART_Init(handle) != HAL_OK) {
+    if (HAL_UART_Init(handle) != HAL_OK ||
+	(handle->Instance != (UART4) &&
+	handle->Instance != (UART5))) {
         return UART_ERR;
     }
 
@@ -427,7 +380,7 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
              }
 
             // Enqueue the payload to be transmitted
-            if (xQueueSend(*tx_queue, &payload, delay_ticks) != pdTRUE) {
+	    if (xQueueSend(*tx_queue, &payload, delay_ticks) != pdTRUE) {
                 return UART_ERR;
             } //delay_ticks: 0 = no wait, portMAX_DELAY = wait until space is available
         }
@@ -553,12 +506,14 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     rx_payload_t receivedData;
     for (int i = 0; i < DATA_SIZE; i++) {
         receivedData.data[i] = rx_buffer[i]; //uartN_rx_buffer.data
+	rx_buffer[i] = 0x00; // clear rx buffer element
     }
 
     BaseType_t higherPriorityTaskWoken = pdFALSE;
 
     xQueueSendFromISR(*rx_queue, &receivedData, &higherPriorityTaskWoken); // Send data from &receivedData(pRxBuffPtr) to rx_queue
 
+    // Trigger the next interrupt
     HAL_UART_Receive_IT(huart, rx_buffer, DATA_SIZE);// pRxBufferPtr is a pointer to the buffer that will store the received data
 
     portYIELD_FROM_ISR(higherPriorityTaskWoken);

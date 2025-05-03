@@ -15,7 +15,6 @@
 
 /* Private function prototypes */
 static void MX_GPIO_Init(void);
-static void MX_UART4_Init(void);
 void TxTask(void *argument);
 void RxTask(void *argument);
 void Error_Handler(void);  // Add this line
@@ -33,7 +32,20 @@ int main(void) {
     HAL_Init();
     SystemClock_Config();
     MX_GPIO_Init();
-    MX_UART4_Init();
+
+    huart4->Instance = UART4;
+    huart4->Init.BaudRate = 115200;
+    huart4->Init.WordLength = UART_WORDLENGTH_8B;
+    huart4->Init.StopBits = UART_STOPBITS_1;
+    huart4->Init.Parity = UART_PARITY_NONE;
+    huart4->Init.Mode = UART_MODE_TX_RX;
+    huart4->Init.HwFlowCtl = UART_HWCONTROL_NONE;
+    huart4->Init.OverSampling = UART_OVERSAMPLING_16;
+
+    #ifdef STM32L4xx
+    huart4->Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+    huart4->AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+    #endif /* STM32L4xx */
 
     
     // Initialize UART BSP
@@ -43,13 +55,13 @@ int main(void) {
     }
 
     // Create the tasks statically
-    xTaskCreateStatic(TxTask, 
-                     "TX",
-                     configMINIMAL_STACK_SIZE,
-                     NULL,
-                     tskIDLE_PRIORITY + 2,
-                     txTaskStack,
-                     &txTaskBuffer);
+  //  xTaskCreateStatic(TxTask, 
+  //                   "TX",
+  //                   configMINIMAL_STACK_SIZE,
+  //                   NULL,
+  //                   tskIDLE_PRIORITY + 2,
+  //                   txTaskStack,
+  //                   &txTaskBuffer);
 
     xTaskCreateStatic(RxTask,
                      "RX", 
@@ -64,27 +76,6 @@ int main(void) {
 
     while (1) {
         // Should never get here
-    }
-}
-
-static void MX_UART4_Init(void)
-{
-    huart4->Instance = UART4;
-    huart4->Init.BaudRate = 115200;
-    huart4->Init.WordLength = UART_WORDLENGTH_8B;
-    huart4->Init.StopBits = UART_STOPBITS_1;
-    huart4->Init.Parity = UART_PARITY_NONE;
-    huart4->Init.Mode = UART_MODE_TX_RX;
-    huart4->Init.HwFlowCtl = UART_HWCONTROL_NONE;
-    huart4->Init.OverSampling = UART_OVERSAMPLING_16;
-
-    #ifdef STM32L4xx
-    huart4->Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-    huart4->AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-    #endif /* STM32L4xx */
-    
-    if (HAL_UART_Init(huart4) != HAL_OK) {
-        Error_Handler();
     }
 }
 
