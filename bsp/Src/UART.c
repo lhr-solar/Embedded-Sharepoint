@@ -1,6 +1,5 @@
 #include "UART.h"
 #include <string.h>
-#include <stdint.h>
 
 // Define the size of the data to be transmitted
 // Currently not used, as we send uint8_t directly

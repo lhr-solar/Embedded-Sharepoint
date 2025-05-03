@@ -23,7 +23,7 @@ export script_dir RED GREEN YELLOW BLUE NC
 port_list=()
 while IFS= read -r -d '' cfg_file; do
     port_list+=("$(basename "${cfg_file%.cfg}")")
-done < <(find ../stm -type f -name "*.cfg" -print0)
+done < <(find $script_dir/../stm -type f -name "*.cfg" -print0)
 
 if [ ${#port_list[@]} -eq 0 ]; then
     echo -e "${RED}[ERROR] Something is horribly wrong. No port config files found.${NC}"
@@ -38,7 +38,7 @@ echo -e "${BLUE}----------------------------------------${NC}"
 
 # Collect all test names
 test_list=()
-for test_file in tests/*.c; do
+for test_file in $script_dir/tests/*.c; do
     test_name=$(basename "$test_file" .c)
     test_list+=("$test_name")
 done
@@ -58,7 +58,7 @@ compile_test() {
 
     project_build_dir="$script_dir/../build/$port/$test_name"
 
-    output=$(make TEST="$test_name" PROJECT_TARGET="$port" BEAR_ENABLE=0 PROJECT_BUILD_DIR=$project_build_dir $MAKE_FLAGS 2>&1)
+    output=$(make -C $script_dir TEST="$test_name" PROJECT_TARGET="$port" BEAR_ENABLE=0 PROJECT_BUILD_DIR=$project_build_dir $MAKE_FLAGS 2>&1)
     error_code=$?
     if [ $error_code -ne 0 ]; then
         printf "${RED}[%s:%s] %s${NC}\n" "$port" "$test_name" "$output"
