@@ -1,9 +1,8 @@
 Data,CAN ID,Length(bytes),Index Used,IN/OUT,Description
 BPS Trip,0x002,1,0,,"Precision: 1 bit
 Data: 1 - bps tripped, something is wrong
-0 - bps has not tripped. Could either be battery pack is safe or bps
-is currently determing if the battery pack is safe. (This is arbitrary though)
-Frequency: Only sends when tripped
+0 - bps has not tripped. Battery pack has not been determined safe yet
+Frequency: At startup and every 250ms
 Notes: Whenever tripped, the bps will sequentially send out every CAN
 message related to the BPS from BPS trip to CAN Error. The bps will not periodically send 0 for BPS trip on the CAN line. The act of sending the BPS trip CAN ID itself should alarm all systems that it tripped"
 BPS All Clear,0x101,1,0,,"Precision: 1 bit
