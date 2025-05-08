@@ -1,5 +1,8 @@
 #include "UART.h"
 #include <string.h>
+#include "FreeRTOS.h"
+#include <stdint.h>
+
 // Define the size of the data to be transmitted
 // Currently not used, as we send uint8_t directly
 // may need to be configured for support for packets less more than 8 bits
@@ -11,13 +14,9 @@ typedef struct {
     uint8_t data[DATA_SIZE]; // data to be transmitted, 1 byte
 } tx_payload_t;
 
-uint16_t sizeof_tx_payload_t = sizeof(tx_payload_t); // Precompute size of payload
-
 typedef struct {
     uint8_t data[DATA_SIZE]; // data received, 1 byte
 } rx_payload_t;
-
-uint16_t sizeof_rx_payload_t = sizeof(rx_payload_t);
 
 #ifdef UART4
 // fallback UART4 TX queue size
@@ -29,6 +28,7 @@ uint16_t sizeof_rx_payload_t = sizeof(rx_payload_t);
 #ifndef UART4_RX_QUEUE_SIZE
 #define UART4_RX_QUEUE_SIZE (10)
 #endif
+
 //UART4 handle
 static UART_HandleTypeDef huart4_ = {.Instance = UART4};
 UART_HandleTypeDef* huart4 = &huart4_;
@@ -44,9 +44,11 @@ static QueueHandle_t uart4_rx_queue = NULL;
 static StaticQueue_t uart4_rx_queue_buffer;
 static uint8_t uart4_rx_queue_storage[UART4_RX_QUEUE_SIZE * sizeof(rx_payload_t)];  // Will be allocated based on queue_size in uart_init
 
+// UART4 RX buffer
+// An intermediate buffer of DATA_SIZE bytes to store received data before it is copied to the queue
+static rx_payload_t uart4_rx_buffer;
 
 #endif /* UART4 */
-
 
 #ifdef UART5
 // fallback UART5 TX queue size
@@ -73,84 +75,130 @@ static QueueHandle_t uart5_rx_queue = NULL;
 static StaticQueue_t uart5_rx_queue_buffer;
 static uint8_t uart5_rx_queue_storage[UART5_RX_QUEUE_SIZE * sizeof(rx_payload_t)];  // Will be allocated based on queue_size
 
+// UART5 RX buffer
+// An intermediate buffer of DATA_SIZE bytes to store received data before it is copied to the queue
+static rx_payload_t uart5_rx_buffer;
+
 #endif /* UART5 */
 
 
-bool is_uart_initialized(UART_HandleTypeDef* handle) {
+static bool is_uart_initialized(UART_HandleTypeDef* handle) {
     // Check if the UART is in a valid state
     // HAL_UART_STATE_RESET indicates the UART is not initialized
     return (handle->gState != HAL_UART_STATE_RESET);
 }
 
-// HAL UART MSP init 
-void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
-
-
+// Redefine me!
+__weak void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){ 
+    GPIO_InitTypeDef init = {0};
+    // Same sets of pins for L4/F4
     #ifdef UART4
     if(huart->Instance == UART4) {
-        GPIO_InitTypeDef GPIO_UART4_InitStruct = {0};
-        __HAL_RCC_UART4_CLK_ENABLE();
+        //enable port A clock
         __HAL_RCC_GPIOA_CLK_ENABLE();
 
-        // UART4 GPIO Configuration    
-        // PA0     ------> UART4_TX
-        // PA1     ------> UART4_RX
-        GPIO_UART4_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
-        GPIO_UART4_InitStruct.Mode = GPIO_MODE_AF_PP;
-        GPIO_UART4_InitStruct.Pull = GPIO_NOPULL;
-        GPIO_UART4_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-        GPIO_UART4_InitStruct.Alternate = GPIO_AF8_UART4;
-        HAL_GPIO_Init(GPIOA, &GPIO_UART4_InitStruct);
-
-        HAL_NVIC_SetPriority(UART4_IRQn, 5, 0); 
-        HAL_NVIC_EnableIRQ(UART4_IRQn);
+        /* enable port A UART4 gpio
+        PA0 -> UART4_TX
+        PA1 -> UART4_RX    
+        */
+        init.Pin = GPIO_PIN_0|GPIO_PIN_1;
+        init.Mode = GPIO_MODE_AF_PP;
+        init.Pull = GPIO_NOPULL;
+        init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+        init.Alternate = GPIO_AF8_UART4;
+        HAL_GPIO_Init(GPIOA, &init);
     }
     #endif /* UART4 */
-
+    
     #ifdef UART5
     if (huart->Instance == UART5) {
-        GPIO_InitTypeDef GPIO_UART5_InitStruct = {0};
-        __HAL_RCC_UART5_CLK_ENABLE();
         __HAL_RCC_GPIOC_CLK_ENABLE();
         __HAL_RCC_GPIOD_CLK_ENABLE();
 
-        // UART5 GPIO Configuration    
-        // PC12     ------> UART5_TX
-        // PD2     ------> UART5_RX
-        GPIO_UART5_InitStruct.Pin = GPIO_PIN_12;
-        GPIO_UART5_InitStruct.Mode = GPIO_MODE_AF_PP;
-        GPIO_UART5_InitStruct.Pull = GPIO_NOPULL;
-        GPIO_UART5_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-        GPIO_UART5_InitStruct.Alternate = GPIO_AF8_UART5;
-        HAL_GPIO_Init(GPIOC, &GPIO_UART5_InitStruct);
+        /* enable UART5 gpio   
+        PC12 -> UART5_TX
+        PD2 -> UART5_RX
+        */
+        init.Pin = GPIO_PIN_12;
+        init.Mode = GPIO_MODE_AF_PP;
+        init.Pull = GPIO_NOPULL;
+        init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+        init.Alternate = GPIO_AF8_UART5;
+        HAL_GPIO_Init(GPIOC, &init);
 
-        GPIO_UART5_InitStruct.Pin = GPIO_PIN_2;
-        HAL_GPIO_Init(GPIOD, &GPIO_UART5_InitStruct);
-
-        HAL_NVIC_SetPriority(UART5_IRQn, 5, 0);
-        HAL_NVIC_EnableIRQ(UART5_IRQn);
+        init.Pin = GPIO_PIN_2;
+        HAL_GPIO_Init(GPIOD, &init);
     }
     #endif /* UART5 */
 }
 
+void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
+    IRQn_Type uart_IRQ = NonMaskableInt_IRQn; // IRQn_Type for UART interrupts
 
-void HAL_UART_MspDeInit(UART_HandleTypeDef *huart) {
     #ifdef UART4
     if (huart->Instance == UART4) {
-        __HAL_RCC_UART4_CLK_DISABLE();                  // disable clocks
-        HAL_GPIO_DeInit(GPIOA, GPIO_PIN_0|GPIO_PIN_1);  // disable gpio
-        HAL_NVIC_DisableIRQ(UART4_IRQn);                // disable interrupts
+        __HAL_RCC_UART4_CLK_ENABLE(); // enable UART4 clock
+        uart_IRQ = UART4_IRQn;
+    }
+    #endif /* UART4 */
+    
+    #ifdef UART5
+    if (huart->Instance == UART5) {
+        __HAL_RCC_UART5_CLK_ENABLE(); // enable UART5 clock
+        uart_IRQ = UART5_IRQn;
+    }
+    #endif /* UART5 */
+
+    // configure GPIO pins for UART
+    HAL_UART_MspGPIOInit(huart); 
+
+    // enable uart interrupts
+    HAL_NVIC_SetPriority(uart_IRQ, 5, 0);
+    HAL_NVIC_EnableIRQ(uart_IRQ); 
+}
+
+// Redefine me!
+__weak void HAL_UART_MspGPIODeInit(UART_HandleTypeDef *huart){ 
+    // Same sets of pins for L4/F4
+    #ifdef UART4
+    if(huart->Instance == UART4) {
+	HAL_GPIO_DeInit(GPIOA, GPIO_PIN_0);
+	HAL_GPIO_DeInit(GPIOA, GPIO_PIN_1);
+    }
+    #endif /* UART4 */
+    
+    #ifdef UART5
+    if (huart->Instance == UART5) {
+	HAL_GPIO_DeInit(GPIOC, GPIO_PIN_12);
+	HAL_GPIO_DeInit(GPIOD, GPIO_PIN_2);
+    }
+    #endif /* UART5 */
+}
+
+void HAL_UART_MspDeInit(UART_HandleTypeDef *huart) {
+    // UART4
+    #ifdef UART4
+    if (huart->Instance == UART4) {
+        //disable clocks
+        __HAL_RCC_UART4_CLK_DISABLE();
+
+        // disable interrupts
+        HAL_NVIC_DisableIRQ(UART4_IRQn);
     }
     #endif /* UART4 */
 
+    // UART5
     #ifdef UART5
     if (huart->Instance == UART5) {
-        __HAL_RCC_UART5_CLK_DISABLE();          // disable clocks
-        HAL_GPIO_DeInit(GPIOC, GPIO_PIN_12);    // disable gpio C12
-        HAL_GPIO_DeInit(GPIOD, GPIO_PIN_2);     //disable gpio D2
+        // disable clocks
+        __HAL_RCC_UART5_CLK_DISABLE();
+    
+        // disable interrupts
         HAL_NVIC_DisableIRQ(UART5_IRQn);        //disable interrupts
     }
     #endif /* UART5 */
+
+    HAL_UART_MspGPIODeInit(huart);
 }
 
 /**
@@ -160,21 +208,24 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart) {
  */
 uart_status_t uart_init(UART_HandleTypeDef* handle) {
 
+    uint8_t *rx_buffer = NULL;
+
     #ifdef UART4
     if (handle->Instance == UART4) {
-
         // Create TX queue
         uart4_tx_queue = xQueueCreateStatic(UART4_TX_QUEUE_SIZE, 
-                                            sizeof(sizeof_tx_payload_t), 
+                                            sizeof(tx_payload_t), 
                                             uart4_tx_queue_storage, 
                                             &uart4_tx_queue_buffer);
         
         
         // Create RX queue
         uart4_rx_queue = xQueueCreateStatic(UART4_RX_QUEUE_SIZE,
-                                            sizeof(sizeof_rx_payload_t),
+                                            sizeof(rx_payload_t),
                                             uart4_rx_queue_storage,
                                             &uart4_rx_queue_buffer);
+
+        rx_buffer = uart4_rx_buffer.data;
     }
     #endif /* UART4 */
 
@@ -183,26 +234,30 @@ uart_status_t uart_init(UART_HandleTypeDef* handle) {
 
         // Allocate static storage for TX queue
         uart5_tx_queue = xQueueCreateStatic(UART5_TX_QUEUE_SIZE, 
-                                          sizeof(sizeof_tx_payload_t), 
+                                          sizeof(tx_payload_t), 
                                           uart5_tx_queue_storage, 
                                           &uart5_tx_queue_buffer);
 
         // Create RX queue
         uart5_rx_queue = xQueueCreateStatic(UART5_RX_QUEUE_SIZE,
-                                          sizeof(sizeof_rx_payload_t),
+                                          sizeof(rx_payload_t),
                                           uart5_rx_queue_storage,
                                           &uart5_rx_queue_buffer);
+
+        rx_buffer = uart5_rx_buffer.data;
     }
     #endif /* UART5 */
     
 
     // init HAL
-    if (HAL_UART_Init(handle) != HAL_OK) {
+    if (HAL_UART_Init(handle) != HAL_OK ||
+	(handle->Instance != (UART4) &&
+	handle->Instance != (UART5))) {
         return UART_ERR;
     }
 
     // Start reception
-    if (HAL_UART_Receive_IT(handle, (uint8_t*)handle->pRxBuffPtr, DATA_SIZE) != HAL_OK) {
+    if (HAL_UART_Receive_IT(handle, rx_buffer, DATA_SIZE) != HAL_OK) {
         return UART_ERR;
     }
 
@@ -250,7 +305,6 @@ uart_status_t uart_deinit(UART_HandleTypeDef* handle) {
     }
     #endif /* UART5 */
 
-
     return UART_OK;
 }
 
@@ -282,9 +336,10 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
     #ifdef UART4
     if(handle->Instance == UART4) {
         tx_buffer = uart4_tx_buffer; // for direct transmission
-        tx_queue = &uart4_tx_queue;  // for queuing 
+        tx_queue = &uart4_tx_queue;  // for queuing
     }
     #endif /* UART 4*/
+
     #ifdef UART5
     if(handle->Instance == UART5) {
         tx_buffer = uart5_tx_buffer;
@@ -296,7 +351,7 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
 
     // Try direct transmission if possible
     portENTER_CRITICAL();
-    if (HAL_UART_GetState(handle) == HAL_UART_STATE_READY && 
+    if ((HAL_UART_GetState(handle) & HAL_UART_STATE_BUSY_TX) != HAL_UART_STATE_BUSY_TX &&
         tx_queue != NULL && uxQueueMessagesWaiting (*tx_queue) == 0 ) { // check if UART is ready and queue is empty
         // Copy data to static buffer
         memcpy(tx_buffer, data, length);
@@ -308,15 +363,27 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
     }
     portEXIT_CRITICAL();
 
+    	// Send data in chunks based on DATA_SIZE
+        for (uint8_t i = 0; i < length; i+=DATA_SIZE) {
+            tx_payload_t payload;
 
-    // put into send queues
-    for (uint8_t i = 0; i < length; i++) {
-        if (xQueueSend(*tx_queue, &data[i], delay_ticks) != pdTRUE){
-            return UART_ERR;
-        }  //delay_ticks: 0 = no wait, portMAX_DELAY = wait until space is available
-    }
-    
+            // Ensure we only copy DATA_SIZE bytes at a time
+            uint8_t chunk_size = (length - i < DATA_SIZE) ? (length - i) : DATA_SIZE;
+            // EX: i=4, length=6, DataSize=4, then chunk_size = 2, instead of usual 4 since we've reached end of length
 
+            // Copy the appropriate number of bytes to the payload data
+             memcpy(payload.data, &data[i], chunk_size); // Usually chunk_size = DATA_SIZE until end of data length
+
+             // If data size is smaller than DATA_SIZE, fill the rest of the payload
+             if (chunk_size < DATA_SIZE) {
+                 memset(&payload.data[chunk_size], 0, DATA_SIZE - chunk_size); // Fill the rest with 0 (or other padding if needed)
+             }
+
+            // Enqueue the payload to be transmitted
+	    if (xQueueSend(*tx_queue, &payload, delay_ticks) != pdTRUE) {
+                return UART_ERR;
+            } //delay_ticks: 0 = no wait, portMAX_DELAY = wait until space is available
+        }
 
 exit:
     return status;
@@ -348,14 +415,26 @@ uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t lengt
     #endif /* UART5 */
 
     uart_status_t status = UART_RECV;
+    rx_payload_t receivedPayload;
+    uint8_t bytes_received = 0;
 
     // Receive all requested bytes
-    for (uint8_t i = 0; i < length; i++) {
-        if (xQueueReceive(rx_queue, &data[i], delay_ticks) == errQUEUE_EMPTY) {
-            return UART_EMPTY;
-        } 
+    while (bytes_received < length) {
+        if (xQueueReceive(rx_queue, &receivedPayload, delay_ticks) == errQUEUE_EMPTY) {
+            return UART_EMPTY;  // Queue empty, no more data to receive
+        }
+
+        // Calculate how many bytes to copy from the payload based on DATA_SIZE
+        uint8_t copy_length = (length - bytes_received) >= DATA_SIZE ? DATA_SIZE : (length - bytes_received);
+
+        // Copy the data from the payload to the user's data buffer
+        for (uint8_t i = 0; i < copy_length; i++) {
+            data[bytes_received + i] = receivedPayload.data[i];
+        }
+
+        // Update the number of bytes received
+        bytes_received += copy_length;
     }
-    
 
     return status;
 }
@@ -378,10 +457,18 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
         tx_queue = &uart5_tx_queue;
     }
     #endif /* UART5 */
+
+    // Pull as many bytes as we can fit in the buffer
+    tx_payload_t payload;
+    while(count + DATA_SIZE <= sizeof(tx_buffer) && xQueueReceiveFromISR(*tx_queue, &payload, &higherPriorityTaskWoken) == pdTRUE) {
+        // Safely copy the data from the payload into the tx_buffer
+    	memcpy(&tx_buffer[count], payload.data, DATA_SIZE);
+        count += DATA_SIZE;
+    }
+
     if(tx_queue == NULL) {
         return; // No valid uart tx queue found
     }
-
 
     // Get as many bytes as we can from queue (up to buffer size)
     while(count < sizeof(tx_buffer) && 
@@ -389,46 +476,46 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
         count++;
     }
 
-    // If we got any bytes, transmit them
-    portENTER_CRITICAL();
+    // 	If we got any bytes, transmit them
     if(count > 0) {
       HAL_UART_Transmit_IT(huart, tx_buffer, count);
     }
-    portEXIT_CRITICAL();
-    
+
+    // Yield to a higher priority task if needed
     portYIELD_FROM_ISR(higherPriorityTaskWoken);
 }
 
 // Receive Callback occurs after a receive is complete
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     QueueHandle_t *rx_queue = NULL;
+    uint8_t *rx_buffer = NULL;
     #ifdef UART4
     if(huart->Instance == UART4) {
         rx_queue = &uart4_rx_queue;
+        rx_buffer = uart4_rx_buffer.data;
     }
     #endif /* UART4 */
 
     #ifdef UART5
     if(huart->Instance == UART5) {
         rx_queue = &uart5_rx_queue;
+        rx_buffer = uart5_rx_buffer.data;
     }
     #endif /* UART5 */
 
-
     rx_payload_t receivedData;
-
     for (int i = 0; i < DATA_SIZE; i++) {
-        receivedData.data[i] = huart->pRxBuffPtr[i];
+        receivedData.data[i] = rx_buffer[i]; //uartN_rx_buffer.data
+	rx_buffer[i] = 0x00; // clear rx buffer element
     }
 
     BaseType_t higherPriorityTaskWoken = pdFALSE;
 
     xQueueSendFromISR(*rx_queue, &receivedData, &higherPriorityTaskWoken); // Send data from &receivedData(pRxBuffPtr) to rx_queue
-    
-    portENTER_CRITICAL();
-    HAL_UART_Receive_IT(huart, (uint8_t*)huart->pRxBuffPtr, DATA_SIZE);// pRxBufferPtr is a pointer to the buffer that will store the received data
-    portEXIT_CRITICAL();
-    
+
+    // Trigger the next interrupt
+    HAL_UART_Receive_IT(huart, rx_buffer, DATA_SIZE);// pRxBufferPtr is a pointer to the buffer that will store the received data
+
     portYIELD_FROM_ISR(higherPriorityTaskWoken);
 }
 
