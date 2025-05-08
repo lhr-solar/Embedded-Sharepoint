@@ -16,12 +16,12 @@ Controls_Fault,0x583,1,0,,"Data:
 0 indicates no fault, 1 indicates a fault
 [7]: Lakshay Fault
 [6]: OS Fault
-[5]: Motor Controller Fault
+[5]: Internal Controls Fault
 [4]: CarCANFault
 [3]: Pedals Fault
 [2]: BPS Fault
 [1]: Motor Controller Fault
-[0]: Any Controls fault",,
+[0]: Any Controls Fault",,
 Motor Controller Identification,0x240,8,0,,"Precision: 64 bits
 Data: 
 [32:63] : Device serial number
