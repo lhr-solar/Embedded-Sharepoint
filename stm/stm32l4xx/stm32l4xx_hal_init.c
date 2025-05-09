@@ -4,11 +4,9 @@
  * @brief This function is executed in case of error occurrence.
  * 
  */
-static void Error_Handler(void)
-{
+__attribute__((weak)) void Error_Handler(void) {
   __disable_irq();
-  while (1)
-  {
+  while (1) {
   }
 }
 
@@ -16,8 +14,7 @@ static void Error_Handler(void)
  * @brief Initializes the Global MSP.
  * 
  */
-void HAL_MspInit(void)
-{
+void HAL_MspInit(void){
   __HAL_RCC_SYSCFG_CLK_ENABLE();
   __HAL_RCC_PWR_CLK_ENABLE();
 

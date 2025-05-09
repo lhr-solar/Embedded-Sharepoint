@@ -3,11 +3,8 @@
 - Setups up UART loopback mode (the TX line is connected to the RX line)
 - Send messages and verify correctness
 */
-#include "FreeRTOS.h"
-#include "task.h"
 #include "stm32xx_hal.h"
 #include "UART.h"
-#include <string.h>
 
 /* Private defines */
 #define LD2_Pin GPIO_PIN_5
@@ -19,7 +16,6 @@ static void MX_GPIO_Init(void);
 static void MX_UART4_Init(void);
 void TxTask(void *argument);
 void RxTask(void *argument);
-void Error_Handler(void);  // Add this line
 
 /* Private variables */
 extern UART_HandleTypeDef* huart4;
@@ -34,44 +30,6 @@ StackType_t rxTaskStack[configMINIMAL_STACK_SIZE];
 StaticQueue_t xRxStaticQueue;
 uint8_t ucRxQueueStorageArea[128];
 QueueHandle_t xRxQueue;
-
-int main(void) {
-    HAL_Init();
-    Clock_Config();
-    MX_GPIO_Init();
-    MX_UART4_Init();
-
-    
-    // Initialize UART BSP
-    uart_status_t status = uart_init(huart4);
-    if (status != UART_OK) {
-        Error_Handler();
-    }
-
-    // Create the tasks statically
-    xTaskCreateStatic(TxTask, 
-                     "TX",
-                     configMINIMAL_STACK_SIZE,
-                     NULL,
-                     tskIDLE_PRIORITY + 2,
-                     txTaskStack,
-                     &txTaskBuffer);
-
-    xTaskCreateStatic(RxTask,
-                     "RX", 
-                     configMINIMAL_STACK_SIZE,
-                     NULL,
-                     tskIDLE_PRIORITY + 2,
-                     rxTaskStack,
-                     &rxTaskBuffer);
-
-    // Start the scheduler
-    vTaskStartScheduler();
-
-    while (1) {
-        // Should never get here
-    }
-}
 
 static void MX_UART4_Init(void)
 {
@@ -191,7 +149,13 @@ void Clock_Config(void)
   RCC_OscInitStruct.PLL.PLLN = 336;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
   RCC_OscInitStruct.PLL.PLLQ = 2;
+  
+  // Field is only defined on this subset of processors
+  #if defined(STM32F410Tx) || defined(STM32F410Cx) || defined(STM32F410Rx) || defined(STM32F446xx) || defined(STM32F469xx) ||\
+    defined(STM32F479xx) || defined(STM32F412Zx) || defined(STM32F412Vx) || defined(STM32F412Rx) || defined(STM32F412Cx) ||\
+    defined(STM32F413xx) || defined(STM32F423xx)
   RCC_OscInitStruct.PLL.PLLR = 2;
+  #endif
 #endif
 
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
@@ -225,9 +189,38 @@ void Clock_Config(void)
   }
 }
 
-void Error_Handler(void)
-{
-    __disable_irq();
-    while (1) {
-    }
+int main(void) {
+  HAL_Init();
+  Clock_Config();
+  MX_GPIO_Init();
+  MX_UART4_Init();
+
+  
+  // Initialize UART BSP
+  uart_status_t status = uart_init(huart4);
+  if (status != UART_OK) {
+      Error_Handler();
+  }
+
+  // Create the tasks statically
+  xTaskCreateStatic(TxTask, 
+                   "TX",
+                   configMINIMAL_STACK_SIZE,
+                   NULL,
+                   tskIDLE_PRIORITY + 2,
+                   txTaskStack,
+                   &txTaskBuffer);
+
+  xTaskCreateStatic(RxTask,
+                   "RX", 
+                   configMINIMAL_STACK_SIZE,
+                   NULL,
+                   tskIDLE_PRIORITY + 2,
+                   rxTaskStack,
+                   &rxTaskBuffer);
+
+  // Start the scheduler
+  vTaskStartScheduler();
+  Error_Handler();
+  return 0;
 }

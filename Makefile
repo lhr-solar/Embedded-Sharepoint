@@ -28,7 +28,6 @@ IGNORED_CLANG_INPUTS = %/stm32f4xx_hal_conf.h %/stm32l4xx_hal_conf.h %/FreeRTOSC
 CLANG_INPUTS = $(PROJECT_C_SOURCES) $(foreach DIR, $(PROJECT_C_INCLUDES), $(wildcard $(DIR)/*))
 CLANG_INPUTS := $(filter-out $(IGNORED_CLANG_INPUTS), $(CLANG_INPUTS))
 
-
 ######################################
 # target
 ######################################
@@ -87,6 +86,8 @@ OPT = -Og
 #######################################
 # Build path
 BUILD_DIR = $(PROJECT_BUILD_DIR)
+$(info BUILD_DIR: $(BUILD_DIR))
+$(info PROJECT_BUILD_DIR: $(PROJECT_BUILD_DIR))
 
 ######################################
 # source
@@ -110,7 +111,6 @@ stm/$(SERIES_GENERIC)/$(SERIES_LINE)/startup_$(SERIES_LINE_GENERIC).s
 
 # ASM sources
 ASMM_SOURCES = 
-
 
 #######################################
 # binaries
@@ -185,25 +185,8 @@ ifeq ($(DEBUG), 1)
 CFLAGS += -g -gdwarf-2
 endif
 
-
 # Generate dependency information
 CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
-
-
-#######################################
-# edge case
-#######################################
-# exclude CAN
-ifeq ($(filter $(SERIES_LINE_GENERIC), stm32f401xe stm32f401xc), $(SERIES_LINE_GENERIC))
-    C_SOURCES := $(filter-out bsp/Src/CAN.c, $(C_SOURCES))
-    C_DEFS += -DCAN_UNDEFINED
-endif
-
-# exclude UART4/5 for unsupported boards
-ifneq ($(filter $(PROJECT_TARGET), stm32f401re stm32f413rht stm32f429zit stm32l431cbt),)
-    C_SOURCES := $(filter-out bsp/Src/UART.c, $(C_SOURCES))
-    C_DEFS += -DUART_UNDEFINED
-endif
 
 #######################################
 # LDFLAGS
@@ -218,7 +201,6 @@ LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BU
 
 # default action: build all
 all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
-
 
 #######################################
 # build the application
@@ -251,7 +233,7 @@ $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	$(BIN) $< $@	
 	
 $(BUILD_DIR):
-	mkdir $@		
+	mkdir -p $@		
 
 #######################################
 # clean up

@@ -1,8 +1,11 @@
 #ifndef UART_H_
 #define UART_H_
-#ifndef UART_UNDEFINED 
 
-#include "stm32xx_hal.h" 
+#include "stm32xx_hal.h"
+
+#if !defined(UART4)
+  #error "[CONFIG] UART not enabled on this chip."
+#endif /* UART4 */
 
 /* Function Descriptions:
  * Init initializes the UART peripheral given the configuration
@@ -41,5 +44,4 @@ uart_status_t uart_deinit(UART_HandleTypeDef* handle);
 uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t length, TickType_t delay_ticks);
 uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t length, TickType_t delay_ticks);
 
-#endif /* UART_UNDEFINED */
 #endif /* UART_H_ */
