@@ -23,27 +23,24 @@ ifeq ($(BEAR_ENABLE), 1)
 endif
 
 BEAR_PREFIX := 
+MV_COMPILE_COMMANDS_FILE :=
 ifeq ($(BEAR_INSTALLED),yes)
 $(info A wild bear has appeared!)
-VS_CODE_DIR ?= $(MAKEFILE_DIR)/../.vscode
-
-# check if the directory exists
-ifneq (,$(wildcard $(VS_CODE_DIR)))
-$(info VS Code directory found: $(VS_CODE_DIR))
-else
-$(info VS Code directory not found: $(VS_CODE_DIR))
-$(error Please create the directory $(VS_CODE_DIR) or set the VS_CODE_DIR variable to a valid path. \
-		If you do not want to use bear, set BEAR_ENABLE to 0.)
+BEAR_PREFIX := bear --output compile_commands.json --append --
+MV_COMPILE_COMMANDS_FILE := mv compile_commands.json $(PROJECT_BUILD_DIR)/compile_commands.json 
 endif
-
-BEAR_PREFIX := bear --output $(VS_CODE_DIR)/compile_commands.json --append --
-endif
-
-TEST_FILE = $(filter %/tests/$(TEST).c, $(PROJECT_C_SOURCES))
 
 default: all
-%:
+all:
 	$(BEAR_PREFIX) $(MAKE) -C $(BUILD_MAKEFILE_DIR) $(MAKECMDGOALS) \
+		PROJECT_TARGET=$(PROJECT_TARGET) \
+		PROJECT_C_SOURCES="$(PROJECT_C_SOURCES)" \
+		PROJECT_C_INCLUDES="$(PROJECT_C_INCLUDES)" \
+		PROJECT_BUILD_DIR=$(PROJECT_BUILD_DIR)
+	$(MV_COMPILE_COMMANDS_FILE)
+
+clean:
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) $(MAKECMDGOALS) \
 		PROJECT_TARGET=$(PROJECT_TARGET) \
 		PROJECT_C_SOURCES="$(PROJECT_C_SOURCES)" \
 		PROJECT_C_INCLUDES="$(PROJECT_C_INCLUDES)" \

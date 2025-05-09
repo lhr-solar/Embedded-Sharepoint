@@ -9,21 +9,48 @@ NC=$'\033[0m' # No Color
 
 script_dir=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-# Verbose arg
-if [ "$1" == "-v" ]; then
-    set -x
-    MAKE_FLAGS="-B -s"
-else
-    MAKE_FLAGS="-B"
-fi
+# Default values
+VERBOSE=false
+MAKE_FLAGS="-B -s"
+
+# Usage function
+usage() {
+    echo -e "${YELLOW}Usage: $0 [-v]"
+    echo "  -v    Enable verbose output (show commands as they're run)"
+    echo "  -h    Show this help message and exit${NC}"
+    exit 1
+}
+
+# Parse arguments
+while getopts ":vh" opt; do
+    case ${opt} in
+        v )
+            VERBOSE=true
+            set -x
+            MAKE_FLAGS="-B"
+            ;;
+        h )
+            usage
+            ;;
+        \? )
+            echo -e "${RED}[ERROR] Invalid option: -$OPTARG${NC}"
+            usage
+            ;;
+    esac
+done
 
 export script_dir RED GREEN YELLOW BLUE NC
 
 # Find all .cfg files in ../stm and extract their base names
+if [ ! -d "$script_dir/../stm" ]; then
+  echo "${RED}[ERROR] Something is horribly wrong. No stm directory found."
+  exit 1
+fi
+
 port_list=()
 while IFS= read -r -d '' cfg_file; do
     port_list+=("$(basename "${cfg_file%.cfg}")")
-done < <(find $script_dir/../stm -type f -name "*.cfg" -print0)
+done < <(find "$script_dir/../stm" -type f -name "*.cfg" -print0)
 
 if [ ${#port_list[@]} -eq 0 ]; then
     echo -e "${RED}[ERROR] Something is horribly wrong. No port config files found.${NC}"
@@ -37,6 +64,11 @@ done
 echo -e "${BLUE}----------------------------------------${NC}"
 
 # Collect all test names
+if [ ! -d "$script_dir/tests" ]; then
+  echo "${RED}[ERROR] Something is horribly wrong. No tests directory found."
+  exit 1
+fi
+
 test_list=()
 for test_file in $script_dir/tests/*.c; do
     test_name=$(basename "$test_file" .c)
@@ -53,12 +85,12 @@ fi
 compile_test() {
     local port=$1
     local test_name=$2
-    # local script_dir=$3
+
     echo -e "${BLUE}[INFO] Compiling the test - $test_name for $port${NC}"
 
     project_build_dir="$script_dir/../build/$port/$test_name"
 
-    output=$(make -C $script_dir TEST="$test_name" PROJECT_TARGET="$port" BEAR_ENABLE=0 PROJECT_BUILD_DIR=$project_build_dir $MAKE_FLAGS 2>&1)
+    output=$(make -C "$script_dir" TEST="$test_name" PROJECT_TARGET="$port" BEAR_ENABLE=0 PROJECT_BUILD_DIR="$project_build_dir" $MAKE_FLAGS 2>&1)
     error_code=$?
     if [ $error_code -ne 0 ]; then
         printf "${RED}[%s:%s] %s${NC}\n" "$port" "$test_name" "$output"
@@ -71,7 +103,7 @@ compile_test() {
     fi
     
     echo -e "${GREEN}[INFO] Successfully compiled $test_name.c : $port${NC}"
-    if [ "$1" == "-v" ]; then
+    if [ "$VERBOSE" = true ]; then
         echo -e "${GREEN}[INFO] Output: $output${NC}"
     fi
 
