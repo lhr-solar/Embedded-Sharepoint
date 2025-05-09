@@ -20,6 +20,11 @@
         
         #define LED_PIN GPIO_PIN_5
         #define LED_PORT GPIOA
+    #elif defined(STM32F429xx)
+        #include "stm32f429xx.h"
+	
+	#define LED_PIN GPIO_PIN_0
+	#define LED_PORT GPIOB
     #endif
 #elif defined(STM32L4xx)
     #include "stm32l4xx.h"

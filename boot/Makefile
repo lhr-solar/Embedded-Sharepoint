@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 # default project configuration
-PROJECT_TARGET ?= stm32f446ret
+PROJECT_TARGET ?= stm32f429zit
 
 # source and include directories
 PROJECT_C_SOURCES = $(wildcard Src/*.c)
@@ -38,13 +38,10 @@ export USER_DEFINES
 # check if bear is installed
 BEAR_INSTALLED := $(shell command -v bear >/dev/null 2>&1 && echo yes || echo no)
 
-# define VS_CODE_DIR
-VS_CODE_DIR := ../.vscode
-
 BEAR_PREFIX := 
 ifeq ($(BEAR_INSTALLED),yes)
-$(info A wild bear appeared)
-BEAR_PREFIX := bear --output $(VS_CODE_DIR)/compile_commands.json --append --
+$(info A wild bear has appeared!)
+BEAR_PREFIX := bear --output $(BOOT_BUILD_DIR)/compile_commands.json --append --
 endif
 
 # default target
@@ -55,12 +52,12 @@ default: all
 docs:
 	cd .. && mkdocs serve
 
-all: $(APP_BUILD_DIR)/$(PROJECT_TARGET).elf $(APP_BUILD_DIR)/$(PROJECT_TARGET).hex $(APP_BUILD_DIR)/$(PROJECT_TARGET).bin
+all: $(BOOT_BUILD_DIR)
 	$(BEAR_PREFIX) $(MAKE) -C $(BUILD_MAKEFILE_DIR) $(MAKECMDGOALS)
-	cp $(BOOT_BUILD_DIR)/$(PROJECT_TARGET).elf $(APP_BUILD_DIR)/$(PROJECT_TARGET)_boot.elf
+	mkdir -p $(APP_BUILD_DIR) && cp $(BOOT_BUILD_DIR)/$(PROJECT_TARGET).elf $(APP_BUILD_DIR)/$(PROJECT_TARGET)_boot.elf
 
-clean:
-	rm -f $(APP_BUILD_DIR)/$(PROJECT_TARGET)_boot.elf
+clean:	
+	-rm -fR $(BOOT_BUILD_DIR)/* $(APP_BUILD_DIR)/$(PROJECT_TARGET)_boot.elf
 	$(MAKE) -C $(BUILD_MAKEFILE_DIR) $(MAKECMDGOALS)
 
 # recursively build in the drivers directory

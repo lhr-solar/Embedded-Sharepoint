@@ -1,12 +1,15 @@
 #!/bin/bash
 
-# Input the path to the CFG file as the first argument
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
+pushd $SCRIPT_DIR
+
+# Input the path to the CFG file as the first argument
 # Generate linker script for STM32 based on LINKER_TEMPLATE.ld
 CFG_FILE=$1
 if [ -z "$CFG_FILE" ]
 then
-    echo -e "${RED}Please provide the path to the CFG file.${NC}"
+  echo -e "${RED}Please provide the path to the CFG file (relative to Embedded-Sharepoint/stm).${NC}"
     exit 1
 fi
 
@@ -35,8 +38,8 @@ LINKER_TEMPLATE="LINKER_TEMPLATE.ld"
 
 LINKER_VARS="_sidata _sdata _edata _sbss _ebss _estack _Min_Heap_Size _Min_Stack_Size"
 
-OUTPUT_FLASH_SCRIPT="${MCU_NAME_CAP}x_APP.ld"
-OUTPUT_BOOT_SCRIPT="${MCU_NAME_CAP}x_BOOT.ld"
+OUTPUT_FLASH_SCRIPT="$SCRIPT_DIR/${MCU_NAME_CAP}x_APP.ld"
+OUTPUT_BOOT_SCRIPT="$SCRIPT_DIR/${MCU_NAME_CAP}x_BOOT.ld"
 
 RAM_SIZE=$(($RAM_SIZE - 1))
 
@@ -86,3 +89,5 @@ echo -e "${GREEN}Generated flash script at $OUTPUT_FLASH_SCRIPT${NC}"
 echo -e "${GREEN}Generated boot script at $OUTPUT_BOOT_SCRIPT${NC}"
 
 echo -e "${BLUE}Jolly good! Move the generated files to the appropriate directory!${NC}"
+
+popd 

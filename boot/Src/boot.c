@@ -24,15 +24,25 @@ uint8_t* shared_mem;
 
 static uint8_t init_cmd[4] = {0xDE, 0xAD, 0xBE, 0xEF};
 
-#define USART1_TX_PIN GPIO_PIN_9
-#define USART1_TX_PORT GPIOA
-#define USART1_RX_PIN GPIO_PIN_10
-#define USART1_RX_PORT GPIOA
-
-#define USART2_TX_PIN GPIO_PIN_2
-#define USART2_TX_PORT GPIOA
-#define USART2_RX_PIN GPIO_PIN_3
-#define USART2_RX_PORT GPIOA
+#if defined(STM32F446xx)
+#define UART_TX_PIN GPIO_PIN_2
+#define UART_TX_PORT GPIOA
+#define UART_RX_PIN GPIO_PIN_3
+#define UART_RX_PORT GPIOA
+#define UART_AF GPIO_AF7_UART2
+#define UART_INST UART2
+#define UART_CLOCK_ENABLE() __HAL_RCC_UART2_CLK_ENABLE()
+#define UART_CLOCK_DISABLE() __HAL_RCC_UART2_CLK_DISABLE()
+#elif defined(STM32F429xx)
+#define UART_TX_PIN GPIO_PIN_8
+#define UART_TX_PORT GPIOD
+#define UART_RX_PIN GPIO_PIN_9
+#define UART_RX_PORT GPIOD
+#define UART_AF GPIO_AF7_USART3
+#define UART_INST USART3
+#define UART_CLOCK_ENABLE() __HAL_RCC_USART3_CLK_ENABLE()
+#define UART_CLOCK_DISABLE() __HAL_RCC_USART3_CLK_DISABLE()
+#endif
 
 static GPIO_InitTypeDef GPIO_InitCfg = {
     .Pin = LED_PIN,
@@ -41,30 +51,30 @@ static GPIO_InitTypeDef GPIO_InitCfg = {
     .Speed = GPIO_SPEED_FREQ_LOW
 };
 
-static GPIO_InitTypeDef USART2_GPIO_TxCfg = {
-    .Pin = USART2_TX_PIN,
+static GPIO_InitTypeDef UART_GPIO_TxCfg = {
+    .Pin = UART_TX_PIN,
     .Mode = GPIO_MODE_AF_PP,
     .Pull = GPIO_NOPULL,
     .Speed = GPIO_SPEED_FAST,
-    .Alternate = GPIO_AF7_USART2
+    .Alternate = UART_AF
 };
 
-static GPIO_InitTypeDef USART2_GPIO_RxCfg = {
-    .Pin = USART2_RX_PIN,
+static GPIO_InitTypeDef UART_GPIO_RxCfg = {
+    .Pin = UART_RX_PIN,
     .Mode = GPIO_MODE_AF_PP,
     .Pull = GPIO_NOPULL,
     .Speed = GPIO_SPEED_FAST,
-    .Alternate = GPIO_AF7_USART2
+    .Alternate = UART_AF
 };
 
-static USART_HandleTypeDef USART2_Handle = {
-    .Instance = USART2,
+static UART_HandleTypeDef UART_Handle = {
+    .Instance = UART,
     .Init.BaudRate = 9600,
-    .Init.WordLength = USART_WORDLENGTH_9B,
-    .Init.StopBits = USART_STOPBITS_1,
-    .Init.Parity = USART_PARITY_EVEN,
-    .Init.Mode = USART_MODE_TX_RX,
-    .State = HAL_USART_STATE_RESET
+    .Init.WordLength = UART_WORDLENGTH_9B,
+    .Init.StopBits = UART_STOPBITS_1,
+    .Init.Parity = UART_PARITY_EVEN,
+    .Init.Mode = UART_MODE_TX_RX,
+    .gState = HAL_UART_STATE_RESET
 };
 
 static inline void startapp_with_err(error_code_t ec){
@@ -76,7 +86,7 @@ static inline void startapp_with_err(error_code_t ec){
 static inline error_code_t uart_ack(){
     // Acknowledge
     uint8_t ack = ACK;
-    return HAL_USART_Transmit(&USART2_Handle, &ack, 1, TX_TIMEOUT);
+    return HAL_UART_Transmit(&UART_Handle, &ack, 1, TX_TIMEOUT);
 }
 
 /*
@@ -88,7 +98,7 @@ static error_code_t uart_stx(){
     uint8_t buf = 0;
 
     // Get STX (start of text character)
-    error_code_t ret = HAL_USART_Receive(&USART2_Handle, &buf, 1, RX_TIMEOUT);
+    error_code_t ret = HAL_UART_Receive(&UART_Handle, &buf, 1, RX_TIMEOUT);
     if(ret == BLDR_OK){
         if(buf == STX){
             ret = uart_ack();
@@ -114,7 +124,7 @@ static error_code_t uart_header(uint8_t *cmd, uint16_t *data_size, uint32_t *add
     uint8_t buf[7] = {0};
     
     // Get CMD and DATA_SIZE
-    error_code_t ret = HAL_USART_Receive(&USART2_Handle, buf, 7, RX_TIMEOUT);
+    error_code_t ret = HAL_UART_Receive(&UART_Handle, buf, 7, RX_TIMEOUT);
     if(ret != BLDR_OK) return ret;
     
     *cmd = buf[0];
@@ -136,7 +146,7 @@ static error_code_t uart_data(uint8_t *data, uint16_t data_size){
     uint8_t buf[data_size];
     
     // Get DATA
-    error_code_t ret = HAL_USART_Receive(&USART2_Handle, buf, data_size, RX_TIMEOUT);
+    error_code_t ret = HAL_UART_Receive(&UART_Handle, buf, data_size, RX_TIMEOUT);
     if(ret != BLDR_OK) return ret;
     
     memcpy(data, buf, data_size);
@@ -158,19 +168,19 @@ ACK (1 byte) RX
 */
 static error_code_t uart_resp(uint8_t *data, uint16_t data_size){
     // Header
-    HAL_USART_Transmit(&USART2_Handle, (const uint8_t*) &data_size, 2, TX_TIMEOUT);
+    HAL_UART_Transmit(&UART_Handle, (const uint8_t*) &data_size, 2, TX_TIMEOUT);
 
     // Wait for ack
     uint8_t ack = 0;
-    error_code_t ret = HAL_USART_Receive(&USART2_Handle, &ack, 1, RX_TIMEOUT);
+    error_code_t ret = HAL_UART_Receive(&UART_Handle, &ack, 1, RX_TIMEOUT);
     if(ret != BLDR_OK) return ret;
     if(ack != ACK) return BLDR_ERR;
 
     // Data
-    HAL_USART_Transmit(&USART2_Handle, data, data_size, TX_TIMEOUT);
+    HAL_UART_Transmit(&UART_Handle, data, data_size, TX_TIMEOUT);
 
     // Wait for ack
-    ret = HAL_USART_Receive(&USART2_Handle, &ack, 1, RX_TIMEOUT);
+    ret = HAL_UART_Receive(&UART_Handle, &ack, 1, RX_TIMEOUT);
     if(ret != BLDR_OK) return ret;
     if(ack != ACK) return BLDR_ERR;
 
@@ -226,7 +236,7 @@ static error_code_t uart_init(){
     
     // Get all 4 packets
     for(bufptr = buf; bufptr<&buf[SIZEOF(buf)-1]; bufptr+=SIZEOF(init_cmd)){
-        ret = HAL_USART_Receive(&USART2_Handle, bufptr, SIZEOF(init_cmd), INIT_RECV_TIMEOUT);
+        ret = HAL_UART_Receive(&UART_Handle, bufptr, SIZEOF(init_cmd), INIT_RECV_TIMEOUT);
         if(ret != BLDR_OK) return ret;
     }
     
@@ -272,19 +282,20 @@ error_code_t boot_init(){
     // Turn on LED with HAL
     HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET);
 
-    // USART initialization
-    HAL_GPIO_Init(USART2_TX_PORT, &USART2_GPIO_TxCfg);
-    HAL_GPIO_Init(USART2_RX_PORT, &USART2_GPIO_RxCfg);
-    __HAL_USART_ENABLE(&USART2_Handle);
-    __USART2_CLK_ENABLE();
-    // __USART1_CLK_ENABLE();
-    if(HAL_USART_Init(&USART2_Handle) == HAL_ERROR){
+    // UART initialization
+    HAL_GPIO_Init(UART_TX_PORT, &UART_GPIO_TxCfg);
+    HAL_GPIO_Init(UART_RX_PORT, &UART_GPIO_RxCfg);
+    __HAL_UART_ENABLE(&UART_Handle);
+    
+    UART_CLOCK_ENABLE();
+
+    if(HAL_UART_Init(&UART_Handle) == HAL_ERROR){
         startapp_with_err(BLDR_FAIL_INIT);
     }
 
-    // Put USART in asynchronous mode
-    USART2_Handle.Instance->CR2 &= ~(USART_CR2_CLKEN);
-    HAL_NVIC_DisableIRQ(USART1_IRQn);
+    // Put UART in asynchronous mode
+    //UART_Handle.Instance->CR2 &= ~(UART_CR2_CLKEN);
+    //HAL_NVIC_DisableIRQ(UART1_IRQn);
 
     // Shared memory
     shared_mem = (uint8_t*)(&_estack) + 4; // Start of shared memory (+4 to avoid stack collision)
@@ -307,11 +318,12 @@ void boot_deinit(){
     HAL_GPIO_DeInit(LED_PORT, LED_PIN);
     __HAL_RCC_GPIOA_CLK_DISABLE();
 
-    __HAL_USART_DISABLE(&USART2_Handle);
-    __USART1_CLK_DISABLE();
-    HAL_USART_DeInit(&USART2_Handle);
+    __HAL_UART_DISABLE(&UART_Handle);
+    
+    UART_CLOCK_DISABLE();
 
-    HAL_NVIC_DisableIRQ(USART1_IRQn);
+    HAL_UART_DeInit(&UART_Handle);
+
     HAL_NVIC_DisableIRQ(SysTick_IRQn);
 
     HAL_DeInit();
