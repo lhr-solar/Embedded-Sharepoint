@@ -41,19 +41,19 @@ done
 
 export script_dir RED GREEN YELLOW BLUE NC
 
-# Find all .cfg files in ../stm and extract their base names
+# Find all .ld files in ../stm and extract their base names
 if [ ! -d "$script_dir/../stm" ]; then
   echo "${RED}[ERROR] Something is horribly wrong. No stm directory found."
   exit 1
 fi
 
 port_list=()
-while IFS= read -r -d '' cfg_file; do
-    port_list+=("$(basename "${cfg_file%.cfg}")")
-done < <(find "$script_dir/../stm" -type f -name "*.cfg" -print0)
+while IFS= read -r -d '' ld_file; do
+  port_list+=("$(basename "${ld_file%.ld}" | sed 's/_FLASH//; s/x//; s/_//g; s/\(.*\)/\L\1/')")
+done < <(find "$script_dir/../stm" -type f -name "*.ld" -print0)
 
 if [ ${#port_list[@]} -eq 0 ]; then
-    echo -e "${RED}[ERROR] Something is horribly wrong. No port config files found.${NC}"
+    echo -e "${RED}[ERROR] Something is horribly wrong. No port linker scripts found.${NC}"
     exit 1
 fi
 

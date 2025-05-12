@@ -50,7 +50,9 @@ all:
 	$(MAKE) move-commands
 
 %:
-	$(MAKE) -C $(BUILD_MAKEFILE_DIR) $@
+	@if [ "$@" != "default" ]; then \
+		$(MAKE) -C $(BUILD_MAKEFILE_DIR) $@; \
+	fi
 
 .PHONY: move-commands
 move-commands: # only runs if compile_commands.json exists
