@@ -39,6 +39,8 @@ endif
 $(info $(PROJECT_BUILD_DIR))
 
 default: all
+
+.PHONY: all
 all:
 	@if [ -n "$(BEAR_PREFIX)" ]; then \
 	    echo "A wild bear has appeared!"; \
@@ -48,7 +50,7 @@ all:
 	$(MAKE) move-commands
 
 %:
-	$(MAKE) -C $(BUILD_MAKEFILE_DIR) $(MAKECMDGOALS)
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) $@
 
 .PHONY: move-commands
 move-commands: # only runs if compile_commands.json exists

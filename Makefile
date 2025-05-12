@@ -86,8 +86,6 @@ OPT = -Og
 #######################################
 # Build path
 BUILD_DIR = $(PROJECT_BUILD_DIR)
-$(info BUILD_DIR: $(BUILD_DIR))
-$(info PROJECT_BUILD_DIR: $(PROJECT_BUILD_DIR))
 
 ######################################
 # source
@@ -200,6 +198,7 @@ LIBDIR =
 LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
 
 # default action: build all
+.PHONY: all
 all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
 
 #######################################
@@ -238,6 +237,7 @@ $(BUILD_DIR):
 #######################################
 # clean up
 #######################################
+.PHONY: clean
 clean:
 	-rm -fR $(BUILD_DIR)
 
@@ -247,7 +247,8 @@ clean:
 FLASH_ADDRESS ?= 0x8000000
 FLASH_FILE = $(shell find $(BUILD_DIR) -name 'stm*.bin' -exec basename {} \;)
 
-flash:
+.PHONY: flash
+flash: all
 	@echo "Flashing $(FLASH_FILE) to $(FLASH_ADDRESS)"
 	-st-flash write $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
 
@@ -256,9 +257,11 @@ flash:
 #######################################
 FORMAT_CONFIG ?= --style=file:../.clang-format
 
+.PHONY: format
 format:
 	-clang-format $(FORMAT_CONFIG) $(CLANG_INPUTS)
 
+.PHONY: format-fix
 format-fix:
 	-clang-format -i $(FORMAT_CONFIG) $(CLANG_INPUTS)
 
@@ -266,6 +269,7 @@ format-fix:
 #######################################
 # help
 #######################################
+.PHONY: help
 help:
 	@echo "Available targets:"
 	@echo "  all          - Build the project."
