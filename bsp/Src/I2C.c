@@ -88,9 +88,7 @@ static QueueHandle_t I2C3_Queue;
 I2C_HandleTypeDef *last_hi2c3;
 #endif
 
-#define I2C_ConvertHALStatus(hal_status) ((I2C_StatusTypeDef)((hal_status) + I2C_HAL_OFFSET))
-
-static I2C_StatusTypeDef update_last_i2c(I2C_HandleTypeDef *hi2c) {
+static i2c_status update_last_i2c(I2C_HandleTypeDef *hi2c) {
 	if (hi2c->Instance == I2C1) {
 		last_hi2c1 = hi2c;
 		return I2C_OK;
@@ -114,9 +112,9 @@ static I2C_StatusTypeDef update_last_i2c(I2C_HandleTypeDef *hi2c) {
 
 /**
  * @brief   Sets up the I2C ports as described by the user
- * @return  I2C_StatusTypeDef
+ * @return  i2c_status
  */
-I2C_StatusTypeDef i2c_init(I2C_HandleTypeDef *hi2c) {
+i2c_status i2c_init(I2C_HandleTypeDef *hi2c) {
 
 	// Initialize the respective I2C peripheral's queue and interrupts
 	if(hi2c->Instance == I2C1)
@@ -159,7 +157,7 @@ I2C_StatusTypeDef i2c_init(I2C_HandleTypeDef *hi2c) {
 	return I2C_BADINST;
 }
 
-I2C_StatusTypeDef i2c_deinit(I2C_HandleTypeDef *hi2c) {
+i2c_status i2c_deinit(I2C_HandleTypeDef *hi2c) {
 	if(HAL_I2C_DeInit(hi2c) != HAL_OK) return I2C_IFAIL;
 
 	return I2C_OK;
@@ -275,9 +273,9 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef* hi2c) {
 * @param    deviceAddr     target device address
 * @param    pDataBuff      data buffer
 * @param    len            amount of data
-* @return   I2C_StatusTypeDef
+* @return   i2c_status
 */
-I2C_StatusTypeDef i2c_send(I2C_HandleTypeDef *hi2c,
+i2c_status i2c_send(I2C_HandleTypeDef *hi2c,
               uint8_t deviceAddr,
               uint8_t* pDataBuff,
               uint16_t len)
@@ -308,7 +306,8 @@ I2C_StatusTypeDef i2c_send(I2C_HandleTypeDef *hi2c,
 
 	if(HAL_I2C_GetState(hi2c) == HAL_I2C_STATE_READY)
 	{
-		return I2C_ConvertHALStatus(HAL_I2C_Master_Transmit_IT(hi2c, deviceAddr, pDataBuff, len));
+		HAL_I2C_Master_Transmit_IT(hi2c, deviceAddr, pDataBuff, len);
+		return I2C_SENT;
 	}
 	
 	QueueHandle_t I2C_Queue = I2C1_Queue;
@@ -361,9 +360,9 @@ I2C_StatusTypeDef i2c_send(I2C_HandleTypeDef *hi2c,
 * @param    deviceAddr      target device address
 * @param    pDataBuff      data buffer
 * @param    len            amount of data
-* @return   I2C_StatusTypeDef
+* @return   i2c_status
 */
-I2C_StatusTypeDef i2c_recv(I2C_HandleTypeDef *hi2c,
+i2c_status i2c_recv(I2C_HandleTypeDef *hi2c,
               uint8_t deviceAddr,
               uint8_t* pDataBuff,
               uint16_t len)
@@ -371,7 +370,8 @@ I2C_StatusTypeDef i2c_recv(I2C_HandleTypeDef *hi2c,
 	// Update the latest I2C peripheral
 	update_last_i2c(hi2c);
 
-    return I2C_ConvertHALStatus(HAL_I2C_Master_Receive_IT(hi2c, deviceAddr, pDataBuff, len));
+    HAL_I2C_Master_Receive_IT(hi2c, deviceAddr, pDataBuff, len);
+	return I2C_OK;
 }
 
 /**
@@ -380,12 +380,12 @@ I2C_StatusTypeDef i2c_recv(I2C_HandleTypeDef *hi2c,
  *
  * @param	i2c_peripheral Either I2C1, I2C1, or I2C3
  */
-static I2C_StatusTypeDef queue_send(I2C_TypeDef *i2c_peripheral)
+static i2c_status queue_send(I2C_TypeDef *i2c_peripheral)
 {
 	I2C_HandleTypeDef *last_hi2c = NULL;
 	QueueHandle_t *I2C_Queue = NULL;
 	BaseType_t higherPriorityTaskWoken = pdFALSE;
-	I2C_StatusTypeDef status = I2C_OK;
+	i2c_status status = I2C_OK;
 
 	if (i2c_peripheral == I2C1)
 	{

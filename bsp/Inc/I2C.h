@@ -13,40 +13,25 @@ typedef enum {
     I2C_IFAIL       = 0x04U,    // Init failure
     I2C_BADSIZE     = 0x05U,    // Incorrect payload size
     I2C_BADINST     = 0x06U,    // Invalid I2C instance
-
-    /* Conversions for defalt HAL transmit */
-    I2C_HAL_OK      = I2C_HAL_OFFSET + 0x00U,
-    I2C_HAL_ERROR   = I2C_HAL_OFFSET + 0x01U,
-    I2C_HAL_BUSY    = I2C_HAL_OFFSET + 0x02U,
-    I2C_HAL_TIMEOUT = I2C_HAL_OFFSET + 0x03U
-} I2C_StatusTypeDef;
+} i2c_status;
 
 
-#if defined(I2C1) || defined(I2C2) || defined(I2C3)
-#if defined(I2C3) && (!defined(I2C2) || !defined(I2C1))
-  #error "I2C3 requires I2C2 and I2C1 to be defined"
-#endif
-
-#if defined(I2C2) && !defined(I2C1)
-  #error "I2C2 requires I2C1 to be defined"
-#endif
-#include "stm32xx_hal.h"
-
+#ifdef I2C1
 /**
  * @brief Initialize I2C port for EEPROM interaction
  *
  * @param hi2c Config for the i2c peripheral setup
- * @return I2C_StatusTypeDef
+ * @return i2c_status
  */
-I2C_StatusTypeDef i2c_init(I2C_HandleTypeDef *hi2c);
+i2c_status i2c_init(I2C_HandleTypeDef *hi2c);
 
 /**
  * @brief Initialize I2C port for EEPROM interaction
  *
  * @param hi2c Config for the i2c peripheral deinit
- * @return I2C_StatusTypeDef
+ * @return i2c_status
  */
-I2C_StatusTypeDef i2c_deinit(I2C_HandleTypeDef *hi2c);
+i2c_status i2c_deinit(I2C_HandleTypeDef *hi2c);
 
 /**
 * @brief    Transmits data onto the I2C bus.
@@ -54,9 +39,9 @@ I2C_StatusTypeDef i2c_deinit(I2C_HandleTypeDef *hi2c);
 * @param    deviceAddr     target device address
 * @param    pDataBuff      data buffer
 * @param    len            amount of data
-* @return   I2C_StatusTypeDef
+* @return   i2c_status
 */
-I2C_StatusTypeDef i2c_send(I2C_HandleTypeDef *hi2c,
+i2c_status i2c_send(I2C_HandleTypeDef *hi2c,
               uint8_t deviceAddr,
               uint8_t* pDataBuff,
               uint16_t len);
@@ -67,9 +52,9 @@ I2C_StatusTypeDef i2c_send(I2C_HandleTypeDef *hi2c,
 * @param    deviceAddr      target device address
 * @param    pDataBuff      data buffer
 * @param    len            amount of data
-* @return   I2C_StatusTypeDef
+* @return   i2c_status
 */
-I2C_StatusTypeDef i2c_recv(I2C_HandleTypeDef *hi2c,
+i2c_status i2c_recv(I2C_HandleTypeDef *hi2c,
               uint8_t deviceAddr,
               uint8_t* pDataBuff,
               uint16_t len);
