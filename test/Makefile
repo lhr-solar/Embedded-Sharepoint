@@ -4,47 +4,55 @@ PROJECT_TARGET ?= stm32f446ret
 BEAR_ENABLE ?= 1
 
 # source and include directories
-PROJECT_C_SOURCES = $(wildcard Src/*.c)
-PROJECT_C_INCLUDES = Inc
+_PROJECT_C_SOURCES = $(wildcard Src/*.c)
+_PROJECT_C_INCLUDES = Inc
 
 # build and driver directories
-PROJECT_BUILD_DIR ?= ../build
+_PROJECT_BUILD_DIR ?= ../build
 BUILD_MAKEFILE_DIR = ../
 
 # ensure all paths are absolute
 MAKEFILE_DIR = $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-PROJECT_C_SOURCES := $(addprefix $(MAKEFILE_DIR)/, $(PROJECT_C_SOURCES) tests/$(TEST).c)
-PROJECT_C_INCLUDES := $(addprefix $(MAKEFILE_DIR)/, $(PROJECT_C_INCLUDES))
-PROJECT_BUILD_DIR := $(addprefix $(MAKEFILE_DIR)/, $(PROJECT_BUILD_DIR))
+PROJECT_C_SOURCES = $(addprefix $(MAKEFILE_DIR)/, $(_PROJECT_C_SOURCES) tests/$(TEST).c)
+PROJECT_C_INCLUDES = $(addprefix $(MAKEFILE_DIR)/, $(_PROJECT_C_INCLUDES))
+PROJECT_BUILD_DIR = $(addprefix $(MAKEFILE_DIR)/, $(_PROJECT_BUILD_DIR))
+
+export PROJECT_TARGET
+export PROJECT_C_SOURCES
+export PROJECT_C_INCLUDES
+export PROJECT_BUILD_DIR
 
 # bear
-ifeq ($(BEAR_ENABLE), 1)
-	BEAR_INSTALLED := $(shell command -v bear >/dev/null 2>&1 && echo yes || echo no)
-endif
-
 BEAR_PREFIX := 
 MV_COMPILE_COMMANDS_FILE :=
-ifeq ($(BEAR_INSTALLED),yes)
-$(info A wild bear has appeared!)
-BEAR_PREFIX := bear --output compile_commands.json --append --
-MV_COMPILE_COMMANDS_FILE := mv compile_commands.json $(PROJECT_BUILD_DIR)/compile_commands.json 
+
+ifeq ($(BEAR_ENABLE), 1)
+  BEAR_INSTALLED := $(shell command -v bear >/dev/null 2>&1 && echo yes || echo no)
+  ifeq ($(BEAR_INSTALLED),yes)
+    BEAR_PREFIX := bear --output compile_commands.json --append --
+    MV_COMPILE_COMMANDS_FILE := @mv compile_commands.json $(PROJECT_BUILD_DIR)/compile_commands.json 
+  else
+    $(warning BEAR_ENABLE=1, but bear is out searching for honey and is nowhere to be found!)
+  endif
 endif
+
+$(info $(PROJECT_BUILD_DIR))
 
 default: all
 all:
-	$(BEAR_PREFIX) $(MAKE) -C $(BUILD_MAKEFILE_DIR) $(MAKECMDGOALS) \
-		PROJECT_TARGET=$(PROJECT_TARGET) \
-		PROJECT_C_SOURCES="$(PROJECT_C_SOURCES)" \
-		PROJECT_C_INCLUDES="$(PROJECT_C_INCLUDES)" \
-		PROJECT_BUILD_DIR=$(PROJECT_BUILD_DIR)
-	$(MV_COMPILE_COMMANDS_FILE)
+	@if [ -n "$(BEAR_PREFIX)" ]; then \
+	    echo "A wild bear has appeared!"; \
+	fi
 
-clean:
-	$(MAKE) -C $(BUILD_MAKEFILE_DIR) $(MAKECMDGOALS) \
-		PROJECT_TARGET=$(PROJECT_TARGET) \
-		PROJECT_C_SOURCES="$(PROJECT_C_SOURCES)" \
-		PROJECT_C_INCLUDES="$(PROJECT_C_INCLUDES)" \
-		PROJECT_BUILD_DIR=$(PROJECT_BUILD_DIR)
+	$(BEAR_PREFIX) $(MAKE) -C $(BUILD_MAKEFILE_DIR) all
+	$(MAKE) move-commands
+
+%:
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) $(MAKECMDGOALS)
+
+.PHONY: move-commands
+move-commands: # only runs if compile_commands.json exists
+	$(MV_COMPILE_COMMANDS_FILE)
 
 # generate documentation
 .PHONY: docs
