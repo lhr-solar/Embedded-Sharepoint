@@ -30,7 +30,7 @@ ifeq ($(BEAR_ENABLE), 1)
   BEAR_INSTALLED := $(shell command -v bear >/dev/null 2>&1 && echo yes || echo no)
   ifeq ($(BEAR_INSTALLED),yes)
     BEAR_PREFIX := bear --output compile_commands.json --append --
-    MV_COMPILE_COMMANDS_FILE := @mv compile_commands.json $(PROJECT_BUILD_DIR)/compile_commands.json 
+    MV_COMPILE_COMMANDS_FILE := -mv compile_commands.json $(PROJECT_BUILD_DIR)/compile_commands.json 
   else
     $(warning BEAR_ENABLE=1, but bear is out searching for honey and is nowhere to be found!)
   endif
