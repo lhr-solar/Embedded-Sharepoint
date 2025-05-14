@@ -380,7 +380,7 @@ i2c_status i2c_recv(I2C_HandleTypeDef *hi2c,
  *
  * @param	i2c_peripheral Either I2C1, I2C1, or I2C3
  */
-static i2c_status queue_send(I2C_TypeDef *i2c_peripheral)
+static i2c_status transmit(I2C_TypeDef *i2c_peripheral)
 {
 	I2C_HandleTypeDef *last_hi2c = NULL;
 	QueueHandle_t *I2C_Queue = NULL;
@@ -476,7 +476,7 @@ static i2c_status queue_send(I2C_TypeDef *i2c_peripheral)
 void I2C1_EV_IRQHandler(void)
 {
 	HAL_I2C_EV_IRQHandler(last_hi2c1);
-	queue_send(I2C1);
+	transmit(I2C1);
 }
 
 /**
@@ -485,7 +485,7 @@ void I2C1_EV_IRQHandler(void)
 void I2C1_ER_IRQHandler(void)
 {
 	HAL_I2C_ER_IRQHandler(last_hi2c1);
-	queue_send(I2C1);
+	transmit(I2C1);
 }
 
 #ifdef I2C2
@@ -495,7 +495,7 @@ void I2C1_ER_IRQHandler(void)
 void I2C2_EV_IRQHandler(void)
 {
 	HAL_I2C_EV_IRQHandler(last_hi2c2);
-	queue_send(I2C2);
+	transmit(I2C2);
 }
 
 /**
@@ -504,7 +504,7 @@ void I2C2_EV_IRQHandler(void)
 void I2C2_ER_IRQHandler(void)
 {
 	HAL_I2C_ER_IRQHandler(last_hi2c2);
-	queue_send(I2C2);
+	transmit(I2C2);
 }
 #endif
 
@@ -515,7 +515,7 @@ void I2C2_ER_IRQHandler(void)
 void I2C3_EV_IRQHandler(void)
 {
 	HAL_I2C_EV_IRQHandler(last_hi2c3);
-	queue_send(I2C3);
+	transmit(I2C3);
 }
 
 /**
@@ -524,6 +524,6 @@ void I2C3_EV_IRQHandler(void)
 void I2C3_ER_IRQHandler(void)
 {
 	HAL_I2C_ER_IRQHandler(last_hi2c3);
-	queue_send(I2C3);
+	transmit(I2C3);
 }
 #endif
