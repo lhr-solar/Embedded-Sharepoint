@@ -68,7 +68,7 @@ static GPIO_InitTypeDef UART_GPIO_RxCfg = {
 };
 
 static UART_HandleTypeDef UART_Handle = {
-    .Instance = UART,
+    .Instance = UART_INST,
     .Init.BaudRate = 9600,
     .Init.WordLength = UART_WORDLENGTH_9B,
     .Init.StopBits = UART_STOPBITS_1,
@@ -86,7 +86,7 @@ static inline void startapp_with_err(error_code_t ec){
 static inline error_code_t uart_ack(){
     // Acknowledge
     uint8_t ack = ACK;
-    return HAL_UART_Transmit(&UART_Handle, &ack, 1, TX_TIMEOUT);
+    return (error_code_t)HAL_UART_Transmit(&UART_Handle, &ack, 1, TX_TIMEOUT);
 }
 
 /*
@@ -295,7 +295,7 @@ error_code_t boot_init(){
 
     // Put UART in asynchronous mode
     //UART_Handle.Instance->CR2 &= ~(UART_CR2_CLKEN);
-    //HAL_NVIC_DisableIRQ(UART1_IRQn);
+    HAL_NVIC_DisableIRQ(USART3_IRQn);
 
     // Shared memory
     shared_mem = (uint8_t*)(&_estack) + 4; // Start of shared memory (+4 to avoid stack collision)

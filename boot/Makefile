@@ -64,6 +64,9 @@ clean:
 %:
 	$(BEAR_PREFIX) $(MAKE) -C $(BUILD_MAKEFILE_DIR) $(MAKECMDGOALS)
 
+$(BOOT_BUILD_DIR):
+	mkdir -p $@
+
 # help
 .PHONY: help
 help:
