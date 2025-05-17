@@ -49,3 +49,17 @@ Frequency: Same as Temperature Data Array (1-5 Hz)
 Notes: This is a suggestion to Array and Controls on whether or not they should supply power to the battery. If the suggestion is not followed, the BPS may trip"
 Voltage Summary,0x10D,8,0,,"uint24 pack voltage in mV, uint24 voltage range in mV, uint16 milliseconds since last voltage update: all little endian. 30 Hz"
 Temperature Summary,0x10E,8,0,,"int24 average temp in millicelsius, int24 temp range in millicelsius, uint16 milliseconds since last temp update: all little endian 30 Hz"
+BPS Fault State,0x10F,1,0,,"Describes what fault is occuring in BPS, only use this to determine what fault is occuring, not if the BPS is faulting. Please use BPS_TRIP. Does NOT support multiple Faults
+0 - No Fault
+1 - Undervoltage
+2 - Overvoltage
+3 - Overtemperature
+4 - Overcurrent
+5 - Open wire
+6 - NA
+7 - OS
+8 - Watchdog
+9 - CRC (IsoSPI)
+10 - ESTOP
+11 - Contactor Fault
+12 - MPPT Fault"
