@@ -197,13 +197,13 @@ LIBS = -lc -lm -lnosys
 LIBDIR = 
 LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
 
+#######################################
+# build the application
+#######################################
 # default action: build all
 .PHONY: all
 all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
 
-#######################################
-# build the application
-#######################################
 # list of objects
 OBJECTS = $(addprefix $(BUILD_DIR)/,$(notdir $(C_SOURCES:.c=.o)))
 vpath %.c $(sort $(dir $(C_SOURCES)))
@@ -222,13 +222,23 @@ $(BUILD_DIR)/%.o: %.S Makefile | $(BUILD_DIR)
 	$(AS) -c $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
+	@if ls $(BUILD_DIR)/*.elf 1> /dev/null 2>&1; then \
+		rm -rf $(BUILD_DIR)/stm*.elf; \
+	fi
+
 	$(CC) $(OBJECTS) $(LDFLAGS) -o $@
 	$(SZ) $@
 
 $(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
+	@if ls $(BUILD_DIR)/*.hex 1> /dev/null 2>&1; then \
+		rm -rf $(BUILD_DIR)/stm*.hex; \
+	fi
 	$(HEX) $< $@
 	
 $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
+	@if ls $(BUILD_DIR)/*.bin 1> /dev/null 2>&1; then \
+		rm -rf $(BUILD_DIR)/stm*.bin; \
+	fi
 	$(BIN) $< $@	
 	
 $(BUILD_DIR):
