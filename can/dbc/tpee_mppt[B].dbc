@@ -53,7 +53,7 @@ BO_ 528 MPPT_33_0_Power: 8 Vector__XXX
  SG_ MPPT_Vin : 7|16@0- (0.01,0) [-327.68|327.67] "V" Vector__XXX
 
 BO_ 537 MPPT_33_0_SetMode: 1 Vector__XXX
- SG_ Mode : 0|1@1+ (0,0) [0|1] "" Vector__XXX
+ SG_ Boost_Enable : 0|1@1+ (0,0) [0|1] "" Vector__XXX
 
 
 

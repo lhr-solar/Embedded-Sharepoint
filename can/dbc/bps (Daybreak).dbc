@@ -36,74 +36,60 @@ BS_:
 BU_:
 
 
-BO_ 2 BPS_Trip: 1 Vector__XXX
-	SG_ BPS_Trip : 0|1@1+ (1,0) [0|8031.875] "" Vector__XXX
 
+BO_ 2 BPS_Trip: 1 Vector__XXX
+	SG_ BPS_Trip : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 257 BPS_All_Clea: 1 Vector__XXX
+	SG_ BPS_All_Clear : 0|1@0+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 258 BPS_Contactor_State: 1 Vector__XXX
-	SG_ Array_Contactor : 0|1@1+ (0,0) [0|1] "" Vector__XXX
-	SG_ HV_Negative_Contactor : 1|1@1+ (0,0) [0|1] "" Vector__XXX
-	SG_ HV_Positive_Contactor : 2|1@1+ (0,0) [0|1] "" Vector__XXX
+	SG_ Array_Contactor : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ HV_Contactor : 2|1@0+ (1,0) [0|1] "" Vector__XXX
 
-BO_ 268 Charging_Enable: 1 Vector__XXX
-	SG_ Charge_Enable : 0|1@1+ (0,0) [0|1] "" Vector__XXX
-
-BO_ 257 BPS_All_Clear: 1 Vector__XXX
-	SG_ BPS_All_Clear : 0|1@1+ (0,0) [0|1] "" Vector__XXX
-
-BO_ 263 WDog_Triggered: 1 Vector__XXX
-	SG_ WDog_Triggered : 0|1@1+ (0,0) [0|1] "" Vector__XXX
+BO_ 259 BPS_Current: 4 Vector__XXX
+	SG_ Current : 0|4@0- (1,0) [-20000|100000] "mA" Vector__XXX
 
 BO_ 260 BPS_Voltage_Array: 5 Vector__XXX
-	SG_ Voltage_Index : 0|8@1+ (0,0) [0|40] "" Vector__XXX
-	SG_ Module_Voltage : 8|32@1+ (0,0) [0|1000000] "mV" Vector__XXX
+	SG_ Voltage_idx : 0|8@1+ (1,0) [0|31] "" Vector__XXX
+	SG_ Voltage_Value : 8|32@1+ (1,0) [0|1000000] "mV" Vector__XXX
 
 BO_ 261 BPS_Temperature_Array: 5 Vector__XXX
-	SG_ Temperature_Idx : 0|8@1+ (0,0) [0|40] "" Vector__XXX
-	SG_ Module_Temperature : 8|32@1+ (0,0) [0|0] "C" Vector__XXX
+	SG_ Temperature_idx : 0|8@1+ (1,0) [0|31] "" Vector__XXX
+	SG_ Temperature_Value : 8|32@1+ (1,0) [0|1000000] "mC" Vector__XXX
 
 BO_ 262 BPS_SOC: 4 Vector__XXX
-	SG_ SOC : 0|32@1+ (0,0) [0|100] "%" Vector__XXX
+	SG_ SoC : 0|32@1+ (1,0) [0|100] "%" Vector__XXX
+
+BO_ 263 BPS_WDog_Trigger: 1 Vector__XXX
+	SG_ WDog_Trig : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 264 BPS_CAN_Error: 1 Vector__XXX
+	SG_ BPS_CAN_Error : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 265 BPS_Command: 8 Vector__XXX
+	SG_ BPS_Command : 0|32@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 267 BPS_Supplemental_Voltage: 2 Vector__XXX
+	SG_ Supplemental_Voltage : 0|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+
+BO_ 268 BPS_Charge_Enabled: 1 Vector__XXX
+	SG_ Charge_Enabled : 0|1@0+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 269 BPS_Voltage_Summary: 8 Vector__XXX
-	SG_ Pack_Voltage : 0|24@1+ (0,0) [0|16777216] "mV" Vector__XXX
-	SG_ Voltage_range : 24|24@1+ (0,0) [0|16777216] "mV" Vector__XXX
-	SG_ Time_Since_Voltage_Update : 48|16@1+ (0,0) [0|65536] "ms" Vector__XXX
+	SG_ Pack_Voltage : 0|24@1+ (1,0) [0|16777215] "mV" Vector__XXX
+	SG_ Voltage_Range : 24|24@1+ (1,0) [0|16777215] "mV" Vector__XXX
+	SG_ Voltage_Timestamp : 48|16@1+ (1,0) [0|65535] "ms" Vector__XXX
 
-BO_ 264 BPS_Temperature_Summary: 8 Vector__XXX
-	SG_ Average_Temp : 0|24@1- (0,0) [0|0] "mC" Vector__XXX
-	SG_ Temperature_Range : 24|24@1- (0,0) [0|0] "mC" Vector__XXX
-	SG_ Time_Since_Temp_Update : 48|16@1+ (0,0) [0|0] "ms" Vector__XXX
+BO_ 270 BPS_Temperature_Summary: 8 Vector__XXX
+	SG_ Average_Temp : 0|24@1+ (1,0) [0|0] "mC" Vector__XXX
+	SG_ Temperature_Range : 24|24@1+ (1,0) [0|0] "mC" Vector__XXX
+	SG_ Temperature_Timestamp : 48|16@1+ (1,0) [0|0] "ms" Vector__XXX
 
-BO_ 267 Supplemental_Voltage: 2 Vector__XXX
-	SG_ Supplemental_Battery_Voltage : 0|16@1+ (0,0) [0|65535] "mV" Vector__XXX
-
-BO_ 270 BPS_Fault_State: 1 Vector__XXX
-	SG_ BPS_Fault_Status : 0|7@1+ (0,0) [0|1] "" Vector__XXX
+BO_ 271 BPS_Fault_State: 1 Vector__XXX
+	SG_ BPS_Fault_State : 0|8@1+ (1,0) [0|12] "" Vector__XXX
 
 
-CM_ BO_ 2 "1 indicates a BPS Fault, 0 indicates no BPS Fault";
-CM_ SG_ 2 BPS_Trip "Indicates a BPS Fault";
-CM_ BO_ 258 "BPS Contactor State";
-CM_ SG_ 258 Array_Contactor "1 is on, 0 is off";
-CM_ SG_ 258 HV_Negative_Contactor "1 is on, 0 is off";
-CM_ SG_ 258 HV_Positive_Contactor "1 is on, 0 is off";
-CM_ BO_ 268 "If BPS wants charging to enabled or disabled";
-CM_ SG_ 268 Charge_Enable "1 is charging enabled, 0 is charging disabled";
-CM_ BO_ 257 "Indicates if BPS is safe or not, sent only once";
-CM_ SG_ 257 BPS_All_Clear "1 for everything running safe, 0 for not safe";
-CM_ SG_ 263 WDog_Triggered "1 means watchdog triggered, 0 means watchdog not triggered";
-CM_ BO_ 260 "Array of battery pack module voltages";
-CM_ SG_ 260 Voltage_Index "Index of battery module";
-CM_ BO_ 263 "Indicates if the BPS watchdog was tripped";
-CM_ BO_ 261 "Array of battery pack temperatures";
-CM_ BO_ 262 "State of Charge of the battery";
-CM_ SG_ 262 SOC "State of Charge of battery";
-CM_ BO_ 269 "uint24 pack voltage in mV, uint24 voltage range in mV, uint16 milliseconds since last voltage update: all little endian. 30 Hz";
-CM_ SG_ 269 Pack_Voltage "Pack voltage in mV";
-CM_ BO_ 264 "int24 average temp in millicelsius, int24 temp range in millicelsius, uint16 milliseconds since last temp update: all little endian 30 Hz";
-CM_ BO_ 267 "Voltage of supplemental battery in mV";
-CM_ BO_ 270 "What fault BPS is in";
 BA_DEF_ SG_  "SPN" INT 0 524287;
 BA_DEF_ BO_  "VFrameFormat" ENUM  "StandardCAN","ExtendedCAN","reserved","J1939PG";
 BA_DEF_  "DatabaseVersion" STRING ;
@@ -120,5 +106,5 @@ BA_ "ProtocolType" "J1939";
 BA_ "BusType" "CAN";
 BA_ "DatabaseCompiler" "CSS ELECTRONICS (WWW.CSSELECTRONICS.COM)";
 BA_ "DatabaseVersion" "1.0.0";
-BA_ "VFrameFormat" BO_ 2364540158 3;
-BA_ "SPN" SG_ 2364540158 EngineSpeed 190;
+BA_ "VFrameFormat" BO_ 2566844926 3;
+BA_ "SPN" SG_ 2566844926 WheelBasedVehicleSpeed 84;
