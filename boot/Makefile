@@ -1,7 +1,6 @@
-SHELL := /bin/bash
-
 # default project configuration
 PROJECT_TARGET ?= stm32f429zit
+BEAR_ENABLE ?= 1
 
 # source and include directories
 PROJECT_C_SOURCES = $(wildcard Src/*.c)
@@ -20,7 +19,6 @@ PROJECT_C_INCLUDES := $(addprefix $(MAKEFILE_DIR)/, $(PROJECT_C_INCLUDES))
 PROJECT_BUILD_DIR := $(addprefix $(MAKEFILE_DIR)/, $(BOOT_BUILD_DIR))
 PROJECT_ASM_SOURCES := $(addprefix $(MAKEFILE_DIR)/, $(PROJECT_ASM_SOURCES))
 
-BOOT_BUILD_DIR := $(addprefix $(MAKEFILE_DIR)/, $(BOOT_BUILD_DIR))
 LD_SUFFIX = BOOT
 FLASH_ADDRESS = 0x08000000
 USER_DEFINES = USER_VECT_TAB_ADDRESS
@@ -35,41 +33,50 @@ export LD_SUFFIX
 export FLASH_ADDRESS
 export USER_DEFINES
 
-# check if bear is installed
-BEAR_INSTALLED := $(shell command -v bear >/dev/null 2>&1 && echo yes || echo no)
-
+# bear
 BEAR_PREFIX := 
-ifeq ($(BEAR_INSTALLED),yes)
-$(info A wild bear has appeared!)
-BEAR_PREFIX := bear --output $(BOOT_BUILD_DIR)/compile_commands.json --append --
+MV_COMPILE_COMMANDS_FILE :=
+
+ifeq ($(BEAR_ENABLE), 1)
+  BEAR_INSTALLED := $(shell command -v bear >/dev/null 2>&1 && echo yes || echo no)
+  ifeq ($(BEAR_INSTALLED),yes)
+    BEAR_PREFIX := bear --output compile_commands.json --append --
+    MV_COMPILE_COMMANDS_FILE := -mv compile_commands.json $(PROJECT_BUILD_DIR)/compile_commands.json 
+  else
+    $(warning BEAR_ENABLE=1, but bear is out searching for honey and is nowhere to be found!)
+  endif
 endif
 
-# default target
+$(info $(PROJECT_BUILD_DIR))
+
 default: all
+
+.PHONY: all
+all:
+	@if [ -n "$(BEAR_PREFIX)" ]; then \
+	    echo "A wild bear has appeared!"; \
+	fi
+
+	$(BEAR_PREFIX) $(MAKE) -C $(BUILD_MAKEFILE_DIR) all
+	$(MAKE) move-commands
+
+%:
+	@if [ "$@" != "default" ]; then \
+		$(MAKE) -C $(BUILD_MAKEFILE_DIR) $@; \
+	fi
+
+.PHONY: move-commands
+move-commands: # only runs if compile_commands.json exists
+	$(MV_COMPILE_COMMANDS_FILE)
 
 # generate documentation
 .PHONY: docs
 docs:
 	cd .. && mkdocs serve
 
-all: $(BOOT_BUILD_DIR)
-	$(BEAR_PREFIX) $(MAKE) -C $(BUILD_MAKEFILE_DIR) $(MAKECMDGOALS)
-	mkdir -p $(APP_BUILD_DIR) && cp $(BOOT_BUILD_DIR)/$(PROJECT_TARGET).elf $(APP_BUILD_DIR)/$(PROJECT_TARGET)_boot.elf
-
-clean:	
-	-rm -fR $(BOOT_BUILD_DIR)/* $(APP_BUILD_DIR)/$(PROJECT_TARGET)_boot.elf
-	$(MAKE) -C $(BUILD_MAKEFILE_DIR) $(MAKECMDGOALS)
-
-# recursively build in the drivers directory
-%:
-	$(BEAR_PREFIX) $(MAKE) -C $(BUILD_MAKEFILE_DIR) $(MAKECMDGOALS)
-
-$(BOOT_BUILD_DIR):
-	mkdir -p $@
-
 # help
 .PHONY: help
 help:
 	@echo "Available targets:"
 	@echo "  docs     - Generate documentation using mkdocs."
-	@$(MAKE) -C $(DRIVERS_DIR) help
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) help
