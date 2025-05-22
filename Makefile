@@ -262,7 +262,7 @@ $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
 	fi
 	
 ifeq ($(BEAR_ENABLE), 1)
-	@echo $(CC) $(OBJECTS) $(LDFLAGS) -o $@ > cc_$(notdir $@).txt
+	@echo $(CC) $(OBJECTS) $(LDFLAGS) -o $@ > $(BUILD_DIR)/cc_$(notdir $@).txt
 endif
 
 ifeq ($(VERBOSE), 1)
