@@ -1,5 +1,6 @@
 #include "UART.h"
 #include <string.h>
+
 // Define the size of the data to be transmitted
 // Currently not used, as we send uint8_t directly
 // may need to be configured for support for packets less more than 8 bits
@@ -75,7 +76,6 @@ static uint8_t uart5_rx_queue_storage[UART5_RX_QUEUE_SIZE * sizeof(rx_payload_t)
 
 #endif /* UART5 */
 
-
 bool is_uart_initialized(UART_HandleTypeDef* handle) {
     // Check if the UART is in a valid state
     // HAL_UART_STATE_RESET indicates the UART is not initialized
@@ -84,22 +84,23 @@ bool is_uart_initialized(UART_HandleTypeDef* handle) {
 
 // HAL UART MSP init 
 void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
+
 
     #ifdef UART4
     if(huart->Instance == UART4) {
+        GPIO_InitTypeDef GPIO_UART4_InitStruct = {0};
         __HAL_RCC_UART4_CLK_ENABLE();
         __HAL_RCC_GPIOA_CLK_ENABLE();
 
         // UART4 GPIO Configuration    
         // PA0     ------> UART4_TX
         // PA1     ------> UART4_RX
-        GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
-        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull = GPIO_NOPULL;
-        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-        GPIO_InitStruct.Alternate = GPIO_AF8_UART4;
-        HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+        GPIO_UART4_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
+        GPIO_UART4_InitStruct.Mode = GPIO_MODE_AF_PP;
+        GPIO_UART4_InitStruct.Pull = GPIO_NOPULL;
+        GPIO_UART4_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+        GPIO_UART4_InitStruct.Alternate = GPIO_AF8_UART4;
+        HAL_GPIO_Init(GPIOA, &GPIO_UART4_InitStruct);
 
         HAL_NVIC_SetPriority(UART4_IRQn, 5, 0); 
         HAL_NVIC_EnableIRQ(UART4_IRQn);
@@ -108,6 +109,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
 
     #ifdef UART5
     if (huart->Instance == UART5) {
+        GPIO_InitTypeDef GPIO_UART5_InitStruct = {0};
         __HAL_RCC_UART5_CLK_ENABLE();
         __HAL_RCC_GPIOC_CLK_ENABLE();
         __HAL_RCC_GPIOD_CLK_ENABLE();
@@ -115,15 +117,15 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
         // UART5 GPIO Configuration    
         // PC12     ------> UART5_TX
         // PD2     ------> UART5_RX
-        GPIO_InitStruct.Pin = GPIO_PIN_12;
-        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull = GPIO_NOPULL;
-        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-        GPIO_InitStruct.Alternate = GPIO_AF8_UART5;
-        HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+        GPIO_UART5_InitStruct.Pin = GPIO_PIN_12;
+        GPIO_UART5_InitStruct.Mode = GPIO_MODE_AF_PP;
+        GPIO_UART5_InitStruct.Pull = GPIO_NOPULL;
+        GPIO_UART5_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+        GPIO_UART5_InitStruct.Alternate = GPIO_AF8_UART5;
+        HAL_GPIO_Init(GPIOC, &GPIO_UART5_InitStruct);
 
-        GPIO_InitStruct.Pin = GPIO_PIN_2;
-        HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+        GPIO_UART5_InitStruct.Pin = GPIO_PIN_2;
+        HAL_GPIO_Init(GPIOD, &GPIO_UART5_InitStruct);
 
         HAL_NVIC_SetPriority(UART5_IRQn, 5, 0);
         HAL_NVIC_EnableIRQ(UART5_IRQn);
@@ -376,8 +378,8 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
         tx_queue = &uart5_tx_queue;
     }
     #endif /* UART5 */
-    else {
-        return;
+    if(tx_queue == NULL) {
+        return; // No valid uart tx queue found
     }
 
 

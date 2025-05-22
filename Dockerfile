@@ -45,17 +45,15 @@ RUN apt-get install -y --no-install-recommends \
       python3.10 \
       python3.10-dev \
       usbutils \
+      parallel \
     && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1 \
     && rm -rf /var/lib/apt/lists/*
 
 # -----------------------------------------------------------------------------
 # Install Python
 # -----------------------------------------------------------------------------
-RUN pip install --no-cache-dir \
-    mkdocs \
-    pyserial \
-    numba \
-    jq
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
 FROM dev AS toolchain-cache
 # -----------------------------------------------------------------------------

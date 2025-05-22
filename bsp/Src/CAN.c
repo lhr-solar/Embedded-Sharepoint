@@ -765,8 +765,10 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
 }
 
 // CAN1
+#ifdef CAN1
 void CAN1_TX_IRQHandler(void) { HAL_CAN_IRQHandler(hcan1); }
 void CAN1_RX0_IRQHandler(void) { HAL_CAN_IRQHandler(hcan1); }
+#endif /* CAN1 */
 
 // CAN2
 #ifdef CAN2
