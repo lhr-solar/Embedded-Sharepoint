@@ -2,6 +2,7 @@
 TEST ?= main
 PROJECT_TARGET ?= stm32f446ret
 BEAR_ENABLE ?= 1
+VERBOSE ?= 0
 
 # source and include directories
 _PROJECT_C_SOURCES = $(wildcard Src/*.c)
@@ -21,31 +22,31 @@ export PROJECT_TARGET
 export PROJECT_C_SOURCES
 export PROJECT_C_INCLUDES
 export PROJECT_BUILD_DIR
+export BEAR_ENABLE
+export VERBOSE
 
 ifeq ($(BEAR_ENABLE), 1)
-	COMPILE_COMMANDS_TXT := $(PROJECT_BUILD_DIR)/compile_commands.txt
 	COMPILE_COMMANDS_JSON := $(PROJECT_BUILD_DIR)/compile_commands.json
-	VERBOSE := 1
-else
-	VERBOSE := 0
 endif
-export VERBOSE
 
 $(info $(PROJECT_BUILD_DIR))
 
 default: all
 all:
-	$(MAKE) -C $(BUILD_MAKEFILE_DIR) all | tee -a $(COMPILE_COMMANDS_TXT)
-	ifeq ($(BEAR_ENABLE), 1)
-		$(BUILD_MAKEFILE_DIR)/bear.py $(COMPILE_COMMANDS_TXT) $(COMPILE_COMMANDS_JSON) > /dev/null 2>&1
-	endif
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) all
+
+ifeq ($(BEAR_ENABLE), 1)
+ifeq ($(VERBOSE), 1)
+	$(BUILD_MAKEFILE_DIR)/bear.py $(PROJECT_BUILD_DIR) $(COMPILE_COMMANDS_JSON)
+else
+	@echo "Generating compile commands..."
+	@$(BUILD_MAKEFILE_DIR)/bear.py $(PROJECT_BUILD_DIR) $(COMPILE_COMMANDS_JSON)
+endif
+endif
 
 .PHONY: clean
 clean:
 	$(MAKE) -C $(BUILD_MAKEFILE_DIR) clean
-ifeq ($(COMPILE_COMMANDS_ENABLED), 1)
-	-rm -f $(COMPILE_COMMANDS_JSON) $(COMPILE_COMMANDS_TXT)
-endif
 
 # generate documentation
 .PHONY: docs

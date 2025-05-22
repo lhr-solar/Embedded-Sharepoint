@@ -21,12 +21,14 @@ endif
 SHELL := /bin/bash
 
 #######################################
-# clang
+# misc
 #######################################
 IGNORED_CLANG_INPUTS = %/stm32f4xx_hal_conf.h %/stm32l4xx_hal_conf.h %/FreeRTOSConfig.h
 
 CLANG_INPUTS = $(PROJECT_C_SOURCES) $(foreach DIR, $(PROJECT_C_INCLUDES), $(wildcard $(DIR)/*))
 CLANG_INPUTS := $(filter-out $(IGNORED_CLANG_INPUTS), $(CLANG_INPUTS))
+
+BEAR_ENABLE ?= 1
 
 ######################################
 # target
@@ -217,7 +219,11 @@ vpath %.s $(sort $(dir $(ASM_SOURCES)))
 OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(ASMM_SOURCES:.S=.o)))
 vpath %.S $(sort $(dir $(ASMM_SOURCES)))
 
-$(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR) 
+$(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR)
+ifeq ($(BEAR_ENABLE), 1)
+	@echo $(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@ > $(BUILD_DIR)/cc_$(notdir $@).txt
+endif
+
 ifeq ($(VERBOSE), 1)
 	$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
 else
@@ -225,7 +231,11 @@ else
 	@echo "CC $< -> $@"
 endif
 
-$(BUILD_DIR)/%.o: %.s Makefile | $(BUILD_DIR)
+$(BUILD_DIR)/%.o: %.S Makefile | $(BUILD_DIR)
+ifeq ($(BEAR_ENABLE), 1)
+	@echo $(AS) -c $(CFLAGS) $< -o $@ > $(BUILD_DIR)/cc_$(notdir $@).txt
+endif
+
 ifeq ($(VERBOSE), 1)
 	$(AS) -c $(CFLAGS) $< -o $@
 else
@@ -233,7 +243,12 @@ else
 	@echo "AS $< -> $@"
 endif
 
-$(BUILD_DIR)/%.o: %.S Makefile | $(BUILD_DIR)
+
+$(BUILD_DIR)/%.o: %.s Makefile | $(BUILD_DIR)
+ifeq ($(BEAR_ENABLE), 1)
+	@echo $(AS) -c $(CFLAGS) $< -o $@ > $(BUILD_DIR)/cc_$(notdir $@).txt
+endif
+
 ifeq ($(VERBOSE), 1)
 	$(AS) -c $(CFLAGS) $< -o $@
 else
@@ -243,38 +258,44 @@ endif
 
 $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
 	@if ls $(BUILD_DIR)/*.elf 1> /dev/null 2>&1; then \
-		rm -rf $(BUILD_DIR)/stm*.elf; \
+	rm -rf $(BUILD_DIR)/stm*.elf; \
 	fi
 	
-	ifeq ($(VERBOSE), 1)
-		$(CC) $(OBJECTS) $(LDFLAGS) -o $@
-	else
-		@$(CC) $(OBJECTS) $(LDFLAGS) -o $@
-		@echo "LD $@"
-	endif
-		@$(SZ) $@
+ifeq ($(BEAR_ENABLE), 1)
+	@echo $(CC) $(OBJECTS) $(LDFLAGS) -o $@ > cc_$(notdir $@).txt
+endif
+
+ifeq ($(VERBOSE), 1)
+	$(CC) $(OBJECTS) $(LDFLAGS) -o $@
+else
+	@$(CC) $(OBJECTS) $(LDFLAGS) -o $@
+	@echo "LD $@"
+endif
+	@$(SZ) $@
 
 $(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	@if ls $(BUILD_DIR)/*.hex 1> /dev/null 2>&1; then \
-		rm -rf $(BUILD_DIR)/stm*.hex; \
+	rm -rf $(BUILD_DIR)/stm*.hex; \
 	fi
-	ifeq ($(VERBOSE), 1)
-		$(HEX) $< $@
-	else
-		@$(HEX) $< $@
-		@echo "HEX $< -> $@"
-	endif
+
+ifeq ($(VERBOSE), 1)
+	$(HEX) $< $@
+else
+	@$(HEX) $< $@
+	@echo "HEX $< -> $@"
+endif
 	
 $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	@if ls $(BUILD_DIR)/*.bin 1> /dev/null 2>&1; then \
-		rm -rf $(BUILD_DIR)/stm*.bin; \
+	rm -rf $(BUILD_DIR)/stm*.bin; \
 	fi
-	ifeq ($(VERBOSE), 1)
-		$(BIN) $< $@
-	else
-		@$(BIN) $< $@
-		@echo "BIN $< -> $@"
-	endif
+
+ifeq ($(VERBOSE), 1)
+	$(BIN) $< $@
+else
+	@$(BIN) $< $@
+	@echo "BIN $< -> $@"
+endif
 	
 $(BUILD_DIR):
 	mkdir -p $@		

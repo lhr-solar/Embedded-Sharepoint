@@ -2,3 +2,4 @@
 mkdocs
 pyserial
 cantools
+jq
