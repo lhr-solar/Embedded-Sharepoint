@@ -582,6 +582,7 @@ void xPortSysTickHandler( void )
             traceISR_EXIT();
         }
     }
+    
     portENABLE_INTERRUPTS();
 }
 /*-----------------------------------------------------------*/
