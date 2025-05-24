@@ -206,7 +206,8 @@ __weak void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
     #ifdef UART5
     if (huart->Instance == UART5) {
         __HAL_RCC_GPIOC_CLK_ENABLE();
-        __HAL_RCC_GPIOD_CLK_ENABLE();
+
+	__HAL_RCC_GPIOD_CLK_ENABLE();
 
         /* enable UART5 gpio   
         PC12 -> UART5_TX
@@ -220,7 +221,8 @@ __weak void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
         HAL_GPIO_Init(GPIOC, &init);
 
         init.Pin = GPIO_PIN_2;
-        HAL_GPIO_Init(GPIOD, &init);
+	
+	HAL_GPIO_Init(GPIOD, &init);
     }
     #endif /* UART5 */
     
@@ -242,7 +244,7 @@ __weak void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
     }
     #endif /* USART1 */
     
-    #ifdef USART2
+    #if defined(USART2) && defined(GPIOD)
     if(huart->Instance == USART2) {
         //enable port D clock
         __HAL_RCC_GPIOD_CLK_ENABLE();
@@ -258,7 +260,7 @@ __weak void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
         init.Alternate = GPIO_AF7_USART2;
         HAL_GPIO_Init(GPIOD, &init);
     }
-    #endif /* USART2 */
+    #endif /* USART2 && GPIOD*/
 
     #ifdef USART3
     if(huart->Instance == USART3) {
@@ -349,7 +351,7 @@ __weak void HAL_UART_MspGPIODeInit(UART_HandleTypeDef *huart){
     }
     #endif /* USART1 */
     
-    #ifdef USART2
+    #if defined(USART2) && defined(GPIOD)
     if(huart->Instance == USART2) {
         HAL_GPIO_DeInit(GPIOD, GPIO_PIN_5);
         HAL_GPIO_DeInit(GPIOD, GPIO_PIN_6);

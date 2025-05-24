@@ -21,27 +21,32 @@ StaticTask_t rxTaskBuffer;
 StackType_t txTaskStack[configMINIMAL_STACK_SIZE];
 StackType_t rxTaskStack[configMINIMAL_STACK_SIZE];
 
+#ifdef UART4
+#define huart huart4
+#else
+#define huart husart1
+#endif
+
 int main(void) {
     HAL_Init();
     SystemClock_Config();
     MX_GPIO_Init();
 
-    husart2->Instance = USART2;
-    husart2->Init.BaudRate = 115200;
-    husart2->Init.WordLength = UART_WORDLENGTH_8B;
-    husart2->Init.StopBits = UART_STOPBITS_1;
-    husart2->Init.Parity = UART_PARITY_NONE;
-    husart2->Init.Mode = UART_MODE_TX_RX;
-    husart2->Init.HwFlowCtl = UART_HWCONTROL_NONE;
-    husart2->Init.OverSampling = UART_OVERSAMPLING_16;
+    huart->Init.BaudRate = 115200;
+    huart->Init.WordLength = UART_WORDLENGTH_8B;
+    huart->Init.StopBits = UART_STOPBITS_1;
+    huart->Init.Parity = UART_PARITY_NONE;
+    huart->Init.Mode = UART_MODE_TX_RX;
+    huart->Init.HwFlowCtl = UART_HWCONTROL_NONE;
+    huart->Init.OverSampling = UART_OVERSAMPLING_16;
 
     #ifdef STM32L4xx
-    huart4->Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-    huart4->AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+    huart->Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+    huart->AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
     #endif /* STM32L4xx */
     
     // Initialize UART BSP
-    uart_status_t status = uart_init(husart2);
+    uart_status_t status = uart_init(huart);
     if (status != UART_OK) {
         Error_Handler();
     }
@@ -73,6 +78,7 @@ int main(void) {
 
 void HAL_UART_MspGPIOInit(UART_HandleTypeDef* huart){
     GPIO_InitTypeDef init = {0}; 
+    #ifdef STM32F446xx
     #ifdef USART2
     if(huart->Instance == USART2) {
         //enable port A clock
@@ -90,6 +96,9 @@ void HAL_UART_MspGPIOInit(UART_HandleTypeDef* huart){
         HAL_GPIO_Init(GPIOA, &init);
     }
     #endif /* USART2 */
+    #else
+    (void)init;
+    #endif /* STM32F446xx */
 }
 
 static void MX_GPIO_Init(void)
@@ -119,7 +128,7 @@ void TxTask(void *argument)
     
     while(1) {
         // Send test message
-        uart_status_t status = uart_send(husart2, testData, msgLen, portMAX_DELAY);
+        uart_status_t status = uart_send(huart, testData, msgLen, portMAX_DELAY);
         
         if (status == UART_SENT) {
             txCount++;
@@ -139,12 +148,12 @@ void RxTask(void *argument)
     
     while(1) {
         // Try to receive data
-        uart_status_t status = uart_recv(husart2, &rxBuffer, 1, 0);
+        uart_status_t status = uart_recv(huart, &rxBuffer, 1, 0);
         
         if (status == UART_RECV) {
             rxCount++;
             // Echo received data back
-            uart_send(husart2, &rxBuffer, 1, portMAX_DELAY);
+            uart_send(huart, &rxBuffer, 1, portMAX_DELAY);
             
             // Toggle LED to indicate successful reception
             HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);

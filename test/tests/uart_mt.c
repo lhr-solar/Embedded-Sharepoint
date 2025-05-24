@@ -15,24 +15,25 @@
 #define TEST_PATTERN_SIZE 32  // Larger pattern to ensure queue gets filled, pattern size represents a message
 #define TX_BURST_SIZE 100     // Number of messages to send in a burst
 
+#ifdef UART4
+#define huart huart4
+#else
+#define huart husart1
+#endif
+
 // Test data
 static uint8_t testPattern[TEST_PATTERN_SIZE];
 
 /* Private function prototypes */
 static void MX_GPIO_Init(void); // Initialize LED gpio 
-static void MX_UART4_Init(void); // Initalize UART settings, buad rate, parity bits, etc. 
 void TxTask(void *argument);
 void RxTask(void *argument);
-
-/* Private variables */
-extern UART_HandleTypeDef* huart4;
 
 // Static task creation resources
 StaticTask_t txTaskBuffer;
 StaticTask_t rxTaskBuffer;
 StackType_t txTaskStack[configMINIMAL_STACK_SIZE];
 StackType_t rxTaskStack[configMINIMAL_STACK_SIZE];
-
 
 // Test data
 static uint8_t testPattern[TEST_PATTERN_SIZE];
@@ -41,7 +42,22 @@ int main(void) {
     HAL_Init();
     SystemClock_Config();
     MX_GPIO_Init();
-    MX_UART4_Init();
+    
+    huart->Init.BaudRate = 115200;
+    huart->Init.WordLength = UART_WORDLENGTH_8B;
+    huart->Init.StopBits = UART_STOPBITS_1;
+    huart->Init.Parity = UART_PARITY_NONE;
+    huart->Init.Mode = UART_MODE_TX_RX;
+    huart->Init.HwFlowCtl = UART_HWCONTROL_NONE;
+    huart->Init.OverSampling = UART_OVERSAMPLING_16;
+    #ifdef STM32L4xx
+    huart->Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+    huart->AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+    #endif /* STM32L4xx */
+    
+    if (HAL_UART_Init(huart) != HAL_OK) {
+      Error_Handler();
+    }
 
     // Initialize test pattern
     for(int i = 0; i < TEST_PATTERN_SIZE; i++) {
@@ -49,7 +65,7 @@ int main(void) {
     }
     
     // Initialize UART BSP
-    uart_status_t status = uart_init(huart4);
+    uart_status_t status = uart_init(huart);
     if (status != UART_OK) {
         Error_Handler();
     }
@@ -84,7 +100,7 @@ void TxTask(void *argument)
   while(1) {
     // Rapid burst transmission to test queue
     for(int i = 0; i < TX_BURST_SIZE; i++) {
-      uart_status_t status = uart_send(huart4, testPattern, TEST_PATTERN_SIZE, 0);
+      uart_status_t status = uart_send(huart, testPattern, TEST_PATTERN_SIZE, 0);
       txCount++;
       
       if(status == UART_ERR) {
@@ -111,7 +127,7 @@ void RxTask(void *argument)
   uint32_t patternMatchCount = 0;
   
   while(1) {
-    uart_status_t status = uart_recv(huart4, rxBuffer, TEST_PATTERN_SIZE, 0);
+    uart_status_t status = uart_recv(huart, rxBuffer, TEST_PATTERN_SIZE, 0);
     
     if(status == UART_RECV) {
       rxCount++;
@@ -123,7 +139,7 @@ void RxTask(void *argument)
       }
       
       // Immediate retry to test queue emptying
-      while(uart_recv(huart4, rxBuffer, TEST_PATTERN_SIZE, 0) == UART_RECV) {
+      while(uart_recv(huart, rxBuffer, TEST_PATTERN_SIZE, 0) == UART_RECV) {
         rxCount++;
       }
     }
@@ -132,29 +148,6 @@ void RxTask(void *argument)
     }
     
     vTaskDelay(pollDelay);
-  }
-}
-
-// Rest of the code (MX_UART4_Init, MX_GPIO_Init, Clock_Config, Error_Handler) same as uart.c
-
-
-static void MX_UART4_Init(void)
-{
-  huart4->Instance = UART4;
-  huart4->Init.BaudRate = 115200;
-  huart4->Init.WordLength = UART_WORDLENGTH_8B;
-  huart4->Init.StopBits = UART_STOPBITS_1;
-  huart4->Init.Parity = UART_PARITY_NONE;
-  huart4->Init.Mode = UART_MODE_TX_RX;
-  huart4->Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart4->Init.OverSampling = UART_OVERSAMPLING_16;
-  #ifdef STM32L4xx
-  huart4->Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-  huart4->AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-  #endif /* STM32L4xx */
-  
-  if (HAL_UART_Init(huart4) != HAL_OK) {
-    Error_Handler();
   }
 }
 
