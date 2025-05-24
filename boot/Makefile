@@ -1,11 +1,11 @@
 # default project configuration
-PROJECT_TARGET ?= stm32f429zit
+PROJECT_TARGET ?= stm32f446ret
 BEAR_ENABLE ?= 1
 
 # source and include directories
 PROJECT_C_SOURCES = $(wildcard Src/*.c)
 PROJECT_C_INCLUDES = Inc
-PROJECT_ASM_SOURCES = reset.s
+PROJECT_ASM_SOURCES = $(wildcard Src/*.s)
 
 # build and driver directories
 APP_BUILD_DIR = ../build

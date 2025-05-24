@@ -1,7 +1,6 @@
 #ifndef FLASH_H
 #define FLASH_H
 
-#include <string.h>
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -34,6 +33,5 @@ bool flash_read_single(void* buf, uint32_t address, uint16_t data_size);
 bool flash_read_buf(void* buf, uint32_t address, uint16_t data_size);
 bool flash_erase(uint32_t address);
 bool flash_mass_erase(void);
-
 
 #endif

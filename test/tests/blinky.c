@@ -12,7 +12,7 @@ int main(){
         .Pin = LED_PIN
     };
     
-    __HAL_RCC_GPIOB_CLK_ENABLE(); // enable clock for GPIOA
+    __HAL_RCC_GPIOA_CLK_ENABLE(); // enable clock for GPIOA
     HAL_GPIO_Init(LED_PORT, &led_config); // initialize GPIOA with led_config
     
     // Systick

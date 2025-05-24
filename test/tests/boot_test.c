@@ -1,44 +1,41 @@
+#include "portmacro.h"
 #include "stm32xx_hal.h"
-#include "stdint.h"
-#include "stdbool.h"
-#include "stdio.h"
-#include "string.h"
+#include <stdint.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
 
-#include "boot_config.h"
+#include "boot_shared.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
 
-uint8_t* shared_mem;
+shared_bootmem_t* shared_mem;
 
-#define USART1_TX_PIN GPIO_PIN_9
-#define USART1_TX_PORT GPIOA
-#define USART1_RX_PIN GPIO_PIN_10
-#define USART1_RX_PORT GPIOA
-
-static GPIO_InitTypeDef USART2_GPIO_TxCfg = {
-    .Pin = USART1_TX_PIN,
+static GPIO_InitTypeDef UART_GPIO_TxCfg = {
+    .Pin = DBG_UART_TX_PIN,
     .Mode = GPIO_MODE_AF_PP,
     .Pull = GPIO_NOPULL,
     .Speed = GPIO_SPEED_FAST,
-    .Alternate = GPIO_AF7_USART2
+    .Alternate = DBG_UART_AF
 };
 
-static GPIO_InitTypeDef USART2_GPIO_RxCfg = {
-    .Pin = USART1_RX_PIN,
+static GPIO_InitTypeDef UART_GPIO_RxCfg = {
+    .Pin = DBG_UART_RX_PIN,
     .Mode = GPIO_MODE_AF_PP,
     .Pull = GPIO_NOPULL,
     .Speed = GPIO_SPEED_FAST,
-    .Alternate = GPIO_AF7_USART2
+    .Alternate = DBG_UART_AF
 };
 
-static USART_HandleTypeDef USART2_Handle = {
-    .Instance = USART1,
+static UART_HandleTypeDef UART_Handle = {
+    .Instance = DBG_UART_INST,
     .Init.BaudRate = 9600,
-    .Init.WordLength = USART_WORDLENGTH_8B,
-    .Init.StopBits = USART_STOPBITS_1,
-    .Init.Parity = USART_PARITY_NONE,
-    .Init.Mode = USART_MODE_TX_RX
+    .Init.WordLength = UART_WORDLENGTH_8B,
+    .Init.StopBits = UART_STOPBITS_1,
+    .Init.Parity = UART_PARITY_NONE,
+    .Init.Mode = UART_MODE_TX_RX,
+    .gState = HAL_UART_STATE_RESET
 };
 
 static GPIO_InitTypeDef led_config = {
@@ -57,6 +54,7 @@ void blinkyTask(void *pvParameters);
 void uartTask(void *pvParameters);
 
 void init(){
+    __disable_irq();
     SystemClock_Config();
 
     if(HAL_Init() == HAL_ERROR){
@@ -70,17 +68,17 @@ void init(){
     HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET);
 
     // USART initialization
-    HAL_GPIO_Init(USART1_TX_PORT, &USART2_GPIO_TxCfg);
-    HAL_GPIO_Init(USART1_RX_PORT, &USART2_GPIO_RxCfg);
-    __HAL_USART_ENABLE(&USART2_Handle);
-    __USART1_CLK_ENABLE();
-    if(HAL_USART_Init(&USART2_Handle) == HAL_ERROR){
+    HAL_GPIO_Init(DBG_UART_TX_PORT, &UART_GPIO_TxCfg);
+    HAL_GPIO_Init(DBG_UART_RX_PORT, &UART_GPIO_RxCfg);
+    
+    __HAL_UART_ENABLE(&UART_Handle);
+    DBG_UART_CLOCK_ENABLE();
+
+    if(HAL_UART_Init(&UART_Handle) == HAL_ERROR){
         while(1){} //error
     }
 
-    // Put USART in asynchronous mode
-    USART2_Handle.Instance->CR2 &= ~(USART_CR2_CLKEN);
-    HAL_NVIC_DisableIRQ(USART1_IRQn);
+    HAL_NVIC_DisableIRQ(DBG_UART_IRQN);
 
     // Create tasks
     xTaskCreateStatic(blinkyTask, 
@@ -101,7 +99,15 @@ void init(){
         &uartTaskTCB
     );
 
-    shared_mem = (uint8_t*)(&_estack) + 4; // Start of shared memory (+4 to avoid stack collision)
+    shared_mem = (shared_bootmem_t*)(&_estack) + 4; // Start of shared memory (+4 to avoid stack collision)
+
+    if(shared_mem->magic_num == BOOT_MAGIC_NUM){
+	const char *boot_success = "Booted from bootloader!\n\r";
+	HAL_UART_Transmit(&UART_Handle, boot_success, strlen(boot_success), portMAX_DELAY);
+    } else {
+	const char *reg_boot = "Booted from typical boot sequence!\n\r";
+	HAL_UART_Transmit(&UART_Handle, reg_boot, strlen(reg_boot), portMAX_DELAY);
+    }
 
     vTaskStartScheduler();
 
@@ -119,11 +125,11 @@ void uartTask(void *pvParameters){
     while(1){
         const char *err_code_label = "Error Code:";
         const char *endln = "\n\r";
-        char err_code = shared_mem[0] + '0';
+        char err_code = shared_mem->err_code + '0';
 
-        HAL_USART_Transmit(&USART2_Handle, (unsigned char *)err_code_label, strlen(err_code_label), portMAX_DELAY);
-        HAL_USART_Transmit(&USART2_Handle, (unsigned char *)&err_code, 1, portMAX_DELAY);
-        HAL_USART_Transmit(&USART2_Handle, (unsigned char *)endln, 2, portMAX_DELAY);
+        HAL_UART_Transmit(&UART_Handle, (unsigned char *)err_code_label, strlen(err_code_label), portMAX_DELAY);
+        HAL_UART_Transmit(&UART_Handle, (unsigned char *)&err_code, 1, portMAX_DELAY);
+        HAL_UART_Transmit(&UART_Handle, (unsigned char *)endln, 2, portMAX_DELAY);
         vTaskDelay(1000);
     }
 }

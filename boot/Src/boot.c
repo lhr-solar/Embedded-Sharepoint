@@ -1,6 +1,5 @@
 #include "boot.h"
-#include "boot_config.h"
-
+#include "boot_shared.h"
 #include "flash.h"
 
 #include <stdint.h>
@@ -8,9 +7,7 @@
 #include "stm32xx_hal.h"
 #include "cmsis_gcc.h"
 
-#define SHARED_MEM_LEN (1020)
-extern uint8_t _estack;
-uint8_t* shared_mem;
+shared_bootmem_t* shared_mem;
 
 #define SIZEOF(x) (sizeof(x)/sizeof(x[0]))
 
@@ -24,26 +21,6 @@ uint8_t* shared_mem;
 
 static uint8_t init_cmd[4] = {0xDE, 0xAD, 0xBE, 0xEF};
 
-#if defined(STM32F446xx)
-#define UART_TX_PIN GPIO_PIN_2
-#define UART_TX_PORT GPIOA
-#define UART_RX_PIN GPIO_PIN_3
-#define UART_RX_PORT GPIOA
-#define UART_AF GPIO_AF7_UART2
-#define UART_INST UART2
-#define UART_CLOCK_ENABLE() __HAL_RCC_UART2_CLK_ENABLE()
-#define UART_CLOCK_DISABLE() __HAL_RCC_UART2_CLK_DISABLE()
-#elif defined(STM32F429xx)
-#define UART_TX_PIN GPIO_PIN_8
-#define UART_TX_PORT GPIOD
-#define UART_RX_PIN GPIO_PIN_9
-#define UART_RX_PORT GPIOD
-#define UART_AF GPIO_AF7_USART3
-#define UART_INST USART3
-#define UART_CLOCK_ENABLE() __HAL_RCC_USART3_CLK_ENABLE()
-#define UART_CLOCK_DISABLE() __HAL_RCC_USART3_CLK_DISABLE()
-#endif
-
 static GPIO_InitTypeDef GPIO_InitCfg = {
     .Pin = LED_PIN,
     .Mode = GPIO_MODE_OUTPUT_PP,
@@ -52,23 +29,23 @@ static GPIO_InitTypeDef GPIO_InitCfg = {
 };
 
 static GPIO_InitTypeDef UART_GPIO_TxCfg = {
-    .Pin = UART_TX_PIN,
+    .Pin = DBG_UART_TX_PIN,
     .Mode = GPIO_MODE_AF_PP,
     .Pull = GPIO_NOPULL,
     .Speed = GPIO_SPEED_FAST,
-    .Alternate = UART_AF
+    .Alternate = DBG_UART_AF
 };
 
 static GPIO_InitTypeDef UART_GPIO_RxCfg = {
-    .Pin = UART_RX_PIN,
+    .Pin = DBG_UART_RX_PIN,
     .Mode = GPIO_MODE_AF_PP,
     .Pull = GPIO_NOPULL,
     .Speed = GPIO_SPEED_FAST,
-    .Alternate = UART_AF
+    .Alternate = DBG_UART_AF
 };
 
 static UART_HandleTypeDef UART_Handle = {
-    .Instance = UART_INST,
+    .Instance = DBG_UART_INST,
     .Init.BaudRate = 9600,
     .Init.WordLength = UART_WORDLENGTH_9B,
     .Init.StopBits = UART_STOPBITS_1,
@@ -78,7 +55,7 @@ static UART_HandleTypeDef UART_Handle = {
 };
 
 static inline void startapp_with_err(error_code_t ec){
-    shared_mem[0] = ec;
+    shared_mem->err_code = ec;
     boot_deinit();
     startapp();
 }
@@ -270,19 +247,23 @@ error_code_t boot_init(){
     // Disable interrupts
     __disable_irq();
 
+    // Write magic number to let application know that bootloader exists
+    shared_mem->magic_num = BOOT_MAGIC_NUM;
+
     SystemClock_Config();
 
     if(HAL_Init() == HAL_ERROR){
         startapp_with_err(BLDR_FAIL_INIT);
     }
 
-    __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
     HAL_GPIO_Init(LED_PORT, &GPIO_InitCfg);
     
     // Turn on LED with HAL
     HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET);
 
     // UART initialization
+    UART_GPIO_ENABLE();
     HAL_GPIO_Init(UART_TX_PORT, &UART_GPIO_TxCfg);
     HAL_GPIO_Init(UART_RX_PORT, &UART_GPIO_RxCfg);
     __HAL_UART_ENABLE(&UART_Handle);
@@ -295,10 +276,10 @@ error_code_t boot_init(){
 
     // Put UART in asynchronous mode
     //UART_Handle.Instance->CR2 &= ~(UART_CR2_CLKEN);
-    HAL_NVIC_DisableIRQ(USART3_IRQn);
+    HAL_NVIC_DisableIRQ(USART2_IRQn);
 
     // Shared memory
-    shared_mem = (uint8_t*)(&_estack) + 4; // Start of shared memory (+4 to avoid stack collision)
+    shared_mem = (shared_bootmem_t*)(&_estack) + 4; // Start of shared memory (+4 to avoid stack collision)
 
     // Systick
     HAL_NVIC_EnableIRQ(SysTick_IRQn);

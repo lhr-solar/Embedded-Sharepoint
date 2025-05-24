@@ -4,8 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "boot_config.h"
-#include "flash.h"
+#include "boot_shared.h"
 
 // These map directly to the command_id_t enum in flash.h
 typedef enum {
