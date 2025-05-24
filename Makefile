@@ -28,7 +28,6 @@ IGNORED_CLANG_INPUTS = %/stm32f4xx_hal_conf.h %/stm32l4xx_hal_conf.h %/FreeRTOSC
 CLANG_INPUTS = $(PROJECT_C_SOURCES) $(foreach DIR, $(PROJECT_C_INCLUDES), $(wildcard $(DIR)/*))
 CLANG_INPUTS := $(filter-out $(IGNORED_CLANG_INPUTS), $(CLANG_INPUTS))
 
-
 ######################################
 # target
 ######################################
@@ -111,7 +110,6 @@ stm/$(SERIES_GENERIC)/$(SERIES_LINE)/startup_$(SERIES_LINE_GENERIC).s
 # ASM sources
 ASMM_SOURCES = 
 
-
 #######################################
 # binaries
 #######################################
@@ -185,25 +183,8 @@ ifeq ($(DEBUG), 1)
 CFLAGS += -g -gdwarf-2
 endif
 
-
 # Generate dependency information
 CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
-
-
-#######################################
-# edge case
-#######################################
-# exclude CAN
-ifeq ($(filter $(SERIES_LINE_GENERIC), stm32f401xe stm32f401xc), $(SERIES_LINE_GENERIC))
-    C_SOURCES := $(filter-out bsp/Src/CAN.c, $(C_SOURCES))
-    C_DEFS += -DCAN_UNDEFINED
-endif
-
-# exclude UART4/5 for unsupported boards
-ifneq ($(filter $(PROJECT_TARGET), stm32f401re stm32f413rht stm32f429zit stm32l431cbt),)
-    C_SOURCES := $(filter-out bsp/Src/UART.c, $(C_SOURCES))
-    C_DEFS += -DUART_UNDEFINED
-endif
 
 #######################################
 # LDFLAGS
@@ -216,13 +197,13 @@ LIBS = -lc -lm -lnosys
 LIBDIR = 
 LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
 
-# default action: build all
-all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
-
-
 #######################################
 # build the application
 #######################################
+# default action: build all
+.PHONY: all
+all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
+
 # list of objects
 OBJECTS = $(addprefix $(BUILD_DIR)/,$(notdir $(C_SOURCES:.c=.o)))
 vpath %.c $(sort $(dir $(C_SOURCES)))
@@ -241,13 +222,23 @@ $(BUILD_DIR)/%.o: %.S Makefile | $(BUILD_DIR)
 	$(AS) -c $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
+	@if ls $(BUILD_DIR)/*.elf 1> /dev/null 2>&1; then \
+		rm -rf $(BUILD_DIR)/stm*.elf; \
+	fi
+
 	$(CC) $(OBJECTS) $(LDFLAGS) -o $@
 	$(SZ) $@
 
 $(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
+	@if ls $(BUILD_DIR)/*.hex 1> /dev/null 2>&1; then \
+		rm -rf $(BUILD_DIR)/stm*.hex; \
+	fi
 	$(HEX) $< $@
 	
 $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
+	@if ls $(BUILD_DIR)/*.bin 1> /dev/null 2>&1; then \
+		rm -rf $(BUILD_DIR)/stm*.bin; \
+	fi
 	$(BIN) $< $@	
 	
 $(BUILD_DIR):
@@ -256,6 +247,7 @@ $(BUILD_DIR):
 #######################################
 # clean up
 #######################################
+.PHONY: clean
 clean:
 	-rm -fR $(BUILD_DIR)
 
@@ -265,7 +257,8 @@ clean:
 FLASH_ADDRESS ?= 0x8000000
 FLASH_FILE = $(shell find $(BUILD_DIR) -name 'stm*.bin' -exec basename {} \;)
 
-flash:
+.PHONY: flash
+flash: all
 	@echo "Flashing $(FLASH_FILE) to $(FLASH_ADDRESS)"
 	-st-flash write $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
 
@@ -274,9 +267,11 @@ flash:
 #######################################
 FORMAT_CONFIG ?= --style=file:../.clang-format
 
+.PHONY: format
 format:
 	-clang-format $(FORMAT_CONFIG) $(CLANG_INPUTS)
 
+.PHONY: format-fix
 format-fix:
 	-clang-format -i $(FORMAT_CONFIG) $(CLANG_INPUTS)
 
@@ -284,6 +279,7 @@ format-fix:
 #######################################
 # help
 #######################################
+.PHONY: help
 help:
 	@echo "Available targets:"
 	@echo "  all          - Build the project."

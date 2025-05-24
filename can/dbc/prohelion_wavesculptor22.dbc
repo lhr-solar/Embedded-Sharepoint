@@ -1,0 +1,205 @@
+VERSION ""
+
+
+NS_ : 
+    NS_DESC_
+    CM_
+    BA_DEF_
+    BA_
+    VAL_
+    CAT_DEF_
+    CAT_
+    FILTER
+    BA_DEF_DEF_
+    EV_DATA_
+    ENVVAR_DATA_
+    SGTYPE_
+    SGTYPE_VAL_
+    BA_DEF_SGTYPE_
+    BA_SGTYPE_
+    SIG_TYPE_REF_
+    VAL_TABLE_
+    SIG_GROUP_
+    SIG_VALTYPE_
+    SIGTYPE_VALTYPE_
+    BO_TX_BU_
+    BA_DEF_REL_
+    BA_REL_
+    BA_DEF_DEF_REL_
+    BU_SG_REL_
+    BU_EV_REL_
+    BU_BO_REL_
+    SG_MUL_VAL_
+
+BS_:
+
+BU_: WaveSculptor22
+
+
+BO_ 128 IDInfo: 8 WaveSculptor22
+ SG_ TritiumID : 0|32@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ SerialNumber : 32|32@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 129 Status: 8 WaveSculptor22
+ SG_ LimitReserved : 7|9@1+ (1,0) [0|511] "On / Off" Vector__XXX
+ SG_ LimitIpmOrMotorTemp : 6|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
+ SG_ LimitBusVoltageLower : 5|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
+ SG_ LimitBusVoltageUpper : 4|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
+ SG_ LimitBusCurrent : 3|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
+ SG_ LimitVelocity : 2|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
+ SG_ LimitMotorCurrent : 1|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
+ SG_ LimitOutputVoltagePWM : 0|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
+ SG_ ErrorReserved : 25|7@1+ (1,0) [0|0] "On / Off" Vector__XXX
+ SG_ ErrorMotorOverSpeed : 24|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
+ SG_ ErrorDesaturationFault : 23|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
+ SG_ Error15vRailUnderVoltage : 22|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
+ SG_ ErrorConfigRead : 21|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
+ SG_ ErrorWatchdogCausedLastReset : 20|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
+ SG_ ErrorBadMotorPositionHallSeq : 19|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
+ SG_ ErrorDcBusOverVoltage : 18|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
+ SG_ ErrorSoftwareOverCurrent : 17|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
+ SG_ ErrorHardwareOverCurrent : 16|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
+ SG_ ActiveMotor : 32|16@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ TxErrorCount : 48|8@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ RxErrorCount : 56|8@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 130 BusMeasurement: 8 WaveSculptor22
+ SG_ BusVoltage : 0|32@1- (1,0) [0|0] "V" Vector__XXX
+ SG_ BusCurrent : 32|32@1- (1,0) [0|0] "A" Vector__XXX
+
+BO_ 131 VelocityMeasurement: 8 WaveSculptor22
+ SG_ MotorVelocity : 0|32@1- (1,0) [0|0] "rpm" Vector__XXX
+ SG_ VehicleVelocity : 32|32@1- (1,0) [0|0] "m/s" Vector__XXX
+
+BO_ 132 PhaseCurrentMeasurement: 8 WaveSculptor22
+ SG_ PhaseCurrentB : 0|32@1- (1,0) [0|0] "A_rms" Vector__XXX
+ SG_ PhaseCurrentC : 32|32@1- (1,0) [0|0] "A_rms" Vector__XXX
+
+BO_ 133 MotorVoltageVectorMeasurement: 8 WaveSculptor22
+ SG_ Vq : 0|32@1- (1,0) [0|0] "V" Vector__XXX
+ SG_ Vd : 32|32@1- (1,0) [0|0] "V" Vector__XXX
+
+BO_ 134 MotorCurrentVectorMeasurement: 8 WaveSculptor22
+ SG_ Iq : 0|32@1- (1,0) [0|0] "A" Vector__XXX
+ SG_ Id : 32|32@1- (1,0) [0|0] "A" Vector__XXX
+
+BO_ 135 BackEMFMeasurementPrediction: 8 WaveSculptor22
+ SG_ BEMFq : 0|32@1- (1,0) [0|0] "V" Vector__XXX
+ SG_ BEMFd : 32|32@1- (1,0) [0|0] "V" Vector__XXX
+
+BO_ 136 VoltageRail15VMeasurement: 8 WaveSculptor22
+ SG_ Supply15V : 32|32@1- (1,0) [0|0] "V" Vector__XXX
+ SG_ ReservedSupply15V : 0|32@1- (1,0) [0|0] "" Vector__XXX
+
+BO_ 137 VoltageRail3V31V9Measurement: 8 WaveSculptor22
+ SG_ Supply1V9 : 0|32@1- (1,0) [0|0] "V" Vector__XXX
+ SG_ Supply3V3 : 32|32@1- (1,0) [0|0] "V" Vector__XXX
+
+BO_ 138 Reserved0A: 8 WaveSculptor22
+ SG_ Reserved0A0 : 0|32@1- (1,0) [0|0] "" Vector__XXX
+ SG_ Reserved0A1 : 32|32@1- (1,0) [0|0] "" Vector__XXX
+
+BO_ 139 HeatsinkMotorTempMeasurement: 8 WaveSculptor22
+ SG_ MotorTemp : 0|32@1- (1,0) [0|0] "C" Vector__XXX
+ SG_ HeatsinkTemp : 32|32@1- (1,0) [0|0] "C" Vector__XXX
+
+BO_ 140 DspBoardTempMeasurement: 8 WaveSculptor22
+ SG_ DspBoardTemp : 0|32@1- (1,0) [0|0] "C" Vector__XXX
+ SG_ ReservedDspBoardTemp : 32|32@1- (1,0) [0|0] "" Vector__XXX
+
+BO_ 141 Reserved0D: 8 WaveSculptor22
+ SG_ Reserved0D0 : 0|32@1- (1,0) [0|0] "" Vector__XXX
+ SG_ Reserved0D1 : 32|32@1- (1,0) [0|0] "" Vector__XXX
+
+BO_ 142 OdometerBusAhMeasurement: 8 WaveSculptor22
+ SG_ Odometer : 0|32@1- (1,0) [0|0] "m" Vector__XXX
+ SG_ DCBusAh : 32|32@1- (1,0) [0|0] "Ah" Vector__XXX
+
+BO_ 151 SlipSpeedMeasurement: 8 WaveSculptor22
+ SG_ SlipSpeed : 0|32@1- (1,0) [0|0] "Hz" Vector__XXX
+ SG_ ReservedSlipSpeed : 32|32@1- (1,0) [0|0] "" Vector__XXX
+
+
+
+CM_ SG_ 128 TritiumID "Device identifier. 0x00004003";
+CM_ SG_ 128 SerialNumber "Device serial number, allocated at manufacture.";
+CM_ SG_ 129 ActiveMotor "The index of the active motor currently being used.";
+CM_ SG_ 129 TxErrorCount "The DSP CAN transmission error counter (CAN 2.0)";
+CM_ SG_ 129 RxErrorCount "The DSP CAN receive error counter (CAN 2.0)";
+CM_ SG_ 130 BusVoltage "DC bus voltage at the controller.";
+CM_ SG_ 130 BusCurrent "Current drawn from the DC bus by the controller.";
+CM_ SG_ 131 MotorVelocity "Motor angular frequency in revolutions per minute.";
+CM_ SG_ 131 VehicleVelocity "Vehicle velocity in metres / second.";
+CM_ SG_ 132 PhaseCurrentB "RMS current in motor Phase B.";
+CM_ SG_ 132 PhaseCurrentC "RMS current in motor Phase C.";
+CM_ SG_ 133 Vq "Imaginary component of the applied non-rotating voltage vector to the motor.";
+CM_ SG_ 133 Vd "Real component of the applied non-rotating voltage vector to the motor.";
+CM_ SG_ 134 Iq "Imaginary component of the applied non-rotating current vector to the motor. This current produces torque in the motor and should be in phase with the back-EMF of the motor";
+CM_ SG_ 134 Id "Real component of the applied non-rotating current vector to the motor. This vector represents the field current of the motor.";
+CM_ SG_ 135 BEMFq "The peak of the phase to neutral motor voltage.";
+CM_ SG_ 135 BEMFd "By definition this value is always 0V.";
+CM_ SG_ 136 Supply15V "Actual voltage level of the 15V power rail.";
+CM_ SG_ 137 Supply1V9 "Actual voltage level of the 1.9V DSP power rail.";
+CM_ SG_ 137 Supply3V3 "Actual voltage level of the 3.3V power rail.";
+CM_ SG_ 139 MotorTemp "Internal temperature of the motor";
+CM_ SG_ 139 HeatsinkTemp "Internal temperature of Heat-sink (case).";
+CM_ SG_ 140 DspBoardTemp "Temperature of the DSP board.";
+CM_ SG_ 142 Odometer "Distance the vehicle has travelled since reset.";
+CM_ SG_ 142 DCBusAh "Charge flow into the controller DC bus from the time of reset.";
+CM_ SG_ 151 SlipSpeed "Slip speed when driving an induction motor.";
+BA_DEF_ BO_  "GenMsgCycleTime" INT 2 50000;
+BA_DEF_ BU_  "GenNodAutoGenSnd" ENUM  "No","Yes";
+BA_DEF_ BU_  "GenNodAutoGenDsp" ENUM  "No","Yes";
+BA_DEF_  "GenEnvVarEndingDsp" STRING ;
+BA_DEF_  "GenEnvVarEndingSnd" STRING ;
+BA_DEF_  "GenEnvVarPrefix" STRING ;
+BA_DEF_DEF_  "GenMsgCycleTime" 100;
+BA_DEF_DEF_  "GenNodAutoGenSnd" "Yes";
+BA_DEF_DEF_  "GenNodAutoGenDsp" "Yes";
+BA_DEF_DEF_  "GenEnvVarEndingDsp" "Dsp";
+BA_DEF_DEF_  "GenEnvVarEndingSnd" "Snd";
+BA_DEF_DEF_  "GenEnvVarPrefix" "Env";
+BA_ "GenMsgCycleTime" BO_ 128 1000;
+BA_ "GenMsgCycleTime" BO_ 129 200;
+BA_ "GenMsgCycleTime" BO_ 130 200;
+BA_ "GenMsgCycleTime" BO_ 131 200;
+BA_ "GenMsgCycleTime" BO_ 132 200;
+BA_ "GenMsgCycleTime" BO_ 133 200;
+BA_ "GenMsgCycleTime" BO_ 134 200;
+BA_ "GenMsgCycleTime" BO_ 135 200;
+BA_ "GenMsgCycleTime" BO_ 136 1000;
+BA_ "GenMsgCycleTime" BO_ 137 1000;
+BA_ "GenMsgCycleTime" BO_ 138 0;
+BA_ "GenMsgCycleTime" BO_ 139 1000;
+BA_ "GenMsgCycleTime" BO_ 140 1000;
+BA_ "GenMsgCycleTime" BO_ 141 1000;
+BA_ "GenMsgCycleTime" BO_ 142 1000;
+BA_ "GenMsgCycleTime" BO_ 151 200;
+SIG_VALTYPE_ 130 BusVoltage : 1;
+SIG_VALTYPE_ 130 BusCurrent : 1;
+SIG_VALTYPE_ 131 MotorVelocity : 1;
+SIG_VALTYPE_ 131 VehicleVelocity : 1;
+SIG_VALTYPE_ 132 PhaseCurrentB : 1;
+SIG_VALTYPE_ 132 PhaseCurrentC : 1;
+SIG_VALTYPE_ 133 Vq : 1;
+SIG_VALTYPE_ 133 Vd : 1;
+SIG_VALTYPE_ 134 Iq : 1;
+SIG_VALTYPE_ 134 Id : 1;
+SIG_VALTYPE_ 135 BEMFq : 1;
+SIG_VALTYPE_ 135 BEMFd : 1;
+SIG_VALTYPE_ 136 Supply15V : 1;
+SIG_VALTYPE_ 136 ReservedSupply15V : 1;
+SIG_VALTYPE_ 137 Supply1V9 : 1;
+SIG_VALTYPE_ 137 Supply3V3 : 1;
+SIG_VALTYPE_ 138 Reserved0A0 : 1;
+SIG_VALTYPE_ 138 Reserved0A1 : 1;
+SIG_VALTYPE_ 139 MotorTemp : 1;
+SIG_VALTYPE_ 139 HeatsinkTemp : 1;
+SIG_VALTYPE_ 140 DspBoardTemp : 1;
+SIG_VALTYPE_ 140 ReservedDspBoardTemp : 1;
+SIG_VALTYPE_ 141 Reserved0D0 : 1;
+SIG_VALTYPE_ 141 Reserved0D1 : 1;
+SIG_VALTYPE_ 142 Odometer : 1;
+SIG_VALTYPE_ 142 DCBusAh : 1;
+SIG_VALTYPE_ 151 SlipSpeed : 1;
+SIG_VALTYPE_ 151 ReservedSlipSpeed : 1;

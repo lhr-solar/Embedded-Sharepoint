@@ -1,7 +1,5 @@
 #include "UART.h"
 #include <string.h>
-#include "FreeRTOS.h"
-#include <stdint.h>
 
 // Define the size of the data to be transmitted
 // Currently not used, as we send uint8_t directly
@@ -80,7 +78,6 @@ static uint8_t uart5_rx_queue_storage[UART5_RX_QUEUE_SIZE * sizeof(rx_payload_t)
 static rx_payload_t uart5_rx_buffer;
 
 #endif /* UART5 */
-
 
 static bool is_uart_initialized(UART_HandleTypeDef* handle) {
     // Check if the UART is in a valid state
