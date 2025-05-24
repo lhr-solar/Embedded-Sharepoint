@@ -72,6 +72,10 @@ endif
 
 TARGET = $(PROJECT_TARGET)
 
+# We pull any embedded sharepoint feature enables from here
+CFG_FILE = stm/$(SERIES_GENERIC)/$(SERIES_LINE)/$(PROJECT_TARGET).cfg
+include $(CFG_FILE)
+
 ######################################
 # building variables
 ######################################
@@ -79,7 +83,6 @@ TARGET = $(PROJECT_TARGET)
 DEBUG = 1
 # optimization
 OPT = -Og
-
 
 #######################################
 # paths
@@ -101,7 +104,7 @@ $(wildcard FreeRTOS-Kernel/*.c) \
 FreeRTOS-Kernel/portable/GCC/ARM_CM4F/port.c \
 $(wildcard common/Src/*.c) \
 $(wildcard driver/Src/*.c) \
-$(wildcard bsp/Src/*.c)
+$(foreach src,$(BSP_ENABLE),bsp/Src/$(src).c)
 
 # ASM sources
 ASM_SOURCES =  \
