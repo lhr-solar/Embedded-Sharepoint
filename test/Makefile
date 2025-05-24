@@ -32,6 +32,7 @@ endif
 $(info $(PROJECT_BUILD_DIR))
 
 default: all
+.PHONY: all
 all:
 	$(MAKE) -C $(BUILD_MAKEFILE_DIR) all
 
