@@ -22,6 +22,9 @@ Controls_Fault,0x583,1,0,,"Data:
 [2]: BPS Fault
 [1]: Motor Controller Fault
 [0]: Any Controls Fault",,
+Motor Controller Safe,0x584,1,0,OUT,"Indicates if Controls thinks the motor controller is safe or not
+0 - indicates Controls does not consider the motor is safe
+1 - indicates Controls considers the motor safe to run",,
 Motor Controller Identification,0x240,8,0,,"Precision: 64 bits
 Data: 
 [32:63] : Device serial number
