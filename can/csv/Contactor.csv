@@ -11,5 +11,7 @@ Contactor Sense,0x400,2,,OUT,"[8:6] Array Precharge Sense Fault
 [2]: 1 indicates Motor sense fault happened
 [1]: Expected motor sense value
 [0]: Actual motor sense value",,
-Precharge Timeout ,0x401,1,,OUT,"[1]: Array precharge timeout
+Precharge Timeout ,0x401,1,,OUT,"Timeout fault for either or array or motor precharge
+1 if it faulted, 0 if not faulted
+[1]: Array precharge timeout
 [0]: Motor precharge timeout",,
