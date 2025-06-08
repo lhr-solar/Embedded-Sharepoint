@@ -1,5 +1,6 @@
 #include "stm32xx_hal.h"
 #include "boot_config.h"
+#include "boot.h"
 
 static GPIO_InitTypeDef LED_InitCfg= {
     .Pin = LED_PIN,
@@ -22,16 +23,6 @@ static GPIO_InitTypeDef UART_GPIO_RxCfg = {
     .Pull = GPIO_NOPULL,
     .Speed = GPIO_SPEED_FAST,
     .Alternate = BOOT_UART_AF
-};
-
-static UART_HandleTypeDef UART_Handle = {
-    .Instance = BOOT_UART_INST,
-    .Init.BaudRate = 9600,
-    .Init.WordLength = UART_WORDLENGTH_9B,
-    .Init.StopBits = UART_STOPBITS_1,
-    .Init.Parity = UART_PARITY_EVEN,
-    .Init.Mode = UART_MODE_TX_RX,
-    .gState = HAL_UART_STATE_RESET
 };
 
 
@@ -75,8 +66,8 @@ void boot_uart_deinit(){
     __HAL_UART_DISABLE(&UART_Handle);
     BOOT_UART_CLOCK_DISABLE();
 
-    HAL_GPIO_DeInit(BOOT_UART_TX_PORT, &UART_GPIO_TxCfg);
-    HAL_GPIO_DeInit(BOOT_UART_RX_PORT, &UART_GPIO_TxCfg);
+    HAL_GPIO_DeInit(BOOT_UART_TX_PORT, BOOT_UART_TX_PIN);
+    HAL_GPIO_DeInit(BOOT_UART_RX_PORT, BOOT_UART_RX_PIN);
 
     GPIO_CLK_DISABLE(BOOT_UART_TX_PORT);
     GPIO_CLK_DISABLE(BOOT_UART_RX_PORT);

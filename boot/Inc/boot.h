@@ -17,8 +17,9 @@ typedef enum {
     NUM_BLDR_IDS
 } bldr_command_id_t;
 
-error_code_t boot_init();
-void boot_deinit();
+extern UART_HandleTypeDef UART_Handle;
+
 void startapp();
+void startapp_with_err(error_code_t ec);
 
 #endif

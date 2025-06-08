@@ -2,8 +2,10 @@
 PROJECT_TARGET ?= stm32f446ret
 BEAR_ENABLE ?= 1
 
+BOOT_CONFIG ?= Src/boot_config.c
+
 # source and include directories
-PROJECT_C_SOURCES = $(wildcard Src/*.c)
+PROJECT_C_SOURCES = $(filter-out Src/boot_config.c, $(wildcard Src/*.c)) $(BOOT_CONFIG)
 PROJECT_C_INCLUDES = Inc
 PROJECT_ASM_SOURCES = $(wildcard Src/*.s)
 

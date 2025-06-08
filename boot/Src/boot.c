@@ -8,6 +8,16 @@
 #include "stm32xx_hal.h"
 #include "cmsis_gcc.h"
 
+UART_HandleTypeDef UART_Handle = {
+    .Instance = BOOT_UART_INST,
+    .Init.BaudRate = 9600,
+    .Init.WordLength = UART_WORDLENGTH_9B,
+    .Init.StopBits = UART_STOPBITS_1,
+    .Init.Parity = UART_PARITY_EVEN,
+    .Init.Mode = UART_MODE_TX_RX,
+    .gState = HAL_UART_STATE_RESET
+};
+
 shared_bootmem_t* shared_mem;
 
 #define SIZEOF(x) (sizeof(x)/sizeof(x[0]))
@@ -22,11 +32,6 @@ shared_bootmem_t* shared_mem;
 
 static uint8_t init_cmd[4] = {0xDE, 0xAD, 0xBE, 0xEF};
 
-static inline void startapp_with_err(error_code_t ec){
-    shared_mem->err_code = ec;
-    boot_deinit();
-    startapp();
-}
 
 static inline error_code_t uart_ack(){
     // Acknowledge
@@ -252,6 +257,12 @@ void boot_deinit(){
     HAL_DeInit();
 }
 
+void startapp_with_err(error_code_t ec){
+    shared_mem->err_code = ec;
+    boot_deinit();
+    startapp();
+}
+
 /*
 =======================
 CMD Structure:
@@ -282,12 +293,12 @@ ACK (1 byte) RX
 
 void boot(){
     // Initialize
-    if(boot_init() != BLDR_OK){
+    if(periph_init() != BLDR_OK){
         boot_deinit();
         startapp_with_err(BLDR_FAIL_INIT);
     }
 
-    if(uart_init() != BLDR_OK){
+    if(boot_init() != BLDR_OK){
         boot_deinit();
         startapp_with_err(BLDR_REGULAR_START);
     }

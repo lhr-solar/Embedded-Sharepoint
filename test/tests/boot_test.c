@@ -1,9 +1,6 @@
-#include "portmacro.h"
 #include "stm32xx_hal.h"
 #include <stdint.h>
 #include <stdbool.h>
-#include <stdio.h>
-#include <string.h>
 
 #include "boot_shared.h"
 
@@ -13,7 +10,7 @@
 shared_bootmem_t* shared_mem;
 
 static GPIO_InitTypeDef UART_GPIO_TxCfg = {
-    .Pin = DBG_UART_TX_PIN,
+    .Pin = ,
     .Mode = GPIO_MODE_AF_PP,
     .Pull = GPIO_NOPULL,
     .Speed = GPIO_SPEED_FAST,
