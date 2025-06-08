@@ -1,6 +1,7 @@
 #ifndef BOOT_SHARED_H
 #define BOOT_SHARED_H
 
+#include "stm32xx_hal.h"
 #include <stdint.h>
 
 // Meant to be included in both the bootloader and the application
@@ -32,11 +33,5 @@ typedef struct {
 #define SHARED_MEM_LEN (1020)
 extern uint8_t _estack;
 #define SHARED_MEM_START ((uint8_t*)(&_estack) + 4) // Start of shared memory (+4 to avoid stack collision)
-
-// UART configuration
-#if defined(STM32F446xx)
-#elif defined(STM32F429xx)
-
-#endif
 
 #endif

@@ -18,17 +18,6 @@
     #elif defined(STM32F446xx)
         #include "stm32f446xx.h"
         
-        #define DBG_UART_TX_PIN GPIO_PIN_2
-        #define DBG_UART_TX_PORT GPIOA
-        #define DBG_UART_RX_PIN GPIO_PIN_3
-        #define DBG_UART_RX_PORT GPIOA
-        #define DBG_UART_AF GPIO_AF7_USART2
-        #define DBG_UART_INST USART2
-        #define DBG_UART_GPIO_ENABLE() __HAL_RCC_GPIOA_CLK_ENABLE();
-        #define DBG_UART_CLOCK_ENABLE() __HAL_RCC_USART2_CLK_ENABLE()
-        #define DBG_UART_CLOCK_DISABLE() __HAL_RCC_USART2_CLK_DISABLE()
-	#define DBG_UART_IRQN USART2_IRQn
-
 	#define LED_PIN GPIO_PIN_5
         #define LED_PORT GPIOA
     #elif defined(STM32F429xx)
@@ -70,5 +59,25 @@
 void Error_Handler(void);
 void HAL_MspInit(void);
 void SystemClock_Config(void);
+
+inline void GPIO_CLK_ENABLE(GPIO_TypeDef *gpio_inst){
+    switch((uint32_t)gpio_inst){
+	case (uint32_t)GPIOA: __HAL_RCC_GPIOA_CLK_ENABLE(); break;
+	case (uint32_t)GPIOB: __HAL_RCC_GPIOB_CLK_ENABLE(); break;
+	case (uint32_t)GPIOC: __HAL_RCC_GPIOC_CLK_ENABLE(); break;
+	case (uint32_t)GPIOD: __HAL_RCC_GPIOD_CLK_ENABLE(); break;
+	case (uint32_t)GPIOE: __HAL_RCC_GPIOE_CLK_ENABLE(); break;
+    }
+}
+
+inline void GPIO_CLK_DISABLE(GPIO_TypeDef *gpio_inst){
+    switch((uint32_t)gpio_inst){
+	case (uint32_t)GPIOA: __HAL_RCC_GPIOA_CLK_DISABLE(); break;
+	case (uint32_t)GPIOB: __HAL_RCC_GPIOB_CLK_DISABLE(); break;
+	case (uint32_t)GPIOC: __HAL_RCC_GPIOC_CLK_DISABLE(); break;
+	case (uint32_t)GPIOD: __HAL_RCC_GPIOD_CLK_DISABLE(); break;
+	case (uint32_t)GPIOE: __HAL_RCC_GPIOE_CLK_DISABLE(); break;
+    }
+}
 
 #endif /* STM32xs_HAL_H */

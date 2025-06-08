@@ -1,4 +1,5 @@
 #include "boot.h"
+#include "boot_config.h"
 #include "boot_shared.h"
 #include "flash.h"
 
@@ -20,39 +21,6 @@ shared_bootmem_t* shared_mem;
 #define TX_TIMEOUT (pdMS_TO_TICKS(1000))
 
 static uint8_t init_cmd[4] = {0xDE, 0xAD, 0xBE, 0xEF};
-
-static GPIO_InitTypeDef GPIO_InitCfg = {
-    .Pin = LED_PIN,
-    .Mode = GPIO_MODE_OUTPUT_PP,
-    .Pull = GPIO_NOPULL,
-    .Speed = GPIO_SPEED_FREQ_LOW
-};
-
-static GPIO_InitTypeDef UART_GPIO_TxCfg = {
-    .Pin = DBG_UART_TX_PIN,
-    .Mode = GPIO_MODE_AF_PP,
-    .Pull = GPIO_NOPULL,
-    .Speed = GPIO_SPEED_FAST,
-    .Alternate = DBG_UART_AF
-};
-
-static GPIO_InitTypeDef UART_GPIO_RxCfg = {
-    .Pin = DBG_UART_RX_PIN,
-    .Mode = GPIO_MODE_AF_PP,
-    .Pull = GPIO_NOPULL,
-    .Speed = GPIO_SPEED_FAST,
-    .Alternate = DBG_UART_AF
-};
-
-static UART_HandleTypeDef UART_Handle = {
-    .Instance = DBG_UART_INST,
-    .Init.BaudRate = 9600,
-    .Init.WordLength = UART_WORDLENGTH_9B,
-    .Init.StopBits = UART_STOPBITS_1,
-    .Init.Parity = UART_PARITY_EVEN,
-    .Init.Mode = UART_MODE_TX_RX,
-    .gState = HAL_UART_STATE_RESET
-};
 
 static inline void startapp_with_err(error_code_t ec){
     shared_mem->err_code = ec;
@@ -203,7 +171,7 @@ Init command (special case):
 DE AD BE EF x3 (12 bytes) RX
 ACK (1 byte) TX
 */
-static error_code_t uart_init(){
+static error_code_t boot_init(){
     // We allocate for one more than the INIT_RECV_CT to handle slight misalignment
     uint8_t buf[SIZEOF(init_cmd)*(INIT_RECV_CT + 1)] = {0};
     uint8_t* bufptr;
@@ -243,7 +211,7 @@ static error_code_t uart_init(){
     return ret;
 }
 
-error_code_t boot_init(){
+error_code_t periph_init(){
     // Disable interrupts
     __disable_irq();
 
@@ -256,27 +224,9 @@ error_code_t boot_init(){
         startapp_with_err(BLDR_FAIL_INIT);
     }
 
-    __HAL_RCC_GPIOB_CLK_ENABLE();
-    HAL_GPIO_Init(LED_PORT, &GPIO_InitCfg);
-    
-    // Turn on LED with HAL
-    HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET);
+    boot_led_init();
 
-    // UART initialization
-    UART_GPIO_ENABLE();
-    HAL_GPIO_Init(UART_TX_PORT, &UART_GPIO_TxCfg);
-    HAL_GPIO_Init(UART_RX_PORT, &UART_GPIO_RxCfg);
-    __HAL_UART_ENABLE(&UART_Handle);
-    
-    UART_CLOCK_ENABLE();
-
-    if(HAL_UART_Init(&UART_Handle) == HAL_ERROR){
-        startapp_with_err(BLDR_FAIL_INIT);
-    }
-
-    // Put UART in asynchronous mode
-    //UART_Handle.Instance->CR2 &= ~(UART_CR2_CLKEN);
-    HAL_NVIC_DisableIRQ(USART2_IRQn);
+    boot_uart_init();
 
     // Shared memory
     shared_mem = (shared_bootmem_t*)(&_estack) + 4; // Start of shared memory (+4 to avoid stack collision)
@@ -293,17 +243,9 @@ error_code_t boot_init(){
 void boot_deinit(){
     __disable_irq();
 
-    // Turn off LED with HAL
-    HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_RESET);
+    boot_led_deinit();
 
-    HAL_GPIO_DeInit(LED_PORT, LED_PIN);
-    __HAL_RCC_GPIOA_CLK_DISABLE();
-
-    __HAL_UART_DISABLE(&UART_Handle);
-    
-    UART_CLOCK_DISABLE();
-
-    HAL_UART_DeInit(&UART_Handle);
+    boot_uart_deinit();
 
     HAL_NVIC_DisableIRQ(SysTick_IRQn);
 
