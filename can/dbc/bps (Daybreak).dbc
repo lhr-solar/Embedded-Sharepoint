@@ -48,7 +48,7 @@ BO_ 258 BPS_Contactor_State: 1 Vector__XXX
 	SG_ HV_Contactor : 2|1@0+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 259 BPS_Current: 4 Vector__XXX
-	SG_ Current : 0|4@0- (1,0) [-20000|100000] "mA" Vector__XXX
+	SG_ Current : 0|32@1- (1,0) [-20000|100000] "mA" Vector__XXX
 
 BO_ 260 BPS_Voltage_Array: 5 Vector__XXX
 	SG_ Voltage_idx : 0|8@1+ (1,0) [0|31] "" Vector__XXX
@@ -108,3 +108,4 @@ BA_ "DatabaseCompiler" "CSS ELECTRONICS (WWW.CSSELECTRONICS.COM)";
 BA_ "DatabaseVersion" "1.0.0";
 BA_ "VFrameFormat" BO_ 2566844926 3;
 BA_ "SPN" SG_ 2566844926 WheelBasedVehicleSpeed 84;
+BA_ "VFrameFormat" BO_ 2147483648 3;
