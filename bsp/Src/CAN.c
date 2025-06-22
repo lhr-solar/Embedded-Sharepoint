@@ -177,15 +177,13 @@ static recv_entry_t can3_recv_entries[] = {};
 static const uint32_t can3_recv_entry_count = 0;
 #endif /* can3_recv_entries.h */
 #endif /* CAN3 */
-    
-// CAN MSP init
-void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan) {
-  GPIO_InitTypeDef init = {0};
 
+static inline void HAL_CAN_MspF4Init(CAN_HandleTypeDef* hcan){
+  GPIO_InitTypeDef init = {0};
+  
   // CAN1
   if (hcan->Instance == CAN1) {
     // enable clocks
-    __HAL_RCC_CAN1_CLK_ENABLE();
     __HAL_RCC_GPIOA_CLK_ENABLE();
 
     /* enable gpio
@@ -205,19 +203,12 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan) {
     init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     init.Alternate = GPIO_AF9_CAN1;
     HAL_GPIO_Init(GPIOA, &init);
-
-    // enable interrupts
-    HAL_NVIC_SetPriority(CAN1_TX_IRQn, 5, 0);
-    HAL_NVIC_EnableIRQ(CAN1_TX_IRQn);
-    HAL_NVIC_SetPriority(CAN1_RX0_IRQn, 5, 0);
-    HAL_NVIC_EnableIRQ(CAN1_RX0_IRQn);
   }
 
   // CAN2
   #ifdef CAN2
   else if (hcan->Instance == CAN2) {
     // enable clocks
-    __HAL_RCC_CAN2_CLK_ENABLE();
     __HAL_RCC_GPIOB_CLK_ENABLE();
 
     /* enable gpio
@@ -237,12 +228,6 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan) {
     init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     init.Alternate = GPIO_AF9_CAN2;
     HAL_GPIO_Init(GPIOB, &init);
-
-    // enable interrupts
-    HAL_NVIC_SetPriority(CAN2_TX_IRQn, 5, 0);
-    HAL_NVIC_EnableIRQ(CAN2_TX_IRQn);
-    HAL_NVIC_SetPriority(CAN2_RX0_IRQn, 5, 0);
-    HAL_NVIC_EnableIRQ(CAN2_RX0_IRQn);
   }
   #endif /* CAN2 */
 
@@ -250,7 +235,6 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan) {
   #ifdef CAN3
   else if (hcan->Instance == CAN3) {
     // enable clocks
-    __HAL_RCC_CAN3_CLK_ENABLE();
     __HAL_RCC_GPIOA_CLK_ENABLE();
 
     /* enable gpio
@@ -270,12 +254,6 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan) {
     init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     init.Alternate = GPIO_AF11_CAN3;
     HAL_GPIO_Init(GPIOA, &init);
-
-    // enable interrupts
-    HAL_NVIC_SetPriority(CAN3_TX_IRQn, 5, 0);
-    HAL_NVIC_EnableIRQ(CAN3_TX_IRQn);
-    HAL_NVIC_SetPriority(CAN3_RX0_IRQn, 5, 0);
-    HAL_NVIC_EnableIRQ(CAN3_RX0_IRQn);
   }
   #endif /* CAN3 */
 }
@@ -336,6 +314,73 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef* hcan) {
     HAL_NVIC_DisableIRQ(CAN3_RX0_IRQn);
   }
   #endif /* CAN3 */
+}
+
+static inline void HAL_CAN_MspL4Init(CAN_HandleTypeDef* hcan){
+  GPIO_InitTypeDef init = {0};
+  // CAN1
+  if (hcan->Instance == CAN1) {
+    // enable clocks
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+
+    /* enable gpio
+    PA11 -> CAN1_RX
+    PA12 -> CAN1_TX
+    */
+    init.Pin = GPIO_PIN_11;
+    init.Mode = GPIO_MODE_AF_PP;
+    init.Pull = GPIO_PULLUP;
+    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    init.Alternate = GPIO_AF9_CAN1;
+    HAL_GPIO_Init(GPIOA, &init);
+
+    init.Pin = GPIO_PIN_12;
+    init.Mode = GPIO_MODE_AF_PP;
+    init.Pull = GPIO_NOPULL;
+    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    init.Alternate = GPIO_AF9_CAN1;
+    HAL_GPIO_Init(GPIOA, &init);
+  }
+}
+    
+// CAN MSP init
+void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan) {
+  IRQn_Type txIRQ = 0;
+  IRQn_Type rxIRQ = 0;
+  if (hcan->Instance == CAN1) {
+    __HAL_RCC_CAN1_CLK_ENABLE();
+    txIRQ = CAN1_TX_IRQn;
+    rxIRQ = CAN1_RX0_IRQn;
+  }
+  #ifdef CAN2
+  else if(hcan->Instance == CAN2){
+    __HAL_RCC_CAN2_CLK_ENABLE();
+    txIRQ = CAN2_TX_IRQn;
+    rxIRQ = CAN2_RX0_IRQn;
+  }
+  #endif
+  #ifdef CAN3
+  else if(hcan->Instance == CAN3){
+    __HAL_RCC_CAN3_CLK_ENABLE();
+    txIRQ = CAN3_TX_IRQn;
+    rxIRQ = CAN3_RX0_IRQn;
+  }
+  #endif
+
+  // configure GPIO pins for CAN
+  #if defined(STM32F4xx)
+  HAL_CAN_MspF4Init(hcan);
+  #elif defined(STM32L4xx)
+  HAL_CAN_MspL4Init(hcan);
+  #endif
+
+  // enable can interrupts
+  if(txIRQ !=0 && rxIRQ !=0){
+    HAL_NVIC_SetPriority(txIRQ, 5, 0);
+    HAL_NVIC_EnableIRQ(txIRQ);
+    HAL_NVIC_SetPriority(rxIRQ, 5, 0);
+    HAL_NVIC_EnableIRQ(rxIRQ);
+  }
 }
 
 can_status_t can_init(CAN_HandleTypeDef* handle, CAN_FilterTypeDef* filter) {
@@ -720,8 +765,10 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
 }
 
 // CAN1
+#ifdef CAN1
 void CAN1_TX_IRQHandler(void) { HAL_CAN_IRQHandler(hcan1); }
 void CAN1_RX0_IRQHandler(void) { HAL_CAN_IRQHandler(hcan1); }
+#endif /* CAN1 */
 
 // CAN2
 #ifdef CAN2
