@@ -36,7 +36,7 @@ BS_:
 BU_:
 
 
-BO_ 2147485057 IO_State: 3 Vector__XXX
+BO_ 1409 IO_State: 3 Vector__XXX
 	SG_ Acceleration_Percentage : 0|8@1+ (1,0) [0|100] "Percentage" Vector__XXX
 	SG_ Brake_Percentage : 8|8@1+ (1,0) [0|100] "Percentage the brake is pressed" Vector__XXX
 	SG_ IGN_Array : 16|1@1+ (1,0) [0|1] "Array Ignition On" Vector__XXX
@@ -70,8 +70,12 @@ BO_ 545 Motor_Drive_Command: 8 Driver
 BO_ 546 Motor_Power_Command: 8 Driver
  SG_ Motor_Power_Setpoint : 32|32@1+ (1,0) [0|0] "%" Vector__XXX
 
+BO_ 1413 Pedals_Raw_Voltage: 4 Vector__XXX
+ SG_ Brake_Raw : 0|0@1- (1,0) [0|3300] "mV" Vector__XXX
+ SG_ Accel_Raw : 0|0@1- (1,0) [0|3300] "mV" Vector__XXX
 
-CM_ BO_ 2147485057 "IO State of Controls";
+
+CM_ BO_ 1409 "IO State of Controls";
 CM_ BO_ 1411 "Controls Fault State";
 CM_ BO_ 1412 "Motor Safe State";
 BA_DEF_ SG_  "SPN" INT 0 524287;
@@ -90,7 +94,7 @@ BA_ "ProtocolType" "J1939";
 BA_ "BusType" "CAN";
 BA_ "DatabaseCompiler" "CSS ELECTRONICS (WWW.CSSELECTRONICS.COM)";
 BA_ "DatabaseVersion" "1.0.0";
-BA_ "VFrameFormat" BO_ 2147485057 3;
+BA_ "VFrameFormat" BO_ 1409 3;
 
 SIG_VALTYPE_ 545 Motor_Current_Setpoint : 2;
 SIG_VALTYPE_ 545 Motor_Velocity_Setpoint : 2;
