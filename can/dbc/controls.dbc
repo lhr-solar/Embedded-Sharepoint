@@ -71,8 +71,8 @@ BO_ 546 Motor_Power_Command: 8 Driver
  SG_ Motor_Power_Setpoint : 32|32@1+ (1,0) [0|0] "%" Vector__XXX
 
 BO_ 1413 Pedals_Raw_Voltage: 4 Vector__XXX
- SG_ Brake_Raw : 0|0@1- (1,0) [0|3300] "mV" Vector__XXX
- SG_ Accel_Raw : 0|0@1- (1,0) [0|3300] "mV" Vector__XXX
+ SG_ Brake_Raw : 0|15@1- (1,0) [0|3300] "mV" Vector__XXX
+ SG_ Accel_Raw : 16|15@1- (1,0) [0|3300] "mV" Vector__XXX
 
 
 CM_ BO_ 1409 "IO State of Controls";
