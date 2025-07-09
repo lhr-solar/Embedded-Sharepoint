@@ -8,11 +8,10 @@ from pathlib import Path
 import cantools
 
 ##### PARSE #####
-# Usage: python3 dbc-to-c.py --parse <dbc_file_path> <bus> <buff_size> <write_dir>
+# Usage: python3 dbc-to-c.py --parse <dbc_file_path> <buff_size> <write_dir>
 # 
 # Args(4):
 #   dbc_file_path: Path to DBC file
-#   bus: CAN bus number
 #   buff_size: Default size of recv queue (default: 10)
 #   write_dir: Path to write parsed headers to (default: current_dir)
 #
@@ -44,37 +43,65 @@ def WarningMessage(msg):
     print(f"{YELLOW}{BOLD}Warning{END}{END}", end=": ")
     print(msg)
 
-def DBC_Parse(db, bus, size, dir):
-    """Generates headers according to DBC files"""
-    # GENERATE canX_recv_entries.h
+# ...existing code...
 
+def get_c_type(sig_length, is_signed, is_float):
+    """Return the appropriate C type for a signal."""
+    if is_float:
+        return "float"
+    if is_signed:
+        if sig_length <= 8:
+            return "int8_t"
+        elif sig_length <= 16:
+            return "int16_t"
+        elif sig_length <= 32:
+            return "int32_t"
+        else:
+            return "int64_t"
+    else:
+        if sig_length <= 8:
+            return "uint8_t"
+        elif sig_length <= 16:
+            return "uint16_t"
+        elif sig_length <= 32:
+            return "uint32_t"
+        else:
+            return "uint64_t"
+
+def gen_mask_and_shift(length, sig_start, sig_length, sig_endian):
+    """Generate the mask and shift length for a signal."""
+    bin_string = list(("0" * (length * 8))) # all 0's
+
+    if sig_endian == "big_endian":
+        bin_string[sig_start:sig_start+sig_length] = list("1" * sig_length)
+    else:
+        bin_string[sig_start-sig_length:sig_start] = list("1" * sig_length)
+            
+    bin_string = "0b" + "".join(bin_string) # make string
+
+    mask = hex(eval(bin_string))
+    # calc trailing 0's
+    shift_length = 0
+    for i in bin_string[::-1]:
+        if i == "1": break
+        shift_length += 1
+    return mask, shift_length
+
+def DBC_Parse(db, size, dir, dbc_basename=""):
+    """Generates headers according to DBC files"""
     if not (Path(dir)).exists():
         WarningMessage(f"{BOLD}{dir}{END} not found ... making it")
         os.mkdir(dir)
-        
-    # Convert hexstring to int
-    if type(bus) == str: 
-        bus = eval(bus)
-    
-    recv_string = ""
-    with open("docs/recv.txt", "r") as f:
-        recv_string = f.read().format(num=bus)
 
     for msg in db.messages:
         id = hex(msg.frame_id)
         name = msg.name
 
-        recv_string += f"CAN_RECV_ENTRY({id}, {size}, false) // {name}\n"
-    
-    with open(f"{dir}/can{bus}_recv_entries.h", "w+") as f:
-        f.write(recv_string)
 
     # GENERATE can_utils.h
     utils_string = ""
     with open("docs/utils.txt", "r") as f:
         utils_string = f.read()
-
-# ...existing code...
 
     for msg in db.messages:
         id = hex(msg.frame_id)
@@ -85,54 +112,50 @@ def DBC_Parse(db, bus, size, dir):
 
         signals = msg.signals
         for s in signals:
-            # --- GEN MASKS ---
             sig_name = s.name
             sig_endian = s.byte_order
             sig_start = s.start
             sig_length = s.length
+            is_signed = s.is_signed
+            is_float = getattr(s, "is_float", False)
 
-            bin_string = list(("0" * (length * 8))) # all 0's
+            # --- GET C TYPE ---
+            c_type = get_c_type(sig_length, is_signed, is_float)
 
-            if sig_endian == "big_endian":
-                bin_string[sig_start:sig_start+sig_length] = list("1" * sig_length)
+            # --- GEN MASK AND SHIFT ---
+            mask, shift_length = gen_mask_and_shift(length, sig_start, sig_length, sig_endian)
+
+            # --- GEN MACRO FOR EXTRACTION ---
+            macro_name = f"CANUTIL_GET_VALUE_{sig_name}"
+            if is_float:
+                utils_string += f"#define {macro_name}(d) (*((float*)(d))) // float\n"
+            elif is_signed:
+                utils_string += f"#define {macro_name}(d) ((({c_type})(((*( (uint64_t *) d ) & {mask}) >> {shift_length})))) // signed\n"
             else:
-                bin_string[sig_start-sig_length:sig_start] = list("1" * sig_length)
-                
-            bin_string = "0b" + "".join(bin_string) # make string
-
-            mask = hex(eval(bin_string))
-            # calc trailing 0's
-            shift_length = 0
-            for i in bin_string[::-1]:
-                if i == "1": break
-                shift_length += 1
-            
-            utils_string += f"#define CANUTIL_GET_VALUE_{sig_name}(d) ((*( (uint64_t *) d ) & {mask}) >> {shift_length})\n"
+                utils_string += f"#define {macro_name}(d) (({c_type})(((*( (uint64_t *) d ) & {mask}) >> {shift_length}))) // unsigned\n"
 
             # --- GEN ENUMS FOR VALUE TABLES ---
             if s.choices:
-                enum_name = f"canutil_{sig_name}_vals"
+                enum_name = f"canutil_{name}_{sig_name}_vals"
                 utils_string += f"\ntypedef enum {enum_name} {{\n"
                 for k, v in sorted(s.choices.items()):
-                    # Make a valid C identifier for the enum value
                     enum_val = f"{enum_name.upper()}_{str(v).upper().replace(' ', '_')}"
                     utils_string += f"    {enum_val} = {k},\n"
                 utils_string = utils_string.rstrip(",\n") + f"\n}} {enum_name};\n\n"
 
-# ...existing code...
-
-    with open(f"{dir}/can_utils.h", "w+") as f:
+    utils_filename = f"{dir}/can_utils.h"
+    with open(utils_filename, "w+") as f:
         f.write(utils_string)
 
+# ...existing code...
 
-def process_dbc_file(path, bus, buff_size, write_dir):
+def process_dbc_file(path, buff_size, write_dir):
     db = cantools.database.load_file(path)
-    DBC_Parse(db, bus, buff_size, write_dir)
+    DBC_Parse(db, buff_size, write_dir)
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("dbc_file_path", help="Path to DBC file or directory containing DBC files")
-    parser.add_argument("bus")
     parser.add_argument("buff_size", nargs='?', const=1, default=DEFAULT_Q_SIZE, type=int)
     parser.add_argument("write_dir", nargs='?', const=1, default=".", type=str)
     args = parser.parse_args()
@@ -151,14 +174,14 @@ def main():
         for dbc_file in dbc_files:
             dbc_path = os.path.join(path, dbc_file)
             print(f"{GREEN}Processing {dbc_path}{END}")
-            process_dbc_file(dbc_path, args.bus, args.buff_size, args.write_dir)
+            process_dbc_file(dbc_path, args.buff_size, args.write_dir)
     else:
         # Input checking for single file
         if not path.endswith(".dbc"):
             ErrorMessage("DBC file path must end with .dbc")
         if not Path(path).exists():
             ErrorMessage(f"{BOLD}{path}{END} is not a valid DBC file path")
-        process_dbc_file(path, args.bus, args.buff_size, args.write_dir)
+        process_dbc_file(path, args.buff_size, args.write_dir)
 
     if args.write_dir == ".":
         WarningMessage("No output dir specified ... using current dir")
