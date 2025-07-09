@@ -136,7 +136,7 @@ def DBC_Parse(db, size, dir, dbc_basename=""):
 
             # --- GEN ENUMS FOR VALUE TABLES ---
             if s.choices:
-                enum_name = f"canutil_{name}_{sig_name}_vals"
+                enum_name = f"canutil_{sig_name}_vals"
                 utils_string += f"\ntypedef enum {enum_name} {{\n"
                 for k, v in sorted(s.choices.items()):
                     enum_val = f"{enum_name.upper()}_{str(v).upper().replace(' ', '_')}"
