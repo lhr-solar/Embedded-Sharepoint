@@ -267,8 +267,6 @@ clean:
 #######################################
 # flash
 #######################################
-LD_CFG = stm/$(SERIES_GENERIC)/$(SERIES_LINE)/$(SERIES_LINE).cfg
-
 # Fixed at 128Kb
 BOOT_SIZE ?= 128
 FLASH_ADDRESS ?= $(shell echo $$((0x08000000 + $(BOOT_SIZE) * 1024)))
@@ -276,9 +274,16 @@ FLASH_ADDRESS ?= $(shell echo $$((0x08000000 + $(BOOT_SIZE) * 1024)))
 FLASH_FILE = $(shell find $(BUILD_DIR) -name 'stm*.bin' -exec basename {} \;)
 
 .PHONY: flash
-flash: all
+flash:
 	@echo "Flashing $(FLASH_FILE) to $(FLASH_ADDRESS)"
 	-st-flash write $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
+
+.PHONY: flash-uart
+flash-uart:
+	@echo "Flashing $(FLASH_FILE) to $(FLASH_ADDRESS)"
+	boot/flashtool init
+	boot/flashtool write $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
+	boot/flashtool start
 
 #######################################
 # format

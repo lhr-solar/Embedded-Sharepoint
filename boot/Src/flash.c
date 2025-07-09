@@ -25,6 +25,12 @@ bool exec_flash_command(void* buf, flash_cmd_t* cmd){
     bool ret = false;
     
     HANDLE_HAL_ERROR(HAL_FLASH_Unlock());
+    __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_EOP);
+    __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_OPERR);
+    __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_WRPERR);
+    __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_PGAERR);
+    __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_PGPERR);
+    __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_PGSERR);
 
     if (cmd->id == FLASH_WRITE) {
         ret = flash_write(buf, cmd->address, cmd->data_size);

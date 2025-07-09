@@ -3,9 +3,12 @@
 import serial
 import time
 import threading
+import os
 
 from enum import Enum
 import argparse
+
+from alive_progress import alive_bar
 
 class Command(Enum):
     FLASH_WRITE = 0
@@ -59,7 +62,6 @@ def send_cmd(cmd, size, addr, data):
 
     # Send SIZE bytes of data
     print("Sending data...")
-    print(f"\tData: {[f'0x{byte:02X}' for byte in data]}")
     ser.write(data)
 
     # Read ACK
@@ -107,13 +109,14 @@ def write(bin_file_path, address=0x08020000):
     print(f"Writing {bin_file_path} to flash at 0x{address:08X}...")
     with open(bin_file_path, "rb") as bin_file:
         addr = address
-        while True:
-            chunk = bin_file.read(256)
-            if not chunk:
-                break
-            print(f"Writing to address 0x{addr:08X}...")
-            send_cmd(Command.FLASH_WRITE, len(chunk), addr, chunk)
-            addr += len(chunk)
+        chunk = bin_file.read(512)
+        with alive_bar(os.path.getsize(bin_file_path)//512) as bar:
+            while chunk:
+                print(f"Writing to address 0x{addr:08X}...")
+                send_cmd(Command.FLASH_WRITE, len(chunk), addr, chunk)
+                addr += len(chunk)
+                chunk = bin_file.read(512)
+                bar()
 
 def start():
     print(f"Starting application...")
@@ -128,8 +131,7 @@ if __name__ == "__main__":
 
     write_parser = subparsers.add_parser("write", help="Write binary file to flash")
     write_parser.add_argument("bin_file_path", type=str, help="Path to the binary file")
-    write_parser.add_argument("address", type=lambda x: int(x, 16), default=0x08020000, help="Start address to write to (default: 0x08020000)")
-
+    write_parser.add_argument("address", type=int, default=0x08020000, help="Start address to write to (decimal, default: 0x08020000)")
     read_parser = subparsers.add_parser("read", help="Read flash to binary file")
     read_parser.add_argument("bin_file_path", type=str, help="Path to save the binary file")
     read_parser.add_argument("address", type=lambda x: int(x, 16), default=0x08020000, help="Start address to read from (default: 0x08020000)")

@@ -32,7 +32,6 @@ shared_bootmem_t* shared_mem;
 
 static uint8_t init_cmd[4] = {0xDE, 0xAD, 0xBE, 0xEF};
 
-
 static inline error_code_t uart_ack(){
     // Acknowledge
     uint8_t ack = ACK;
