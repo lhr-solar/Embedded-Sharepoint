@@ -6,3 +6,5 @@ site
 .env
 .cache
 /can/CANMetaData.*
+
+*/venv

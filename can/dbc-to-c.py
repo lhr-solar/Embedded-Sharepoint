@@ -79,7 +79,7 @@ def DBC_Parse(db, bus, size, dir):
         name = msg.name
         length = msg.length
 
-        utils_string += f"#define CANUTIL_{name} {id}\n\n"
+        utils_string += f"#define CAN_ID_{name} {id}\n\n"
 
         signals = msg.signals
         for s in signals:
@@ -120,30 +120,44 @@ def DBC_Parse(db, bus, size, dir):
     with open(f"{dir}/can_utils.h", "w+") as f:
         f.write(utils_string)
 
-parser = argparse.ArgumentParser()
 
-parser.add_argument("dbc_file_path")
-parser.add_argument("bus") 
-parser.add_argument("buff_size", nargs='?', const=1, default=DEFAULT_Q_SIZE, type=int)
-parser.add_argument("write_dir", nargs='?', const=1, default=".", type=str)
+def process_dbc_file(path, bus, buff_size, write_dir):
+    db = cantools.database.load_file(path)
+    DBC_Parse(db, bus, buff_size, write_dir)
 
-args = parser.parse_args()
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("dbc_file_path", help="Path to DBC file or directory containing DBC files")
+    parser.add_argument("bus")
+    parser.add_argument("buff_size", nargs='?', const=1, default=DEFAULT_Q_SIZE, type=int)
+    parser.add_argument("write_dir", nargs='?', const=1, default=".", type=str)
+    args = parser.parse_args()
 
-path = args.dbc_file_path
+    path = args.dbc_file_path
 
-# Input checking
-if not path.endswith(".dbc"):
-    ErrorMessage("DBC file path must end with .dbc")
-if not Path(path).exists():
-    ErrorMessage(f"{BOLD}{path}{END} is not a valid DBC file path")
+    # Check docs
+    if not Path("docs/recv.txt").exists() or not Path("docs/utils.txt").exists():
+        ErrorMessage(f"Make sure to include {BOLD}'docs'{END} folder in current directory containing {BOLD}recv.txt{END} and {BOLD}utils.txt{END}.")
 
-# Check if documentation files exist
-if not Path("docs/recv.txt").exists() or not Path("docs/utils.txt").exists():
-    ErrorMessage(f"Make sure to include {BOLD}'docs'{END} folder in current directory containing {BOLD}recv.txt{END} and {BOLD}utils.txt{END}.")
+    # If path is a directory, process all .dbc files
+    if os.path.isdir(path):
+        dbc_files = [f for f in os.listdir(path) if f.endswith(".dbc")]
+        if not dbc_files:
+            ErrorMessage(f"No .dbc files found in directory {BOLD}{path}{END}")
+        for dbc_file in dbc_files:
+            dbc_path = os.path.join(path, dbc_file)
+            print(f"{GREEN}Processing {dbc_path}{END}")
+            process_dbc_file(dbc_path, args.bus, args.buff_size, args.write_dir)
+    else:
+        # Input checking for single file
+        if not path.endswith(".dbc"):
+            ErrorMessage("DBC file path must end with .dbc")
+        if not Path(path).exists():
+            ErrorMessage(f"{BOLD}{path}{END} is not a valid DBC file path")
+        process_dbc_file(path, args.bus, args.buff_size, args.write_dir)
 
-db = cantools.database.load_file(path)
+    if args.write_dir == ".":
+        WarningMessage("No output dir specified ... using current dir")
 
-if args.write_dir == ".":
-    WarningMessage("No output dir specified ... using current dir")
-
-DBC_Parse(db, args.bus, args.buff_size, args.write_dir)
+if __name__ == "__main__":
+    main()

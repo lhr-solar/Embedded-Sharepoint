@@ -18,7 +18,7 @@
  *
  * Example usage:
  * @code
- * CANUTILS_Heartbeat --> 0x650
+ * CAN_ID_Heartbeat --> 0x650
  * @endcode
  */
 
