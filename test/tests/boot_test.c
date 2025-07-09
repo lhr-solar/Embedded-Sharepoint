@@ -102,10 +102,10 @@ void init(){
 
     if(shared_mem->magic_num == BOOT_MAGIC_NUM){
 	const char *boot_success = "Booted from bootloader!\n\r";
-	HAL_UART_Transmit(&UART_Handle, (uint8_t*)boot_success, strlen(boot_success), portMAX_DELAY);
+	HAL_UART_Transmit(&UART_Handle, (unsigned char*)boot_success, strlen(boot_success), portMAX_DELAY);
     } else {
 	const char *reg_boot = "Booted from typical boot sequence!\n\r";
-	HAL_UART_Transmit(&UART_Handle, (uint8_t*)reg_boot, strlen(reg_boot), portMAX_DELAY);
+	HAL_UART_Transmit(&UART_Handle, (unsigned char*)reg_boot, strlen(reg_boot), portMAX_DELAY);
     }
 
     vTaskStartScheduler();
@@ -122,12 +122,26 @@ void blinkyTask(void *pvParameters){
 
 void uartTask(void *pvParameters){
     while(1){
-        const char *err_code_label = "Error Code:";
+        const char *err_code_label = "Error Code: ";
         const char *endln = "\n\r";
-        char err_code = shared_mem->err_code + '0';
+
+	const char *err_code;
+	switch(shared_mem->err_code){
+	    case BLDR_OK: err_code="BLDR_OK";break;
+	    case BLDR_ERR: err_code="BLDR_ERR";break;
+	    case BLDR_BUSY: err_code="BLDR_BUSY";break;
+	    case BLDR_TMOUT: err_code="BLDR_TMOUT";break;
+	    case BLDR_FAIL_INIT: err_code="BLDR_FAIL_INIT";break;
+	    case BLDR_FAIL_STX: err_code="BLDR_FAIL_STX";break;
+	    case BLDR_FAIL_HDR: err_code="BLDR_FAIL_HDR";break;
+	    case BLDR_FAIL_DATA: err_code="BLDR_FAIL_DATA";break;
+	    case BLDR_FAIL_FLASH: err_code="BLDR_FAIL_FLASH";break;
+	    case BLDR_REGULAR_START: err_code="BLDR_REGULAR_START";break;
+	    case BLDR_START_AFTER_UPDATE: err_code="BLDR_START_AFTER_UPDATE";break;
+	}
 
         HAL_UART_Transmit(&UART_Handle, (unsigned char *)err_code_label, strlen(err_code_label), portMAX_DELAY);
-        HAL_UART_Transmit(&UART_Handle, (unsigned char *)&err_code, 1, portMAX_DELAY);
+        HAL_UART_Transmit(&UART_Handle, (unsigned char *)err_code, strlen(err_code), portMAX_DELAY);
         HAL_UART_Transmit(&UART_Handle, (unsigned char *)endln, 2, portMAX_DELAY);
         vTaskDelay(1000);
     }
