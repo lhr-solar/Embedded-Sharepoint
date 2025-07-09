@@ -281,9 +281,9 @@ flash:
 .PHONY: flash-uart
 flash-uart:
 	@echo "Flashing $(FLASH_FILE) to $(FLASH_ADDRESS)"
-	boot/flashtool init
-	boot/flashtool write $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
-	boot/flashtool start
+	-boot/flashtool init
+	-boot/flashtool write $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
+	-boot/flashtool start
 
 #######################################
 # format

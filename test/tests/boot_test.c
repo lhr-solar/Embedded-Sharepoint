@@ -1,8 +1,10 @@
 #include "stm32xx_hal.h"
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "boot_shared.h"
+#include "boot_config.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
@@ -10,23 +12,23 @@
 shared_bootmem_t* shared_mem;
 
 static GPIO_InitTypeDef UART_GPIO_TxCfg = {
-    .Pin = ,
+    .Pin = BOOT_UART_TX_PIN,
     .Mode = GPIO_MODE_AF_PP,
     .Pull = GPIO_NOPULL,
     .Speed = GPIO_SPEED_FAST,
-    .Alternate = DBG_UART_AF
+    .Alternate = BOOT_UART_AF
 };
 
 static GPIO_InitTypeDef UART_GPIO_RxCfg = {
-    .Pin = DBG_UART_RX_PIN,
+    .Pin = BOOT_UART_RX_PIN,
     .Mode = GPIO_MODE_AF_PP,
     .Pull = GPIO_NOPULL,
     .Speed = GPIO_SPEED_FAST,
-    .Alternate = DBG_UART_AF
+    .Alternate = BOOT_UART_AF
 };
 
 static UART_HandleTypeDef UART_Handle = {
-    .Instance = DBG_UART_INST,
+    .Instance = BOOT_UART_INST,
     .Init.BaudRate = 9600,
     .Init.WordLength = UART_WORDLENGTH_8B,
     .Init.StopBits = UART_STOPBITS_1,
@@ -65,17 +67,17 @@ void init(){
     HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET);
 
     // USART initialization
-    HAL_GPIO_Init(DBG_UART_TX_PORT, &UART_GPIO_TxCfg);
-    HAL_GPIO_Init(DBG_UART_RX_PORT, &UART_GPIO_RxCfg);
+    HAL_GPIO_Init(BOOT_UART_TX_PORT, &UART_GPIO_TxCfg);
+    HAL_GPIO_Init(BOOT_UART_RX_PORT, &UART_GPIO_RxCfg);
     
     __HAL_UART_ENABLE(&UART_Handle);
-    DBG_UART_CLOCK_ENABLE();
+    BOOT_UART_CLOCK_ENABLE();
 
     if(HAL_UART_Init(&UART_Handle) == HAL_ERROR){
         while(1){} //error
     }
 
-    HAL_NVIC_DisableIRQ(DBG_UART_IRQN);
+    HAL_NVIC_DisableIRQ(BOOT_UART_IRQN);
 
     // Create tasks
     xTaskCreateStatic(blinkyTask, 
@@ -100,10 +102,10 @@ void init(){
 
     if(shared_mem->magic_num == BOOT_MAGIC_NUM){
 	const char *boot_success = "Booted from bootloader!\n\r";
-	HAL_UART_Transmit(&UART_Handle, boot_success, strlen(boot_success), portMAX_DELAY);
+	HAL_UART_Transmit(&UART_Handle, (uint8_t*)boot_success, strlen(boot_success), portMAX_DELAY);
     } else {
 	const char *reg_boot = "Booted from typical boot sequence!\n\r";
-	HAL_UART_Transmit(&UART_Handle, reg_boot, strlen(reg_boot), portMAX_DELAY);
+	HAL_UART_Transmit(&UART_Handle, (uint8_t*)reg_boot, strlen(reg_boot), portMAX_DELAY);
     }
 
     vTaskStartScheduler();
