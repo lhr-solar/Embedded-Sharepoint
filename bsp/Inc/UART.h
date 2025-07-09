@@ -3,7 +3,7 @@
 
 #include "stm32xx_hal.h"
 
-#if !defined(UART4)
+#if !defined(UART4) && !defined(USART1)
   #error "[CONFIG] UART not enabled on this chip."
 #endif /* UART4 */
 
@@ -37,6 +37,18 @@ extern UART_HandleTypeDef* huart4;
 #ifdef UART5
 extern UART_HandleTypeDef* huart5;
 #endif /* UART5 */
+
+#ifdef USART1
+extern UART_HandleTypeDef* husart1;
+#endif /* USART1 */
+
+#ifdef USART2
+extern UART_HandleTypeDef* husart2;
+#endif /* USART2 */
+
+#ifdef USART3
+extern UART_HandleTypeDef* husart3;
+#endif /* USART3 */
 
 // Function prototypes with consistent parameters and return types
 uart_status_t uart_init(UART_HandleTypeDef* handle); // Create queue at compile time, User passes in the size of the queue they want
