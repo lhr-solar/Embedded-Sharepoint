@@ -88,7 +88,7 @@ BO_ 270 BPS_Temperature_Summary: 8 Vector__XXX
 
 BO_ 271 BPS_Fault_State: 1 Vector__XXX
 	SG_ BPS_Fault_State : 0|8@1+ (1,0) [0|12] "" Vector__XXX
-VAL_ 271 BPS_Fault_State 0 "No Fault" 1 "Undervoltage" 2 "Overvoltage" 3 "Overtemperature" 4 "Overcurrent" 5 "Open wire" 6 "NA" 7 "OS" 8 "Watchdog" 9 "CRC (IsoSPI)" 10 "ESTOP" 11 "Contactor Fault" 12 "MPPT Fault" ;
+VAL_ 271 BPS_Fault_State 0 "No Fault" 1 "Undervoltage" 2 "Overvoltage" 3 "Overtemperature" 4 "Overcurrent" 5 "Open wire" 6 "NA" 7 "OS" 8 "Watchdog" 9 "CRC" 10 "ESTOP" 11 "Contactor Fault" 12 "MPPT Fault" ;
 
 
 

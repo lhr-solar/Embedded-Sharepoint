@@ -74,6 +74,8 @@ def DBC_Parse(db, bus, size, dir):
     with open("docs/utils.txt", "r") as f:
         utils_string = f.read()
 
+# ...existing code...
+
     for msg in db.messages:
         id = hex(msg.frame_id)
         name = msg.name
@@ -107,15 +109,17 @@ def DBC_Parse(db, bus, size, dir):
             
             utils_string += f"#define CANUTIL_GET_VALUE_{sig_name}(d) ((*( (uint64_t *) d ) & {mask}) >> {shift_length})\n"
 
-            # --- GEN ENUMS ---
+            # --- GEN ENUMS FOR VALUE TABLES ---
             if s.choices:
-                keys = sorted(s.choices.keys())
-                utils_string += f"\ntypedef enum {{ \n"
+                enum_name = f"canutil_{sig_name}_vals"
+                utils_string += f"\ntypedef enum {enum_name} {{\n"
+                for k, v in sorted(s.choices.items()):
+                    # Make a valid C identifier for the enum value
+                    enum_val = f"{enum_name.upper()}_{str(v).upper().replace(' ', '_')}"
+                    utils_string += f"    {enum_val} = {k},\n"
+                utils_string = utils_string.rstrip(",\n") + f"\n}} {enum_name};\n\n"
 
-                for k in keys:
-                    utils_string += f"  {s.choices[k]} = {k},\n"
-            
-                utils_string = utils_string[:-2] + f"\n }} canutil_{sig_name}_vals;\n\n" # trim ".\n" off the last entry
+# ...existing code...
 
     with open(f"{dir}/can_utils.h", "w+") as f:
         f.write(utils_string)
