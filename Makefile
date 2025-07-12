@@ -76,10 +76,13 @@ TARGET = $(PROJECT_TARGET)
 # building variables
 ######################################
 # debug build?
-DEBUG = 1
+DEBUG ?= 1
 # optimization
-OPT = -Og
-
+ifdef DEBUG
+OPT = -O0
+else
+OPT = -O3
+endif
 
 #######################################
 # paths
@@ -106,6 +109,10 @@ $(wildcard bsp/Src/*.c)
 # ASM sources
 ASM_SOURCES =  \
 stm/$(SERIES_GENERIC)/$(SERIES_LINE)/startup_$(SERIES_LINE_GENERIC).s
+
+ifdef PROJECT_ASM_SOURCES
+ASM_SOURCES += $(PROJECT_ASM_SOURCES)
+endif
 
 # ASM sources
 ASMM_SOURCES = 
@@ -157,6 +164,10 @@ $(SERIES_GENERIC_CAP)
 
 C_DEFS := $(addprefix -D,$(C_DEFS))
 
+ifdef USER_DEFINES
+C_DEFS += $(addprefix -D,$(USER_DEFINES))
+endif
+
 # AS includes
 AS_INCLUDES = 
 
@@ -169,18 +180,19 @@ stm/$(SERIES_GENERIC)/CMSIS/Include \
 FreeRTOS-Kernel/include \
 FreeRTOS-Kernel/portable/GCC/ARM_CM4F \
 common/Inc \
-driver/Inc \
-bsp/Inc
+boot/Inc \
+bsp/Inc \
+driver/Inc
 
 C_INCLUDES := $(addprefix -I,$(C_INCLUDES))
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -Werror -Wfatal-errors -fdata-sections -ffunction-sections
 
-CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -Werror -Wfatal-errors -fdata-sections -ffunction-sections
+CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -Werror -Wfatal-errors -Wno-unused -fdata-sections -ffunction-sections
 
 ifeq ($(DEBUG), 1)
-CFLAGS += -g -gdwarf-2
+CFLAGS += -ggdb3 -gdwarf-2
 endif
 
 # Generate dependency information
@@ -190,7 +202,8 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 # LDFLAGS
 #######################################
 # link script
-LDSCRIPT = stm/$(SERIES_GENERIC)/$(SERIES_LINE)/$(SERIES_LINE_CAP)$(EXTRA_CAP)x_FLASH.ld
+LD_SUFFIX ?= APP
+LDSCRIPT = stm/$(SERIES_GENERIC)/$(SERIES_LINE)/$(SERIES_LINE_CAP)$(EXTRA_CAP)x_$(LD_SUFFIX).ld
 
 # libraries
 LIBS = -lc -lm -lnosys 
@@ -249,18 +262,28 @@ $(BUILD_DIR):
 #######################################
 .PHONY: clean
 clean:
-	-rm -fR $(BUILD_DIR)
+	-rm -fR $(BUILD_DIR)/*
 
 #######################################
 # flash
 #######################################
-FLASH_ADDRESS ?= 0x8000000
+# Fixed at 128Kb
+BOOT_SIZE ?= 128
+FLASH_ADDRESS ?= $(shell echo $$((0x08000000 + $(BOOT_SIZE) * 1024)))
+
 FLASH_FILE = $(shell find $(BUILD_DIR) -name 'stm*.bin' -exec basename {} \;)
 
 .PHONY: flash
 flash:
 	@echo "Flashing $(FLASH_FILE) to $(FLASH_ADDRESS)"
 	-st-flash write $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
+
+.PHONY: flash-uart
+flash-uart:
+	@echo "Flashing $(FLASH_FILE) to $(FLASH_ADDRESS)"
+	-boot/flashtool init
+	-boot/flashtool write $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
+	-boot/flashtool start
 
 #######################################
 # format
