@@ -28,6 +28,7 @@ IGNORED_CLANG_INPUTS = %/stm32f4xx_hal_conf.h %/stm32l4xx_hal_conf.h %/FreeRTOSC
 CLANG_INPUTS = $(PROJECT_C_SOURCES) $(foreach DIR, $(PROJECT_C_INCLUDES), $(wildcard $(DIR)/*))
 CLANG_INPUTS := $(filter-out $(IGNORED_CLANG_INPUTS), $(CLANG_INPUTS))
 
+MAKEFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 BEAR_ENABLE ?= 1
 
 ######################################
@@ -221,7 +222,8 @@ vpath %.S $(sort $(dir $(ASMM_SOURCES)))
 
 $(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR)
 ifeq ($(BEAR_ENABLE), 1)
-	@echo $(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@ > $(BUILD_DIR)/cc_$(notdir $@).txt
+	@echo $(MAKEFILE_DIR) > $(BUILD_DIR)/cc_$(notdir $@).txt
+	@echo $(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@ >> $(BUILD_DIR)/cc_$(notdir $@).txt
 endif
 
 ifeq ($(VERBOSE), 1)
@@ -233,7 +235,8 @@ endif
 
 $(BUILD_DIR)/%.o: %.S Makefile | $(BUILD_DIR)
 ifeq ($(BEAR_ENABLE), 1)
-	@echo $(AS) -c $(CFLAGS) $< -o $@ > $(BUILD_DIR)/cc_$(notdir $@).txt
+	@echo $(MAKEFILE_DIR) > $(BUILD_DIR)/cc_$(notdir $@).txt
+	@echo $(AS) -c $(CFLAGS) $< -o $@ >> $(BUILD_DIR)/cc_$(notdir $@).txt
 endif
 
 ifeq ($(VERBOSE), 1)
@@ -246,7 +249,8 @@ endif
 
 $(BUILD_DIR)/%.o: %.s Makefile | $(BUILD_DIR)
 ifeq ($(BEAR_ENABLE), 1)
-	@echo $(AS) -c $(CFLAGS) $< -o $@ > $(BUILD_DIR)/cc_$(notdir $@).txt
+	@echo $(MAKEFILE_DIR) > $(BUILD_DIR)/cc_$(notdir $@).txt
+	@echo $(AS) -c $(CFLAGS) $< -o $@ >> $(BUILD_DIR)/cc_$(notdir $@).txt
 endif
 
 ifeq ($(VERBOSE), 1)
@@ -262,7 +266,8 @@ $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
 	fi
 	
 ifeq ($(BEAR_ENABLE), 1)
-	@echo $(CC) $(OBJECTS) $(LDFLAGS) -o $@ > $(BUILD_DIR)/cc_$(notdir $@).txt
+	@echo $(MAKEFILE_DIR) > $(BUILD_DIR)/cc_$(notdir $@).txt
+	@echo $(CC) $(OBJECTS) $(LDFLAGS) -o $@ >> $(BUILD_DIR)/cc_$(notdir $@).txt
 endif
 
 ifeq ($(VERBOSE), 1)

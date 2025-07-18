@@ -5,8 +5,22 @@ import sys
 import json
 import os
 
-if __name__ == "__main__":
-    # Read input directory from command-line
+def load_commands(build_dir):
+    """Read cc_*.txt files and extract (workdir, command) pairs."""
+    pairs = []
+    for fname in os.listdir(build_dir):
+        if fname.startswith("cc_") and fname.endswith(".txt"):
+            full_path = os.path.join(build_dir, fname)
+            try:
+                with open(full_path, "r") as f:
+                    lines = [line.strip() for line in f if line.strip()]
+                    if len(lines) >= 2:
+                        pairs.append((lines[0], lines[1]))
+            except Exception as e:
+                print(f"Warning: Failed to read {full_path}: {e}", file=sys.stderr)
+    return pairs
+
+def main():
     if len(sys.argv) < 3:
         print("Usage: bear.py <build_dir> <output_file>")
         sys.exit(1)
@@ -18,64 +32,54 @@ if __name__ == "__main__":
         print(f"Error: {build_dir} is not a valid directory.")
         sys.exit(1)
 
-    # Collect all files that start with 'cc_' in the given build directory
-    input_lines = []
-    try:
-        for fname in os.listdir(build_dir):
-            if fname.startswith("cc_"):
-                full_path = os.path.join(build_dir, fname)
-                with open(full_path, "r") as file:
-                    input_lines.extend(file.readlines())
-    except Exception as e:
-        print(f"Error reading from directory: {e}")
-        sys.exit(1)
+    input_pairs = load_commands(build_dir)
 
-    # jq filter to convert command line to Bear-style JSON object
     jq_filter = r'''
-    . as $line
+    .
+    | .workdir as $workdir
+    | .command as $line
     | $line
-    | split(" ")  
+    | split(" ")
     | map(select(length > 0))
     | {
         arguments: [.[]],
         output: (
-            (index("-o") as $o_idx | .[$o_idx + 1])
+          (index("-o") as $o_idx | .[$o_idx + 1])
+          | if startswith("/") then . else $workdir + "/" + . end
         ),
         file: (
-            (
-                map(select(test("\\.(c|s|S|asm)$"))) | .[-1]
-            )
-            | if type == "string" and startswith("/") then . 
-              elif type == "string" then "/workdir/" + . 
-              else null 
-              end
+          (
+            map(select(test("\\.(c|s|S|asm)$"))) | .[-1]
+          )
+          | if type == "string" and startswith("/") then .
+            elif type == "string" then $workdir + "/" + .
+            else null
+          end
         ),
-        directory: "/workdir"
-    }
+        directory: $workdir
+      }
     '''
 
-    # Apply filter to each input line
+    compiled = jq.compile(jq_filter)
+
     results = []
-    for input_string in input_lines:
-        input_string = input_string.strip()
-        if not input_string:
+    for workdir, command in input_pairs:
+        if " -c " not in command:
             continue
-
-        # Filter out irrelevant lines
-        if "arm-none-eabi-gcc" not in input_string or " -c " not in input_string:
-            continue
-
         try:
-            result = jq.compile(jq_filter).input(input_string).first()
-            results.append(result)
+            res = compiled.input({"command": command, "workdir": workdir}).first()
+            if res is not None:
+                results.append(res)
         except Exception as e:
-            print(f"Error processing line: {e}\n  -> {input_string}")
+            print(f"Warning: Failed to process command in {workdir}: {e}", file=sys.stderr)
 
-    # Write to output
     try:
-        with open(output_file, "w") as file:
-            json.dump(results, file, indent=2)
+        with open(output_file, "w") as f:
+            json.dump(results, f, indent=2)
         print(f"Results written to {output_file}")
     except Exception as e:
-        print(f"Error writing to file: {e}")
+        print(f"Error writing to output file: {e}", file=sys.stderr)
         sys.exit(1)
+
+if __name__ == "__main__":
+    main()
