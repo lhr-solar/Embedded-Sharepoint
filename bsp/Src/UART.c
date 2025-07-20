@@ -8,6 +8,11 @@
 #define DATA_SIZE (1) // fallback to 1 byte
 #endif
 
+// Define the preemption priority for the interrupt
+#ifndef UART_NVIC_PREEMPT_PRIO
+#define UART_NVIC_PREEMPT_PRIO (5)
+#endif
+
 typedef struct {
     uint8_t data[DATA_SIZE]; // data to be transmitted, 1 byte
 } tx_payload_t;
@@ -323,47 +328,12 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
     HAL_UART_MspGPIOInit(huart); 
 
     // enable uart interrupts
-    HAL_NVIC_SetPriority(uart_IRQ, 5, 0);
+    HAL_NVIC_SetPriority(uart_IRQ, UART_NVIC_PREEMPT_PRIO, 0);
     HAL_NVIC_EnableIRQ(uart_IRQ); 
 }
 
 // Redefine me!
 __weak void HAL_UART_MspGPIODeInit(UART_HandleTypeDef *huart){ 
-    // Same sets of pins for L4/F4
-    #ifdef UART4
-    if(huart->Instance == UART4) {
-	HAL_GPIO_DeInit(GPIOA, GPIO_PIN_0);
-	HAL_GPIO_DeInit(GPIOA, GPIO_PIN_1);
-    }
-    #endif /* UART4 */
-    
-    #ifdef UART5
-    if (huart->Instance == UART5) {
-	HAL_GPIO_DeInit(GPIOC, GPIO_PIN_12);
-	HAL_GPIO_DeInit(GPIOD, GPIO_PIN_2);
-    }
-    #endif /* UART5 */
-    
-    #ifdef USART1
-    if(huart->Instance == USART1) {
-	HAL_GPIO_DeInit(GPIOA, GPIO_PIN_9);
-	HAL_GPIO_DeInit(GPIOA, GPIO_PIN_10);
-    }
-    #endif /* USART1 */
-    
-    #if defined(USART2) && defined(GPIOD)
-    if(huart->Instance == USART2) {
-        HAL_GPIO_DeInit(GPIOD, GPIO_PIN_5);
-        HAL_GPIO_DeInit(GPIOD, GPIO_PIN_6);
-    }
-    #endif /* USART2 */
-
-    #ifdef USART3
-    if(huart->Instance == USART3) {
-        HAL_GPIO_DeInit(GPIOC, GPIO_PIN_10);
-        HAL_GPIO_DeInit(GPIOC, GPIO_PIN_11);
-    }
-    #endif /* USART3 */
 }
 
 void HAL_UART_MspDeInit(UART_HandleTypeDef *huart) {
@@ -549,7 +519,6 @@ uart_status_t uart_init(UART_HandleTypeDef* handle) {
  * @param handle pointer to the UART handle
  * @return uart_status_t
  */
-
 uart_status_t uart_deinit(UART_HandleTypeDef* handle) {
     // Stop any ongoing transfers first
     HAL_UART_Abort(handle);

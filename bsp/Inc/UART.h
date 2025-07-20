@@ -11,11 +11,11 @@
  * Init initializes the UART peripheral given the configuration
  * DeInit deinitializes the UART peripheral meaning the configuration is reset
  * Send queues data to be transmitted when the UART peripheral is available
- * Recv reads received data from the RX queue
+ * Recv reads length bytes of received data from the RX queue
  *
  * How to Use This Driver:
  * 1. Init to initialize the UART peripheral
- * 2. Send/Recv operations
+ * 2. Send/Recv operations. 
  * 3. DeInit to deinitialize
  * 4. Init to start over...
  */
