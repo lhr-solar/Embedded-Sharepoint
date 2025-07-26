@@ -14,10 +14,13 @@
  * Recv reads length bytes of received data from the RX queue
  *
  * How to Use This Driver:
- * 1. Init to initialize the UART peripheral
- * 2. Send/Recv operations. 
- * 3. DeInit to deinitialize
- * 4. Init to start over...
+ * 1. uart_init to initialize the UART peripheral
+ * 2. uart_send/uart_recv operations
+ * 3. uart_deinit to deinitialize
+ * 
+ * - The function HAL_UART_MspGPIOInit and HAL_UART_MspGPIODeInit must be overriden with the user's implementation of initializing/deinitializing the GPIO pins for the selected peripheral. This includes initializing the GPIO Clk and claling HAL_GPIO_Init on the correct GPIO_InitTypeDef structure.
+ * - For now, a UART peripheral needs to be contained to one task as only one receive queue exists for each.
+ *
  */
 
 // Return codes for UART operations
