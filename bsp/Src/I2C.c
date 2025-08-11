@@ -7,6 +7,9 @@
 #include "I2C.h"
 #include "stm32xx_hal.h"
 
+// Shift I2C address left by 1 bit to give space for read write bit
+#define I2C_ADDR_LEFT_SHIFT(addr)   ((uint8_t)(((addr) & 0x7F) << 1))
+
 /* Used Functions */
 void Single_I2C_Init(I2C_HandleTypeDef*);
 
@@ -16,7 +19,7 @@ typedef struct {
 	uint8_t deviceAddr;
 	uint8_t pDataBuff;
 	uint8_t payloadsLeft;
-} DataInfo_t;
+} I2C_DataInfo_t;
 
 // Define queue sizes for each I2C peripheral if not done so already
 #ifdef I2C1
@@ -36,7 +39,7 @@ typedef struct {
 #define I2C1SPRIO 0
 #endif
 
-static uint8_t I2C1_DataStore[I2C1_QUEUE_SIZE * sizeof(DataInfo_t)];
+static uint8_t I2C1_DataStore[I2C1_QUEUE_SIZE * sizeof(I2C_DataInfo_t)];
 static QueueHandle_t I2C1_Queue;
 static StaticQueue_t I2C1_DataQueue;
 I2C_HandleTypeDef *last_hi2c1;
@@ -59,7 +62,7 @@ I2C_HandleTypeDef *last_hi2c1;
 #define I2C2SPRIO 0
 #endif
 
-static uint8_t I2C2_DataStore[I2C2_QUEUE_SIZE * sizeof(DataInfo_t)];
+static uint8_t I2C2_DataStore[I2C2_QUEUE_SIZE * sizeof(I2C_DataInfo_t)];
 static StaticQueue_t I2C2_DataQueue;
 static QueueHandle_t I2C2_Queue;
 I2C_HandleTypeDef *last_hi2c2;
@@ -82,12 +85,13 @@ I2C_HandleTypeDef *last_hi2c2;
 #define I2C3SPRIO 0
 #endif
 
-static uint8_t I2C3_DataStore[I2C3_QUEUE_SIZE * sizeof(DataInfo_t)];
+static uint8_t I2C3_DataStore[I2C3_QUEUE_SIZE * sizeof(I2C_DataInfo_t)];
 static StaticQueue_t I2C3_DataQueue;
 static QueueHandle_t I2C3_Queue;
 I2C_HandleTypeDef *last_hi2c3;
 #endif
 
+// Call this function from while interrupts are disabled since last_hi2c1 is used in the ISR  
 static i2c_status update_last_i2c(I2C_HandleTypeDef *hi2c) {
 	if (hi2c->Instance == I2C1) {
 		last_hi2c1 = hi2c;
@@ -280,6 +284,7 @@ i2c_status i2c_send(I2C_HandleTypeDef *hi2c,
               uint8_t* pDataBuff,
               uint16_t len)
 {
+	uint8_t shiftedDeviceAddr = I2C_ADDR_LEFT_SHIFT(deviceAddr);
 	// Confirm length is not larger than its designated payload size
 	if(hi2c->Instance == I2C1 && len > I2C1_MAX_PAYLOADS)
 	{
@@ -301,17 +306,29 @@ i2c_status i2c_send(I2C_HandleTypeDef *hi2c,
 	}
 	#endif
 
+	// Disable interrupts to prevent i2c interrupts occuring and modifying the handle
+	portENTER_CRITICAL();
+
 	// Update the latest I2C peripheral
 	update_last_i2c(hi2c);
 
+	// If I2C peripheral is ready, send data immediately
 	if(HAL_I2C_GetState(hi2c) == HAL_I2C_STATE_READY)
 	{
-		HAL_I2C_Master_Transmit_IT(hi2c, deviceAddr, pDataBuff, len);
+		HAL_I2C_Master_Transmit_IT(hi2c, shiftedDeviceAddr, pDataBuff, len);
+		// Renable interrupts
+		portEXIT_CRITICAL();
 		return I2C_SENT;
 	}
+
+	// Renable interrupts
+	portEXIT_CRITICAL();
 	
 	QueueHandle_t I2C_Queue = I2C1_Queue;
-	if(hi2c->Instance == I2C1) {}
+	if(hi2c->Instance == I2C1) 
+	{
+		I2C_Queue = I2C1_Queue;
+	}
 	#ifdef I2C2
 	else if (hi2c->Instance == I2C2)
 	{
@@ -337,9 +354,9 @@ i2c_status i2c_send(I2C_HandleTypeDef *hi2c,
 	
 	for(int packetsLeft = len - 1; packetsLeft >= 0; packetsLeft--)
 	{
-		DataInfo_t dataToEnqueue = {
+		I2C_DataInfo_t dataToEnqueue = {
 			.hi2c = hi2c,
-			.deviceAddr = deviceAddr,
+			.deviceAddr = shiftedDeviceAddr,
 			.pDataBuff = pDataBuff[len - packetsLeft - 1],
 			.payloadsLeft = packetsLeft
 		};
@@ -367,10 +384,16 @@ i2c_status i2c_recv(I2C_HandleTypeDef *hi2c,
               uint8_t* pDataBuff,
               uint16_t len)
 {
+
+	// Disable and enable interrupts so modifying the handle is atomic
+	portENTER_CRITICAL();
 	// Update the latest I2C peripheral
 	update_last_i2c(hi2c);
 
-    HAL_I2C_Master_Receive_IT(hi2c, deviceAddr, pDataBuff, len);
+
+	portEXIT_CRITICAL();
+
+    HAL_I2C_Master_Receive_IT(hi2c, I2C_ADDR_LEFT_SHIFT(deviceAddr), pDataBuff, len);
 	return I2C_OK;
 }
 
@@ -386,17 +409,20 @@ static i2c_status transmit(I2C_TypeDef *i2c_peripheral)
 	QueueHandle_t *I2C_Queue = NULL;
 	BaseType_t higherPriorityTaskWoken = pdFALSE;
 	i2c_status status = I2C_OK;
+	uint8_t max_payload_size = 0;
 
 	if (i2c_peripheral == I2C1)
 	{
 		last_hi2c = last_hi2c1;
 		I2C_Queue = &I2C1_Queue;
+		max_payload_size = I2C1_MAX_PAYLOADS;
 	}
 	#ifdef I2C2
 	else if (i2c_peripheral == I2C2)
 	{
 		last_hi2c = last_hi2c2;
 		I2C_Queue = &I2C2_Queue;
+		max_payload_size = I2C2_MAX_PAYLOADS;
 	}
 	#endif
 	#ifdef I2C3
@@ -404,10 +430,11 @@ static i2c_status transmit(I2C_TypeDef *i2c_peripheral)
 	{
 		last_hi2c = last_hi2c3;
 		I2C_Queue = &I2C3_Queue;
+		max_payload_size = I2C3_MAX_PAYLOADS;
 	}
 	#endif
 
-	if(I2C_Queue == NULL || last_hi2c == NULL)
+	if(I2C_Queue == NULL || last_hi2c == NULL || max_payload_size == 0)
 	{
 		// Invalid I2C peripheral
 		return I2C_BADINST;
@@ -416,21 +443,22 @@ static i2c_status transmit(I2C_TypeDef *i2c_peripheral)
 	if (HAL_I2C_GetState(last_hi2c) != HAL_I2C_STATE_READY)
 		return I2C_IFAIL;
 
-	DataInfo_t data;
+	I2C_DataInfo_t data;
 	if (xQueueReceiveFromISR(*I2C_Queue, &data, &higherPriorityTaskWoken) == pdPASS) {
 	    // Process dequeuedData
+		uint8_t dataToTransmit[max_payload_size];
+		uint8_t index = 0;
+		dataToTransmit[index] = data.pDataBuff;
+		while(data.payloadsLeft != 0)
+		{
+			xQueueReceiveFromISR(*I2C_Queue, &data, &higherPriorityTaskWoken);
+			dataToTransmit[++index] = data.pDataBuff;
+		}
+
+		HAL_I2C_Master_Transmit_IT(data.hi2c, I2C_ADDR_LEFT_SHIFT(data.deviceAddr), dataToTransmit, index + 1);	
 		if(i2c_peripheral == I2C1)
 		{
-			uint8_t dataToTransmit[I2C1_MAX_PAYLOADS];
-			uint8_t index = 0;
-			dataToTransmit[index] = data.pDataBuff;
-			while(data.payloadsLeft != 0)
-			{
-				xQueueReceiveFromISR(*I2C_Queue, &data, &higherPriorityTaskWoken);
-				dataToTransmit[++index] = data.pDataBuff;
-			}
 
-			HAL_I2C_Master_Transmit_IT(data.hi2c, data.deviceAddr, dataToTransmit, index + 1);	
 		}
 		#ifdef I2C2
 		else if(i2c_peripheral == I2C2)
