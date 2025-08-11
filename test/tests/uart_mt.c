@@ -1,14 +1,13 @@
 /* UART multithreaded queue test
- * Tests:
- * - TX queue functionality under high load
- * - RX queue functionality when UART is busy
- * - Queue overflow conditions
- */
-#include "FreeRTOS.h"
-#include "task.h"
+* Tests:
+* - TX queue functionality under high load
+* - RX queue functionality when UART is busy
+* - Queue overflow conditions
+*/
 #include "stm32xx_hal.h"
-#include <string.h>
 #include "UART.h"
+
+#include <string.h>
 
 /* Private defines */
 #define LD2_Pin GPIO_PIN_5
@@ -16,16 +15,19 @@
 #define TEST_PATTERN_SIZE 32  // Larger pattern to ensure queue gets filled, pattern size represents a message
 #define TX_BURST_SIZE 100     // Number of messages to send in a burst
 
+#ifdef UART4
+#define huart huart4
+#else
+#define huart husart1
+#endif
+
+// Test data
+static uint8_t testPattern[TEST_PATTERN_SIZE];
+
 /* Private function prototypes */
-void Clock_Config(void);
-static void MX_GPIO_Init(void);
-static void MX_UART4_Init(void);
+static void MX_GPIO_Init(void); // Initialize LED gpio 
 void TxTask(void *argument);
 void RxTask(void *argument);
-void Error_Handler(void);
-
-/* Private variables */
-extern UART_HandleTypeDef* huart4;
 
 // Static task creation resources
 StaticTask_t txTaskBuffer;
@@ -33,19 +35,29 @@ StaticTask_t rxTaskBuffer;
 StackType_t txTaskStack[configMINIMAL_STACK_SIZE];
 StackType_t rxTaskStack[configMINIMAL_STACK_SIZE];
 
-// Static queue creation resources
-StaticQueue_t xRxStaticQueue;
-uint8_t ucRxQueueStorageArea[128];
-QueueHandle_t xRxQueue;
-
 // Test data
 static uint8_t testPattern[TEST_PATTERN_SIZE];
 
 int main(void) {
     HAL_Init();
-    Clock_Config();
+    SystemClock_Config();
     MX_GPIO_Init();
-    MX_UART4_Init();
+    
+    huart->Init.BaudRate = 115200;
+    huart->Init.WordLength = UART_WORDLENGTH_8B;
+    huart->Init.StopBits = UART_STOPBITS_1;
+    huart->Init.Parity = UART_PARITY_NONE;
+    huart->Init.Mode = UART_MODE_TX_RX;
+    huart->Init.HwFlowCtl = UART_HWCONTROL_NONE;
+    huart->Init.OverSampling = UART_OVERSAMPLING_16;
+    #ifdef STM32L4xx
+    huart->Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+    huart->AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+    #endif /* STM32L4xx */
+    
+    if (HAL_UART_Init(huart) != HAL_OK) {
+      Error_Handler();
+    }
 
     // Initialize test pattern
     for(int i = 0; i < TEST_PATTERN_SIZE; i++) {
@@ -53,7 +65,7 @@ int main(void) {
     }
     
     // Initialize UART BSP
-    uart_status_t status = uart_init(huart4);
+    uart_status_t status = uart_init(huart);
     if (status != UART_OK) {
         Error_Handler();
     }
@@ -80,121 +92,102 @@ int main(void) {
 
 void TxTask(void *argument)
 {
-    const TickType_t fastDelay = pdMS_TO_TICKS(1);    // 1ms between transmissions, could be 0 for maximum stress
-    const TickType_t burstDelay = pdMS_TO_TICKS(500); // 500ms between bursts, good for now
-    uint32_t txCount = 0;
-    uint32_t queueFullCount = 0;
-    
-    while(1) {
-        // Rapid burst transmission to test queue
-        for(int i = 0; i < TX_BURST_SIZE; i++) {
-            uart_status_t status = uart_send(huart4, testPattern, TEST_PATTERN_SIZE, 0);
-            txCount++;
-            
-            if(status == UART_ERR) {
-                queueFullCount++;  // Track when queue gets full
-                HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
-            } else {
-                HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
-            }
-            
-            vTaskDelay(fastDelay);
-        }
-        
-        // Allow some time for queue to process
-        vTaskDelay(burstDelay);
+  const TickType_t fastDelay = pdMS_TO_TICKS(1);    // 1ms between transmissions, could be 0 for maximum stress
+  const TickType_t burstDelay = pdMS_TO_TICKS(500); // 500ms between bursts, good for now
+  uint32_t txCount = 0;
+  uint32_t queueFullCount = 0;
+  
+  while(1) {
+    // Rapid burst transmission to test queue
+    for(int i = 0; i < TX_BURST_SIZE; i++) {
+      uart_status_t status = uart_send(huart, testPattern, TEST_PATTERN_SIZE, 0);
+      txCount++;
+      
+      if(status == UART_ERR) {
+        queueFullCount++;  // Track when queue gets full
+        HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+      } else {
+        HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+      }
+      
+      vTaskDelay(fastDelay);
     }
+    
+    // Allow some time for queue to process
+    vTaskDelay(burstDelay);
+  }
 }
 
 void RxTask(void *argument)
 {
-    const TickType_t pollDelay = pdMS_TO_TICKS(5);  // 5ms polling rate
-    uint8_t rxBuffer[TEST_PATTERN_SIZE];
-    uint32_t rxCount = 0;
-    uint32_t rxEmptyCount = 0;
-    uint32_t patternMatchCount = 0;
+  const TickType_t pollDelay = pdMS_TO_TICKS(5);  // 5ms polling rate
+  uint8_t rxBuffer[TEST_PATTERN_SIZE];
+  uint32_t rxCount = 0;
+  uint32_t rxEmptyCount = 0;
+  uint32_t patternMatchCount = 0;
+  
+  while(1) {
+    uart_status_t status = uart_recv(huart, rxBuffer, TEST_PATTERN_SIZE, 0);
     
-    while(1) {
-        uart_status_t status = uart_recv(huart4, rxBuffer, TEST_PATTERN_SIZE, 0);
-        
-        if(status == UART_RECV) {
-            rxCount++;
-            
-            // Check pattern match
-            if(memcmp(rxBuffer, testPattern, TEST_PATTERN_SIZE) == 0) {
-                patternMatchCount++;
-                HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-            }
-            
-            // Immediate retry to test queue emptying
-            while(uart_recv(huart4, rxBuffer, TEST_PATTERN_SIZE, 0) == UART_RECV) {
-                rxCount++;
-            }
-        }
-        else if(status == UART_EMPTY) {
-            rxEmptyCount++;
-        }
-        
-        vTaskDelay(pollDelay);
+    if(status == UART_RECV) {
+      rxCount++;
+      
+      // Check pattern match
+      if(memcmp(rxBuffer, testPattern, TEST_PATTERN_SIZE) == 0) {
+        patternMatchCount++;
+        HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+      }
+      
+      // Immediate retry to test queue emptying
+      while(uart_recv(huart, rxBuffer, TEST_PATTERN_SIZE, 0) == UART_RECV) {
+        rxCount++;
+      }
     }
-}
-
-// Rest of the code (MX_UART4_Init, MX_GPIO_Init, Clock_Config, Error_Handler) same as uart.c
-
-
-static void MX_UART4_Init(void)
-{
-    huart4->Instance = UART4;
-    huart4->Init.BaudRate = 115200;
-    huart4->Init.WordLength = UART_WORDLENGTH_8B;
-    huart4->Init.StopBits = UART_STOPBITS_1;
-    huart4->Init.Parity = UART_PARITY_NONE;
-    huart4->Init.Mode = UART_MODE_TX_RX;
-    huart4->Init.HwFlowCtl = UART_HWCONTROL_NONE;
-    huart4->Init.OverSampling = UART_OVERSAMPLING_16;
-    #ifdef STM32L4xx
-    huart4->Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-    huart4->AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-    #endif /* STM32L4xx */
+    else if(status == UART_EMPTY) {
+      rxEmptyCount++;
+    }
     
-    if (HAL_UART_Init(huart4) != HAL_OK) {
-        Error_Handler();
-    }
+    vTaskDelay(pollDelay);
+  }
 }
 
 static void MX_GPIO_Init(void)
 {
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-    /* GPIO Ports Clock Enable */
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-
-    /* Configure GPIO pin Output Level */
-    HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
-
-    /* Configure LED pin */
-    GPIO_InitStruct.Pin = LD2_Pin;
-    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+  
+  /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  
+  /* Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+  
+  /* Configure LED pin */
+  GPIO_InitStruct.Pin = LD2_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
 }
 
 
-
+void Error_Handler(void)
+{
+    __disable_irq();
+    while (1) {}
+}
 
 void Clock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-
-#ifdef STM32L4xx
+  
+  #ifdef STM32L4xx
   // L4 series configuration
   if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK)
   {
     Error_Handler();
   }
-
+  
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
@@ -205,8 +198,8 @@ void Clock_Config(void)
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV7;
   RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
   RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
-
-#else
+  
+  #else
   // F4 series configuration
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
@@ -217,42 +210,43 @@ void Clock_Config(void)
   RCC_OscInitStruct.PLL.PLLN = 336;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
   RCC_OscInitStruct.PLL.PLLQ = 2;
+  
+  // Field is only defined on this subset of processors
+  #if defined(STM32F410Tx) || defined(STM32F410Cx) || defined(STM32F410Rx) || defined(STM32F446xx) || defined(STM32F469xx) ||\
+  defined(STM32F479xx) || defined(STM32F412Zx) || defined(STM32F412Vx) || defined(STM32F412Rx) || defined(STM32F412Cx) ||\
+  defined(STM32F413xx) || defined(STM32F423xx)
   RCC_OscInitStruct.PLL.PLLR = 2;
-#endif
-
+  #endif
+  #endif
+  
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
   }
-
-#ifdef STM32L4xx
+  
+  #ifdef STM32L4xx
   // L4 series specific clock configuration
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
-
+  
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
-#else
+  #else
   // F4 series specific clock configuration
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
-
+  
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
-#endif
+  #endif
   {
     Error_Handler();
   }
 }
-void Error_Handler(void)
-{
-    __disable_irq();
-    while (1) {
-    }
-}
+
