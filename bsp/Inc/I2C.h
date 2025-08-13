@@ -13,6 +13,7 @@ typedef enum {
     I2C_IFAIL       = 0x04U,    // Init failure
     I2C_BADSIZE     = 0x05U,    // Incorrect payload size
     I2C_BADINST     = 0x06U,    // Invalid I2C instance
+    I2C_BUSY        = 0x07U,    // Bus is busy
 } i2c_status;
 
 
