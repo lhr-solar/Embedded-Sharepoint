@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.14.0" xml:lang="en-US">
+  <compound refid="structrecv__entry__t" kind="struct"><name>recv_entry_t</name>
+    <member refid="structrecv__entry__t_1a8737145aba5d7ad2896c87a1be22df49" kind="variable"><name>id</name></member>
+    <member refid="structrecv__entry__t_1a168f5683828b1fdb35f29221c05d8ad9" kind="variable"><name>size</name></member>
+    <member refid="structrecv__entry__t_1a2257cb88eb7b78ecd70b702a7afdd8f4" kind="variable"><name>queue</name></member>
+    <member refid="structrecv__entry__t_1aefcf8280e82f8611c3c0e3de21f04286" kind="variable"><name>storage</name></member>
+    <member refid="structrecv__entry__t_1ae115529a444d7e7cb0a509c408402197" kind="variable"><name>circular</name></member>
+    <member refid="structrecv__entry__t_1a5e0d8ed5fe756277683fa75f5018f3d3" kind="variable"><name>buffer</name></member>
+  </compound>
+  <compound refid="structrx__payload__t" kind="struct"><name>rx_payload_t</name>
+    <member refid="structrx__payload__t_1a95e7c494d7fee42051c92eb3405b4d66" kind="variable"><name>header</name></member>
+    <member refid="structrx__payload__t_1a237dfa564d8c87be172555a28b75c0c5" kind="variable"><name>data</name></member>
+  </compound>
+  <compound refid="structtx__payload__t" kind="struct"><name>tx_payload_t</name>
+    <member refid="structtx__payload__t_1afc77ab4dfc79d5fde9a75d069e80b05c" kind="variable"><name>header</name></member>
+    <member refid="structtx__payload__t_1a150d1c66ede9b8fe94fe9f84c0766d46" kind="variable"><name>data</name></member>
+  </compound>
+  <compound refid="_a_d_c_8h" kind="file"><name>ADC.h</name>
+    <member refid="_a_d_c_8h_1a2a6a6e8349f02b5b357746a44166280c" kind="enum"><name>adc_status_t</name></member>
+    <member refid="_a_d_c_8h_1a2a6a6e8349f02b5b357746a44166280ca58c6c49250945a68ba73bfe0428bc8b9" kind="enumvalue"><name>ADC_OK</name></member>
+    <member refid="_a_d_c_8h_1a2a6a6e8349f02b5b357746a44166280ca7e986c4c85cccb23929409914bbeaf7d" kind="enumvalue"><name>ADC_INIT_FAIL</name></member>
+    <member refid="_a_d_c_8h_1a2a6a6e8349f02b5b357746a44166280ca4b815a2e811451218dada0dfe02daa62" kind="enumvalue"><name>ADC_DEINIT_FAIL</name></member>
+    <member refid="_a_d_c_8h_1a2a6a6e8349f02b5b357746a44166280ca17153fe264a0868b7c003463fc02c82c" kind="enumvalue"><name>ADC_CHANNEL_CONFIG_FAIL</name></member>
+    <member refid="_a_d_c_8h_1a2a6a6e8349f02b5b357746a44166280ca889d0460b7ccb9e3260b6ba2ae134d9a" kind="enumvalue"><name>ADC_INTERRUPT_BUSY</name></member>
+    <member refid="_a_d_c_8h_1a2a6a6e8349f02b5b357746a44166280ca5134a117384387ad568e47edb741349d" kind="enumvalue"><name>ADC_INTERRUPT_TIMEOUT</name></member>
+    <member refid="_a_d_c_8h_1a2a6a6e8349f02b5b357746a44166280cae4c164e447d917034d2a8be9ed5050ad" kind="enumvalue"><name>ADC_INTERRUPT_ERROR</name></member>
+    <member refid="_a_d_c_8h_1a2a6a6e8349f02b5b357746a44166280ca39962f1ad4291ddf543bea23eb9cb9f4" kind="enumvalue"><name>ADC_QUEUE_FULL</name></member>
+    <member refid="_a_d_c_8h_1aa6ce1870c5232d9fdb070c93fdb952b0" kind="function"><name>adc_init</name></member>
+    <member refid="_a_d_c_8h_1ae33dfb81b03a4b81c607347162ac5422" kind="function"><name>adc_read</name></member>
+    <member refid="_a_d_c_8h_1ac2d2036424929332c6b0f6e7f9dd3feb" kind="function"><name>adc_deinit</name></member>
+  </compound>
+  <compound refid="_c_a_n_8h" kind="file"><name>CAN.h</name>
+    <member refid="_c_a_n_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kind="enum"><name>can_status_t</name></member>
+    <member refid="_c_a_n_8h_1a507b4ed3fc531e0c40aa8812174e3e1dabf22114c59d1a69b0796b28d3486fbf8" kind="enumvalue"><name>CAN_ERR</name></member>
+    <member refid="_c_a_n_8h_1a507b4ed3fc531e0c40aa8812174e3e1dab7db0e53b737c0839be931efcb79246e" kind="enumvalue"><name>CAN_OK</name></member>
+    <member refid="_c_a_n_8h_1a507b4ed3fc531e0c40aa8812174e3e1daff29dfa90428ea73bc47e54b8ee0d43e" kind="enumvalue"><name>CAN_SENT</name></member>
+    <member refid="_c_a_n_8h_1a507b4ed3fc531e0c40aa8812174e3e1da51244aed50587da9655e1559b3a3daec" kind="enumvalue"><name>CAN_RECV</name></member>
+    <member refid="_c_a_n_8h_1a507b4ed3fc531e0c40aa8812174e3e1da24485c2f3c00368d084bcb14d3a56bf9" kind="enumvalue"><name>CAN_EMPTY</name></member>
+    <member refid="_c_a_n_8h_1adb98f482f84dbc90394b3878fe84d6a3" kind="function"><name>can_init</name></member>
+    <member refid="_c_a_n_8h_1aeeba29faf74a0c662365149bf0f5780e" kind="function"><name>can_deinit</name></member>
+    <member refid="_c_a_n_8h_1a95783594f75e8feb9203af4ec4e28aed" kind="function"><name>can_start</name></member>
+    <member refid="_c_a_n_8h_1adee9ce61f8d5f4b4cdfc97c8d7b0dafc" kind="function"><name>can_stop</name></member>
+    <member refid="_c_a_n_8h_1a5308363109455439841baf22512c415f" kind="function"><name>can_send</name></member>
+    <member refid="_c_a_n_8h_1a9891bb23cf1be1a31110671519764f74" kind="function"><name>can_recv</name></member>
+  </compound>
+  <compound refid="_u_a_r_t_8h" kind="file"><name>UART.h</name>
+    <member refid="_u_a_r_t_8h_1af7d6a356f1601c95992ab6990320fd35" kind="enum"><name>uart_status_t</name></member>
+    <member refid="_u_a_r_t_8h_1af7d6a356f1601c95992ab6990320fd35a6a641fc3fa375d4bf149fb18fc290b55" kind="enumvalue"><name>UART_ERR</name></member>
+    <member refid="_u_a_r_t_8h_1af7d6a356f1601c95992ab6990320fd35a525187963c0aaa465f2a35b30b894d07" kind="enumvalue"><name>UART_OK</name></member>
+    <member refid="_u_a_r_t_8h_1af7d6a356f1601c95992ab6990320fd35a9928134997b763cbf346c8f3e14d9128" kind="enumvalue"><name>UART_SENT</name></member>
+    <member refid="_u_a_r_t_8h_1af7d6a356f1601c95992ab6990320fd35acfb8d3a96884efae4bd347830bd8a4c4" kind="enumvalue"><name>UART_RECV</name></member>
+    <member refid="_u_a_r_t_8h_1af7d6a356f1601c95992ab6990320fd35ac2ecba679f3dca11555b66d448198d0c" kind="enumvalue"><name>UART_EMPTY</name></member>
+    <member refid="_u_a_r_t_8h_1a1847d0a7e7670fccc3a7ffac3ba1e016" kind="function"><name>uart_init</name></member>
+    <member refid="_u_a_r_t_8h_1a3e4de921d10fbf0a69f2e9466530e732" kind="function"><name>uart_deinit</name></member>
+    <member refid="_u_a_r_t_8h_1a71553a13e21823d5ca910beb2abacb32" kind="function"><name>uart_send</name></member>
+    <member refid="_u_a_r_t_8h_1aa8ffbc96e17f61846c7b405b69488f18" kind="function"><name>uart_recv</name></member>
+  </compound>
+  <compound refid="_a_d_c_8c" kind="file"><name>ADC.c</name>
+    <member refid="_a_d_c_8c_1a02ad924490620c022bda69a6d1c65d23" kind="variable"><name>adc_err_code</name></member>
+    <member refid="_a_d_c_8c_1a52a9fa8209e34ffd26b631a45a48aaf8" kind="function"><name>adc_init</name></member>
+    <member refid="_a_d_c_8c_1ac2d2036424929332c6b0f6e7f9dd3feb" kind="function"><name>adc_deinit</name></member>
+    <member refid="_a_d_c_8c_1ae33dfb81b03a4b81c607347162ac5422" kind="function"><name>adc_read</name></member>
+    <member refid="_a_d_c_8c_1a14eed1aeca4fd0404c553698e9370c85" kind="function"><name>HAL_ADC_ConvCpltCallback</name></member>
+    <member refid="_a_d_c_8c_1aae4360fed4b9208a97b0bee259c08ebf" kind="function"><name>HAL_ADC_MspGPIOInit</name></member>
+    <member refid="_a_d_c_8c_1a0e55dd7ec72b4bf4249c939d3fd4631c" kind="function"><name>HAL_ADC_MspInit</name></member>
+    <member refid="_a_d_c_8c_1a392868153bf38cf0d06edb3e184f112c" kind="function"><name>HAL_ADC_MspDeInit</name></member>
+    <member refid="_a_d_c_8c_1a6540ad5da39d6ceff72603fe4fd2fc1a" kind="function"><name>HAL_ADC_ErrorCallback</name></member>
+  </compound>
+  <compound refid="_c_a_n_8c" kind="file"><name>CAN.c</name>
+    <member refid="_c_a_n_8c_1af55149bc1f05cf18af067a302e31e3f9" kind="define"><name>DATA_SIZE</name></member>
+    <member refid="_c_a_n_8c_1a0b89b9c618224a29765a4e1c85bca834" kind="function"><name>HAL_CAN_MspF4Init</name></member>
+    <member refid="_c_a_n_8c_1a7961550b05594a87512b20a4157713e8" kind="function"><name>HAL_CAN_MspDeInit</name></member>
+    <member refid="_c_a_n_8c_1aa83a2948bb1612620e14ef616730683a" kind="function"><name>HAL_CAN_MspL4Init</name></member>
+    <member refid="_c_a_n_8c_1a8ecddba6a06c36b74e0b754bde266414" kind="function"><name>HAL_CAN_MspInit</name></member>
+    <member refid="_c_a_n_8c_1adb98f482f84dbc90394b3878fe84d6a3" kind="function"><name>can_init</name></member>
+    <member refid="_c_a_n_8c_1aeeba29faf74a0c662365149bf0f5780e" kind="function"><name>can_deinit</name></member>
+    <member refid="_c_a_n_8c_1a95783594f75e8feb9203af4ec4e28aed" kind="function"><name>can_start</name></member>
+    <member refid="_c_a_n_8c_1adee9ce61f8d5f4b4cdfc97c8d7b0dafc" kind="function"><name>can_stop</name></member>
+    <member refid="_c_a_n_8c_1a9891bb23cf1be1a31110671519764f74" kind="function"><name>can_recv</name></member>
+    <member refid="_c_a_n_8c_1a5308363109455439841baf22512c415f" kind="function"><name>can_send</name></member>
+    <member refid="_c_a_n_8c_1ad3fab83e3631b6384d10d0138f1ee330" kind="function"><name>transmit</name></member>
+    <member refid="_c_a_n_8c_1a75e275a14f7262262bdeebe3fedb4ec8" kind="function"><name>HAL_CAN_TxMailbox0CompleteCallback</name></member>
+    <member refid="_c_a_n_8c_1ae3998cca8ac1b2f8adcfbcb5745089de" kind="function"><name>HAL_CAN_TxMailbox1CompleteCallback</name></member>
+    <member refid="_c_a_n_8c_1a2fdfd760f1c31359331deb6e04c6f09d" kind="function"><name>HAL_CAN_TxMailbox2CompleteCallback</name></member>
+    <member refid="_c_a_n_8c_1a7368d39e78009c017d6f81ccf33b9b2c" kind="function"><name>HAL_CAN_RxFifo0MsgPendingCallback</name></member>
+  </compound>
+  <compound refid="_u_a_r_t_8c" kind="file"><name>UART.c</name>
+    <member refid="_u_a_r_t_8c_1af55149bc1f05cf18af067a302e31e3f9" kind="define"><name>DATA_SIZE</name></member>
+    <member refid="_u_a_r_t_8c_1a59a219f100ff4335ca5c105d04c57a34" kind="define"><name>UART_NVIC_PREEMPT_PRIO</name></member>
+    <member refid="_u_a_r_t_8c_1afbc769cab9a5661a6be112b30e4142a4" kind="function"><name>is_uart_initialized</name></member>
+    <member refid="_u_a_r_t_8c_1a7555e92bc84240cf15e24caeda22eec3" kind="function"><name>HAL_UART_MspGPIOInit</name></member>
+    <member refid="_u_a_r_t_8c_1a0e553b32211877322f949b14801bbfa7" kind="function"><name>HAL_UART_MspInit</name></member>
+    <member refid="_u_a_r_t_8c_1a282692a8295efe77e2d8997dcee59ed3" kind="function"><name>HAL_UART_MspGPIODeInit</name></member>
+    <member refid="_u_a_r_t_8c_1a718f39804e3b910d738a0e1e46151188" kind="function"><name>HAL_UART_MspDeInit</name></member>
+    <member refid="_u_a_r_t_8c_1a1847d0a7e7670fccc3a7ffac3ba1e016" kind="function"><name>uart_init</name></member>
+    <member refid="_u_a_r_t_8c_1a3e4de921d10fbf0a69f2e9466530e732" kind="function"><name>uart_deinit</name></member>
+    <member refid="_u_a_r_t_8c_1a71553a13e21823d5ca910beb2abacb32" kind="function"><name>uart_send</name></member>
+    <member refid="_u_a_r_t_8c_1aa8ffbc96e17f61846c7b405b69488f18" kind="function"><name>uart_recv</name></member>
+    <member refid="_u_a_r_t_8c_1abcdf9b59049eccbc87d54042f9235b1a" kind="function"><name>HAL_UART_TxCpltCallback</name></member>
+    <member refid="_u_a_r_t_8c_1ae494a9643f29b87d6d81e5264e60e57b" kind="function"><name>HAL_UART_RxCpltCallback</name></member>
+  </compound>
+  <compound refid="dir_3c5459f7c179b79c90e2565474bb2856" kind="dir"><name>bsp</name>
+  </compound>
+  <compound refid="dir_f9758a777e5683291000913d5e959461" kind="dir"><name>bsp/Inc</name>
+  </compound>
+  <compound refid="dir_160128b01eb7e6b2a554f83ab5d45f5a" kind="dir"><name>bsp/Src</name>
+  </compound>
+</doxygenindex>

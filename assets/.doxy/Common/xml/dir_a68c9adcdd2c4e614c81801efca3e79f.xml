@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.14.0" xml:lang="en-US">
+  <compounddef id="dir_a68c9adcdd2c4e614c81801efca3e79f" kind="dir">
+    <compoundname>common/Src</compoundname>
+    <innerfile refid="freertos_8c">freertos.c</innerfile>
+    <innerfile refid="syscalls_8c">syscalls.c</innerfile>
+    <innerfile refid="sysmem_8c">sysmem.c</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="common/Src/"/>
+  </compounddef>
+</doxygen>

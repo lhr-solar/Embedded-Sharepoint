@@ -1,0 +1,2752 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Software library shared among LHRS embedded systems">
+      
+      
+        <meta name="author" content="LHR - Solar">
+      
+      
+      
+        <link rel="prev" href="../BSP/modules/">
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.17">
+    
+    
+      
+        <title>Signals & Messages - Embedded Sharepoint Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e37652d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#prohelion_wavesculptor22dbc" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Embedded Sharepoint Documentation" class="md-header__button md-logo" aria-label="Embedded Sharepoint Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Embedded Sharepoint Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Signals & Messages
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Embedded Sharepoint Documentation" class="md-nav__button md-logo" aria-label="Embedded Sharepoint Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Embedded Sharepoint Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Doxygen
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Doxygen
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    BSP
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            BSP
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../BSP/annotated/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Class Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../BSP/classes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Class Index
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../BSP/hierarchy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Class Hierarchy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../BSP/class_members/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Class Members
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../BSP/class_member_functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Member Functions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../BSP/class_member_variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Member Variables
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../BSP/class_member_typedefs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Member Typedefs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../BSP/class_member_enums/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Member Enums
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../BSP/functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Functions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../BSP/variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Variables
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../BSP/macros/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Macros
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../BSP/files/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Files
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../BSP/modules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Modules
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    CAN Messages
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            CAN Messages
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Signals & Messages
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Signals & Messages
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      Messages
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signals" class="md-nav__link">
+    <span class="md-ellipsis">
+      Signals
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      Messages
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signals" class="md-nav__link">
+    <span class="md-ellipsis">
+      Signals
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="prohelion_wavesculptor22dbc">prohelion_wavesculptor22.dbc</h1>
+<h2 id="messages">Messages</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>DLC</th>
+<th>Signals</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>576</td>
+<td>IDInfo</td>
+<td>8</td>
+<td>TritiumID, SerialNumber</td>
+</tr>
+<tr>
+<td>577</td>
+<td>Status</td>
+<td>8</td>
+<td>LimitOutputVoltagePWM, LimitMotorCurrent, LimitVelocity, LimitBusCurrent, LimitBusVoltageUpper, LimitBusVoltageLower, LimitIpmOrMotorTemp, LimitReserved, ErrorHardwareOverCurrent, ErrorSoftwareOverCurrent, ErrorDcBusOverVoltage, ErrorBadMotorPositionHallSeq, ErrorWatchdogCausedLastReset, ErrorConfigRead, Error15vRailUnderVoltage, ErrorDesaturationFault, ErrorMotorOverSpeed, ErrorReserved, ActiveMotor, TxErrorCount, RxErrorCount</td>
+</tr>
+<tr>
+<td>578</td>
+<td>BusMeasurement</td>
+<td>8</td>
+<td>BusVoltage, BusCurrent</td>
+</tr>
+<tr>
+<td>579</td>
+<td>VelocityMeasurement</td>
+<td>8</td>
+<td>MotorVelocity, VehicleVelocity</td>
+</tr>
+<tr>
+<td>580</td>
+<td>PhaseCurrentMeasurement</td>
+<td>8</td>
+<td>PhaseCurrentB, PhaseCurrentC</td>
+</tr>
+<tr>
+<td>581</td>
+<td>MotorVoltageVectorMeasurement</td>
+<td>8</td>
+<td>Vq, Vd</td>
+</tr>
+<tr>
+<td>582</td>
+<td>MotorCurrentVectorMeasurement</td>
+<td>8</td>
+<td>Iq, Id</td>
+</tr>
+<tr>
+<td>583</td>
+<td>BackEMFMeasurementPrediction</td>
+<td>8</td>
+<td>BEMFq, BEMFd</td>
+</tr>
+<tr>
+<td>584</td>
+<td>VoltageRail15VMeasurement</td>
+<td>8</td>
+<td>ReservedSupply15V, Supply15V</td>
+</tr>
+<tr>
+<td>585</td>
+<td>VoltageRail3V31V9Measurement</td>
+<td>8</td>
+<td>Supply1V9, Supply3V3</td>
+</tr>
+<tr>
+<td>586</td>
+<td>Reserved0A</td>
+<td>8</td>
+<td>Reserved0A0, Reserved0A1</td>
+</tr>
+<tr>
+<td>587</td>
+<td>HeatsinkMotorTempMeasurement</td>
+<td>8</td>
+<td>MotorTemp, HeatsinkTemp</td>
+</tr>
+<tr>
+<td>588</td>
+<td>DspBoardTempMeasurement</td>
+<td>8</td>
+<td>DspBoardTemp, ReservedDspBoardTemp</td>
+</tr>
+<tr>
+<td>589</td>
+<td>Reserved0D</td>
+<td>8</td>
+<td>Reserved0D0, Reserved0D1</td>
+</tr>
+<tr>
+<td>590</td>
+<td>OdometerBusAhMeasurement</td>
+<td>8</td>
+<td>Odometer, DCBusAh</td>
+</tr>
+<tr>
+<td>599</td>
+<td>SlipSpeedMeasurement</td>
+<td>8</td>
+<td>SlipSpeed, ReservedSlipSpeed</td>
+</tr>
+</tbody>
+</table>
+<h2 id="signals">Signals</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Message</th>
+<th>Start Bit</th>
+<th>Length</th>
+<th>Factor</th>
+<th>Offset</th>
+<th>Min</th>
+<th>Max</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TritiumID</td>
+<td>IDInfo</td>
+<td>0</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr>
+<td>SerialNumber</td>
+<td>IDInfo</td>
+<td>32</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr>
+<td>LimitOutputVoltagePWM</td>
+<td>Status</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>On / Off</td>
+</tr>
+<tr>
+<td>LimitMotorCurrent</td>
+<td>Status</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>On / Off</td>
+</tr>
+<tr>
+<td>LimitVelocity</td>
+<td>Status</td>
+<td>2</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>On / Off</td>
+</tr>
+<tr>
+<td>LimitBusCurrent</td>
+<td>Status</td>
+<td>3</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>On / Off</td>
+</tr>
+<tr>
+<td>LimitBusVoltageUpper</td>
+<td>Status</td>
+<td>4</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>On / Off</td>
+</tr>
+<tr>
+<td>LimitBusVoltageLower</td>
+<td>Status</td>
+<td>5</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>On / Off</td>
+</tr>
+<tr>
+<td>LimitIpmOrMotorTemp</td>
+<td>Status</td>
+<td>6</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>On / Off</td>
+</tr>
+<tr>
+<td>LimitReserved</td>
+<td>Status</td>
+<td>7</td>
+<td>9</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>511</td>
+<td>On / Off</td>
+</tr>
+<tr>
+<td>ErrorHardwareOverCurrent</td>
+<td>Status</td>
+<td>16</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>On / Off</td>
+</tr>
+<tr>
+<td>ErrorSoftwareOverCurrent</td>
+<td>Status</td>
+<td>17</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>On / Off</td>
+</tr>
+<tr>
+<td>ErrorDcBusOverVoltage</td>
+<td>Status</td>
+<td>18</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>On / Off</td>
+</tr>
+<tr>
+<td>ErrorBadMotorPositionHallSeq</td>
+<td>Status</td>
+<td>19</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>On / Off</td>
+</tr>
+<tr>
+<td>ErrorWatchdogCausedLastReset</td>
+<td>Status</td>
+<td>20</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>On / Off</td>
+</tr>
+<tr>
+<td>ErrorConfigRead</td>
+<td>Status</td>
+<td>21</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>On / Off</td>
+</tr>
+<tr>
+<td>Error15vRailUnderVoltage</td>
+<td>Status</td>
+<td>22</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>On / Off</td>
+</tr>
+<tr>
+<td>ErrorDesaturationFault</td>
+<td>Status</td>
+<td>23</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>On / Off</td>
+</tr>
+<tr>
+<td>ErrorMotorOverSpeed</td>
+<td>Status</td>
+<td>24</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>On / Off</td>
+</tr>
+<tr>
+<td>ErrorReserved</td>
+<td>Status</td>
+<td>25</td>
+<td>7</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>On / Off</td>
+</tr>
+<tr>
+<td>ActiveMotor</td>
+<td>Status</td>
+<td>32</td>
+<td>16</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr>
+<td>TxErrorCount</td>
+<td>Status</td>
+<td>48</td>
+<td>8</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr>
+<td>RxErrorCount</td>
+<td>Status</td>
+<td>56</td>
+<td>8</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr>
+<td>BusVoltage</td>
+<td>BusMeasurement</td>
+<td>0</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>100</td>
+<td>V</td>
+</tr>
+<tr>
+<td>BusCurrent</td>
+<td>BusMeasurement</td>
+<td>32</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1000</td>
+<td>A</td>
+</tr>
+<tr>
+<td>MotorVelocity</td>
+<td>VelocityMeasurement</td>
+<td>0</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>rpm</td>
+</tr>
+<tr>
+<td>VehicleVelocity</td>
+<td>VelocityMeasurement</td>
+<td>32</td>
+<td>32</td>
+<td>2.237</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>mph</td>
+</tr>
+<tr>
+<td>PhaseCurrentB</td>
+<td>PhaseCurrentMeasurement</td>
+<td>0</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>A_rms</td>
+</tr>
+<tr>
+<td>PhaseCurrentC</td>
+<td>PhaseCurrentMeasurement</td>
+<td>32</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>A_rms</td>
+</tr>
+<tr>
+<td>Vq</td>
+<td>MotorVoltageVectorMeasurement</td>
+<td>0</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>V</td>
+</tr>
+<tr>
+<td>Vd</td>
+<td>MotorVoltageVectorMeasurement</td>
+<td>32</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>V</td>
+</tr>
+<tr>
+<td>Iq</td>
+<td>MotorCurrentVectorMeasurement</td>
+<td>0</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>A</td>
+</tr>
+<tr>
+<td>Id</td>
+<td>MotorCurrentVectorMeasurement</td>
+<td>32</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>A</td>
+</tr>
+<tr>
+<td>BEMFq</td>
+<td>BackEMFMeasurementPrediction</td>
+<td>0</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>V</td>
+</tr>
+<tr>
+<td>BEMFd</td>
+<td>BackEMFMeasurementPrediction</td>
+<td>32</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>V</td>
+</tr>
+<tr>
+<td>ReservedSupply15V</td>
+<td>VoltageRail15VMeasurement</td>
+<td>0</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr>
+<td>Supply15V</td>
+<td>VoltageRail15VMeasurement</td>
+<td>32</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>V</td>
+</tr>
+<tr>
+<td>Supply1V9</td>
+<td>VoltageRail3V31V9Measurement</td>
+<td>0</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>V</td>
+</tr>
+<tr>
+<td>Supply3V3</td>
+<td>VoltageRail3V31V9Measurement</td>
+<td>32</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>V</td>
+</tr>
+<tr>
+<td>Reserved0A0</td>
+<td>Reserved0A</td>
+<td>0</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr>
+<td>Reserved0A1</td>
+<td>Reserved0A</td>
+<td>32</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr>
+<td>MotorTemp</td>
+<td>HeatsinkMotorTempMeasurement</td>
+<td>0</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>C</td>
+</tr>
+<tr>
+<td>HeatsinkTemp</td>
+<td>HeatsinkMotorTempMeasurement</td>
+<td>32</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>C</td>
+</tr>
+<tr>
+<td>DspBoardTemp</td>
+<td>DspBoardTempMeasurement</td>
+<td>0</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>C</td>
+</tr>
+<tr>
+<td>ReservedDspBoardTemp</td>
+<td>DspBoardTempMeasurement</td>
+<td>32</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr>
+<td>Reserved0D0</td>
+<td>Reserved0D</td>
+<td>0</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr>
+<td>Reserved0D1</td>
+<td>Reserved0D</td>
+<td>32</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr>
+<td>Odometer</td>
+<td>OdometerBusAhMeasurement</td>
+<td>0</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>m</td>
+</tr>
+<tr>
+<td>DCBusAh</td>
+<td>OdometerBusAhMeasurement</td>
+<td>32</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>Ah</td>
+</tr>
+<tr>
+<td>SlipSpeed</td>
+<td>SlipSpeedMeasurement</td>
+<td>0</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>Hz</td>
+</tr>
+<tr>
+<td>ReservedSlipSpeed</td>
+<td>SlipSpeedMeasurement</td>
+<td>32</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h1 id="tpee_mpptadbc">tpee_mppt[A].dbc</h1>
+<h2 id="messages_1">Messages</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>DLC</th>
+<th>Signals</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>513</td>
+<td>MPPT_32_0_Status</td>
+<td>5</td>
+<td>MPPT_Mode, MPPT_Fault, MPPT_Enabled, MPPT_AmbientTemperature, MPPT_HeatsinkTemperature</td>
+</tr>
+<tr>
+<td>512</td>
+<td>MPPT_32_0_Power</td>
+<td>8</td>
+<td>MPPT_Vin, MPPT_Iin, MPPT_Vout, MPPT_Iout</td>
+</tr>
+<tr>
+<td>521</td>
+<td>MPPT_32_0_SetMode</td>
+<td>1</td>
+<td>Boost_Enable</td>
+</tr>
+</tbody>
+</table>
+<h2 id="signals_1">Signals</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Message</th>
+<th>Start Bit</th>
+<th>Length</th>
+<th>Factor</th>
+<th>Offset</th>
+<th>Min</th>
+<th>Max</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MPPT_Mode</td>
+<td>MPPT_32_0_Status</td>
+<td>0</td>
+<td>8</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr>
+<td>MPPT_Fault</td>
+<td>MPPT_32_0_Status</td>
+<td>8</td>
+<td>8</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr>
+<td>MPPT_Enabled</td>
+<td>MPPT_32_0_Status</td>
+<td>16</td>
+<td>8</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr>
+<td>MPPT_AmbientTemperature</td>
+<td>MPPT_32_0_Status</td>
+<td>31</td>
+<td>8</td>
+<td>1</td>
+<td>0</td>
+<td>-128</td>
+<td>127</td>
+<td>C</td>
+</tr>
+<tr>
+<td>MPPT_HeatsinkTemperature</td>
+<td>MPPT_32_0_Status</td>
+<td>39</td>
+<td>8</td>
+<td>1</td>
+<td>0</td>
+<td>-128</td>
+<td>127</td>
+<td>C</td>
+</tr>
+<tr>
+<td>MPPT_Vin</td>
+<td>MPPT_32_0_Power</td>
+<td>7</td>
+<td>16</td>
+<td>0.01</td>
+<td>0</td>
+<td>-327.68</td>
+<td>327.67</td>
+<td>V</td>
+</tr>
+<tr>
+<td>MPPT_Iin</td>
+<td>MPPT_32_0_Power</td>
+<td>23</td>
+<td>16</td>
+<td>0.0005</td>
+<td>0</td>
+<td>-16.384</td>
+<td>16.3835</td>
+<td>A</td>
+</tr>
+<tr>
+<td>MPPT_Vout</td>
+<td>MPPT_32_0_Power</td>
+<td>39</td>
+<td>16</td>
+<td>0.01</td>
+<td>0</td>
+<td>-327.68</td>
+<td>327.67</td>
+<td>V</td>
+</tr>
+<tr>
+<td>MPPT_Iout</td>
+<td>MPPT_32_0_Power</td>
+<td>55</td>
+<td>16</td>
+<td>0.0005</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>A</td>
+</tr>
+<tr>
+<td>Boost_Enable</td>
+<td>MPPT_32_0_SetMode</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h1 id="controlsdbc">controls.dbc</h1>
+<h2 id="messages_2">Messages</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>DLC</th>
+<th>Signals</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1409</td>
+<td>IO_State</td>
+<td>3</td>
+<td>Acceleration_Percentage, Brake_Percentage, IGN_Array, IGN_Motor, Regen_SW, Forward_Gear, Reverse_Gear, Cruz_EN, Cruz_Set, Brake_Light</td>
+</tr>
+<tr>
+<td>1411</td>
+<td>Controls_Fault</td>
+<td>1</td>
+<td>Controls_Fault, Motor_Controller_Fault, BPS_Fault, Pedals_Fault, CarCAN_Fault, Internal_Controls_Fault, OS_Fault, Lakshay_Fault</td>
+</tr>
+<tr>
+<td>1412</td>
+<td>Motor_Controller_Safe</td>
+<td>1</td>
+<td>Motor_Safe, Motor_Controller_Error</td>
+</tr>
+<tr>
+<td>545</td>
+<td>Motor_Drive_Command</td>
+<td>8</td>
+<td>Motor_Velocity_Setpoint, Motor_Current_Setpoint</td>
+</tr>
+<tr>
+<td>546</td>
+<td>Motor_Power_Command</td>
+<td>8</td>
+<td>Motor_Power_Setpoint</td>
+</tr>
+<tr>
+<td>1413</td>
+<td>Pedals_Raw_Voltage</td>
+<td>4</td>
+<td>Brake_Raw, Accel_Raw</td>
+</tr>
+</tbody>
+</table>
+<h2 id="signals_2">Signals</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Message</th>
+<th>Start Bit</th>
+<th>Length</th>
+<th>Factor</th>
+<th>Offset</th>
+<th>Min</th>
+<th>Max</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Acceleration_Percentage</td>
+<td>IO_State</td>
+<td>0</td>
+<td>8</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>100</td>
+<td>Percentage</td>
+</tr>
+<tr>
+<td>Brake_Percentage</td>
+<td>IO_State</td>
+<td>8</td>
+<td>8</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>100</td>
+<td>Percentage the brake is pressed</td>
+</tr>
+<tr>
+<td>IGN_Array</td>
+<td>IO_State</td>
+<td>16</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>Array Ignition On</td>
+</tr>
+<tr>
+<td>IGN_Motor</td>
+<td>IO_State</td>
+<td>17</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>Motor Ignition On</td>
+</tr>
+<tr>
+<td>Regen_SW</td>
+<td>IO_State</td>
+<td>18</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>Regen Switched On</td>
+</tr>
+<tr>
+<td>Forward_Gear</td>
+<td>IO_State</td>
+<td>19</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>Forward switch</td>
+</tr>
+<tr>
+<td>Reverse_Gear</td>
+<td>IO_State</td>
+<td>20</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>Reverse switch</td>
+</tr>
+<tr>
+<td>Cruz_EN</td>
+<td>IO_State</td>
+<td>21</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>Cruise Enable</td>
+</tr>
+<tr>
+<td>Cruz_Set</td>
+<td>IO_State</td>
+<td>22</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>Cruise Set</td>
+</tr>
+<tr>
+<td>Brake_Light</td>
+<td>IO_State</td>
+<td>23</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>Brakelight state</td>
+</tr>
+<tr>
+<td>Controls_Fault</td>
+<td>Controls_Fault</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>Motor_Controller_Fault</td>
+<td>Controls_Fault</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>BPS_Fault</td>
+<td>Controls_Fault</td>
+<td>2</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>Pedals_Fault</td>
+<td>Controls_Fault</td>
+<td>3</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr>
+<td>CarCAN_Fault</td>
+<td>Controls_Fault</td>
+<td>4</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>Internal_Controls_Fault</td>
+<td>Controls_Fault</td>
+<td>5</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>OS_Fault</td>
+<td>Controls_Fault</td>
+<td>6</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>Lakshay_Fault</td>
+<td>Controls_Fault</td>
+<td>7</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>Motor_Safe</td>
+<td>Motor_Controller_Safe</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>Motor_Controller_Error</td>
+<td>Motor_Controller_Safe</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>Motor_Velocity_Setpoint</td>
+<td>Motor_Drive_Command</td>
+<td>0</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>rpm</td>
+</tr>
+<tr>
+<td>Motor_Current_Setpoint</td>
+<td>Motor_Drive_Command</td>
+<td>32</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>%</td>
+</tr>
+<tr>
+<td>Motor_Power_Setpoint</td>
+<td>Motor_Power_Command</td>
+<td>32</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>%</td>
+</tr>
+<tr>
+<td>Brake_Raw</td>
+<td>Pedals_Raw_Voltage</td>
+<td>0</td>
+<td>15</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>3300</td>
+<td>mV</td>
+</tr>
+<tr>
+<td>Accel_Raw</td>
+<td>Pedals_Raw_Voltage</td>
+<td>16</td>
+<td>15</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>3300</td>
+<td>mV</td>
+</tr>
+</tbody>
+</table>
+<h1 id="tpee_mpptbdbc">tpee_mppt[B].dbc</h1>
+<h2 id="messages_3">Messages</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>DLC</th>
+<th>Signals</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>529</td>
+<td>MPPT_33_0_Status</td>
+<td>5</td>
+<td>MPPT_Mode, MPPT_Fault, MPPT_Enabled, MPPT_AmbientTemperature, MPPT_HeatsinkTemperature</td>
+</tr>
+<tr>
+<td>528</td>
+<td>MPPT_33_0_Power</td>
+<td>8</td>
+<td>MPPT_Vin, MPPT_Iin, MPPT_Vout, MPPT_Iout</td>
+</tr>
+<tr>
+<td>537</td>
+<td>MPPT_33_0_SetMode</td>
+<td>1</td>
+<td>Boost_Enable</td>
+</tr>
+</tbody>
+</table>
+<h2 id="signals_3">Signals</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Message</th>
+<th>Start Bit</th>
+<th>Length</th>
+<th>Factor</th>
+<th>Offset</th>
+<th>Min</th>
+<th>Max</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MPPT_Mode</td>
+<td>MPPT_33_0_Status</td>
+<td>0</td>
+<td>8</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr>
+<td>MPPT_Fault</td>
+<td>MPPT_33_0_Status</td>
+<td>8</td>
+<td>8</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr>
+<td>MPPT_Enabled</td>
+<td>MPPT_33_0_Status</td>
+<td>16</td>
+<td>8</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr>
+<td>MPPT_AmbientTemperature</td>
+<td>MPPT_33_0_Status</td>
+<td>31</td>
+<td>8</td>
+<td>1</td>
+<td>0</td>
+<td>-128</td>
+<td>127</td>
+<td>C</td>
+</tr>
+<tr>
+<td>MPPT_HeatsinkTemperature</td>
+<td>MPPT_33_0_Status</td>
+<td>39</td>
+<td>8</td>
+<td>1</td>
+<td>0</td>
+<td>-128</td>
+<td>127</td>
+<td>C</td>
+</tr>
+<tr>
+<td>MPPT_Vin</td>
+<td>MPPT_33_0_Power</td>
+<td>7</td>
+<td>16</td>
+<td>0.01</td>
+<td>0</td>
+<td>-327.68</td>
+<td>327.67</td>
+<td>V</td>
+</tr>
+<tr>
+<td>MPPT_Iin</td>
+<td>MPPT_33_0_Power</td>
+<td>23</td>
+<td>16</td>
+<td>0.0005</td>
+<td>0</td>
+<td>-16.384</td>
+<td>16.3835</td>
+<td>A</td>
+</tr>
+<tr>
+<td>MPPT_Vout</td>
+<td>MPPT_33_0_Power</td>
+<td>39</td>
+<td>16</td>
+<td>0.01</td>
+<td>0</td>
+<td>-327.68</td>
+<td>327.67</td>
+<td>V</td>
+</tr>
+<tr>
+<td>MPPT_Iout</td>
+<td>MPPT_33_0_Power</td>
+<td>55</td>
+<td>16</td>
+<td>0.0005</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>A</td>
+</tr>
+<tr>
+<td>Boost_Enable</td>
+<td>MPPT_33_0_SetMode</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h1 id="bps-daybreakdbc">bps (Daybreak).dbc</h1>
+<h2 id="messages_4">Messages</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>DLC</th>
+<th>Signals</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>BPS_Trip</td>
+<td>1</td>
+<td>BPS_Trip</td>
+</tr>
+<tr>
+<td>257</td>
+<td>BPS_All_Clea</td>
+<td>1</td>
+<td>BPS_All_Clear</td>
+</tr>
+<tr>
+<td>258</td>
+<td>BPS_Contactor_State</td>
+<td>1</td>
+<td>HV_Contactor, Array_Contactor</td>
+</tr>
+<tr>
+<td>259</td>
+<td>BPS_Current</td>
+<td>4</td>
+<td>Current</td>
+</tr>
+<tr>
+<td>260</td>
+<td>BPS_Voltage_Array</td>
+<td>5</td>
+<td>Voltage_idx, Voltage_Value</td>
+</tr>
+<tr>
+<td>261</td>
+<td>BPS_Temperature_Array</td>
+<td>5</td>
+<td>Temperature_idx, Temperature_Value</td>
+</tr>
+<tr>
+<td>262</td>
+<td>BPS_SOC</td>
+<td>4</td>
+<td>SoC</td>
+</tr>
+<tr>
+<td>263</td>
+<td>BPS_WDog_Trigger</td>
+<td>1</td>
+<td>WDog_Trig</td>
+</tr>
+<tr>
+<td>264</td>
+<td>BPS_CAN_Error</td>
+<td>1</td>
+<td>BPS_CAN_Error</td>
+</tr>
+<tr>
+<td>265</td>
+<td>BPS_Command</td>
+<td>8</td>
+<td>BPS_Command</td>
+</tr>
+<tr>
+<td>267</td>
+<td>BPS_Supplemental_Voltage</td>
+<td>2</td>
+<td>Supplemental_Voltage</td>
+</tr>
+<tr>
+<td>268</td>
+<td>BPS_Charge_Enabled</td>
+<td>1</td>
+<td>Charge_Enabled</td>
+</tr>
+<tr>
+<td>269</td>
+<td>BPS_Voltage_Summary</td>
+<td>8</td>
+<td>Pack_Voltage, Voltage_Range, Voltage_Timestamp</td>
+</tr>
+<tr>
+<td>270</td>
+<td>BPS_Temperature_Summary</td>
+<td>8</td>
+<td>Average_Temp, Temperature_Range, Temperature_Timestamp</td>
+</tr>
+<tr>
+<td>271</td>
+<td>BPS_Fault_State</td>
+<td>1</td>
+<td>BPS_Fault_State</td>
+</tr>
+</tbody>
+</table>
+<h2 id="signals_4">Signals</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Message</th>
+<th>Start Bit</th>
+<th>Length</th>
+<th>Factor</th>
+<th>Offset</th>
+<th>Min</th>
+<th>Max</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BPS_Trip</td>
+<td>BPS_Trip</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>BPS_All_Clear</td>
+<td>BPS_All_Clea</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>HV_Contactor</td>
+<td>BPS_Contactor_State</td>
+<td>2</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>Array_Contactor</td>
+<td>BPS_Contactor_State</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>Current</td>
+<td>BPS_Current</td>
+<td>0</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>-20000</td>
+<td>100000</td>
+<td>mA</td>
+</tr>
+<tr>
+<td>Voltage_idx</td>
+<td>BPS_Voltage_Array</td>
+<td>0</td>
+<td>8</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>31</td>
+<td></td>
+</tr>
+<tr>
+<td>Voltage_Value</td>
+<td>BPS_Voltage_Array</td>
+<td>8</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1000000</td>
+<td>mV</td>
+</tr>
+<tr>
+<td>Temperature_idx</td>
+<td>BPS_Temperature_Array</td>
+<td>0</td>
+<td>8</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>31</td>
+<td></td>
+</tr>
+<tr>
+<td>Temperature_Value</td>
+<td>BPS_Temperature_Array</td>
+<td>8</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1000000</td>
+<td>mC</td>
+</tr>
+<tr>
+<td>SoC</td>
+<td>BPS_SOC</td>
+<td>0</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>100</td>
+<td>%</td>
+</tr>
+<tr>
+<td>WDog_Trig</td>
+<td>BPS_WDog_Trigger</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>BPS_CAN_Error</td>
+<td>BPS_CAN_Error</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>BPS_Command</td>
+<td>BPS_Command</td>
+<td>0</td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr>
+<td>Supplemental_Voltage</td>
+<td>BPS_Supplemental_Voltage</td>
+<td>0</td>
+<td>16</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>65535</td>
+<td>mV</td>
+</tr>
+<tr>
+<td>Charge_Enabled</td>
+<td>BPS_Charge_Enabled</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>Pack_Voltage</td>
+<td>BPS_Voltage_Summary</td>
+<td>0</td>
+<td>24</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>16777215</td>
+<td>mV</td>
+</tr>
+<tr>
+<td>Voltage_Range</td>
+<td>BPS_Voltage_Summary</td>
+<td>24</td>
+<td>24</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>16777215</td>
+<td>mV</td>
+</tr>
+<tr>
+<td>Voltage_Timestamp</td>
+<td>BPS_Voltage_Summary</td>
+<td>48</td>
+<td>16</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>65535</td>
+<td>ms</td>
+</tr>
+<tr>
+<td>Average_Temp</td>
+<td>BPS_Temperature_Summary</td>
+<td>0</td>
+<td>24</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>mC</td>
+</tr>
+<tr>
+<td>Temperature_Range</td>
+<td>BPS_Temperature_Summary</td>
+<td>24</td>
+<td>24</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>mC</td>
+</tr>
+<tr>
+<td>Temperature_Timestamp</td>
+<td>BPS_Temperature_Summary</td>
+<td>48</td>
+<td>16</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td>ms</td>
+</tr>
+<tr>
+<td>BPS_Fault_State</td>
+<td>BPS_Fault_State</td>
+<td>0</td>
+<td>8</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>12</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h1 id="contactordbc">contactor.dbc</h1>
+<h2 id="messages_5">Messages</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>DLC</th>
+<th>Signals</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1025</td>
+<td>Precharge_Timeout</td>
+<td>1</td>
+<td>Motor_Precharge_Timeout, Array_Precharge_Timeout</td>
+</tr>
+<tr>
+<td>1024</td>
+<td>Contactor_Sense</td>
+<td>2</td>
+<td>Actual_Motor_Sense, Expected_Motor_Sense, Motor_Sense_Fault, Motor_Precharge_Sense, Expected_Motor_Precharge_Sense, Motor_Precharge_Sense_Fault, Array_Precharge_Sense, Expected_Array_Precharge_Sense, Array_Prechage_Sense_Fault</td>
+</tr>
+</tbody>
+</table>
+<h2 id="signals_5">Signals</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Message</th>
+<th>Start Bit</th>
+<th>Length</th>
+<th>Factor</th>
+<th>Offset</th>
+<th>Min</th>
+<th>Max</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Motor_Precharge_Timeout</td>
+<td>Precharge_Timeout</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>Array_Precharge_Timeout</td>
+<td>Precharge_Timeout</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr>
+<td>Actual_Motor_Sense</td>
+<td>Contactor_Sense</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>Expected_Motor_Sense</td>
+<td>Contactor_Sense</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr>
+<td>Motor_Sense_Fault</td>
+<td>Contactor_Sense</td>
+<td>2</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>Motor_Precharge_Sense</td>
+<td>Contactor_Sense</td>
+<td>3</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>Expected_Motor_Precharge_Sense</td>
+<td>Contactor_Sense</td>
+<td>4</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>Motor_Precharge_Sense_Fault</td>
+<td>Contactor_Sense</td>
+<td>5</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>Array_Precharge_Sense</td>
+<td>Contactor_Sense</td>
+<td>6</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>Expected_Array_Precharge_Sense</td>
+<td>Contactor_Sense</td>
+<td>7</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>Array_Prechage_Sense_Fault</td>
+<td>Contactor_Sense</td>
+<td>8</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.92b07e13.min.js"></script>
+      
+    
+  </body>
+</html>

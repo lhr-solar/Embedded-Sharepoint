@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.14.0" xml:lang="en-US">
+  <compounddef id="structrx__payload__t" kind="struct" language="C++" prot="public">
+    <compoundname>rx_payload_t</compoundname>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structrx__payload__t_1a95e7c494d7fee42051c92eb3405b4d66" prot="public" static="no" mutable="no">
+        <type>CAN_RxHeaderTypeDef</type>
+        <definition>CAN_RxHeaderTypeDef rx_payload_t::header</definition>
+        <argsstring></argsstring>
+        <name>header</name>
+        <qualifiedname>rx_payload_t::header</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Src/CAN.c" line="14" column="23" bodyfile="bsp/Src/CAN.c" bodystart="14" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structrx__payload__t_1a237dfa564d8c87be172555a28b75c0c5" prot="public" static="no" mutable="no">
+        <type>uint8_t</type>
+        <definition>uint8_t rx_payload_t::data</definition>
+        <argsstring>[DATA_SIZE]</argsstring>
+        <name>data</name>
+        <qualifiedname>rx_payload_t::data</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Src/CAN.c" line="15" column="11" bodyfile="bsp/Src/CAN.c" bodystart="15" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="bsp/Src/CAN.c" line="13" column="1" bodyfile="bsp/Src/CAN.c" bodystart="13" bodyend="16"/>
+    <listofallmembers>
+      <member refid="structrx__payload__t_1a237dfa564d8c87be172555a28b75c0c5" prot="public" virt="non-virtual"><scope>rx_payload_t</scope><name>data</name></member>
+      <member refid="structrx__payload__t_1a95e7c494d7fee42051c92eb3405b4d66" prot="public" virt="non-virtual"><scope>rx_payload_t</scope><name>header</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

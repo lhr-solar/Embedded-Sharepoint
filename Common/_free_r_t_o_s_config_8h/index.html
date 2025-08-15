@@ -1,0 +1,1588 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Software library shared among LHRS embedded systems">
+      
+      
+        <meta name="author" content="LHR - Solar">
+      
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.17">
+    
+    
+      
+        <title>File FreeRTOSConfig.h - Embedded Sharepoint Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e37652d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#file-freertosconfigh" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Embedded Sharepoint Documentation" class="md-header__button md-logo" aria-label="Embedded Sharepoint Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Embedded Sharepoint Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              File FreeRTOSConfig.h
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Embedded Sharepoint Documentation" class="md-nav__button md-logo" aria-label="Embedded Sharepoint Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Embedded Sharepoint Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Doxygen
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Doxygen
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    BSP
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            BSP
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../BSP/annotated/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Class Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../BSP/classes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Class Index
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../BSP/hierarchy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Class Hierarchy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../BSP/class_members/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Class Members
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../BSP/class_member_functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Member Functions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../BSP/class_member_variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Member Variables
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../BSP/class_member_typedefs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Member Typedefs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../BSP/class_member_enums/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Member Enums
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../BSP/functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Functions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../BSP/variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Variables
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../BSP/macros/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Macros
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../BSP/files/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Files
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../BSP/modules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Modules
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    CAN Messages
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            CAN Messages
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DBC/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Signals & Messages
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#macros" class="md-nav__link">
+    <span class="md-ellipsis">
+      Macros
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#macro-definition-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Macro Definition Documentation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Macro Definition Documentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#define-include_uxtaskpriorityget" class="md-nav__link">
+    <span class="md-ellipsis">
+      define INCLUDE_uxTaskPriorityGet
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-include_vtaskcleanupresources" class="md-nav__link">
+    <span class="md-ellipsis">
+      define INCLUDE_vTaskCleanUpResources
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-include_vtaskdelay" class="md-nav__link">
+    <span class="md-ellipsis">
+      define INCLUDE_vTaskDelay
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-include_vtaskdelayuntil" class="md-nav__link">
+    <span class="md-ellipsis">
+      define INCLUDE_vTaskDelayUntil
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-include_vtaskdelete" class="md-nav__link">
+    <span class="md-ellipsis">
+      define INCLUDE_vTaskDelete
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-include_vtaskpriorityset" class="md-nav__link">
+    <span class="md-ellipsis">
+      define INCLUDE_vTaskPrioritySet
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-include_vtasksuspend" class="md-nav__link">
+    <span class="md-ellipsis">
+      define INCLUDE_vTaskSuspend
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-include_xtaskgetschedulerstate" class="md-nav__link">
+    <span class="md-ellipsis">
+      define INCLUDE_xTaskGetSchedulerState
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configassert" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configASSERT
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configcpu_clock_hz" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configCPU_CLOCK_HZ
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configenable_fpu" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configENABLE_FPU
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configenable_mpu" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configENABLE_MPU
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configkernel_interrupt_priority" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configKERNEL_INTERRUPT_PRIORITY
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configlibrary_lowest_interrupt_priority" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configLIBRARY_LOWEST_INTERRUPT_PRIORITY
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configlibrary_max_syscall_interrupt_priority" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configmax_co_routine_priorities" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configMAX_CO_ROUTINE_PRIORITIES
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configmax_priorities" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configMAX_PRIORITIES
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configmax_syscall_interrupt_priority" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configMAX_SYSCALL_INTERRUPT_PRIORITY
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configmax_task_name_len" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configMAX_TASK_NAME_LEN
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configmessage_buffer_length_type" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configMESSAGE_BUFFER_LENGTH_TYPE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configminimal_stack_size" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configMINIMAL_STACK_SIZE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configprio_bits" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configPRIO_BITS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configqueue_registry_size" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configQUEUE_REGISTRY_SIZE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configsupport_dynamic_allocation" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configSUPPORT_DYNAMIC_ALLOCATION
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configsupport_static_allocation" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configSUPPORT_STATIC_ALLOCATION
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configtick_rate_hz" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configTICK_RATE_HZ
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configtimer_queue_length" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configTIMER_QUEUE_LENGTH
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configtimer_task_priority" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configTIMER_TASK_PRIORITY
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configtimer_task_stack_depth" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configTIMER_TASK_STACK_DEPTH
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configuse_16_bit_ticks" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configUSE_16_BIT_TICKS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configuse_counting_semaphores" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configUSE_COUNTING_SEMAPHORES
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configuse_co_routines" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configUSE_CO_ROUTINES
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configuse_idle_hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configUSE_IDLE_HOOK
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configuse_mutexes" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configUSE_MUTEXES
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configuse_port_optimised_task_selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configUSE_PORT_OPTIMISED_TASK_SELECTION
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configuse_preemption" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configUSE_PREEMPTION
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configuse_recursive_mutexes" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configUSE_RECURSIVE_MUTEXES
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configuse_tick_hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configUSE_TICK_HOOK
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-configuse_timers" class="md-nav__link">
+    <span class="md-ellipsis">
+      define configUSE_TIMERS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-vportsvchandler" class="md-nav__link">
+    <span class="md-ellipsis">
+      define vPortSVCHandler
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-xportpendsvhandler" class="md-nav__link">
+    <span class="md-ellipsis">
+      define xPortPendSVHandler
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-xportsystickhandler" class="md-nav__link">
+    <span class="md-ellipsis">
+      define xPortSysTickHandler
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="file-freertosconfigh">File FreeRTOSConfig.h</h1>
+<p><a href="../files/"><strong>FileList</strong></a> <strong>&gt;</strong> <a href="../dir_bdd9a5d540de89e9fe90efdfc6973a4f/"><strong>common</strong></a> <strong>&gt;</strong> <a href="../dir_4152f073bf32bf79124b676c9fe2adc1/"><strong>Inc</strong></a> <strong>&gt;</strong> <a href="./"><strong>FreeRTOSConfig.h</strong></a></p>
+<p><a href="../_free_r_t_o_s_config_8h_source/">Go to the source code of this file</a></p>
+<h2 id="macros">Macros</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Type</th>
+<th style="text-align: left;">Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-include_uxtaskpriorityget"><strong>INCLUDE_uxTaskPriorityGet</strong></a>  <code>1</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-include_vtaskcleanupresources"><strong>INCLUDE_vTaskCleanUpResources</strong></a>  <code>0</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-include_vtaskdelay"><strong>INCLUDE_vTaskDelay</strong></a>  <code>1</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-include_vtaskdelayuntil"><strong>INCLUDE_vTaskDelayUntil</strong></a>  <code>1</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-include_vtaskdelete"><strong>INCLUDE_vTaskDelete</strong></a>  <code>1</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-include_vtaskpriorityset"><strong>INCLUDE_vTaskPrioritySet</strong></a>  <code>1</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-include_vtasksuspend"><strong>INCLUDE_vTaskSuspend</strong></a>  <code>1</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-include_xtaskgetschedulerstate"><strong>INCLUDE_xTaskGetSchedulerState</strong></a>  <code>1</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configassert"><strong>configASSERT</strong></a> (x) <code>if ((x) == 0) {taskDISABLE\_INTERRUPTS(); for( ;; );}</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configcpu_clock_hz"><strong>configCPU_CLOCK_HZ</strong></a>  <code>( SystemCoreClock )</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configenable_fpu"><strong>configENABLE_FPU</strong></a>  <code>1</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configenable_mpu"><strong>configENABLE_MPU</strong></a>  <code>0</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configkernel_interrupt_priority"><strong>configKERNEL_INTERRUPT_PRIORITY</strong></a>  <code>( configLIBRARY\_LOWEST\_INTERRUPT\_PRIORITY &amp;lt;&amp;lt; (8 - configPRIO\_BITS) )</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configlibrary_lowest_interrupt_priority"><strong>configLIBRARY_LOWEST_INTERRUPT_PRIORITY</strong></a>  <code>15</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configlibrary_max_syscall_interrupt_priority"><strong>configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY</strong></a>  <code>5</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configmax_co_routine_priorities"><strong>configMAX_CO_ROUTINE_PRIORITIES</strong></a>  <code>( 2 )</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configmax_priorities"><strong>configMAX_PRIORITIES</strong></a>  <code>( 7 )</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configmax_syscall_interrupt_priority"><strong>configMAX_SYSCALL_INTERRUPT_PRIORITY</strong></a>  <code>( configLIBRARY\_MAX\_SYSCALL\_INTERRUPT\_PRIORITY &amp;lt;&amp;lt; (8 - configPRIO\_BITS) )</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configmax_task_name_len"><strong>configMAX_TASK_NAME_LEN</strong></a>  <code>( 16 )</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configmessage_buffer_length_type"><strong>configMESSAGE_BUFFER_LENGTH_TYPE</strong></a>  <code>size\_t</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configminimal_stack_size"><strong>configMINIMAL_STACK_SIZE</strong></a>  <code>((uint16\_t)128)</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configprio_bits"><strong>configPRIO_BITS</strong></a>  <code>4</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configqueue_registry_size"><strong>configQUEUE_REGISTRY_SIZE</strong></a>  <code>8</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configsupport_dynamic_allocation"><strong>configSUPPORT_DYNAMIC_ALLOCATION</strong></a>  <code>0</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configsupport_static_allocation"><strong>configSUPPORT_STATIC_ALLOCATION</strong></a>  <code>1</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configtick_rate_hz"><strong>configTICK_RATE_HZ</strong></a>  <code>((TickType\_t)1000)</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configtimer_queue_length"><strong>configTIMER_QUEUE_LENGTH</strong></a>  <code>10</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configtimer_task_priority"><strong>configTIMER_TASK_PRIORITY</strong></a>  <code>( 2 )</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configtimer_task_stack_depth"><strong>configTIMER_TASK_STACK_DEPTH</strong></a>  <code>256</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configuse_16_bit_ticks"><strong>configUSE_16_BIT_TICKS</strong></a>  <code>0</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configuse_counting_semaphores"><strong>configUSE_COUNTING_SEMAPHORES</strong></a>  <code>1</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configuse_co_routines"><strong>configUSE_CO_ROUTINES</strong></a>  <code>0</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configuse_idle_hook"><strong>configUSE_IDLE_HOOK</strong></a>  <code>0</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configuse_mutexes"><strong>configUSE_MUTEXES</strong></a>  <code>1</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configuse_port_optimised_task_selection"><strong>configUSE_PORT_OPTIMISED_TASK_SELECTION</strong></a>  <code>1</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configuse_preemption"><strong>configUSE_PREEMPTION</strong></a>  <code>1</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configuse_recursive_mutexes"><strong>configUSE_RECURSIVE_MUTEXES</strong></a>  <code>1</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configuse_tick_hook"><strong>configUSE_TICK_HOOK</strong></a>  <code>0</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-configuse_timers"><strong>configUSE_TIMERS</strong></a>  <code>1</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-vportsvchandler"><strong>vPortSVCHandler</strong></a>  <code>SVC\_Handler</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-xportpendsvhandler"><strong>xPortPendSVHandler</strong></a>  <code>PendSV\_Handler</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-xportsystickhandler"><strong>xPortSysTickHandler</strong></a>  <code>SysTick\_Handler</code><br></td>
+</tr>
+</tbody>
+</table>
+<h2 id="macro-definition-documentation">Macro Definition Documentation</h2>
+<h3 id="define-include_uxtaskpriorityget">define INCLUDE_uxTaskPriorityGet</h3>
+<pre><code class="language-C++">#define INCLUDE_uxTaskPriorityGet `1`
+</code></pre>
+<hr>
+
+<h3 id="define-include_vtaskcleanupresources">define INCLUDE_vTaskCleanUpResources</h3>
+<pre><code class="language-C++">#define INCLUDE_vTaskCleanUpResources `0`
+</code></pre>
+<hr>
+
+<h3 id="define-include_vtaskdelay">define INCLUDE_vTaskDelay</h3>
+<pre><code class="language-C++">#define INCLUDE_vTaskDelay `1`
+</code></pre>
+<hr>
+
+<h3 id="define-include_vtaskdelayuntil">define INCLUDE_vTaskDelayUntil</h3>
+<pre><code class="language-C++">#define INCLUDE_vTaskDelayUntil `1`
+</code></pre>
+<hr>
+
+<h3 id="define-include_vtaskdelete">define INCLUDE_vTaskDelete</h3>
+<pre><code class="language-C++">#define INCLUDE_vTaskDelete `1`
+</code></pre>
+<hr>
+
+<h3 id="define-include_vtaskpriorityset">define INCLUDE_vTaskPrioritySet</h3>
+<pre><code class="language-C++">#define INCLUDE_vTaskPrioritySet `1`
+</code></pre>
+<hr>
+
+<h3 id="define-include_vtasksuspend">define INCLUDE_vTaskSuspend</h3>
+<pre><code class="language-C++">#define INCLUDE_vTaskSuspend `1`
+</code></pre>
+<hr>
+
+<h3 id="define-include_xtaskgetschedulerstate">define INCLUDE_xTaskGetSchedulerState</h3>
+<pre><code class="language-C++">#define INCLUDE_xTaskGetSchedulerState `1`
+</code></pre>
+<hr>
+
+<h3 id="define-configassert">define configASSERT</h3>
+<pre><code class="language-C++">#define configASSERT (
+    x
+) `if ((x) == 0) {taskDISABLE_INTERRUPTS(); for( ;; );}`
+</code></pre>
+<hr>
+
+<h3 id="define-configcpu_clock_hz">define configCPU_CLOCK_HZ</h3>
+<pre><code class="language-C++">#define configCPU_CLOCK_HZ `( SystemCoreClock )`
+</code></pre>
+<hr>
+
+<h3 id="define-configenable_fpu">define configENABLE_FPU</h3>
+<pre><code class="language-C++">#define configENABLE_FPU `1`
+</code></pre>
+<hr>
+
+<h3 id="define-configenable_mpu">define configENABLE_MPU</h3>
+<pre><code class="language-C++">#define configENABLE_MPU `0`
+</code></pre>
+<hr>
+
+<h3 id="define-configkernel_interrupt_priority">define configKERNEL_INTERRUPT_PRIORITY</h3>
+<pre><code class="language-C++">#define configKERNEL_INTERRUPT_PRIORITY `( configLIBRARY_LOWEST_INTERRUPT_PRIORITY &lt;&lt; (8 - configPRIO_BITS) )`
+</code></pre>
+<hr>
+
+<h3 id="define-configlibrary_lowest_interrupt_priority">define configLIBRARY_LOWEST_INTERRUPT_PRIORITY</h3>
+<pre><code class="language-C++">#define configLIBRARY_LOWEST_INTERRUPT_PRIORITY `15`
+</code></pre>
+<hr>
+
+<h3 id="define-configlibrary_max_syscall_interrupt_priority">define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY</h3>
+<pre><code class="language-C++">#define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY `5`
+</code></pre>
+<hr>
+
+<h3 id="define-configmax_co_routine_priorities">define configMAX_CO_ROUTINE_PRIORITIES</h3>
+<pre><code class="language-C++">#define configMAX_CO_ROUTINE_PRIORITIES `( 2 )`
+</code></pre>
+<hr>
+
+<h3 id="define-configmax_priorities">define configMAX_PRIORITIES</h3>
+<pre><code class="language-C++">#define configMAX_PRIORITIES `( 7 )`
+</code></pre>
+<hr>
+
+<h3 id="define-configmax_syscall_interrupt_priority">define configMAX_SYSCALL_INTERRUPT_PRIORITY</h3>
+<pre><code class="language-C++">#define configMAX_SYSCALL_INTERRUPT_PRIORITY `( configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY &lt;&lt; (8 - configPRIO_BITS) )`
+</code></pre>
+<hr>
+
+<h3 id="define-configmax_task_name_len">define configMAX_TASK_NAME_LEN</h3>
+<pre><code class="language-C++">#define configMAX_TASK_NAME_LEN `( 16 )`
+</code></pre>
+<hr>
+
+<h3 id="define-configmessage_buffer_length_type">define configMESSAGE_BUFFER_LENGTH_TYPE</h3>
+<pre><code class="language-C++">#define configMESSAGE_BUFFER_LENGTH_TYPE `size_t`
+</code></pre>
+<hr>
+
+<h3 id="define-configminimal_stack_size">define configMINIMAL_STACK_SIZE</h3>
+<pre><code class="language-C++">#define configMINIMAL_STACK_SIZE `((uint16_t)128)`
+</code></pre>
+<hr>
+
+<h3 id="define-configprio_bits">define configPRIO_BITS</h3>
+<pre><code class="language-C++">#define configPRIO_BITS `4`
+</code></pre>
+<hr>
+
+<h3 id="define-configqueue_registry_size">define configQUEUE_REGISTRY_SIZE</h3>
+<pre><code class="language-C++">#define configQUEUE_REGISTRY_SIZE `8`
+</code></pre>
+<hr>
+
+<h3 id="define-configsupport_dynamic_allocation">define configSUPPORT_DYNAMIC_ALLOCATION</h3>
+<pre><code class="language-C++">#define configSUPPORT_DYNAMIC_ALLOCATION `0`
+</code></pre>
+<hr>
+
+<h3 id="define-configsupport_static_allocation">define configSUPPORT_STATIC_ALLOCATION</h3>
+<pre><code class="language-C++">#define configSUPPORT_STATIC_ALLOCATION `1`
+</code></pre>
+<hr>
+
+<h3 id="define-configtick_rate_hz">define configTICK_RATE_HZ</h3>
+<pre><code class="language-C++">#define configTICK_RATE_HZ `((TickType_t)1000)`
+</code></pre>
+<hr>
+
+<h3 id="define-configtimer_queue_length">define configTIMER_QUEUE_LENGTH</h3>
+<pre><code class="language-C++">#define configTIMER_QUEUE_LENGTH `10`
+</code></pre>
+<hr>
+
+<h3 id="define-configtimer_task_priority">define configTIMER_TASK_PRIORITY</h3>
+<pre><code class="language-C++">#define configTIMER_TASK_PRIORITY `( 2 )`
+</code></pre>
+<hr>
+
+<h3 id="define-configtimer_task_stack_depth">define configTIMER_TASK_STACK_DEPTH</h3>
+<pre><code class="language-C++">#define configTIMER_TASK_STACK_DEPTH `256`
+</code></pre>
+<hr>
+
+<h3 id="define-configuse_16_bit_ticks">define configUSE_16_BIT_TICKS</h3>
+<pre><code class="language-C++">#define configUSE_16_BIT_TICKS `0`
+</code></pre>
+<hr>
+
+<h3 id="define-configuse_counting_semaphores">define configUSE_COUNTING_SEMAPHORES</h3>
+<pre><code class="language-C++">#define configUSE_COUNTING_SEMAPHORES `1`
+</code></pre>
+<hr>
+
+<h3 id="define-configuse_co_routines">define configUSE_CO_ROUTINES</h3>
+<pre><code class="language-C++">#define configUSE_CO_ROUTINES `0`
+</code></pre>
+<hr>
+
+<h3 id="define-configuse_idle_hook">define configUSE_IDLE_HOOK</h3>
+<pre><code class="language-C++">#define configUSE_IDLE_HOOK `0`
+</code></pre>
+<hr>
+
+<h3 id="define-configuse_mutexes">define configUSE_MUTEXES</h3>
+<pre><code class="language-C++">#define configUSE_MUTEXES `1`
+</code></pre>
+<hr>
+
+<h3 id="define-configuse_port_optimised_task_selection">define configUSE_PORT_OPTIMISED_TASK_SELECTION</h3>
+<pre><code class="language-C++">#define configUSE_PORT_OPTIMISED_TASK_SELECTION `1`
+</code></pre>
+<hr>
+
+<h3 id="define-configuse_preemption">define configUSE_PREEMPTION</h3>
+<pre><code class="language-C++">#define configUSE_PREEMPTION `1`
+</code></pre>
+<hr>
+
+<h3 id="define-configuse_recursive_mutexes">define configUSE_RECURSIVE_MUTEXES</h3>
+<pre><code class="language-C++">#define configUSE_RECURSIVE_MUTEXES `1`
+</code></pre>
+<hr>
+
+<h3 id="define-configuse_tick_hook">define configUSE_TICK_HOOK</h3>
+<pre><code class="language-C++">#define configUSE_TICK_HOOK `0`
+</code></pre>
+<hr>
+
+<h3 id="define-configuse_timers">define configUSE_TIMERS</h3>
+<pre><code class="language-C++">#define configUSE_TIMERS `1`
+</code></pre>
+<hr>
+
+<h3 id="define-vportsvchandler">define vPortSVCHandler</h3>
+<pre><code class="language-C++">#define vPortSVCHandler `SVC_Handler`
+</code></pre>
+<hr>
+
+<h3 id="define-xportpendsvhandler">define xPortPendSVHandler</h3>
+<pre><code class="language-C++">#define xPortPendSVHandler `PendSV_Handler`
+</code></pre>
+<hr>
+
+<h3 id="define-xportsystickhandler">define xPortSysTickHandler</h3>
+<pre><code class="language-C++">#define xPortSysTickHandler `SysTick_Handler`
+</code></pre>
+<hr>
+
+<hr />
+<p>The documentation for this class was generated from the following file <code>common/Inc/FreeRTOSConfig.h</code></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.92b07e13.min.js"></script>
+      
+    
+  </body>
+</html>

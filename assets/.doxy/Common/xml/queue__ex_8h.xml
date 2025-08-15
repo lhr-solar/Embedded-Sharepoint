@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.14.0" xml:lang="en-US">
+  <compounddef id="queue__ex_8h" kind="file" language="C++">
+    <compoundname>queue_ex.h</compoundname>
+    <sectiondef kind="define">
+      <memberdef kind="define" id="queue__ex_8h_1a5d8d9d51e731f83043809d85d29a0c48" prot="public" static="no">
+        <name>xQueueSendCircularBuffer</name>
+        <param><defname>xQueue</defname></param>
+        <param><defname>pvItemToQueue</defname></param>
+        <param><defname>xTicksToWait</defname></param>
+        <param><defname>QUEUE_ITEM_SIZE</defname></param>
+        <initializer>    do { \
+        taskENTER_CRITICAL(); \
+        if (xQueueSend(xQueue, pvItemToQueue, 0) == errQUEUE_FULL) \
+        { \
+            uint8_t tempBuffer[QUEUE_ITEM_SIZE]; \
+            xQueueReceive(xQueue, tempBuffer, 0); \
+            xQueueSend(xQueue, pvItemToQueue, xTicksToWait); \
+        } \
+        taskEXIT_CRITICAL(); \
+    } while(0)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="common/Inc/queue_ex.h" line="4" column="9" bodyfile="common/Inc/queue_ex.h" bodystart="4" bodyend="14"/>
+      </memberdef>
+      <memberdef kind="define" id="queue__ex_8h_1a0061f605807edbbce46e44ac4fd862dd" prot="public" static="no">
+        <name>xQueueSendCircularBufferFromISR</name>
+        <param><defname>xQueue</defname></param>
+        <param><defname>pvItemToQueue</defname></param>
+        <param><defname>pxHigherPriorityTaskWoken</defname></param>
+        <param><defname>QUEUE_ITEM_SIZE</defname></param>
+        <initializer>    do { \
+        UBaseType_t uxSavedInterruptStatus = taskENTER_CRITICAL_FROM_ISR(); \
+        if (xQueueSendFromISR(xQueue, pvItemToQueue, pxHigherPriorityTaskWoken) == errQUEUE_FULL) { \
+            uint8_t tempBuffer[QUEUE_ITEM_SIZE];    \
+            xQueueReceiveFromISR(xQueue, tempBuffer, NULL); \
+            xQueueSendFromISR(xQueue, pvItemToQueue, pxHigherPriorityTaskWoken);    \
+        }   \
+        taskEXIT_CRITICAL_FROM_ISR(uxSavedInterruptStatus); \
+    } while(0)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="common/Inc/queue_ex.h" line="16" column="9" bodyfile="common/Inc/queue_ex.h" bodystart="16" bodyend="25"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#ifndef<sp/>QUEUE_EX_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>QUEUE_EX_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>xQueueSendCircularBuffer(<sp/>xQueue,<sp/>pvItemToQueue,<sp/>xTicksToWait,<sp/>QUEUE_ITEM_SIZE<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="5"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>do<sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="6"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>taskENTER_CRITICAL();<sp/>\</highlight></codeline>
+<codeline lineno="7"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>if<sp/>(xQueueSend(xQueue,<sp/>pvItemToQueue,<sp/>0)<sp/>==<sp/>errQUEUE_FULL)<sp/>\</highlight></codeline>
+<codeline lineno="8"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="9"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint8_t<sp/>tempBuffer[QUEUE_ITEM_SIZE];<sp/>\</highlight></codeline>
+<codeline lineno="10"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>xQueueReceive(xQueue,<sp/>tempBuffer,<sp/>0);<sp/>\</highlight></codeline>
+<codeline lineno="11"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>xQueueSend(xQueue,<sp/>pvItemToQueue,<sp/>xTicksToWait);<sp/>\</highlight></codeline>
+<codeline lineno="12"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/>\</highlight></codeline>
+<codeline lineno="13"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>taskEXIT_CRITICAL();<sp/>\</highlight></codeline>
+<codeline lineno="14"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}<sp/>while(0)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>xQueueSendCircularBufferFromISR(<sp/>xQueue,<sp/>pvItemToQueue,<sp/>pxHigherPriorityTaskWoken,<sp/>QUEUE_ITEM_SIZE<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="17"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>do<sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="18"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>UBaseType_t<sp/>uxSavedInterruptStatus<sp/>=<sp/>taskENTER_CRITICAL_FROM_ISR();<sp/>\</highlight></codeline>
+<codeline lineno="19"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>if<sp/>(xQueueSendFromISR(xQueue,<sp/>pvItemToQueue,<sp/>pxHigherPriorityTaskWoken)<sp/>==<sp/>errQUEUE_FULL)<sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="20"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint8_t<sp/>tempBuffer[QUEUE_ITEM_SIZE];<sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="21"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>xQueueReceiveFromISR(xQueue,<sp/>tempBuffer,<sp/>NULL);<sp/>\</highlight></codeline>
+<codeline lineno="22"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>xQueueSendFromISR(xQueue,<sp/>pvItemToQueue,<sp/>pxHigherPriorityTaskWoken);<sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="23"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="24"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>taskEXIT_CRITICAL_FROM_ISR(uxSavedInterruptStatus);<sp/>\</highlight></codeline>
+<codeline lineno="25"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}<sp/>while(0)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+    </programlisting>
+    <location file="common/Inc/queue_ex.h"/>
+  </compounddef>
+</doxygen>

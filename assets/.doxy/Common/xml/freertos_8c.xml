@@ -1,0 +1,206 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.14.0" xml:lang="en-US">
+  <compounddef id="freertos_8c" kind="file" language="C++">
+    <compoundname>freertos.c</compoundname>
+    <includes local="yes">FreeRTOS.h</includes>
+    <incdepgraph>
+      <node id="1">
+        <label>common/Src/freertos.c</label>
+        <link refid="freertos_8c"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>FreeRTOS.h</label>
+      </node>
+    </incdepgraph>
+    <sectiondef kind="var">
+      <memberdef kind="variable" id="freertos_8c_1a2dd1013c5ef8f355ac2f1479e36ec659" prot="public" static="yes" mutable="no">
+        <type>StaticTask_t</type>
+        <definition>StaticTask_t xIdleTaskTCBBuffer</definition>
+        <argsstring></argsstring>
+        <name>xIdleTaskTCBBuffer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="common/Src/freertos.c" line="3" column="21" bodyfile="common/Src/freertos.c" bodystart="3" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="freertos_8c_1af311b04396149ce536fe1a3b5f127445" prot="public" static="yes" mutable="no">
+        <type>StackType_t</type>
+        <definition>StackType_t xIdleStack[configMINIMAL_STACK_SIZE]</definition>
+        <argsstring>[configMINIMAL_STACK_SIZE]</argsstring>
+        <name>xIdleStack</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="common/Src/freertos.c" line="4" column="20" bodyfile="common/Src/freertos.c" bodystart="4" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="freertos_8c_1a38d479dc434b1716ec493c97d862680e" prot="public" static="yes" mutable="no">
+        <type>StaticTask_t</type>
+        <definition>StaticTask_t xTimerTaskTCBBuffer</definition>
+        <argsstring></argsstring>
+        <name>xTimerTaskTCBBuffer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="common/Src/freertos.c" line="20" column="21" bodyfile="common/Src/freertos.c" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="freertos_8c_1ac4bbf08a713d317769fd40e9474a279b" prot="public" static="yes" mutable="no">
+        <type>StackType_t</type>
+        <definition>StackType_t xTimerStack[configTIMER_TASK_STACK_DEPTH]</definition>
+        <argsstring>[configTIMER_TASK_STACK_DEPTH]</argsstring>
+        <name>xTimerStack</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="common/Src/freertos.c" line="21" column="20" bodyfile="common/Src/freertos.c" bodystart="21" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="freertos_8c_1a1988aa923b19fa6f31c93afa7773f793" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void vApplicationGetIdleTaskMemory</definition>
+        <argsstring>(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize)</argsstring>
+        <name>vApplicationGetIdleTaskMemory</name>
+        <param>
+          <type>StaticTask_t **</type>
+          <declname>ppxIdleTaskTCBBuffer</declname>
+        </param>
+        <param>
+          <type>StackType_t **</type>
+          <declname>ppxIdleTaskStackBuffer</declname>
+        </param>
+        <param>
+          <type>uint32_t *</type>
+          <declname>pulIdleTaskStackSize</declname>
+        </param>
+        <briefdescription>
+<para>Create memory for Idle task. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ppxIdleTaskTCBBuffer</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ppxIdleTaskStackBuffer</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pulIdleTaskStackSize</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="common/Src/freertos.c" line="13" column="6" bodyfile="common/Src/freertos.c" bodystart="13" bodyend="18"/>
+      </memberdef>
+      <memberdef kind="function" id="freertos_8c_1a1e80ecbd3fc2d04f18d6409ffa893a86" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void vApplicationGetTimerTaskMemory</definition>
+        <argsstring>(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize)</argsstring>
+        <name>vApplicationGetTimerTaskMemory</name>
+        <param>
+          <type>StaticTask_t **</type>
+          <declname>ppxTimerTaskTCBBuffer</declname>
+        </param>
+        <param>
+          <type>StackType_t **</type>
+          <declname>ppxTimerTaskStackBuffer</declname>
+        </param>
+        <param>
+          <type>uint32_t *</type>
+          <declname>pulTimerTaskStackSize</declname>
+        </param>
+        <briefdescription>
+<para>Create memory for Timer task. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ppxTimerTaskTCBBuffer</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ppxTimerTaskStackBuffer</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pulTimerTaskStackSize</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="common/Src/freertos.c" line="30" column="6" bodyfile="common/Src/freertos.c" bodystart="30" bodyend="35"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#include<sp/>&quot;FreeRTOS.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>StaticTask_t<sp/>xIdleTaskTCBBuffer;</highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>StackType_t<sp/>xIdleStack[configMINIMAL_STACK_SIZE];</highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>vApplicationGetIdleTaskMemory(<sp/>StaticTask_t<sp/>**ppxIdleTaskTCBBuffer,<sp/>StackType_t<sp/>**ppxIdleTaskStackBuffer,<sp/>uint32_t<sp/>*pulIdleTaskStackSize<sp/>)</highlight></codeline>
+<codeline lineno="14"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"><sp/><sp/>*ppxIdleTaskTCBBuffer<sp/>=<sp/>&amp;xIdleTaskTCBBuffer;</highlight></codeline>
+<codeline lineno="16"><highlight class="normal"><sp/><sp/>*ppxIdleTaskStackBuffer<sp/>=<sp/>&amp;xIdleStack[0];</highlight></codeline>
+<codeline lineno="17"><highlight class="normal"><sp/><sp/>*pulIdleTaskStackSize<sp/>=<sp/>configMINIMAL_STACK_SIZE;</highlight></codeline>
+<codeline lineno="18"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>StaticTask_t<sp/>xTimerTaskTCBBuffer;</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>StackType_t<sp/>xTimerStack[configTIMER_TASK_STACK_DEPTH];</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>vApplicationGetTimerTaskMemory(<sp/>StaticTask_t<sp/>**ppxTimerTaskTCBBuffer,<sp/>StackType_t<sp/>**ppxTimerTaskStackBuffer,<sp/>uint32_t<sp/>*pulTimerTaskStackSize<sp/>)</highlight></codeline>
+<codeline lineno="31"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/>*ppxTimerTaskTCBBuffer<sp/>=<sp/>&amp;xTimerTaskTCBBuffer;</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/>*ppxTimerTaskStackBuffer<sp/>=<sp/>&amp;xTimerStack[0];</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/>*pulTimerTaskStackSize<sp/>=<sp/>configTIMER_TASK_STACK_DEPTH;</highlight></codeline>
+<codeline lineno="35"><highlight class="normal">}</highlight></codeline>
+    </programlisting>
+    <location file="common/Src/freertos.c"/>
+  </compounddef>
+</doxygen>

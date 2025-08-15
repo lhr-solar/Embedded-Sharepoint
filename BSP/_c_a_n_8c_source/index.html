@@ -1,0 +1,1568 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Software library shared among LHRS embedded systems">
+      
+      
+        <meta name="author" content="LHR - Solar">
+      
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.17">
+    
+    
+      
+        <title>File CAN.c - Embedded Sharepoint Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e37652d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#file-canc" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Embedded Sharepoint Documentation" class="md-header__button md-logo" aria-label="Embedded Sharepoint Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Embedded Sharepoint Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              File CAN.c
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Embedded Sharepoint Documentation" class="md-nav__button md-logo" aria-label="Embedded Sharepoint Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Embedded Sharepoint Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Doxygen
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Doxygen
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    BSP
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            BSP
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../annotated/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Class Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../classes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Class Index
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hierarchy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Class Hierarchy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../class_members/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Class Members
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../class_member_functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Member Functions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../class_member_variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Member Variables
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../class_member_typedefs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Member Typedefs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../class_member_enums/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Member Enums
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Functions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Variables
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../macros/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Macros
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../files/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Files
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Modules
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    CAN Messages
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            CAN Messages
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DBC/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Signals & Messages
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="file-canc">File CAN.c</h1>
+<p><a href="../files/"><strong>File List</strong></a> <strong>&gt;</strong> <a href="../dir_3c5459f7c179b79c90e2565474bb2856/"><strong>bsp</strong></a> <strong>&gt;</strong> <a href="../dir_160128b01eb7e6b2a554f83ab5d45f5a/"><strong>Src</strong></a> <strong>&gt;</strong> <a href="../_c_a_n_8c/"><strong>CAN.c</strong></a></p>
+<p><a href="../_c_a_n_8c/">Go to the documentation of this file</a></p>
+<pre><code class="language-C++">#include &quot;CAN.h&quot;
+#include &quot;queue_ex.h&quot;
+
+// 8 for now unless extended payload is supported
+#define DATA_SIZE (8)
+
+// entries in queues
+typedef struct {
+  CAN_TxHeaderTypeDef header;
+  uint8_t data[DATA_SIZE];
+} tx_payload_t;
+
+typedef struct {
+  CAN_RxHeaderTypeDef header;
+  uint8_t data[DATA_SIZE];
+} rx_payload_t;
+
+// metadata for recieve queues
+typedef struct {
+  uint16_t id;
+  uint16_t size;
+  QueueHandle_t queue;
+  uint8_t* storage;
+  bool circular;
+  StaticQueue_t buffer;
+} recv_entry_t;
+
+#ifdef CAN1
+// fallback can1 send queue size
+#ifndef CAN1_SEND_QUEUE_SIZE
+#define CAN1_SEND_QUEUE_SIZE (10)
+#endif
+
+// can1 handle
+static CAN_HandleTypeDef hcan1_ = {.Instance = CAN1};
+CAN_HandleTypeDef* hcan1 = &amp;hcan1_;
+
+// can1 send queue
+static QueueHandle_t can1_send_queue = NULL;
+static StaticQueue_t can1_send_queue_buffer;
+static uint8_t
+    can1_send_queue_storage[CAN1_SEND_QUEUE_SIZE * sizeof(tx_payload_t)];
+
+#if __has_include(&quot;can1_recv_entries.h&quot;)
+// create can1 recv queue storage
+#define CAN_RECV_ENTRY(ID_, SIZE_, CIRCULAR_) \
+  static uint8_t can1_recv_queue_storage_##ID_[SIZE_ * sizeof(rx_payload_t)];
+
+#include &quot;can1_recv_entries.h&quot;
+
+#undef CAN_RECV_ENTRY
+
+// create can1 recv queue array
+#define CAN_RECV_ENTRY(ID_, SIZE_, CIRCULAR_)      \
+  {.id = (ID_),                         \
+   .size = (SIZE_),                     \
+   .queue = NULL,                       \
+   .storage = can1_recv_queue_storage_##ID_, \
+   .circular = (CIRCULAR_), \
+   .buffer = 0},
+
+static recv_entry_t can1_recv_entries[] = {
+#include &quot;can1_recv_entries.h&quot;
+};
+#undef CAN_RECV_ENTRY
+
+// calculate amount of can1 recv entries
+static const uint32_t can1_recv_entry_count =
+    sizeof(can1_recv_entries) / sizeof(can1_recv_entries[0]);
+
+#else /* can1_recv_entries.h */
+// create can1 recv queue array
+static recv_entry_t can1_recv_entries[] = {};
+// calculate amount of can1 recv entries
+static const uint32_t can1_recv_entry_count = 0;
+#endif /* can1_recv_entries.h */
+#endif /* CAN1 */
+
+#ifdef CAN2
+// fallback can2 send queue size
+#ifndef CAN2_SEND_QUEUE_SIZE
+#define CAN2_SEND_QUEUE_SIZE (10)
+#endif
+
+// can2 handle
+static CAN_HandleTypeDef hcan2_ = {.Instance = CAN2};
+CAN_HandleTypeDef* hcan2 = &amp;hcan2_;
+
+// can2 send queue
+static QueueHandle_t can2_send_queue = NULL;
+static StaticQueue_t can2_send_queue_buffer;
+static uint8_t
+    can2_send_queue_storage[CAN2_SEND_QUEUE_SIZE * sizeof(tx_payload_t)];
+
+#if __has_include(&quot;can2_recv_entries.h&quot;)
+// create can2 recv queue storage
+#define CAN_RECV_ENTRY(ID_, SIZE_, CIRCULAR_) \
+  static uint8_t can2_recv_queue_storage_##ID_[SIZE_ * sizeof(rx_payload_t)];
+
+#include &quot;can2_recv_entries.h&quot;
+
+#undef CAN_RECV_ENTRY
+
+// create can2 recv queue array
+#define CAN_RECV_ENTRY(ID_, SIZE_, CIRCULAR_)      \
+  {.id = (ID_),                         \
+   .size = (SIZE_),                     \
+   .queue = NULL,                       \
+   .storage = can2_recv_queue_storage_##ID_, \
+   .circular = (CIRCULAR_), \
+   .buffer = 0},
+
+static recv_entry_t can2_recv_entries[] = {
+#include &quot;can2_recv_entries.h&quot;
+};
+#undef CAN_RECV_ENTRY
+
+// calculate amount of can2 recv entries
+static const uint32_t can2_recv_entry_count =
+    sizeof(can2_recv_entries) / sizeof(can2_recv_entries[0]);
+
+#else /* can2_recv_entries.h */
+// create can2 recv queue array
+static recv_entry_t can2_recv_entries[] = {};
+// calculate amount of can2 recv entries
+static const uint32_t can2_recv_entry_count = 0;
+#endif /* can2_recv_entries.h */
+#endif /* CAN2 */
+
+#ifdef CAN3
+// fallback can3 send queue size
+#ifndef CAN3_SEND_QUEUE_SIZE
+#define CAN3_SEND_QUEUE_SIZE (10)
+#endif
+
+// can3 handle
+static CAN_HandleTypeDef hcan3_ = {.Instance = CAN3};
+CAN_HandleTypeDef* hcan3 = &amp;hcan3_;
+
+// can3 send queue
+static QueueHandle_t can3_send_queue = NULL;
+static StaticQueue_t can3_send_queue_buffer;
+static uint8_t
+    can3_send_queue_storage[CAN3_SEND_QUEUE_SIZE * sizeof(tx_payload_t)];
+
+#if __has_include(&quot;can3_recv_entries.h&quot;)
+// create recv queue storage
+#define CAN_RECV_ENTRY(ID_, SIZE_, CIRCULAR_) \
+  static uint8_t recv_queue_storage_##ID_[SIZE_ * sizeof(rx_payload_t)];
+
+#include &quot;can3_recv_entries.h&quot;
+
+#undef CAN_RECV_ENTRY
+
+// create can3 recv queue array
+#define CAN_RECV_ENTRY(ID_, SIZE_, CIRCULAR_)      \
+  {.id = (ID_),                         \
+   .size = (SIZE_),                     \
+   .queue = NULL,                       \
+   .storage = recv_queue_storage_##ID_, \
+   .circular = (CIRCULAR_), \
+   .buffer = 0},
+
+static recv_entry_t can3_recv_entries[] = {
+#include &quot;can3_recv_entries.h&quot;
+};
+#undef CAN_RECV_ENTRY
+
+// calculate amount of can3 recv entries
+static const uint32_t can3_recv_entry_count =
+    sizeof(can3_recv_entries) / sizeof(can3_recv_entries[0]);
+
+#else /* can3_recv_entries.h */
+// create can3 recv queue array
+static recv_entry_t can3_recv_entries[] = {};
+// calculate amount of can3 recv entries
+static const uint32_t can3_recv_entry_count = 0;
+#endif /* can3_recv_entries.h */
+#endif /* CAN3 */
+
+static inline void HAL_CAN_MspF4Init(CAN_HandleTypeDef* hcan){
+  GPIO_InitTypeDef init = {0};
+
+  // CAN1
+  if (hcan-&gt;Instance == CAN1) {
+    // enable clocks
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+
+    /* enable gpio
+    PA11 -&gt; CAN1_RX
+    PA12 -&gt; CAN1_TX
+    */
+    init.Pin = GPIO_PIN_11;
+    init.Mode = GPIO_MODE_AF_PP;
+    init.Pull = GPIO_PULLUP;
+    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    init.Alternate = GPIO_AF9_CAN1;
+    HAL_GPIO_Init(GPIOA, &amp;init);
+
+    init.Pin = GPIO_PIN_12;
+    init.Mode = GPIO_MODE_AF_PP;
+    init.Pull = GPIO_NOPULL;
+    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    init.Alternate = GPIO_AF9_CAN1;
+    HAL_GPIO_Init(GPIOA, &amp;init);
+  }
+
+  // CAN2
+  #ifdef CAN2
+  else if (hcan-&gt;Instance == CAN2) {
+    // enable clocks
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+
+    /* enable gpio
+    PB12 -&gt; CAN2_RX
+    PB13 -&gt; CAN2_TX
+    */
+    init.Pin = GPIO_PIN_12;
+    init.Mode = GPIO_MODE_AF_PP;
+    init.Pull = GPIO_PULLUP;
+    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    init.Alternate = GPIO_AF9_CAN2;
+    HAL_GPIO_Init(GPIOB, &amp;init);
+
+    init.Pin = GPIO_PIN_13;
+    init.Mode = GPIO_MODE_AF_PP;
+    init.Pull = GPIO_NOPULL;
+    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    init.Alternate = GPIO_AF9_CAN2;
+    HAL_GPIO_Init(GPIOB, &amp;init);
+  }
+  #endif /* CAN2 */
+
+  // CAN3
+  #ifdef CAN3
+  else if (hcan-&gt;Instance == CAN3) {
+    // enable clocks
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+
+    /* enable gpio
+    PA8  -&gt; CAN3_RX
+    PA15 -&gt; CAN3_TX
+    */
+    init.Pin = GPIO_PIN_8;
+    init.Mode = GPIO_MODE_AF_PP;
+    init.Pull = GPIO_PULLUP;
+    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    init.Alternate = GPIO_AF11_CAN3;
+    HAL_GPIO_Init(GPIOA, &amp;init);
+
+    init.Pin = GPIO_PIN_15;
+    init.Mode = GPIO_MODE_AF_PP;
+    init.Pull = GPIO_NOPULL;
+    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    init.Alternate = GPIO_AF11_CAN3;
+    HAL_GPIO_Init(GPIOA, &amp;init);
+  }
+  #endif /* CAN3 */
+}
+
+// CAN MSP deinit
+void HAL_CAN_MspDeInit(CAN_HandleTypeDef* hcan) {
+  // CAN1
+  if (hcan-&gt;Instance == CAN1) {
+    // disable clocks
+    __HAL_RCC_CAN1_CLK_DISABLE();
+
+    /* disable gpio
+    PA11 -&gt; CAN1_RX
+    PA12 -&gt; CAN1_TX
+    */
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_11);
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_12);
+
+    // disable interrupts
+    HAL_NVIC_DisableIRQ(CAN1_TX_IRQn);
+    HAL_NVIC_DisableIRQ(CAN1_RX0_IRQn);
+  }
+
+  // CAN2
+  #ifdef CAN2
+  else if (hcan-&gt;Instance == CAN2) {
+    // disable clocks
+    __HAL_RCC_CAN2_CLK_DISABLE();
+
+    /* disable gpio
+    PB12 -&gt; CAN2_RX
+    PB13 -&gt; CAN2_TX
+    */
+    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_12);
+    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_13);
+
+    // disable interrupts
+    HAL_NVIC_DisableIRQ(CAN2_TX_IRQn);
+    HAL_NVIC_DisableIRQ(CAN2_RX0_IRQn);
+  }
+  #endif /* CAN2 */
+
+  // CAN3
+  #ifdef CAN3
+  else if (hcan-&gt;Instance == CAN3) {
+    // disable clocks
+    __HAL_RCC_CAN3_CLK_DISABLE();
+
+    /* disable gpio
+    PA8  -&gt; CAN3_RX
+    PB15 -&gt; CAN3_TX
+    */
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_8);
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_15);
+
+    // disable interrupts
+    HAL_NVIC_DisableIRQ(CAN3_TX_IRQn);
+    HAL_NVIC_DisableIRQ(CAN3_RX0_IRQn);
+  }
+  #endif /* CAN3 */
+}
+
+static inline void HAL_CAN_MspL4Init(CAN_HandleTypeDef* hcan){
+  GPIO_InitTypeDef init = {0};
+  // CAN1
+  if (hcan-&gt;Instance == CAN1) {
+    // enable clocks
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+
+    /* enable gpio
+    PA11 -&gt; CAN1_RX
+    PA12 -&gt; CAN1_TX
+    */
+    init.Pin = GPIO_PIN_11;
+    init.Mode = GPIO_MODE_AF_PP;
+    init.Pull = GPIO_PULLUP;
+    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    init.Alternate = GPIO_AF9_CAN1;
+    HAL_GPIO_Init(GPIOA, &amp;init);
+
+    init.Pin = GPIO_PIN_12;
+    init.Mode = GPIO_MODE_AF_PP;
+    init.Pull = GPIO_NOPULL;
+    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    init.Alternate = GPIO_AF9_CAN1;
+    HAL_GPIO_Init(GPIOA, &amp;init);
+  }
+}
+
+// CAN MSP init
+void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan) {
+  IRQn_Type txIRQ = 0;
+  IRQn_Type rxIRQ = 0;
+  if (hcan-&gt;Instance == CAN1) {
+    __HAL_RCC_CAN1_CLK_ENABLE();
+    txIRQ = CAN1_TX_IRQn;
+    rxIRQ = CAN1_RX0_IRQn;
+  }
+  #ifdef CAN2
+  else if(hcan-&gt;Instance == CAN2){
+    __HAL_RCC_CAN2_CLK_ENABLE();
+    txIRQ = CAN2_TX_IRQn;
+    rxIRQ = CAN2_RX0_IRQn;
+  }
+  #endif
+  #ifdef CAN3
+  else if(hcan-&gt;Instance == CAN3){
+    __HAL_RCC_CAN3_CLK_ENABLE();
+    txIRQ = CAN3_TX_IRQn;
+    rxIRQ = CAN3_RX0_IRQn;
+  }
+  #endif
+
+  // configure GPIO pins for CAN
+  #if defined(STM32F4xx)
+  HAL_CAN_MspF4Init(hcan);
+  #elif defined(STM32L4xx)
+  HAL_CAN_MspL4Init(hcan);
+  #endif
+
+  // enable can interrupts
+  if(txIRQ !=0 &amp;&amp; rxIRQ !=0){
+    HAL_NVIC_SetPriority(txIRQ, 5, 0);
+    HAL_NVIC_EnableIRQ(txIRQ);
+    HAL_NVIC_SetPriority(rxIRQ, 5, 0);
+    HAL_NVIC_EnableIRQ(rxIRQ);
+  }
+}
+
+can_status_t can_init(CAN_HandleTypeDef* handle, CAN_FilterTypeDef* filter) {
+  // CAN1
+  if (handle-&gt;Instance == CAN1) {
+    // init queues
+    can1_send_queue =
+        xQueueCreateStatic(CAN1_SEND_QUEUE_SIZE, sizeof(tx_payload_t),
+                           can1_send_queue_storage, &amp;can1_send_queue_buffer);
+    for (int i = 0; i &lt; can1_recv_entry_count; i++) {
+      can1_recv_entries[i].queue = xQueueCreateStatic(
+          can1_recv_entries[i].size, sizeof(rx_payload_t),
+          can1_recv_entries[i].storage, &amp;can1_recv_entries[i].buffer);
+    }
+  }
+
+  // CAN2
+  #ifdef CAN2
+  else if (handle-&gt;Instance == CAN2) {
+    // init queues
+    can2_send_queue =
+        xQueueCreateStatic(CAN2_SEND_QUEUE_SIZE, sizeof(tx_payload_t),
+                           can2_send_queue_storage, &amp;can2_send_queue_buffer);
+    for (int i = 0; i &lt; can2_recv_entry_count; i++) {
+      can2_recv_entries[i].queue = xQueueCreateStatic(
+          can2_recv_entries[i].size, sizeof(rx_payload_t),
+          can2_recv_entries[i].storage, &amp;can2_recv_entries[i].buffer);
+    }
+  }
+  #endif /* CAN2 */
+
+  // CAN3
+  #ifdef CAN3
+  else if (handle-&gt;Instance == CAN3) {
+    // init queues
+    can3_send_queue =
+        xQueueCreateStatic(CAN3_SEND_QUEUE_SIZE, sizeof(tx_payload_t),
+                           can3_send_queue_storage, &amp;can3_send_queue_buffer);
+    for (int i = 0; i &lt; can3_recv_entry_count; i++) {
+      can3_recv_entries[i].queue = xQueueCreateStatic(
+          can3_recv_entries[i].size, sizeof(rx_payload_t),
+          can3_recv_entries[i].storage, &amp;can3_recv_entries[i].buffer);
+    }
+  }
+  #endif /* CAN3 */
+
+  else {
+    return CAN_ERR;
+  }
+
+  // init HAL
+  if (HAL_CAN_Init(handle) != HAL_OK) {
+    return CAN_ERR;
+  }
+
+  // init filter
+  if (HAL_CAN_ConfigFilter(handle, filter) != HAL_OK) {
+    return CAN_ERR;
+  }
+
+  // enable interrupts
+  if (HAL_CAN_ActivateNotification(handle, CAN_IT_TX_MAILBOX_EMPTY) != HAL_OK) {
+    return CAN_ERR;
+  }
+  if (HAL_CAN_ActivateNotification(handle, CAN_IT_RX_FIFO0_MSG_PENDING) !=
+      HAL_OK) {
+    return CAN_ERR;
+  }
+
+  return CAN_OK;
+}
+
+can_status_t can_deinit(CAN_HandleTypeDef* handle) {
+  // deinit HAL
+  if (HAL_CAN_DeInit(handle) != HAL_OK) {
+    return CAN_ERR;
+  }
+
+  // disable interrupts
+  if (HAL_CAN_DeactivateNotification(handle, CAN_IT_TX_MAILBOX_EMPTY) != HAL_OK) {
+    return CAN_ERR;
+  }
+  if (HAL_CAN_DeactivateNotification(handle, CAN_IT_RX_FIFO0_MSG_PENDING) !=
+      HAL_OK) {
+    return CAN_ERR;
+  }
+
+  return CAN_OK;
+}
+
+can_status_t can_start(CAN_HandleTypeDef* handle) {
+  if (HAL_CAN_Start(handle) != HAL_OK) {
+    return CAN_ERR;
+  }
+
+  return CAN_OK;
+}
+
+can_status_t can_stop(CAN_HandleTypeDef* handle) {
+  if (HAL_CAN_Stop(handle) != HAL_OK) {
+    return CAN_ERR;
+  }
+
+  return CAN_OK;
+}
+
+can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
+                      CAN_RxHeaderTypeDef* header, uint8_t data[],
+                      TickType_t delay_ticks) {
+  // recieve from queue matching id
+  rx_payload_t payload = {0};
+  bool valid_id = false;
+  // CAN1
+  if (handle-&gt;Instance == CAN1) {
+    for (int i = 0; i &lt; can1_recv_entry_count; i++) {
+      if (can1_recv_entries[i].id == id) {
+        valid_id = true;
+
+        // if delay_ticks == portMAX_DELAY thread blocks, 
+        // other values of delay_ticks are delays
+        if (xQueueReceive(can1_recv_entries[i].queue, &amp;payload, delay_ticks) ==
+            errQUEUE_EMPTY) {
+          return CAN_EMPTY;
+        }
+
+        break;
+      }
+    }
+  }
+
+  // CAN2
+  #ifdef CAN2
+  else if (handle-&gt;Instance == CAN2) {
+    for (int i = 0; i &lt; can2_recv_entry_count; i++) {
+      if (can2_recv_entries[i].id == id) {
+        valid_id = true;
+
+        // if delay_ticks == portMAX_DELAY thread blocks, 
+        // other values of delay_ticks are delays
+        if (xQueueReceive(can2_recv_entries[i].queue, &amp;payload, delay_ticks) ==
+            errQUEUE_EMPTY) {
+          return CAN_EMPTY;
+        }
+
+        break;
+      }
+    }
+  }
+  #endif /* CAN2 */
+
+  // CAN3
+  #ifdef CAN3
+  else if (handle-&gt;Instance == CAN3) {
+    for (int i = 0; i &lt; can3_recv_entry_count; i++) {
+      if (can3_recv_entries[i].id == id) {
+        valid_id = true;
+
+        // if delay_ticks == portMAX_DELAY thread blocks, 
+        // other values of delay_ticks are delays
+        if (xQueueReceive(can3_recv_entries[i].queue, &amp;payload, delay_ticks) ==
+            errQUEUE_EMPTY) {
+          return CAN_EMPTY;
+        }
+
+        break;
+      }
+    }
+  }
+  #endif /* CAN3 */
+
+  else {
+    return CAN_ERR;
+  }
+
+  // decode payload if it is valid and message recieved
+  if (valid_id) {
+    *header = payload.header;
+    for (int i = 0; i &lt; DATA_SIZE; i++) {
+      data[i] = payload.data[i];
+    }
+
+    return CAN_RECV;
+
+  } else {
+    return CAN_ERR;
+  }
+}
+
+can_status_t can_send(CAN_HandleTypeDef* handle,
+                      const CAN_TxHeaderTypeDef* header, const uint8_t data[],
+                      TickType_t delay_ticks) {
+
+  // disable interrupts (do not want race conditions
+  // on shared resource (mailbox) between threads and
+  // interrupt routines (TxComplete))
+  portENTER_CRITICAL();
+
+  // if transmit is inactive, put payload into mailbox
+  if (HAL_CAN_GetTxMailboxesFreeLevel(handle) &gt;= 1) {
+    uint32_t mailbox;
+    if (HAL_CAN_AddTxMessage(handle, header, data, &amp;mailbox) != HAL_OK) {
+      // disable interrupts
+      portEXIT_CRITICAL();
+
+      return CAN_ERR;
+    }
+
+    // disable interrupts
+    portEXIT_CRITICAL();
+  }
+  // otherwise, put into send queue
+  else {
+    // disable interrupts
+    portEXIT_CRITICAL();
+
+    tx_payload_t payload = {0};
+    payload.header = *header;
+    for (int i = 0; i &lt; DATA_SIZE; i++) {
+      payload.data[i] = data[i];
+    }
+
+    // CAN1
+    if (handle-&gt;Instance == CAN1) {
+      if (xQueueSend(can1_send_queue, &amp;payload, delay_ticks) != pdTRUE) {
+        return CAN_ERR;
+      }
+    }
+
+    // CAN2
+    #ifdef CAN2
+    else if (handle-&gt;Instance == CAN2) {
+      if (xQueueSend(can2_send_queue, &amp;payload, delay_ticks) != pdTRUE) {
+        return CAN_ERR;
+      }
+    }
+    #endif /* CAN2 */
+
+    // CAN3
+    #ifdef CAN3
+    else if (handle-&gt;Instance == CAN3) {
+      if (xQueueSend(can3_send_queue, &amp;payload, delay_ticks) != pdTRUE) {
+        return CAN_ERR;
+      }
+    }
+    #endif /* CAN3 */
+  }
+
+  return CAN_SENT;
+}
+
+static void transmit(CAN_HandleTypeDef* handle) {
+  tx_payload_t payload = {0};
+  BaseType_t higherPriorityTaskWoken = pdFALSE;
+
+  // receive data from send queue
+  bool success = false;
+  // CAN1
+  if (handle-&gt;Instance == CAN1) {
+    if (xQueueReceiveFromISR(can1_send_queue, &amp;payload,
+                             &amp;higherPriorityTaskWoken) == pdTRUE) {
+      success = true;
+    }
+  }
+
+  // CAN2
+  #ifdef CAN2
+  else if (handle-&gt;Instance == CAN2) {
+    if (xQueueReceiveFromISR(can2_send_queue, &amp;payload,
+                             &amp;higherPriorityTaskWoken) == pdTRUE) {
+      success = true;
+    }
+  }
+  #endif /* CAN2 */
+
+  // CAN3
+  #ifdef CAN3
+  else if (handle-&gt;Instance == CAN3) {
+    if (xQueueReceiveFromISR(can3_send_queue, &amp;payload,
+                             &amp;higherPriorityTaskWoken) == pdTRUE) {
+      success = true;
+    }
+  }
+  #endif /* CAN3 */
+
+  // add payload to mailbox
+  if (success) {
+    uint32_t mailbox;
+    if (HAL_CAN_AddTxMessage(handle, &amp;payload.header, payload.data, &amp;mailbox) != HAL_OK) {
+      // Handle transmission error (optional: log or retry mechanism)
+      // treated as lost packet for now
+    }
+  }
+
+  portYIELD_FROM_ISR(higherPriorityTaskWoken);
+}
+
+void HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef* hcan) {
+  transmit(hcan);
+}
+
+void HAL_CAN_TxMailbox1CompleteCallback(CAN_HandleTypeDef* hcan) {
+  transmit(hcan);
+}
+
+void HAL_CAN_TxMailbox2CompleteCallback(CAN_HandleTypeDef* hcan) {
+  transmit(hcan);
+}
+
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
+  rx_payload_t payload = {0};
+  BaseType_t higherPriorityTaskWoken = pdFALSE;
+
+  // recieve messages from queue till empty and put into recieve queues
+  while (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &amp;payload.header,
+                              payload.data) == HAL_OK) {
+    // CAN1
+    if (hcan-&gt;Instance == CAN1) {
+      for (int i = 0; i &lt; can1_recv_entry_count; i++) {
+        if (can1_recv_entries[i].id == payload.header.StdId) {
+          if (can1_recv_entries[i].circular){
+            xQueueSendCircularBufferFromISR(
+              can1_recv_entries[i].queue, 
+              &amp;payload, 
+              &amp;higherPriorityTaskWoken, 
+              sizeof(rx_payload_t)
+            );
+          } else {
+            xQueueSendFromISR(can1_recv_entries[i].queue, &amp;payload,
+                            &amp;higherPriorityTaskWoken);
+          }
+      break;
+        }
+      }
+    }
+
+    // CAN2
+    #ifdef CAN2
+    else if (hcan-&gt;Instance == CAN2) {
+      for (int i = 0; i &lt; can2_recv_entry_count; i++) {
+        if (can2_recv_entries[i].id == payload.header.StdId) {
+          if (can2_recv_entries[i].circular){
+            xQueueSendCircularBufferFromISR(
+              can2_recv_entries[i].queue, 
+              &amp;payload, 
+              &amp;higherPriorityTaskWoken, 
+              sizeof(rx_payload_t)
+            );
+          } else {
+            xQueueSendFromISR(can2_recv_entries[i].queue, &amp;payload,
+                            &amp;higherPriorityTaskWoken);
+          }
+      break;
+        }
+      }
+    }
+    #endif /* CAN2 */
+
+    // CAN3
+    #ifdef CAN3
+    if (hcan-&gt;Instance == CAN3) {
+      for (int i = 0; i &lt; can3_recv_entry_count; i++) {
+        if (can3_recv_entries[i].id == payload.header.StdId) {
+          if (can3_recv_entries[i].circular){
+            xQueueSendCircularBufferFromISR(
+              can3_recv_entries[i].queue, 
+              &amp;payload, 
+              &amp;higherPriorityTaskWoken, 
+              sizeof(rx_payload_t)
+            );
+          } else {
+            xQueueSendFromISR(can3_recv_entries[i].queue, &amp;payload,
+                            &amp;higherPriorityTaskWoken);
+          }
+      break;
+        }
+      }
+    }
+    #endif /* CAN3 */
+  }
+
+  portYIELD_FROM_ISR(higherPriorityTaskWoken);
+}
+
+// CAN1
+#ifdef CAN1
+void CAN1_TX_IRQHandler(void) { HAL_CAN_IRQHandler(hcan1); }
+void CAN1_RX0_IRQHandler(void) { HAL_CAN_IRQHandler(hcan1); }
+#endif /* CAN1 */
+
+// CAN2
+#ifdef CAN2
+void CAN2_TX_IRQHandler(void) { HAL_CAN_IRQHandler(hcan2); }
+void CAN2_RX0_IRQHandler(void) { HAL_CAN_IRQHandler(hcan2); }
+#endif /* CAN2 */
+
+// CAN3
+#ifdef CAN3
+void CAN3_TX_IRQHandler(void) { HAL_CAN_IRQHandler(hcan3); }
+void CAN3_RX0_IRQHandler(void) { HAL_CAN_IRQHandler(hcan3); }
+#endif /* CAN3 */
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.92b07e13.min.js"></script>
+      
+    
+  </body>
+</html>
