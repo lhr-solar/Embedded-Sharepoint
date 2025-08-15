@@ -23,6 +23,7 @@ jobs:
       # 3. Install dependencies
       - name: Install dependencies
         run: |
+          sudo apt-get install -y doxygen graphviz
           pip install --upgrade pip
           pip install -r requirements.txt
 
