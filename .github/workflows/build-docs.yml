@@ -5,7 +5,6 @@ on:
     branches:
       - mkdocs-rework
 
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -33,9 +32,6 @@ jobs:
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
-        run: |
-          echo "Deploying to GitHub Pages"
-          mkdocs gh-deploy
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
