@@ -13,7 +13,7 @@ jobs:
        - name: Install
          run: |
           sudo ./nix_install.sh
-          nix develop
+          nix develop --no-update-lock-file
 
        - name: Clean
          run: |
