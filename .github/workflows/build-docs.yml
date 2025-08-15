@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install mkdocs mkdocs-material
+          pip install -r requirements.txt
 
       # 4. Build the MkDocs site
       - name: Build MkDocs site

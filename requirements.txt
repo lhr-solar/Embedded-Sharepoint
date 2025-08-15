@@ -4,4 +4,3 @@ mkdocs-material
 mkdoxy
 pyserial
 cantools
-mkdocs-macros-plugin
