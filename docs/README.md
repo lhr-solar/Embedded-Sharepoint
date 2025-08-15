@@ -1,17 +1,23 @@
 # Welcome to the Embedded Sharepoint Documentation
 
-Welcome to the Embedded Sharepoint! This documentation is designed to assist LHR - Solar teams in developing projects using STM32 devices.
+Welcome to the Embedded Sharepoint! Embedded-Sharepoint contains the shared embedded files to build and develop for our custom STM32 PCBs.
 
 ## Getting Started
 
 
-<!-- ## Quick Links -->
+## Directory Structure
 
-<!-- TODO: Add confluence or add documentation -->
-<!-- - [Getting Started](getting-started.md) - Learn how to set up and begin using the library.
-- [API Reference](api-reference.md) - Explore detailed documentation of all available functions and modules.
-- [Examples & Tutorials](examples.md) - Follow step-by-step guides to implement common use cases.
-- [FAQ](faq.md) - Find answers to frequently asked questions. -->
+## Command Usage
+
+## Adding Sharepoint To Your Project
+Embedded-Sharepoint contains common files so it should be stored as a submodule inside your repository.  
+
+### Examples:
+* [BPS-Leader](https://github.com/lhr-solar/BPS-Leader)
+* [Activ-Precharge Board](https://github.com/lhr-solar/Active-Precharge-Board#)
+
+## Contributing
+
 
 ## WSL
 

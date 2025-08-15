@@ -1,4 +1,4 @@
-name: Build and Deploy MkDocs to github pages
+name: Build and Deploy Sharepoint Documentation to GitHub Pages
 
 on:
   push:
@@ -32,7 +32,6 @@ jobs:
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
-        run: mkdocs gh-deploy
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
