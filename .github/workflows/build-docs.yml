@@ -1,4 +1,4 @@
-name: Build and Deploy MkDocs
+name: Build and Deploy MkDocs to github pages
 
 on:
   push:
@@ -10,28 +10,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Set up Python
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: 3.12
 
-      # 3. Install dependencies
       - name: Install dependencies
         run: |
           sudo apt-get install -y doxygen graphviz
           pip install --upgrade pip
           pip install -r requirements.txt
+          
+      - name: Generate DBC Table
+        run: python docs/generate_dbc_table.py
 
-      # 4. Build the MkDocs site
       - name: Build MkDocs site
         run: mkdocs build
 
-      # 5. Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
