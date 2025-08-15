@@ -6,3 +6,6 @@ site
 .env
 .cache
 /can/CANMetaData.*
+
+.venv
+flake.lock
