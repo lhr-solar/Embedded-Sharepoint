@@ -19,7 +19,6 @@ fi
 
 echo -e "${GREEN}Detecting Nix installation type...${NC}"
 
-# Default to user config
 CONFIG_FILE="$HOME/.config/nix/nix.conf"
 NEED_RESTART=false
 
@@ -67,9 +66,9 @@ elif [ -e "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh" ]; then
     source "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh"
 fi
 
-# Install nix unstable (for latest flake features)
-echo -e "${GREEN}Installing nix unstable for full flakes support...${NC}"
-nix-env -iA nixpkgs.nixUnstable
+# Install latest Nix version (replaces nixUnstable)
+echo -e "${GREEN}Installing latest Nix version for full flakes support...${NC}"
+nix-env -iA nixpkgs.nixVersions.latest
 
 # Verify flake commands work
 echo -e "${GREEN}Verifying flake support...${NC}"
@@ -79,4 +78,5 @@ else
     echo -e "${RED}Something went wrong: flake commands not working.${NC}"
 fi
 
+# Install NixOS bin
 sudo apt install nix-bin
