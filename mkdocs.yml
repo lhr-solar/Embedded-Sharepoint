@@ -30,7 +30,6 @@ plugins:
   - search:
       prebuild_index: true
       lang: en
-  - macros:
 
   - mkdoxy:
       projects:
@@ -47,7 +46,6 @@ plugins:
             FILE_PATTERNS: "*.c *.h"
             RECURSIVE: true
 
-  - macros
 
 extra_javascript: []
 extra_css: []
