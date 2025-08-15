@@ -9,3 +9,5 @@ site
 
 .venv
 flake.lock
+.DS_Store
+*.swp
