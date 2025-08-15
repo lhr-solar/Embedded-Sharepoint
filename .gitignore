@@ -8,7 +8,7 @@ site
 /can/CANMetaData.*
 
 .venv
-flake.lock
 .DS_Store
+flake.lock
 *.swp
 compile_commands.json
