@@ -34,6 +34,7 @@
             pkgs.cacert
             pkgs.gnumake
             pkgs.binutils
+            pkgs.parallel
             python
           ];
           # Only add armGcc if it exists
