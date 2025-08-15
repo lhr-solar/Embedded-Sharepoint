@@ -64,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#prohelion_wavesculptor22dbc" class="md-skip">
+        <a href="#table-of-contents" class="md-skip">
           Skip to content
         </a>
       
@@ -679,19 +679,6 @@
         
       
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Signals & Messages
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -703,43 +690,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#messages" class="md-nav__link">
-    <span class="md-ellipsis">
-      Messages
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#signals" class="md-nav__link">
-    <span class="md-ellipsis">
-      Signals
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -773,32 +723,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#messages" class="md-nav__link">
-    <span class="md-ellipsis">
-      Messages
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#signals" class="md-nav__link">
-    <span class="md-ellipsis">
-      Signals
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -813,6 +737,16 @@
 
 
 
+<h1 id="table-of-contents">Table of Contents</h1>
+<ul>
+<li><a href="#prohelion_wavesculptor22">Prohelion Wavesculptor22</a></li>
+<li><a href="#tpee_mppt[A]">Tpee Mppt[a]</a></li>
+<li><a href="#controls">Controls</a></li>
+<li><a href="#tpee_mppt[B]">Tpee Mppt[b]</a></li>
+<li><a href="#bps-(Daybreak)">Bps (daybreak)</a></li>
+<li><a href="#contactor">Contactor</a></li>
+</ul>
+<p><a name="prohelion_wavesculptor22"></a></p>
 <h1 id="prohelion_wavesculptor22dbc">prohelion_wavesculptor22.dbc</h1>
 <h2 id="messages">Messages</h2>
 <table>
@@ -826,97 +760,97 @@
 </thead>
 <tbody>
 <tr>
-<td>576</td>
+<td>0x240</td>
 <td>IDInfo</td>
 <td>8</td>
 <td>TritiumID, SerialNumber</td>
 </tr>
 <tr>
-<td>577</td>
+<td>0x241</td>
 <td>Status</td>
 <td>8</td>
 <td>LimitOutputVoltagePWM, LimitMotorCurrent, LimitVelocity, LimitBusCurrent, LimitBusVoltageUpper, LimitBusVoltageLower, LimitIpmOrMotorTemp, LimitReserved, ErrorHardwareOverCurrent, ErrorSoftwareOverCurrent, ErrorDcBusOverVoltage, ErrorBadMotorPositionHallSeq, ErrorWatchdogCausedLastReset, ErrorConfigRead, Error15vRailUnderVoltage, ErrorDesaturationFault, ErrorMotorOverSpeed, ErrorReserved, ActiveMotor, TxErrorCount, RxErrorCount</td>
 </tr>
 <tr>
-<td>578</td>
+<td>0x242</td>
 <td>BusMeasurement</td>
 <td>8</td>
 <td>BusVoltage, BusCurrent</td>
 </tr>
 <tr>
-<td>579</td>
+<td>0x243</td>
 <td>VelocityMeasurement</td>
 <td>8</td>
 <td>MotorVelocity, VehicleVelocity</td>
 </tr>
 <tr>
-<td>580</td>
+<td>0x244</td>
 <td>PhaseCurrentMeasurement</td>
 <td>8</td>
 <td>PhaseCurrentB, PhaseCurrentC</td>
 </tr>
 <tr>
-<td>581</td>
+<td>0x245</td>
 <td>MotorVoltageVectorMeasurement</td>
 <td>8</td>
 <td>Vq, Vd</td>
 </tr>
 <tr>
-<td>582</td>
+<td>0x246</td>
 <td>MotorCurrentVectorMeasurement</td>
 <td>8</td>
 <td>Iq, Id</td>
 </tr>
 <tr>
-<td>583</td>
+<td>0x247</td>
 <td>BackEMFMeasurementPrediction</td>
 <td>8</td>
 <td>BEMFq, BEMFd</td>
 </tr>
 <tr>
-<td>584</td>
+<td>0x248</td>
 <td>VoltageRail15VMeasurement</td>
 <td>8</td>
 <td>ReservedSupply15V, Supply15V</td>
 </tr>
 <tr>
-<td>585</td>
+<td>0x249</td>
 <td>VoltageRail3V31V9Measurement</td>
 <td>8</td>
 <td>Supply1V9, Supply3V3</td>
 </tr>
 <tr>
-<td>586</td>
+<td>0x24A</td>
 <td>Reserved0A</td>
 <td>8</td>
 <td>Reserved0A0, Reserved0A1</td>
 </tr>
 <tr>
-<td>587</td>
+<td>0x24B</td>
 <td>HeatsinkMotorTempMeasurement</td>
 <td>8</td>
 <td>MotorTemp, HeatsinkTemp</td>
 </tr>
 <tr>
-<td>588</td>
+<td>0x24C</td>
 <td>DspBoardTempMeasurement</td>
 <td>8</td>
 <td>DspBoardTemp, ReservedDspBoardTemp</td>
 </tr>
 <tr>
-<td>589</td>
+<td>0x24D</td>
 <td>Reserved0D</td>
 <td>8</td>
 <td>Reserved0D0, Reserved0D1</td>
 </tr>
 <tr>
-<td>590</td>
+<td>0x24E</td>
 <td>OdometerBusAhMeasurement</td>
 <td>8</td>
 <td>Odometer, DCBusAh</td>
 </tr>
 <tr>
-<td>599</td>
+<td>0x257</td>
 <td>SlipSpeedMeasurement</td>
 <td>8</td>
 <td>SlipSpeed, ReservedSlipSpeed</td>
@@ -929,7 +863,7 @@
 <tr>
 <th>Name</th>
 <th>Message</th>
-<th>Start Bit</th>
+<th>Bits [start:end]</th>
 <th>Length</th>
 <th>Factor</th>
 <th>Offset</th>
@@ -942,7 +876,7 @@
 <tr>
 <td>TritiumID</td>
 <td>IDInfo</td>
-<td>0</td>
+<td>[0:31]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -953,7 +887,7 @@
 <tr>
 <td>SerialNumber</td>
 <td>IDInfo</td>
-<td>32</td>
+<td>[32:63]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -964,7 +898,7 @@
 <tr>
 <td>LimitOutputVoltagePWM</td>
 <td>Status</td>
-<td>0</td>
+<td>[0:0]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -975,7 +909,7 @@
 <tr>
 <td>LimitMotorCurrent</td>
 <td>Status</td>
-<td>1</td>
+<td>[1:1]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -986,7 +920,7 @@
 <tr>
 <td>LimitVelocity</td>
 <td>Status</td>
-<td>2</td>
+<td>[2:2]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -997,7 +931,7 @@
 <tr>
 <td>LimitBusCurrent</td>
 <td>Status</td>
-<td>3</td>
+<td>[3:3]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1008,7 +942,7 @@
 <tr>
 <td>LimitBusVoltageUpper</td>
 <td>Status</td>
-<td>4</td>
+<td>[4:4]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1019,7 +953,7 @@
 <tr>
 <td>LimitBusVoltageLower</td>
 <td>Status</td>
-<td>5</td>
+<td>[5:5]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1030,7 +964,7 @@
 <tr>
 <td>LimitIpmOrMotorTemp</td>
 <td>Status</td>
-<td>6</td>
+<td>[6:6]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1041,7 +975,7 @@
 <tr>
 <td>LimitReserved</td>
 <td>Status</td>
-<td>7</td>
+<td>[7:15]</td>
 <td>9</td>
 <td>1</td>
 <td>0</td>
@@ -1052,7 +986,7 @@
 <tr>
 <td>ErrorHardwareOverCurrent</td>
 <td>Status</td>
-<td>16</td>
+<td>[16:16]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1063,7 +997,7 @@
 <tr>
 <td>ErrorSoftwareOverCurrent</td>
 <td>Status</td>
-<td>17</td>
+<td>[17:17]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1074,7 +1008,7 @@
 <tr>
 <td>ErrorDcBusOverVoltage</td>
 <td>Status</td>
-<td>18</td>
+<td>[18:18]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1085,7 +1019,7 @@
 <tr>
 <td>ErrorBadMotorPositionHallSeq</td>
 <td>Status</td>
-<td>19</td>
+<td>[19:19]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1096,7 +1030,7 @@
 <tr>
 <td>ErrorWatchdogCausedLastReset</td>
 <td>Status</td>
-<td>20</td>
+<td>[20:20]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1107,7 +1041,7 @@
 <tr>
 <td>ErrorConfigRead</td>
 <td>Status</td>
-<td>21</td>
+<td>[21:21]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1118,7 +1052,7 @@
 <tr>
 <td>Error15vRailUnderVoltage</td>
 <td>Status</td>
-<td>22</td>
+<td>[22:22]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1129,7 +1063,7 @@
 <tr>
 <td>ErrorDesaturationFault</td>
 <td>Status</td>
-<td>23</td>
+<td>[23:23]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1140,7 +1074,7 @@
 <tr>
 <td>ErrorMotorOverSpeed</td>
 <td>Status</td>
-<td>24</td>
+<td>[24:24]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1151,7 +1085,7 @@
 <tr>
 <td>ErrorReserved</td>
 <td>Status</td>
-<td>25</td>
+<td>[25:31]</td>
 <td>7</td>
 <td>1</td>
 <td>0</td>
@@ -1162,7 +1096,7 @@
 <tr>
 <td>ActiveMotor</td>
 <td>Status</td>
-<td>32</td>
+<td>[32:47]</td>
 <td>16</td>
 <td>1</td>
 <td>0</td>
@@ -1173,7 +1107,7 @@
 <tr>
 <td>TxErrorCount</td>
 <td>Status</td>
-<td>48</td>
+<td>[48:55]</td>
 <td>8</td>
 <td>1</td>
 <td>0</td>
@@ -1184,7 +1118,7 @@
 <tr>
 <td>RxErrorCount</td>
 <td>Status</td>
-<td>56</td>
+<td>[56:63]</td>
 <td>8</td>
 <td>1</td>
 <td>0</td>
@@ -1195,7 +1129,7 @@
 <tr>
 <td>BusVoltage</td>
 <td>BusMeasurement</td>
-<td>0</td>
+<td>[0:31]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1206,7 +1140,7 @@
 <tr>
 <td>BusCurrent</td>
 <td>BusMeasurement</td>
-<td>32</td>
+<td>[32:63]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1217,7 +1151,7 @@
 <tr>
 <td>MotorVelocity</td>
 <td>VelocityMeasurement</td>
-<td>0</td>
+<td>[0:31]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1228,7 +1162,7 @@
 <tr>
 <td>VehicleVelocity</td>
 <td>VelocityMeasurement</td>
-<td>32</td>
+<td>[32:63]</td>
 <td>32</td>
 <td>2.237</td>
 <td>0</td>
@@ -1239,7 +1173,7 @@
 <tr>
 <td>PhaseCurrentB</td>
 <td>PhaseCurrentMeasurement</td>
-<td>0</td>
+<td>[0:31]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1250,7 +1184,7 @@
 <tr>
 <td>PhaseCurrentC</td>
 <td>PhaseCurrentMeasurement</td>
-<td>32</td>
+<td>[32:63]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1261,7 +1195,7 @@
 <tr>
 <td>Vq</td>
 <td>MotorVoltageVectorMeasurement</td>
-<td>0</td>
+<td>[0:31]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1272,7 +1206,7 @@
 <tr>
 <td>Vd</td>
 <td>MotorVoltageVectorMeasurement</td>
-<td>32</td>
+<td>[32:63]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1283,7 +1217,7 @@
 <tr>
 <td>Iq</td>
 <td>MotorCurrentVectorMeasurement</td>
-<td>0</td>
+<td>[0:31]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1294,7 +1228,7 @@
 <tr>
 <td>Id</td>
 <td>MotorCurrentVectorMeasurement</td>
-<td>32</td>
+<td>[32:63]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1305,7 +1239,7 @@
 <tr>
 <td>BEMFq</td>
 <td>BackEMFMeasurementPrediction</td>
-<td>0</td>
+<td>[0:31]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1316,7 +1250,7 @@
 <tr>
 <td>BEMFd</td>
 <td>BackEMFMeasurementPrediction</td>
-<td>32</td>
+<td>[32:63]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1327,7 +1261,7 @@
 <tr>
 <td>ReservedSupply15V</td>
 <td>VoltageRail15VMeasurement</td>
-<td>0</td>
+<td>[0:31]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1338,7 +1272,7 @@
 <tr>
 <td>Supply15V</td>
 <td>VoltageRail15VMeasurement</td>
-<td>32</td>
+<td>[32:63]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1349,7 +1283,7 @@
 <tr>
 <td>Supply1V9</td>
 <td>VoltageRail3V31V9Measurement</td>
-<td>0</td>
+<td>[0:31]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1360,7 +1294,7 @@
 <tr>
 <td>Supply3V3</td>
 <td>VoltageRail3V31V9Measurement</td>
-<td>32</td>
+<td>[32:63]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1371,7 +1305,7 @@
 <tr>
 <td>Reserved0A0</td>
 <td>Reserved0A</td>
-<td>0</td>
+<td>[0:31]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1382,7 +1316,7 @@
 <tr>
 <td>Reserved0A1</td>
 <td>Reserved0A</td>
-<td>32</td>
+<td>[32:63]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1393,7 +1327,7 @@
 <tr>
 <td>MotorTemp</td>
 <td>HeatsinkMotorTempMeasurement</td>
-<td>0</td>
+<td>[0:31]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1404,7 +1338,7 @@
 <tr>
 <td>HeatsinkTemp</td>
 <td>HeatsinkMotorTempMeasurement</td>
-<td>32</td>
+<td>[32:63]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1415,7 +1349,7 @@
 <tr>
 <td>DspBoardTemp</td>
 <td>DspBoardTempMeasurement</td>
-<td>0</td>
+<td>[0:31]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1426,7 +1360,7 @@
 <tr>
 <td>ReservedDspBoardTemp</td>
 <td>DspBoardTempMeasurement</td>
-<td>32</td>
+<td>[32:63]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1437,7 +1371,7 @@
 <tr>
 <td>Reserved0D0</td>
 <td>Reserved0D</td>
-<td>0</td>
+<td>[0:31]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1448,7 +1382,7 @@
 <tr>
 <td>Reserved0D1</td>
 <td>Reserved0D</td>
-<td>32</td>
+<td>[32:63]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1459,7 +1393,7 @@
 <tr>
 <td>Odometer</td>
 <td>OdometerBusAhMeasurement</td>
-<td>0</td>
+<td>[0:31]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1470,7 +1404,7 @@
 <tr>
 <td>DCBusAh</td>
 <td>OdometerBusAhMeasurement</td>
-<td>32</td>
+<td>[32:63]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1481,7 +1415,7 @@
 <tr>
 <td>SlipSpeed</td>
 <td>SlipSpeedMeasurement</td>
-<td>0</td>
+<td>[0:31]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1492,7 +1426,7 @@
 <tr>
 <td>ReservedSlipSpeed</td>
 <td>SlipSpeedMeasurement</td>
-<td>32</td>
+<td>[32:63]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1502,6 +1436,7 @@
 </tr>
 </tbody>
 </table>
+<p><a name="tpee_mppt[A]"></a></p>
 <h1 id="tpee_mpptadbc">tpee_mppt[A].dbc</h1>
 <h2 id="messages_1">Messages</h2>
 <table>
@@ -1515,19 +1450,19 @@
 </thead>
 <tbody>
 <tr>
-<td>513</td>
+<td>0x201</td>
 <td>MPPT_32_0_Status</td>
 <td>5</td>
 <td>MPPT_Mode, MPPT_Fault, MPPT_Enabled, MPPT_AmbientTemperature, MPPT_HeatsinkTemperature</td>
 </tr>
 <tr>
-<td>512</td>
+<td>0x200</td>
 <td>MPPT_32_0_Power</td>
 <td>8</td>
 <td>MPPT_Vin, MPPT_Iin, MPPT_Vout, MPPT_Iout</td>
 </tr>
 <tr>
-<td>521</td>
+<td>0x209</td>
 <td>MPPT_32_0_SetMode</td>
 <td>1</td>
 <td>Boost_Enable</td>
@@ -1540,7 +1475,7 @@
 <tr>
 <th>Name</th>
 <th>Message</th>
-<th>Start Bit</th>
+<th>Bits [start:end]</th>
 <th>Length</th>
 <th>Factor</th>
 <th>Offset</th>
@@ -1553,7 +1488,7 @@
 <tr>
 <td>MPPT_Mode</td>
 <td>MPPT_32_0_Status</td>
-<td>0</td>
+<td>[0:7]</td>
 <td>8</td>
 <td>1</td>
 <td>0</td>
@@ -1564,7 +1499,7 @@
 <tr>
 <td>MPPT_Fault</td>
 <td>MPPT_32_0_Status</td>
-<td>8</td>
+<td>[8:15]</td>
 <td>8</td>
 <td>1</td>
 <td>0</td>
@@ -1575,7 +1510,7 @@
 <tr>
 <td>MPPT_Enabled</td>
 <td>MPPT_32_0_Status</td>
-<td>16</td>
+<td>[16:23]</td>
 <td>8</td>
 <td>1</td>
 <td>0</td>
@@ -1586,7 +1521,7 @@
 <tr>
 <td>MPPT_AmbientTemperature</td>
 <td>MPPT_32_0_Status</td>
-<td>31</td>
+<td>[31:38]</td>
 <td>8</td>
 <td>1</td>
 <td>0</td>
@@ -1597,7 +1532,7 @@
 <tr>
 <td>MPPT_HeatsinkTemperature</td>
 <td>MPPT_32_0_Status</td>
-<td>39</td>
+<td>[39:46]</td>
 <td>8</td>
 <td>1</td>
 <td>0</td>
@@ -1608,7 +1543,7 @@
 <tr>
 <td>MPPT_Vin</td>
 <td>MPPT_32_0_Power</td>
-<td>7</td>
+<td>[7:22]</td>
 <td>16</td>
 <td>0.01</td>
 <td>0</td>
@@ -1619,7 +1554,7 @@
 <tr>
 <td>MPPT_Iin</td>
 <td>MPPT_32_0_Power</td>
-<td>23</td>
+<td>[23:38]</td>
 <td>16</td>
 <td>0.0005</td>
 <td>0</td>
@@ -1630,7 +1565,7 @@
 <tr>
 <td>MPPT_Vout</td>
 <td>MPPT_32_0_Power</td>
-<td>39</td>
+<td>[39:54]</td>
 <td>16</td>
 <td>0.01</td>
 <td>0</td>
@@ -1641,7 +1576,7 @@
 <tr>
 <td>MPPT_Iout</td>
 <td>MPPT_32_0_Power</td>
-<td>55</td>
+<td>[55:70]</td>
 <td>16</td>
 <td>0.0005</td>
 <td>0</td>
@@ -1652,7 +1587,7 @@
 <tr>
 <td>Boost_Enable</td>
 <td>MPPT_32_0_SetMode</td>
-<td>0</td>
+<td>[0:0]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1662,6 +1597,7 @@
 </tr>
 </tbody>
 </table>
+<p><a name="controls"></a></p>
 <h1 id="controlsdbc">controls.dbc</h1>
 <h2 id="messages_2">Messages</h2>
 <table>
@@ -1675,37 +1611,37 @@
 </thead>
 <tbody>
 <tr>
-<td>1409</td>
+<td>0x581</td>
 <td>IO_State</td>
 <td>3</td>
 <td>Acceleration_Percentage, Brake_Percentage, IGN_Array, IGN_Motor, Regen_SW, Forward_Gear, Reverse_Gear, Cruz_EN, Cruz_Set, Brake_Light</td>
 </tr>
 <tr>
-<td>1411</td>
+<td>0x583</td>
 <td>Controls_Fault</td>
 <td>1</td>
 <td>Controls_Fault, Motor_Controller_Fault, BPS_Fault, Pedals_Fault, CarCAN_Fault, Internal_Controls_Fault, OS_Fault, Lakshay_Fault</td>
 </tr>
 <tr>
-<td>1412</td>
+<td>0x584</td>
 <td>Motor_Controller_Safe</td>
 <td>1</td>
 <td>Motor_Safe, Motor_Controller_Error</td>
 </tr>
 <tr>
-<td>545</td>
+<td>0x221</td>
 <td>Motor_Drive_Command</td>
 <td>8</td>
 <td>Motor_Velocity_Setpoint, Motor_Current_Setpoint</td>
 </tr>
 <tr>
-<td>546</td>
+<td>0x222</td>
 <td>Motor_Power_Command</td>
 <td>8</td>
 <td>Motor_Power_Setpoint</td>
 </tr>
 <tr>
-<td>1413</td>
+<td>0x585</td>
 <td>Pedals_Raw_Voltage</td>
 <td>4</td>
 <td>Brake_Raw, Accel_Raw</td>
@@ -1718,7 +1654,7 @@
 <tr>
 <th>Name</th>
 <th>Message</th>
-<th>Start Bit</th>
+<th>Bits [start:end]</th>
 <th>Length</th>
 <th>Factor</th>
 <th>Offset</th>
@@ -1731,7 +1667,7 @@
 <tr>
 <td>Acceleration_Percentage</td>
 <td>IO_State</td>
-<td>0</td>
+<td>[0:7]</td>
 <td>8</td>
 <td>1</td>
 <td>0</td>
@@ -1742,7 +1678,7 @@
 <tr>
 <td>Brake_Percentage</td>
 <td>IO_State</td>
-<td>8</td>
+<td>[8:15]</td>
 <td>8</td>
 <td>1</td>
 <td>0</td>
@@ -1753,7 +1689,7 @@
 <tr>
 <td>IGN_Array</td>
 <td>IO_State</td>
-<td>16</td>
+<td>[16:16]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1764,7 +1700,7 @@
 <tr>
 <td>IGN_Motor</td>
 <td>IO_State</td>
-<td>17</td>
+<td>[17:17]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1775,7 +1711,7 @@
 <tr>
 <td>Regen_SW</td>
 <td>IO_State</td>
-<td>18</td>
+<td>[18:18]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1786,7 +1722,7 @@
 <tr>
 <td>Forward_Gear</td>
 <td>IO_State</td>
-<td>19</td>
+<td>[19:19]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1797,7 +1733,7 @@
 <tr>
 <td>Reverse_Gear</td>
 <td>IO_State</td>
-<td>20</td>
+<td>[20:20]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1808,7 +1744,7 @@
 <tr>
 <td>Cruz_EN</td>
 <td>IO_State</td>
-<td>21</td>
+<td>[21:21]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1819,7 +1755,7 @@
 <tr>
 <td>Cruz_Set</td>
 <td>IO_State</td>
-<td>22</td>
+<td>[22:22]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1830,7 +1766,7 @@
 <tr>
 <td>Brake_Light</td>
 <td>IO_State</td>
-<td>23</td>
+<td>[23:23]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1841,7 +1777,7 @@
 <tr>
 <td>Controls_Fault</td>
 <td>Controls_Fault</td>
-<td>0</td>
+<td>[0:0]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1852,7 +1788,7 @@
 <tr>
 <td>Motor_Controller_Fault</td>
 <td>Controls_Fault</td>
-<td>1</td>
+<td>[1:1]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1863,7 +1799,7 @@
 <tr>
 <td>BPS_Fault</td>
 <td>Controls_Fault</td>
-<td>2</td>
+<td>[2:2]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1874,7 +1810,7 @@
 <tr>
 <td>Pedals_Fault</td>
 <td>Controls_Fault</td>
-<td>3</td>
+<td>[3:3]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1885,7 +1821,7 @@
 <tr>
 <td>CarCAN_Fault</td>
 <td>Controls_Fault</td>
-<td>4</td>
+<td>[4:4]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1896,7 +1832,7 @@
 <tr>
 <td>Internal_Controls_Fault</td>
 <td>Controls_Fault</td>
-<td>5</td>
+<td>[5:5]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1907,7 +1843,7 @@
 <tr>
 <td>OS_Fault</td>
 <td>Controls_Fault</td>
-<td>6</td>
+<td>[6:6]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1918,7 +1854,7 @@
 <tr>
 <td>Lakshay_Fault</td>
 <td>Controls_Fault</td>
-<td>7</td>
+<td>[7:7]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1929,7 +1865,7 @@
 <tr>
 <td>Motor_Safe</td>
 <td>Motor_Controller_Safe</td>
-<td>0</td>
+<td>[0:0]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1940,7 +1876,7 @@
 <tr>
 <td>Motor_Controller_Error</td>
 <td>Motor_Controller_Safe</td>
-<td>1</td>
+<td>[1:1]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -1951,7 +1887,7 @@
 <tr>
 <td>Motor_Velocity_Setpoint</td>
 <td>Motor_Drive_Command</td>
-<td>0</td>
+<td>[0:31]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1962,7 +1898,7 @@
 <tr>
 <td>Motor_Current_Setpoint</td>
 <td>Motor_Drive_Command</td>
-<td>32</td>
+<td>[32:63]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1973,7 +1909,7 @@
 <tr>
 <td>Motor_Power_Setpoint</td>
 <td>Motor_Power_Command</td>
-<td>32</td>
+<td>[32:63]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -1984,7 +1920,7 @@
 <tr>
 <td>Brake_Raw</td>
 <td>Pedals_Raw_Voltage</td>
-<td>0</td>
+<td>[0:14]</td>
 <td>15</td>
 <td>1</td>
 <td>0</td>
@@ -1995,7 +1931,7 @@
 <tr>
 <td>Accel_Raw</td>
 <td>Pedals_Raw_Voltage</td>
-<td>16</td>
+<td>[16:30]</td>
 <td>15</td>
 <td>1</td>
 <td>0</td>
@@ -2005,6 +1941,7 @@
 </tr>
 </tbody>
 </table>
+<p><a name="tpee_mppt[B]"></a></p>
 <h1 id="tpee_mpptbdbc">tpee_mppt[B].dbc</h1>
 <h2 id="messages_3">Messages</h2>
 <table>
@@ -2018,19 +1955,19 @@
 </thead>
 <tbody>
 <tr>
-<td>529</td>
+<td>0x211</td>
 <td>MPPT_33_0_Status</td>
 <td>5</td>
 <td>MPPT_Mode, MPPT_Fault, MPPT_Enabled, MPPT_AmbientTemperature, MPPT_HeatsinkTemperature</td>
 </tr>
 <tr>
-<td>528</td>
+<td>0x210</td>
 <td>MPPT_33_0_Power</td>
 <td>8</td>
 <td>MPPT_Vin, MPPT_Iin, MPPT_Vout, MPPT_Iout</td>
 </tr>
 <tr>
-<td>537</td>
+<td>0x219</td>
 <td>MPPT_33_0_SetMode</td>
 <td>1</td>
 <td>Boost_Enable</td>
@@ -2043,7 +1980,7 @@
 <tr>
 <th>Name</th>
 <th>Message</th>
-<th>Start Bit</th>
+<th>Bits [start:end]</th>
 <th>Length</th>
 <th>Factor</th>
 <th>Offset</th>
@@ -2056,7 +1993,7 @@
 <tr>
 <td>MPPT_Mode</td>
 <td>MPPT_33_0_Status</td>
-<td>0</td>
+<td>[0:7]</td>
 <td>8</td>
 <td>1</td>
 <td>0</td>
@@ -2067,7 +2004,7 @@
 <tr>
 <td>MPPT_Fault</td>
 <td>MPPT_33_0_Status</td>
-<td>8</td>
+<td>[8:15]</td>
 <td>8</td>
 <td>1</td>
 <td>0</td>
@@ -2078,7 +2015,7 @@
 <tr>
 <td>MPPT_Enabled</td>
 <td>MPPT_33_0_Status</td>
-<td>16</td>
+<td>[16:23]</td>
 <td>8</td>
 <td>1</td>
 <td>0</td>
@@ -2089,7 +2026,7 @@
 <tr>
 <td>MPPT_AmbientTemperature</td>
 <td>MPPT_33_0_Status</td>
-<td>31</td>
+<td>[31:38]</td>
 <td>8</td>
 <td>1</td>
 <td>0</td>
@@ -2100,7 +2037,7 @@
 <tr>
 <td>MPPT_HeatsinkTemperature</td>
 <td>MPPT_33_0_Status</td>
-<td>39</td>
+<td>[39:46]</td>
 <td>8</td>
 <td>1</td>
 <td>0</td>
@@ -2111,7 +2048,7 @@
 <tr>
 <td>MPPT_Vin</td>
 <td>MPPT_33_0_Power</td>
-<td>7</td>
+<td>[7:22]</td>
 <td>16</td>
 <td>0.01</td>
 <td>0</td>
@@ -2122,7 +2059,7 @@
 <tr>
 <td>MPPT_Iin</td>
 <td>MPPT_33_0_Power</td>
-<td>23</td>
+<td>[23:38]</td>
 <td>16</td>
 <td>0.0005</td>
 <td>0</td>
@@ -2133,7 +2070,7 @@
 <tr>
 <td>MPPT_Vout</td>
 <td>MPPT_33_0_Power</td>
-<td>39</td>
+<td>[39:54]</td>
 <td>16</td>
 <td>0.01</td>
 <td>0</td>
@@ -2144,7 +2081,7 @@
 <tr>
 <td>MPPT_Iout</td>
 <td>MPPT_33_0_Power</td>
-<td>55</td>
+<td>[55:70]</td>
 <td>16</td>
 <td>0.0005</td>
 <td>0</td>
@@ -2155,7 +2092,7 @@
 <tr>
 <td>Boost_Enable</td>
 <td>MPPT_33_0_SetMode</td>
-<td>0</td>
+<td>[0:0]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -2165,6 +2102,7 @@
 </tr>
 </tbody>
 </table>
+<p><a name="bps-(Daybreak)"></a></p>
 <h1 id="bps-daybreakdbc">bps (Daybreak).dbc</h1>
 <h2 id="messages_4">Messages</h2>
 <table>
@@ -2178,91 +2116,91 @@
 </thead>
 <tbody>
 <tr>
-<td>2</td>
+<td>0x2</td>
 <td>BPS_Trip</td>
 <td>1</td>
 <td>BPS_Trip</td>
 </tr>
 <tr>
-<td>257</td>
+<td>0x101</td>
 <td>BPS_All_Clea</td>
 <td>1</td>
 <td>BPS_All_Clear</td>
 </tr>
 <tr>
-<td>258</td>
+<td>0x102</td>
 <td>BPS_Contactor_State</td>
 <td>1</td>
 <td>HV_Contactor, Array_Contactor</td>
 </tr>
 <tr>
-<td>259</td>
+<td>0x103</td>
 <td>BPS_Current</td>
 <td>4</td>
 <td>Current</td>
 </tr>
 <tr>
-<td>260</td>
+<td>0x104</td>
 <td>BPS_Voltage_Array</td>
 <td>5</td>
 <td>Voltage_idx, Voltage_Value</td>
 </tr>
 <tr>
-<td>261</td>
+<td>0x105</td>
 <td>BPS_Temperature_Array</td>
 <td>5</td>
 <td>Temperature_idx, Temperature_Value</td>
 </tr>
 <tr>
-<td>262</td>
+<td>0x106</td>
 <td>BPS_SOC</td>
 <td>4</td>
 <td>SoC</td>
 </tr>
 <tr>
-<td>263</td>
+<td>0x107</td>
 <td>BPS_WDog_Trigger</td>
 <td>1</td>
 <td>WDog_Trig</td>
 </tr>
 <tr>
-<td>264</td>
+<td>0x108</td>
 <td>BPS_CAN_Error</td>
 <td>1</td>
 <td>BPS_CAN_Error</td>
 </tr>
 <tr>
-<td>265</td>
+<td>0x109</td>
 <td>BPS_Command</td>
 <td>8</td>
 <td>BPS_Command</td>
 </tr>
 <tr>
-<td>267</td>
+<td>0x10B</td>
 <td>BPS_Supplemental_Voltage</td>
 <td>2</td>
 <td>Supplemental_Voltage</td>
 </tr>
 <tr>
-<td>268</td>
+<td>0x10C</td>
 <td>BPS_Charge_Enabled</td>
 <td>1</td>
 <td>Charge_Enabled</td>
 </tr>
 <tr>
-<td>269</td>
+<td>0x10D</td>
 <td>BPS_Voltage_Summary</td>
 <td>8</td>
 <td>Pack_Voltage, Voltage_Range, Voltage_Timestamp</td>
 </tr>
 <tr>
-<td>270</td>
+<td>0x10E</td>
 <td>BPS_Temperature_Summary</td>
 <td>8</td>
 <td>Average_Temp, Temperature_Range, Temperature_Timestamp</td>
 </tr>
 <tr>
-<td>271</td>
+<td>0x10F</td>
 <td>BPS_Fault_State</td>
 <td>1</td>
 <td>BPS_Fault_State</td>
@@ -2275,7 +2213,7 @@
 <tr>
 <th>Name</th>
 <th>Message</th>
-<th>Start Bit</th>
+<th>Bits [start:end]</th>
 <th>Length</th>
 <th>Factor</th>
 <th>Offset</th>
@@ -2288,7 +2226,7 @@
 <tr>
 <td>BPS_Trip</td>
 <td>BPS_Trip</td>
-<td>0</td>
+<td>[0:0]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -2299,7 +2237,7 @@
 <tr>
 <td>BPS_All_Clear</td>
 <td>BPS_All_Clea</td>
-<td>0</td>
+<td>[0:0]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -2310,7 +2248,7 @@
 <tr>
 <td>HV_Contactor</td>
 <td>BPS_Contactor_State</td>
-<td>2</td>
+<td>[2:2]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -2321,7 +2259,7 @@
 <tr>
 <td>Array_Contactor</td>
 <td>BPS_Contactor_State</td>
-<td>0</td>
+<td>[0:0]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -2332,7 +2270,7 @@
 <tr>
 <td>Current</td>
 <td>BPS_Current</td>
-<td>0</td>
+<td>[0:31]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -2343,7 +2281,7 @@
 <tr>
 <td>Voltage_idx</td>
 <td>BPS_Voltage_Array</td>
-<td>0</td>
+<td>[0:7]</td>
 <td>8</td>
 <td>1</td>
 <td>0</td>
@@ -2354,7 +2292,7 @@
 <tr>
 <td>Voltage_Value</td>
 <td>BPS_Voltage_Array</td>
-<td>8</td>
+<td>[8:39]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -2365,7 +2303,7 @@
 <tr>
 <td>Temperature_idx</td>
 <td>BPS_Temperature_Array</td>
-<td>0</td>
+<td>[0:7]</td>
 <td>8</td>
 <td>1</td>
 <td>0</td>
@@ -2376,7 +2314,7 @@
 <tr>
 <td>Temperature_Value</td>
 <td>BPS_Temperature_Array</td>
-<td>8</td>
+<td>[8:39]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -2387,7 +2325,7 @@
 <tr>
 <td>SoC</td>
 <td>BPS_SOC</td>
-<td>0</td>
+<td>[0:31]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -2398,7 +2336,7 @@
 <tr>
 <td>WDog_Trig</td>
 <td>BPS_WDog_Trigger</td>
-<td>0</td>
+<td>[0:0]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -2409,7 +2347,7 @@
 <tr>
 <td>BPS_CAN_Error</td>
 <td>BPS_CAN_Error</td>
-<td>0</td>
+<td>[0:0]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -2420,7 +2358,7 @@
 <tr>
 <td>BPS_Command</td>
 <td>BPS_Command</td>
-<td>0</td>
+<td>[0:31]</td>
 <td>32</td>
 <td>1</td>
 <td>0</td>
@@ -2431,7 +2369,7 @@
 <tr>
 <td>Supplemental_Voltage</td>
 <td>BPS_Supplemental_Voltage</td>
-<td>0</td>
+<td>[0:15]</td>
 <td>16</td>
 <td>1</td>
 <td>0</td>
@@ -2442,7 +2380,7 @@
 <tr>
 <td>Charge_Enabled</td>
 <td>BPS_Charge_Enabled</td>
-<td>0</td>
+<td>[0:0]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -2453,7 +2391,7 @@
 <tr>
 <td>Pack_Voltage</td>
 <td>BPS_Voltage_Summary</td>
-<td>0</td>
+<td>[0:23]</td>
 <td>24</td>
 <td>1</td>
 <td>0</td>
@@ -2464,7 +2402,7 @@
 <tr>
 <td>Voltage_Range</td>
 <td>BPS_Voltage_Summary</td>
-<td>24</td>
+<td>[24:47]</td>
 <td>24</td>
 <td>1</td>
 <td>0</td>
@@ -2475,7 +2413,7 @@
 <tr>
 <td>Voltage_Timestamp</td>
 <td>BPS_Voltage_Summary</td>
-<td>48</td>
+<td>[48:63]</td>
 <td>16</td>
 <td>1</td>
 <td>0</td>
@@ -2486,7 +2424,7 @@
 <tr>
 <td>Average_Temp</td>
 <td>BPS_Temperature_Summary</td>
-<td>0</td>
+<td>[0:23]</td>
 <td>24</td>
 <td>1</td>
 <td>0</td>
@@ -2497,7 +2435,7 @@
 <tr>
 <td>Temperature_Range</td>
 <td>BPS_Temperature_Summary</td>
-<td>24</td>
+<td>[24:47]</td>
 <td>24</td>
 <td>1</td>
 <td>0</td>
@@ -2508,7 +2446,7 @@
 <tr>
 <td>Temperature_Timestamp</td>
 <td>BPS_Temperature_Summary</td>
-<td>48</td>
+<td>[48:63]</td>
 <td>16</td>
 <td>1</td>
 <td>0</td>
@@ -2519,7 +2457,7 @@
 <tr>
 <td>BPS_Fault_State</td>
 <td>BPS_Fault_State</td>
-<td>0</td>
+<td>[0:7]</td>
 <td>8</td>
 <td>1</td>
 <td>0</td>
@@ -2529,6 +2467,7 @@
 </tr>
 </tbody>
 </table>
+<p><a name="contactor"></a></p>
 <h1 id="contactordbc">contactor.dbc</h1>
 <h2 id="messages_5">Messages</h2>
 <table>
@@ -2542,13 +2481,13 @@
 </thead>
 <tbody>
 <tr>
-<td>1025</td>
+<td>0x401</td>
 <td>Precharge_Timeout</td>
 <td>1</td>
 <td>Motor_Precharge_Timeout, Array_Precharge_Timeout</td>
 </tr>
 <tr>
-<td>1024</td>
+<td>0x400</td>
 <td>Contactor_Sense</td>
 <td>2</td>
 <td>Actual_Motor_Sense, Expected_Motor_Sense, Motor_Sense_Fault, Motor_Precharge_Sense, Expected_Motor_Precharge_Sense, Motor_Precharge_Sense_Fault, Array_Precharge_Sense, Expected_Array_Precharge_Sense, Array_Prechage_Sense_Fault</td>
@@ -2561,7 +2500,7 @@
 <tr>
 <th>Name</th>
 <th>Message</th>
-<th>Start Bit</th>
+<th>Bits [start:end]</th>
 <th>Length</th>
 <th>Factor</th>
 <th>Offset</th>
@@ -2574,7 +2513,7 @@
 <tr>
 <td>Motor_Precharge_Timeout</td>
 <td>Precharge_Timeout</td>
-<td>0</td>
+<td>[0:0]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -2585,7 +2524,7 @@
 <tr>
 <td>Array_Precharge_Timeout</td>
 <td>Precharge_Timeout</td>
-<td>1</td>
+<td>[1:1]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -2596,7 +2535,7 @@
 <tr>
 <td>Actual_Motor_Sense</td>
 <td>Contactor_Sense</td>
-<td>0</td>
+<td>[0:0]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -2607,7 +2546,7 @@
 <tr>
 <td>Expected_Motor_Sense</td>
 <td>Contactor_Sense</td>
-<td>1</td>
+<td>[1:1]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -2618,7 +2557,7 @@
 <tr>
 <td>Motor_Sense_Fault</td>
 <td>Contactor_Sense</td>
-<td>2</td>
+<td>[2:2]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -2629,7 +2568,7 @@
 <tr>
 <td>Motor_Precharge_Sense</td>
 <td>Contactor_Sense</td>
-<td>3</td>
+<td>[3:3]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -2640,7 +2579,7 @@
 <tr>
 <td>Expected_Motor_Precharge_Sense</td>
 <td>Contactor_Sense</td>
-<td>4</td>
+<td>[4:4]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -2651,7 +2590,7 @@
 <tr>
 <td>Motor_Precharge_Sense_Fault</td>
 <td>Contactor_Sense</td>
-<td>5</td>
+<td>[5:5]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -2662,7 +2601,7 @@
 <tr>
 <td>Array_Precharge_Sense</td>
 <td>Contactor_Sense</td>
-<td>6</td>
+<td>[6:6]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -2673,7 +2612,7 @@
 <tr>
 <td>Expected_Array_Precharge_Sense</td>
 <td>Contactor_Sense</td>
-<td>7</td>
+<td>[7:7]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -2684,7 +2623,7 @@
 <tr>
 <td>Array_Prechage_Sense_Fault</td>
 <td>Contactor_Sense</td>
-<td>8</td>
+<td>[8:8]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>

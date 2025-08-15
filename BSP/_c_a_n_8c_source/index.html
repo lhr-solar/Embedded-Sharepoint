@@ -785,7 +785,7 @@ static uint8_t
    .queue = NULL,                       \
    .storage = can1_recv_queue_storage_##ID_, \
    .circular = (CIRCULAR_), \
-   .buffer = 0},
+   .buffer = {{0}}},
 
 static recv_entry_t can1_recv_entries[] = {
 #include &quot;can1_recv_entries.h&quot;
@@ -836,7 +836,7 @@ static uint8_t
    .queue = NULL,                       \
    .storage = can2_recv_queue_storage_##ID_, \
    .circular = (CIRCULAR_), \
-   .buffer = 0},
+   .buffer = {{0}}},
 
 static recv_entry_t can2_recv_entries[] = {
 #include &quot;can2_recv_entries.h&quot;
@@ -887,7 +887,7 @@ static uint8_t
    .queue = NULL,                       \
    .storage = recv_queue_storage_##ID_, \
    .circular = (CIRCULAR_), \
-   .buffer = 0},
+   .buffer = {{0}}},
 
 static recv_entry_t can3_recv_entries[] = {
 #include &quot;can3_recv_entries.h&quot;
