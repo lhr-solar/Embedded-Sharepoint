@@ -79,4 +79,4 @@ else
 fi
 
 # Install NixOS bin
-sudo apt install nix-bin
+sudo apt install -y nix-bin
