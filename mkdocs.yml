@@ -2,89 +2,35 @@ site_name: Embedded Sharepoint Documentation
 site_description: Software library shared among LHRS embedded systems
 site_author: LHR - Solar
 
-theme: material
+theme:
+  name: material
 
 nav:
   - Home: 'README.md'
+  - Installation: 'Installation.md'
   - Doxygen:
-    - BSP:
-        - Class Overview: 'BSP/annotated.md'
-        - Class Index: 'BSP/classes.md'
-        - Class Hierarchy: 'BSP/hierarchy.md'
-        - Class Members: 'BSP/class_members.md'
-        - Member Functions: 'BSP/class_member_functions.md'
-        - Member Variables: 'BSP/class_member_variables.md'
-        - Member Typedefs: 'BSP/class_member_typedefs.md'
-        - Member Enums: 'BSP/class_member_enums.md'
-        - Functions: 'BSP/functions.md'
-        - Variables: 'BSP/variables.md'
-        - Macros: 'BSP/macros.md'
-        - Files: 'BSP/files.md'
-        - Modules: 'BSP/modules.md'
+      - BSP:
+          - Class Overview: 'BSP/annotated.md'
+          - Class Index: 'BSP/classes.md'
+          - Class Hierarchy: 'BSP/hierarchy.md'
+          - Class Members: 'BSP/class_members.md'
+          - Member Functions: 'BSP/class_member_functions.md'
+          - Member Variables: 'BSP/class_member_variables.md'
+          - Member Typedefs: 'BSP/class_member_typedefs.md'
+          - Member Enums: 'BSP/class_member_enums.md'
+          - Functions: 'BSP/functions.md'
+          - Variables: 'BSP/variables.md'
+          - Macros: 'BSP/macros.md'
+          - Files: 'BSP/files.md'
+          - Modules: 'BSP/modules.md'
+  - CAN Messages:
+      - Signals & Messages: 'DBC.md'
 
-    - Common:
-        - Class Overview: 'Common/annotated.md'
-        - Class Index: 'Common/classes.md'
-        - Class Hierarchy: 'Common/hierarchy.md'
-        - Class Members: 'Common/class_members.md'
-        - Member Functions: 'Common/class_member_functions.md'
-        - Member Variables: 'Common/class_member_variables.md'
-        - Member Typedefs: 'Common/class_member_typedefs.md'
-        - Member Enums: 'Common/class_member_enums.md'
-        - Functions: 'Common/functions.md'
-        - Variables: 'Common/variables.md'
-        - Macros: 'Common/macros.md'
-        - Files: 'Common/files.md'
-        - Modules: 'Common/modules.md'
-
-    - FreeRTOS_Kernel:
-        - Class Overview: 'FreeRTOS_Kernel/annotated.md'
-        - Class Index: 'FreeRTOS_Kernel/classes.md'
-        - Class Hierarchy: 'FreeRTOS_Kernel/hierarchy.md'
-        - Class Members: 'FreeRTOS_Kernel/class_members.md'
-        - Member Functions: 'FreeRTOS_Kernel/class_member_functions.md'
-        - Member Variables: 'FreeRTOS_Kernel/class_member_variables.md'
-        - Member Typedefs: 'FreeRTOS_Kernel/class_member_typedefs.md'
-        - Member Enums: 'FreeRTOS_Kernel/class_member_enums.md'
-        - Functions: 'FreeRTOS_Kernel/functions.md'
-        - Variables: 'FreeRTOS_Kernel/variables.md'
-        - Macros: 'FreeRTOS_Kernel/macros.md'
-        - Files: 'FreeRTOS_Kernel/files.md'
-        - Modules: 'FreeRTOS_Kernel/modules.md'
-
-    - STM32F4xx_Drivers:
-        - Class Overview: 'STM32F4xx_Drivers/annotated.md'
-        - Class Index: 'STM32F4xx_Drivers/classes.md'
-        - Class Hierarchy: 'STM32F4xx_Drivers/hierarchy.md'
-        - Class Members: 'STM32F4xx_Drivers/class_members.md'
-        - Member Functions: 'STM32F4xx_Drivers/class_member_functions.md'
-        - Member Variables: 'STM32F4xx_Drivers/class_member_variables.md'
-        - Member Typedefs: 'STM32F4xx_Drivers/class_member_typedefs.md'
-        - Member Enums: 'STM32F4xx_Drivers/class_member_enums.md'
-        - Functions: 'STM32F4xx_Drivers/functions.md'
-        - Variables: 'STM32F4xx_Drivers/variables.md'
-        - Macros: 'STM32F4xx_Drivers/macros.md'
-        - Files: 'STM32F4xx_Drivers/files.md'
-        - Modules: 'STM32F4xx_Drivers/modules.md'
-
-    - STM32L4xx_Drivers:
-        - Class Overview: 'STM32L4xx_Drivers/annotated.md'
-        - Class Index: 'STM32L4xx_Drivers/classes.md'
-        - Class Hierarchy: 'STM32L4xx_Drivers/hierarchy.md'
-        - Class Members: 'STM32L4xx_Drivers/class_members.md'
-        - Member Functions: 'STM32L4xx_Drivers/class_member_functions.md'
-        - Member Variables: 'STM32L4xx_Drivers/class_member_variables.md'
-        - Member Typedefs: 'STM32L4xx_Drivers/class_member_typedefs.md'
-        - Member Enums: 'STM32L4xx_Drivers/class_member_enums.md'
-        - Functions: 'STM32L4xx_Drivers/functions.md'
-        - Variables: 'STM32L4xx_Drivers/variables.md'
-        - Macros: 'STM32L4xx_Drivers/macros.md'
-        - Files: 'STM32L4xx_Drivers/files.md'
-        - Modules: 'STM32L4xx_Drivers/modules.md'
 plugins:
   - search:
       prebuild_index: true
       lang: en
+  - macros:
 
   - mkdoxy:
       projects:
@@ -94,7 +40,6 @@ plugins:
           doxy-cfg:
             FILE_PATTERNS: "*.c *.h"
             RECURSIVE: true
-
         Common:
           src-dirs: common
           full-doc: true
@@ -102,23 +47,7 @@ plugins:
             FILE_PATTERNS: "*.c *.h"
             RECURSIVE: true
 
-        FreeRTOS_Kernel:
-          src-dirs: FreeRTOS-Kernel FreeRTOS-Kernel/include FreeRTOS-Kernel/portable/GCC/ARM_CM4F
-          full-doc: true
-          doxy-cfg:
-            FILE_PATTERNS: "*.c *.h"
-            RECURSIVE: false
+  - macros
 
-        STM32F4xx_Drivers:
-          src-dirs: stm/stm32f4xx stm/stm32f4xx/STM32F4xx_HAL_Driver/Inc stm/stm32f4xx/STM32F4xx_HAL_Driver/Src 
-          full-doc: true
-          doxy-cfg:
-            FILE_PATTERNS: "*.c *.h *.s"
-            RECURSIVE: false
-
-        STM32L4xx_Drivers:
-          src-dirs: stm/stm32l4xx stm/stm32l4xx/STM32L4xx_HAL_Driver/Inc stm/stm32l4xx/STM32L4xx_HAL_Driver/Src
-          full-doc: true
-          doxy-cfg:
-            FILE_PATTERNS: "*.c *.h *.s"
-            RECURSIVE: false
+extra_javascript: []
+extra_css: []

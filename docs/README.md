@@ -2,11 +2,8 @@
 
 Welcome to the Embedded Sharepoint! This documentation is designed to assist LHR - Solar teams in developing projects using STM32 devices.
 
-## Key Features
+## Getting Started
 
-- **Simplified Development:** Provides a unified interface for working with various STM32 devices.
-- **Modular Design:** Easily integrate with different components and libraries.
-- **Comprehensive Documentation:** Detailed guides and API references for every module.
 
 <!-- ## Quick Links -->
 
