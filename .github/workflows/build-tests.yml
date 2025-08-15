@@ -12,9 +12,8 @@ jobs:
 
        - name: Install
          run: |
-          sudo apt -y update
-          sudo apt -y install gcc-arm-none-eabi
-          sudo apt -y install parallel
+          sudo ./nix_install.sh
+          nix develop
 
        - name: Clean
          run: |
