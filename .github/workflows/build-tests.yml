@@ -3,26 +3,41 @@ name: Build Tests
 on:
   push:
   pull_request:
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps: 
-       - name: Checkout repository
-         uses: actions/checkout@v3
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-       - name: Install
-         run: |
+      # Cache Nix store & downloads
+      - name: Cache Nix
+        uses: actions/cache@v3
+        with:
+          path: |
+            /nix/store
+            ~/.cache/nix
+          key: nix-${{ runner.os }}-${{ hashFiles('flake.lock') }}
+          restore-keys: |
+            nix-${{ runner.os }}-
+
+      - name: Install Nix
+        run: |
           sudo ./nix_install.sh
-          nix develop
 
-       - name: Clean
-         run: |
+      - name: Enter Nix dev shell
+        run: |
+          nix develop --accept-flake-config --no-update-lock-file
+
+      - name: Clean
+        run: |
           cd test/
           make clean
           cd ..
 
-       - name: Build tests
-         run: |
+      - name: Build tests
+        run: |
           cd test/
           bash makeAllTests.sh
           cd ..
