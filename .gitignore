@@ -9,6 +9,5 @@ site
 
 .venv
 .DS_Store
-flake.lock
 *.swp
 compile_commands.json

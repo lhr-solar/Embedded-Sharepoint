@@ -13,7 +13,6 @@ jobs:
        - name: Install
          run: |
           sudo ./nix_install.sh
-          git add -f flake.lock || true
           nix develop
 
        - name: Clean
