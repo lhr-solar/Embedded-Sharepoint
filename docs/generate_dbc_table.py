@@ -5,6 +5,7 @@ import cantools
 # ----- CONFIG -----
 DBC_DIR = Path("can/dbc")      # Folder containing your .dbc files
 OUTPUT_MD = Path("docs/DBC.md")        # Output markdown file
+GITHUB_DBC_BASE = "https://github.com/lhr-solar/Embedded-Sharepoint/tree/main/can/dbc"
 # ------------------
 
 def clean_name_for_toc(filename: str) -> str:
@@ -22,8 +23,10 @@ def dbc_to_markdown(dbc_path: Path) -> str:
     """
     db = cantools.database.load_file(dbc_path)
     anchor = dbc_path.stem.replace(' ', '-').replace('.', '-')
+    github_link = f"{GITHUB_DBC_BASE}/{dbc_path.name}"
     md = f"<a name=\"{anchor}\"></a>\n"
     md += f"# {dbc_path.name}\n\n"
+    md += f"[GitHub]({github_link})\n\n"
 
     # Messages table
     md += "## Messages\n\n"
@@ -46,7 +49,7 @@ def dbc_to_markdown(dbc_path: Path) -> str:
     return anchor, md
 
 def main():
-    dbc_files = list(DBC_DIR.glob("*.dbc"))
+    dbc_files = sorted(DBC_DIR.glob("*.dbc"), key=lambda p: p.name.lower())
     if not dbc_files:
         print(f"No .dbc files found in {DBC_DIR}")
         return

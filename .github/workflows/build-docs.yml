@@ -3,8 +3,8 @@ name: Build and Deploy MkDocs to github pages
 on:
   push:
     branches:
-      - main
-      - mkdocs-rework  # Deploy whenever you push to main
+      - main # Deploy whenever you push to main
+      - mkdocs-rework
 
 
 jobs:
@@ -34,6 +34,9 @@ jobs:
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
+        run: |
+          echo "Deploying to GitHub Pages"
+          mkdocs gh-deploy
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
