@@ -11,7 +11,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Cache Nix store & downloads
       - name: Cache Nix
         uses: actions/cache@v3
         with:
@@ -26,18 +25,8 @@ jobs:
         run: |
           sudo ./nix_install.sh
 
-      - name: Enter Nix dev shell
+      - name: Clean & Build tests
         run: |
-          nix develop --accept-flake-config --no-update-lock-file
-
-      - name: Clean
-        run: |
-          cd test/
-          make clean
-          cd ..
-
-      - name: Build tests
-        run: |
-          cd test/
-          bash makeAllTests.sh
-          cd ..
+          nix develop --accept-flake-config --command bash -c "
+            cd test && make clean && bash makeAllTests.sh
+          "
