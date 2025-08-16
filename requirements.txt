@@ -1,4 +1,6 @@
 # Dependencies for Python
 mkdocs
+mkdocs-material
+mkdoxy
 pyserial
 cantools
