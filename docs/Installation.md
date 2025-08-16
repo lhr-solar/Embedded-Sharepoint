@@ -6,7 +6,7 @@ Please ensure you've done the following before moving on:
 2. Install [Visual Studio Code](https://code.visualstudio.com/)
 
 ## Linux
-Thanks for making our lives easy :) 
+Thanks for making our lives easy :)    
 
 1. Follow the instructions here to create your github SSH key
 2. Run the steps in [Nix](#nix) next
@@ -37,11 +37,24 @@ Next we will use the Ubuntu iso image we just downloaded to create a new Ubuntu 
 3. Press browse and select the downloaded ARM-based ISO file.
 4. Adjust hardware settings:
     * Memory: Default is 4000 MB (adjust based on Mac capacity).
-    * Processors: Set according to your Mac's cores available (up to 8).
     * Storage: Default is 64 GB (adjust as necessary).
 5. No shared directory necessary so press Continue here
 6. Name the VM (e.g., Ubuntu 24.04 LTS).
 7. Click Save to create the VM.
+
+8. Click on Run to start the installation.
+9. Use arrow keys to select Try or Install Ubuntu Server. ![Try Ubuntu Server](mac_utm_imgs/tryUbuntu.png)
+10. Select language (e.g., English). ![language](mac_utm_imgs/language.png)
+10. Choose keyboard layout ![language](mac_utm_imgs/keyboard.png)
+11. For installation type, ensure Ubuntu Server is selected. ![language](mac_utm_imgs/ubuntuServer.png)
+11. Enable Search for third-party drivers.
+12. Accept default for network configuration and proxy settings.
+13. Choose storage configuration: Use entire disk.
+14. Set up profile:
+Machine name (e.g., CodeBind).
+Username (e.g., CodeBind) and password.
+15. Choose to install OpenSSH for remote access.
+16. Continue through prompts to complete installation.
 
 #### Configuring SSH
 The Ubuntu VM we created is pretty slow and can't run graphical applications easily, so it'll be hard to develop code here. What we will do instead is SSH into the VM we created from regular MacOS so we can develop our linux code while also being in MacOS.  
@@ -73,4 +86,18 @@ User laksh
 Run the steps in [Nix](#nix) next
 
 ## Nix
-[todo, sowey]
+Nix is a package manger that lets you write out all the packages you want to install in a human readable format. This simplifies development since I can write out a list of dependencies needed to compile.  
+Run the following scripts in your linux terminal:
+Make the nix_install script runnable
+```
+chmod +x ./nix_install.sh
+```
+Run the script to install the needed nix dependencies
+```
+./nix_install.sh
+```
+Enter the nix shell and download dependencies for Embedded-Sharepoint
+```
+nix develop
+```
+In this nix shell all the dependencies needed for Embedded-Sharepoint should be installed, anytime you want to develop code you will need to run nix develop.

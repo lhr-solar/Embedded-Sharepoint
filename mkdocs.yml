@@ -4,6 +4,7 @@ site_author: LHR - Solar
 
 theme:
   name: material
+  favicon: LHRs.ico
 
 nav:
   - Home: 'README.md'
