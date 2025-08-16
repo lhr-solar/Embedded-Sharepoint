@@ -117,10 +117,10 @@
   </option>
   <option  id='QUIET' default='yes' type='bool'><value>NO</value></option>
   <option  id='WARNINGS' default='yes' type='bool'><value>YES</value></option>
-  <option  id='WARN_IF_UNDOCUMENTED' default='yes' type='bool'><value>YES</value></option>
-  <option  id='WARN_IF_DOC_ERROR' default='yes' type='bool'><value>YES</value></option>
+  <option  id='WARN_IF_UNDOCUMENTED' default='no' type='bool'><value>NO</value></option>
+  <option  id='WARN_IF_DOC_ERROR' default='no' type='bool'><value>NO</value></option>
   <option  id='WARN_IF_INCOMPLETE_DOC' default='yes' type='bool'><value>YES</value></option>
-  <option  id='WARN_NO_PARAMDOC' default='no' type='bool'><value>YES</value></option>
+  <option  id='WARN_NO_PARAMDOC' default='yes' type='bool'><value>NO</value></option>
   <option  id='WARN_IF_UNDOC_ENUM_VAL' default='yes' type='bool'><value>NO</value></option>
   <option  id='WARN_LAYOUT_FILE' default='yes' type='bool'><value>YES</value></option>
   <option  id='WARN_AS_ERROR' default='yes' type='string'><value>NO</value></option>
@@ -128,13 +128,14 @@
   <option  id='WARN_LINE_FORMAT' default='yes' type='string'><value><![CDATA["at line $line of file $file"]]></value></option>
   <option  id='WARN_LOGFILE' default='yes' type='string'><value><![CDATA[]]></value></option>
   <option  id='INPUT' default='no' type='stringlist'>
-    <value><![CDATA[bsp]]></value>
+    <value><![CDATA[bsp/Src]]></value>
   </option>
   <option  id='INPUT_ENCODING' default='yes' type='string'><value><![CDATA[UTF-8]]></value></option>
   <option  id='INPUT_FILE_ENCODING' default='yes' type='stringlist'>
   </option>
   <option  id='FILE_PATTERNS' default='no' type='stringlist'>
     <value><![CDATA[*.c]]></value>
+    <value><![CDATA[*.h]]></value>
   </option>
   <option  id='RECURSIVE' default='no' type='bool'><value>YES</value></option>
   <option  id='EXCLUDE' default='yes' type='stringlist'>
@@ -163,7 +164,7 @@
   <option  id='IMPLICIT_DIR_DOCS' default='yes' type='bool'><value>YES</value></option>
   <option  id='FORTRAN_COMMENT_AFTER' default='yes' type='int'><value>72</value></option>
   <option  id='SOURCE_BROWSER' default='yes' type='bool'><value>NO</value></option>
-  <option  id='INLINE_SOURCES' default='yes' type='bool'><value>NO</value></option>
+  <option  id='INLINE_SOURCES' default='no' type='bool'><value>YES</value></option>
   <option  id='STRIP_CODE_COMMENTS' default='yes' type='bool'><value>YES</value></option>
   <option  id='REFERENCED_BY_RELATION' default='yes' type='bool'><value>NO</value></option>
   <option  id='REFERENCES_RELATION' default='yes' type='bool'><value>NO</value></option>
