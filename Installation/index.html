@@ -19,7 +19,7 @@
         <link rel="next" href="../BSP/annotated/">
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../LHRs.ico">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.17">
     
     
@@ -1028,7 +1028,6 @@ Download Ubuntu 24 <a href="https://ubuntu.com/download/server">here</a>. </p>
 <li>Press browse and select the downloaded ARM-based ISO file.</li>
 <li>Adjust hardware settings:<ul>
 <li>Memory: Default is 4000 MB (adjust based on Mac capacity).</li>
-<li>Processors: Set according to your Mac's cores available (up to 8).</li>
 <li>Storage: Default is 64 GB (adjust as necessary).</li>
 </ul>
 </li>
@@ -1063,7 +1062,18 @@ User laksh
 </ol>
 <p>Run the steps in <a href="#nix">Nix</a> next</p>
 <h2 id="nix">Nix</h2>
-<p>[todo, sowey]</p>
+<p>Nix is a package manger that lets you write out all the packages you want to install in a human readable format. This simplifies development since I can write out a list of dependencies needed to compile.<br />
+Run the following scripts in your linux terminal:
+Make the nix_install script runnable</p>
+<pre><code>chmod +x ./nix_install.sh
+</code></pre>
+<p>Run the script to install the needed nix dependencies</p>
+<pre><code>./nix_install.sh
+</code></pre>
+<p>Enter the nix shell and download dependencies for Embedded-Sharepoint</p>
+<pre><code>nix develop
+</code></pre>
+<p>In this nix shell all the dependencies needed for Embedded-Sharepoint should be installed, anytime you want to develop code you will need to run nix develop.</p>
 
 
 
