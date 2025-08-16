@@ -196,10 +196,6 @@ adc_status_t adc_deinit (
 
 
 
-channel uint32\_t channel to read samplingTime uint32\_t ADC sampling time blocking bool whether the process is blocking 
-
-
-        
 
 <hr>
 
@@ -234,10 +230,6 @@ adc_status_t adc_read (
 
 
 
-init ADC\_InitTypeDef bitNum uint8\_t number of bits in ADC Vcc double rxQueue QueueHandle\_t pointer to user-provided Queue handle 
-
-
-        
 
 <hr>
 

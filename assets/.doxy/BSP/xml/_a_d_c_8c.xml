@@ -2,37 +2,16 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.14.0" xml:lang="en-US">
   <compounddef id="_a_d_c_8c" kind="file" language="C++">
     <compoundname>ADC.c</compoundname>
-    <includes refid="_a_d_c_8h" local="yes">ADC.h</includes>
+    <includes local="yes">ADC.h</includes>
     <incdepgraph>
-      <node id="2">
-        <label>ADC.h</label>
-        <link refid="_a_d_c_8h_source"/>
-        <childnode refid="3" relation="include">
-        </childnode>
-        <childnode refid="4" relation="include">
-        </childnode>
-        <childnode refid="5" relation="include">
-        </childnode>
-        <childnode refid="6" relation="include">
-        </childnode>
-      </node>
       <node id="1">
         <label>bsp/Src/ADC.c</label>
         <link refid="_a_d_c_8c"/>
         <childnode refid="2" relation="include">
         </childnode>
       </node>
-      <node id="4">
-        <label>FreeRTOS.h</label>
-      </node>
-      <node id="5">
-        <label>queue.h</label>
-      </node>
-      <node id="6">
-        <label>semphr.h</label>
-      </node>
-      <node id="3">
-        <label>stm32xx_hal.h</label>
+      <node id="2">
+        <label>ADC.h</label>
       </node>
     </incdepgraph>
     <sectiondef kind="var">
@@ -85,7 +64,6 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>channel uint32_t channel to read samplingTime uint32_t ADC sampling time blocking bool whether the process is blocking </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
@@ -115,7 +93,6 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>init ADC_InitTypeDef bitNum uint8_t number of bits in ADC Vcc double rxQueue QueueHandle_t pointer to user-provided Queue handle </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
@@ -250,9 +227,9 @@
 <codeline lineno="40"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="41"><highlight class="normal"></highlight></codeline>
 <codeline lineno="42"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Hardware<sp/>ADC<sp/>error<sp/>code</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="43"><highlight class="normal">uint32_t<sp/>adc_err_code<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="43"><highlight class="normal">uint32_t<sp/><ref refid="_a_d_c_8c_1a02ad924490620c022bda69a6d1c65d23" kindref="member">adc_err_code</ref><sp/>=<sp/>0;</highlight></codeline>
 <codeline lineno="44"><highlight class="normal"></highlight></codeline>
-<codeline lineno="45"><highlight class="normal">adc_status_t<sp/>adc_init(ADC_InitTypeDef<sp/>init,<sp/>ADC_HandleTypeDef*<sp/>h)<sp/>{</highlight></codeline>
+<codeline lineno="45"><highlight class="normal">adc_status_t<sp/><ref refid="_a_d_c_8c_1a52a9fa8209e34ffd26b631a45a48aaf8" kindref="member">adc_init</ref>(ADC_InitTypeDef<sp/>init,<sp/>ADC_HandleTypeDef*<sp/>h)<sp/>{</highlight></codeline>
 <codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Initalize<sp/>ADC</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/>h-&gt;Init<sp/>=<sp/>init;</highlight></codeline>
 <codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(HAL_ADC_Init(h)<sp/>!=<sp/>HAL_OK)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>ADC_INIT_FAIL;</highlight></codeline>
@@ -260,7 +237,7 @@
 <codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>ADC_OK;</highlight></codeline>
 <codeline lineno="51"><highlight class="normal">}</highlight></codeline>
 <codeline lineno="52"><highlight class="normal"></highlight></codeline>
-<codeline lineno="53"><highlight class="normal">adc_status_t<sp/>adc_deinit(ADC_HandleTypeDef<sp/>*h)<sp/>{</highlight></codeline>
+<codeline lineno="53"><highlight class="normal">adc_status_t<sp/><ref refid="_a_d_c_8c_1ac2d2036424929332c6b0f6e7f9dd3feb" kindref="member">adc_deinit</ref>(ADC_HandleTypeDef<sp/>*h)<sp/>{</highlight></codeline>
 <codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Deinit<sp/>ADC<sp/>at<sp/>specific<sp/>handle</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(HAL_ADC_DeInit(h)<sp/>!=<sp/>HAL_OK)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>ADC_DEINIT_FAIL;</highlight></codeline>
 <codeline lineno="56"><highlight class="normal"></highlight></codeline>
@@ -268,7 +245,7 @@
 <codeline lineno="58"><highlight class="normal">}<sp/></highlight></codeline>
 <codeline lineno="59"><highlight class="normal"></highlight></codeline>
 <codeline lineno="60"><highlight class="normal"></highlight></codeline>
-<codeline lineno="61"><highlight class="normal">adc_status_t<sp/>adc_read(uint32_t<sp/>channel,<sp/>uint32_t<sp/>samplingTime,<sp/>ADC_HandleTypeDef<sp/>*h,<sp/>QueueHandle_t<sp/>*q)<sp/>{</highlight></codeline>
+<codeline lineno="61"><highlight class="normal">adc_status_t<sp/><ref refid="_a_d_c_8c_1ae33dfb81b03a4b81c607347162ac5422" kindref="member">adc_read</ref>(uint32_t<sp/>channel,<sp/>uint32_t<sp/>samplingTime,<sp/>ADC_HandleTypeDef<sp/>*h,<sp/>QueueHandle_t<sp/>*q)<sp/>{</highlight></codeline>
 <codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/>ADC_ChannelConfTypeDef<sp/>sConfig<sp/>=<sp/>{</highlight></codeline>
 <codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.Channel<sp/>=<sp/>channel,</highlight></codeline>
 <codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.Rank<sp/>=<sp/>1,</highlight></codeline>
@@ -315,7 +292,7 @@
 <codeline lineno="105"><highlight class="normal">}</highlight></codeline>
 <codeline lineno="106"><highlight class="normal"></highlight></codeline>
 <codeline lineno="107"><highlight class="normal"></highlight></codeline>
-<codeline lineno="108"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef<sp/>*h)<sp/>{</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_a_d_c_8c_1a14eed1aeca4fd0404c553698e9370c85" kindref="member">HAL_ADC_ConvCpltCallback</ref>(ADC_HandleTypeDef<sp/>*h)<sp/>{</highlight></codeline>
 <codeline lineno="109"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">/*</highlight></codeline>
 <codeline lineno="110"><highlight class="comment"><sp/><sp/><sp/><sp/>Interrupt<sp/>triggers<sp/>this<sp/>callback<sp/>when<sp/>the<sp/>conversion<sp/>is<sp/>complete</highlight></codeline>
 <codeline lineno="111"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"><sp/></highlight></codeline>
@@ -337,7 +314,7 @@
 <codeline lineno="127"><highlight class="normal"><sp/><sp/><sp/><sp/>portYIELD_FROM_ISR(higherPriorityTaskWoken);</highlight></codeline>
 <codeline lineno="128"><highlight class="normal">}</highlight></codeline>
 <codeline lineno="129"><highlight class="normal"></highlight></codeline>
-<codeline lineno="130"><highlight class="normal">__weak<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>HAL_ADC_MspGPIOInit()<sp/>{</highlight></codeline>
+<codeline lineno="130"><highlight class="normal">__weak<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_a_d_c_8c_1aae4360fed4b9208a97b0bee259c08ebf" kindref="member">HAL_ADC_MspGPIOInit</ref>()<sp/>{</highlight></codeline>
 <codeline lineno="131"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>GPIO<sp/>---<sp/>Instanstiate<sp/>PA3</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="132"><highlight class="normal"><sp/><sp/><sp/><sp/>__HAL_RCC_GPIOA_CLK_ENABLE();</highlight></codeline>
 <codeline lineno="133"><highlight class="normal"></highlight></codeline>
@@ -352,7 +329,7 @@
 <codeline lineno="142"><highlight class="normal"></highlight></codeline>
 <codeline lineno="143"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>defined(STM32L4xx)</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="144"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>HAL_ADC_MspL4Init(ADC_HandleTypeDef<sp/>*h)<sp/>{</highlight></codeline>
-<codeline lineno="145"><highlight class="normal"><sp/><sp/><sp/><sp/>HAL_ADC_MspGPIOInit();</highlight></codeline>
+<codeline lineno="145"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_a_d_c_8c_1aae4360fed4b9208a97b0bee259c08ebf" kindref="member">HAL_ADC_MspGPIOInit</ref>();</highlight></codeline>
 <codeline lineno="146"><highlight class="normal"></highlight></codeline>
 <codeline lineno="147"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>L4<sp/>Clock</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="148"><highlight class="normal"><sp/><sp/><sp/><sp/>__HAL_RCC_ADC_CLK_ENABLE();</highlight></codeline>
@@ -379,7 +356,7 @@
 <codeline lineno="169"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>defined(STM32F4xx)</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="170"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>HAL_ADC_MspF4Init(ADC_HandleTypeDef<sp/>*h)<sp/>{</highlight></codeline>
 <codeline lineno="171"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>GPIO<sp/>Init</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="172"><highlight class="normal"><sp/><sp/><sp/><sp/>HAL_ADC_MspGPIOInit();</highlight></codeline>
+<codeline lineno="172"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_a_d_c_8c_1aae4360fed4b9208a97b0bee259c08ebf" kindref="member">HAL_ADC_MspGPIOInit</ref>();</highlight></codeline>
 <codeline lineno="173"><highlight class="normal"></highlight></codeline>
 <codeline lineno="174"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>F4<sp/>Clock</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="175"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(h-&gt;Instance<sp/>==<sp/>ADC1)<sp/>__HAL_RCC_ADC1_CLK_ENABLE();</highlight></codeline>
@@ -437,7 +414,7 @@
 <codeline lineno="227"><highlight class="normal">}</highlight></codeline>
 <codeline lineno="228"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="229"><highlight class="normal"></highlight></codeline>
-<codeline lineno="230"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>HAL_ADC_MspInit(ADC_HandleTypeDef<sp/>*h)<sp/>{</highlight></codeline>
+<codeline lineno="230"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_a_d_c_8c_1a0e55dd7ec72b4bf4249c939d3fd4631c" kindref="member">HAL_ADC_MspInit</ref>(ADC_HandleTypeDef<sp/>*h)<sp/>{</highlight></codeline>
 <codeline lineno="231"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>L4</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="232"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/><sp/><sp/>#ifdef<sp/>STM32L4xx</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="233"><highlight class="normal"><sp/><sp/><sp/><sp/>HAL_ADC_MspL4Init(h);</highlight></codeline>
@@ -449,7 +426,7 @@
 <codeline lineno="239"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/><sp/><sp/>#endif</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="240"><highlight class="normal">}</highlight></codeline>
 <codeline lineno="241"><highlight class="normal"></highlight></codeline>
-<codeline lineno="242"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>HAL_ADC_MspDeInit(ADC_HandleTypeDef<sp/>*h)<sp/>{</highlight></codeline>
+<codeline lineno="242"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_a_d_c_8c_1a392868153bf38cf0d06edb3e184f112c" kindref="member">HAL_ADC_MspDeInit</ref>(ADC_HandleTypeDef<sp/>*h)<sp/>{</highlight></codeline>
 <codeline lineno="243"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>L4</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="244"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/><sp/><sp/>#ifdef<sp/>STM32L4xx</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="245"><highlight class="normal"><sp/><sp/><sp/><sp/>HAL_ADC_MspL4DeInit(h);</highlight></codeline>
@@ -514,8 +491,8 @@
 <codeline lineno="304"><highlight class="normal">}</highlight></codeline>
 <codeline lineno="305"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="306"><highlight class="normal"></highlight></codeline>
-<codeline lineno="307"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>HAL_ADC_ErrorCallback(ADC_HandleTypeDef<sp/>*h)<sp/>{</highlight></codeline>
-<codeline lineno="308"><highlight class="normal"><sp/><sp/><sp/><sp/>adc_err_code<sp/>=<sp/>HAL_ADC_GetError(h);</highlight></codeline>
+<codeline lineno="307"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_a_d_c_8c_1a6540ad5da39d6ceff72603fe4fd2fc1a" kindref="member">HAL_ADC_ErrorCallback</ref>(ADC_HandleTypeDef<sp/>*h)<sp/>{</highlight></codeline>
+<codeline lineno="308"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_a_d_c_8c_1a02ad924490620c022bda69a6d1c65d23" kindref="member">adc_err_code</ref><sp/>=<sp/>HAL_ADC_GetError(h);</highlight></codeline>
 <codeline lineno="309"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
 <codeline lineno="310"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>retry<sp/></highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="311"><highlight class="normal"><sp/><sp/><sp/><sp/>HAL_ADC_Stop_IT(h);</highlight></codeline>

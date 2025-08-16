@@ -2,7 +2,6 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.14.0" xml:lang="en-US">
   <compounddef id="dir_3c5459f7c179b79c90e2565474bb2856" kind="dir">
     <compoundname>bsp</compoundname>
-    <innerdir refid="dir_f9758a777e5683291000913d5e959461">bsp/Inc</innerdir>
     <innerdir refid="dir_160128b01eb7e6b2a554f83ab5d45f5a">bsp/Src</innerdir>
     <briefdescription>
     </briefdescription>

@@ -2,27 +2,21 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.14.0" xml:lang="en-US">
   <compounddef id="_u_a_r_t_8c" kind="file" language="C++">
     <compoundname>UART.c</compoundname>
-    <includes refid="_u_a_r_t_8h" local="yes">UART.h</includes>
+    <includes local="yes">UART.h</includes>
     <includes local="no">string.h</includes>
     <incdepgraph>
-      <node id="2">
-        <label>UART.h</label>
-        <link refid="_u_a_r_t_8h_source"/>
-        <childnode refid="3" relation="include">
-        </childnode>
-      </node>
       <node id="1">
         <label>bsp/Src/UART.c</label>
         <link refid="_u_a_r_t_8c"/>
         <childnode refid="2" relation="include">
         </childnode>
-        <childnode refid="4" relation="include">
+        <childnode refid="3" relation="include">
         </childnode>
       </node>
-      <node id="3">
-        <label>stm32xx_hal.h</label>
+      <node id="2">
+        <label>UART.h</label>
       </node>
-      <node id="4">
+      <node id="3">
         <label>string.h</label>
       </node>
     </incdepgraph>
@@ -378,11 +372,11 @@
 <codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="15"><highlight class="normal"></highlight></codeline>
 <codeline lineno="16"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">{</highlight></codeline>
-<codeline lineno="17"><highlight class="normal"><sp/><sp/><sp/><sp/>uint8_t<sp/>data[DATA_SIZE];<sp/></highlight><highlight class="comment">//<sp/>data<sp/>to<sp/>be<sp/>transmitted,<sp/>1<sp/>byte</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"><sp/><sp/><sp/><sp/>uint8_t<sp/>data[<ref refid="_c_a_n_8c_1af55149bc1f05cf18af067a302e31e3f9" kindref="member">DATA_SIZE</ref>];<sp/></highlight><highlight class="comment">//<sp/>data<sp/>to<sp/>be<sp/>transmitted,<sp/>1<sp/>byte</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="18"><highlight class="normal">}<sp/><ref refid="structtx__payload__t" kindref="compound">tx_payload_t</ref>;</highlight></codeline>
 <codeline lineno="19"><highlight class="normal"></highlight></codeline>
 <codeline lineno="20"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">{</highlight></codeline>
-<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/>uint8_t<sp/>data[DATA_SIZE];<sp/></highlight><highlight class="comment">//<sp/>data<sp/>received,<sp/>1<sp/>byte</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/>uint8_t<sp/>data[<ref refid="_c_a_n_8c_1af55149bc1f05cf18af067a302e31e3f9" kindref="member">DATA_SIZE</ref>];<sp/></highlight><highlight class="comment">//<sp/>data<sp/>received,<sp/>1<sp/>byte</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="22"><highlight class="normal">}<sp/><ref refid="structrx__payload__t" kindref="compound">rx_payload_t</ref>;</highlight></codeline>
 <codeline lineno="23"><highlight class="normal"></highlight></codeline>
 <codeline lineno="24"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>UART4</highlight><highlight class="normal"></highlight></codeline>
@@ -551,7 +545,7 @@
 <codeline lineno="187"><highlight class="normal">}</highlight></codeline>
 <codeline lineno="188"><highlight class="normal"></highlight></codeline>
 <codeline lineno="189"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Redefine<sp/>me!</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="190"><highlight class="normal">__weak<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>HAL_UART_MspGPIOInit(UART_HandleTypeDef<sp/>*huart){<sp/></highlight></codeline>
+<codeline lineno="190"><highlight class="normal">__weak<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_u_a_r_t_8c_1a7555e92bc84240cf15e24caeda22eec3" kindref="member">HAL_UART_MspGPIOInit</ref>(UART_HandleTypeDef<sp/>*huart){<sp/></highlight></codeline>
 <codeline lineno="191"><highlight class="normal"><sp/><sp/><sp/><sp/>GPIO_InitTypeDef<sp/>init<sp/>=<sp/>{0};</highlight></codeline>
 <codeline lineno="192"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Same<sp/>sets<sp/>of<sp/>pins<sp/>for<sp/>L4/F4</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="193"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/><sp/><sp/>#ifdef<sp/>UART4</highlight><highlight class="normal"></highlight></codeline>
@@ -650,7 +644,7 @@
 <codeline lineno="286"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/><sp/><sp/>#endif<sp/></highlight><highlight class="comment">/*<sp/>USART3<sp/>*/</highlight><highlight class="preprocessor"><sp/><sp/><sp/><sp/></highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="287"><highlight class="normal">}</highlight></codeline>
 <codeline lineno="288"><highlight class="normal"></highlight></codeline>
-<codeline lineno="289"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>HAL_UART_MspInit(UART_HandleTypeDef<sp/>*huart)<sp/>{</highlight></codeline>
+<codeline lineno="289"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_u_a_r_t_8c_1a0e553b32211877322f949b14801bbfa7" kindref="member">HAL_UART_MspInit</ref>(UART_HandleTypeDef<sp/>*huart)<sp/>{</highlight></codeline>
 <codeline lineno="290"><highlight class="normal"><sp/><sp/><sp/><sp/>IRQn_Type<sp/>uart_IRQ<sp/>=<sp/>NonMaskableInt_IRQn;<sp/></highlight><highlight class="comment">//<sp/>IRQn_Type<sp/>for<sp/>UART<sp/>interrupts</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="291"><highlight class="normal"></highlight></codeline>
 <codeline lineno="292"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/><sp/><sp/>#ifdef<sp/>UART4</highlight><highlight class="normal"></highlight></codeline>
@@ -689,18 +683,18 @@
 <codeline lineno="325"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/><sp/><sp/>#endif<sp/></highlight><highlight class="comment">/*<sp/>USART3<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="326"><highlight class="normal"></highlight></codeline>
 <codeline lineno="327"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>configure<sp/>GPIO<sp/>pins<sp/>for<sp/>UART</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="328"><highlight class="normal"><sp/><sp/><sp/><sp/>HAL_UART_MspGPIOInit(huart);<sp/></highlight></codeline>
+<codeline lineno="328"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_u_a_r_t_8c_1a7555e92bc84240cf15e24caeda22eec3" kindref="member">HAL_UART_MspGPIOInit</ref>(huart);<sp/></highlight></codeline>
 <codeline lineno="329"><highlight class="normal"></highlight></codeline>
 <codeline lineno="330"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>enable<sp/>uart<sp/>interrupts</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="331"><highlight class="normal"><sp/><sp/><sp/><sp/>HAL_NVIC_SetPriority(uart_IRQ,<sp/>UART_NVIC_PREEMPT_PRIO,<sp/>0);</highlight></codeline>
+<codeline lineno="331"><highlight class="normal"><sp/><sp/><sp/><sp/>HAL_NVIC_SetPriority(uart_IRQ,<sp/><ref refid="_u_a_r_t_8c_1a59a219f100ff4335ca5c105d04c57a34" kindref="member">UART_NVIC_PREEMPT_PRIO</ref>,<sp/>0);</highlight></codeline>
 <codeline lineno="332"><highlight class="normal"><sp/><sp/><sp/><sp/>HAL_NVIC_EnableIRQ(uart_IRQ);<sp/></highlight></codeline>
 <codeline lineno="333"><highlight class="normal">}</highlight></codeline>
 <codeline lineno="334"><highlight class="normal"></highlight></codeline>
 <codeline lineno="335"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Redefine<sp/>me!</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="336"><highlight class="normal">__weak<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>HAL_UART_MspGPIODeInit(UART_HandleTypeDef<sp/>*huart){<sp/></highlight></codeline>
+<codeline lineno="336"><highlight class="normal">__weak<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_u_a_r_t_8c_1a282692a8295efe77e2d8997dcee59ed3" kindref="member">HAL_UART_MspGPIODeInit</ref>(UART_HandleTypeDef<sp/>*huart){<sp/></highlight></codeline>
 <codeline lineno="337"><highlight class="normal">}</highlight></codeline>
 <codeline lineno="338"><highlight class="normal"></highlight></codeline>
-<codeline lineno="339"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>HAL_UART_MspDeInit(UART_HandleTypeDef<sp/>*huart)<sp/>{</highlight></codeline>
+<codeline lineno="339"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_u_a_r_t_8c_1a718f39804e3b910d738a0e1e46151188" kindref="member">HAL_UART_MspDeInit</ref>(UART_HandleTypeDef<sp/>*huart)<sp/>{</highlight></codeline>
 <codeline lineno="340"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>UART4</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="341"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/><sp/><sp/>#ifdef<sp/>UART4</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="342"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(huart-&gt;Instance<sp/>==<sp/>UART4)<sp/>{</highlight></codeline>
@@ -756,10 +750,10 @@
 <codeline lineno="392"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="393"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/><sp/><sp/>#endif<sp/></highlight><highlight class="comment">/*<sp/>USART3<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="394"><highlight class="normal"></highlight></codeline>
-<codeline lineno="395"><highlight class="normal"><sp/><sp/><sp/><sp/>HAL_UART_MspGPIODeInit(huart);</highlight></codeline>
+<codeline lineno="395"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_u_a_r_t_8c_1a282692a8295efe77e2d8997dcee59ed3" kindref="member">HAL_UART_MspGPIODeInit</ref>(huart);</highlight></codeline>
 <codeline lineno="396"><highlight class="normal">}</highlight></codeline>
 <codeline lineno="397"><highlight class="normal"></highlight></codeline>
-<codeline lineno="403"><highlight class="normal">uart_status_t<sp/>uart_init(UART_HandleTypeDef*<sp/>handle)<sp/>{</highlight></codeline>
+<codeline lineno="403"><highlight class="normal">uart_status_t<sp/><ref refid="_u_a_r_t_8c_1a1847d0a7e7670fccc3a7ffac3ba1e016" kindref="member">uart_init</ref>(UART_HandleTypeDef*<sp/>handle)<sp/>{</highlight></codeline>
 <codeline lineno="404"><highlight class="normal"><sp/><sp/><sp/><sp/>uint8_t<sp/>*rx_buffer<sp/>=<sp/>NULL;</highlight></codeline>
 <codeline lineno="405"><highlight class="normal"></highlight></codeline>
 <codeline lineno="406"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/><sp/><sp/>#ifdef<sp/>UART4</highlight><highlight class="normal"></highlight></codeline>
@@ -865,7 +859,7 @@
 <codeline lineno="506"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="507"><highlight class="normal"></highlight></codeline>
 <codeline lineno="508"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Start<sp/>reception</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="509"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(HAL_UART_Receive_IT(handle,<sp/>rx_buffer,<sp/>DATA_SIZE)<sp/>!=<sp/>HAL_OK)<sp/>{</highlight></codeline>
+<codeline lineno="509"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(HAL_UART_Receive_IT(handle,<sp/>rx_buffer,<sp/><ref refid="_c_a_n_8c_1af55149bc1f05cf18af067a302e31e3f9" kindref="member">DATA_SIZE</ref>)<sp/>!=<sp/>HAL_OK)<sp/>{</highlight></codeline>
 <codeline lineno="510"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>UART_ERR;</highlight></codeline>
 <codeline lineno="511"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="512"><highlight class="normal"></highlight></codeline>
@@ -873,7 +867,7 @@
 <codeline lineno="514"><highlight class="normal">}</highlight></codeline>
 <codeline lineno="515"><highlight class="normal"></highlight></codeline>
 <codeline lineno="516"><highlight class="normal"></highlight></codeline>
-<codeline lineno="522"><highlight class="normal">uart_status_t<sp/>uart_deinit(UART_HandleTypeDef*<sp/>handle)<sp/>{</highlight></codeline>
+<codeline lineno="522"><highlight class="normal">uart_status_t<sp/><ref refid="_u_a_r_t_8c_1a3e4de921d10fbf0a69f2e9466530e732" kindref="member">uart_deinit</ref>(UART_HandleTypeDef*<sp/>handle)<sp/>{</highlight></codeline>
 <codeline lineno="523"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Stop<sp/>any<sp/>ongoing<sp/>transfers<sp/>first</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="524"><highlight class="normal"><sp/><sp/><sp/><sp/>HAL_UART_Abort(handle);</highlight></codeline>
 <codeline lineno="525"><highlight class="normal"></highlight></codeline>
@@ -947,7 +941,7 @@
 <codeline lineno="600"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>uint8_t<sp/>usart3_tx_buffer[USART3_TX_QUEUE_SIZE];<sp/></highlight><highlight class="comment">//<sp/>make<sp/>buffer<sp/>size<sp/>same<sp/>as<sp/>queue<sp/>size<sp/></highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="601"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>USART3<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="602"><highlight class="normal"></highlight></codeline>
-<codeline lineno="603"><highlight class="normal">uart_status_t<sp/>uart_send(UART_HandleTypeDef*<sp/>handle,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint8_t*<sp/>data,<sp/>uint8_t<sp/>length,<sp/>TickType_t<sp/>delay_ticks)<sp/>{</highlight></codeline>
+<codeline lineno="603"><highlight class="normal">uart_status_t<sp/><ref refid="_u_a_r_t_8c_1a71553a13e21823d5ca910beb2abacb32" kindref="member">uart_send</ref>(UART_HandleTypeDef*<sp/>handle,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint8_t*<sp/>data,<sp/>uint8_t<sp/>length,<sp/>TickType_t<sp/>delay_ticks)<sp/>{</highlight></codeline>
 <codeline lineno="604"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(length<sp/>==<sp/>0<sp/>||<sp/>!is_uart_initialized(handle))<sp/>{<sp/></highlight><highlight class="comment">//<sp/>check<sp/>if<sp/>UART<sp/>is<sp/>initialized<sp/>and<sp/>data<sp/>length<sp/>is<sp/>not<sp/>0</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="605"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>UART_ERR;</highlight></codeline>
 <codeline lineno="606"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
@@ -1008,19 +1002,19 @@
 <codeline lineno="661"><highlight class="normal"><sp/><sp/><sp/><sp/>portEXIT_CRITICAL();</highlight></codeline>
 <codeline lineno="662"><highlight class="normal"></highlight></codeline>
 <codeline lineno="663"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Send<sp/>data<sp/>in<sp/>chunks<sp/>based<sp/>on<sp/>DATA_SIZE</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="664"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(uint8_t<sp/>i<sp/>=<sp/>0;<sp/>i<sp/>&lt;<sp/>length;<sp/>i+=DATA_SIZE)<sp/>{</highlight></codeline>
+<codeline lineno="664"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(uint8_t<sp/>i<sp/>=<sp/>0;<sp/>i<sp/>&lt;<sp/>length;<sp/>i+=<ref refid="_c_a_n_8c_1af55149bc1f05cf18af067a302e31e3f9" kindref="member">DATA_SIZE</ref>)<sp/>{</highlight></codeline>
 <codeline lineno="665"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structtx__payload__t" kindref="compound">tx_payload_t</ref><sp/>payload;</highlight></codeline>
 <codeline lineno="666"><highlight class="normal"></highlight></codeline>
 <codeline lineno="667"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Ensure<sp/>we<sp/>only<sp/>copy<sp/>DATA_SIZE<sp/>bytes<sp/>at<sp/>a<sp/>time</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="668"><highlight class="normal"><sp/><sp/><sp/><sp/>uint8_t<sp/>chunk_size<sp/>=<sp/>(length<sp/>-<sp/>i<sp/>&lt;<sp/>DATA_SIZE)<sp/>?<sp/>(length<sp/>-<sp/>i)<sp/>:<sp/>DATA_SIZE;</highlight></codeline>
+<codeline lineno="668"><highlight class="normal"><sp/><sp/><sp/><sp/>uint8_t<sp/>chunk_size<sp/>=<sp/>(length<sp/>-<sp/>i<sp/>&lt;<sp/><ref refid="_c_a_n_8c_1af55149bc1f05cf18af067a302e31e3f9" kindref="member">DATA_SIZE</ref>)<sp/>?<sp/>(length<sp/>-<sp/>i)<sp/>:<sp/><ref refid="_c_a_n_8c_1af55149bc1f05cf18af067a302e31e3f9" kindref="member">DATA_SIZE</ref>;</highlight></codeline>
 <codeline lineno="669"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>EX:<sp/>i=4,<sp/>length=6,<sp/>DataSize=4,<sp/>then<sp/>chunk_size<sp/>=<sp/>2,<sp/>instead<sp/>of<sp/>usual<sp/>4<sp/>since<sp/>we&apos;ve<sp/>reached<sp/>end<sp/>of<sp/>length</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="670"><highlight class="normal"></highlight></codeline>
 <codeline lineno="671"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Copy<sp/>the<sp/>appropriate<sp/>number<sp/>of<sp/>bytes<sp/>to<sp/>the<sp/>payload<sp/>data</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="672"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>memcpy(payload.data,<sp/>&amp;data[i],<sp/>chunk_size);<sp/></highlight><highlight class="comment">//<sp/>Usually<sp/>chunk_size<sp/>=<sp/>DATA_SIZE<sp/>until<sp/>end<sp/>of<sp/>data<sp/>length</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="672"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>memcpy(payload.<ref refid="structtx__payload__t_1a150d1c66ede9b8fe94fe9f84c0766d46" kindref="member">data</ref>,<sp/>&amp;data[i],<sp/>chunk_size);<sp/></highlight><highlight class="comment">//<sp/>Usually<sp/>chunk_size<sp/>=<sp/>DATA_SIZE<sp/>until<sp/>end<sp/>of<sp/>data<sp/>length</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="673"><highlight class="normal"></highlight></codeline>
 <codeline lineno="674"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>If<sp/>data<sp/>size<sp/>is<sp/>smaller<sp/>than<sp/>DATA_SIZE,<sp/>fill<sp/>the<sp/>rest<sp/>of<sp/>the<sp/>payload</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="675"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(chunk_size<sp/>&lt;<sp/>DATA_SIZE)<sp/>{</highlight></codeline>
-<codeline lineno="676"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>memset(&amp;payload.data[chunk_size],<sp/>0,<sp/>DATA_SIZE<sp/>-<sp/>chunk_size);<sp/></highlight><highlight class="comment">//<sp/>Fill<sp/>the<sp/>rest<sp/>with<sp/>0<sp/>(or<sp/>other<sp/>padding<sp/>if<sp/>needed)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="675"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(chunk_size<sp/>&lt;<sp/><ref refid="_c_a_n_8c_1af55149bc1f05cf18af067a302e31e3f9" kindref="member">DATA_SIZE</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="676"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>memset(&amp;payload.<ref refid="structtx__payload__t_1a150d1c66ede9b8fe94fe9f84c0766d46" kindref="member">data</ref>[chunk_size],<sp/>0,<sp/><ref refid="_c_a_n_8c_1af55149bc1f05cf18af067a302e31e3f9" kindref="member">DATA_SIZE</ref><sp/>-<sp/>chunk_size);<sp/></highlight><highlight class="comment">//<sp/>Fill<sp/>the<sp/>rest<sp/>with<sp/>0<sp/>(or<sp/>other<sp/>padding<sp/>if<sp/>needed)</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="677"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="678"><highlight class="normal"></highlight></codeline>
 <codeline lineno="679"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Enqueue<sp/>the<sp/>payload<sp/>to<sp/>be<sp/>transmitted</highlight><highlight class="normal"></highlight></codeline>
@@ -1033,7 +1027,7 @@
 <codeline lineno="686"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>status;</highlight></codeline>
 <codeline lineno="687"><highlight class="normal">}</highlight></codeline>
 <codeline lineno="688"><highlight class="normal"></highlight></codeline>
-<codeline lineno="697"><highlight class="normal">uart_status_t<sp/>uart_recv(UART_HandleTypeDef*<sp/>handle,<sp/>uint8_t*<sp/>data,<sp/>uint8_t<sp/>length,<sp/>TickType_t<sp/>delay_ticks)<sp/>{</highlight></codeline>
+<codeline lineno="697"><highlight class="normal">uart_status_t<sp/><ref refid="_u_a_r_t_8c_1aa8ffbc96e17f61846c7b405b69488f18" kindref="member">uart_recv</ref>(UART_HandleTypeDef*<sp/>handle,<sp/>uint8_t*<sp/>data,<sp/>uint8_t<sp/>length,<sp/>TickType_t<sp/>delay_ticks)<sp/>{</highlight></codeline>
 <codeline lineno="698"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(!data<sp/>||<sp/>length<sp/>==<sp/>0<sp/>||<sp/>!is_uart_initialized(handle))<sp/>{<sp/></highlight><highlight class="comment">//<sp/>check<sp/>if<sp/>data<sp/>is<sp/>not<sp/>null,<sp/>length<sp/>is<sp/>not<sp/>0<sp/>and<sp/>UART<sp/>is<sp/>initialized</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="699"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>UART_ERR;</highlight></codeline>
 <codeline lineno="700"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
@@ -1080,11 +1074,11 @@
 <codeline lineno="741"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="742"><highlight class="normal"></highlight></codeline>
 <codeline lineno="743"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Calculate<sp/>how<sp/>many<sp/>bytes<sp/>to<sp/>copy<sp/>from<sp/>the<sp/>payload<sp/>based<sp/>on<sp/>DATA_SIZE</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="744"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint8_t<sp/>copy_length<sp/>=<sp/>(length<sp/>-<sp/>bytes_received)<sp/>&gt;=<sp/>DATA_SIZE<sp/>?<sp/>DATA_SIZE<sp/>:<sp/>(length<sp/>-<sp/>bytes_received);</highlight></codeline>
+<codeline lineno="744"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint8_t<sp/>copy_length<sp/>=<sp/>(length<sp/>-<sp/>bytes_received)<sp/>&gt;=<sp/><ref refid="_c_a_n_8c_1af55149bc1f05cf18af067a302e31e3f9" kindref="member">DATA_SIZE</ref><sp/>?<sp/><ref refid="_c_a_n_8c_1af55149bc1f05cf18af067a302e31e3f9" kindref="member">DATA_SIZE</ref><sp/>:<sp/>(length<sp/>-<sp/>bytes_received);</highlight></codeline>
 <codeline lineno="745"><highlight class="normal"></highlight></codeline>
 <codeline lineno="746"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Copy<sp/>the<sp/>data<sp/>from<sp/>the<sp/>payload<sp/>to<sp/>the<sp/>user&apos;s<sp/>data<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="747"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(uint8_t<sp/>i<sp/>=<sp/>0;<sp/>i<sp/>&lt;<sp/>copy_length;<sp/>i++)<sp/>{</highlight></codeline>
-<codeline lineno="748"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>data[bytes_received<sp/>+<sp/>i]<sp/>=<sp/>receivedPayload.data[i];</highlight></codeline>
+<codeline lineno="748"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>data[bytes_received<sp/>+<sp/>i]<sp/>=<sp/>receivedPayload.<ref refid="structrx__payload__t_1a237dfa564d8c87be172555a28b75c0c5" kindref="member">data</ref>[i];</highlight></codeline>
 <codeline lineno="749"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="750"><highlight class="normal"></highlight></codeline>
 <codeline lineno="751"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Update<sp/>the<sp/>number<sp/>of<sp/>bytes<sp/>received</highlight><highlight class="normal"></highlight></codeline>
@@ -1095,7 +1089,7 @@
 <codeline lineno="756"><highlight class="normal">}</highlight></codeline>
 <codeline lineno="757"><highlight class="normal"></highlight></codeline>
 <codeline lineno="758"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Transmit<sp/>Callback<sp/>occurs<sp/>after<sp/>a<sp/>transmission<sp/>if<sp/>complete<sp/>(depending<sp/>on<sp/>how<sp/>huart<sp/>is<sp/>configure)</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="759"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>HAL_UART_TxCpltCallback(UART_HandleTypeDef<sp/>*huart)<sp/>{</highlight></codeline>
+<codeline lineno="759"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_u_a_r_t_8c_1abcdf9b59049eccbc87d54042f9235b1a" kindref="member">HAL_UART_TxCpltCallback</ref>(UART_HandleTypeDef<sp/>*huart)<sp/>{</highlight></codeline>
 <codeline lineno="760"><highlight class="normal"><sp/><sp/><sp/><sp/>BaseType_t<sp/>higherPriorityTaskWoken<sp/>=<sp/>pdFALSE;</highlight></codeline>
 <codeline lineno="761"><highlight class="normal"><sp/><sp/><sp/><sp/>uint8_t<sp/>tx_buffer[32];<sp/><sp/></highlight><highlight class="comment">//<sp/>Buffer<sp/>for<sp/>collecting<sp/>bytes<sp/>to<sp/>send</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="762"><highlight class="normal"><sp/><sp/><sp/><sp/>uint8_t<sp/>count<sp/>=<sp/>0;</highlight></codeline>
@@ -1134,10 +1128,10 @@
 <codeline lineno="795"><highlight class="normal"></highlight></codeline>
 <codeline lineno="796"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Pull<sp/>as<sp/>many<sp/>bytes<sp/>as<sp/>we<sp/>can<sp/>fit<sp/>in<sp/>the<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="797"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structtx__payload__t" kindref="compound">tx_payload_t</ref><sp/>payload;</highlight></codeline>
-<codeline lineno="798"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal">(count<sp/>+<sp/>DATA_SIZE<sp/>&lt;=<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(tx_buffer)<sp/>&amp;&amp;<sp/>xQueueReceiveFromISR(*tx_queue,<sp/>&amp;payload,<sp/>&amp;higherPriorityTaskWoken)<sp/>==<sp/>pdTRUE)<sp/>{</highlight></codeline>
+<codeline lineno="798"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal">(count<sp/>+<sp/><ref refid="_c_a_n_8c_1af55149bc1f05cf18af067a302e31e3f9" kindref="member">DATA_SIZE</ref><sp/>&lt;=<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(tx_buffer)<sp/>&amp;&amp;<sp/>xQueueReceiveFromISR(*tx_queue,<sp/>&amp;payload,<sp/>&amp;higherPriorityTaskWoken)<sp/>==<sp/>pdTRUE)<sp/>{</highlight></codeline>
 <codeline lineno="799"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Safely<sp/>copy<sp/>the<sp/>data<sp/>from<sp/>the<sp/>payload<sp/>into<sp/>the<sp/>tx_buffer</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="800"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>memcpy(&amp;tx_buffer[count],<sp/>payload.data,<sp/>DATA_SIZE);</highlight></codeline>
-<codeline lineno="801"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>count<sp/>+=<sp/>DATA_SIZE;</highlight></codeline>
+<codeline lineno="800"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>memcpy(&amp;tx_buffer[count],<sp/>payload.<ref refid="structtx__payload__t_1a150d1c66ede9b8fe94fe9f84c0766d46" kindref="member">data</ref>,<sp/><ref refid="_c_a_n_8c_1af55149bc1f05cf18af067a302e31e3f9" kindref="member">DATA_SIZE</ref>);</highlight></codeline>
+<codeline lineno="801"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>count<sp/>+=<sp/><ref refid="_c_a_n_8c_1af55149bc1f05cf18af067a302e31e3f9" kindref="member">DATA_SIZE</ref>;</highlight></codeline>
 <codeline lineno="802"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="803"><highlight class="normal"></highlight></codeline>
 <codeline lineno="804"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(tx_queue<sp/>==<sp/>NULL)<sp/>{</highlight></codeline>
@@ -1160,7 +1154,7 @@
 <codeline lineno="821"><highlight class="normal">}</highlight></codeline>
 <codeline lineno="822"><highlight class="normal"></highlight></codeline>
 <codeline lineno="823"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Receive<sp/>Callback<sp/>occurs<sp/>after<sp/>a<sp/>receive<sp/>is<sp/>complete</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="824"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>HAL_UART_RxCpltCallback(UART_HandleTypeDef<sp/>*huart)<sp/>{</highlight></codeline>
+<codeline lineno="824"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_u_a_r_t_8c_1ae494a9643f29b87d6d81e5264e60e57b" kindref="member">HAL_UART_RxCpltCallback</ref>(UART_HandleTypeDef<sp/>*huart)<sp/>{</highlight></codeline>
 <codeline lineno="825"><highlight class="normal"><sp/><sp/><sp/><sp/>QueueHandle_t<sp/>*rx_queue<sp/>=<sp/>NULL;</highlight></codeline>
 <codeline lineno="826"><highlight class="normal"><sp/><sp/><sp/><sp/>uint8_t<sp/>*rx_buffer<sp/>=<sp/>NULL;</highlight></codeline>
 <codeline lineno="827"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
@@ -1200,8 +1194,8 @@
 <codeline lineno="861"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/><sp/><sp/>#endif<sp/></highlight><highlight class="comment">/*<sp/>USART3<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="862"><highlight class="normal"></highlight></codeline>
 <codeline lineno="863"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structrx__payload__t" kindref="compound">rx_payload_t</ref><sp/>receivedData;</highlight></codeline>
-<codeline lineno="864"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i<sp/>=<sp/>0;<sp/>i<sp/>&lt;<sp/>DATA_SIZE;<sp/>i++)<sp/>{</highlight></codeline>
-<codeline lineno="865"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>receivedData.data[i]<sp/>=<sp/>rx_buffer[i];<sp/></highlight><highlight class="comment">//uartN_rx_buffer.data</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="864"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i<sp/>=<sp/>0;<sp/>i<sp/>&lt;<sp/><ref refid="_c_a_n_8c_1af55149bc1f05cf18af067a302e31e3f9" kindref="member">DATA_SIZE</ref>;<sp/>i++)<sp/>{</highlight></codeline>
+<codeline lineno="865"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>receivedData.<ref refid="structrx__payload__t_1a237dfa564d8c87be172555a28b75c0c5" kindref="member">data</ref>[i]<sp/>=<sp/>rx_buffer[i];<sp/></highlight><highlight class="comment">//uartN_rx_buffer.data</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="866"><highlight class="normal"><sp/><sp/><sp/><sp/>rx_buffer[i]<sp/>=<sp/>0x00;<sp/></highlight><highlight class="comment">//<sp/>clear<sp/>rx<sp/>buffer<sp/>element</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="867"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="868"><highlight class="normal"></highlight></codeline>
@@ -1210,7 +1204,7 @@
 <codeline lineno="871"><highlight class="normal"><sp/><sp/><sp/><sp/>xQueueSendFromISR(*rx_queue,<sp/>&amp;receivedData,<sp/>&amp;higherPriorityTaskWoken);<sp/></highlight><highlight class="comment">//<sp/>Send<sp/>data<sp/>from<sp/>&amp;receivedData(pRxBuffPtr)<sp/>to<sp/>rx_queue</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="872"><highlight class="normal"></highlight></codeline>
 <codeline lineno="873"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Trigger<sp/>the<sp/>next<sp/>interrupt</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="874"><highlight class="normal"><sp/><sp/><sp/><sp/>HAL_UART_Receive_IT(huart,<sp/>rx_buffer,<sp/>DATA_SIZE);</highlight><highlight class="comment">//<sp/>pRxBufferPtr<sp/>is<sp/>a<sp/>pointer<sp/>to<sp/>the<sp/>buffer<sp/>that<sp/>will<sp/>store<sp/>the<sp/>received<sp/>data</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="874"><highlight class="normal"><sp/><sp/><sp/><sp/>HAL_UART_Receive_IT(huart,<sp/>rx_buffer,<sp/><ref refid="_c_a_n_8c_1af55149bc1f05cf18af067a302e31e3f9" kindref="member">DATA_SIZE</ref>);</highlight><highlight class="comment">//<sp/>pRxBufferPtr<sp/>is<sp/>a<sp/>pointer<sp/>to<sp/>the<sp/>buffer<sp/>that<sp/>will<sp/>store<sp/>the<sp/>received<sp/>data</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="875"><highlight class="normal"></highlight></codeline>
 <codeline lineno="876"><highlight class="normal"><sp/><sp/><sp/><sp/>portYIELD_FROM_ISR(higherPriorityTaskWoken);</highlight></codeline>
 <codeline lineno="877"><highlight class="normal">}</highlight></codeline>

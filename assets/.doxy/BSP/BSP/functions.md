@@ -5,19 +5,19 @@
 
 ## a
 
-* **adc\_deinit** ([**ADC.h**](_a_d_c_8h.md), [**ADC.c**](_a_d_c_8c.md))
-* **adc\_init** ([**ADC.h**](_a_d_c_8h.md), [**ADC.c**](_a_d_c_8c.md))
-* **adc\_read** ([**ADC.h**](_a_d_c_8h.md), [**ADC.c**](_a_d_c_8c.md))
+* **adc\_deinit** ([**ADC.c**](_a_d_c_8c.md))
+* **adc\_init** ([**ADC.c**](_a_d_c_8c.md))
+* **adc\_read** ([**ADC.c**](_a_d_c_8c.md))
 
 
 ## c
 
-* **can\_deinit** ([**CAN.h**](_c_a_n_8h.md), [**CAN.c**](_c_a_n_8c.md))
-* **can\_init** ([**CAN.h**](_c_a_n_8h.md), [**CAN.c**](_c_a_n_8c.md))
-* **can\_recv** ([**CAN.h**](_c_a_n_8h.md), [**CAN.c**](_c_a_n_8c.md))
-* **can\_send** ([**CAN.h**](_c_a_n_8h.md), [**CAN.c**](_c_a_n_8c.md))
-* **can\_start** ([**CAN.h**](_c_a_n_8h.md), [**CAN.c**](_c_a_n_8c.md))
-* **can\_stop** ([**CAN.h**](_c_a_n_8h.md), [**CAN.c**](_c_a_n_8c.md))
+* **can\_deinit** ([**CAN.c**](_c_a_n_8c.md))
+* **can\_init** ([**CAN.c**](_c_a_n_8c.md))
+* **can\_recv** ([**CAN.c**](_c_a_n_8c.md))
+* **can\_send** ([**CAN.c**](_c_a_n_8c.md))
+* **can\_start** ([**CAN.c**](_c_a_n_8c.md))
+* **can\_stop** ([**CAN.c**](_c_a_n_8c.md))
 
 
 ## h
@@ -55,10 +55,10 @@
 
 ## u
 
-* **uart\_deinit** ([**UART.h**](_u_a_r_t_8h.md), [**UART.c**](_u_a_r_t_8c.md))
-* **uart\_init** ([**UART.h**](_u_a_r_t_8h.md), [**UART.c**](_u_a_r_t_8c.md))
-* **uart\_recv** ([**UART.h**](_u_a_r_t_8h.md), [**UART.c**](_u_a_r_t_8c.md))
-* **uart\_send** ([**UART.h**](_u_a_r_t_8h.md), [**UART.c**](_u_a_r_t_8c.md))
+* **uart\_deinit** ([**UART.c**](_u_a_r_t_8c.md))
+* **uart\_init** ([**UART.c**](_u_a_r_t_8c.md))
+* **uart\_recv** ([**UART.c**](_u_a_r_t_8c.md))
+* **uart\_send** ([**UART.c**](_u_a_r_t_8c.md))
 
 
 
