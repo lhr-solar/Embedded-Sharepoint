@@ -999,7 +999,7 @@
 1. Follow the instructions here to create your github SSH key
 2. Install <a href="https://code.visualstudio.com/">Visual Studio Code</a></p>
 <h2 id="linux">Linux</h2>
-<p>Thanks for making our lives easy :) </p>
+<p>Thanks for making our lives easy :)    </p>
 <ol>
 <li>Follow the instructions here to create your github SSH key</li>
 <li>Run the steps in <a href="#nix">Nix</a> next</li>
@@ -1033,7 +1033,24 @@ Download Ubuntu 24 <a href="https://ubuntu.com/download/server">here</a>. </p>
 </li>
 <li>No shared directory necessary so press Continue here</li>
 <li>Name the VM (e.g., Ubuntu 24.04 LTS).</li>
-<li>Click Save to create the VM.</li>
+<li>
+<p>Click Save to create the VM.</p>
+</li>
+<li>
+<p>Click on Run to start the installation.</p>
+</li>
+<li>Use arrow keys to select Try or Install Ubuntu Server. <img alt="Try Ubuntu Server" src="../mac_utm_imgs/tryUbuntu.png" /></li>
+<li>Select language (e.g., English). <img alt="language" src="/mac_utm_imgs/language.png" /></li>
+<li>Choose keyboard layout <img alt="language" src="/mac_utm_imgs/keyboard.png" /></li>
+<li>For installation type, ensure Ubuntu Server is selected. <img alt="language" src="/mac_utm_imgs/ubuntuServer.png" /></li>
+<li>Enable Search for third-party drivers.</li>
+<li>Accept default for network configuration and proxy settings.</li>
+<li>Choose storage configuration: Use entire disk.</li>
+<li>Set up profile:
+Machine name (e.g., CodeBind).
+Username (e.g., CodeBind) and password.</li>
+<li>Choose to install OpenSSH for remote access.</li>
+<li>Continue through prompts to complete installation.</li>
 </ol>
 <h4 id="configuring-ssh">Configuring SSH</h4>
 <p>The Ubuntu VM we created is pretty slow and can't run graphical applications easily, so it'll be hard to develop code here. What we will do instead is SSH into the VM we created from regular MacOS so we can develop our linux code while also being in MacOS.  </p>
