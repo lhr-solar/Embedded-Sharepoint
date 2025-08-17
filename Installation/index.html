@@ -30,6 +30,9 @@
     
       <link rel="stylesheet" href="../assets/stylesheets/main.7e37652d.min.css">
       
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
       
 
 
@@ -57,7 +60,14 @@
   </head>
   
   
-    <body dir="ltr">
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="indigo">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -108,6 +118,18 @@
         </div>
       </div>
     </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
     
     
       <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
@@ -684,8 +706,13 @@ Download Ubuntu 24 <a href="https://ubuntu.com/download/server">here</a>. </p>
 Your name and your server name doesn't matter
 Username (your ubuntu username) password.</li>
 <li>Skip enabling Ubuntu Pro</li>
-<li>Choose to install OpenSSH for remote access.</li>
-<li>Continue through prompts to complete installation.</li>
+<li>Choose to install OpenSSH for remote access. <img alt="openSSH" src="../mac_utm_imgs/openSSH.png" /></li>
+<li>Accept defaults for the rest of the settings and wait for installation to be complete</li>
+<li>Press Reboot Now when the option is there</li>
+<li>You'll likely get a failed unmounting error <img alt="rip" src="../mac_utm_imgs/wompWomp.png" />. Press enter after this happens</li>
+<li>Exit out of your VM and right click the list of VMs to actually stop it! <a href="../mac_utm_imgs/stopVM.png">stopVM</a></li>
+<li>Select CD/DVD and press clear <a href="../mac_utm_imgs/clear.png">clear</a>, it should now be empty <a href="../mac_utm_imgs/empty.png">empty</a></li>
+<li>Press the play button on your VM to enter it where you will be prompted to enter your ubuntu username and password</li>
 </ol>
 <h4 id="configuring-ssh">Configuring SSH</h4>
 <p>The Ubuntu VM we created is pretty slow and can't run graphical applications easily, so it'll be hard to develop code here. What we will do instead is SSH into the VM we created from regular MacOS so we can develop our linux code while also being in MacOS.  </p>
@@ -714,10 +741,11 @@ User laksh
 <li>Select the hostname you just added</li>
 <li>Congrats! You are now SSH'd into your Ubuntu VM. </li>
 </ol>
+<p>You need to rerun the github SSH key setups in your linux VM. </p>
 <p>Run the steps in <a href="#nix">Nix</a> next</p>
 <h2 id="nix">Nix</h2>
 <p>Nix is a package manger that lets you write out all the packages you want to install in a human readable format. This simplifies development since I can write out a list of dependencies needed to compile.<br />
-Run the following scripts in your linux terminal:
+Open Embedded-Sharepoint in your linux environment, and run the following commands in the terminal: 
 Make the nix_install script runnable</p>
 <pre><code>chmod +x ./nix_install.sh
 </code></pre>
