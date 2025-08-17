@@ -9,6 +9,8 @@ Welcome to the Embedded Sharepoint! Embedded-Sharepoint contains the shared embe
 
 ## Command Usage
 
+### Running tests
+
 ## Adding Sharepoint To Your Project
 Embedded-Sharepoint contains common files so it should be stored as a submodule inside your repository.  
 
@@ -23,12 +25,6 @@ Embedded-Sharepoint contains common files so it should be stored as a submodule 
 
 ### USB PassThrough
 
-#### Install USBIPD (only need to do this the first time)
-
-In Powershell administrator:
-    
-    winget install usbipd
-
 #### Pass USB Devices
 
 In PowerShell administrator: 
@@ -37,37 +33,6 @@ In PowerShell administrator:
     usbipd bind --busid <busid>
     usbipd attach --wsl --busid <busid>
 
-## Setup
-
-Note: Docker installs tools for development on Ubuntu 22.04.
-
-Note: DO NOT install packages in the docker session. Changes will be lost. Update the Dockerfile instead!
-
-Note: If USB devices are detected via lsusb but fail to open, try restarting the container with the device plugged in.
-
-### VS Code
-
-Install Dev Containers extension
-
-Open repository folder in VS Code
-
-F1 → "Dev Containers: Open Folder in Container..."
-
-Ensure docker is running
-    
-    sudo systemctl start docker
-
-### CLI Script
-
-This script sets up a docker container for embedded development.
-
-Usage:
-
-    ./start.sh
-
-Remove Docker Image:
-
-    docker rmi embedded-sharepoint-dev
 
 ## Porting
 

@@ -26,7 +26,7 @@ def dbc_to_markdown(dbc_path: Path) -> str:
     github_link = f"{GITHUB_DBC_BASE}/{dbc_path.name}"
     md = f"<a name=\"{anchor}\"></a>\n"
     md += f"# {dbc_path.name}\n\n"
-    md += f"[GitHub]({github_link})\n\n"
+    md += f"[GitHub Link]({github_link})\n\n"
 
     # Messages table
     md += "## Messages\n\n"

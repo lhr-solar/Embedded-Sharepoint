@@ -36,8 +36,8 @@ Next we will use the Ubuntu iso image we just downloaded to create a new Ubuntu 
 2. Select Virtualize and then choose Linux.
 3. Press browse and select the downloaded ARM-based ISO file.
 4. Adjust hardware settings:
-    * Memory: Default is 4000 MB (adjust based on Mac capacity).
-    * Storage: Default is 64 GB (adjust as necessary).
+    * Memory: Default is 4096 MiB
+    * Storage: Tested with 32 GB
 5. No shared directory necessary so press Continue here
 6. Name the VM (e.g., Ubuntu 24.04 LTS).
 7. Click Save to create the VM.
@@ -47,12 +47,15 @@ Next we will use the Ubuntu iso image we just downloaded to create a new Ubuntu 
 10. Select language (e.g., English). ![language](mac_utm_imgs/language.png)
 10. Choose keyboard layout ![language](mac_utm_imgs/keyboard.png)
 11. For installation type, ensure Ubuntu Server is selected. ![language](mac_utm_imgs/ubuntuServer.png)
-11. Enable Search for third-party drivers.
-12. Accept default for network configuration and proxy settings.
-13. Choose storage configuration: Use entire disk.
-14. Set up profile:
-Machine name (e.g., CodeBind).
-Username (e.g., CodeBind) and password.
+11. Select defaults for network configuration ![network](mac_utm_imgs/networkConfiguration.png)
+12. Leave default for proxy settings ![proxy](mac_utm_imgs/proxyDefault.png)
+13. Wait for Ubuntu mirror configuration tests to pass.![mirror](mac_utm_imgs/ubuntuMirrorTests.png)
+13. Choose storage configuration: Use entire disk. ![disk](mac_utm_imgs/useEntireDisk.png)
+14. Accept defaults for filesystem and accept continuing installation. ![installation](mac_utm_imgs/startInstillation.png)
+15. Set up profile
+Your name and your server name doesn't matter
+Username (your ubuntu username) password.
+16. Skip enabling Ubuntu Pro
 15. Choose to install OpenSSH for remote access.
 16. Continue through prompts to complete installation.
 
@@ -60,6 +63,8 @@ Username (e.g., CodeBind) and password.
 The Ubuntu VM we created is pretty slow and can't run graphical applications easily, so it'll be hard to develop code here. What we will do instead is SSH into the VM we created from regular MacOS so we can develop our linux code while also being in MacOS.  
 
 Open the Ubuntu VM and run ``` hostname -I``` This will output your Ubuntu VM's IP address to SSH into.  
+![language](mac_utm_imgs/ip_addr.png)
+Note the ip address, everything before the letters (192.168.64.8 from the image above) 
 
 Open Visual Studio Code in MacOS. 
 Install the folowing extensions from the extensions marketplace:  
@@ -100,4 +105,9 @@ Enter the nix shell and download dependencies for Embedded-Sharepoint
 ```
 nix develop
 ```
-In this nix shell all the dependencies needed for Embedded-Sharepoint should be installed, anytime you want to develop code you will need to run nix develop.
+In this nix shell all the dependencies needed for Embedded-Sharepoint should be installed, anytime you want to develop code you will need to run nix develop.  
+Test if installation is succesful by compiling a test 
+```
+cd test
+make TEST=blinky
+```
