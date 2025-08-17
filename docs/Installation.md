@@ -56,8 +56,13 @@ Next we will use the Ubuntu iso image we just downloaded to create a new Ubuntu 
 Your name and your server name doesn't matter
 Username (your ubuntu username) password.
 16. Skip enabling Ubuntu Pro
-15. Choose to install OpenSSH for remote access.
-16. Continue through prompts to complete installation.
+15. Choose to install OpenSSH for remote access. ![openSSH](mac_utm_imgs/openSSH.png)
+16. Accept defaults for the rest of the settings and wait for installation to be complete
+17. Press Reboot Now when the option is there
+18. You'll likely get a failed unmounting error ![rip](mac_utm_imgs/wompWomp.png). Press enter after this happens
+19. Exit out of your VM and right click the list of VMs to actually stop it! [stopVM](mac_utm_imgs/stopVM.png)
+20. Select CD/DVD and press clear [clear](mac_utm_imgs/clear.png), it should now be empty [empty](mac_utm_imgs/empty.png)
+21. Press the play button on your VM to enter it where you will be prompted to enter your ubuntu username and password
 
 #### Configuring SSH
 The Ubuntu VM we created is pretty slow and can't run graphical applications easily, so it'll be hard to develop code here. What we will do instead is SSH into the VM we created from regular MacOS so we can develop our linux code while also being in MacOS.  
