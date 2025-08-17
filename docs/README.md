@@ -16,7 +16,7 @@ Embedded-Sharepoint contains common files so it should be stored as a submodule 
 
 ### Examples:
 * [BPS-Leader](https://github.com/lhr-solar/BPS-Leader)
-* [Activ-Precharge Board](https://github.com/lhr-solar/Active-Precharge-Board#)
+* [Active-Precharge Board](https://github.com/lhr-solar/Active-Precharge-Board#)
 
 ## Contributing
 

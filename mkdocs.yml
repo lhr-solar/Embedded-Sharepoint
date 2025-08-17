@@ -5,6 +5,9 @@ site_author: LHR - Solar
 theme:
   name: material
   favicon: LHRs.ico
+  palette:
+  - scheme: slate
+    primary: blue
 
 nav:
   - Home: 'README.md'

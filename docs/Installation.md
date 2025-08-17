@@ -93,11 +93,13 @@ User laksh
 6. Select the hostname you just added
 7. Congrats! You are now SSH'd into your Ubuntu VM. 
 
+You need to rerun the github SSH key setups in your linux VM. 
+
 Run the steps in [Nix](#nix) next
 
 ## Nix
 Nix is a package manger that lets you write out all the packages you want to install in a human readable format. This simplifies development since I can write out a list of dependencies needed to compile.  
-Run the following scripts in your linux terminal:
+Open Embedded-Sharepoint in your linux environment, and run the following commands in the terminal: 
 Make the nix_install script runnable
 ```
 chmod +x ./nix_install.sh
