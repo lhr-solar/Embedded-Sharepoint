@@ -659,8 +659,8 @@ Download Ubuntu 24 <a href="https://ubuntu.com/download/server">here</a>. </p>
 <li>Select Virtualize and then choose Linux.</li>
 <li>Press browse and select the downloaded ARM-based ISO file.</li>
 <li>Adjust hardware settings:<ul>
-<li>Memory: Default is 4000 MB (adjust based on Mac capacity).</li>
-<li>Storage: Default is 64 GB (adjust as necessary).</li>
+<li>Memory: Default is 4096 MiB</li>
+<li>Storage: Tested with 32 GB</li>
 </ul>
 </li>
 <li>No shared directory necessary so press Continue here</li>
@@ -675,12 +675,15 @@ Download Ubuntu 24 <a href="https://ubuntu.com/download/server">here</a>. </p>
 <li>Select language (e.g., English). <img alt="language" src="../mac_utm_imgs/language.png" /></li>
 <li>Choose keyboard layout <img alt="language" src="../mac_utm_imgs/keyboard.png" /></li>
 <li>For installation type, ensure Ubuntu Server is selected. <img alt="language" src="../mac_utm_imgs/ubuntuServer.png" /></li>
-<li>Enable Search for third-party drivers.</li>
-<li>Accept default for network configuration and proxy settings.</li>
-<li>Choose storage configuration: Use entire disk.</li>
-<li>Set up profile:
-Machine name (e.g., CodeBind).
-Username (e.g., CodeBind) and password.</li>
+<li>Select defaults for network configuration <img alt="network" src="../mac_utm_imgs/networkConfiguration.png" /></li>
+<li>Leave default for proxy settings <img alt="proxy" src="../mac_utm_imgs/proxyDefault.png" /></li>
+<li>Wait for Ubuntu mirror configuration tests to pass.<img alt="mirror" src="../mac_utm_imgs/ubuntuMirrorTests.png" /></li>
+<li>Choose storage configuration: Use entire disk. <img alt="disk" src="../mac_utm_imgs/useEntireDisk.png" /></li>
+<li>Accept defaults for filesystem and accept continuing installation. <img alt="installation" src="../mac_utm_imgs/startInstillation.png" /></li>
+<li>Set up profile
+Your name and your server name doesn't matter
+Username (your ubuntu username) password.</li>
+<li>Skip enabling Ubuntu Pro</li>
 <li>Choose to install OpenSSH for remote access.</li>
 <li>Continue through prompts to complete installation.</li>
 </ol>
