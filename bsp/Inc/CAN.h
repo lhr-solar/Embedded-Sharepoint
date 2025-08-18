@@ -3,7 +3,9 @@
 #include "stm32xx_hal.h"
 
 #if !defined(CAN1)
+#ifndef ALLOW_CAN_INCLUDE
   #error "[CONFIG] CAN not enabled on this chip."
+  #endif /* ALLOW_CAN_INCLUDE */
 #endif /* CAN1 */
 
 /* Function Descriptions:
