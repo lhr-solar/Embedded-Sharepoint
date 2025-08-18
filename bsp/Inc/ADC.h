@@ -25,8 +25,7 @@
  *    - Set `timeout` to 0 for non-blocking behavior.
  */
 
-#ifndef _ADC_H
-#define _ADC_H
+#pragma once
 
 #include "stm32xx_hal.h"
 
@@ -73,5 +72,3 @@ adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef
 */
 
 adc_status_t adc_deinit(ADC_HandleTypeDef *h);
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef CAN_H
-#define CAN_H
+#pragma once
 
 #include "stm32xx_hal.h"
 
@@ -71,5 +70,3 @@ can_status_t can_start(CAN_HandleTypeDef* handle);
 can_status_t can_stop(CAN_HandleTypeDef* handle);
 can_status_t can_send(CAN_HandleTypeDef* handle, const CAN_TxHeaderTypeDef* header, const uint8_t data[], TickType_t delay_ticks);
 can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id, CAN_RxHeaderTypeDef* header, uint8_t data[], TickType_t delay_ticks);
-
-#endif /* CAN_H */
