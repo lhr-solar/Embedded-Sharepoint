@@ -17,7 +17,7 @@ jobs:
           path: |
             /nix/store
             ~/.cache/nix
-          key: nix-${{ runner.os }}-${{ hashFiles('flake.lock') }}
+          key: nix-${{ runner.os }}
           restore-keys: |
             nix-${{ runner.os }}-
 
@@ -27,6 +27,6 @@ jobs:
 
       - name: Clean & Build tests
         run: |
-          nix develop --accept-flake-config --command bash -c "
+          nix develop --no-write-lock-file --accept-flake-config --command bash -c "
             cd test && make clean && bash makeAllTests.sh
           "
