@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import jq
 import sys
 import json
 import os
+import re
 
 def load_commands(build_dir):
     """Read cc_*.txt files and extract (workdir, command) pairs."""
@@ -20,6 +20,38 @@ def load_commands(build_dir):
                 print(f"Warning: Failed to read {full_path}: {e}", file=sys.stderr)
     return pairs
 
+def process_command(workdir, command):
+    """Convert a command string into a dict similar to your jq filter."""
+    if " -c " not in command:
+        return None
+
+    # Split command into arguments, ignoring extra spaces
+    args = [arg for arg in command.split(" ") if arg]
+
+    # Find output file after "-o" flag
+    output = None
+    if "-o" in args:
+        o_idx = args.index("-o")
+        if o_idx + 1 < len(args):
+            output = args[o_idx + 1]
+            if not output.startswith("/"):
+                output = os.path.join(workdir, output)
+
+    # Find source file ending with .c, .s, .S, or .asm
+    src_files = [arg for arg in args if re.search(r"\.(c|s|S|asm)$", arg)]
+    file = None
+    if src_files:
+        file = src_files[-1]
+        if not file.startswith("/"):
+            file = os.path.join(workdir, file)
+
+    return {
+        "arguments": args,
+        "output": output,
+        "file": file,
+        "directory": workdir
+    }
+
 def main():
     if len(sys.argv) < 3:
         print("Usage: bear.py <build_dir> <output_file>")
@@ -33,41 +65,11 @@ def main():
         sys.exit(1)
 
     input_pairs = load_commands(build_dir)
-
-    jq_filter = r'''
-    .
-    | .workdir as $workdir
-    | .command as $line
-    | $line
-    | split(" ")
-    | map(select(length > 0))
-    | {
-        arguments: [.[]],
-        output: (
-          (index("-o") as $o_idx | .[$o_idx + 1])
-          | if startswith("/") then . else $workdir + "/" + . end
-        ),
-        file: (
-          (
-            map(select(test("\\.(c|s|S|asm)$"))) | .[-1]
-          )
-          | if type == "string" and startswith("/") then .
-            elif type == "string" then $workdir + "/" + .
-            else null
-          end
-        ),
-        directory: $workdir
-      }
-    '''
-
-    compiled = jq.compile(jq_filter)
-
     results = []
+
     for workdir, command in input_pairs:
-        if " -c " not in command:
-            continue
         try:
-            res = compiled.input({"command": command, "workdir": workdir}).first()
+            res = process_command(workdir, command)
             if res is not None:
                 results.append(res)
         except Exception as e:
