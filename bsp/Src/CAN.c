@@ -1,5 +1,4 @@
 #include "queue_ex.h"
-
 #include "CAN.h"
 
 #if defined(CAN1) || defined(CAN2) || defined(CAN3)
