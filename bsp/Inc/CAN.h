@@ -3,10 +3,10 @@
 #include "stm32xx_hal.h"
 
 #if !defined(CAN1)
-#ifndef ALLOW_CAN_INCLUDE
   #error "[CONFIG] CAN not enabled on this chip."
-  #endif /* ALLOW_CAN_INCLUDE */
-#endif /* CAN1 */
+#endif
+
+#if defined(CAN1)
 
 /* Function Descriptions:
  * Init initializes the CAN peripheral given the configuration
@@ -72,3 +72,5 @@ can_status_t can_start(CAN_HandleTypeDef* handle);
 can_status_t can_stop(CAN_HandleTypeDef* handle);
 can_status_t can_send(CAN_HandleTypeDef* handle, const CAN_TxHeaderTypeDef* header, const uint8_t data[], TickType_t delay_ticks);
 can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id, CAN_RxHeaderTypeDef* header, uint8_t data[], TickType_t delay_ticks);
+
+#endif
