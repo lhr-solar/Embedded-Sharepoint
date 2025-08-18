@@ -2,6 +2,7 @@
 TEST ?= main
 PROJECT_TARGET ?= stm32f446ret
 BEAR_ENABLE ?= 1
+VERBOSE ?= 0
 
 # source and include directories
 _PROJECT_C_SOURCES = $(wildcard Src/*.c)
@@ -21,42 +22,32 @@ export PROJECT_TARGET
 export PROJECT_C_SOURCES
 export PROJECT_C_INCLUDES
 export PROJECT_BUILD_DIR
-
-# bear
-BEAR_PREFIX := 
-MV_COMPILE_COMMANDS_FILE :=
+export BEAR_ENABLE
+export VERBOSE
 
 ifeq ($(BEAR_ENABLE), 1)
-  BEAR_INSTALLED := $(shell command -v bear >/dev/null 2>&1 && echo yes || echo no)
-  ifeq ($(BEAR_INSTALLED),yes)
-    BEAR_PREFIX := bear --output compile_commands.json --append --
-    MV_COMPILE_COMMANDS_FILE := -mv compile_commands.json $(PROJECT_BUILD_DIR)/compile_commands.json 
-  else
-    $(warning BEAR_ENABLE=1, but bear is out searching for honey and is nowhere to be found!)
-  endif
+	COMPILE_COMMANDS_JSON := $(PROJECT_BUILD_DIR)/compile_commands.json
 endif
 
 $(info $(PROJECT_BUILD_DIR))
 
 default: all
-
 .PHONY: all
 all:
-	@if [ -n "$(BEAR_PREFIX)" ]; then \
-	    echo "A wild bear has appeared!"; \
-	fi
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) all
 
-	$(BEAR_PREFIX) $(MAKE) -C $(BUILD_MAKEFILE_DIR) all
-	$(MAKE) move-commands
+ifeq ($(BEAR_ENABLE), 1)
+ifeq ($(VERBOSE), 1)
+	$(BUILD_MAKEFILE_DIR)/bear2.py $(PROJECT_BUILD_DIR) $(COMPILE_COMMANDS_JSON)
+else
+	@echo "Generating compile commands..."
+	@$(BUILD_MAKEFILE_DIR)/bear2.py $(PROJECT_BUILD_DIR) $(COMPILE_COMMANDS_JSON)
+endif
+endif
 
-%:
-	@if [ "$@" != "default" ]; then \
-		$(MAKE) -C $(BUILD_MAKEFILE_DIR) $@; \
-	fi
-
-.PHONY: move-commands
-move-commands: # only runs if compile_commands.json exists
-	$(MV_COMPILE_COMMANDS_FILE)
+.PHONY: clean
+clean:
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) clean
 
 # generate documentation
 .PHONY: docs
