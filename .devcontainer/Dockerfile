@@ -1,23 +1,22 @@
-# Use platform-qualified base
-ARG TARGETPLATFORM
+ARG TARGETPLATFORM=linux/amd64
 FROM --platform=${TARGETPLATFORM} ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=UTC
 
-# Consistent dev user
 RUN groupadd -g 1000 dev \
  && useradd -u 1000 -g dev -m -s /bin/bash dev \
  && echo "dev ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+RUN usermod -aG dialout,plugdev dev
 
-# Install pinned packages
-RUN apt-get update && apt-get install -y --no-install-recommends \
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
     build-essential=12.9ubuntu3 \
     git=1:2.34.1-1ubuntu1.10 \
     wget=1.21.2-2ubuntu1 \
     curl=7.81.0-1ubuntu1.15 \
     cmake=3.22.1-1ubuntu1.22.04.1 \
-    # ninja-build=1.10.1-1 \
     make=4.3-4.1build1 \
     gdb-multiarch=12.1-0ubuntu1~22.04 \
     openocd=0.11.0-1ubuntu1 \
@@ -30,7 +29,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     iputils-ping=3:20211215-1 \
     dnsutils=1:9.18.18-0ubuntu0.22.04.2 \
     tcpdump=4.99.1-3ubuntu0.1 \
-    # netcat-openbsd=1.218-4ubuntu1 \
     openssh-client=1:8.9p1-3ubuntu0.6 \
     ca-certificates=20230311ubuntu0.22.04.1 \
     usbutils=1:014-1 \
@@ -51,37 +49,32 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     parallel=20210822+ds-2 \
  && rm -rf /var/lib/apt/lists/*
 
-# Install ARM toolchain
 ARG GCC_ARM_VERSION=14.2.rel1
 WORKDIR /tmp
 RUN case "${TARGETPLATFORM}" in \
-        "linux/amd64") ARCH="x86_64" ;; \
-        "linux/arm64") ARCH="aarch64" ;; \
+       "linux/amd64") ARCH="x86_64" ;; \
+       "linux/arm64") ARCH="aarch64" ;; \
     esac \
  && wget -q "https://developer.arm.com/-/media/Files/downloads/gnu/${GCC_ARM_VERSION}/binrel/arm-gnu-toolchain-${GCC_ARM_VERSION}-${ARCH}-arm-none-eabi.tar.xz" \
- && tar -xf arm-gnu-toolchain-${GCC_ARM_VERSION}-${ARCH}-arm-none-eabi.tar.xz -C /usr/local --strip-components=1 \
- && rm arm-gnu-toolchain-${GCC_ARM_VERSION}-${ARCH}-arm-none-eabi.tar.xz \
- && ln -sf /usr/local/bin/arm-none-eabi-gcc /usr/bin/arm-none-eabi-gcc \
- && ln -sf /usr/local/bin/arm-none-eabi-g++ /usr/bin/arm-none-eabi-g++ \
+ && tar -xf "arm-gnu-toolchain-${GCC_ARM_VERSION}-${ARCH}-arm-none-eabi.tar.xz" -C /usr/local --strip-components=1 \
+ && rm "arm-gnu-toolchain-${GCC_ARM_VERSION}-${ARCH}-arm-none-eabi.tar.xz" \
+ && ln -sf /usr/local/bin/arm-none-eabi-gcc  /usr/bin/arm-none-eabi-gcc \
+ && ln -sf /usr/local/bin/arm-none-eabi-g++  /usr/bin/arm-none-eabi-g++ \
  && ln -sf /usr/local/bin/arm-none-eabi-objcopy /usr/bin/arm-none-eabi-objcopy \
- && ln -sf /usr/local/bin/arm-none-eabi-objdump /usr/bin/arm-none-eabi-objdump \
- && rm -rf /tmp
+ && ln -sf /usr/local/bin/arm-none-eabi-objdump /usr/bin/arm-none-eabi-objdump
 
-# Install Python requirements
 COPY requirements.txt /tmp/
 RUN pip3 install --no-cache-dir -r /tmp/requirements.txt \
  && rm /tmp/requirements.txt
 
-# Fix ncurses
 RUN ln -sf /usr/lib/x86_64-linux-gnu/libncurses.so.6 /usr/lib/x86_64-linux-gnu/libncurses.so.5
 
-# Setup workspace
-RUN mkdir -p /workdir/{build,tools} && chown -R dev:dev /workdir
+RUN mkdir -p /workdir/{build,tools} \
+ && chown -R dev:dev /workdir
 
 USER dev
 WORKDIR /workdir
 
-# Add utility scripts
 COPY .devcontainer/setup.sh /workdir/.devcontainer/setup.sh
 RUN chmod +x /workdir/.devcontainer/setup.sh
 

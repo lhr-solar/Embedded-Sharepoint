@@ -4,6 +4,14 @@
     "dockerfile": "Dockerfile",
     "context": ".."
   },
+  "runArgs": [
+    "--privileged",
+    "--network=host"
+  ],
+  "mounts": [
+    "type=bind,source=/dev/bus/usb,target=/dev/bus/usb",
+    "type=bind,source=/dev,target=/dev"
+  ],
   "customizations": {
     "vscode": {
       "extensions": [
@@ -18,50 +26,36 @@
         "eamodio.gitlens"
       ],
       "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
         "C_Cpp.default.compilerPath": "/usr/local/bin/arm-none-eabi-gcc",
         "C_Cpp.default.cStandard": "c11",
         "C_Cpp.default.cppStandard": "c++17",
         "C_Cpp.default.intelliSenseMode": "gcc-arm",
         "cortex-debug.armToolchainPath": "/usr/local/bin",
         "cortex-debug.openocdPath": "/usr/local/bin/openocd",
-        "cortex-debug.stlinkPath": "/usr/local/bin/st-flash",
-        "terminal.integrated.defaultProfile.linux": "bash"
+        "cortex-debug.stlinkPath": "/usr/local/bin/st-flash"
       }
     }
   },
-  "runArgs": [
-    "--privileged",
-    "--device-cgroup-rule=c *:* rmw",
-    "--network=host"
-  ],
-  "mounts": [
-    {
-      "source": "${localWorkspaceFolder}",
-      "target": "/workdir",
-      "type": "bind"
-    },
-    {
-      "source": "${localEnv:HOME}${localEnv:USERPROFILE}/.gitconfig",
-      "target": "/home/dev/.gitconfig",
-      "type": "bind"
-    },
-    {
-      "source": "/dev/bus/usb",
-      "target": "/dev/bus/usb",
-      "type": "bind"
-    }
-  ],
   "containerEnv": {
     "CROSS_COMPILE": "arm-none-eabi-",
     "ARCH": "arm"
   },
-  "postCreateCommand": "/workdir/.devcontainer/setup.sh",
+  "postCreateCommand": "/bin/bash /workdir/.devcontainer/setup.sh",
   "remoteUser": "dev",
   "workspaceFolder": "/workdir",
-  "forwardPorts": [3333, 4444, 8080],
+  "forwardPorts": [
+    3333,
+    8080
+  ],
   "portsAttributes": {
-    "3333": { "label": "OpenOCD GDB Server", "onAutoForward": "notify" },
-    "4444": { "label": "OpenOCD Telnet", "onAutoForward": "ignore" },
-    "8080": { "label": "Web Server", "onAutoForward": "openPreview" }
+    "3333": {
+      "label": "OpenOCD GDB Server",
+      "onAutoForward": "notify"
+    },
+    "8080": {
+      "label": "Web Server",
+      "onAutoForward": "openPreview"
+    }
   }
 }
