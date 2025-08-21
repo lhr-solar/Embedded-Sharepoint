@@ -1,31 +1,67 @@
-// .devcontainer/devcontainer.json
 {
-  "name": "Embedded Sharepoint",
-  "dockerComposeFile": [
-    "../docker-compose.yml"
-  ],
-
-  "service": "dev",
-  "workspaceFolder": "/workdir",
-  "shutdownAction": "stopCompose",
-
-  "initializeCommand": "echo \"WORKDIR_MOUNT=${localWorkspaceFolder}\nREMOTE_USER=$USER\nREMOTE_UID=$(id -u)\nREMOTE_GID=$(id -g)\" > .env",
-
+  "name": "LHR Solar Embedded Sharepoint",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
   "customizations": {
     "vscode": {
-      "settings": {
-        "terminal.integrated.defaultProfile.linux": "bash"
-      },
       "extensions": [
         "ms-vscode.cpptools-extension-pack",
-        "ms-python.python",
-        "GitHub.vscode-pull-request-github",
+        "ms-vscode.cmake-tools",
+        "marus25.cortex-debug",
+        "dan-c-underwood.arm",
+        "twxs.cmake",
         "ms-vscode.makefile-tools",
-        "thecreativedodo.usbip-connect",
-        "eamodio.gitlens",
-        "ms-vscode.hexeditor"
-      ]
+        "ms-python.python",
+        "ms-vscode.hexeditor",
+        "eamodio.gitlens"
+      ],
+      "settings": {
+        "C_Cpp.default.compilerPath": "/usr/local/bin/arm-none-eabi-gcc",
+        "C_Cpp.default.cStandard": "c11",
+        "C_Cpp.default.cppStandard": "c++17",
+        "C_Cpp.default.intelliSenseMode": "gcc-arm",
+        "cortex-debug.armToolchainPath": "/usr/local/bin",
+        "cortex-debug.openocdPath": "/usr/local/bin/openocd",
+        "cortex-debug.stlinkPath": "/usr/local/bin/st-flash",
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
     }
+  },
+  "runArgs": [
+    "--privileged",
+    "--device-cgroup-rule=c *:* rmw",
+    "--network=host"
+  ],
+  "mounts": [
+    {
+      "source": "${localWorkspaceFolder}",
+      "target": "/workdir",
+      "type": "bind"
+    },
+    {
+      "source": "${localEnv:HOME}${localEnv:USERPROFILE}/.gitconfig",
+      "target": "/home/dev/.gitconfig",
+      "type": "bind"
+    },
+    {
+      "source": "/dev/bus/usb",
+      "target": "/dev/bus/usb",
+      "type": "bind"
+    }
+  ],
+  "containerEnv": {
+    "CROSS_COMPILE": "arm-none-eabi-",
+    "ARCH": "arm"
+  },
+  "postCreateCommand": "/workdir/.devcontainer/setup.sh",
+  "remoteUser": "dev",
+  "workspaceFolder": "/workdir",
+  "forwardPorts": [3333, 4444, 8080],
+  "portsAttributes": {
+    "3333": { "label": "OpenOCD GDB Server", "onAutoForward": "notify" },
+    "4444": { "label": "OpenOCD Telnet", "onAutoForward": "ignore" },
+    "8080": { "label": "Web Server", "onAutoForward": "openPreview" }
   }
 }
-
