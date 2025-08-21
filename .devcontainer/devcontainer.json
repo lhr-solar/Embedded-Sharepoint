@@ -9,6 +9,7 @@
     "--network=host"
   ],
   "mounts": [
+    "type=bind,source=${localWorkspaceFolder},target=/workdir",
     "type=bind,source=/dev/bus/usb,target=/dev/bus/usb",
     "type=bind,source=/dev,target=/dev"
   ],
@@ -41,7 +42,7 @@
     "CROSS_COMPILE": "arm-none-eabi-",
     "ARCH": "arm"
   },
-  "postCreateCommand": "/bin/bash /workdir/.devcontainer/setup.sh",
+  "postCreateCommand": "/workdir/.devcontainer/setup.sh",
   "remoteUser": "dev",
   "workspaceFolder": "/workdir",
   "forwardPorts": [
