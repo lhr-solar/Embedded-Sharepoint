@@ -11,16 +11,17 @@ sudo find /workdir -type f \( -name "*.sh" -o -name "*.py" -o -name "*.conf" -o 
 echo "[INFO] Activating Python virtual environment..."
 if [ -f "$HOME/.venv/bin/activate" ]; then
     # shellcheck source=/dev/null
-    echo 'source "$HOME/.venv/bin/activate"' >> /home/dev/.bashrc
+    echo 'source "$HOME/.venv/bin/activate"' >> $HOME/.bashrc
 else
     echo "[WARN] Python virtual environment not found at $HOME/.venv"
 fi
 
-echo "[INFO] Installing Python dependencies with uv..."
-if [ -f "/workdir/requirements.txt" ]; then
-    uv pip sync /workdir/requirements.txt
+echo "[INFO] Python executable: $(which pip)"
+if [ -s "/workdir/requirements.txt" ]; then
+    echo "[INFO] Showing installed packages:"
+    pip list
 else
-    echo "[WARN] requirements.txt not found at /workdir"
+    echo "[WARN] No python dependencies found at /workdir/requirements.txt"
 fi
 
 # USB permissions
@@ -69,11 +70,10 @@ else
     echo "[WARN] No STM32 device detected."
 fi
 
-echo "[INFO] Checking MkDocs installation..."
-if ! python -c "import mkdocs" &> /dev/null; then
-    echo "[ERROR] MkDocs not installed!"
-    exit 1
-fi
-echo "[INFO] MkDocs is installed!"
+echo "[DEBUG] Venv python: $HOME/.venv/bin/python"
+$HOME/.venv/bin/python --version
+
+echo "[INFO] MkDocs pip show:"
+$HOME/.venv/bin/python -m pip show mkdocs || echo "[WARN] mkdocs not found by pip show"
 
 echo "[DONE] Setup complete! Jolly good!"

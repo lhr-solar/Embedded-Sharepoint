@@ -26,7 +26,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         build-essential git cmake make bear doxygen \
     gdb-multiarch openocd stlink-tools picocom \
-        python3 python3-pip python3-dev wget curl \
+        python3 python3-pip python3-dev python3-venv wget curl \
         ca-certificates usbutils iputils-ping openssh-client udev \
         file vim nano tree htop parallel  dos2unix sudo \
     && rm -rf /var/lib/apt/lists/*
@@ -74,10 +74,14 @@ FROM toolchain AS python
 
 LABEL stage="python environment"
 
-RUN python3 -m pip install --break-system-packages uv && \
-    uv venv --python python3 /home/dev/.venv && \
-    chown -R dev:dev /home/dev/.venv
+COPY requirements.txt /tmp/requirements.txt
+RUN python3 -m venv /home/dev/.venv && \
+    /home/dev/.venv/bin/pip install --upgrade pip && \
+    /home/dev/.venv/bin/pip install --no-cache-dir -r /tmp/requirements.txt && \
+    chown -R dev:dev /home/dev/.venv && \
+    rm /tmp/requirements.txt 
 
+    
 ENV PATH="/home/dev/.venv/bin:${PATH}"
 
 # ----------- Final devcontainer stage -----------
@@ -87,10 +91,10 @@ LABEL stage="final devcontainer"
 
 WORKDIR /workdir
 
-COPY .devcontainer/setup.sh /workdir/.devcontainer/setup.sh
-RUN chmod +x /workdir/.devcontainer/setup.sh && \
-    dos2unix /workdir/.devcontainer/setup.sh && \
-    chown -R dev:dev /workdir
+# COPY .devcontainer/setup.sh /workdir/.devcontainer/setup.sh
+# RUN chmod +x /workdir/.devcontainer/setup.sh && \
+#     dos2unix /workdir/.devcontainer/setup.sh && \
+#     chown -R dev:dev /workdir
 
 USER dev
 ENV HOME=/home/dev

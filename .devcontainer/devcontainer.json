@@ -12,10 +12,15 @@
     "type=bind,source=${localWorkspaceFolder},target=/workdir,consistency=cached",
     // "type=bind,source=/dev/bus/usb,target=/dev/bus/usb",
     // "type=bind,source=/dev,target=/dev"
-    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/dev/.ssh,type=bind,readonly"
+    // "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/dev/.ssh,type=bind,readonly",
+    // "source=${env:SSH_AUTH_SOCK},target=/ssh-agent,type=bind,consistency=cached",
+
+    // Windows: bind the OpenSSH named pipe into /ssh-agent
+    // "source=\\\\.\\pipe\\openssh-ssh-agent,target=/ssh-agent,type=bind,consistency=cached"
   ],
   "remoteEnv": {
-    "HOME": "/home/dev"
+    "HOME": "/home/dev",
+    "SSH_AUTH_SOCK": "/ssh-agent"
   },
   "customizations": {
     "vscode": {
@@ -46,7 +51,11 @@
     "CROSS_COMPILE": "arm-none-eabi-",
     "ARCH": "arm"
   },
-  "postCreateCommand": "/workdir/.devcontainer/setup.sh",
+  "postCreateCommand": [
+    "/bin/sh", "-c", 
+    // "sudo chown -R dev:dev /workdir && sudo chown -R dev:dev /home/dev && 
+    "/bin/sh /workdir/.devcontainer/setup.sh"
+  ],
   "remoteUser": "dev",
   "workspaceFolder": "/workdir",
   "forwardPorts": [
