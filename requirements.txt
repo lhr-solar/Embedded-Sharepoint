@@ -1,4 +1,18 @@
-# Dependencies for Python
+# Dependencies for mkdocs (:sob:)
 mkdocs
+click
+mergedeep
+mkdocs-material
+pyyaml
+pyyaml_env_tag
+jinja2
+markupsafe
+markdown
+mkdoxy
+pathspec
+watchdog
+backrefs
+
+# Other stuff we use
 pyserial
 cantools

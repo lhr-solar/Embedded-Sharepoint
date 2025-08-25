@@ -9,10 +9,14 @@
     "--network=host"
   ],
   "mounts": [
-    "type=bind,source=${localWorkspaceFolder},target=/workdir",
-    "type=bind,source=/dev/bus/usb,target=/dev/bus/usb",
-    "type=bind,source=/dev,target=/dev"
+    "type=bind,source=${localWorkspaceFolder},target=/workdir,consistency=cached",
+    // "type=bind,source=/dev/bus/usb,target=/dev/bus/usb",
+    // "type=bind,source=/dev,target=/dev"
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/dev/.ssh,type=bind,readonly"
   ],
+  "remoteEnv": {
+    "HOME": "/home/dev"
+  },
   "customizations": {
     "vscode": {
       "extensions": [
