@@ -10,6 +10,8 @@ NC='\033[0m'
 # Check for root/sudo
 if [[ $EUID -ne 0 ]]; then
     echo "This script must be run as root or with sudo privileges."
+    echo "please run with sudo. For example:"
+    echo "sudo ./nix_install.sh"
     exit 1
 fi
 
