@@ -6,3 +6,9 @@ site
 .env
 .cache
 /can/CANMetaData.*
+
+*venv
+.DS_Store
+*.swp
+compile_commands.json
+flake.lock
