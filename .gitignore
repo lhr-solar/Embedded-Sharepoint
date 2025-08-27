@@ -11,3 +11,6 @@ site
 .DS_Store
 *.swp
 compile_commands.json
+
+.ssh/*
+.devcontainer/.ssh/*

@@ -41,7 +41,6 @@ RUN groupadd -r dev && useradd -m -s /bin/bash -g dev dev && \
     echo "dev ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/dev && \
     chmod 440 /etc/sudoers.d/dev
 
-
 # ----------- ARM gcc toolchain install stage -----------
 FROM user-setup AS toolchain
 
@@ -53,13 +52,13 @@ WORKDIR /tmp
 ARG TARGETPLATFORM
 RUN ARCH=$([ "${TARGETPLATFORM}" = "linux/arm64" ] && echo "aarch64" || echo "x86_64") && \
     TOOLCHAIN="arm-gnu-toolchain-${GCC_ARM_VERSION}-${ARCH}-arm-none-eabi.tar.xz" && \
-    echo "Downloading ${TOOLCHAIN}" && \
+    echo "Downloading ${TOOLCHAIN}..." && \
     wget -q "https://developer.arm.com/-/media/Files/downloads/gnu/${GCC_ARM_VERSION}/binrel/${TOOLCHAIN}" && \
     echo "Extracting ${TOOLCHAIN}" && \
     tar -xf "${TOOLCHAIN}" -C /usr/local --strip-components=1 && \
     echo "Extracted to ${pwd}" && \
     rm "${TOOLCHAIN}" && \
-    echo "Creating symlinks to /usr/bin" && \
+    echo "Creating symlinks to /usr/bin..." && \
     for bin in arm-none-eabi-gcc arm-none-eabi-g++ arm-none-eabi-objcopy arm-none-eabi-objdump; do \
         ln -sf /usr/local/bin/$bin /usr/bin/$bin; \
     done && \
@@ -81,7 +80,6 @@ RUN python3 -m venv /home/dev/.venv && \
     chown -R dev:dev /home/dev/.venv && \
     rm /tmp/requirements.txt 
 
-    
 ENV PATH="/home/dev/.venv/bin:${PATH}"
 
 # ----------- Final devcontainer stage -----------
@@ -89,14 +87,15 @@ FROM python AS devcontainer
 
 LABEL stage="final devcontainer"
 
-WORKDIR /workdir
-
-# COPY .devcontainer/setup.sh /workdir/.devcontainer/setup.sh
-# RUN chmod +x /workdir/.devcontainer/setup.sh && \
-#     dos2unix /workdir/.devcontainer/setup.sh && \
-#     chown -R dev:dev /workdir
+COPY .devcontainer/.ssh /home/dev/.ssh
+RUN chmod 700 /home/dev/.ssh && \
+    chmod 600 /home/dev/.ssh/* && \
+    chown -R dev:dev /home/dev/.ssh
 
 USER dev
 ENV HOME=/home/dev
+WORKDIR /workdir
+
+# RUN echo "asdffea"
 
 CMD ["/bin/bash"]

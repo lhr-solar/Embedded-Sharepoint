@@ -10,6 +10,9 @@
   ],
   "mounts": [
     "type=bind,source=${localWorkspaceFolder},target=/workdir,consistency=cached",
+    // "type=bind,source=\\\\.\\pipe\\openssh-ssh-agent,target=/ssh-agent"
+    "type=bind,source=${localWorkspaceFolder}/.devcontainer/.ssh,target=/home/dev/.ssh"
+
     // "type=bind,source=/dev/bus/usb,target=/dev/bus/usb",
     // "type=bind,source=/dev,target=/dev"
     // "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/dev/.ssh,type=bind,readonly",
@@ -54,7 +57,7 @@
   "postCreateCommand": [
     "/bin/sh", "-c", 
     // "sudo chown -R dev:dev /workdir && sudo chown -R dev:dev /home/dev && 
-    "/bin/sh /workdir/.devcontainer/setup.sh"
+    "/workdir/.devcontainer/setup.sh"
   ],
   "remoteUser": "dev",
   "workspaceFolder": "/workdir",
