@@ -22,6 +22,8 @@ In an administrator Powershell terminal run:
 winget install usbipd
 ```
 
+Run the steps in [Nix](#nix) next
+
 ## Mac
 To develop on a Mac we will use UTM, which is an apple application to emulate other operating systems. The following instructions have been tested on an M2 Macbook.
 ### UTM
