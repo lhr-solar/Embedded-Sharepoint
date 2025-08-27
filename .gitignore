@@ -7,7 +7,7 @@ site
 .cache
 /can/CANMetaData.*
 
-.venv
+*venv
 .DS_Store
 *.swp
 compile_commands.json
