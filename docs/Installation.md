@@ -37,7 +37,7 @@ Next we will use the Ubuntu iso image we just downloaded to create a new Ubuntu 
 3. Press browse and select the downloaded ARM-based ISO file.
 4. Adjust hardware settings:
     * Memory: Default is 4096 MiB
-    * Storage: Tested with 32 GB
+    * Storage: Tested with 40 GB
 5. No shared directory necessary so press Continue here
 6. Name the VM (e.g., Ubuntu 24.04 LTS).
 7. Click Save to create the VM.
