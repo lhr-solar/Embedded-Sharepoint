@@ -12,6 +12,8 @@ theme:
 nav:
   - Home: 'README.md'
   - Installation: 'Installation.md'
+  - CubeMX: 'CubeMX.md'
+
   - CAN Messages:
       - Signals & Messages: 'DBC.md'
 
