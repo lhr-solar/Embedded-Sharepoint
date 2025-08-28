@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - mkdocs-rework
-      
+
 permissions:
   contents: write
 
@@ -37,6 +37,6 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: ./site
           publish_branch: gh-pages
           keep_files: true
