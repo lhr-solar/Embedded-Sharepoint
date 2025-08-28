@@ -94,3 +94,27 @@ fi
 
 # Install NixOS bin
 sudo apt install -y nix-bin
+
+# --- Add shell prompt hook for flakes ---
+BASHRC="$HOME/.bashrc"
+ZSHRC="$HOME/.zshrc"
+
+FLAKE_PROMPT_SNIPPET='
+# Nix flake prompt
+if [ -n "$IN_NIX_SHELL" ]; then
+  FLAKE_NAME=$(basename "$(git rev-parse --show-toplevel 2>/dev/null || pwd)")
+  export PS1="[\u@\h ❄ $FLAKE_NAME \W]$ "
+fi
+'
+
+if ! grep -q "Nix flake prompt" "$BASHRC" 2>/dev/null; then
+    echo -e "${YELLOW}Adding nix flake prompt to $BASHRC...${NC}"
+    echo "$FLAKE_PROMPT_SNIPPET" >> "$BASHRC"
+fi
+
+if [ -f "$ZSHRC" ] && ! grep -q "Nix flake prompt" "$ZSHRC" 2>/dev/null; then
+    echo -e "${YELLOW}Adding nix flake prompt to $ZSHRC...${NC}"
+    echo "$FLAKE_PROMPT_SNIPPET" >> "$ZSHRC"
+fi
+
+echo -e "${GREEN}✅ Nix installation finished. Restart your shell to see ❄ when inside a flake.${NC}"

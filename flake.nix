@@ -47,9 +47,18 @@
           shellHook = ''
             echo "${armGccMessage}"
             export PATH=$PATH:${armGcc}/bin
-            python3 -m venv .venv
+
+            # check if a venv already exists 
+            if [ ! -d .venv ]; then
+              python3 -m venv .venv
+              echo "Creating python venv"
+            fi
             source .venv/bin/activate
-            pip install -r requirements.txt
+            echo "Installing python requirements"
+            # Install requirements if requirements.txt exists
+            if [ -f requirements.txt ]; then
+                pip install -r requirements.txt
+            fi            
             echo "Dev environment loaded for ${system}!"
           '';
         };
