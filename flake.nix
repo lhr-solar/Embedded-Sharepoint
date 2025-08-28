@@ -11,8 +11,6 @@
           armGcc = pkgs.gcc-arm-embedded;
           # Python with desired packages
           python = pkgs.python310.withPackages (ps: with ps; [
-            mkdocs
-            pyserial
           ]);
           # Base packages
           basePackages = [
@@ -49,6 +47,9 @@
           shellHook = ''
             echo "${armGccMessage}"
             export PATH=$PATH:${armGcc}/bin
+            python3 -m venv .venv
+            source .venv/bin/activate
+            pip install -r requirements.txt
             echo "Dev environment loaded for ${system}!"
           '';
         };
