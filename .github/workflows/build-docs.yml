@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - mkdocs-rework
+      
+permissions:
+  contents: write
 
 jobs:
   build-and-deploy:
