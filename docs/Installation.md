@@ -105,9 +105,9 @@ Make the nix_install script runnable
 ```
 chmod +x ./nix_install.sh
 ```
-Run the script to install the needed nix dependencies
+Run the script to install the needed nix dependencies.
 ```
-./nix_install.sh
+sudo ./nix_install.sh
 ```
 Enter the nix shell and download dependencies for Embedded-Sharepoint
 ```
