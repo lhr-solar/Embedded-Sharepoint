@@ -7,7 +7,21 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m'
 
+# Check for root/sudo
+if [[ $EUID -ne 0 ]]; then
+    echo "This script must be run as root or with sudo privileges."
+    echo "please run with sudo. For example:"
+    echo "sudo ./nix_install.sh"
+    exit 1
+fi
+
 echo -e "${GREEN}Checking Nix installation...${NC}"
+
+# Handle pre-existing Nix backup issue
+if [ -f /etc/bash.bashrc.backup-before-nix ]; then
+    echo -e "${YELLOW}Existing /etc/bash.bashrc.backup-before-nix found. Renaming it to preserve old backup...${NC}"
+    sudo mv /etc/bash.bashrc.backup-before-nix /etc/bash.bashrc.backup-before-nix."$(date +%s)"
+fi
 
 if ! command -v nix &>/dev/null; then
     echo -e "${YELLOW}Nix is not installed. Installing...${NC}"
@@ -50,7 +64,7 @@ if grep -q "experimental-features" "$CONFIG_FILE" 2>/dev/null; then
     fi
 else
     echo -e "${YELLOW}Adding flakes support...${NC}"
-    echo "experimental-features = nix-command flakes" >> "$CONFIG_FILE"
+    echo "experimental-features = nix-command flakes" | sudo tee -a "$CONFIG_FILE" >/dev/null
 fi
 
 # Restart daemon if needed
