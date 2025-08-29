@@ -54,6 +54,10 @@ clean:
 docs:
 	cd .. && mkdocs serve
 
+.PHONY: flash
+flash:
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) flash
+
 # help
 .PHONY: help
 help:

@@ -65,6 +65,17 @@
             echo "${armGccMessage}"
             ${if armGcc != null then "export PATH=$PATH:${armGcc}/bin" else ""}
 
+            # Provide lsusb-mac alias
+            if [[ "$OSTYPE" == "darwin"* ]]; then
+              lsusb_mac() {
+                system_profiler SPUSBDataType
+              }
+              export -f lsusb_mac
+              echo "Run: lsusb_mac (macOS USB info)"
+            else
+              echo "Run: lsusb (Linux USB info)"
+            fi
+
             if [ ! -d .venv ]; then
               python3 -m venv .venv
               echo "Creating python venv"
