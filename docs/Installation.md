@@ -1,5 +1,5 @@
 # Installation Instructions
-Development for Embedded-Sharepoint requires a linux-based environment. Running linux natively yields the best results, but there are workarounds through UTM virtual machine on Mac OS or Windows Subsystem for Linux (WSL) on Windows.  
+Development for Embedded-Sharepoint requires a linux-based environment. Running linux natively yields the best results, but there are workarounds through nix on Mac OS or Windows Subsystem for Linux (WSL) on Windows.  
 
 Please ensure you've done the following before moving on:  
 Install [Visual Studio Code](https://code.visualstudio.com/)
