@@ -7,8 +7,10 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m'
 
-# Check for root/sudo
-if [[ $EUID -ne 0 ]]; then
+OS="$(uname -s)"
+
+# Check for root/sudo (Linux only)
+if [[ "$OS" == "Linux" && $EUID -ne 0 ]]; then
     echo "This script must be run as root or with sudo privileges."
     echo "please run with sudo. For example:"
     echo "sudo ./nix_install.sh"
@@ -17,16 +19,20 @@ fi
 
 echo -e "${GREEN}Checking Nix installation...${NC}"
 
-# Handle pre-existing Nix backup issue
-if [ -f /etc/bash.bashrc.backup-before-nix ]; then
-    echo -e "${YELLOW}Existing /etc/bash.bashrc.backup-before-nix found. Renaming it to preserve old backup...${NC}"
+# Handle pre-existing Nix backup issue (Linux only)
+if [[ "$OS" == "Linux" && -f /etc/bash.bashrc.backup-before-nix ]]; then
+    echo -e "${YELLOW}Existing /etc/bash.bashrc.backup-before-nix found. Renaming it...${NC}"
     sudo mv /etc/bash.bashrc.backup-before-nix /etc/bash.bashrc.backup-before-nix."$(date +%s)"
 fi
 
+# Install nix if missing
 if ! command -v nix &>/dev/null; then
     echo -e "${YELLOW}Nix is not installed. Installing...${NC}"
-    # Install multi-user Nix by default
-    sh <(curl -L https://nixos.org/nix/install) --daemon
+    if [[ "$OS" == "Darwin" ]]; then
+        sh <(curl -L https://nixos.org/nix/install)
+    else
+        sh <(curl -L https://nixos.org/nix/install) --daemon
+    fi
 else
     echo -e "${GREEN}Nix is already installed.${NC}"
 fi
@@ -36,31 +42,41 @@ echo -e "${GREEN}Detecting Nix installation type...${NC}"
 CONFIG_FILE="$HOME/.config/nix/nix.conf"
 NEED_RESTART=false
 
-# Check if multi-user daemon exists
-if systemctl list-units --type=service 2>/dev/null | grep -q nix-daemon.service; then
-    if [ "$(id -u)" -eq 0 ]; then
-        CONFIG_FILE="/etc/nix/nix.conf"
+if [[ "$OS" == "Linux" ]]; then
+    if systemctl list-units --type=service 2>/dev/null | grep -q nix-daemon.service; then
+        if [ "$(id -u)" -eq 0 ]; then
+            CONFIG_FILE="/etc/nix/nix.conf"
+        else
+            CONFIG_FILE="$HOME/.config/nix/nix.conf"
+        fi
+        NEED_RESTART=true
+        echo -e "${YELLOW}Multi-user Nix detected.${NC}"
     else
-        CONFIG_FILE="$HOME/.config/nix/nix.conf"
+        echo -e "${YELLOW}Single-user Nix detected.${NC}"
     fi
-    NEED_RESTART=true
-    echo -e "${YELLOW}Multi-user Nix detected.${NC}"
 else
-    echo -e "${YELLOW}Single-user Nix detected.${NC}"
+    # On macOS, Nix always installs multi-user via launchctl
+    CONFIG_FILE="/etc/nix/nix.conf"
+    NEED_RESTART=true
+    echo -e "${YELLOW}Multi-user Nix (macOS launchctl) detected.${NC}"
 fi
 
 echo -e "Using config file: ${GREEN}$CONFIG_FILE${NC}"
 
-# Create the directory if needed
-mkdir -p "$(dirname "$CONFIG_FILE")"
+# Create config dir if missing
+sudo mkdir -p "$(dirname "$CONFIG_FILE")"
 
-# Add flakes feature if missing
+# Add flakes support
 if grep -q "experimental-features" "$CONFIG_FILE" 2>/dev/null; then
     if grep -q "nix-command" "$CONFIG_FILE" && grep -q "flakes" "$CONFIG_FILE"; then
         echo -e "${GREEN}Flakes already enabled.${NC}"
     else
         echo -e "${YELLOW}Updating experimental-features line...${NC}"
-        sed -i '/experimental-features/ s/$/ nix-command flakes/' "$CONFIG_FILE"
+        if [[ "$OS" == "Darwin" ]]; then
+            sudo sed -i '' '/experimental-features/ s/$/ nix-command flakes/' "$CONFIG_FILE"
+        else
+            sudo sed -i '/experimental-features/ s/$/ nix-command flakes/' "$CONFIG_FILE"
+        fi
     fi
 else
     echo -e "${YELLOW}Adding flakes support...${NC}"
@@ -69,18 +85,23 @@ fi
 
 # Restart daemon if needed
 if $NEED_RESTART; then
-    echo -e "${YELLOW}Restarting nix-daemon...${NC}"
-    sudo systemctl restart nix-daemon
+    if [[ "$OS" == "Linux" ]]; then
+        echo -e "${YELLOW}Restarting nix-daemon (systemd)...${NC}"
+        sudo systemctl restart nix-daemon
+    elif [[ "$OS" == "Darwin" ]]; then
+        echo -e "${YELLOW}Restarting nix-daemon (launchctl)...${NC}"
+        sudo launchctl kickstart -k system/org.nixos.nix-daemon
+    fi
 fi
 
-# Load nix profile so 'nix' command works in this script
+# Load nix profile
 if [ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
     source "$HOME/.nix-profile/etc/profile.d/nix.sh"
 elif [ -e "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh" ]; then
     source "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh"
 fi
 
-# Install latest Nix version (replaces nixUnstable)
+# Install latest Nix
 echo -e "${GREEN}Installing latest Nix version for full flakes support...${NC}"
 nix-env -iA nixpkgs.nixVersions.latest
 
@@ -92,8 +113,10 @@ else
     echo -e "${RED}Something went wrong: flake commands not working.${NC}"
 fi
 
-# Install NixOS bin
-sudo apt install -y nix-bin
+# Linux-only nix-bin (skip on macOS)
+if [[ "$OS" == "Linux" ]]; then
+    sudo apt install -y nix-bin || true
+fi
 
 # --- Add shell prompt hook for flakes ---
 BASHRC="$HOME/.bashrc"

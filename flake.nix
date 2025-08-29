@@ -1,21 +1,26 @@
 {
   description = "LHRs STM32 Embedded Dev";
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/23.05";
   };
+
   outputs = { self, nixpkgs }:
     let
+      systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
+
       mkShellFor = system:
         let
           pkgs = import nixpkgs { inherit system; };
-          armGcc = pkgs.gcc-arm-embedded;
-          # Python with desired packages
-          python = pkgs.python310.withPackages (ps: with ps; [
-          ]);
-          # Base packages
+
+          # arm-none-eabi toolchain (may not exist everywhere)
+          armGcc = pkgs.gcc-arm-embedded or null;
+
+          python = pkgs.python310.withPackages (ps: with ps; [ ]);
+
+          # Base packages (common to all)
           basePackages = [
             pkgs.gcc
-            pkgs.gdb
             pkgs.clang
             pkgs.clang-tools
             pkgs.lld
@@ -24,8 +29,6 @@
             pkgs.pkg-config
             pkgs.ncurses
             pkgs.picocom
-            pkgs.openocd
-            pkgs.stlink
             pkgs.git
             pkgs.wget
             pkgs.gnupg
@@ -35,9 +38,23 @@
             pkgs.parallel
             python
           ];
-          # Only add armGcc if it exists
-          packageList = if armGcc != null then basePackages ++ [ armGcc ] else basePackages;
-          # Nix-level shellHook message
+
+          # Extra debug/flash tools, only if available
+          debugPackages =
+            if pkgs.stdenv.isLinux then [
+              pkgs.gdb
+              pkgs.openocd
+              pkgs.stlink
+            ] else if pkgs.stdenv.isDarwin then [
+              pkgs.openocd
+              pkgs.stlink
+              pkgs.openocd or null
+            ] else [];
+
+          # Remove nulls
+          packageList = builtins.filter (x: x != null)
+            (basePackages ++ debugPackages ++ (if armGcc != null then [ armGcc ] else []));
+
           armGccMessage = if armGcc != null
                           then "ARM cross-compiler available"
                           else "No ARM cross-compiler available";
@@ -46,27 +63,23 @@
           packages = packageList;
           shellHook = ''
             echo "${armGccMessage}"
-            export PATH=$PATH:${armGcc}/bin
+            ${if armGcc != null then "export PATH=$PATH:${armGcc}/bin" else ""}
 
-            # check if a venv already exists 
             if [ ! -d .venv ]; then
               python3 -m venv .venv
               echo "Creating python venv"
             fi
             source .venv/bin/activate
             echo "Installing python requirements"
-            # Install requirements if requirements.txt exists
             if [ -f requirements.txt ]; then
-                pip install -r requirements.txt
-            fi            
+              pip install -r requirements.txt
+            fi
             echo "Dev environment loaded for ${system}!"
           '';
         };
-    in
-    {
-      devShells = {
-        "x86_64-linux" = { default = mkShellFor "x86_64-linux"; };
-        "aarch64-linux" = { default = mkShellFor "aarch64-linux"; };
-      };
+    in {
+      devShells = nixpkgs.lib.genAttrs systems (system: {
+        default = mkShellFor system;
+      });
     };
 }
