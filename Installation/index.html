@@ -340,54 +340,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Mac">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#utm" class="md-nav__link">
-    <span class="md-ellipsis">
-      UTM
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="UTM">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#download" class="md-nav__link">
-    <span class="md-ellipsis">
-      Download
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#configuring-utm" class="md-nav__link">
-    <span class="md-ellipsis">
-      Configuring UTM
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#configuring-ssh" class="md-nav__link">
-    <span class="md-ellipsis">
-      Configuring SSH
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -572,54 +524,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Mac">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#utm" class="md-nav__link">
-    <span class="md-ellipsis">
-      UTM
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="UTM">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#download" class="md-nav__link">
-    <span class="md-ellipsis">
-      Download
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#configuring-utm" class="md-nav__link">
-    <span class="md-ellipsis">
-      Configuring UTM
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#configuring-ssh" class="md-nav__link">
-    <span class="md-ellipsis">
-      Configuring SSH
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -669,83 +573,10 @@ In an administrator Powershell terminal run:</p>
 </code></pre>
 <p>Run the steps in <a href="#nix">Nix</a> next</p>
 <h2 id="mac">Mac</h2>
-<p>To develop on a Mac we will use UTM, which is an apple application to emulate other operating systems. The following instructions have been tested on an M2 Macbook.</p>
-<h3 id="utm">UTM</h3>
-<h4 id="download">Download</h4>
-<p>Download the UTM app <a href="https://mac.getutm.app/">here</a>. 
-Download Ubuntu 24 <a href="https://ubuntu.com/download/server">here</a>. </p>
-<h4 id="configuring-utm">Configuring UTM</h4>
-<p>Next we will use the Ubuntu iso image we just downloaded to create a new Ubuntu VM</p>
-<ol>
-<li>Open UTM and click on Create a New Virtual Machine.</li>
-<li>Select Virtualize and then choose Linux.</li>
-<li>Press browse and select the downloaded ARM-based ISO file.</li>
-<li>Adjust hardware settings:<ul>
-<li>Memory: Default is 4096 MiB</li>
-<li>Storage: Tested with 40 GB</li>
-</ul>
-</li>
-<li>No shared directory necessary so press Continue here</li>
-<li>Name the VM (e.g., Ubuntu 24.04 LTS).</li>
-<li>
-<p>Click Save to create the VM.</p>
-</li>
-<li>
-<p>Click on Run to start the installation.</p>
-</li>
-<li>Use arrow keys to select Try or Install Ubuntu Server. <img alt="Try Ubuntu Server" src="../mac_utm_imgs/tryUbuntu.png" /></li>
-<li>Select language (e.g., English). <img alt="language" src="../mac_utm_imgs/language.png" /></li>
-<li>Choose keyboard layout <img alt="language" src="../mac_utm_imgs/keyboard.png" /></li>
-<li>For installation type, ensure Ubuntu Server is selected. <img alt="language" src="../mac_utm_imgs/ubuntuServer.png" /></li>
-<li>Select defaults for network configuration <img alt="network" src="../mac_utm_imgs/networkConfiguration.png" /></li>
-<li>Leave default for proxy settings <img alt="proxy" src="../mac_utm_imgs/proxyDefault.png" /></li>
-<li>Wait for Ubuntu mirror configuration tests to pass.<img alt="mirror" src="../mac_utm_imgs/ubuntuMirrorTests.png" /></li>
-<li>Choose storage configuration: Use entire disk. <img alt="disk" src="../mac_utm_imgs/useEntireDisk.png" /></li>
-<li>Accept defaults for filesystem and accept continuing installation. <img alt="installation" src="../mac_utm_imgs/startInstillation.png" /></li>
-<li>Set up profile
-Your name and your server name doesn't matter
-Username (your ubuntu username) password.</li>
-<li>Skip enabling Ubuntu Pro</li>
-<li>Choose to install OpenSSH for remote access. <img alt="openSSH" src="../mac_utm_imgs/openSSH.png" /></li>
-<li>Accept defaults for the rest of the settings and wait for installation to be complete</li>
-<li>Press Reboot Now when the option is there</li>
-<li>You'll likely get a failed unmounting error <img alt="rip" src="../mac_utm_imgs/wompWomp.png" />. Press enter after this happens</li>
-<li>Exit out of your VM and right click the list of VMs to actually stop it! <a href="../mac_utm_imgs/stopVM.png">stopVM</a></li>
-<li>Select CD/DVD and press clear <a href="../mac_utm_imgs/clear.png">clear</a>, it should now be empty <a href="../mac_utm_imgs/empty.png">empty</a></li>
-<li>Press the play button on your VM to enter it where you will be prompted to enter your ubuntu username and password</li>
-</ol>
-<h4 id="configuring-ssh">Configuring SSH</h4>
-<p>The Ubuntu VM we created is pretty slow and can't run graphical applications easily, so it'll be hard to develop code here. What we will do instead is SSH into the VM we created from regular MacOS so we can develop our linux code while also being in MacOS.  </p>
-<p>Open the Ubuntu VM and run <code>hostname -I</code> This will output your Ubuntu VM's IP address to SSH into.<br />
-<img alt="language" src="../mac_utm_imgs/ip_addr.png" />
-Note the ip address, everything before the letters (192.168.64.8 from the image above) </p>
-<p>Open Visual Studio Code in MacOS. 
-Install the folowing extensions from the extensions marketplace:  </p>
-<ol>
-<li>In VSCode press <code>command + shift + p</code></li>
-<li>Type Remote-SSH: Open SSH Configuration File</li>
-<li>Select the one that's in /.ssh/config</li>
-<li>This file contains all your possible SSH targets, we will add the Ubuntu VM as an SSH target. Type this into your ssh config and the IP address of your VM you got earlier.</li>
-</ol>
-<pre><code>Host [Name of SSH, can be anything]
-HostName [IP Address]
-User [Your user name]
-</code></pre>
-<p>For example mine could be: </p>
-<pre><code>Host Ubuntu-UTM-VM
-HostName 192.169.42.0
-User laksh 
-</code></pre>
-<ol>
-<li>Press <code>command + shift + p</code> and type Remote-SSH: Connect to Host</li>
-<li>Select the hostname you just added</li>
-<li>Congrats! You are now SSH'd into your Ubuntu VM. </li>
-</ol>
-<p>You need to rerun the github SSH key setups in your linux VM. </p>
-<p>Run the steps in <a href="#nix">Nix</a> next</p>
+<p>Run the steps in <a href="#nix">Nix</a></p>
 <h2 id="nix">Nix</h2>
 <p>Nix is a package manger that lets you write out all the packages you want to install in a human readable format. This simplifies development since I can write out a list of dependencies needed to compile.<br />
-Open Embedded-Sharepoint in your linux environment, and run the following commands in the terminal: 
+Open Embedded-Sharepoint in your unix/linux (WSL for windows and MacOS for mac) environment, and run the following commands in the terminal: 
 Make the nix_install script runnable</p>
 <pre><code>chmod +x ./nix_install.sh
 </code></pre>
