@@ -42,9 +42,7 @@ Enter the nix shell and download dependencies for Embedded-Sharepoint
 ```
 nix develop
 ```
-In this nix shell all the dependencies needed for Embedded-Sharepoint should be installed.  Anytime you open a new terminal and want to run compile/flash code you need to run nix develop to open the shell with Sharepoint's dependencies.
-
-
+In this nix shell all the dependencies needed for Embedded-Sharepoint should be installed.  Anytime you open a new terminal and want to run compile/flash code you need to run nix develop to open the shell with Sharepoint's dependencies.  
 
 Test if installation is succesful by compiling a test 
 ```
