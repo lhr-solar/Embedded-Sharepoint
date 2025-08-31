@@ -9,9 +9,9 @@
     "--network=host"
   ],
   "mounts": [
-    "type=bind,source=${localWorkspaceFolder},target=/workdir,consistency=cached",
+    "type=bind,source=${localWorkspaceFolder},target=/workdir,consistency=cached"//,
     // "type=bind,source=\\\\.\\pipe\\openssh-ssh-agent,target=/ssh-agent"
-    "type=bind,source=${localWorkspaceFolder}/.devcontainer/.ssh,target=/home/dev/.ssh"
+    // "type=bind,source=${localWorkspaceFolder}/.devcontainer/.ssh,target=/home/dev/.ssh"
 
     // "type=bind,source=/dev/bus/usb,target=/dev/bus/usb",
     // "type=bind,source=/dev,target=/dev"
@@ -22,8 +22,8 @@
     // "source=\\\\.\\pipe\\openssh-ssh-agent,target=/ssh-agent,type=bind,consistency=cached"
   ],
   "remoteEnv": {
-    "HOME": "/home/dev",
-    "SSH_AUTH_SOCK": "/ssh-agent"
+    "HOME": "/home/dev"//,
+    //"SSH_AUTH_SOCK": "/ssh-agent"
   },
   "customizations": {
     "vscode": {
