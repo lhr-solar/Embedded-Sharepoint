@@ -11,13 +11,6 @@ Welcome to the Embedded Sharepoint! Embedded-Sharepoint contains the shared embe
 
 ### Running tests
 
-## Adding Sharepoint To Your Project
-Embedded-Sharepoint contains common files so it should be stored as a submodule inside your repository.  
-
-### Examples:
-* [BPS-Leader](https://github.com/lhr-solar/BPS-Leader)
-* [Active-Precharge Board](https://github.com/lhr-solar/Active-Precharge-Board#)
-
 ## Contributing
 
 
