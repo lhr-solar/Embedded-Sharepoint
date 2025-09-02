@@ -5,8 +5,8 @@ Please ensure you've done the following before moving on:
 
 - Install [Visual Studio Code](https://code.visualstudio.com/)
 - Set up your GitHub account and [SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent).
+    - You need to both generate an ssh key and [add](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account) it to your github account
 - Been added to the lhr-solar organization as a member. Ask one of your leads to do so.
-- Cloned [Embedded-Sharepoint](https://github.com/lhr-solar/Embedded-Sharepoint/) onto your computer. If you've never used git before, some great tutorials exist [here](https://learngitbranching.js.org/?locale=en_US) and [here](https://www.atlassian.com/git/tutorials/what-is-version-control).
     - If you have not already, clone Embedded Sharepoint into your unix/linux environment (WSL for windows and MacOS for mac). Any line with # is a comment so you don't need to run those lines
 
 ```sh
@@ -36,8 +36,11 @@ winget install usbipd
 From now on, you'll be writting all of your solar code in WSL. We primary use VSCode as our code IDE, but there are other IDEs/code editors you can use like Vim or Nano.
 1. Open Visual Studio Code
 2. Go into extensions menu on the left side of VSCode, select the WSL extension from Microsoft
-3. 
-4. Run the **Ubuntu** application, and now you'll be in your WSL/Linux environment.
+3. Press **CTRL+SHIFT+P** and press connect to WSL
+4. Now your VSCode is running WSL and you can run it like a Linux environment. For more info see the [WSL guide](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode)
+5. Do the instructions for generating the github ssh key again while you're in WSL 
+
+Run the **Ubuntu** application, and now you'll be in your WSL/Linux environment.
 
 Run the steps in [Nix](#nix) next
 
