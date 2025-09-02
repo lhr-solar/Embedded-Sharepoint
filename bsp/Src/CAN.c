@@ -1,5 +1,7 @@
-#include "CAN.h"
 #include "queue_ex.h"
+#include "CAN.h"
+
+#if defined(CAN1) || defined(CAN2) || defined(CAN3)
 
 // 8 for now unless extended payload is supported
 #define DATA_SIZE (8)
@@ -781,3 +783,5 @@ void CAN2_RX0_IRQHandler(void) { HAL_CAN_IRQHandler(hcan2); }
 void CAN3_TX_IRQHandler(void) { HAL_CAN_IRQHandler(hcan3); }
 void CAN3_RX0_IRQHandler(void) { HAL_CAN_IRQHandler(hcan3); }
 #endif /* CAN3 */
+
+#endif /* CAN_ENABLED_MCU */

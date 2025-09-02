@@ -1,5 +1,4 @@
-#ifndef UART_H_
-#define UART_H_
+#pragma once
 
 #include "stm32xx_hal.h"
 
@@ -58,5 +57,3 @@ uart_status_t uart_init(UART_HandleTypeDef* handle); // Create queue at compile 
 uart_status_t uart_deinit(UART_HandleTypeDef* handle);
 uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t length, TickType_t delay_ticks);
 uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t length, TickType_t delay_ticks);
-
-#endif /* UART_H_ */
