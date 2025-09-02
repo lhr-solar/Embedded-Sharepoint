@@ -656,7 +656,13 @@
 <h2 id="command-usage">Command Usage</h2>
 <p>The Makefile in the top level directory compiles all needed files for the STM32, it is not meant to be called directly, instead you must call it from a different Makefile</p>
 <h3 id="running-tests">Running tests</h3>
-<p>In the tests </p>
+<p>In the test/ directory there is a Makefile meant for just running test files. To run a test do:</p>
+<pre><code class="language-sh">make TEST=[name of test file without the .c extension] PROJECT_TARGET=[name of the STM32 you want to compile for]
+
+# For example:
+make TEST=blinky PROJECT_TARGET=stm32f413rht
+# This compiles the blinky.c test for the STM32F413RHT
+</code></pre>
 <h2 id="contributing">Contributing</h2>
 <p>See our <a href="https://github.com/lhr-solar/Embedded-Sharepoint/issues">Issues</a> to see what you can work on!<br />
 Once you're ready for a review please open a pull request to merge into main. <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request">Pull Requests explained</a> </p>
