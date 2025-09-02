@@ -547,14 +547,16 @@ For more information about submodules: <a href="https://github.blog/open-source/
 git submodule update --init --recursive
 </code></pre>
 <h2 id="2-writting-a-makefile-for-your-project">2. Writting a makefile for your project</h2>
-<p>A <strong>Makefile</strong> is a file used to outline how you want your code to compile. There is a <a href="https://github.com/lhr-solar/Embedded-Sharepoint/blob/main/Makefile">Makefile</a> that compiles all needed files for the STM32 (our microcontroller). You need to write a Makefile to compile your project files and call the Embedded-Sharepoint Makefile. A good example of this a Makefile you'd make is the sharepoint's test <a href="https://github.com/lhr-solar/Embedded-Sharepoint/blob/main/test/Makefile">Makefile</a>. </p>
+<p>A <strong>Makefile</strong> is a file used to outline how you want your code to compile. There is a <a href="https://github.com/lhr-solar/Embedded-Sharepoint/blob/main/Makefile">Makefile</a> that compiles all needed files for the STM32 (our microcontroller) in the top level of the Embedded Sharepoint. You need to write a Makefile to compile your project files and call the Embedded-Sharepoint Makefile. <br />
+A good example of this a Makefile you'd make is the sharepoint's test <a href="https://github.com/lhr-solar/Embedded-Sharepoint/blob/main/test/Makefile">Makefile</a>.  </p>
 <h3 id="set-project-variables">Set Project Variables</h3>
-<p>In your Makefile, define variables that describe your project:
-   - <code>PROJECT_TARGET</code>: The STM32 part number (e.g., <code>stm32f446ret</code>)
-   - <code>PROJECT_C_SOURCES</code>: List of your C source files
-   - <code>PROJECT_C_INCLUDES</code>: List of your include directories
-   - <code>PROJECT_BUILD_DIR</code>: Where to place build outputs
-   - Optionally, <code>BEAR_ENABLE</code> and <code>VERBOSE</code> for build tooling and output</p>
+<ul>
+<li><code>PROJECT_TARGET</code>: The STM32 part number (e.g., <code>stm32f446ret</code>)</li>
+<li><code>PROJECT_C_SOURCES</code>: List of your C source files</li>
+<li><code>PROJECT_C_INCLUDES</code>: List of your include directories</li>
+<li><code>PROJECT_BUILD_DIR</code>: Where to place build outputs</li>
+<li>Optionally, <code>BEAR_ENABLE</code> and <code>VERBOSE</code> for build tooling and output</li>
+</ul>
 <h2 id="examples-of-projects-that-use-embedded-sharepoint">Examples of projects that use Embedded Sharepoint</h2>
 <ul>
 <li><a href="https://github.com/lhr-solar/BPS-Leader">BPS-Leader</a></li>
