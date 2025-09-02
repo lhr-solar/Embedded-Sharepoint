@@ -8,9 +8,10 @@ Welcome to the Embedded Sharepoint! Embedded-Sharepoint contains the shared embe
 ## Directory Structure
 
 ## Command Usage
-The Makefile in the [top level directory]((https://github.com/lhr-solar/Embedded-Sharepoint/blob/main/Makefile))compiles all needed files for the STM32, it is not meant to be called directly from the 
+The Makefile in the top level directory compiles all needed files for the STM32, it is not meant to be called directly, instead you must call it from a different Makefile
 
 ### Running tests
+In the tests 
 
 ## Contributing
 See our [Issues](https://github.com/lhr-solar/Embedded-Sharepoint/issues) to see what you can work on!  
