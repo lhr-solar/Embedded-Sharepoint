@@ -12,6 +12,7 @@ theme:
 nav:
   - Home: 'README.md'
   - Installation: 'Installation.md'
+  - Adding Embedded Sharepoint: 'SharepointSubmodule.md'
   - CubeMX: 'CubeMX.md'
 
   - CAN Messages:

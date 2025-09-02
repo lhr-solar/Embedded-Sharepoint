@@ -29,6 +29,9 @@ jobs:
           
       - name: Generate DBC Table
         run: python docs/generate_dbc_table.py
+  
+      - name: Generate STM32 Ports Documentation
+        run: python docs/generate_stm_ports.py
 
       - name: Build MkDocs site
         run: mkdocs build
