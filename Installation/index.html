@@ -328,6 +328,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#using-wsl" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using WSL
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -534,6 +543,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#using-wsl" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using WSL
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -591,26 +609,37 @@ It will take time to fully install it, but once installed you can open WSL and i
 <h3 id="usbipd">USBIPD</h3>
 <p>In order to see a USB device in WSL, we need to pass access of a USB device from windows to WSL. You can do this through USBIPD.<br />
 In an administrator Powershell terminal run:</p>
-<pre><code>winget install usbipd
+<pre><code class="language-sh">winget install usbipd
 </code></pre>
+<h3 id="using-wsl">Using WSL</h3>
+<p>From now on, you'll be writting all of your solar code in WSL. We primary use VSCode as our code IDE, but there are other IDEs/code editors you can use like Vim or Nano.
+1. Open Visual Studio Code
+2. Go into extensions menu on the left side of VSCode, 
+1. Run the <strong>Ubuntu</strong> application, and now you'll be in your WSL/Linux environment.</p>
 <p>Run the steps in <a href="#nix">Nix</a> next</p>
 <h2 id="mac">Mac</h2>
 <p>Run the steps in <a href="#nix">Nix</a></p>
 <h2 id="nix">Nix</h2>
 <p>Nix is a package manger that lets you write out all the packages you want to install in a human readable format. This simplifies development since I can write out a list of dependencies needed to compile.<br />
-Open Embedded-Sharepoint in your unix/linux (WSL for windows and MacOS for mac) environment, and run the following commands in the terminal: 
+If you have not already, clone Embedded Sharepoint into your unix/linux environment (WSL for windows and MacOS for mac). Any line with # is a comment so you don't need to run those lines</p>
+<pre><code class="language-sh"># Clone the embedded sharepoint repository from the internet to your local computer
+git clone git@github.com:lhr-solar/Embedded-Sharepoint.git --recursive
+# cd (change directory) to enter the Embedded Sharepoint's directory 
+cd Embedded-Sharepoint
+</code></pre>
+<p>Enter the Embedded Sharepoint and run the following commands in the terminal: 
 Make the nix_install script runnable</p>
-<pre><code>chmod +x ./nix_install.sh
+<pre><code class="language-sh">chmod +x ./nix_install.sh
 </code></pre>
 <p>Run the script to install the needed nix dependencies.</p>
-<pre><code>sudo ./nix_install.sh
+<pre><code class="language-sh">sudo ./nix_install.sh
 </code></pre>
 <p>Enter the nix shell and download dependencies for Embedded-Sharepoint</p>
-<pre><code>nix develop
+<pre><code class="language-sh">nix develop
 </code></pre>
 <p>In this nix shell all the dependencies needed for Embedded-Sharepoint should be installed.  Anytime you open a new terminal and want to run compile/flash code you need to run nix develop to open the shell with Sharepoint's dependencies.  </p>
 <p>Test if installation is succesful by compiling a test </p>
-<pre><code>cd test
+<pre><code class="language-sh">cd test
 make TEST=blinky
 </code></pre>
 
