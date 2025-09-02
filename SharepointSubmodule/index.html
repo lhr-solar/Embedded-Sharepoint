@@ -13,6 +13,10 @@
       
       
       
+        <link rel="prev" href="../Installation/">
+      
+      
+        <link rel="next" href="../CubeMX/">
       
       
       <link rel="icon" href="../LHRs.ico">
@@ -20,7 +24,7 @@
     
     
       
-        <title>Adding Sharepoint To Your Project - Embedded Sharepoint Documentation</title>
+        <title>Adding Embedded Sharepoint - Embedded Sharepoint Documentation</title>
       
     
     
@@ -108,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Adding Sharepoint To Your Project
+              Adding Embedded Sharepoint
             
           </span>
         </div>
@@ -257,6 +261,112 @@
       
   
   
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Adding Embedded Sharepoint
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Adding Embedded Sharepoint
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-add-embedded-sharepoint-as-a-submodule" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Add Embedded-Sharepoint as a Submodule
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-writting-a-makefile-for-your-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Writting a makefile for your project
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Writting a makefile for your project">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-the-embedded-sharepoint-makefile-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      How the Embedded Sharepoint Makefile works:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples-of-projects-that-use-embedded-sharepoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples of projects that use Embedded Sharepoint
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
   
   
     <li class="md-nav__item">
@@ -290,10 +400,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
             
   
   
@@ -306,8 +416,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             CAN Messages
           </label>
@@ -385,6 +495,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="2. Writting a makefile for your project">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-the-embedded-sharepoint-makefile-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      How the Embedded Sharepoint Makefile works:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -414,13 +539,17 @@
 
 <h1 id="adding-sharepoint-to-your-project">Adding Sharepoint To Your Project</h1>
 <h3 id="1-add-embedded-sharepoint-as-a-submodule">1. Add Embedded-Sharepoint as a Submodule</h3>
-<p>Embedded-Sharepoint contains common files so it should be stored as a submodule inside your repository.</p>
-<p>For more information about submodules: <a href="https://github.blog/open-source/git/working-with-submodules/">git submodules documentaiton</a></p>
+<p>A <strong>Git submodule</strong> is a way to include one Git repository inside another. 
+Embedded-Sharepoint contains common files so it should be stored as a submodule inside your repository.
+For more information about submodules: <a href="https://github.blog/open-source/git/working-with-submodules/">git submodules documentaiton</a></p>
 <p>Whever you want to add the Embedded-Sharepoint, run: </p>
 <pre><code class="language-sh">git submodule add https://github.com/lhr-solar/Embedded-Sharepoint.git
 git submodule update --init --recursive
 </code></pre>
 <h2 id="2-writting-a-makefile-for-your-project">2. Writting a makefile for your project</h2>
+<p>A <strong>Makefile</strong> is a file used to outline how you want your code to compile. There is a <a href="https://github.com/lhr-solar/Embedded-Sharepoint/blob/main/Makefile">Makefile</a> that compiles all needed files for the STM32 (our microcontroller). You need to write a Makefile to compile your project files and call the Embedded-Sharepoint Makefile. A good example of this a Makefile you'd make is the sharepoint's test <a href="https://github.com/lhr-solar/Embedded-Sharepoint/blob/main/test/Makefile">Makefile</a>. </p>
+<h3 id="how-the-embedded-sharepoint-makefile-works">How the Embedded Sharepoint Makefile works:</h3>
+<p>You need to specify certain variables in your Makefile that describe your project:</p>
 <h2 id="examples-of-projects-that-use-embedded-sharepoint">Examples of projects that use Embedded Sharepoint</h2>
 <ul>
 <li><a href="https://github.com/lhr-solar/BPS-Leader">BPS-Leader</a></li>
