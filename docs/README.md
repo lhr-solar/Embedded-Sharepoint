@@ -4,7 +4,11 @@ Welcome to the Embedded Sharepoint! Embedded-Sharepoint contains the shared embe
 
 ## Getting Started
 
-
+### Cloning the repository
+To clone the repository, run 
+```sh
+git clone git@github.com:lhr-solar/Embedded-Sharepoint.git --recursive
+```
 ## Directory Structure
 
 ## Command Usage

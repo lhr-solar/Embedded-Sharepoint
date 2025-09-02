@@ -23,8 +23,10 @@ A good example of this a Makefile you'd make is the sharepoint's test [Makefile]
 * `PROJECT_BUILD_DIR`: Where to place build outputs
 * `BEAR_ENABLE` to make VSCode not mad at you (the red error squiggles)
 
+
 ### Creating a test directive
-It's good to be able to test independent portions of your code instead of your whole code base at once. For example, if I have a driver just for controlling lights I should have a test file that just runs some code for my lights driver instead of the whole codebase. 
+It's good to be able to test independent portions of your code instead of your whole code base at once. For example, if I have a driver just for controlling lights I should have a test file that just runs some code for my lights driver instead of the whole codebase.  
+The way we can do this is change   
 
 
 ## Examples of projects that use Embedded Sharepoint
