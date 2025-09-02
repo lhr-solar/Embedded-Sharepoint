@@ -11,7 +11,14 @@ Welcome to the Embedded Sharepoint! Embedded-Sharepoint contains the shared embe
 The Makefile in the top level directory compiles all needed files for the STM32, it is not meant to be called directly, instead you must call it from a different Makefile
 
 ### Running tests
-In the tests 
+In the test/ directory there is a Makefile meant for just running test files. To run a test do:
+``` sh
+make TEST=[name of test file without the .c extension] PROJECT_TARGET=[name of the STM32 you want to compile for]
+
+# For example:
+make TEST=blinky PROJECT_TARGET=stm32f413rht
+# This compiles the blinky.c test for the STM32F413RHT
+```
 
 ## Contributing
 See our [Issues](https://github.com/lhr-solar/Embedded-Sharepoint/issues) to see what you can work on!  
