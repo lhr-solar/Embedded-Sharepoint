@@ -1,4 +1,4 @@
-# Setting up CubeMX
+# CubeMX
 
 ## 1. Installing CubeMX
 
