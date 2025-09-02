@@ -1,14 +1,16 @@
 # Installation Instructions
-Development for Embedded-Sharepoint requires a linux-based environment. Running linux natively yields the best results, but there are workarounds through nix on Mac OS or Windows Subsystem for Linux (WSL) on Windows.  
+Development for Embedded-Sharepoint requires a Linux environment. Running Linux natively yields the best results, but there are workarounds through Nix on Mac OS or Windows Subsystem for Linux (WSL) on Windows.  
 
 Please ensure you've done the following before moving on:  
-Install [Visual Studio Code](https://code.visualstudio.com/)
+- Install [Visual Studio Code](https://code.visualstudio.com/)
+- Set up your GitHub account and [SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent).
+- Been added to the lhr-solar organization as a member. Ask one of your leads to do so.
+- Cloned [Embedded-Sharepoint](https://github.com/lhr-solar/Embedded-Sharepoint/) onto your computer. If you've never used git before, some great tutorials exist [here](https://learngitbranching.js.org/?locale=en_US) and [here](https://www.atlassian.com/git/tutorials/what-is-version-control).
+    - You can also check out our internal documentation on [How To Git](https://cloud.wikis.utexas.edu/wiki/spaces/LHRSOLAR/pages/28285528/How+to+Git)
 
 ## Linux
-Thanks for making our lives easy :)    
-
-1. Follow the instructions here to create your github SSH key
-2. Run the steps in [Nix](#nix) next
+Thanks for making our lives easy :)
+Run the steps in [Nix](#nix) next
 
 ## Windows
 ### Windows Subsystem for Linux (WSL)
@@ -28,23 +30,27 @@ Run the steps in [Nix](#nix) next
 Run the steps in [Nix](#nix)
 
 ## Nix
-Nix is a package manger that lets you write out all the packages you want to install in a human readable format. This simplifies development since I can write out a list of dependencies needed to compile.  
-Open Embedded-Sharepoint in your unix/linux (WSL for windows and MacOS for mac) environment, and run the following commands in the terminal: 
+Nix is a package manager that lets you write out all the packages you want to install in a human readable format. This simplifies development since I can write out a list of dependencies needed to compile.  
+Open Embedded-Sharepoint in your Unix/Linux (WSL for windows and MacOS for mac) environment, and run the following commands in the terminal: 
+
 Make the nix_install script runnable
 ```
 chmod +x ./nix_install.sh
 ```
+
 Run the script to install the needed nix dependencies.
 ```
 sudo ./nix_install.sh
 ```
+
 Enter the nix shell and download dependencies for Embedded-Sharepoint
 ```
 nix develop
 ```
+
 In this nix shell all the dependencies needed for Embedded-Sharepoint should be installed.  Anytime you open a new terminal and want to run compile/flash code you need to run nix develop to open the shell with Sharepoint's dependencies.  
 
-Test if installation is succesful by compiling a test 
+Test if installation is succesful by compiling a test.
 ```
 cd test
 make TEST=blinky
