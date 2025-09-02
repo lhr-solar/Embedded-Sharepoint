@@ -592,15 +592,21 @@
 
 
 <h1 id="installation-instructions">Installation Instructions</h1>
-<p>Development for Embedded-Sharepoint requires a linux-based environment. Running linux natively yields the best results, but there are workarounds through nix on Mac OS or Windows Subsystem for Linux (WSL) on Windows.  </p>
+<p>Development for Embedded-Sharepoint requires a Linux environment. Running Linux natively yields the best results, but there are workarounds through Nix on Mac OS or Windows Subsystem for Linux (WSL) on Windows.  </p>
 <p>Please ensure you've done the following before moving on:<br />
-Install <a href="https://code.visualstudio.com/">Visual Studio Code</a></p>
+- Install <a href="https://code.visualstudio.com/">Visual Studio Code</a>
+- Set up your GitHub account and <a href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent">SSH key</a>.
+- Been added to the lhr-solar organization as a member. Ask one of your leads to do so.
+- Cloned <a href="https://github.com/lhr-solar/Embedded-Sharepoint/">Embedded-Sharepoint</a> onto your computer. If you've never used git before, some great tutorials exist <a href="https://learngitbranching.js.org/?locale=en_US">here</a> and <a href="https://www.atlassian.com/git/tutorials/what-is-version-control">here</a>.
+    - If you have not already, clone Embedded Sharepoint into your unix/linux environment (WSL for windows and MacOS for mac). Any line with # is a comment so you don't need to run those lines</p>
+<pre><code class="language-sh"># Clone the embedded sharepoint repository from the internet to your local computer
+git clone git@github.com:lhr-solar/Embedded-Sharepoint.git --recursive
+# cd (change directory) to enter the Embedded Sharepoint's directory 
+cd Embedded-Sharepoint
+</code></pre>
 <h2 id="linux">Linux</h2>
-<p>Thanks for making our lives easy :)    </p>
-<ol>
-<li>Follow the instructions here to create your github SSH key</li>
-<li>Run the steps in <a href="#nix">Nix</a> next</li>
-</ol>
+<p>Thanks for making our lives easy :)
+Run the steps in <a href="#nix">Nix</a> next</p>
 <h2 id="windows">Windows</h2>
 <h3 id="windows-subsystem-for-linux-wsl">Windows Subsystem for Linux (WSL)</h3>
 <p>Windows Subsystem for Linux allows you to run a linux terminal on your windows machine. We specifically use WSL2 since it allows USB passthrough for flashing our microcontrollers.<br />
@@ -620,15 +626,9 @@ In an administrator Powershell terminal run:</p>
 <h2 id="mac">Mac</h2>
 <p>Run the steps in <a href="#nix">Nix</a></p>
 <h2 id="nix">Nix</h2>
-<p>Nix is a package manger that lets you write out all the packages you want to install in a human readable format. This simplifies development since I can write out a list of dependencies needed to compile.<br />
-If you have not already, clone Embedded Sharepoint into your unix/linux environment (WSL for windows and MacOS for mac). Any line with # is a comment so you don't need to run those lines</p>
-<pre><code class="language-sh"># Clone the embedded sharepoint repository from the internet to your local computer
-git clone git@github.com:lhr-solar/Embedded-Sharepoint.git --recursive
-# cd (change directory) to enter the Embedded Sharepoint's directory 
-cd Embedded-Sharepoint
-</code></pre>
-<p>Enter the Embedded Sharepoint and run the following commands in the terminal: 
-Make the nix_install script runnable</p>
+<p>Nix is a package manger that lets you write out all the packages you want to install in a human readable format. This simplifies development since I can write out a list of dependencies needed to compile.  </p>
+<p>Enter the Embedded Sharepoint and run the following commands in the terminal: </p>
+<p>Make the nix_install script runnable</p>
 <pre><code class="language-sh">chmod +x ./nix_install.sh
 </code></pre>
 <p>Run the script to install the needed nix dependencies.</p>
