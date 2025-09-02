@@ -24,8 +24,9 @@ winget install usbipd
 ### Using WSL
 From now on, you'll be writting all of your solar code in WSL. We primary use VSCode as our code IDE, but there are other IDEs/code editors you can use like Vim or Nano.
 1. Open Visual Studio Code
-2. Go into extensions menu on the left side of VSCode, 
-1. Run the **Ubuntu** application, and now you'll be in your WSL/Linux environment.
+2. Go into extensions menu on the left side of VSCode, select the WSL extension from Microsoft
+3. 
+4. Run the **Ubuntu** application, and now you'll be in your WSL/Linux environment.
 
 Run the steps in [Nix](#nix) next
 
