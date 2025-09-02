@@ -2,6 +2,7 @@
 Development for Embedded-Sharepoint requires a Linux environment. Running Linux natively yields the best results, but there are workarounds through Nix on Mac OS or Windows Subsystem for Linux (WSL) on Windows.  
 
 Please ensure you've done the following before moving on:  
+
 - Install [Visual Studio Code](https://code.visualstudio.com/)
 - Set up your GitHub account and [SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent).
 - Been added to the lhr-solar organization as a member. Ask one of your leads to do so.
