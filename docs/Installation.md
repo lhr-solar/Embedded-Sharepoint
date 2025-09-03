@@ -7,7 +7,6 @@ Please ensure you've done the following before moving on:
 - Set up your GitHub account and [SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent).
     - You need to both generate an ssh key and [add](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account) it to your github account
 - Been added to the lhr-solar organization as a member. Ask one of your leads to do so.
-    - If you have not already, clone Embedded Sharepoint into your unix/linux environment (WSL for windows and MacOS for mac). Any line with # is a comment so you don't need to run those lines
 
 ```sh
 # Clone the embedded sharepoint repository from the internet to your local computer
