@@ -347,7 +347,7 @@
         <li class="md-nav__item">
   <a href="#2-using-the-cubemx-microcontroller-editor" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Using the CubeMX microcontroller editor
+      2. Using the CubeMX Microcontroller Editor
     </span>
   </a>
   
@@ -356,16 +356,49 @@
         <li class="md-nav__item">
   <a href="#3-editing-peripheral-settings" class="md-nav__link">
     <span class="md-ellipsis">
-      3. Editing peripheral settings
+      3. Editing Peripheral Settings
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="3. Editing Peripheral Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-peripheral-selector-pinout-configuration-tab" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 Peripheral Selector (Pinout &amp; Configuration Tab)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-peripheral-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2 Peripheral Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-clock-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3 Clock Configuration
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#4-generating-code" class="md-nav__link">
     <span class="md-ellipsis">
-      4. Generating code
+      4. Generating Code
     </span>
   </a>
   
@@ -485,7 +518,7 @@
         <li class="md-nav__item">
   <a href="#2-using-the-cubemx-microcontroller-editor" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Using the CubeMX microcontroller editor
+      2. Using the CubeMX Microcontroller Editor
     </span>
   </a>
   
@@ -494,16 +527,49 @@
         <li class="md-nav__item">
   <a href="#3-editing-peripheral-settings" class="md-nav__link">
     <span class="md-ellipsis">
-      3. Editing peripheral settings
+      3. Editing Peripheral Settings
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="3. Editing Peripheral Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-peripheral-selector-pinout-configuration-tab" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 Peripheral Selector (Pinout &amp; Configuration Tab)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-peripheral-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2 Peripheral Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-clock-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3 Clock Configuration
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#4-generating-code" class="md-nav__link">
     <span class="md-ellipsis">
-      4. Generating code
+      4. Generating Code
     </span>
   </a>
   
@@ -526,10 +592,55 @@
 
 
 <h1 id="cubemx">CubeMX</h1>
+<p>STM32 CubeMX is a graphical tool made by STMicro to help in creating STM32 hardware and software. While the generated code is not always optimal, CubeMX is extremely useful for figuring out pin alternate functions, setting up clock trees, and quickly enabling peripherals.</p>
 <h2 id="1-installing-cubemx">1. Installing CubeMX</h2>
-<h2 id="2-using-the-cubemx-microcontroller-editor">2. Using the CubeMX microcontroller editor</h2>
-<h2 id="3-editing-peripheral-settings">3. Editing peripheral settings</h2>
-<h2 id="4-generating-code">4. Generating code</h2>
+<p>Download CubeMX <a href="https://www.st.com/en/development-tools/stm32cubemx.html">here</a>.</p>
+<h2 id="2-using-the-cubemx-microcontroller-editor">2. Using the CubeMX Microcontroller Editor</h2>
+<ol>
+<li>Open CubeMX.  </li>
+<li>Press <strong>"Access to MCU Selector"</strong>.  </li>
+<li>Search for your mcu part number (stm32f413rht)</li>
+<li></li>
+</ol>
+<h2 id="3-editing-peripheral-settings">3. Editing Peripheral Settings</h2>
+<p>CubeMX has two main ways to enable and configure peripherals:</p>
+<h3 id="31-peripheral-selector-pinout-configuration-tab">3.1 Peripheral Selector (Pinout &amp; Configuration Tab)</h3>
+<ul>
+<li>On the left-hand side, expand the <strong>Peripherals</strong> list.  </li>
+<li>Check the box of the peripheral you want to enable (e.g., <strong>USART1</strong>, <strong>I2C1</strong>, <strong>TIM2</strong>, etc.).  </li>
+<li>CubeMX will automatically assign the required pins on the microcontroller diagram.  </li>
+<li>If there are conflicts (e.g., two peripherals trying to use the same pin), CubeMX will show a warning and let you reassign pins manually.  </li>
+<li>Hover over the microcontroller diagram and click on a pin to change its function or remap it.</li>
+</ul>
+<h3 id="32-peripheral-configuration">3.2 Peripheral Configuration</h3>
+<ul>
+<li>After enabling a peripheral, click on its name in the <strong>Configuration Pane</strong> (bottom or side panel).  </li>
+<li>This opens a settings window for that peripheral.  </li>
+<li>Examples of configurations:</li>
+<li><strong>USART:</strong> baud rate, word length, stop bits, parity, DMA options.  </li>
+<li><strong>Timers:</strong> PWM mode, clock source, prescaler values, channel mappings.  </li>
+<li><strong>ADC:</strong> resolution, sampling time, number of channels, trigger source.  </li>
+<li>You can also configure <strong>NVIC interrupts</strong> and enable/disable them from this window.</li>
+</ul>
+<h3 id="33-clock-configuration">3.3 Clock Configuration</h3>
+<ul>
+<li>Go to the <strong>Clock Configuration</strong> tab.  </li>
+<li>Set up the input oscillator (HSI, HSE, LSE) and PLL settings.  </li>
+<li>CubeMX will calculate derived clock speeds for the AHB, APB buses, and peripherals.  </li>
+<li>If you exceed limits, CubeMX will flag the error in red.</li>
+</ul>
+<h2 id="4-generating-code">4. Generating Code</h2>
+<ol>
+<li>Press the <strong>Project Manager</strong> tab.  </li>
+<li>Choose your project name, location, and toolchain (e.g., STM32CubeIDE, Keil, IAR, or Makefile).  </li>
+<li>Under <strong>Code Generator</strong>, you can decide:</li>
+<li><strong>HAL only</strong> (default)</li>
+<li><strong>Low-level drivers</strong> (LL)</li>
+<li><strong>Empty project</strong> with just initialization.  </li>
+<li>Click <strong>Generate Code</strong>.  </li>
+<li>Open the generated project in your chosen IDE and start writing your application code.</li>
+</ol>
+<hr />
 
 
 
