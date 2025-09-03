@@ -1,0 +1,9 @@
+# List of STM32 Port Names (from *_FLASH.ld files)
+
+- `STM32F401REx`
+- `STM32F413RHTx`
+- `STM32F429ZITx`
+- `STM32F446RETx`
+- `STM32L431CBTx`
+- `STM32L432KCUx`
+- `STM32L476RGTx`

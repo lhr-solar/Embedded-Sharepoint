@@ -1,30 +1,36 @@
 # Welcome to the Embedded Sharepoint Documentation
 
-Welcome to the Embedded Sharepoint! This documentation is designed to assist LHR - Solar teams in developing projects using STM32 devices.
+Welcome to the Embedded Sharepoint! Embedded-Sharepoint contains the shared embedded files to build and develop for our custom STM32 PCBs.
 
-## Key Features
+## Getting Started
 
-- **Simplified Development:** Provides a unified interface for working with various STM32 devices.
-- **Modular Design:** Easily integrate with different components and libraries.
-- **Comprehensive Documentation:** Detailed guides and API references for every module.
+### Cloning the repository
+To clone the repository, run 
+```sh
+git clone git@github.com:lhr-solar/Embedded-Sharepoint.git --recursive
+```
+## Directory Structure
 
-<!-- ## Quick Links -->
+## Command Usage
+The Makefile in the top level directory compiles all needed files for the STM32, it is not meant to be called directly, instead you must call it from a different Makefile
 
-<!-- TODO: Add confluence or add documentation -->
-<!-- - [Getting Started](getting-started.md) - Learn how to set up and begin using the library.
-- [API Reference](api-reference.md) - Explore detailed documentation of all available functions and modules.
-- [Examples & Tutorials](examples.md) - Follow step-by-step guides to implement common use cases.
-- [FAQ](faq.md) - Find answers to frequently asked questions. -->
+### Running tests
+In the test/ directory there is a Makefile meant for just running test files. To run a test do:
+``` sh
+make TEST=[name of test file without the .c extension] PROJECT_TARGET=[name of the STM32 you want to compile for]
+
+# For example:
+make TEST=blinky PROJECT_TARGET=stm32f413rht
+# This compiles the blinky.c test for the STM32F413RHT
+```
+
+## Contributing
+See our [Issues](https://github.com/lhr-solar/Embedded-Sharepoint/issues) to see what you can work on!  
+Once you're ready for a review please open a pull request to merge into main. [Pull Requests explained](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) 
 
 ## WSL
 
 ### USB PassThrough
-
-#### Install USBIPD (only need to do this the first time)
-
-In Powershell administrator:
-    
-    winget install usbipd
 
 #### Pass USB Devices
 
@@ -34,37 +40,6 @@ In PowerShell administrator:
     usbipd bind --busid <busid>
     usbipd attach --wsl --busid <busid>
 
-## Setup
-
-Note: Docker installs tools for development on Ubuntu 22.04.
-
-Note: DO NOT install packages in the docker session. Changes will be lost. Update the Dockerfile instead!
-
-Note: If USB devices are detected via lsusb but fail to open, try restarting the container with the device plugged in.
-
-### VS Code
-
-Install Dev Containers extension
-
-Open repository folder in VS Code
-
-F1 → "Dev Containers: Open Folder in Container..."
-
-Ensure docker is running
-    
-    sudo systemctl start docker
-
-### CLI Script
-
-This script sets up a docker container for embedded development.
-
-Usage:
-
-    ./start.sh
-
-Remove Docker Image:
-
-    docker rmi embedded-sharepoint-dev
 
 ## Porting
 
