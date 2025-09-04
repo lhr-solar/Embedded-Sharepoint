@@ -45,6 +45,8 @@ else
 endif
 endif
 
+	@echo "Finished compiling! Jolly good!"
+
 .PHONY: clean
 clean:
 	$(MAKE) -C $(BUILD_MAKEFILE_DIR) clean
