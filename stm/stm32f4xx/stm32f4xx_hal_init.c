@@ -27,7 +27,8 @@ void HAL_MspInit(void) {
  * @brief System Clock Configuration
  * @retval None
  */
-void SystemClock_Config(void) {
+__weak void SystemClock_Config(void) {
+  // Default configuration: Nucleo STM32F446RE
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
