@@ -1,14 +1,26 @@
+# VSCode settings
 .vscode/*
 !.vscode/c_cpp_properties.json
+compile_commands.json
+
 build
-site
 .dockerfile.hash
-.env
 .cache
 /can/CANMetaData.*
 
+# Python
 *venv
+__pycache__/
+.env
+
+# Mac specific files
 .DS_Store
+
+# Vim
 *.swp
 compile_commands.json
-flake.lock
+
+# Documentation toolset
+docs/doxygen/
+site
+Zone.Identifier
