@@ -23,4 +23,5 @@ compile_commands.json
 # Documentation toolset
 docs/doxygen/
 site/*
+!site/empty.a
 Zone.Identifier
