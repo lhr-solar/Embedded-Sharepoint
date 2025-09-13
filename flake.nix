@@ -75,8 +75,8 @@
             
               ls_stm32_dev_port() {
                   ls /dev/cu.*
-                }
-                export -f ls_stm32_dev_port
+              }
+              export -f ls_stm32_dev_port
               echo "On Mac run: ls_stm32_dev_port (to list STM32 serial port)"
             else
               echo "Run: lsusb (Linux USB info)"
