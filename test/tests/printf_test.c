@@ -1,6 +1,6 @@
 #include "UART.h"
 #include "stm32xx_hal.h"
-#include <stdio.h>
+#include "printf.h"
 
 StaticTask_t txTaskBuffer;
 StackType_t txTaskStack[configMINIMAL_STACK_SIZE];
@@ -29,8 +29,8 @@ void TxTask(void *argument){
     husart2->Init.Mode = UART_MODE_TX_RX;
     husart2->Init.HwFlowCtl = UART_HWCONTROL_NONE;
     husart2->Init.OverSampling = UART_OVERSAMPLING_16;
-
-    uart_init(husart2);
+    
+    printf_init(husart2);
 
     while(1){
         printf("Hello World! %s\n", "Ishan wuz here");
@@ -41,8 +41,6 @@ void TxTask(void *argument){
 int main(void) {
     HAL_Init();
     SystemClock_Config();
-
-    configure_printf(husart2);
 
     xTaskCreateStatic(TxTask, 
                      "TX",
