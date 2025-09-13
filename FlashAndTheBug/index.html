@@ -1,0 +1,724 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Software library shared among LHRS embedded systems">
+      
+      
+        <meta name="author" content="LHR - Solar">
+      
+      
+      
+      
+      
+      <link rel="icon" href="../LHRs.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.19">
+    
+    
+      
+        <title>Flashing and Debugging on an MCU - Embedded Sharepoint Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e37652d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#flashing-and-debugging-on-an-mcu" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Embedded Sharepoint Documentation" class="md-header__button md-logo" aria-label="Embedded Sharepoint Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Embedded Sharepoint Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Flashing and Debugging on an MCU
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Embedded Sharepoint Documentation" class="md-nav__button md-logo" aria-label="Embedded Sharepoint Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Embedded Sharepoint Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SharepointSubmodule/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Adding Embedded Sharepoint
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CubeMX/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CubeMX
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    CAN Messages
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            CAN Messages
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DBC/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Signals & Messages
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#attaching-usb-devices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Attaching USB devices
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hardware-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hardware Interface
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Hardware Interface">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#st-link-connector" class="md-nav__link">
+    <span class="md-ellipsis">
+      ST-Link Connector
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#swd-connector" class="md-nav__link">
+    <span class="md-ellipsis">
+      SWD Connector
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#software-tooling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Software Tooling
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Software Tooling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#make-executables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Make Executables
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flash" class="md-nav__link">
+    <span class="md-ellipsis">
+      Flash
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="flashing-and-debugging-on-an-mcu">Flashing and Debugging on an MCU</h1>
+<p>This page will walk you through how you can flash your C code on an MCU using Embedded Sharepoint!</p>
+<p>... and also debug it 🫠</p>
+<blockquote>
+<p>ℹ️ <strong>Prerequisite :</strong> 
+Make sure you've <a href="../SharepointSubmodule/">added Embedded Sharepoint</a>.</p>
+</blockquote>
+<h2 id="attaching-usb-devices">Attaching USB devices</h2>
+<p>Assuming you're using WSL, when you plug in your Nucleo it won't automatically get recognized.</p>
+<p>You can verify this by running <code>lsusb</code>.</p>
+<p>To attach a USB device on WSL you need to install <a href="https://github.com/dorssel/usbipd-win/releases"><code>usbipd-win</code></a>.</p>
+<ol>
+<li>
+<p>Go to the latest release.</p>
+</li>
+<li>
+<p>Select the <code>.msi</code> file, and download it. (You may get a warning asking you to confirm that you trust this download).</p>
+</li>
+<li>
+<p>Run the downloaded <code>usbipd-win_x.msi</code> installer file.</p>
+</li>
+</ol>
+<p>Once we have <code>usbipd</code> we can bind and attach USB devices.</p>
+<ol>
+<li>Open Powershell and <strong>"Run as Administrator"</strong>.</li>
+<li>Run <code>usbipd list</code> to get a list of all USB buses.</li>
+<li>Locate the device called "<strong>ST-Link Debug</strong>" and note the <strong>"BUSID"</strong>.</li>
+<li>Run <code>usbipd bind --busid &lt;BUSID&gt;</code>.</li>
+<li>Run <code>usbipd attach --wsl --busid &lt;BUSID&gt;</code> (<strong>must have an instance of WSL running</strong>).</li>
+</ol>
+<p>And you're good!</p>
+<p>Confirm all is well with <code>lsusb</code>.</p>
+<h2 id="hardware-interface">Hardware Interface</h2>
+<p><strong>Serial Wire Debug</strong> (SWD) is a two-wire protocol that is an alternative to JTAG. JTAG is the most common interface for debugging/accessing MCU registers, but it requires 4 pins to communicate while SWD only requires 2, so many ARM microcontrollers will use SWD to ease pin requirements.</p>
+<p>If you take a look at your STM32 Nucleo you should notice <strong>two</strong> sections on the board:</p>
+<p><img alt="Nucleo Section" src="../assets/NucleoDivide.png" /></p>
+<div style="display: flex; justify-content: space-between;">
+    <span><span style="color: #e06666; font-weight: bold;">Red</span> ST-Link for Debugging</span>
+    <span><span style="color: #4a90e2; font-weight: bold;">Blue</span> STM32 MCU and Peripherals</span>
+</div>
+
+<h3 id="st-link-connector">ST-Link Connector</h3>
+<p>Your board may have the jumpers ON or OFF on the ST-Link Connector (<strong>CN2</strong>).</p>
+<p><strong>ON</strong> - you are programming the <strong>INTERNAL</strong> STM32 MCU (Nucleo)</p>
+<p><strong>OFF</strong> - you are programming the <strong>EXTERNAL</strong> STM32 MCU (Solar Board)</p>
+<p>Decide whether you need jumpers based on which MCU you are trying to program.</p>
+<blockquote>
+<p>ℹ️ If you're unsure, run <code>st-info --probe</code> to see the MCU you're flashing to.</p>
+</blockquote>
+<h3 id="swd-connector">SWD Connector</h3>
+<p>When programming an <strong>external</strong> MCU (not on the Nucleo) the 6-pin SWD connector (CN4) on the ST-Link will be used. </p>
+<p>Here's the pinout for reference</p>
+<table>
+<thead>
+<tr>
+<th>Pin</th>
+<th>CN4</th>
+<th>Designation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>VDD_TARGET</td>
+<td>VDD from application</td>
+</tr>
+<tr>
+<td>2</td>
+<td>SWCLK</td>
+<td>SWD clock</td>
+</tr>
+<tr>
+<td>3</td>
+<td>GND</td>
+<td>Ground</td>
+</tr>
+<tr>
+<td>4</td>
+<td>SWDIO</td>
+<td>SWD data I/O</td>
+</tr>
+<tr>
+<td>5</td>
+<td>NRST</td>
+<td>RESET of target STM32</td>
+</tr>
+<tr>
+<td>6</td>
+<td>SWO</td>
+<td>Reserved</td>
+</tr>
+</tbody>
+</table>
+<p>On our solar boards we have a SWD interface that looks like this</p>
+<div style="display: flex; align-items: center; gap: 20px;">
+    <img src="../assets/SWDSolarBoard.png" alt="Solar SWD 1" style="height: 200px; width: 200px; object-fit: contain;">
+    <img src="../assets/AnothaOne.png" alt="Solar SWD 2" style="height: 200px; width: 200px; transform: rotate(90deg); object-fit: contain;">
+</div>
+
+<p>After connecting the corresponding pins you'll be able to program the MCU on your board.</p>
+<h2 id="software-tooling">Software Tooling</h2>
+<h3 id="overview">Overview</h3>
+<p>The OpenOCD and stlink packages are some software tools we use to flash and debug code on our board. They are two different options for doing the same thing (flashing and debugging via JTAG/SWD).</p>
+<ul>
+<li>
+<p><a href="https://github.com/stlink-org/stlink"><strong>stlink</strong></a> is a software package developed by STMicroelectronics to interface with an ST-LINK device for programming and debugging purposes.</p>
+</li>
+<li>
+<p><a href="https://pfeerick.github.io/InfiniTime/doc/openOCD.html"><strong>OpenOCD</strong></a> runs a GDB server, which allows us to debug remote targets via GDB. It also lets us write to flash with some extra configuration.</p>
+</li>
+</ul>
+<p>We currently use the OpenOCD GDB server for debugging while using <code>st-flash</code>, a tool in the stlink package for flashing code.</p>
+<h3 id="implementation">Implementation</h3>
+<p>Embedded Sharepoint contains Makefiles to simplify the process of flashing code on an MCU. These Makefiles directly call the <code>st-flash</code> command.</p>
+<p>On an STM32 MCU, flash memory starts at <code>0x8000000</code>.</p>
+<p><img alt="0x8000" src="../assets/0x8000.png" /></p>
+<p>After the Makefile compiles your source code into a binary (<code>.bin</code>), it writes to flash using</p>
+<pre> st-flash write $(BUILD_DIR)/$(TARGET).bin 0x8000000 </pre>
+
+<p><strong>NOTE</strong>: We're not flashing the <code>.elf</code> file because it contains unnecessary debug symbols that we don't need to simply flash.</p>
+<h3 id="make-executables">Make Executables</h3>
+<p>You can use the Makefile from the <code>test/</code> directory to flash files within the <code>tests/</code> directory.</p>
+<ol>
+<li>
+<p>Navigate to the <code>test/</code> directory.</p>
+</li>
+<li>
+<p>If you've set the environment variables mentioned in "<a href="../SharepointSubmodule/">Adding Embedded Sharepoint</a>" then you can run <code>make TEST=&lt;testfile&gt;</code> where <code>tests/testfile.c</code> is your test.</p>
+</li>
+<li>
+<p>After your code has been compiled and linked you should see information regarding the <code>.elf</code> file created.</p>
+</li>
+</ol>
+<p><img alt="Will Ferrell" src="../assets/ELF.png" /></p>
+<p>If you don't see a similar message nor a <code>.elf</code> file in the <code>build/</code> directory, then look at your console output for a specific error traceback.</p>
+<h3 id="flash">Flash</h3>
+<p>If you ran the previous section without error then you should have a <code>.bin</code> and a <code>.elf</code> in your <code>build/</code> corresponding to your target MCU.</p>
+<p>To flash</p>
+<ol>
+<li>Navigate to <code>test/</code></li>
+<li>Run <code>make flash</code></li>
+</ol>
+<p>... and you've flashed to the MCU!</p>
+<h3 id="debug">Debug</h3>
+<p>To debug we'll use <strong>OpenOCD</strong>. </p>
+<ol>
+<li>Navigate to the root directory of Embedded Sharepoint.</li>
+<li>Run <code>openocd -f openocd-stm32f4x.cfg</code> if you're programming an F4 MCU or the corresponding <code>..l4x.cfg</code> if you're programming an L4.</li>
+<li>You should see a message that a GDB server was started on port <code>3333</code>.</li>
+</ol>
+<p>Open a second terminal session to use GDB</p>
+<ol>
+<li>Run <code>gdb-multiarch build/(TARGET).elf</code>. If you aren't in root the filepath will look slightly different.</li>
+<li>Verify that GDB is using the debug symbols from the <code>.elf</code> file.</li>
+<li>Run <code>tar extended-remote :3333</code> to connect to the OpenOCD GDB server.</li>
+</ol>
+<p>Step through your code in GDB to analyze execution!</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.92b07e13.min.js"></script>
+      
+    
+  </body>
+</html>
