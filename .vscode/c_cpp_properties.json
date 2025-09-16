@@ -7,9 +7,8 @@
             ],
             "defines": [],
             "cStandard": "c99",
-            "cppStandard": "${default}",
             "intelliSenseMode": "linux-gcc-arm",
-            "compileCommands": "${workspaceFolder}/.vscode/compile_commands.json"
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json"
         }
     ],
     "version": 4
