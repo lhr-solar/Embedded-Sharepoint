@@ -277,6 +277,7 @@ else
 	@echo "LD $@"
 endif
 	@$(SZ) $@
+	@echo "Finished compiling. Jolly good!"
 
 $(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	@if ls $(BUILD_DIR)/*.hex 1> /dev/null 2>&1; then \
