@@ -29,6 +29,11 @@ It's good to be able to test independent portions of your code instead of your w
 The way we can do this is change   
 
 
+### Define SystemClock_Config
+SystemClock_Config is a function defined as "weak" in stm32f4xx_hal_init.c, stm32g4xx_hal_init.c, and stm32l4xx_hal_init.c. The default behavior of this function is to initialize the internal oscillator of some specific Nucleo, but since we operate with a variety of Nucleos and processors on boards, you will probably want to redefine it.
+
+Generate a new SystemClock_Config in STM32CubeMX and add it to one of your files in your repository. This should serve as a redefinition of the function and will override the default behavior. Make sure you are generating the code with the correct microcontroller part number in the software, and you are using an external oscillator (if generating code for one of our SOM PCBs).
+
 ## Examples of projects that use Embedded Sharepoint
 * [BPS-Leader](https://github.com/lhr-solar/BPS-Leader)
-* [Active-Precharge Board](https://github.com/lhr-solar/Active-Precharge-Board#)
+* [Active-Precharge Board](https://github.com/lhr-solar/Active-Precharge-Board#)                                                                                                                                                     e
