@@ -13,7 +13,7 @@
       
       
       
-        <link rel="prev" href="../FlashAndTheBug/">
+        <link rel="prev" href="../Installation/">
       
       
         <link rel="next" href="../CubeMX/">
@@ -261,28 +261,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../FlashAndTheBug/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Flashing and Debugging
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -372,6 +350,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#define-systemclock_config" class="md-nav__link">
+    <span class="md-ellipsis">
+      Define SystemClock_Config
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -431,10 +418,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
             
   
   
@@ -447,8 +434,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             CAN Messages
           </label>
@@ -547,6 +534,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#define-systemclock_config" class="md-nav__link">
+    <span class="md-ellipsis">
+      Define SystemClock_Config
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -600,10 +596,13 @@ A good example of this a Makefile you'd make is the sharepoint's test <a href="h
 <h3 id="creating-a-test-directive">Creating a test directive</h3>
 <p>It's good to be able to test independent portions of your code instead of your whole code base at once. For example, if I have a driver just for controlling lights I should have a test file that just runs some code for my lights driver instead of the whole codebase.<br />
 The way we can do this is change   </p>
+<h3 id="define-systemclock_config">Define SystemClock_Config</h3>
+<p>SystemClock_Config is a function defined as "weak" in stm32f4xx_hal_init.c, stm32g4xx_hal_init.c, and stm32l4xx_hal_init.c. The default behavior of this function is to initialize the internal oscillator of some specific Nucleo, but since we operate with a variety of Nucleos and processors on boards, you will probably want to redefine it.</p>
+<p>Generate a new SystemClock_Config in STM32CubeMX and add it to one of your files in your repository. This should serve as a redefinition of the function and will override the default behavior. Make sure you are generating the code with the correct microcontroller part number in the software, and you are using an external oscillator (if generating code for one of our SOM PCBs).</p>
 <h2 id="examples-of-projects-that-use-embedded-sharepoint">Examples of projects that use Embedded Sharepoint</h2>
 <ul>
 <li><a href="https://github.com/lhr-solar/BPS-Leader">BPS-Leader</a></li>
-<li><a href="https://github.com/lhr-solar/Active-Precharge-Board#">Active-Precharge Board</a></li>
+<li><a href="https://github.com/lhr-solar/Active-Precharge-Board#">Active-Precharge Board</a>                                                                                                                                                     e</li>
 </ul>
 
 
