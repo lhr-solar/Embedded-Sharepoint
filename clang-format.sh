@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -e
-
+if ! command -v clang-format &> /dev/null; then
+    echo "Error: clang-format could not be found. Please install it." >&2
+    exit 1
+fi
 if [ "$#" -lt 1 ]; then
     echo "Usage: $0 <dir1> [dir2 ...]" >&2
     exit 1
