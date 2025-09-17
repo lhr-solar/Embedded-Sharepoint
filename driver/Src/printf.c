@@ -9,7 +9,7 @@ UART_HandleTypeDef *printf_huart = NULL;
  */
 bool printf_init(UART_HandleTypeDef *huart) { 
     printf_huart = huart; 
-    return uart_init(huart) == UART_OK?true:false;
+    return uart_init(huart) == UART_OK;
 }
 
 // Called by _read in syscalls.c
