@@ -30,7 +30,4 @@ void Error_Handler(void);
 void HAL_MspInit(void);
 void SystemClock_Config(void);
 
-// Printf config
-void configure_printf(UART_HandleTypeDef *huart);
-
 #endif /* STM32xs_HAL_H */

@@ -160,13 +160,14 @@ Step through your code in GDB to analyze execution!
 
 Another debugging option is serial monitoring. The `printf` method is integrated into Embedded-Sharepoint.
 
-1. Run `printf_init(UART_HandleTypeDef)` with your desired UART to output to. For a Nucleo, this will be specified in the Nucleo user manual which you can find online. For one of our PCBs, check the schematic to see which UART peripheral your USB is connected to. 
+1. The `HAL_UART_MspGPIOInit()` function must be implemented with the proper GPIO initialization (RCC_CLK_ENABLE, GPIO struct filled in, HAL_GPIO_Init called).
 
+2. The `UART_HandleTypeDef` struct must be initialized with the proper settings before calling printf_init.
+
+3. Run `printf_init(UART_HandleTypeDef)` with your desired UART to output to. For a Nucleo, this will be specified in the Nucleo user manual which you can find online. For one of our PCBs, check the schematic to see which UART peripheral your USB is connected to. 
 - `printf_init` must be run after the RTOS is initialized.
-- the `UART_HandleTypeDef` struct must be initialized with the proper settings before calling printf_init.
-- the `HAL_UART_MspGPIOInit()` function must be implemented with the proper GPIO initialization (RCC_CLK_ENABLE, GPIO struct filled in, HAL_GPIO_Init called).
 
-2. Run `printf(...)` with your desired [format](https://www.geeksforgeeks.org/c/printf-in-c/)!
+4. Run `printf(...)` with your desired [format](https://www.geeksforgeeks.org/c/printf-in-c/)!
 
 To view the output, open up an application like [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) or [picocom](https://github.com/npat-efault/picocom).
 
