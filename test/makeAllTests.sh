@@ -71,9 +71,9 @@ fi
 
 test_list=()
 shopt -s nullglob
-for test_file in "$script_dir"/tests/test_*.c; do
+for test_file in "$script_dir"/tests/*_test.c; do
     test_name=$(basename "$test_file" .c)
-    test_name="${test_name#test_}"   # remove leading "test_"
+    test_name="${test_name%_test}"   # remove trailing "_test"
     test_list+=("$test_name")
 done
 shopt -u nullglob
