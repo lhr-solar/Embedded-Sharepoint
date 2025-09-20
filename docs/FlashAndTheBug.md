@@ -140,6 +140,8 @@ To flash
 
 ### Debug
 
+#### GDB
+
 To debug we'll use **OpenOCD**. 
 
 1. Navigate to the root directory of Embedded Sharepoint.
@@ -153,3 +155,22 @@ Open a second terminal session to use GDB
 3. Run `tar extended-remote :3333` to connect to the OpenOCD GDB server.
 
 Step through your code in GDB to analyze execution!
+
+#### Serial Monitoring
+
+Another debugging option is serial monitoring. The `printf` method is integrated into Embedded-Sharepoint.
+
+1. The `HAL_UART_MspGPIOInit()` function must be implemented with the proper GPIO initialization (RCC_CLK_ENABLE, GPIO struct filled in, HAL_GPIO_Init called).
+
+2. The `UART_HandleTypeDef` struct must be initialized with the proper settings before calling printf_init.
+
+3. Run `printf_init(UART_HandleTypeDef)` with your desired UART to output to. For a Nucleo, this will be specified in the Nucleo user manual which you can find online. For one of our PCBs, check the schematic to see which UART peripheral your USB is connected to. 
+- `printf_init` must be run after the RTOS is initialized.
+
+4. Run `printf(...)` with your desired [format](https://www.geeksforgeeks.org/c/printf-in-c/)!
+
+To view the output, open up an application like [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) or [picocom](https://github.com/npat-efault/picocom).
+
+- For PuTTY, click Serial and enter your desired COM port. This should show up on your device manager (for Mac or Linux, run `lsusb`). Set the baud rate to what you configured the UART for. Hit the big open button at the bottom.
+- For picocom, type in `picocom -b <baud-rate> <tty-name>` and you should be set.
+
