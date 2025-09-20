@@ -109,7 +109,7 @@ $(wildcard FreeRTOS-Kernel/*.c) \
 FreeRTOS-Kernel/portable/GCC/ARM_CM4F/port.c \
 $(wildcard common/Src/*.c) \
 $(wildcard driver/Src/*.c) \
-$(foreach src,$(BSP_ENABLE),bsp/Src/$(src).c)
+$(filter-out $(addprefix bsp/Src/,$(addsuffix .c,$(BSP_DISABLE))),$(wildcard bsp/Src/*.c))
 
 # ASM sources
 ASM_SOURCES =  \
