@@ -486,6 +486,30 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Debug">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gdb" class="md-nav__link">
+    <span class="md-ellipsis">
+      GDB
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#serial-monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      Serial Monitoring
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -653,6 +677,7 @@ Make sure you've <a href="../SharepointSubmodule/">added Embedded Sharepoint</a>
 </ol>
 <p>... and you've flashed to the MCU!</p>
 <h3 id="debug">Debug</h3>
+<h4 id="gdb">GDB</h4>
 <p>To debug we'll use <strong>OpenOCD</strong>. </p>
 <ol>
 <li>Navigate to the root directory of Embedded Sharepoint.</li>
@@ -666,6 +691,30 @@ Make sure you've <a href="../SharepointSubmodule/">added Embedded Sharepoint</a>
 <li>Run <code>tar extended-remote :3333</code> to connect to the OpenOCD GDB server.</li>
 </ol>
 <p>Step through your code in GDB to analyze execution!</p>
+<h4 id="serial-monitoring">Serial Monitoring</h4>
+<p>Another debugging option is serial monitoring. The <code>printf</code> method is integrated into Embedded-Sharepoint.</p>
+<ol>
+<li>
+<p>The <code>HAL_UART_MspGPIOInit()</code> function must be implemented with the proper GPIO initialization (RCC_CLK_ENABLE, GPIO struct filled in, HAL_GPIO_Init called).</p>
+</li>
+<li>
+<p>The <code>UART_HandleTypeDef</code> struct must be initialized with the proper settings before calling printf_init.</p>
+</li>
+<li>
+<p>Run <code>printf_init(UART_HandleTypeDef)</code> with your desired UART to output to. For a Nucleo, this will be specified in the Nucleo user manual which you can find online. For one of our PCBs, check the schematic to see which UART peripheral your USB is connected to. </p>
+</li>
+<li>
+<p><code>printf_init</code> must be run after the RTOS is initialized.</p>
+</li>
+<li>
+<p>Run <code>printf(...)</code> with your desired <a href="https://www.geeksforgeeks.org/c/printf-in-c/">format</a>!</p>
+</li>
+</ol>
+<p>To view the output, open up an application like <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html">PuTTY</a> or <a href="https://github.com/npat-efault/picocom">picocom</a>.</p>
+<ul>
+<li>For PuTTY, click Serial and enter your desired COM port. This should show up on your device manager (for Mac or Linux, run <code>lsusb</code>). Set the baud rate to what you configured the UART for. Hit the big open button at the bottom.</li>
+<li>For picocom, type in <code>picocom -b &lt;baud-rate&gt; &lt;tty-name&gt;</code> and you should be set.</li>
+</ul>
 
 
 
