@@ -70,10 +70,13 @@ if [ ! -d "$script_dir/tests" ]; then
 fi
 
 test_list=()
-for test_file in $script_dir/tests/*.c; do
+shopt -s nullglob
+for test_file in "$script_dir"/tests/test_*.c; do
     test_name=$(basename "$test_file" .c)
+    test_name="${test_name#test_}"   # remove leading "test_"
     test_list+=("$test_name")
 done
+shopt -u nullglob
 
 # Check if test_list is empty
 if [ ${#test_list[@]} -eq 0 ]; then
