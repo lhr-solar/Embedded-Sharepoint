@@ -1,13 +1,15 @@
 #include <stdbool.h>
 #include "printf.h"
 
-#define LOGGING_ENABLE 1
+#ifndef LOGGING_ENABLE
+#define LOGGING_ENABLE 0
+#endif
 
 #ifndef LOGGING_LEVEL
 #define LOGGING_LEVEL 6
 #endif
 
-#define LOG_MAX_BEFORE_SIZE 128
+#define LOG_MAX_BEFORE_SIZE 64
 #define LOG_MAX_LOG_SIZE    256
 
 #define CONVERT_TO_STRING(arg) #arg
@@ -61,7 +63,7 @@ log_level_color(LoggingLevel level)
 static inline void
 log_printf(void)
 {
-    printf("%-" AS_STRING(LOG_MAX_BEFORE_SIZE) "s | %s%s\n",
+    printf("%-" AS_STRING(LOG_MAX_BEFORE_SIZE) "s | %s%s\n\r",
            (char *)&log_before_buf, (char *)&log_buf, log_level_color(L_NONE));
 }
 

@@ -5,6 +5,17 @@
 #include <stdio.h>
 #include "printf.h"
 
+// Enables logging
+#define LOGGING_ENABLE 1
+
+// MUST BE DEFINED AS AN INTEGER
+// Logging levels:
+// L_FATAL: 1
+// L_ERROR: 2
+// L_WARN: 3
+// L_DEBUG: 4
+// L_TRACE: 5
+#define LOGGING_LEVEL 4
 #include "log.h"
 
 StaticTask_t txTaskBuffer;
