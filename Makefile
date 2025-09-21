@@ -148,7 +148,7 @@ CPU = -mcpu=cortex-m4
 FPU = -mfpu=fpv4-sp-d16
 
 # float-abi
-FLOAT-ABI = -mfloat-abi=hard
+FLOAT-ABI = -mfloat-abi=hard -lc -lrdimon -u _printf_float
 
 # mcu
 MCU = $(CPU) -mthumb $(FPU) $(FLOAT-ABI)
