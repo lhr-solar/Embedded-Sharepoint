@@ -174,3 +174,7 @@ To view the output, open up an application like [PuTTY](https://www.chiark.green
 - For PuTTY, click Serial and enter your desired COM port. This should show up on your device manager (for Mac or Linux, run `lsusb`). Set the baud rate to what you configured the UART for. Hit the big open button at the bottom.
 - For picocom, type in `picocom -b <baud-rate> <tty-name>` and you should be set.
 
+#### Logging Library
+
+A convenient integration we've made for easier debugging is this logging header file. Credit to Clark Poon.
+
