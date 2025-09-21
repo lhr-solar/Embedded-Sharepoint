@@ -20,6 +20,9 @@ __pycache__/
 *.swp
 compile_commands.json
 
+# Nix
+flake.lock
+
 # Documentation toolset
 docs/doxygen/
 site/*
