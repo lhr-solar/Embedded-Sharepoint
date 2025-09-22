@@ -9,7 +9,7 @@ Please ensure you've done the following before moving on:
     - You need to both generate an ssh key and [add](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account) it to your github account
 - Been added to the lhr-solar organization as a member. Ask one of your leads to do so.
 
-Any line that that starts with `#` is a comment and you don't need to run it. 
+Any line that starts with `#` is a comment and you don't need to run it. 
 ```sh
 # Clone the embedded sharepoint repository from the internet to your local computer
 git clone git@github.com:lhr-solar/Embedded-Sharepoint.git --recursive
@@ -33,7 +33,7 @@ winget install usbipd
 ```
 
 ### Using WSL
-From now on, you'll be writting all of your solar code in WSL. We primary use VSCode as our code IDE, but there are other IDEs/code editors you can use like Vim or Nano.
+From now on, you'll be writing all of your solar code in WSL. We primary use VSCode as our code IDE, but there are other IDEs/code editors you can use like Vim or Nano.
 
 1. Open Visual Studio Code
 2. Go into extensions menu on the left side of VSCode, select the WSL extension from Microsoft
@@ -91,5 +91,5 @@ This means your user doesn't have permissions to use a USB port.  To fix this ru
 sudo chmod -R 777 /dev/bus/usb/
 ```
 
-## Cant flash after changing PROJECT_TARGET
+## Can't flash after changing PROJECT_TARGET
 If you build your code for one PROJECT_TARGET and then switch to another, you’ll usually need to run `make clean` before flashing to remove all old build files. Otherwise, leftover files from the previous build may remain in your build folder, causing `make flash` to get confused about which `.bin` file to use.
