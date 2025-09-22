@@ -1,6 +1,7 @@
 # Installation Instructions
 Development for Embedded-Sharepoint requires a Linux environment. Running Linux natively yields the best results, but there are workarounds through Nix on Mac OS or Windows Subsystem for Linux (WSL) on Windows.  
 
+## Prerequisites
 Please ensure you've done the following before moving on:  
 
 - Install [Visual Studio Code](https://code.visualstudio.com/)
@@ -8,6 +9,7 @@ Please ensure you've done the following before moving on:
     - You need to both generate an ssh key and [add](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account) it to your github account
 - Been added to the lhr-solar organization as a member. Ask one of your leads to do so.
 
+Any line that starts with `#` is a comment and you don't need to run it. 
 ```sh
 # Clone the embedded sharepoint repository from the internet to your local computer
 git clone git@github.com:lhr-solar/Embedded-Sharepoint.git --recursive
@@ -16,7 +18,6 @@ cd Embedded-Sharepoint
 ```
 
 ## Linux
-Thanks for making our lives easy :)
 Run the steps in [Nix](#nix) next
 
 ## Windows
@@ -32,7 +33,8 @@ winget install usbipd
 ```
 
 ### Using WSL
-From now on, you'll be writting all of your solar code in WSL. We primary use VSCode as our code IDE, but there are other IDEs/code editors you can use like Vim or Nano.
+From now on, you'll be writing all of your solar code in WSL. We primary use VSCode as our code IDE, but there are other IDEs/code editors you can use like Vim or Nano.
+
 1. Open Visual Studio Code
 2. Go into extensions menu on the left side of VSCode, select the WSL extension from Microsoft
 3. Press **CTRL+SHIFT+P** and press connect to WSL
@@ -73,3 +75,21 @@ Test if installation is succesful by compiling a test
 cd test
 make TEST=blinky
 ```
+Now that you've successfully compiled a test, we want to flash our code to the microcontroller. The term "flashing" in an embedded system refers to putting your code onto the microcontroller. If you're using WSL there are some extra setup steps you need to do to connect to the microcontroller, that can be found [here](./FlashAndTheBug.md) in the `Attaching USB devices in WSL` section.  
+
+After that run ``lsusb`` and make sure you see an ST-Link Debug device is seen by your terminal. Then run the following command to flash to your microcontroller
+```sh
+make flash
+```
+
+# Common Errors
+## Could not open USB device
+if you're getting:
+```libusb couldn't open USB device /dev/bus/usb/001/003, errno=13```
+This means your user doesn't have permissions to use a USB port.  To fix this run
+```sh
+sudo chmod -R 777 /dev/bus/usb/
+```
+
+## Can't flash after changing PROJECT_TARGET
+If you build your code for one PROJECT_TARGET and then switch to another, you’ll usually need to run `make clean` before flashing to remove all old build files. Otherwise, leftover files from the previous build may remain in your build folder, causing `make flash` to get confused about which `.bin` file to use.
