@@ -1,6 +1,7 @@
 # Installation Instructions
 Development for Embedded-Sharepoint requires a Linux environment. Running Linux natively yields the best results, but there are workarounds through Nix on Mac OS or Windows Subsystem for Linux (WSL) on Windows.  
 
+## Prerequisites
 Please ensure you've done the following before moving on:  
 
 - Install [Visual Studio Code](https://code.visualstudio.com/)
@@ -8,6 +9,7 @@ Please ensure you've done the following before moving on:
     - You need to both generate an ssh key and [add](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account) it to your github account
 - Been added to the lhr-solar organization as a member. Ask one of your leads to do so.
 
+Any line that that starts with `#` is a comment and you don't need to run it. 
 ```sh
 # Clone the embedded sharepoint repository from the internet to your local computer
 git clone git@github.com:lhr-solar/Embedded-Sharepoint.git --recursive
@@ -16,7 +18,6 @@ cd Embedded-Sharepoint
 ```
 
 ## Linux
-Thanks for making our lives easy :)
 Run the steps in [Nix](#nix) next
 
 ## Windows
@@ -33,6 +34,7 @@ winget install usbipd
 
 ### Using WSL
 From now on, you'll be writting all of your solar code in WSL. We primary use VSCode as our code IDE, but there are other IDEs/code editors you can use like Vim or Nano.
+
 1. Open Visual Studio Code
 2. Go into extensions menu on the left side of VSCode, select the WSL extension from Microsoft
 3. Press **CTRL+SHIFT+P** and press connect to WSL
@@ -81,7 +83,6 @@ make flash
 ```
 
 # Common Errors
-
 ## Could not open USB device
 if you're getting:
 ```libusb couldn't open USB device /dev/bus/usb/001/003, errno=13```

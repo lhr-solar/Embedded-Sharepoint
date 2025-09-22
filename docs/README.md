@@ -4,11 +4,9 @@ Welcome to the Embedded Sharepoint! Embedded-Sharepoint contains the shared embe
 
 ## Getting Started
 
-### Cloning the repository
-To clone the repository, run 
-```sh
-git clone git@github.com:lhr-solar/Embedded-Sharepoint.git --recursive
-```
+### Installation
+Follow the installation instructions for your specific platform, found [here](./Installation.md)
+
 ## Directory Structure
 
 ## Command Usage
@@ -23,7 +21,7 @@ make TEST=[name of test file without _test_ and the .c extension] PROJECT_TARGET
 make TEST=blinky PROJECT_TARGET=stm32f413rht
 # This compiles the blinky_test.c test for the STM32F413RHT
 ```
-For PROJECT_TARGET options, see the [STM32_Ports](./STM32_Ports.md) page
+For all PROJECT_TARGET options, see the [STM32_Ports](./STM32_Ports.md) page
 
 ### Flashing code
 Once your code is compiled, use the makefile in the `test/` directory to flash your built code to the microcontroller. If you are running WSL there are some extra steps to connect the STM32 to your computer, which can be found [here](./FlashAndTheBug.md).
@@ -33,22 +31,12 @@ Run the following command to flash:
 make flash
 ```
 
+## Adding Embedded Sharepoint to your project
+Follow these [instructions](./SharepointSubmodule.md) on how to add Embedded Sharepoint to your project
+
 ## Contributing
 See our [Issues](https://github.com/lhr-solar/Embedded-Sharepoint/issues) to see what you can work on!  
 Once you're ready for a review please open a pull request to merge into main. [Pull Requests explained](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) 
-
-## WSL
-
-### USB PassThrough
-
-#### Pass USB Devices
-
-In PowerShell administrator: 
-
-    usbipd list
-    usbipd bind --busid <busid>
-    usbipd attach --wsl --busid <busid>
-
 
 ## Porting
 
