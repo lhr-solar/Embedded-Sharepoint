@@ -30,7 +30,7 @@ And you're good!
 
 Confirm that your device is shared to WSL by running `lsusb` in your WSL terminal.  
 
-## Attaching USB devices using USBIPD extenstion
+## Attach USB devices using USBIPD extension
 If you're using VSCode then you can use the `USBIPD Connect` extension to streamline the process.
 
 Once the extension is installed you should see an `Attatch` button at the bottom of your VSCode that when pressed will show you all USB devices. You can now press the ST-Link USB device to connect to it. 

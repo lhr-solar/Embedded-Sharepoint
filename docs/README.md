@@ -26,7 +26,7 @@ make TEST=blinky PROJECT_TARGET=stm32f413rht
 For PROJECT_TARGET options, see the [STM32_Ports](./STM32_Ports.md) page
 
 ### Flashing code
-Once your code is compiled, use the makefile in the the `test/` directory to flash your built code to the microcontroller. If you are running WSL there are some extra steps to connect the STM32 to your computer, which can be found [here](./FlashAndTheBug.md).
+Once your code is compiled, use the makefile in the `test/` directory to flash your built code to the microcontroller. If you are running WSL there are some extra steps to connect the STM32 to your computer, which can be found [here](./FlashAndTheBug.md).
 
 Run the following command to flash:
 ```sh
