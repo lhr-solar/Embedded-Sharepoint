@@ -13,13 +13,20 @@
 // L_FATAL: 1
 // L_ERROR: 2
 // L_WARN: 3
-// L_DEBUG: 4
-// L_TRACE: 5
+// L_INFO: 4
+// L_DEBUG: 5
+// L_TRACE: 6
 #define LOGGING_LEVEL 4
 #include "log.h"
 
+StaticTask_t initTaskBuffer;
+StackType_t initTaskStack[configMINIMAL_STACK_SIZE];
+
 StaticTask_t txTaskBuffer;
 StackType_t txTaskStack[configMINIMAL_STACK_SIZE];
+
+StaticTask_t txTaskBuffer2;
+StackType_t txTaskStack2[configMINIMAL_STACK_SIZE];
 
 void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
     GPIO_InitTypeDef init = {0};
@@ -37,7 +44,32 @@ void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
     HAL_GPIO_Init(GPIOA, &init);
 }
 
+
 void TxTask(void *argument){
+    while(1){
+        log(L_FATAL, "TxTask1 Fatal");
+        log(L_ERROR, "TxTask1 Error");
+        log(L_WARN, "TxTask1 Warn");
+        log(L_INFO, "TxTask1 Info");
+        log(L_DEBUG, "TxTask1 Debug");
+        log(L_TRACE, "TxTask1 Trace");
+        vTaskDelay(pdMS_TO_TICKS(100));
+    }
+}
+
+void TxTask2(void *argument){
+    while(1){
+        log(L_FATAL, "TxTask2 Fatal");
+        log(L_ERROR, "TxTask2 Error");
+        log(L_WARN, "TxTask2 Warn");
+        log(L_INFO, "TxTask2 Info");
+        log(L_DEBUG, "TxTask2 Debug");
+        log(L_TRACE, "TxTask2 Trace");
+        vTaskDelay(pdMS_TO_TICKS(100));
+    }
+}
+
+void InitTask(void *argument){
     husart2->Init.BaudRate = 115200;
     husart2->Init.WordLength = UART_WORDLENGTH_8B;
     husart2->Init.StopBits = UART_STOPBITS_1;
@@ -48,21 +80,6 @@ void TxTask(void *argument){
     
     printf_init(husart2);
 
-    while(1){
-        log(L_FATAL, "Test Fatal");
-        log(L_ERROR, "Test Error");
-        log(L_WARN, "Test Warn");
-        log(L_INFO, "Test Info");
-        log(L_DEBUG, "Test Debug");
-        log(L_TRACE, "Test Trace");
-        vTaskDelay(pdMS_TO_TICKS(100));
-    }
-}
-
-int main(void) {
-    HAL_Init();
-    SystemClock_Config();
-
     xTaskCreateStatic(TxTask, 
                      "TX",
                      configMINIMAL_STACK_SIZE,
@@ -70,6 +87,30 @@ int main(void) {
                      tskIDLE_PRIORITY + 2,
                      txTaskStack,
                      &txTaskBuffer);
+
+    xTaskCreateStatic(TxTask2, 
+                     "TX2",
+                     configMINIMAL_STACK_SIZE,
+                     NULL,
+                     tskIDLE_PRIORITY + 2,
+                     txTaskStack2,
+                     &txTaskBuffer2);
+
+    while(1){
+    }
+}
+
+int main(void) {
+    HAL_Init();
+    SystemClock_Config();
+
+    xTaskCreateStatic(InitTask, 
+                     "Init",
+                     configMINIMAL_STACK_SIZE,
+                     NULL,
+                     tskIDLE_PRIORITY + 2,
+                     initTaskStack,
+                     &initTaskBuffer);
 
     vTaskStartScheduler();
 
