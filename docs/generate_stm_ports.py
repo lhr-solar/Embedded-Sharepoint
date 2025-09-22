@@ -55,7 +55,7 @@ def main():
             for name in grouped[series]:
                 proj_target = project_target_from_port(name)
                 f.write(f"- `{name}`\n")
-                f.write(f"  - `PROJECT_TARGET={proj_target}`\n")
+                f.write(f"    - `PROJECT_TARGET={proj_target}`\n")
             f.write("\n")
     print(f"Generated {OUTPUT_MD}")
 

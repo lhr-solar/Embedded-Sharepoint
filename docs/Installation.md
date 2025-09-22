@@ -90,3 +90,6 @@ This means your user doesn't have permissions to use a USB port.  To fix this ru
 ```sh
 sudo chmod -R 777 /dev/bus/usb/
 ```
+
+## Cant flash after changing PROJECT_TARGET
+If you build your code for one PROJECT_TARGET and then switch to another, you’ll usually need to run `make clean` before flashing to remove all old build files. Otherwise, leftover files from the previous build may remain in your build folder, causing `make flash` to get confused about which `.bin` file to use.
