@@ -12,6 +12,7 @@ theme:
 nav:
   - Home: 'README.md'
   - Installation: 'Installation.md'
+  - Flashing and Debugging: 'FlashAndTheBug.md'
   - Adding Embedded Sharepoint: 'SharepointSubmodule.md'
   - CubeMX: 'CubeMX.md'
 

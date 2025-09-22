@@ -7,35 +7,41 @@ This page will walk you through how you can flash your C code on an MCU using Em
 > ℹ️ **Prerequisite :** 
 > Make sure you've [added Embedded Sharepoint](SharepointSubmodule.md).
 
-## Attaching USB devices
+## Attaching USB devices in WSL
 
-Assuming you're using WSL, when you plug in your Nucleo it won't automatically get recognized.
-
-You can verify this by running `lsusb`.
+When you plug in your STM32 device, it won't automatically get recognized by your WSL
 
 To attach a USB device on WSL you need to install [`usbipd-win`](https://github.com/dorssel/usbipd-win/releases).
 
-1. Go to the latest release.
+1. Install WinGet if you haven't already using these [instructions](https://learn.microsoft.com/en-us/windows/package-manager/winget/)
+2. Open your powershell in administrator mode
+3. Run `winget install --interactive --exact dorssel.usbipd-win`
 
-2. Select the `.msi` file, and download it. (You may get a warning asking you to confirm that you trust this download).
-
-3. Run the downloaded `usbipd-win_x.msi` installer file.
 
 Once we have `usbipd` we can bind and attach USB devices.
 
 1. Open Powershell and **"Run as Administrator"**.
 2. Run `usbipd list` to get a list of all USB buses.
-3. Locate the device called "**ST-Link Debug**" and note the **"BUSID"**.
+3. Locate the device called "**ST-Link Debug**" and note the **"BUSID"** (usually in the format of number-number ).
 4. Run `usbipd bind --busid <BUSID>`.
 5. Run `usbipd attach --wsl --busid <BUSID>` (**must have an instance of WSL running**).
 
 And you're good!
 
-Confirm all is well with `lsusb`.
+Confirm that your device is shared to WSL by running `lsusb` in your WSL terminal.  
+
+## Attaching USB devices using USBIPD extenstion
+If you're using VSCode then you can use the `USBIPD Connect` extension to streamline the process.
+
+Once the extension is installed you should see an `Attatch` button at the bottom of your VSCode that when pressed will show you all USB devices. You can now press the ST-Link USB device to connect to it. 
+
+Note: The extension only works with ST-Links/Nucleos that you’ve previously connected. If you want to use a new device, you’ll need to go through the full manual usbipd setup first. Once a device has been connected manually, the extension can be used to reconnect it quickly in the future.
 
 ## Hardware Interface
 
 **Serial Wire Debug** (SWD) is a two-wire protocol that is an alternative to JTAG. JTAG is the most common interface for debugging/accessing MCU registers, but it requires 4 pins to communicate while SWD only requires 2, so many ARM microcontrollers will use SWD to ease pin requirements.
+
+To program the STM32 microcontroller with SWD, we use an **ST-Link**—a tool from STMicroelectronics that runs dedicated firmware designed to program STM32 devices.
 
 If you take a look at your STM32 Nucleo you should notice **two** sections on the board:
 

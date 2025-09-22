@@ -73,3 +73,19 @@ Test if installation is succesful by compiling a test
 cd test
 make TEST=blinky
 ```
+Now that you've succesfully compiled a test, we want to flash our code to the microcontroller. The term "flashing" in an embedded system refers too putting your code onto the microcontroller. If you're using WSL there are some extra setup steps you need to do to connect to the microcontroller, that can be found [here](./FlashAndTheBug.md/) in the `Attatching USB devices in WSL` section.  
+
+After that run ``lsusb`` and make sure you see an ST-Link Debug device is seen by your terminal. Then run the following command to flash to your microcontroller
+```sh
+make flash
+```
+
+# Common Errors
+
+## Could not open USB device
+if you're getting 
+```libusb couldn't open USB device /dev/bus/usb/001/003, errno=13```
+Then that means your user doesn't have permissions to use a USB port.  To fix this run
+```sh
+sudo chmod -R 777 /dev/bus/usb/
+```
