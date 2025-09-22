@@ -13,7 +13,7 @@
       
       
       
-        <link rel="prev" href="../Installation/">
+        <link rel="prev" href="../FlashAndTheBug/">
       
       
         <link rel="next" href="../CubeMX/">
@@ -261,6 +261,28 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../FlashAndTheBug/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Flashing and Debugging
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -409,6 +431,28 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../STM32_Ports/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    STM32 Ports
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     
     
     
@@ -418,10 +462,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
             
   
   
@@ -434,8 +478,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             CAN Messages
           </label>
@@ -594,15 +638,16 @@ A good example of this a Makefile you'd make is the sharepoint's test <a href="h
 <li><code>BEAR_ENABLE</code> to make VSCode not mad at you (the red error squiggles)</li>
 </ul>
 <h3 id="creating-a-test-directive">Creating a test directive</h3>
-<p>It's good to be able to test independent portions of your code instead of your whole code base at once. For example, if I have a driver just for controlling lights I should have a test file that just runs some code for my lights driver instead of the whole codebase.<br />
-The way we can do this is change   </p>
+<p>It's good to be able to test independent portions of your code instead of your whole code base at once. For example, if I have a driver just for controlling lights I should have a test file that just runs some code for my lights driver instead of the whole codebase.</p>
+<p>C expects a <code>main()</code> function as the starting point of your code, so the way we generally implement this is filtering out the main.c file where the <code>main()</code> function is implemented, and compiling your test file instead with it's own <code>main()</code> function.</p>
 <h3 id="define-systemclock_config">Define SystemClock_Config</h3>
-<p>SystemClock_Config is a function defined as "weak" in stm32f4xx_hal_init.c, stm32g4xx_hal_init.c, and stm32l4xx_hal_init.c. The default behavior of this function is to initialize the internal oscillator of some specific Nucleo, but since we operate with a variety of Nucleos and processors on boards, you will probably want to redefine it.</p>
-<p>Generate a new SystemClock_Config in STM32CubeMX and add it to one of your files in your repository. This should serve as a redefinition of the function and will override the default behavior. Make sure you are generating the code with the correct microcontroller part number in the software, and you are using an external oscillator (if generating code for one of our SOM PCBs).</p>
+<p>The <code>SystemClock_Config</code> function configures the clock that your STM32 runs on (things like clock frequency, clock source, etc). If the clock is not setup properly then you risk unexepected behavior since a lot of low level embedded code runs using the system clock. We normally run the system clock at <strong>80mhz</strong>.</p>
+<p>We define the SystemClock_Config function as "weak", which means that the function can be overriden by a different implementaiton of the function. We have a default implementaiton in the stm32xx_hal_init.c file, which by default initializes the internal oscillator of some specific Nucleo's clock, but since we operate with a variety of Nucleos and processors you should redefine the function for your specific usecase.</p>
+<p>Generate a new SystemClock_Config in STM32CubeMX and add it to one of your files in your repository. This should serve as a redefinition of the function and will override the default behavior. Make sure you are generating the code with the correct microcontroller part number in the software, and you are using an external oscillator (if generating code for one of our SOM PCBs). Instructions on how to use CubeMX can be found <a href="../CubeMX/">here</a>.</p>
 <h2 id="examples-of-projects-that-use-embedded-sharepoint">Examples of projects that use Embedded Sharepoint</h2>
 <ul>
 <li><a href="https://github.com/lhr-solar/BPS-Leader">BPS-Leader</a></li>
-<li><a href="https://github.com/lhr-solar/Active-Precharge-Board#">Active-Precharge Board</a>                                                                                                                                                     e</li>
+<li><a href="https://github.com/lhr-solar/Active-Precharge-Board#">Active-Precharge Board</a></li>
 </ul>
 
 
