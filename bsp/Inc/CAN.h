@@ -2,6 +2,7 @@
 #define CAN_H
 
 #include "stm32xx_hal.h"
+#include "CAN_Common.h"
 
 #if !defined(CAN1)
   #error "[CONFIG] CAN not enabled on this chip."
@@ -42,15 +43,6 @@
  for an example. Make sure these entries line up with the
  filter config.
  */
-
-// return code for can driver
-typedef enum {
-    CAN_ERR,   // unsuccessful operation
-    CAN_OK,
-    CAN_SENT,  // successful send
-    CAN_RECV,  // successful recieve
-    CAN_EMPTY, // recieved nothing with no errors
-} can_status_t;
 
 // can handlers
 #ifdef CAN1
