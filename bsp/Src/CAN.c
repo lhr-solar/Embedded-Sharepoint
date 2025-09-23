@@ -1,18 +1,16 @@
 #include "CAN.h"
 #include "queue_ex.h"
 
-// 8 for now unless extended payload is supported
-#define DATA_SIZE (8)
 
 // entries in queues
 typedef struct {
   CAN_TxHeaderTypeDef header;
-  uint8_t data[DATA_SIZE];
+  uint8_t data[CAN_DATA_SIZE];
 } tx_payload_t;
 
 typedef struct {
   CAN_RxHeaderTypeDef header;
-  uint8_t data[DATA_SIZE];
+  uint8_t data[CAN_DATA_SIZE];
 } rx_payload_t;
 
 // metadata for recieve queues
@@ -493,15 +491,35 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
   // recieve from queue matching id
   rx_payload_t payload = {0};
   bool valid_id = false;
-  // CAN1
+
+  recv_entry_t* can_recv_entries = NULL;
+  uint32_t can_recv_entry_count = 0;
+#ifdef CAN1
   if (handle->Instance == CAN1) {
-    for (int i = 0; i < can1_recv_entry_count; i++) {
-      if (can1_recv_entries[i].id == id) {
+    can_recv_entry_count = can1_recv_entry_count;
+    can_recv_entries = can1_recv_entries;
+  }
+#endif
+#ifdef CAN2
+  if (handle->Instance == CAN2) {
+    can_recv_entry_count = can2_recv_entry_count;
+    can_recv_entries = can2_recv_entries;
+  }
+#endif
+#ifdef CAN3
+  if (handle->Instance == CAN3) {
+    can_recv_entry_count = can3_recv_entry_count;
+    can_recv_entries = can3_recv_entries;
+  }
+#endif
+  if(can_recv_entries != NULL){
+    for(uint32_t i = 0; i < can_recv_entry_count; i++){
+      if (can_recv_entries[i].id == id) {
         valid_id = true;
 
         // if delay_ticks == portMAX_DELAY thread blocks, 
         // other values of delay_ticks are delays
-        if (xQueueReceive(can1_recv_entries[i].queue, &payload, delay_ticks) ==
+        if (xQueueReceive(can_recv_entries[i].queue, &payload, delay_ticks) ==
             errQUEUE_EMPTY) {
           return CAN_EMPTY;
         }
@@ -510,55 +528,14 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
       }
     }
   }
-
-  // CAN2
-  #ifdef CAN2
-  else if (handle->Instance == CAN2) {
-    for (int i = 0; i < can2_recv_entry_count; i++) {
-      if (can2_recv_entries[i].id == id) {
-        valid_id = true;
-
-        // if delay_ticks == portMAX_DELAY thread blocks, 
-        // other values of delay_ticks are delays
-        if (xQueueReceive(can2_recv_entries[i].queue, &payload, delay_ticks) ==
-            errQUEUE_EMPTY) {
-          return CAN_EMPTY;
-        }
-  
-        break;
-      }
-    }
-  }
-  #endif /* CAN2 */
-
-  // CAN3
-  #ifdef CAN3
-  else if (handle->Instance == CAN3) {
-    for (int i = 0; i < can3_recv_entry_count; i++) {
-      if (can3_recv_entries[i].id == id) {
-        valid_id = true;
-
-        // if delay_ticks == portMAX_DELAY thread blocks, 
-        // other values of delay_ticks are delays
-        if (xQueueReceive(can3_recv_entries[i].queue, &payload, delay_ticks) ==
-            errQUEUE_EMPTY) {
-          return CAN_EMPTY;
-        }
-  
-        break;
-      }
-    }
-  }
-  #endif /* CAN3 */
-
-  else {
+  else{
     return CAN_ERR;
   }
 
   // decode payload if it is valid and message recieved
   if (valid_id) {
     *header = payload.header;
-    for (int i = 0; i < DATA_SIZE; i++) {
+    for (int i = 0; i < CAN_DATA_SIZE; i++) {
       data[i] = payload.data[i];
     }
 
@@ -598,7 +575,7 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
     
     tx_payload_t payload = {0};
     payload.header = *header;
-    for (int i = 0; i < DATA_SIZE; i++) {
+    for (int i = 0; i < CAN_DATA_SIZE; i++) {
       payload.data[i] = data[i];
     }
 

@@ -1,5 +1,8 @@
 #pragma once
 
+// 8 for now unless extended payload is supported
+#define CAN_DATA_SIZE (8)
+
 // return code for can driver
 typedef enum {
     CAN_ERR,   // unsuccessful operation
