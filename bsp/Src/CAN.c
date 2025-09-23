@@ -559,18 +559,18 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
   if (HAL_CAN_GetTxMailboxesFreeLevel(handle) >= 1) {
     uint32_t mailbox;
     if (HAL_CAN_AddTxMessage(handle, header, data, &mailbox) != HAL_OK) {
-      // disable interrupts
+      // enable interrupts
       portEXIT_CRITICAL();
 
       return CAN_ERR;
     }
 
-    // disable interrupts
+    // enable interrupts
     portEXIT_CRITICAL();
   }
   // otherwise, put into send queue
   else {
-    // disable interrupts
+    // enable interrupts
     portEXIT_CRITICAL();
     
     tx_payload_t payload = {0};
