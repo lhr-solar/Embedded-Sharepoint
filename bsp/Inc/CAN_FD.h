@@ -7,6 +7,7 @@
   #error "[CONFIG] CAN FD not enabled on this chip."
 #endif /* FDCAN1 */
 
+
 // can handlers
 #ifdef FDCAN1
 extern FDCAN_HandleTypeDef* hfdcan1;
