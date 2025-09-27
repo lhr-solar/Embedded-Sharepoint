@@ -4,18 +4,21 @@
 #ifdef ADC1
 static ADC_HandleTypeDef hadc1_ = {.Instance = ADC1};
 ADC_HandleTypeDef* hadc1 = &hadc1_;
+static QueueHandle_t* adcLUT_1[22] = {0}; // 22 channel LUT [STATIC]
 QueueHandle_t* adc1_q;
 #endif
 
 #ifdef ADC2
 static ADC_HandleTypeDef hadc2_ = {.Instance = ADC2};
 ADC_HandleTypeDef* hadc2 = &hadc2_;
+static QueueHandle_t*  adcLUT_2[22] = {0};
 QueueHandle_t* adc2_q;
 #endif
 
 #ifdef ADC3
 static ADC_HandleTypeDef hadc3_ = {.Instance = ADC3};
 ADC_HandleTypeDef* hadc3 = &hadc3_;
+static QueueHandle_t* adcLUT_3[22] = {0};
 QueueHandle_t* adc3_q;
 #endif
 
@@ -40,10 +43,42 @@ QueueHandle_t* adc3_q;
 #endif
 
 // Hardware ADC error code
-uint32_t adc_err_code = 0;
+uint8_t adc_err_code = 0;
+
+// Channel macro parsing
+#if __has_include("adc_channels.h")
+
+// have a check to see which ADC this is for
+
+#define ADC_CHANNEL(NAME_, ADC_NUM_, CHANNEL_, SIZE_, CIRCULAR_)                  \
+  static uint8_t qStore_##NAME_[SIZE_ * sizeof(uint32_t)];                         \
+  static StaticQueue_t xStaticQueue_##NAME_;                                       \
+  QueueHandle_t xQueueADC_##NAME_;                                                 
+
+#include "adc_channels.h"
+
+#undef ADC_CHANNEL
+
+    void init_adc_lut() {                                                              
+    #define ADC_CHANNEL(NAME_, ADC_NUM_, CHANNEL_, SIZE_, CIRCULAR_)                  \
+        adcLUT_##ADC_NUM_[CHANNEL_] = &xQueueADC_##NAME_;                              \
+        xQueueADC_##NAME_ = xQueueCreateStatic(  SIZE_,                                \
+                                                sizeof(uint32_t),                     \
+                                                qStore_##NAME_,                        \
+                                                &xStaticQueue_##NAME_ );               
+
+    #include "adc_channels.h"
+
+    #undef ADC_CHANNEL   
+  }
+
+#endif
 
 adc_status_t adc_init(ADC_InitTypeDef init, ADC_HandleTypeDef* h) {
-    // Initalize ADC
+    init_adc_lut(); // intialize adc LUT
+
+
+
     h->Init = init;
     if (HAL_ADC_Init(h) != HAL_OK) return ADC_INIT_FAIL;
 
@@ -56,7 +91,6 @@ adc_status_t adc_deinit(ADC_HandleTypeDef *h) {
 
     return ADC_OK;
 } 
-
 
 adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef *h, QueueHandle_t *q) {
     ADC_ChannelConfTypeDef sConfig = {
