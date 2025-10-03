@@ -23,10 +23,10 @@ StaticTask_t initTaskBuffer;
 StackType_t initTaskStack[configMINIMAL_STACK_SIZE];
 
 StaticTask_t txTaskBuffer;
-StackType_t txTaskStack[configMINIMAL_STACK_SIZE];
+StackType_t txTaskStack[configMINIMAL_STACK_SIZE*2];
 
 StaticTask_t txTaskBuffer2;
-StackType_t txTaskStack2[configMINIMAL_STACK_SIZE];
+StackType_t txTaskStack2[configMINIMAL_STACK_SIZE*2];
 
 void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
     GPIO_InitTypeDef init = {0};
@@ -44,7 +44,6 @@ void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
     HAL_GPIO_Init(GPIOA, &init);
 }
 
-
 void TxTask(void *argument){
     while(1){
         log(L_FATAL, "TxTask1 Fatal");
@@ -53,7 +52,7 @@ void TxTask(void *argument){
         log(L_INFO, "TxTask1 Info");
         log(L_DEBUG, "TxTask1 Debug");
         log(L_TRACE, "TxTask1 Trace");
-        vTaskDelay(pdMS_TO_TICKS(100));
+        vTaskDelay(pdMS_TO_TICKS(30));
     }
 }
 
@@ -65,7 +64,8 @@ void TxTask2(void *argument){
         log(L_INFO, "TxTask2 Info");
         log(L_DEBUG, "TxTask2 Debug");
         log(L_TRACE, "TxTask2 Trace");
-        vTaskDelay(pdMS_TO_TICKS(100));
+        taskYIELD();
+        vTaskDelay(pdMS_TO_TICKS(50));
     }
 }
 
@@ -84,7 +84,7 @@ void InitTask(void *argument){
                      "TX",
                      configMINIMAL_STACK_SIZE,
                      NULL,
-                     tskIDLE_PRIORITY + 2,
+                     tskIDLE_PRIORITY + 1,
                      txTaskStack,
                      &txTaskBuffer);
 
@@ -96,8 +96,7 @@ void InitTask(void *argument){
                      txTaskStack2,
                      &txTaskBuffer2);
 
-    while(1){
-    }
+    vTaskDelete(NULL);
 }
 
 int main(void) {
@@ -108,7 +107,7 @@ int main(void) {
                      "Init",
                      configMINIMAL_STACK_SIZE,
                      NULL,
-                     tskIDLE_PRIORITY + 2,
+                     tskIDLE_PRIORITY + 3,
                      initTaskStack,
                      &initTaskBuffer);
 

@@ -63,7 +63,7 @@ log_level_color(LoggingLevel level)
 static inline void
 log_printf(void)
 {
-    printf("%-" AS_STRING(LOG_MAX_BEFORE_SIZE) "s | %s%s\n\r",
+    printf("%-" AS_STRING(LOG_MAX_BEFORE_SIZE) "s | %s%s\n\r\r",
            (char *)&log_before_buf, (char *)&log_buf, log_level_color(L_NONE));
 }
 

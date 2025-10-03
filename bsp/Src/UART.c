@@ -1,6 +1,9 @@
 #include "UART.h"
 #include <string.h>
 
+static int a = 0;
+static int b = 0;
+
 // Define the size of the data to be transmitted
 // Currently not used, as we send uint8_t directly
 // may need to be configured for support for packets less more than 8 bits
@@ -227,7 +230,7 @@ __weak void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
 
         init.Pin = GPIO_PIN_2;
 	
-	HAL_GPIO_Init(GPIOD, &init);
+        HAL_GPIO_Init(GPIOD, &init);
     }
     #endif /* UART5 */
     
@@ -502,7 +505,7 @@ uart_status_t uart_init(UART_HandleTypeDef* handle) {
     if (HAL_UART_Init(handle) != HAL_OK ||
 	!IS_UART_INSTANCE(handle->Instance) ||
 	!IS_USART_INSTANCE(handle->Instance)){
-	return UART_ERR;
+        return UART_ERR;
     }
 
     // Start reception
@@ -531,36 +534,36 @@ uart_status_t uart_deinit(UART_HandleTypeDef* handle) {
     // Deinitialize Handler
     #ifdef UART4
     if (handle->Instance == UART4) {
-	uart4_tx_queue = NULL;
-	uart4_rx_queue = NULL;
+        uart4_tx_queue = NULL;
+        uart4_rx_queue = NULL;
     }
     #endif /* UART4 */
     
     #ifdef UART5
     if (handle->Instance == UART5) {
-	uart5_tx_queue = NULL;
-	uart5_rx_queue = NULL;
+        uart5_tx_queue = NULL;
+        uart5_rx_queue = NULL;
     }
     #endif /* UART5 */
     
     #ifdef USART1
     if (handle->Instance == USART1) {
-	usart1_tx_queue = NULL;
-	usart1_rx_queue = NULL;
+        usart1_tx_queue = NULL;
+        usart1_rx_queue = NULL;
     }
     #endif /* USART1 */
 
     #ifdef USART2
     if (handle->Instance == USART2) {
-	usart2_tx_queue = NULL;
-	usart2_rx_queue = NULL;
+        usart2_tx_queue = NULL;
+        usart2_rx_queue = NULL;
     }
     #endif /* USART2 */
 
     #ifdef USART3
     if (handle->Instance == USART3) {
-	usart3_tx_queue = NULL;
-	usart3_rx_queue = NULL;
+        usart3_tx_queue = NULL;
+        usart3_rx_queue = NULL;
     }
     #endif /* USART3 */
 
@@ -650,6 +653,7 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
     portENTER_CRITICAL();
     if ((HAL_UART_GetState(handle) & HAL_UART_STATE_BUSY_TX) != HAL_UART_STATE_BUSY_TX &&
         tx_queue != NULL && uxQueueMessagesWaiting (*tx_queue) == 0 ) { // check if UART is ready and queue is empty
+        a++;
         // Copy data to static buffer
         memcpy(tx_buffer, data, length);
         if (HAL_UART_Transmit_IT(handle, tx_buffer, length) != HAL_OK) {
@@ -660,26 +664,27 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
     }
     portEXIT_CRITICAL();
 
+    b++;
     // Send data in chunks based on DATA_SIZE
-    for (uint8_t i = 0; i < length; i+=DATA_SIZE) {
-	tx_payload_t payload;
+    for (size_t i = 0; i < length; i+=DATA_SIZE) {
+        tx_payload_t payload;
 
-	// Ensure we only copy DATA_SIZE bytes at a time
-	uint8_t chunk_size = (length - i < DATA_SIZE) ? (length - i) : DATA_SIZE;
-	// EX: i=4, length=6, DataSize=4, then chunk_size = 2, instead of usual 4 since we've reached end of length
+        // Ensure we only copy DATA_SIZE bytes at a time
+        size_t chunk_size = (length - i < DATA_SIZE) ? (length - i) : DATA_SIZE;
+        // EX: i=4, length=6, DataSize=4, then chunk_size = 2, instead of usual 4 since we've reached end of length
 
-	// Copy the appropriate number of bytes to the payload data
-	 memcpy(payload.data, &data[i], chunk_size); // Usually chunk_size = DATA_SIZE until end of data length
+        // Copy the appropriate number of bytes to the payload data
+        memcpy(payload.data, &data[i], chunk_size); // Usually chunk_size = DATA_SIZE until end of data length
 
-	 // If data size is smaller than DATA_SIZE, fill the rest of the payload
-	 if (chunk_size < DATA_SIZE) {
-	     memset(&payload.data[chunk_size], 0, DATA_SIZE - chunk_size); // Fill the rest with 0 (or other padding if needed)
-	 }
+        // If data size is smaller than DATA_SIZE, fill the rest of the payload
+        if (chunk_size < DATA_SIZE) {
+            memset(&payload.data[chunk_size], 0, DATA_SIZE - chunk_size); // Fill the rest with 0 (or other padding if needed)
+        }
 
-	// Enqueue the payload to be transmitted
-	if (xQueueSend(*tx_queue, &payload, delay_ticks) != pdTRUE) {
-	    return UART_ERR;
-	} //delay_ticks: 0 = no wait, portMAX_DELAY = wait until space is available
+        // Enqueue the payload to be transmitted
+        if (xQueueSend(*tx_queue, &payload, delay_ticks) != pdTRUE) {
+            return UART_ERR;
+        } //delay_ticks: 0 = no wait, portMAX_DELAY = wait until space is available
     }
 
 exit:

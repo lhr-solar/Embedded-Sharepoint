@@ -1,11 +1,16 @@
 // A simple echo application to test input and output over serial
+#include "FreeRTOSConfig.h"
 #include "UART.h"
-#include "projdefs.h"
 #include "stm32xx_hal.h"
-#include "printf.h"
+
+#include <stdio.h>
+#include "task_print.h"
 
 StaticTask_t txTaskBuffer;
 StackType_t txTaskStack[configMINIMAL_STACK_SIZE];
+
+StaticTask_t printTaskBuffer;
+StackType_t printTaskStack[configMINIMAL_STACK_SIZE];
 
 void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
     GPIO_InitTypeDef init = {0};
@@ -32,8 +37,6 @@ void TxTask(void *argument){
     husart2->Init.HwFlowCtl = UART_HWCONTROL_NONE;
     husart2->Init.OverSampling = UART_OVERSAMPLING_16;
     
-    printf_init(husart2);
-
     while(1){
         printf("Hello World! %s %d %f\n\r", "Test String", 5, 4.4);
         vTaskDelay(pdMS_TO_TICKS(100));
@@ -43,6 +46,14 @@ void TxTask(void *argument){
 int main(void) {
     HAL_Init();
     SystemClock_Config();
+
+    xTaskCreateStatic(print_task,
+                      "Print Task",
+                      configMINIMAL_STACK_SIZE,
+                      husart2,
+                      tskIDLE_PRIORITY + 2,
+                      printTaskStack,
+                      &printTaskBuffer);
 
     xTaskCreateStatic(TxTask, 
                      "TX",

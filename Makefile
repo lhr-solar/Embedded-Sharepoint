@@ -111,6 +111,7 @@ $(wildcard $(FREERTOS_PATH)/*.c) \
 $(FREERTOS_PATH)/portable/GCC/ARM_CM4F/port.c \
 $(wildcard common/Src/*.c) \
 $(wildcard driver/Src/*.c) \
+$(wildcard task/Src/*.c) \
 $(filter-out $(addprefix bsp/Src/,$(addsuffix .c,$(BSP_DISABLE))),$(wildcard bsp/Src/*.c))
 
 # ASM sources
@@ -180,6 +181,7 @@ $(FREERTOS_PATH)/include \
 $(FREERTOS_PATH)/portable/GCC/ARM_CM4F \
 common/Inc \
 driver/Inc \
+task/Inc \
 bsp/Inc
 
 C_INCLUDES := $(addprefix -I,$(C_INCLUDES))
