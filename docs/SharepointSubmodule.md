@@ -25,15 +25,18 @@ A good example of this a Makefile you'd make is the sharepoint's test [Makefile]
 
 
 ### Creating a test directive
-It's good to be able to test independent portions of your code instead of your whole code base at once. For example, if I have a driver just for controlling lights I should have a test file that just runs some code for my lights driver instead of the whole codebase.  
-The way we can do this is change   
+It's good to be able to test independent portions of your code instead of your whole code base at once. For example, if I have a driver just for controlling lights I should have a test file that just runs some code for my lights driver instead of the whole codebase.
+
+C expects a `main()` function as the starting point of your code, so the way we generally implement this is filtering out the main.c file where the `main()` function is implemented, and compiling your test file instead with it's own `main()` function.
 
 
 ### Define SystemClock_Config
-SystemClock_Config is a function defined as "weak" in stm32f4xx_hal_init.c, stm32g4xx_hal_init.c, and stm32l4xx_hal_init.c. The default behavior of this function is to initialize the internal oscillator of some specific Nucleo, but since we operate with a variety of Nucleos and processors on boards, you will probably want to redefine it.
+The `SystemClock_Config` function configures the clock that your STM32 runs on (things like clock frequency, clock source, etc). If the clock is not setup properly then you risk unexepected behavior since a lot of low level embedded code runs using the system clock. We normally run the system clock at **80mhz**.
 
-Generate a new SystemClock_Config in STM32CubeMX and add it to one of your files in your repository. This should serve as a redefinition of the function and will override the default behavior. Make sure you are generating the code with the correct microcontroller part number in the software, and you are using an external oscillator (if generating code for one of our SOM PCBs).
+We define the SystemClock_Config function as "weak", which means that the function can be overriden by a different implementaiton of the function. We have a default implementaiton in the stm32xx_hal_init.c file, which by default initializes the internal oscillator of some specific Nucleo's clock, but since we operate with a variety of Nucleos and processors you should redefine the function for your specific usecase.
+
+Generate a new SystemClock_Config in STM32CubeMX and add it to one of your files in your repository. This should serve as a redefinition of the function and will override the default behavior. Make sure you are generating the code with the correct microcontroller part number in the software, and you are using an external oscillator (if generating code for one of our SOM PCBs). Instructions on how to use CubeMX can be found [here](./CubeMX.md).
 
 ## Examples of projects that use Embedded Sharepoint
 * [BPS-Leader](https://github.com/lhr-solar/BPS-Leader)
-* [Active-Precharge Board](https://github.com/lhr-solar/Active-Precharge-Board#)                                                                                                                                                     e
+* [Active-Precharge Board](https://github.com/lhr-solar/Active-Precharge-Board#)
