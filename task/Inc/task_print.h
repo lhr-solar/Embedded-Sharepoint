@@ -5,4 +5,6 @@
 #include "UART.h"
 
 extern int printf ( const char * format, ... );
-void print_task(void *huart);
+
+void task_print_init(UART_HandleTypeDef *huart);
+void task_print(void *huart);
