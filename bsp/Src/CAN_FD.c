@@ -8,15 +8,20 @@ FDCAN_HandleTypeDef* hfdcan1 = &hfdcan1_;
 
 can_status_t can_fd_init(FDCAN_HandleTypeDef* handle, FDCAN_FilterTypeDef* filter){
     return CAN_ERR;
-
 }
 
 can_status_t can_fd_deinit(FDCAN_HandleTypeDef* handle){
     return CAN_ERR;
-
 }
 
 can_status_t can_fd_start(FDCAN_HandleTypeDef* handle){
+
+    // activate interrupts for rx and tx interrupts
+    if(HAL_FDCAN_ActivateNotification(handle, FDCAN_IT_RX_FIFO0_NEW_MESSAGE | FDCAN_IT_TX_COMPLETE, 0) != HAL_OK){
+        return CAN_ERR;
+    }
+
+    // start the can peripheral
     if (HAL_FDCAN_Start(handle) != HAL_OK){
         return CAN_ERR;
     }
@@ -71,6 +76,7 @@ __weak void HAL_FDCAN_MspGpioInit(FDCAN_HandleTypeDef* hfdcan){
 
 void HAL_FDCAN_MspInit(FDCAN_HandleTypeDef* hfdcan){
     RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
+
 #ifdef FDCAN1
     if(hfdcan->Instance==FDCAN1)
     {
@@ -85,4 +91,29 @@ void HAL_FDCAN_MspInit(FDCAN_HandleTypeDef* hfdcan){
     }
 #endif /* FDCAN1 */ 
     HAL_FDCAN_MspGpioInit(hfdcan);
+
+    /* FDCAN1 interrupt Init */
+    HAL_NVIC_SetPriority(FDCAN1_IT0_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(FDCAN1_IT0_IRQn);
+    HAL_NVIC_SetPriority(FDCAN1_IT1_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(FDCAN1_IT1_IRQn);
+}
+
+
+void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
+{
+  if((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET)
+  {
+    /* Retreive Rx messages from RX FIFO0 */
+    if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK)
+    {
+    /* Reception Error */
+    Error_Handler();
+    }
+    if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK)
+    {
+      /* Notification Error */
+      Error_Handler();
+    }
+  }
 }
