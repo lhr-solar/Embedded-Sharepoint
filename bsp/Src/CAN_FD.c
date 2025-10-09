@@ -7,6 +7,16 @@ FDCAN_HandleTypeDef* hfdcan1 = &hfdcan1_;
 
 
 can_status_t can_fd_init(FDCAN_HandleTypeDef* handle, FDCAN_FilterTypeDef* filter){
+    
+    if (HAL_FDCAN_ConfigFilter(handle, filter) != HAL_OK)
+    {
+        return CAN_ERR;
+    }
+
+    if (HAL_FDCAN_Init(handle) != HAL_OK)
+    {
+        return CAN_ERR;
+    }
     return CAN_OK;
 }
 
@@ -105,11 +115,10 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 {
   if((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET)
   {
-    /* Retreive Rx messages from RX FIFO0 */
-    if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK)
-    {
-    /* Reception Error */
-    Error_Handler();
-    }
+    // /* Retreive Rx messages from RX FIFO0 */
+    // if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK)
+    // {
+    // /* Reception Error */
+    // }
   }
 }

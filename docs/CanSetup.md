@@ -9,6 +9,7 @@ There are two types of CAN, regular bxCAN and CAN FD. CAN FD is a variant of CAN
 A CAN DBC is a file used to store and encode CAN messages. 
 
 ## CAN Driver Structure
+Functionality wise, the code for CAN FD and bxCAN are very similar, so we can have a function 
 
 ### bxCAN Driver
 
@@ -47,3 +48,13 @@ So the values I normally suggest using these values for 250kbps:
 
 You'll see the baud rate you've configured in the ```Nominal Buad Rate``` field in bit/s. If you're configuring for 250kbps you should see 250000 bit/s.
 
+
+## Configuring the CAN driver
+
+### System Clock Config
+
+### CAN recieve entries
+
+### CAN filter
+
+### CAN init
