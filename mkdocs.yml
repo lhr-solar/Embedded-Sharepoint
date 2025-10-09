@@ -14,7 +14,9 @@ nav:
   - Installation: 'Installation.md'
   - Flashing and Debugging: 'FlashAndTheBug.md'
   - Adding Embedded Sharepoint: 'SharepointSubmodule.md'
-  - CubeMX: 'CubeMX.md'
+  - CubeMX: 
+    - Overview: 'CubeMX.md'
+    - CAN Setup: 'CanSetup.md'
   - STM32 Ports: 'STM32_Ports.md'
 
   - CAN Messages:

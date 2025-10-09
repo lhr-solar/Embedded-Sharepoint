@@ -9,7 +9,6 @@ int main(void) {
 
     // CANFD1 Filter Config
     FDCAN_FilterTypeDef sFilterConfig;
-
     sFilterConfig.IdType = FDCAN_STANDARD_ID;
     sFilterConfig.FilterIndex = 0;
     sFilterConfig.FilterType = FDCAN_FILTER_MASK;
@@ -17,12 +16,11 @@ int main(void) {
     sFilterConfig.FilterID1 = 0x22;
     sFilterConfig.FilterID2 = 0x22;
 
-    if (HAL_FDCAN_ConfigFilter(hfdcan1, &sFilterConfig) != HAL_OK)
-    {
-        /* Filter configuration Error */
-        Error_Handler();
-    }
-
+    // if (HAL_FDCAN_ConfigFilter(hfdcan1, &sFilterConfig) != HAL_OK)
+    // {
+    //     /* Filter configuration Error */
+    //     Error_Handler();
+    // }
 
     hfdcan1->Instance = FDCAN1;
     hfdcan1->Init.ClockDivider = FDCAN_CLOCK_DIV1;
@@ -42,8 +40,12 @@ int main(void) {
     hfdcan1->Init.StdFiltersNbr = 0;
     hfdcan1->Init.ExtFiltersNbr = 0;
     hfdcan1->Init.TxFifoQueueMode = FDCAN_TX_FIFO_OPERATION;
-    if (HAL_FDCAN_Init(hfdcan1) != HAL_OK)
-    {
+    // if (HAL_FDCAN_Init(hfdcan1) != HAL_OK)
+    // {
+    //     Error_Handler();
+    // }
+
+    if(can_fd_init(hfdcan1, &sFilterConfig) != CAN_OK){
         Error_Handler();
     }
 
