@@ -7,7 +7,7 @@ FDCAN_HandleTypeDef* hfdcan1 = &hfdcan1_;
 
 
 can_status_t can_fd_init(FDCAN_HandleTypeDef* handle, FDCAN_FilterTypeDef* filter){
-    return CAN_ERR;
+    return CAN_OK;
 }
 
 can_status_t can_fd_deinit(FDCAN_HandleTypeDef* handle){
@@ -34,7 +34,7 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
     portENTER_CRITICAL();
     // Check if there is a free can mailbox to send a message
     if(HAL_FDCAN_GetTxFifoFreeLevel(handle) >= 1){
-        // if the mailbox is free, add the message to the fifo
+        // if the mailbox is free, add the message to the hardware fifo
         if(HAL_FDCAN_AddMessageToTxFifoQ(handle, header, data) != HAL_OK){
             // enable interrupts
             portEXIT_CRITICAL();
@@ -93,6 +93,7 @@ void HAL_FDCAN_MspInit(FDCAN_HandleTypeDef* hfdcan){
     HAL_FDCAN_MspGpioInit(hfdcan);
 
     /* FDCAN1 interrupt Init */
+    // TODO: make this configurable depending on the FDCAN instance
     HAL_NVIC_SetPriority(FDCAN1_IT0_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(FDCAN1_IT0_IRQn);
     HAL_NVIC_SetPriority(FDCAN1_IT1_IRQn, 0, 0);
@@ -109,11 +110,6 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
     {
     /* Reception Error */
     Error_Handler();
-    }
-    if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK)
-    {
-      /* Notification Error */
-      Error_Handler();
     }
   }
 }

@@ -4,6 +4,7 @@
 int main(void) {
     HAL_Init();
 
+    // This clock config is for the Nucleo G474 Nucleo, if testing for a diff mcu please change out as clock tree is different
     SystemClock_Config();
 
     // CANFD1 Filter Config
@@ -46,5 +47,4 @@ int main(void) {
         Error_Handler();
     }
 
-    
 }
