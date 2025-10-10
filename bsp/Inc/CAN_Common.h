@@ -1,4 +1,7 @@
 #pragma once
+#include "stm32xx_hal.h"
+#include "FreeRTOS.h"
+#include "queue.h"
 
 // 8 for now unless extended payload is supported
 #define CAN_DATA_SIZE (8)
