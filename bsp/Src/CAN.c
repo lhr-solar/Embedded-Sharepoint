@@ -550,7 +550,7 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
                       const CAN_TxHeaderTypeDef* header, const uint8_t data[],
                       TickType_t delay_ticks) {
 
-  // disable interrupts (do not want race conditions
+  // disable interrupts (do not want race conditions)
   // on shared resource (mailbox) between threads and
   // interrupt routines (TxComplete))
   portENTER_CRITICAL();

@@ -51,10 +51,12 @@ You'll see the baud rate you've configured in the ```Nominal Buad Rate``` field 
 
 ## Configuring the CAN driver
 
-### System Clock Config
+### 1. CAN MSP Init
 
-### CAN recieve entries
+### 2. System Clock Config
 
-### CAN filter
+### 3. CAN recieve entries
 
-### CAN init
+### 4. CAN filter
+
+### 5. CAN init
