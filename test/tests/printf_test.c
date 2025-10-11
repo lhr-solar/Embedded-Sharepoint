@@ -1,4 +1,3 @@
-#include "FreeRTOSConfig.h"
 #include "UART.h"
 #include "stm32xx_hal.h"
 

@@ -1,5 +1,6 @@
 #include <stdbool.h>
-#include "printf.h"
+#include <stdio.h>
+#include "stm32xx_hal.h"
 
 #ifndef LOGGING_ENABLE
 #define LOGGING_ENABLE 0
@@ -9,8 +10,8 @@
 #define LOGGING_LEVEL 6
 #endif
 
-#define LOG_MAX_BEFORE_SIZE 64
-#define LOG_MAX_LOG_SIZE    256
+#define LOG_MAX_BEFORE_SIZE 32
+#define LOG_MAX_LOG_SIZE    128
 
 #define CONVERT_TO_STRING(arg) #arg
 #define AS_STRING(arg)         CONVERT_TO_STRING(arg)
@@ -75,9 +76,9 @@ log_printf(void)
         LoggingLevel level = LEVEL;                                 \
         if (LOGGING_LEVEL >= level) {                               \
             snprintf(log_before_buf, LOG_MAX_BEFORE_SIZE,           \
-                     "%s%-5s | %s:%d:%s() ",                        \
+                     "%s%-5s | %s() ",                        \
                      log_level_color(level), log_level_name(level), \
-                     __FILE__, __LINE__, __func__);                 \
+                     pcTaskGetTaskName(NULL));                 \
             snprintf((char *)&log_buf, LOG_MAX_LOG_SIZE, fmt);      \
             log_printf();                                           \
         }                                                           \

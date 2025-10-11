@@ -1,9 +1,8 @@
 // A simple echo application to test input and output over serial
 #include "UART.h"
-#include "projdefs.h"
+#include "task_print.h"
 #include "stm32xx_hal.h"
 #include <stdio.h>
-#include "printf.h"
 
 // Enables logging
 #define LOGGING_ENABLE 1
@@ -16,17 +15,29 @@
 // L_INFO: 4
 // L_DEBUG: 5
 // L_TRACE: 6
-#define LOGGING_LEVEL 4
+#define LOGGING_LEVEL 2
 #include "log.h"
 
 StaticTask_t initTaskBuffer;
 StackType_t initTaskStack[configMINIMAL_STACK_SIZE];
 
-StaticTask_t txTaskBuffer;
-StackType_t txTaskStack[configMINIMAL_STACK_SIZE*2];
+StaticTask_t txTaskBuffer1;
+StackType_t txTaskStack1[configMINIMAL_STACK_SIZE * 4];
 
 StaticTask_t txTaskBuffer2;
-StackType_t txTaskStack2[configMINIMAL_STACK_SIZE*2];
+StackType_t txTaskStack2[configMINIMAL_STACK_SIZE * 4];
+
+StaticTask_t txTaskBuffer3;
+StackType_t txTaskStack3[configMINIMAL_STACK_SIZE * 4];
+
+StaticTask_t txTaskBuffer4;
+StackType_t txTaskStack4[configMINIMAL_STACK_SIZE * 4];
+
+StaticTask_t txTaskBuffer5;
+StackType_t txTaskStack5[configMINIMAL_STACK_SIZE * 4];
+
+StaticTask_t printTaskBuffer;
+StackType_t printTaskStack[configMINIMAL_STACK_SIZE * 4];
 
 void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
     GPIO_InitTypeDef init = {0};
@@ -46,26 +57,13 @@ void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
 
 void TxTask(void *argument){
     while(1){
-        log(L_FATAL, "TxTask1 Fatal");
-        log(L_ERROR, "TxTask1 Error");
-        log(L_WARN, "TxTask1 Warn");
-        log(L_INFO, "TxTask1 Info");
-        log(L_DEBUG, "TxTask1 Debug");
-        log(L_TRACE, "TxTask1 Trace");
-        vTaskDelay(pdMS_TO_TICKS(30));
-    }
-}
-
-void TxTask2(void *argument){
-    while(1){
-        log(L_FATAL, "TxTask2 Fatal");
-        log(L_ERROR, "TxTask2 Error");
-        log(L_WARN, "TxTask2 Warn");
-        log(L_INFO, "TxTask2 Info");
-        log(L_DEBUG, "TxTask2 Debug");
-        log(L_TRACE, "TxTask2 Trace");
-        taskYIELD();
-        vTaskDelay(pdMS_TO_TICKS(50));
+        log(L_FATAL, "%s",  "FATAL");
+        log(L_ERROR, "%s",  "ERROR");
+        log(L_WARN, "%s",  "WARN");
+        log(L_INFO, "%s",  "INFO");
+        log(L_DEBUG, "%s",  "DEBUG");
+        log(L_TRACE, "%s",  "TRACE");
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
 
@@ -77,39 +75,69 @@ void InitTask(void *argument){
     husart2->Init.Mode = UART_MODE_TX_RX;
     husart2->Init.HwFlowCtl = UART_HWCONTROL_NONE;
     husart2->Init.OverSampling = UART_OVERSAMPLING_16;
-    
-    printf_init(husart2);
+
+    task_print_init(husart2);
+
+    xTaskCreateStatic(task_print,
+                      "Print Task",
+                      configMINIMAL_STACK_SIZE,
+                      husart2,
+                      tskIDLE_PRIORITY + 2,
+                      printTaskStack,
+                      &printTaskBuffer);
 
     xTaskCreateStatic(TxTask, 
-                     "TX",
-                     configMINIMAL_STACK_SIZE,
-                     NULL,
-                     tskIDLE_PRIORITY + 1,
-                     txTaskStack,
-                     &txTaskBuffer);
-
-    xTaskCreateStatic(TxTask2, 
-                     "TX2",
-                     configMINIMAL_STACK_SIZE,
-                     NULL,
-                     tskIDLE_PRIORITY + 2,
-                     txTaskStack2,
-                     &txTaskBuffer2);
+                      "TX1",
+                      configMINIMAL_STACK_SIZE*4,
+                      NULL,
+                      tskIDLE_PRIORITY + 2,
+                      txTaskStack1,
+                      &txTaskBuffer1);
+    xTaskCreateStatic(TxTask, 
+                      "TX2",
+                      configMINIMAL_STACK_SIZE*4,
+                      NULL,
+                      tskIDLE_PRIORITY + 2,
+                      txTaskStack2,
+                      &txTaskBuffer2);
+    xTaskCreateStatic(TxTask, 
+                      "TX3",
+                      configMINIMAL_STACK_SIZE*4,
+                      NULL,
+                      tskIDLE_PRIORITY + 2,
+                      txTaskStack3,
+                      &txTaskBuffer3);
+    xTaskCreateStatic(TxTask, 
+                      "TX4",
+                      configMINIMAL_STACK_SIZE*4,
+                      NULL,
+                      tskIDLE_PRIORITY + 2,
+                      txTaskStack4,
+                      &txTaskBuffer4);
+//    xTaskCreateStatic(TxTask, 
+//                      "TX5",
+//                      configMINIMAL_STACK_SIZE*4,
+//                      NULL,
+//                      tskIDLE_PRIORITY + 2,
+//                      txTaskStack5,
+//                      &txTaskBuffer5);
 
     vTaskDelete(NULL);
+
+    while(1);
 }
 
 int main(void) {
     HAL_Init();
     SystemClock_Config();
 
-    xTaskCreateStatic(InitTask, 
-                     "Init",
-                     configMINIMAL_STACK_SIZE,
-                     NULL,
-                     tskIDLE_PRIORITY + 3,
-                     initTaskStack,
-                     &initTaskBuffer);
+    xTaskCreateStatic(InitTask,
+                      "Init",
+                      configMINIMAL_STACK_SIZE,
+                      NULL,
+                      tskIDLE_PRIORITY + 3,
+                      initTaskStack,
+                      &initTaskBuffer);
 
     vTaskStartScheduler();
 

@@ -2,7 +2,7 @@
 #include "stm32xx_hal.h"
 #include <string.h>
 
-#define MAX_PRINTF_SIZE  (512)
+#define MAX_PRINTF_SIZE  (256)
 #define MAX_PRINTF_ITEMS (4)
 
 #ifndef TASK_PRINT_DELAY
@@ -26,9 +26,9 @@ void task_print(void *huart){
 
   while(1) {
     if(xQueueReceive(print_tx_queue, (uint8_t *)&print_item_buffer[0], portMAX_DELAY) == pdPASS){
-        uart_send(print_huart, (uint8_t *)print_item_buffer, strlen(print_item_buffer) + 1, portMAX_DELAY);
+        uart_send(print_huart, (uint8_t *)print_item_buffer, strlen(print_item_buffer)+1, portMAX_DELAY);
     }
-    vTaskDelay(TASK_PRINT_DELAY);
+    taskYIELD();
   }
 }
 
@@ -36,7 +36,7 @@ int _write(int file, char *ptr, int len) {
     (void)file;
 
     static char write_item_buffer[MAX_PRINTF_SIZE] = {0};
-    strncpy(write_item_buffer, ptr, len);
+    memcpy(write_item_buffer, ptr, len);
 
     if(xQueueSend(print_tx_queue, (const uint8_t *)write_item_buffer, portMAX_DELAY) != pdPASS) return -1;
 
