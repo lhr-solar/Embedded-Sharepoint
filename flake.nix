@@ -40,15 +40,19 @@
           ];
 
           # Extra debug/flash tools, only if available
-          debugPackages =
-            if pkgs.stdenv.isLinux then [
+          debugPackages =(
+              [
+                pkgs.stlink
+                pkgs.openocd
+              ] ++
+            (if pkgs.stdenv.isLinux then [
+              # Linux specific packages
               pkgs.gdb
-              pkgs.openocd
-              pkgs.stlink
             ] else if pkgs.stdenv.isDarwin then [
-              pkgs.stlink
-              pkgs.openocd
-            ] else [];
+              # Any macOS specific packages
+
+            ] else []
+          ));
 
           # Remove nulls
           packageList = builtins.filter (x: x != null)
