@@ -48,8 +48,8 @@ int main(void) {
     sFilterConfig.FilterIndex = 0;
     sFilterConfig.FilterType = FDCAN_FILTER_MASK;
     sFilterConfig.FilterConfig = FDCAN_FILTER_TO_RXFIFO0; // directs frames to FIFO0
-    sFilterConfig.FilterID1 = 0x22;
-    sFilterConfig.FilterID2 = 0x22;
+    sFilterConfig.FilterID1 = 0;
+    sFilterConfig.FilterID2 = 0x7FF;
 
     // if (HAL_FDCAN_ConfigFilter(hfdcan1, &sFilterConfig) != HAL_OK)
     // {
