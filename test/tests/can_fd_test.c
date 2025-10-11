@@ -9,6 +9,36 @@ StackType_t task_stack[configMINIMAL_STACK_SIZE];
 // If you only want to disable loop, uncomment the line below
 // #undef CAN_LOOPBACK_ENABLED
 
+
+// Most other nucleos have a heartbeat for A5
+#define LED_PIN GPIO_PIN_5
+#define LED_PORT GPIOA
+
+// Initialize clock for heartbeat LED port
+void Heartbeat_Init() {
+    GPIO_InitTypeDef led_config = {
+        .Mode = GPIO_MODE_OUTPUT_PP,
+        .Pull = GPIO_NOPULL,
+        .Pin = LED_PIN
+    };
+
+    switch ((uint32_t)LED_PORT) {
+        case (uint32_t)GPIOA:
+            __HAL_RCC_GPIOA_CLK_ENABLE();
+            break;
+        case (uint32_t)GPIOB:
+            __HAL_RCC_GPIOB_CLK_ENABLE();
+            break;
+        case (uint32_t)GPIOC:
+            __HAL_RCC_GPIOC_CLK_ENABLE();
+            break;
+    }
+    
+    HAL_GPIO_Init(LED_PORT, &led_config);
+
+}
+
+
 void G474_SystemClockConfig(){
 
 }
@@ -23,9 +53,16 @@ void Error_Handler(){
     }
 }
 
+void Success_Handler(){
+    HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
+}
+
 
 static void task(void *pvParameters) {
 
+
+    Success_Handler();
+    vTaskDelay(pdMS_TO_TICKS(500));
 }
 
 int main(void) {
@@ -41,6 +78,8 @@ int main(void) {
     #else
         SystemClock_Config();
     #endif
+
+    Heartbeat_Init(); // enable LED for LED_PORT
 
     // CANFD1 Filter Config
     FDCAN_FilterTypeDef sFilterConfig;

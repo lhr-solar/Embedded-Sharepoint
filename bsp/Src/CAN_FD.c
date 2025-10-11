@@ -5,6 +5,16 @@ static FDCAN_HandleTypeDef hfdcan1_ = {.Instance = FDCAN1};
 FDCAN_HandleTypeDef* hfdcan1 = &hfdcan1_;
 #endif
 
+#ifdef FDCAN2
+static FDCAN_HandleTypeDef hfdcan2_ = {.Instance = FDCAN2};
+FDCAN_HandleTypeDef* hfdcan2 = &hfdcan2_;
+#endif
+
+#ifdef FDCAN3
+static FDCAN_HandleTypeDef hfdcan3_ = {.Instance = FDCAN3};
+FDCAN_HandleTypeDef* hfdcan3 = &hfdcan3_;
+#endif
+
 
 can_status_t can_fd_init(FDCAN_HandleTypeDef* handle, FDCAN_FilterTypeDef* filter){
     
