@@ -16,11 +16,15 @@ nav:
   - Adding Embedded Sharepoint: 'SharepointSubmodule.md'
   - CubeMX: 'CubeMX.md'
   - STM32 Ports: 'STM32_Ports.md'
-
   - CAN Messages:
-      - Signals & Messages: 'DBC.md'
+    - Signals & Messages: 'DBC.md'
+  - BSP:
+    - ADC: 'BSP/ADC_8h.md'
+    - UART: 'BSP/UART_8h.md'
+    - CAN: 'BSP/CAN_8h.md'
 
 plugins:
+  - awesome-pages
   - macros:
       include_dir: docs/ 
   - search:
@@ -28,16 +32,19 @@ plugins:
       lang: en
   - mkdoxy:
       projects:
-      full-doc: True
-      save-api: .mkdoxy
-      BSP:
-          src-dirs: bsp/Src/* bsp/Inc/*
-          full-doc: True
-          GENERATE_MARKDOWN: YES
-          nav-title: BSP
+        BSP:
+          src-dirs: bsp/Inc
+          full-doc: true
           doxy-cfg:
-            FILE_PATTERNS: "*.c *.h*"
-            RECURSIVE: True
+            RECURSIVE: true
+            EXTRACT_ALL: true          # Include everything, even if no doc
+            EXTRACT_STATIC: true       # Include static functions
+            EXTRACT_PRIVATE: true      # Include private functions
+            OPTIMIZE_OUTPUT_FOR_C: true
+            SHOW_INCLUDE_FILES: true
+            INCLUDE_FILE_COMMENTS: true  # Include top-of-file comments
+            file_patterns: "*.h*"
+            recursive: true
 
   - redirects:
       redirect_maps: {}
