@@ -6,4 +6,3 @@ pyserial
 cantools
 mkdocs-redirects
 mkdocs-macros-plugin
-mkdocs-awesome-pages-plugin

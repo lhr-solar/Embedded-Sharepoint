@@ -24,7 +24,6 @@ nav:
     - CAN: 'BSP/CAN_8h.md'
 
 plugins:
-  - awesome-pages
   - macros:
       include_dir: docs/ 
   - search:
@@ -45,7 +44,6 @@ plugins:
             INCLUDE_FILE_COMMENTS: true  # Include top-of-file comments
             file_patterns: "*.h*"
             recursive: true
-
   - redirects:
       redirect_maps: {}
 
