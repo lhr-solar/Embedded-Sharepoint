@@ -6,3 +6,4 @@ pyserial
 cantools
 mkdocs-redirects
 mkdocs-macros-plugin
+mkdocs-gen-files

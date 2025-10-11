@@ -44,6 +44,10 @@ plugins:
             INCLUDE_FILE_COMMENTS: true  # Include top-of-file comments
             file_patterns: "*.h*"
             recursive: true
+  - gen-files:
+      scripts:
+        - docs/gen-stm-ports.py
+        - docs/gen-dbc-table.py
   - redirects:
       redirect_maps: {}
 

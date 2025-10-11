@@ -1,3 +1,4 @@
+import mkdocs_gen_files
 import os
 from pathlib import Path
 import cantools
@@ -64,9 +65,8 @@ def main():
 
     all_md = toc + "\n" + "\n\n".join(sections)
 
-    with open(OUTPUT_MD, "w") as f:
+    with mkdocs_gen_files.open(OUTPUT_MD, "w") as f:
         f.write(all_md)
     print(f"Generated {OUTPUT_MD}")
 
-if __name__ == "__main__":
-    main()
+main()
