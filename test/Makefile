@@ -52,6 +52,7 @@ clean:
 # generate documentation
 .PHONY: docs
 docs:
+	cd .. && mkdocs build
 	cd .. && mkdocs serve
 
 .PHONY: flash
