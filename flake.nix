@@ -46,9 +46,8 @@
               pkgs.openocd
               pkgs.stlink
             ] else if pkgs.stdenv.isDarwin then [
-              pkgs.openocd
               pkgs.stlink
-              pkgs.openocd or null
+              pkgs.openocd
             ] else [];
 
           # Remove nulls
