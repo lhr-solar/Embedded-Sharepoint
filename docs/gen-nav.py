@@ -52,7 +52,7 @@ for file in mkdocs_gen_files.files:
         if path.parent in (Path("."), Path("docs")):
             nav[path.stem] = file_posix
         else:
-            key = (path.parent.name, path.stem.split("_8h")[0])
+            key = (path.parent.name + " Documentation", path.stem.split("_8h")[0])
             nav[key] = file_posix
 
 # --- Write merged nav ---
