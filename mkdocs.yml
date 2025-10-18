@@ -9,20 +9,6 @@ theme:
   - scheme: slate
     primary: blue
 
-nav:
-  - Home: 'README.md'
-  - Installation: 'Installation.md'
-  - Flashing and Debugging: 'FlashAndTheBug.md'
-  - Adding Embedded Sharepoint: 'SharepointSubmodule.md'
-  - CubeMX: 'CubeMX.md'
-  - STM32 Ports: 'STM32_Ports.md'
-  - CAN Messages:
-    - Signals & Messages: 'DBC.md'
-  - BSP:
-    - ADC: 'BSP/ADC_8h.md'
-    - UART: 'BSP/UART_8h.md'
-    - CAN: 'BSP/CAN_8h.md'
-
 plugins:
   - macros:
       include_dir: docs/ 
@@ -44,10 +30,39 @@ plugins:
             INCLUDE_FILE_COMMENTS: true  # Include top-of-file comments
             file_patterns: "*.h*"
             recursive: true
+        Drivers:
+          src-dirs: driver/Inc
+          full-doc: true
+          doxy-cfg:
+            RECURSIVE: true
+            EXTRACT_ALL: true          # Include everything, even if no doc
+            EXTRACT_STATIC: true       # Include static functions
+            EXTRACT_PRIVATE: true      # Include private functions
+            OPTIMIZE_OUTPUT_FOR_C: true
+            SHOW_INCLUDE_FILES: true
+            INCLUDE_FILE_COMMENTS: true  # Include top-of-file comments
+            file_patterns: "*.h*"
+            recursive: true
+        Middleware:
+          src-dirs: middleware/Inc
+          full-doc: true
+          doxy-cfg:
+            RECURSIVE: true
+            EXTRACT_ALL: true          # Include everything, even if no doc
+            EXTRACT_STATIC: true       # Include static functions
+            EXTRACT_PRIVATE: true      # Include private functions
+            OPTIMIZE_OUTPUT_FOR_C: true
+            SHOW_INCLUDE_FILES: true
+            INCLUDE_FILE_COMMENTS: true  # Include top-of-file comments
+            file_patterns: "*.h*"
+            recursive: true
   - gen-files:
       scripts:
         - docs/gen-stm-ports.py
         - docs/gen-dbc-table.py
+        - docs/gen-nav.py
+  - literate-nav:
+      nav_file: docs/nav.md
   - redirects:
       redirect_maps: {}
 
