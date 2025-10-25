@@ -1,7 +1,8 @@
 /**
  * This is the driver for addressable LEDs. 
  * The VCAT lighting board uses WS2814 LEDs which read an NZR protocol to set the color for each individual LED.
- * This is done by sending an array to be sent using DMA. The STM will automatically use these values to set PWM duration.
+ * This is done by sending an array of PWM high values using DMA. The STM will automatically use these values to set PWM duration.
+ * This driver also currently doesn't work, so something is probably wrong...
  */
 
 #include "Gamer_LEDs.h"
@@ -12,8 +13,8 @@
 
                 // PWM Cycle Values //
 
- // For DMA; Number of cycles that need to send high to send a one or zero to the LEDs
-#ifdef WS2812B // # Cycles high for a 100 cycle period. Assuming 12.5ns clock cycle (set counter to 99)
+ // For DMA; Number of cycles that need to be high to send a one or zero to the LEDs
+#ifdef WS2812B // # Cycles high for a 100 cycle period. Assuming 12.5ns clock cycle from 80MHz (set counter to 99)
 #define PWM_ONE_HIGH 64 // 800ns
 #define PWM_ZERO_HIGH 32 // 400ns
 #else // # Cycles high for WS2814 in a 100 cycle period using 12.5ns per cycle (set counter to 99)
@@ -24,11 +25,10 @@
                 // DMA handles //
 
  #ifdef STM32L432_PA8 // PA8 is the pin used for LEDs on the TPS testboard
- extern TIM_HandleTypeDef htim1; // Is it better to extern here and include variables elsewhere?
+ extern TIM_HandleTypeDef htim1;
  DMA_HandleTypeDef hdma_tim1_ch1; 
  #else // The lighting board will have three addressable LED pins across two timers
  extern TIM_HandleTypeDef htim1;
-TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim2;
 DMA_HandleTypeDef hdma_tim1_ch4_trig_com;
 DMA_HandleTypeDef hdma_tim2_ch1;
@@ -42,12 +42,13 @@ DMA_HandleTypeDef hdma_tim2_ch3;
  #define BYTES_PER_PIXEL 4 // WS2814 has four colors: RGBW
  #endif
 
- #define NUM_PIXELS 2                             // Number of LEDs
+ #define NUM_PIXELS 2                             // Number of LEDs (change based on board)
  #define NUM_BYTES (BYTES_PER_PIXEL * NUM_PIXELS) // Total bytes per message (for all LEDs)
  #define BITS_PER_BYTE 8
  #define RESET_CYCLES 50 // Need the line low for >50 us to reset after each message. 
  #define WR_BUF_LENGTH (NUM_BYTES * BITS_PER_BYTE + RESET_CYCLES) // Include extra bits for setting PWM low (0 cycles on each period)
 
+ // TODO: will need to support multiple addressable LED strips on one board
 
  /************** Function Prototypes ***************/
 
@@ -55,7 +56,7 @@ DMA_HandleTypeDef hdma_tim2_ch3;
  static void MX_GPIO_Init(void);
  static void MX_TIM1_Init(void);
  #ifndef STM32L432_PA8
- static void MX_TIM2_Init(void);// TODO: Test including other init functions for lighting board?
+ static void MX_TIM2_Init(void);
  #endif
 
 
@@ -104,11 +105,9 @@ DMA_HandleTypeDef hdma_tim2_ch3;
     MX_TIM2_Init(); // TODO: Test init TIM2 if on the lighting board instead of the testing board
     #endif
 
-    
-
  }
 
- // Example code for the Neopixel running on an STM32F042 
+ // Example code for Neopixel leds running on an STM32F042 
  // from https://www.thevfdcollective.com/blog/stm32-and-sk6812-rgbw-led
  // Could follow this model to convert colors to PWM cycles for DMA transfer
 

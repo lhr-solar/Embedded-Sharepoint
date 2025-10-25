@@ -5,7 +5,7 @@
 
 
  // Choose board and configuration
- #define STM32L432_PA8  // STM32L432KCU - MCU for the TPS Test board
+ //#define STM32L432_PA8  // STM32L432KCU - MCU for the TPS Test board
                         // STM32L431CBT - MCY for the lighting PSOM
 
 
