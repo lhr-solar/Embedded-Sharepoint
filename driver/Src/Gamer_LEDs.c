@@ -23,10 +23,10 @@
 
                 // DMA handles //
 
- #ifdef STM32L432_PA8 // This is the pin used for LEDs on the TPS testboard
+ #ifdef STM32L432_PA8 // PA8 is the pin used for LEDs on the TPS testboard
  extern TIM_HandleTypeDef htim1; // Is it better to extern here and include variables elsewhere?
  DMA_HandleTypeDef hdma_tim1_ch1; 
- #else // TODO: Might need to fill this in
+ #else // The lighting board will have three addressable LED pins across two timers
  extern TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim2;
@@ -34,7 +34,6 @@ DMA_HandleTypeDef hdma_tim1_ch4_trig_com;
 DMA_HandleTypeDef hdma_tim2_ch1;
 DMA_HandleTypeDef hdma_tim2_ch3;
  #endif
- // The lighting board uses the STM32L431
 
  // defines
  #ifdef WS2812B
@@ -63,7 +62,9 @@ DMA_HandleTypeDef hdma_tim2_ch3;
  /************** Data buffers ***************/
 
  // buffer of colors
- uint8_t color_array[NUM_BYTES] = {0}; // TODO: Each LED takes in a value from 0-255 for each color (R, G, B, W if 2814)
+ //uint8_t color_array[NUM_BYTES] = {0}; // TODO: Each LED takes in a value from 0-255 for each color (R, G, B, W if 2814)
+ // Will likely need multiple since there will be mutiple LED pins per board
+
  // buffer to send to DMA
  uint8_t write_buf[(WR_BUF_LENGTH)] = {0}; // Hard-code size and extra reset zeroes for now
 
@@ -75,7 +76,7 @@ DMA_HandleTypeDef hdma_tim2_ch3;
  //         Example code is included at the bottom of this file
 
  /**
-  * Test function; currently nothing works, but this is probably an issue at a lower level
+  * Test function; currently nothing works, but this is probably an issue at a lower level rather than one in this function
   */
  void test_set_leds_high() {
     // Hardcode send high for everything for now
@@ -249,7 +250,7 @@ void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim) {
  // // // // // MSP Functions // // // // /
  /// /// /// /// /// /// /// /// /// /// //
 
-#ifdef STM32L432_PA8
+#ifdef STM32L432_PA8 // Functions for the test board
  void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
  /**
@@ -352,8 +353,7 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
 
 }
 
-#else 
-        // Lighting board //
+#else // Functions for the lighting board
 
 /**
   * @brief TIM_Base MSP Initialization
