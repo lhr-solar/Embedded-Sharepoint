@@ -1,4 +1,5 @@
 #include "UART.h"
+#include "bsp_config.h"
 #include <string.h>
 
 // Define the size of the data to be transmitted
@@ -398,9 +399,9 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart) {
 /**
  * @brief Initializes the UART peripheral
  * @param handle pointer to the UART handle
- * @return uart_status_t
+ * @return bsp_status_t
  */
-uart_status_t uart_init(UART_HandleTypeDef* handle) {
+bsp_status_t uart_init(UART_HandleTypeDef* handle) {
     uint8_t *rx_buffer = NULL;
 
     #ifdef UART4
@@ -500,71 +501,71 @@ uart_status_t uart_init(UART_HandleTypeDef* handle) {
 
     // init HAL
     if (HAL_UART_Init(handle) != HAL_OK ||
-	!IS_UART_INSTANCE(handle->Instance) ||
-	!IS_USART_INSTANCE(handle->Instance)){
-	return UART_ERR;
+      !IS_UART_INSTANCE(handle->Instance) ||
+      !IS_USART_INSTANCE(handle->Instance)){
+        return BSP_INIT_ERROR;
     }
 
     // Start reception
     if (HAL_UART_Receive_IT(handle, rx_buffer, DATA_SIZE) != HAL_OK) {
-        return UART_ERR;
+        return BSP_INIT_ERROR;
     }
 
-    return UART_OK;
+    return BSP_OK;
 }
 
 
 /**
  * @brief Deinitializes the UART peripheral
  * @param handle pointer to the UART handle
- * @return uart_status_t
+ * @return bsp_status_t
  */
-uart_status_t uart_deinit(UART_HandleTypeDef* handle) {
+bsp_status_t uart_deinit(UART_HandleTypeDef* handle) {
     // Stop any ongoing transfers first
     HAL_UART_Abort(handle);
 
     // Deinitialize HAL
     if (HAL_UART_DeInit(handle) != HAL_OK) {
-        return UART_ERR; 
+        return BSP_ERROR; 
     }
 
     // Deinitialize Handler
     #ifdef UART4
     if (handle->Instance == UART4) {
-	uart4_tx_queue = NULL;
-	uart4_rx_queue = NULL;
+      uart4_tx_queue = NULL;
+      uart4_rx_queue = NULL;
     }
     #endif /* UART4 */
     
     #ifdef UART5
     if (handle->Instance == UART5) {
-	uart5_tx_queue = NULL;
-	uart5_rx_queue = NULL;
+      uart5_tx_queue = NULL;
+      uart5_rx_queue = NULL;
     }
     #endif /* UART5 */
     
     #ifdef USART1
     if (handle->Instance == USART1) {
-	usart1_tx_queue = NULL;
-	usart1_rx_queue = NULL;
+      usart1_tx_queue = NULL;
+      usart1_rx_queue = NULL;
     }
     #endif /* USART1 */
 
     #ifdef USART2
     if (handle->Instance == USART2) {
-	usart2_tx_queue = NULL;
-	usart2_rx_queue = NULL;
+      usart2_tx_queue = NULL;
+      usart2_rx_queue = NULL;
     }
     #endif /* USART2 */
 
     #ifdef USART3
     if (handle->Instance == USART3) {
-	usart3_tx_queue = NULL;
-	usart3_rx_queue = NULL;
+      usart3_tx_queue = NULL;
+      usart3_rx_queue = NULL;
     }
     #endif /* USART3 */
 
-    return UART_OK;
+    return BSP_OK;
 }
 
 
@@ -573,7 +574,7 @@ uart_status_t uart_deinit(UART_HandleTypeDef* handle) {
  * @param data pointer to the data buffer that will be written/transmitted
  * @param length of the buffer that will be written/transmitted
  * @param delay_ticks number of ticks to wait for data to be transmitted
- * @return uart_status_t
+ * @return bsp_status_t
  */
 #ifdef UART4
 // static buffer for UART4 TX
@@ -600,9 +601,9 @@ static uint8_t usart2_tx_buffer[USART2_TX_QUEUE_SIZE]; // make buffer size same 
 static uint8_t usart3_tx_buffer[USART3_TX_QUEUE_SIZE]; // make buffer size same as queue size 
 #endif /* USART3 */
 
-uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t length, TickType_t delay_ticks) {
+bsp_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t length, TickType_t delay_ticks) {
     if (length == 0 || !is_uart_initialized(handle)) { // check if UART is initialized and data length is not 0
-        return UART_ERR;
+        return BSP_ERROR;
     }
 
     QueueHandle_t* tx_queue = NULL;
@@ -644,7 +645,7 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
     #endif /* USART3 */
   
 
-    uart_status_t status = UART_SENT;
+    bsp_status_t status = BSP_OK;
 
     // Try direct transmission if possible
     portENTER_CRITICAL();
@@ -653,7 +654,7 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
         // Copy data to static buffer
         memcpy(tx_buffer, data, length);
         if (HAL_UART_Transmit_IT(handle, tx_buffer, length) != HAL_OK) {
-            status = UART_ERR;
+            status = BSP_MAILBOX_FULL;
         }
         portEXIT_CRITICAL();
         goto exit;
@@ -662,24 +663,24 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
 
     // Send data in chunks based on DATA_SIZE
     for (uint8_t i = 0; i < length; i+=DATA_SIZE) {
-	tx_payload_t payload;
+        tx_payload_t payload;
 
-	// Ensure we only copy DATA_SIZE bytes at a time
-	uint8_t chunk_size = (length - i < DATA_SIZE) ? (length - i) : DATA_SIZE;
-	// EX: i=4, length=6, DataSize=4, then chunk_size = 2, instead of usual 4 since we've reached end of length
+        // Ensure we only copy DATA_SIZE bytes at a time
+        uint8_t chunk_size = (length - i < DATA_SIZE) ? (length - i) : DATA_SIZE;
+        // EX: i=4, length=6, DataSize=4, then chunk_size = 2, instead of usual 4 since we've reached end of length
 
-	// Copy the appropriate number of bytes to the payload data
-	 memcpy(payload.data, &data[i], chunk_size); // Usually chunk_size = DATA_SIZE until end of data length
+        // Copy the appropriate number of bytes to the payload data
+        memcpy(payload.data, &data[i], chunk_size); // Usually chunk_size = DATA_SIZE until end of data length
 
-	 // If data size is smaller than DATA_SIZE, fill the rest of the payload
-	 if (chunk_size < DATA_SIZE) {
-	     memset(&payload.data[chunk_size], 0, DATA_SIZE - chunk_size); // Fill the rest with 0 (or other padding if needed)
-	 }
+        // If data size is smaller than DATA_SIZE, fill the rest of the payload
+        if (chunk_size < DATA_SIZE) {
+            memset(&payload.data[chunk_size], 0, DATA_SIZE - chunk_size); // Fill the rest with 0 (or other padding if needed)
+        }
 
-	// Enqueue the payload to be transmitted
-	if (xQueueSend(*tx_queue, &payload, delay_ticks) != pdTRUE) {
-	    return UART_ERR;
-	} //delay_ticks: 0 = no wait, portMAX_DELAY = wait until space is available
+        // Enqueue the payload to be transmitted
+        if (xQueueSend(*tx_queue, &payload, delay_ticks) != pdTRUE) {
+            return BSP_QUEUE_FULL;
+        } //delay_ticks: 0 = no wait, portMAX_DELAY = wait until space is available
     }
 
 exit:
@@ -692,11 +693,11 @@ exit:
  * @param data pointer to the data buffer that will be read into
  * @param length of the buffer that will be read
  * @param delay_ticks number of ticks to wait for data to be received
- * @return uart_status_t
+ * @return bsp_status_t
  */
-uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t length, TickType_t delay_ticks) {
+bsp_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t length, TickType_t delay_ticks) {
     if (!data || length == 0 || !is_uart_initialized(handle)) { // check if data is not null, length is not 0 and UART is initialized
-        return UART_ERR;
+        return BSP_ERROR;
     }
 
     QueueHandle_t rx_queue = NULL;
@@ -730,14 +731,14 @@ uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t lengt
     }
     #endif /* USART3 */
 
-    uart_status_t status = UART_RECV;
+    bsp_status_t status = BSP_OK;
     rx_payload_t receivedPayload;
     uint8_t bytes_received = 0;
 
     // Receive all requested bytes
     while (bytes_received < length) {
         if (xQueueReceive(rx_queue, &receivedPayload, delay_ticks) == errQUEUE_EMPTY) {
-            return UART_EMPTY;  // Queue empty, no more data to receive
+            return BSP_QUEUE_EMPTY;  // Queue empty, no more data to receive
         }
 
         // Calculate how many bytes to copy from the payload based on DATA_SIZE

@@ -1,4 +1,5 @@
 #include "printf.h"
+#include "bsp_config.h"
 
 UART_HandleTypeDef *printf_huart = NULL;
 
@@ -9,15 +10,15 @@ UART_HandleTypeDef *printf_huart = NULL;
  */
 bool printf_init(UART_HandleTypeDef *huart) { 
     printf_huart = huart; 
-    return uart_init(huart) == UART_OK;
+    return uart_init(huart) == BSP_OK;
 }
 
 // Called by _read in syscalls.c
 int __io_getchar() {
     if (printf_huart != NULL) {
         uint8_t data;
-        uart_status_t ret = uart_recv(printf_huart, &data, 1, portMAX_DELAY);
-        if(ret != UART_OK) return -1;
+        bsp_status_t ret = uart_recv(printf_huart, &data, 1, portMAX_DELAY);
+        if(ret != BSP_OK) return -1;
         return data;
     }
     return -1;
@@ -26,8 +27,8 @@ int __io_getchar() {
 // Called by _write in syscalls.c
 int __io_putchar(int data) {
     if (printf_huart != NULL) {
-        uart_status_t ret = uart_send(printf_huart, (const uint8_t *)&data, 1, portMAX_DELAY);
-        if(ret != UART_OK) return -1;
+        bsp_status_t ret = uart_send(printf_huart, (const uint8_t *)&data, 1, portMAX_DELAY);
+        if(ret != BSP_OK) return -1;
         return data;
     }
     return -1;

@@ -41,78 +41,78 @@ static void task(void *pvParameters) {
   uint8_t tx_data[8] = {0};
   tx_data[0] = 0x01;
   tx_data[1] = 0x00;
-  if (can_send(hcan1, &tx_header, tx_data, portMAX_DELAY) != CAN_SENT) Error_Handler();
+  if (can_send(hcan1, &tx_header, tx_data, portMAX_DELAY) != BSP_OK) Error_Handler();
   #ifdef CAN2
-  if (can_send(hcan2, &tx_header, tx_data, portMAX_DELAY) != CAN_SENT) Error_Handler();
+  if (can_send(hcan2, &tx_header, tx_data, portMAX_DELAY) != BSP_OK) Error_Handler();
   #endif /* CAN2 */
 
   tx_data[0] = 0x02;
-  if (can_send(hcan1, &tx_header, tx_data, portMAX_DELAY) != CAN_SENT) Error_Handler();
+  if (can_send(hcan1, &tx_header, tx_data, portMAX_DELAY) != BSP_OK) Error_Handler();
   #ifdef CAN2
-  if (can_send(hcan2, &tx_header, tx_data, portMAX_DELAY) != CAN_SENT) Error_Handler();
+  if (can_send(hcan2, &tx_header, tx_data, portMAX_DELAY) != BSP_OK) Error_Handler();
   #endif /* CAN2 */
 
   // send two payloads to 0x3
   tx_data[0] = 0x03;
   tx_header.StdId = 0x003;
-  if (can_send(hcan1, &tx_header, tx_data, portMAX_DELAY) != CAN_SENT) Error_Handler();
+  if (can_send(hcan1, &tx_header, tx_data, portMAX_DELAY) != BSP_OK) Error_Handler();
   #ifdef CAN2
-  if (can_send(hcan2, &tx_header, tx_data, portMAX_DELAY) != CAN_SENT) Error_Handler();
+  if (can_send(hcan2, &tx_header, tx_data, portMAX_DELAY) != BSP_OK) Error_Handler();
   #endif /* CAN2 */
 
   tx_data[0] = 0x04;
-  if (can_send(hcan1, &tx_header, tx_data, portMAX_DELAY) != CAN_SENT) Error_Handler();
+  if (can_send(hcan1, &tx_header, tx_data, portMAX_DELAY) != BSP_OK) Error_Handler();
   #ifdef CAN2
-  if (can_send(hcan2, &tx_header, tx_data, portMAX_DELAY) != CAN_SENT) Error_Handler();
+  if (can_send(hcan2, &tx_header, tx_data, portMAX_DELAY) != BSP_OK) Error_Handler();
   #endif /* CAN2 */
 
   // receive what was sent to 0x1
   CAN_RxHeaderTypeDef rx_header = {0};
   uint8_t rx_data[8] = {0};
-  can_status_t status;
+  bsp_status_t status;
 
   // CAN1
   status = can_recv(hcan1, 0x1, &rx_header, rx_data, portMAX_DELAY);
-  if (status != CAN_RECV && rx_data[0] != 0x1) Error_Handler();
+  if (status != BSP_OK && rx_data[0] != 0x1) Error_Handler();
   status = can_recv(hcan1, 0x1, &rx_header, rx_data, portMAX_DELAY);
-  if (status != CAN_RECV && rx_data[0] != 0x2) Error_Handler();
+  if (status != BSP_OK && rx_data[0] != 0x2) Error_Handler();
 
   #ifdef CAN2
   // CAN2
   status = can_recv(hcan2, 0x1, &rx_header, rx_data, portMAX_DELAY);
-  if (status != CAN_RECV && rx_data[0] != 0x1) Error_Handler();
+  if (status != BSP_OK && rx_data[0] != 0x1) Error_Handler();
   status = can_recv(hcan2, 0x1, &rx_header, rx_data, portMAX_DELAY);
-  if (status != CAN_RECV && rx_data[0] != 0x2) Error_Handler();
+  if (status != BSP_OK && rx_data[0] != 0x2) Error_Handler();
   #endif /* CAN2 */
 
   // make sure we don't receive from wrong ID and nonblocking works
   // CAN1
   status = can_recv(hcan1, 0x1, &rx_header, rx_data, 0);
-  if (status != CAN_EMPTY) Error_Handler();
+  if (status != BSP_QUEUE_EMPTY) Error_Handler();
   status = can_recv(hcan1, 0x1, &rx_header, rx_data, 0);
-  if (status != CAN_EMPTY) Error_Handler();
+  if (status != BSP_QUEUE_EMPTY) Error_Handler();
 
   #ifdef CAN2
   // CAN2
   status = can_recv(hcan2, 0x1, &rx_header, rx_data, 0);
-  if (status != CAN_EMPTY) Error_Handler();
+  if (status != BSP_QUEUE_EMPTY) Error_Handler();
   status = can_recv(hcan2, 0x1, &rx_header, rx_data, 0);
-  if (status != CAN_EMPTY) Error_Handler();
+  if (status != BSP_QUEUE_EMPTY) Error_Handler();
   #endif /* CAN2 */
 
   // receive the rest
   // CAN1
   status = can_recv(hcan1, 0x3, &rx_header, rx_data, portMAX_DELAY);
-  if (status != CAN_RECV && rx_data[0] != 0x3) Error_Handler();
+  if (status != BSP_OK && rx_data[0] != 0x3) Error_Handler();
   status = can_recv(hcan1, 0x3, &rx_header, rx_data, portMAX_DELAY);
-  if (status != CAN_RECV && rx_data[0] != 0x4) Error_Handler();
+  if (status != BSP_OK && rx_data[0] != 0x4) Error_Handler();
 
   #ifdef CAN2
   // CAN2
   status = can_recv(hcan2, 0x3, &rx_header, rx_data, portMAX_DELAY);
-  if (status != CAN_RECV && rx_data[0] != 0x3) Error_Handler();
+  if (status != BSP_OK && rx_data[0] != 0x3) Error_Handler();
   status = can_recv(hcan2, 0x3, &rx_header, rx_data, portMAX_DELAY);
-  if (status != CAN_RECV && rx_data[0] != 0x4) Error_Handler();
+  if (status != BSP_OK && rx_data[0] != 0x4) Error_Handler();
   #endif /* CAN2 */
 
   // TEST QUEUE OVERWRITE ============================================
@@ -120,35 +120,35 @@ static void task(void *pvParameters) {
   // send one payload to 0x4
   tx_data[0] = 0x04;
   tx_header.StdId = 0x004;
-  if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) Error_Handler();
+  if (can_send(hcan1, &tx_header, tx_data, true) != BSP_OK) Error_Handler();
 
   // receive what was sent to 0x4
   status = can_recv(hcan1, 0x4, &rx_header, rx_data, true);
-  if (status != CAN_RECV && rx_data[0] != 0x4) Error_Handler();
+  if (status != BSP_OK && rx_data[0] != 0x4) Error_Handler();
   
   // send two payloads to 0x4, only the last one should be received
   tx_data[0] = 0x05;
-  if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) Error_Handler();
+  if (can_send(hcan1, &tx_header, tx_data, true) != BSP_OK) Error_Handler();
   tx_data[0] = 0x06;
-  if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) Error_Handler();
+  if (can_send(hcan1, &tx_header, tx_data, true) != BSP_OK) Error_Handler();
   tx_data[0] = 0x07;
-  if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) Error_Handler();
+  if (can_send(hcan1, &tx_header, tx_data, true) != BSP_OK) Error_Handler();
   tx_data[0] = 0x08;
-  if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) Error_Handler();
+  if (can_send(hcan1, &tx_header, tx_data, true) != BSP_OK) Error_Handler();
   tx_data[0] = 0x09;
-  if (can_send(hcan1, &tx_header, tx_data, true) != CAN_SENT) Error_Handler();
+  if (can_send(hcan1, &tx_header, tx_data, true) != BSP_OK) Error_Handler();
 
   HAL_Delay(200);
 
   // receive the rest in order
   status = can_recv(hcan1, 0x4, &rx_header, rx_data, true);
-  if (status != CAN_RECV || rx_data[0] != 0x6) Error_Handler();
+  if (status != BSP_OK || rx_data[0] != 0x6) Error_Handler();
   status = can_recv(hcan1, 0x4, &rx_header, rx_data, true);
-  if (status != CAN_RECV || rx_data[0] != 0x7) Error_Handler();
+  if (status != BSP_OK || rx_data[0] != 0x7) Error_Handler();
   status = can_recv(hcan1, 0x4, &rx_header, rx_data, true);
-  if (status != CAN_RECV || rx_data[0] != 0x8) Error_Handler();
+  if (status != BSP_OK || rx_data[0] != 0x8) Error_Handler();
   status = can_recv(hcan1, 0x4, &rx_header, rx_data, true);
-  if (status != CAN_RECV || rx_data[0] != 0x9) Error_Handler();
+  if (status != BSP_OK || rx_data[0] != 0x9) Error_Handler();
 
   success_handler();
 }
@@ -189,8 +189,8 @@ int main(void) {
   hcan1->Init.TransmitFifoPriority = ENABLE;
 
   // initialize CAN1
-  if (can_init(hcan1, &sFilterConfig) != CAN_OK) Error_Handler();
-  if (can_start(hcan1) != CAN_OK) Error_Handler();
+  if (can_init(hcan1, &sFilterConfig) != BSP_OK) Error_Handler();
+  if (can_start(hcan1) != BSP_OK) Error_Handler();
 
   #ifdef CAN2
   // setup can2 init
@@ -208,8 +208,8 @@ int main(void) {
 
   // initialize CAN
   sFilterConfig.FilterBank = 14;
-  if (can_init(hcan2, &sFilterConfig) != CAN_OK) Error_Handler();
-  if (can_start(hcan2) != CAN_OK) Error_Handler();
+  if (can_init(hcan2, &sFilterConfig) != BSP_OK) Error_Handler();
+  if (can_start(hcan2) != BSP_OK) Error_Handler();
   #endif /* CAN2 */
 
   xTaskCreateStatic(

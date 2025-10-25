@@ -2,6 +2,7 @@
 #define UART_H_
 
 #include "stm32xx_hal.h"
+#include "bsp_config.h"
 
 #if !defined(UART4) && !defined(USART1)
   #error "[CONFIG] UART not enabled on this chip."
@@ -22,15 +23,6 @@
  * - For now, a UART peripheral needs to be contained to one task as only one receive queue exists for each.
  *
  */
-
-// Return codes for UART operations
-typedef enum {
-    UART_ERR,
-    UART_OK,
-    UART_SENT,
-    UART_RECV,
-    UART_EMPTY,
-} uart_status_t;
 
 // uart handlers
 #ifdef UART4
@@ -54,9 +46,9 @@ extern UART_HandleTypeDef* husart3;
 #endif /* USART3 */
 
 // Function prototypes with consistent parameters and return types
-uart_status_t uart_init(UART_HandleTypeDef* handle); // Create queue at compile time, User passes in the size of the queue they want
-uart_status_t uart_deinit(UART_HandleTypeDef* handle);
-uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t length, TickType_t delay_ticks);
-uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t length, TickType_t delay_ticks);
+bsp_status_t uart_init(UART_HandleTypeDef* handle); // Create queue at compile time, User passes in the size of the queue they want
+bsp_status_t uart_deinit(UART_HandleTypeDef* handle);
+bsp_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t length, TickType_t delay_ticks);
+bsp_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t length, TickType_t delay_ticks);
 
 #endif /* UART_H_ */
