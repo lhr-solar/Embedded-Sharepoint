@@ -173,7 +173,7 @@ int main() {
 
     volatile adc_status_t s = adc_init(&adc_init_1, hadc1);
     s+=0;
-    if (adc_init(&adc_init_1, hadc1) != ADC_OK) error_handler(ADC_INIT_FAIL);
+    if (s != ADC_OK) error_handler(ADC_INIT_FAIL);
 
     #ifdef ADC2
     ADC_InitTypeDef adc_init_2 = {0};

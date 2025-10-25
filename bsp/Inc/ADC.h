@@ -58,7 +58,7 @@ extern ADC_HandleTypeDef* hadc3;
 
 adc_status_t adc_init(const ADC_InitTypeDef* init, ADC_HandleTypeDef* hadc);
 /** 
- * init             ADC_InitTypeDef 
+ * init             ADC_InitTypeDef* 
  * bitNum           uint8_t         number of bits in ADC
  * Vcc              double
  * rxQueue          QueueHandle_t   pointer to user-provided Queue handle
