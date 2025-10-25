@@ -1,4 +1,5 @@
 #include "CAN.h"
+#include "bsp_config.h"
 #include "queue_ex.h"
 
 // 8 for now unless extended payload is supported
@@ -383,7 +384,7 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan) {
   }
 }
 
-can_status_t can_init(CAN_HandleTypeDef* handle, CAN_FilterTypeDef* filter) {
+bsp_status_t can_init(CAN_HandleTypeDef* handle, CAN_FilterTypeDef* filter) {
   // CAN1
   if (handle->Instance == CAN1) {
     // init queues
@@ -428,66 +429,66 @@ can_status_t can_init(CAN_HandleTypeDef* handle, CAN_FilterTypeDef* filter) {
   #endif /* CAN3 */
 
   else {
-    return CAN_ERR;
+    return BSP_INIT_ERROR;
   }
 
   // init HAL
   if (HAL_CAN_Init(handle) != HAL_OK) {
-    return CAN_ERR;
+    return BSP_INIT_ERROR;
   }
 
   // init filter
   if (HAL_CAN_ConfigFilter(handle, filter) != HAL_OK) {
-    return CAN_ERR;
+    return BSP_INIT_ERROR;
   }
 
   // enable interrupts
   if (HAL_CAN_ActivateNotification(handle, CAN_IT_TX_MAILBOX_EMPTY) != HAL_OK) {
-    return CAN_ERR;
+    return BSP_INIT_ERROR;
   }
   if (HAL_CAN_ActivateNotification(handle, CAN_IT_RX_FIFO0_MSG_PENDING) !=
       HAL_OK) {
-    return CAN_ERR;
+    return BSP_INIT_ERROR;
   }
 
-  return CAN_OK;
+  return BSP_OK;
 }
 
-can_status_t can_deinit(CAN_HandleTypeDef* handle) {
+bsp_status_t can_deinit(CAN_HandleTypeDef* handle) {
   // deinit HAL
   if (HAL_CAN_DeInit(handle) != HAL_OK) {
-    return CAN_ERR;
+    return BSP_INIT_ERROR;
   }
 
   // disable interrupts
   if (HAL_CAN_DeactivateNotification(handle, CAN_IT_TX_MAILBOX_EMPTY) != HAL_OK) {
-    return CAN_ERR;
+    return BSP_INIT_ERROR;
   }
   if (HAL_CAN_DeactivateNotification(handle, CAN_IT_RX_FIFO0_MSG_PENDING) !=
       HAL_OK) {
-    return CAN_ERR;
+    return BSP_INIT_ERROR;
   }
 
-  return CAN_OK;
+  return BSP_OK;
 }
 
-can_status_t can_start(CAN_HandleTypeDef* handle) {
+bsp_status_t can_start(CAN_HandleTypeDef* handle) {
   if (HAL_CAN_Start(handle) != HAL_OK) {
-    return CAN_ERR;
+    return BSP_ERROR;
   }
 
-  return CAN_OK;
+  return BSP_OK;
 }
 
-can_status_t can_stop(CAN_HandleTypeDef* handle) {
+bsp_status_t can_stop(CAN_HandleTypeDef* handle) {
   if (HAL_CAN_Stop(handle) != HAL_OK) {
-    return CAN_ERR;
+    return BSP_ERROR;
   }
 
-  return CAN_OK;
+  return BSP_OK;
 }
 
-can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
+bsp_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
                       CAN_RxHeaderTypeDef* header, uint8_t data[],
                       TickType_t delay_ticks) {
   // recieve from queue matching id
@@ -503,7 +504,7 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
         // other values of delay_ticks are delays
         if (xQueueReceive(can1_recv_entries[i].queue, &payload, delay_ticks) ==
             errQUEUE_EMPTY) {
-          return CAN_EMPTY;
+          return BSP_QUEUE_EMPTY;
         }
   
         break;
@@ -522,7 +523,7 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
         // other values of delay_ticks are delays
         if (xQueueReceive(can2_recv_entries[i].queue, &payload, delay_ticks) ==
             errQUEUE_EMPTY) {
-          return CAN_EMPTY;
+          return BSP_QUEUE_EMPTY;
         }
   
         break;
@@ -542,7 +543,7 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
         // other values of delay_ticks are delays
         if (xQueueReceive(can3_recv_entries[i].queue, &payload, delay_ticks) ==
             errQUEUE_EMPTY) {
-          return CAN_EMPTY;
+          return BSP_QUEUE_EMPTY;
         }
   
         break;
@@ -552,7 +553,7 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
   #endif /* CAN3 */
 
   else {
-    return CAN_ERR;
+    return BSP_ERROR;
   }
 
   // decode payload if it is valid and message recieved
@@ -562,17 +563,16 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
       data[i] = payload.data[i];
     }
 
-    return CAN_RECV;
+    return BSP_OK;
 
   } else {
-    return CAN_ERR;
+    return BSP_ERROR;
   }
 }
 
-can_status_t can_send(CAN_HandleTypeDef* handle,
+bsp_status_t can_send(CAN_HandleTypeDef* handle,
                       const CAN_TxHeaderTypeDef* header, const uint8_t data[],
                       TickType_t delay_ticks) {
-
   // disable interrupts (do not want race conditions
   // on shared resource (mailbox) between threads and
   // interrupt routines (TxComplete))
@@ -585,7 +585,7 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
       // disable interrupts
       portEXIT_CRITICAL();
 
-      return CAN_ERR;
+      return BSP_MAILBOX_FULL;
     }
 
     // disable interrupts
@@ -605,7 +605,7 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
     // CAN1
     if (handle->Instance == CAN1) {
       if (xQueueSend(can1_send_queue, &payload, delay_ticks) != pdTRUE) {
-        return CAN_ERR;
+        return BSP_QUEUE_FULL;
       }
     }
 
@@ -613,7 +613,7 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
     #ifdef CAN2
     else if (handle->Instance == CAN2) {
       if (xQueueSend(can2_send_queue, &payload, delay_ticks) != pdTRUE) {
-        return CAN_ERR;
+        return BSP_QUEUE_FULL;
       }
     }
     #endif /* CAN2 */
@@ -622,13 +622,13 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
     #ifdef CAN3
     else if (handle->Instance == CAN3) {
       if (xQueueSend(can3_send_queue, &payload, delay_ticks) != pdTRUE) {
-        return CAN_ERR;
+        return BSP_QUEUE_FULL; 
       }
     }
     #endif /* CAN3 */
   }
 
-  return CAN_SENT;
+  return BSP_OK;
 }
 
 static void transmit(CAN_HandleTypeDef* handle) {

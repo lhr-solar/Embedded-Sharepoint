@@ -29,22 +29,10 @@
 #define _ADC_H
 
 #include "stm32xx_hal.h"
-
+#include "bsp_config.h"
 #include "FreeRTOS.h"
 #include "queue.h"
 #include "semphr.h"
-
-typedef enum {
-    ADC_OK,
-    ADC_INIT_FAIL,
-    ADC_DEINIT_FAIL,
-    ADC_CHANNEL_CONFIG_FAIL,
-    ADC_INTERRUPT_BUSY,
-    ADC_INTERRUPT_TIMEOUT,
-    ADC_INTERRUPT_ERROR,
-    ADC_QUEUE_FULL,
-
-} adc_status_t;
 
 #ifdef ADC1
 extern ADC_HandleTypeDef* hadc1;
@@ -56,7 +44,7 @@ extern ADC_HandleTypeDef* hadc2;
 extern ADC_HandleTypeDef* hadc3;
 #endif /* ADC3 */
 
-adc_status_t adc_init(ADC_InitTypeDef init, ADC_HandleTypeDef* hadc);
+bsp_status_t adc_init(ADC_InitTypeDef init, ADC_HandleTypeDef* hadc);
 /** 
  * init             ADC_InitTypeDef 
  * bitNum           uint8_t         number of bits in ADC
@@ -65,13 +53,13 @@ adc_status_t adc_init(ADC_InitTypeDef init, ADC_HandleTypeDef* hadc);
 */
 
 
-adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef *h, QueueHandle_t *q); 
+bsp_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef *h, QueueHandle_t *q); 
 /**
  *   channel        uint32_t        channel to read
  *   samplingTime   uint32_t        ADC sampling time
  *   blocking       bool            whether the process is blocking
 */
 
-adc_status_t adc_deinit(ADC_HandleTypeDef *h);
+bsp_status_t adc_deinit(ADC_HandleTypeDef *h);
 
 #endif

@@ -1,4 +1,5 @@
 #include "ADC.h"
+#include "bsp_config.h"
 
 // Define Queue Handles
 #ifdef ADC1
@@ -42,23 +43,22 @@ QueueHandle_t* adc3_q;
 // Hardware ADC error code
 uint32_t adc_err_code = 0;
 
-adc_status_t adc_init(ADC_InitTypeDef init, ADC_HandleTypeDef* h) {
+bsp_status_t adc_init(ADC_InitTypeDef init, ADC_HandleTypeDef* h) {
     // Initalize ADC
     h->Init = init;
-    if (HAL_ADC_Init(h) != HAL_OK) return ADC_INIT_FAIL;
+    if (HAL_ADC_Init(h) != HAL_OK) return BSP_INIT_ERROR;
 
-    return ADC_OK;
+    return BSP_OK;
 }
 
-adc_status_t adc_deinit(ADC_HandleTypeDef *h) {
+bsp_status_t adc_deinit(ADC_HandleTypeDef *h) {
     // Deinit ADC at specific handle
-    if (HAL_ADC_DeInit(h) != HAL_OK) return ADC_DEINIT_FAIL;
+    if (HAL_ADC_DeInit(h) != HAL_OK) return BSP_INIT_ERROR;
 
-    return ADC_OK;
+    return BSP_OK;
 } 
 
-
-adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef *h, QueueHandle_t *q) {
+bsp_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef *h, QueueHandle_t *q) {
     ADC_ChannelConfTypeDef sConfig = {
         .Channel = channel,
         .Rank = 1,
@@ -78,30 +78,18 @@ adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef
     
     // Check Queue Full
     if (uxQueueSpacesAvailable(*q) == 0) {
-        return ADC_QUEUE_FULL;
+        return BSP_QUEUE_FULL;
     }
+
     // Configure Channel
     if (HAL_ADC_ConfigChannel(h, &sConfig) != HAL_OK) {
-        return ADC_CHANNEL_CONFIG_FAIL;
+        return BSP_ERROR;
     }
+
     // Trigger Interrupt
     HAL_StatusTypeDef adc_it_stat = HAL_ADC_Start_IT(h);
-
-    // Handling
-    switch (adc_it_stat) {
-        case HAL_BUSY:
-            return ADC_INTERRUPT_BUSY;
-            break;
-        case HAL_TIMEOUT:
-            return ADC_INTERRUPT_TIMEOUT;
-            break;
-        case HAL_ERROR:
-            return ADC_INTERRUPT_ERROR;
-            break;
-        default: break;
-    }
     
-    return ADC_OK; 
+    return (bsp_status_t)adc_it_stat; 
 }
 
 
@@ -190,7 +178,6 @@ static inline void HAL_ADC_MspF4Init(ADC_HandleTypeDef *h) {
 #if defined(STM32L4xx)
 static inline void HAL_ADC_MspL4DeInit(ADC_HandleTypeDef *h) {
     // GPIO Init
-    
 
     // L4 Clock
     __HAL_RCC_ADC_CLK_DISABLE();
