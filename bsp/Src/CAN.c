@@ -1,5 +1,7 @@
 #include "CAN.h"
+#include "portmacro.h"
 #include "queue_ex.h"
+#include "stm32xx_hal.h"
 
 // 8 for now unless extended payload is supported
 #define DATA_SIZE (8)
@@ -384,6 +386,11 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan) {
 }
 
 can_status_t can_init(CAN_HandleTypeDef* handle, CAN_FilterTypeDef* filter) {
+  BaseType_t sched_state = xTaskGetSchedulerState();
+  if (sched_state == taskSCHEDULER_NOT_STARTED || sched_state == taskSCHEDULER_SUSPENDED){
+    return CAN_ERR;
+  }
+
   // CAN1
   if (handle->Instance == CAN1) {
     // init queues
@@ -490,6 +497,11 @@ can_status_t can_stop(CAN_HandleTypeDef* handle) {
 can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
                       CAN_RxHeaderTypeDef* header, uint8_t data[],
                       TickType_t delay_ticks) {
+  BaseType_t sched_state = xTaskGetSchedulerState();
+  if (sched_state == taskSCHEDULER_NOT_STARTED || sched_state == taskSCHEDULER_SUSPENDED){
+    return CAN_ERR;
+  }
+
   // recieve from queue matching id
   rx_payload_t payload = {0};
   bool valid_id = false;
@@ -573,6 +585,10 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
                       const CAN_TxHeaderTypeDef* header, const uint8_t data[],
                       TickType_t delay_ticks) {
 
+  BaseType_t sched_state = xTaskGetSchedulerState();
+  if (sched_state == taskSCHEDULER_NOT_STARTED || sched_state == taskSCHEDULER_SUSPENDED){
+    return CAN_ERR;
+  }
   // disable interrupts (do not want race conditions
   // on shared resource (mailbox) between threads and
   // interrupt routines (TxComplete))

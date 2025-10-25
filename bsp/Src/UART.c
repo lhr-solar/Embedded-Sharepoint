@@ -401,6 +401,11 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart) {
  * @return uart_status_t
  */
 uart_status_t uart_init(UART_HandleTypeDef* handle) {
+    BaseType_t sched_state = xTaskGetSchedulerState();
+    if (sched_state == taskSCHEDULER_NOT_STARTED || sched_state == taskSCHEDULER_SUSPENDED){
+      return UART_ERR;
+    }
+
     uint8_t *rx_buffer = NULL;
 
     #ifdef UART4
@@ -601,6 +606,11 @@ static uint8_t usart3_tx_buffer[USART3_TX_QUEUE_SIZE]; // make buffer size same 
 #endif /* USART3 */
 
 uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t length, TickType_t delay_ticks) {
+    BaseType_t sched_state = xTaskGetSchedulerState();
+    if (sched_state == taskSCHEDULER_NOT_STARTED || sched_state == taskSCHEDULER_SUSPENDED){
+      return UART_ERR;
+    }
+
     if (length == 0 || !is_uart_initialized(handle)) { // check if UART is initialized and data length is not 0
         return UART_ERR;
     }
@@ -695,6 +705,11 @@ exit:
  * @return uart_status_t
  */
 uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t length, TickType_t delay_ticks) {
+    BaseType_t sched_state = xTaskGetSchedulerState();
+    if (sched_state == taskSCHEDULER_NOT_STARTED || sched_state == taskSCHEDULER_SUSPENDED){
+      return UART_ERR;
+    }
+
     if (!data || length == 0 || !is_uart_initialized(handle)) { // check if data is not null, length is not 0 and UART is initialized
         return UART_ERR;
     }
