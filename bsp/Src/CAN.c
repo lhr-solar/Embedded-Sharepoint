@@ -504,7 +504,7 @@ bsp_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
         // other values of delay_ticks are delays
         if (xQueueReceive(can1_recv_entries[i].queue, &payload, delay_ticks) ==
             errQUEUE_EMPTY) {
-          return BSP_TIMEOUT;
+          return BSP_QUEUE_EMPTY;
         }
   
         break;
@@ -523,7 +523,7 @@ bsp_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
         // other values of delay_ticks are delays
         if (xQueueReceive(can2_recv_entries[i].queue, &payload, delay_ticks) ==
             errQUEUE_EMPTY) {
-          return BSP_TIMEOUT;
+          return BSP_QUEUE_EMPTY;
         }
   
         break;
@@ -543,7 +543,7 @@ bsp_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
         // other values of delay_ticks are delays
         if (xQueueReceive(can3_recv_entries[i].queue, &payload, delay_ticks) ==
             errQUEUE_EMPTY) {
-          return BSP_TIMEOUT;
+          return BSP_QUEUE_EMPTY;
         }
   
         break;
