@@ -42,9 +42,9 @@ QueueHandle_t* adc3_q;
 // Hardware ADC error code
 uint32_t adc_err_code = 0;
 
-adc_status_t adc_init(ADC_InitTypeDef init, ADC_HandleTypeDef* h) {
+adc_status_t adc_init(const ADC_InitTypeDef* init, ADC_HandleTypeDef* h) {
     // Initalize ADC
-    h->Init = init;
+    h->Init = *init;
     if (HAL_ADC_Init(h) != HAL_OK) return ADC_INIT_FAIL;
 
     return ADC_OK;

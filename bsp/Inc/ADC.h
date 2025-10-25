@@ -56,7 +56,7 @@ extern ADC_HandleTypeDef* hadc2;
 extern ADC_HandleTypeDef* hadc3;
 #endif /* ADC3 */
 
-adc_status_t adc_init(ADC_InitTypeDef init, ADC_HandleTypeDef* hadc);
+adc_status_t adc_init(const ADC_InitTypeDef* init, ADC_HandleTypeDef* hadc);
 /** 
  * init             ADC_InitTypeDef 
  * bitNum           uint8_t         number of bits in ADC
