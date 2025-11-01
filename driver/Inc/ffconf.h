@@ -16,18 +16,11 @@
   */
 /* USER CODE END Header */
 
-#ifndef _FFCONF
-#define _FFCONF 80386   /*80386*/
-#define FFCONF_DEF 80386      /* Must match FF_DEFINED in ff.h */
-#endif
+ #ifndef _FFCONF
+ #define _FFCONF 68300	/* Revision ID */
 
-// #ifndef _FFCONF
-// #define FFCONF_DEF 68300   /* must match the value in ff.h check */
-
-// #ifndef _FFCONF
-// #define _FFCONF 68300	/* Revision ID */
-
-// #define FFCONF_DEF 68000   /* value expected by ff.h */
+// #ifndef FF_DEFINED
+// #define FF_DEFINED	68300
 
 /*-----------------------------------------------------------------------------/
 / Additional user header to be used
@@ -163,25 +156,12 @@
 / Drive/Volume Configurations
 /----------------------------------------------------------------------------*/
 
-// #define _VOLUMES    1
-// #define _MULTI_PARTITION 0
-
-// #define _STR_VOLUME_ID 0
-// #define _VOLUME_STRS "SD1"
-// #include "ff.h"
-
-#define _VOLUMES        1
-#define _STR_VOLUME_ID  0          /* 0: use numeric 0..9, 1: use strings */
-#define _VOLUME_STRS    "SD1"      /* must match _VOLUMES if _STR_VOLUME_ID = 1 */
-#define _MULTI_PARTITION 0
-
-#include "ff.h"
-
+#define _VOLUMES    1
 /* Number of volumes (logical drives) to be used. */
 
 /* USER CODE BEGIN Volumes */
-//#define _STR_VOLUME_ID          0	/* 0:Use only 0-9 for drive ID, 1:Use strings for drive ID */
-//#define _VOLUME_STRS            "RAM","NAND","CF","SD1","SD2","USB1","USB2","USB3"
+#define _STR_VOLUME_ID          0	/* 0:Use only 0-9 for drive ID, 1:Use strings for drive ID */
+#define _VOLUME_STRS            "RAM","NAND","CF","SD1","SD2","USB1","USB2","USB3"
 /* _STR_VOLUME_ID switches string support of volume ID.
 /  When _STR_VOLUME_ID is set to 1, also pre-defined strings can be used as drive
 /  number in the path name. _VOLUME_STRS defines the drive ID strings for each
@@ -198,8 +178,6 @@
 /  function will be available. */
 #define _MIN_SS    512  /* 512, 1024, 2048 or 4096 */
 #define _MAX_SS    512  /* 512, 1024, 2048 or 4096 */
-#define FF_MIN_SS _MIN_SS
-#define FF_MAX_SS _MAX_SS
 /* These options configure the range of sector size to be supported. (512, 1024,
 /  2048 or 4096) Always set both 512 for most systems, all type of memory cards and
 /  harddisk. But a larger value may be required for on-board flash memory and some
@@ -289,4 +267,4 @@
 #define ff_free  free
 #endif
 
-// #endif /* _FFCONF */
+#endif /* _FFCONF */

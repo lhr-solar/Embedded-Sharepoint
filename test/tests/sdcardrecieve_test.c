@@ -1,5 +1,8 @@
-#include "stm32l4xx_hal.h"
-#include "ff.h"
+//#include "stm32l4xx_hal.h" 
+#include "stm32xx_hal.h"
+#include "fatfs.h"
+#include "ffconf.h"
+#include "user_diskio.h"
 #include "sdcard.h"
 #include <string.h>
 #include <stdio.h>
