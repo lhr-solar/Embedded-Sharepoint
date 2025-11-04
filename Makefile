@@ -330,8 +330,6 @@ flash:
 	@echo "🔦 Flashing $(FLASH_FILE) to $(FLASH_ADDRESS)"
 	-st-flash write $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
 
-# TODO: figure out installation for this bs
-# TODO: find usb device using lsusb (ttyUSBx)
 .PHONY: flash-uart
 flash-uart:
 	@echo "🌉 Detecting CP210x UART bridge..."
