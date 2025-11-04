@@ -327,14 +327,21 @@ FLASH_FILE = $(shell find $(BUILD_DIR) -name 'stm*.bin' -exec basename {} \;)
 
 .PHONY: flash
 flash:
-	@echo "Flashing $(FLASH_FILE) to $(FLASH_ADDRESS)"
+	@echo "🔦 Flashing $(FLASH_FILE) to $(FLASH_ADDRESS)"
 	-st-flash write $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
 
 # TODO: figure out installation for this bs
 # TODO: find usb device using lsusb (ttyUSBx)
 .PHONY: flash-uart
 flash-uart:
-	@echo "Flashing $(FLASH_FILE) to $(FLASH_ADDRESS)"
+	@echo "🌉 Detecting CP210x UART bridge..."
+	@PORT=$$(readlink -f /sys/class/tty/$$(ls -1 /sys/class/tty | grep ttyUSB | while read t; do \
+	  u=$$(udevadm info -q property -p /sys/class/tty/$$t | grep ID_VENDOR_ID); \
+	  p=$$(udevadm info -q property -p /sys/class/tty/$$t | grep ID_MODEL_ID); \
+	  if [ "$$u" = "ID_VENDOR_ID=10c4" ] && [ "$$p" = "ID_MODEL_ID=ea60" ]; then echo $$t; fi; \
+	done)); \
+	echo "⚓ Using $$PORT";
+	@echo "🔦 Flashing $(FLASH_FILE) to $(FLASH_ADDRESS)"
 	~/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin/STM32_Programmer_CLI -c port=/dev/ttyUSB0 -w $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS) -v
 
 #######################################
