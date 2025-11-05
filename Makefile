@@ -332,18 +332,7 @@ flash:
 
 .PHONY: flash-uart
 flash-uart:
-	@echo "🔦 Flashing $(FLASH_FILE) to $(FLASH_ADDRESS)"
-	@echo "🌉 Detecting CP210x UART bridge..."
-	@PORT=$$(for t in /dev/ttyUSB*; do \
-	  u=$$(udevadm info -q property -n $$t | grep ID_VENDOR_ID); \
-	  p=$$(udevadm info -q property -n $$t | grep ID_MODEL_ID); \
-	  if [ "$$u" = "ID_VENDOR_ID=10c4" ] && [ "$$p" = "ID_MODEL_ID=ea60" ]; then echo $$t; break; fi; \
-	done); \
-	if [ -z "$$PORT" ]; then \
-	  echo "ERROR: CP210x device not found!"; exit 1; \
-	fi; \
-	echo "⚓ Using $$PORT"; \
-	~/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin/STM32_Programmer_CLI -c port=$$PORT -w $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS) -v
+	./flash-uart.sh $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
 
 #######################################
 # format
