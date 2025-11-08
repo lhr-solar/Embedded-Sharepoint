@@ -54,11 +54,11 @@ uint8_t SD_SPI_Init(sd_handle_t *sd) {
     sd->hspi->Instance = SPI2;
     sd->hspi->Init.Mode = SPI_MODE_MASTER;
     sd->hspi->Init.Direction = SPI_DIRECTION_2LINES;
-    sd->hspi->Init.DataSize = SPI_DATASIZE_8BIT;
+    sd->hspi->Init.DataSize = SPI_DATASIZE_8BIT; // before 8 BIT
     sd->hspi->Init.CLKPolarity = SPI_POLARITY_LOW;
     sd->hspi->Init.CLKPhase = SPI_PHASE_1EDGE;
     sd->hspi->Init.NSS = SPI_NSS_SOFT;
-    sd->hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16; //before: 16
+    sd->hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64; //before worked: 16
     sd->hspi->Init.FirstBit = SPI_FIRSTBIT_MSB;
     sd->hspi->Init.TIMode = SPI_TIMODE_DISABLE;
     sd->hspi->Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -84,7 +84,7 @@ uint8_t SD_Transmit(sd_handle_t *sd, uint8_t data) {
 
 void SD_SendDummyClocks(sd_handle_t *sd) { //wakes up sd card
     SD_Deselect(sd);
-    for (int i = 0; i < 10; i++) SD_Transmit(sd, 0xFF);
+    for (int i = 0; i < 10; i++) SD_Transmit(sd, 0xFF); //worked: i<10
 }
 
 uint8_t SD_SendCommand(sd_handle_t *sd, uint8_t cmd, uint32_t arg, uint8_t crc) {
@@ -109,7 +109,9 @@ uint8_t SD_SendCommand(sd_handle_t *sd, uint8_t cmd, uint32_t arg, uint8_t crc) 
 }
 
 uint8_t SD_Init(sd_handle_t *sd) {
+    HAL_Delay(10); 
     SD_SendDummyClocks(sd);
+
 
     uint8_t response;
     int timeout = 0xFFFF;
