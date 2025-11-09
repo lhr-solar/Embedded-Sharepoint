@@ -31,7 +31,7 @@ case "$OS" in
         STM32PROG="$HOME/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin/STM32_Programmer_CLI"
         ;;
     Darwin*)
-        STM32PROG="/Applications/STM32CubeProgrammer.app/Contents/MacOs/STM32_Programmer_CLI"
+        STM32PROG="/Applications/STMicroelectronics/STM32Cube/STM32CubeProgrammer/STM32CubeProgrammer.app/Contents/Resources/bin/STM32_Programmer_CLI"
         ;;
     *)
         echo "❌ Unsupported OS: $OS"
