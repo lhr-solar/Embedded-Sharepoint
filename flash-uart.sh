@@ -16,7 +16,7 @@ if [[ -z "$FLASH_FILE" || -z "$FLASH_ADDRESS" ]]; then
 fi
 
 if [[ ! -f "$FLASH_FILE" ]]; then
-    echo "❌ ERROR: Flash file does not exist: $FLASH_FILE"
+    echo "ERROR: Flash file does not exist: $FLASH_FILE"
     exit 1
 fi
 
@@ -24,7 +24,7 @@ fi
 # Detect OS
 # ----------------------------
 OS="$(uname -s)"
-echo "🖥  OS detected: $OS"
+echo "OS detected: $OS"
 
 case "$OS" in
     Linux*)
@@ -34,7 +34,7 @@ case "$OS" in
         STM32PROG="/Applications/STMicroelectronics/STM32Cube/STM32CubeProgrammer/STM32CubeProgrammer.app/Contents/Resources/bin/STM32_Programmer_CLI"
         ;;
     *)
-        echo "❌ Unsupported OS: $OS"
+        echo "Unsupported OS: $OS"
         exit 1
         ;;
 esac
@@ -43,7 +43,7 @@ esac
 # Check STM32CubeProgrammer
 # ----------------------------
 if [[ ! -x "$STM32PROG" ]]; then
-    echo "❌ ERROR: STM32_Programmer_CLI not found at:"
+    echo "ERROR: STM32_Programmer_CLI not found at:"
     echo "   $STM32PROG"
     echo "   Please install STM32CubeProgrammer or fix the path."
     exit 1
@@ -52,7 +52,7 @@ fi
 # ----------------------------
 # Detect CP210x UART
 # ----------------------------
-echo "🌉 Detecting CP210x UART bridge..."
+echo "Detecting CP210x UART bridge..."
 
 detect_linux() {
     for t in /dev/ttyUSB*; do
@@ -89,7 +89,7 @@ else
 fi
 
 if [[ -z "$PORT" ]]; then
-    echo "❌ ERROR: CP210x device not found!"
+    echo "ERROR: CP210x device not found!"
     echo "   Make sure your CP2102/CP210x USB-UART is connected."
     exit 1
 fi
@@ -99,14 +99,14 @@ echo "⚓ Using $PORT"
 # ----------------------------
 # Flash
 # ----------------------------
-echo "🔦 Flashing $FLASH_FILE to $FLASH_ADDRESS"
+echo "Flashing $FLASH_FILE to $FLASH_ADDRESS"
 $STM32PROG -c port="$PORT" -w "$FLASH_FILE" "$FLASH_ADDRESS" -v
 RET=$?
 
 if [[ $RET -eq 0 ]]; then
-    echo "✅ Flash complete"
+    echo "Flash complete"
 else
-    echo "❌ Flash failed (exit $RET)"
+    echo "Flash failed (exit $RET)"
 fi
 
 exit $RET
