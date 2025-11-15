@@ -39,6 +39,7 @@
 #include "sdcard.h"
 extern sd_handle_t sd;
 
+
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 
@@ -90,7 +91,8 @@ DSTATUS USER_initialize (
     // return SD_SPI_Init(pdrv);
 
     return (SD_Init(&sd) == 0) ? 0 : STA_NOINIT;
-
+    //return (SD_Init(&sd, DEBUG_PORT, DEBUG_PIN) == 0) ? 0 : STA_NOINIT;
+    
   /* USER CODE END INIT */
 }
 
@@ -128,7 +130,13 @@ DRESULT USER_read (
   /* USER CODE BEGIN READ */
     //return RES_OK;
     
-  return (SD_ReadSector(&sd, sector, buff) == 0) ? RES_OK : RES_ERROR;
+    for (UINT i = 0; i < count; i++) {
+        if (SD_ReadSector(&sd, sector + i, buff + i * 512) != 0)
+            return RES_ERROR;
+    }
+    return RES_OK;
+
+  // return (SD_ReadSector(&sd, sector, buff) == 0) ? RES_OK : RES_ERROR;
 
   /* USER CODE END READ */
 }
@@ -152,8 +160,15 @@ DRESULT USER_write (
   /* USER CODE BEGIN WRITE */
   /* USER CODE HERE */
     //return RES_OK;
-    
-    return (SD_WriteSector(&sd, buff, sector, count) == 0) ? RES_OK : RES_ERROR;
+    //return (SD_WriteSector(&sd, sector, buff) == 0) ? RES_OK : RES_ERROR;
+
+    for (UINT i = 0; i < count; i++) {
+        if (SD_WriteSector(&sd, sector + i, buff + i * 512) != 0)
+            return RES_ERROR;
+    }
+    return RES_OK;
+
+    //return (SD_WriteSector(&sd, buff, sector, count) == 0) ? RES_OK : RES_ERROR;
 
   /* USER CODE END WRITE */
 }

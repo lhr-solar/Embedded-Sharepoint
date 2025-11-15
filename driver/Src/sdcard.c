@@ -8,6 +8,8 @@ extern SPI_HandleTypeDef hspi2;
 #define CMD17 17 // Read single block
 #define CMD24 24 // Write single block
 
+
+
 uint8_t SD_SPI_Init(sd_handle_t *sd) {
 
     /*Creates a structure to configure GPIO pins.*/
@@ -58,7 +60,7 @@ uint8_t SD_SPI_Init(sd_handle_t *sd) {
     sd->hspi->Init.CLKPolarity = SPI_POLARITY_LOW;
     sd->hspi->Init.CLKPhase = SPI_PHASE_1EDGE;
     sd->hspi->Init.NSS = SPI_NSS_SOFT;
-    sd->hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64; //before worked: 16
+    sd->hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128; //before worked: 16  new worked: 64
     sd->hspi->Init.FirstBit = SPI_FIRSTBIT_MSB;
     sd->hspi->Init.TIMode = SPI_TIMODE_DISABLE;
     sd->hspi->Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -77,39 +79,88 @@ uint8_t SD_Transmit(sd_handle_t *sd, uint8_t data) {
     // recieve 1 byte from SD card
     // return received;
 
-    uint8_t received = 0;
-    HAL_SPI_TransmitReceive(sd->hspi, &data, &received, 1, HAL_MAX_DELAY);
-    return received;
+    uint8_t dummy;
+
+    while (1)
+    {
+        HAL_GPIO_WritePin(sd->cs_port, sd->cs_pin, GPIO_PIN_RESET); // CS low (active)
+        HAL_SPI_TransmitReceive(&hspi2, &data, &dummy, sizeof(data), HAL_MAX_DELAY);
+        HAL_GPIO_WritePin(sd->cs_port, sd->cs_pin, GPIO_PIN_SET);   // CS high (inactive)
+        HAL_Delay(1000);
+    }
+
+    return dummy;
 }
 
 void SD_SendDummyClocks(sd_handle_t *sd) { //wakes up sd card
-    SD_Deselect(sd);
+    //SD_Deselect(sd);
+
     for (int i = 0; i < 10; i++) SD_Transmit(sd, 0xFF); //worked: i<10
+    
+
 }
 
+// Wait until SD card is ready (returns 0xFF)
+static void SD_WaitNotBusy(sd_handle_t *sd) {
+    uint8_t resp;
+    do {
+        resp = SD_Transmit(sd, 0xFF);
+    } while (resp != 0xFF);
+}
+
+// Send command and return R1 response
 uint8_t SD_SendCommand(sd_handle_t *sd, uint8_t cmd, uint32_t arg, uint8_t crc) {
-    
+    SD_WaitNotBusy(sd);       // Wait until card is ready
     SD_Deselect(sd);
-    SD_Transmit(sd, 0xFF); //use 0xFF to generate 8 SPI clock cycles.
+    SD_Transmit(sd, 0xFF);    // Dummy 8 clocks
     SD_Select(sd);
 
-    SD_Transmit(sd, 0x40 | cmd); //argument command 4 byte
-    SD_Transmit(sd, arg >> 24);
-    SD_Transmit(sd, arg >> 16);
-    SD_Transmit(sd, arg >> 8);
-    SD_Transmit(sd, arg);
+    // Send command packet
+    SD_Transmit(sd, 0x40 | cmd);
+    SD_Transmit(sd, (arg >> 24) & 0xFF);
+    SD_Transmit(sd, (arg >> 16) & 0xFF);
+    SD_Transmit(sd, (arg >> 8) & 0xFF);
+    SD_Transmit(sd, arg & 0xFF);
     SD_Transmit(sd, crc);
 
+    // Wait for R1 response (bit7 == 0)
     uint8_t response;
     for (int i = 0; i < 8; i++) {
         response = SD_Transmit(sd, 0xFF);
         if (!(response & 0x80)) break;
     }
+
+    SD_Deselect(sd);
+    SD_Transmit(sd, 0xFF); // 8 more clocks after deselect
+
     return response;
 }
+// uint8_t SD_SendCommand(sd_handle_t *sd, uint8_t cmd, uint32_t arg, uint8_t crc) {
+    
+//     SD_Deselect(sd);
+//     SD_Transmit(sd, 0xFF); //use 0xFF to generate 8 SPI clock cycles.
+//     SD_Select(sd);
+
+//     SD_Transmit(sd, 0x40 | cmd); //argument command 4 byte
+//     SD_Transmit(sd, arg >> 24);
+//     SD_Transmit(sd, arg >> 16);
+//     SD_Transmit(sd, arg >> 8);
+//     SD_Transmit(sd, arg);
+//     SD_Transmit(sd, crc);
+
+//     uint8_t response;
+//     for (int i = 0; i < 8; i++) {
+//         response = SD_Transmit(sd, 0xFF);
+//         if (!(response & 0x80)) break;
+//     }
+//     return response;
+// }
 
 uint8_t SD_Init(sd_handle_t *sd) {
+//uint8_t SD_Init(sd_handle_t *sd, GPIO_TypeDef* debug_port, uint16_t debug_pin) {
+
     HAL_Delay(10); 
+
     SD_SendDummyClocks(sd);
 
 

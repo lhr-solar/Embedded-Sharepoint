@@ -4,11 +4,11 @@
 //#include "stm32xx_hal.h"
 #include "fatfs.h"
 #include "ffconf.h"
+#include "ff.h"
 #include "user_diskio.h"
 #include "sdcard.h"
 #include <string.h>
 #include <stdio.h>
-#include "ff.h"
 #include <stdarg.h>
 
 //#include "gpio.h"
@@ -17,6 +17,8 @@ sd_handle_t sd;
 
 // UART handle for debug printing
 UART_HandleTypeDef huart1;
+
+SPI_HandleTypeDef hspi2;
 
 // FatFs objects
 FATFS fs;
@@ -70,9 +72,48 @@ void LED_BlinkCount(int count)
 
 int main(void)
 {
+    // HAL_Init();
+    // SystemClock_Config();
+
+    // // --- Configure SD handle ---
+    // sd.hspi = &hspi2;
+    // sd.cs_port = GPIOB;
+    // sd.cs_pin = GPIO_PIN_1;
+
+    // // --- Initialize SPI & GPIO (includes your CS setup) ---
+    // if (SD_SPI_Init(&sd) != 0) {
+    //     Error_Handler();
+    // }
+
+    // //SD_Transmit(&sd, 0xAF);
+
+    // //     uint8_t pattern = 0xAF; // simple pattern
+    // //     uint8_t dummy;
+
+    // // while (1)
+    // // {
+    // //     HAL_GPIO_WritePin(sd.cs_port, sd.cs_pin, GPIO_PIN_RESET); // CS low (active)
+    // //     HAL_SPI_TransmitReceive(&hspi2, &pattern, &dummy, sizeof(pattern), HAL_MAX_DELAY);
+    // //     HAL_GPIO_WritePin(sd.cs_port, sd.cs_pin, GPIO_PIN_SET);   // CS high (inactive)
+    // //     HAL_Delay(1000);
+    // // }
+
+    // while (1)
+    // {
+    //     SD_SendDummyClocks(&sd);
+    //     // Toggle LED to indicate dummy clocks were sent
+    //     HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
+    //     HAL_Delay(500);
+    // }
+
 
     HAL_Init();
     LED_Init();
+
+    // --- Configure SD handle ---
+    sd.hspi = &hspi2;
+    sd.cs_port = GPIOB;
+    sd.cs_pin = GPIO_PIN_1;
 
     HAL_GPIO_WritePin(DEBUG_PORT, DEBUG_PIN, GPIO_PIN_RESET);
 
@@ -95,7 +136,7 @@ int main(void)
     if (spi_status == 0)
     {
         // SPI init success → raise debug pin
-        // HAL_GPIO_WritePin(DEBUG_PORT, DEBUG_PIN, GPIO_PIN_SET);
+        //HAL_GPIO_WritePin(DEBUG_PORT, DEBUG_PIN, GPIO_PIN_SET);
     }
     else
     {
@@ -104,26 +145,98 @@ int main(void)
 
     // pre mount filesystem sd.init
 
+    //uint8_t sd_status = SD_Init(&sd);
     uint8_t sd_status = SD_Init(&sd);
 
     if (sd_status == 0)
     {
-        // SPI init success → raise debug pin
-        //HAL_GPIO_WritePin(DEBUG_PORT, DEBUG_PIN, GPIO_PIN_SET);
+        HAL_GPIO_WritePin(DEBUG_PORT, DEBUG_PIN, GPIO_PIN_SET);
     }
     else
     {
         while(1);
     }
 
+
     // --- Step 2: Mount filesystem ---
     FATFS fs;
     FRESULT fr = f_mount(&fs, "", 1);
     if (fr != FR_OK)
     {
-        while(1);
+         while(1);
     }
-    HAL_GPIO_WritePin(DEBUG_PORT, DEBUG_PIN, GPIO_PIN_SET);
+
+    //HAL_GPIO_WritePin(DEBUG_PORT, DEBUG_PIN, GPIO_PIN_SET);
+    uint8_t testByte = 0xAB;  // dummy byte / idle clock
+    SD_Transmit(&sd, testByte);
+
+    // test sd transmit:
+    // uint8_t test = 0xFF;
+    // for (int i = 0; i < 10; i++) {
+    //     SD_Transmit(&sd, test);
+    //     //HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
+    //     HAL_GPIO_WritePin(DEBUG_PORT, DEBUG_PIN, GPIO_PIN_SET);
+    //     HAL_Delay(100);
+    // }
+
+    // uint8_t sent = 0xFF;       // dummy clocks / idle byte
+    // uint8_t received = SD_Transmit(&sd, sent);
+
+    // if (received == 0xFF) {
+    //     HAL_GPIO_WritePin(DEBUG_PORT, DEBUG_PIN, GPIO_PIN_SET); // expected idle response
+    // } else {
+    //     HAL_GPIO_WritePin(DEBUG_PORT, DEBUG_PIN, GPIO_PIN_RESET); // something is wrong
+    // }
+
+    // test sd command
+    // uint8_t r = SD_SendCommand(&sd, 0, 0, 0x95); // CMD0
+    // if (r == 0x01) {
+    //     HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET); // LED ON → CMD0 OK
+    // } else {
+    //     while(1); // LED stays OFF → CMD0 failed
+    // }
+
+    uint8_t response = SD_SendCommand(&sd, 0, 0, 0x95); // CMD0
+    if (response == 0x01) // expected response: idle state
+        HAL_GPIO_WritePin(DEBUG_PORT, DEBUG_PIN, GPIO_PIN_SET); // LED ON
+    else
+        HAL_GPIO_WritePin(DEBUG_PORT, DEBUG_PIN, GPIO_PIN_RESET); // LED OFF
+
+    while (1)
+    {
+        // optional: toggle LED to show alive
+        HAL_Delay(500);
+        HAL_GPIO_TogglePin(DEBUG_PORT, DEBUG_PIN);
+    }
+
+    // test readsector
+    // uint8_t buffer[512] = {0};
+    // uint8_t r = SD_ReadSector(&sd, 0, buffer);
+    // if (r == 0) {
+    //     HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET); // LED ON → read succeeded
+    // } else {
+    //     while(1); // LED stays OFF → read failed
+    // }
+
+        // test writesector
+    uint8_t buffer[512];
+    memset(buffer, 0xAA, 512); // test pattern
+    uint8_t r = SD_WriteSector(&sd, 0, buffer);
+    if (r == 0) {
+        HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET); // LED ON → write succeeded
+    } else {
+        while(1); // LED stays OFF → write failed
+    }
+
+    // --- Step 2: Mount filesystem ---
+    // FATFS fs;
+    // FRESULT fr = f_mount(&fs, "", 1);
+    // if (fr != FR_OK)
+    // {
+    //      while(1);
+    // }
+
+    //HAL_GPIO_WritePin(DEBUG_PORT, DEBUG_PIN, GPIO_PIN_SET);
 
 
     // --- Step 3: Open file for writing ---
@@ -297,48 +410,97 @@ void Error_Handler(void)
     while(1);
 }
 
-// Basic system clock (adjust as CubeMX generated if needed)
 void SystemClock_Config(void)
 {
-  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+    RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+    RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
-  /** Configure the main internal regulator output voltage
-  */
-  if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK)
-  {
-    Error_Handler();
-  }
 
-  /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = 1;
-  RCC_OscInitStruct.PLL.PLLN = 10;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV7;
-  RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
-  RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-  {
-    Error_Handler();
-  }
+    /** Configure the main internal regulator output voltage */
+    if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK)
+    {
+        Error_Handler();
+    }
 
-  /** Initializes the CPU, AHB and APB buses clocks
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
-  {
-    Error_Handler();
-  }
+    /** Initializes the RCC Oscillators according to the specified parameters
+      * in the RCC_OscInitTypeDef structure.
+      */
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+    RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+    RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+    RCC_OscInitStruct.PLL.PLLM = 1;
+    RCC_OscInitStruct.PLL.PLLN = 10;
+    RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV7;
+    RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
+    RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
+
+
+    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+    {
+        Error_Handler();
+    }
+
+
+    /** Initializes the CPU, AHB and APB buses clocks */
+    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
+                                | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+    RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+
+
+    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
+    {
+        Error_Handler();
+    }
 }
+
+// Basic system clock (adjust as CubeMX generated if needed) ver1 old
+// void SystemClock_Config(void)
+// {
+//   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+//   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+
+//   /** Configure the main internal regulator output voltage
+//   */
+//   if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK)
+//   {
+//     Error_Handler();
+//   }
+
+//   /** Initializes the RCC Oscillators according to the specified parameters
+//   * in the RCC_OscInitTypeDef structure.
+//   */
+//   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+//   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+//   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+//   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+//   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+//   RCC_OscInitStruct.PLL.PLLM = 1;
+//   RCC_OscInitStruct.PLL.PLLN = 10;
+//   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV7;
+//   RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
+//   RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
+//   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+//   {
+//     Error_Handler();
+//   }
+
+//   /** Initializes the CPU, AHB and APB buses clocks
+//   */
+//   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+//                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+//   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+//   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+//   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+//   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+
+//   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
+//   {
+//     Error_Handler();
+//   }
+// }

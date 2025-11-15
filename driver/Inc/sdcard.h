@@ -21,6 +21,9 @@ typedef struct {
 //void SD_SPI_Init(sd_handle_t *sd);
 uint8_t SD_SPI_Init(sd_handle_t *sd);
 uint8_t SD_Init(sd_handle_t *sd);
+//uint8_t SD_Init(sd_handle_t *sd, GPIO_TypeDef* debug_port, uint16_t debug_pin);
+
+void SD_SendDummyClocks(sd_handle_t *sd);  // <<< Add this line
 
 
 
@@ -37,5 +40,7 @@ uint8_t SD_SendCommand(sd_handle_t *sd, uint8_t cmd, uint32_t arg, uint8_t crc);
 // Basic read/write
 uint8_t SD_ReadSector(sd_handle_t *sd, uint32_t sector, uint8_t *buffer);
 uint8_t SD_WriteSector(sd_handle_t *sd, uint32_t sector, const uint8_t *buffer);
+
+
 
 #endif
