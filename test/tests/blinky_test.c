@@ -43,7 +43,7 @@ int main(){
 
     while(1){
         HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
-        HAL_Delay(1000);
+        HAL_Delay(500);
     }
 
     return 0;
