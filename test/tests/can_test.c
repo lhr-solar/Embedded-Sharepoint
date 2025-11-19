@@ -111,9 +111,17 @@ int main(void) {
   TxHeader.ExtId = 0x00; // Not used for Standard ID
   TxHeader.RTR = CAN_RTR_DATA; // Data frame
   TxHeader.IDE = CAN_ID_STD; // Standard ID type
-  TxHeader.DLC = 1; // Data length code
+  TxHeader.DLC = 8; // Data length code
 
-  TxData[0] = 55;
+  TxData[0] = 10;
+  TxData[1] = 20;
+  TxData[2] = 30;
+  TxData[3] = 40;
+  TxData[4] = 50;
+  TxData[5] = 60;
+  TxData[6] = 70;
+  TxData[7] = 80;
+
 
   while (1) {
     if (HAL_CAN_AddTxMessage(hcan1, &TxHeader, TxData, &TxMailbox) != HAL_OK)
@@ -122,7 +130,7 @@ int main(void) {
     }
 
     HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_11);
-    HAL_Delay(100);
+    HAL_Delay(1);
   }
 
   return 0;
