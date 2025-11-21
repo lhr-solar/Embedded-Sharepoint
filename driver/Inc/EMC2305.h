@@ -5,56 +5,41 @@
 #include "stm32xx_hal.h"
 #include <stdint.h>
 
-/* Public handle (opaque-friendly but concrete) */
+// Device handle
 typedef struct {
-    I2C_HandleTypeDef *hi2c;   /* STM32 HAL I2C handle */
-    uint16_t dev_addr;         /* HAL convention: 7-bit address << 1 */
+    I2C_HandleTypeDef *hi2c;   // STM32 HAL I2C handle
+    uint16_t dev_addr;         // HAL convention: 7-bit address << 1
 } EMC2305_HandleTypeDef;
 
-/* Lifecycle */
-HAL_StatusTypeDef EMC2305_Open(EMC2305_HandleTypeDef *h, I2C_HandleTypeDef *hi2c, uint16_t dev_addr);
-void             EMC2305_Close(EMC2305_HandleTypeDef *h);
-
-/* Basic register helpers */
-HAL_StatusTypeDef EMC2305_ReadReg(EMC2305_HandleTypeDef *h, uint8_t reg, uint8_t *value);
-HAL_StatusTypeDef EMC2305_WriteReg(EMC2305_HandleTypeDef *h, uint8_t reg, uint8_t value);
-
-/* Fan control (fan index 1..5) */
-HAL_StatusTypeDef EMC2305_SetDutyPercentFan(EMC2305_HandleTypeDef *h, unsigned fan, uint8_t percent);
-HAL_StatusTypeDef EMC2305_ReadDriveFan(EMC2305_HandleTypeDef *h, unsigned fan, uint8_t *out_val);
-HAL_StatusTypeDef EMC2305_SetFscEnabled(EMC2305_HandleTypeDef *h, unsigned fan, uint8_t enable);
-
-/* Tachometer */
-HAL_StatusTypeDef EMC2305_ReadTachRawFan(EMC2305_HandleTypeDef *h, unsigned fan, uint16_t *out_count);
-/* Convert raw tach count to RPM.
-   range_multiplier = 1,2,4,8 depending on RNGx bits (see datasheet) */
-uint32_t          EMC2305_TachCountToRpm(uint16_t tach_count, uint8_t range_multiplier);
-
-/* Misc */
-HAL_StatusTypeDef EMC2305_MaskAlert(EMC2305_HandleTypeDef *h, uint8_t mask);
-
-
-/* Config */
+// I2C Response Timeout
 #ifndef EMC2305_I2C_TIMEOUT
-#define EMC2305_I2C_TIMEOUT 100u
+#define EMC2305_I2C_TIMEOUT 100u // 100ms default
 #endif
 
-/* Register map -- replace with values from the EMC2305 datasheet */
-/* FanChip_regs.h  -- register map / bit masks for EMC2305 (EMC2301/2/3/5 family) */
+// Register map from EMC2305 datasheet
+// https://ww1.microchip.com/downloads/aemDocuments/documents/MSLD/ProductDocuments/DataSheets/EMC2301-2-3-5-Data-Sheet-DS20006532A.pdf
 
-/* Registers (hex) */
-#define EMC2305_REG_CONFIGURATION           0x20u
-#define EMC2305_REG_FAN_STATUS              0x24u
-#define EMC2305_REG_FAN_STALL_STATUS        0x25u
-#define EMC2305_REG_FAN_SPIN_STATUS         0x26u
-#define EMC2305_REG_DRIVE_FAIL_STATUS       0x27u
-#define EMC2305_REG_FAN_INTERRUPT_ENABLE    0x29u
-#define EMC2305_REG_PWM_POLARITY            0x2Au
-#define EMC2305_REG_PWM_OUTPUT_CONFIG       0x2Bu
-#define EMC2305_REG_PWM_BASEF45             0x2Cu
-#define EMC2305_REG_PWM_BASEF123            0x2Du
+// Device Configuration
+#define EMC2305_REG_CONFIGURATION           0x20u // The Configuration register controls the basic functionality of the EMC2301/2/3/5. The Configuration Register is software locked.
+#define EMC2305_REG_FAN_INTERRUPT_ENABLE    0x29u // The Fan Interrupt Enable register controls the masking for each fan channel. When a channel is enabled, it will cause the ALERT pin to be asserted when an Error condition is detected. • ‘1’ - An Error condition (Stall, Spin Up, Drive Fail) on fan X will cause the ALERT pin to be asserted. • ‘0’ (default) - An Error condition on fan X will not cause the ALERT pin to be asserted; however, the status registers will be updated normally.
+#define EMC2305_REG_PWM_POLARITY            0x2Au // The PWM Polarity Configuration registers control the output type and polarity of all PWM outputs.
+#define EMC2305_REG_PWM_OUTPUT_CONFIG       0x2Bu // The PWM Output Configuration register controls the PWM output type as push-pull or open drain.
+#define EMC2305_REG_PWM_BASEF45             0x2Cu // The PWM BASEF45 Register controls the base frequency of PWM drivers 4 and 5.
+#define EMC2305_REG_PWM_BASEF123            0x2Du // The PWM BaseF123 Register controls the base frequency of PWM drivers 1, 2 and 3.
+#define EMC2305_REG_SW_LOCK                 0xEFu // Software Lock Register - bit 0 LOCK Enables the SWL function: 1 = All SWL registers are locked and read-only. Unlock occurs on power cycle. 0 = All SWL registers are writable.
+#define EMC2305_REG_PRODUCT_FEAT            0xFCu // Product Features Register - bit 5-3: ADR[2:0]: SMBus address determined by the ADDR_SEL pin decode. bit 2-0:  FSP[2:0]: Default Fan Speed determined by the CLK pin decode. This is conditional on ADDR_SEL.
+#define EMC2305_REG_PRODUCT_ID              0xFDu // Production Identification Register - bit 1-0: PID[1:0]: Product Identification Register. Device defines bit pattern. 00 for EMC2305
+#define EMC2305_REG_MANUFACTURER_ID         0xFEu // Manufacturer Identification Register - Hard coded fixed value of 0x5D
+#define EMC2305_REG_REVISION                0xFFu // Silicon Revision Register - Hard coded fixed value of 0x80
 
-/* Fan drive setting registers (read/write in Direct mode, read-only in FSC) */
+// Device Status
+#define EMC2305_REG_FAN_STATUS              0x24u // The Fan Status register indicates that the fan driver has stalled or failed or that the Watchdog Timer has expired (see Section 4.11 “Watchdog Timer”).
+#define EMC2305_REG_FAN_STALL_STATUS        0x25u // The Fan Stall Status register indicates which fan driver has detected a stalled condition (see Section 4.4.3 “Stalled Fan”). All bits are cleared upon a read if the Error condition has been removed.
+#define EMC2305_REG_FAN_SPIN_STATUS         0x26u // The Fan Spin Status register indicates which fan driver has failed to spin-up (see Section 4.8 “Spin Up Rou tine”). All bits are cleared upon a read if the Error condition has been removed.
+#define EMC2305_REG_DRIVE_FAIL_STATUS       0x27u // The Fan Drive Fail Status register indicates which fan driver cannot drive to the programmed speed even at 100% duty cycle (see Section 4.4.4 “Aging Fan or Invalid Drive Detection” and Register 6-16). All bits are cleared upon a read if the Error condition has been removed.
+
+// Fan 1
+// BEFORE OTHERS - BREAK UP INTO READ/WRITE!!!!!
 #define EMC2305_REG_FAN1_SETTING            0x30u
 #define EMC2305_REG_PWM1_DIVIDE             0x31u
 #define EMC2305_REG_FAN1_CONFIG1            0x32u
@@ -70,6 +55,21 @@ HAL_StatusTypeDef EMC2305_MaskAlert(EMC2305_HandleTypeDef *h, uint8_t mask);
 #define EMC2305_REG_FAN1_TACH_TARGET_H      0x3Du
 #define EMC2305_REG_FAN1_TACH_READING_H     0x3Eu
 #define EMC2305_REG_FAN1_TACH_READING_L     0x3Fu
+
+// Fan 2
+
+
+// Fan 3
+
+
+// Fan 4
+
+
+// Fan 5
+
+
+/* Fan drive setting registers (read/write in Direct mode, read-only in FSC) */
+
 
 #define EMC2305_REG_FAN2_SETTING            0x40u
 #define EMC2305_REG_PWM2_DIVIDE             0x41u
@@ -136,11 +136,7 @@ HAL_StatusTypeDef EMC2305_MaskAlert(EMC2305_HandleTypeDef *h, uint8_t mask);
 #define EMC2305_REG_FAN5_TACH_READING_L     0x7Fu
 
 /* Software lock, product features and identification */
-#define EMC2305_REG_SW_LOCK                 0xEFu
-#define EMC2305_REG_PRODUCT_FEAT            0xFCu
-#define EMC2305_REG_PRODUCT_ID              0xFDu
-#define EMC2305_REG_MANUFACTURER_ID         0xFEu
-#define EMC2305_REG_REVISION                0xFFu
+
 
 /* ---------------------- Useful bit masks ---------------------- */
 /* CONFIG (0x20) bits */
