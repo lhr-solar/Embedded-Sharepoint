@@ -1,14 +1,9 @@
-/*
- * File: FanChip.h
- * Simple EMC2305 I2C driver for STM32L4 using HAL.
- */
+// Driver for Microchip EMC2305 PWM Fan Controller
 
-#ifndef FANCHIP_H_
-#define FANCHIP_H_
+#pragma once
 
-#include "stm32l4xx_hal.h"
+#include "stm32xx_hal.h"
 #include <stdint.h>
-
 
 /* Public handle (opaque-friendly but concrete) */
 typedef struct {
@@ -230,5 +225,3 @@ HAL_StatusTypeDef EMC2305_MaskAlert(EMC2305_HandleTypeDef *h, uint8_t mask);
 
 /* Control register bits (placeholder) */
 #define EMC2305_CTRL_FAN_ENABLE (1u << 0)
-
-#endif /* FANCHIP_H_ */
