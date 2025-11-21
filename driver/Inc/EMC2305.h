@@ -123,75 +123,75 @@ typedef struct {
 #define EMC2305_REG_FAN5_TACH_READING_H    0x7Eu // Fan 5 Tachometer Reading High Byte Register - The TACH Reading Registers describe the current tachometer reading for each of the fans (see Section 4.4 “Tachometer Measurement”).
 #define EMC2305_REG_FAN5_TACH_READING_L    0x7Fu // Fan 5 Tachometer Reading Low Byte Register - The TACH Reading Registers describe the current tachometer reading for each of the fans (see Section 4.4 “Tachometer Measurement”).
 
-// /* ---------------------- Useful bit masks ---------------------- */
-// /* CONFIG (0x20) bits */
-// #define EMC2305_CFG_MASK_ALERT              (1u << 7)  /* MASK - mask ALERT pin when set */
-// #define EMC2305_CFG_DIS_TO                  (1u << 6)  /* DIS_TO - SMBus timeout disable (I2C compat) */
-// #define EMC2305_CFG_WD_EN                   (1u << 5)  /* WD_EN - enable watchdog continuous mode */
-// #define EMC2305_CFG_DRECK                   (1u << 1)  /* DRECK - CLK pin drives internal clock when set (output) */
-// #define EMC2305_CFG_USECK                   (1u << 0)  /* USECK - use external CLK pin as tach clock when set */
+// Bitmasks
+// Config (0x20) bits
+#define EMC2305_CFG_MASK_ALERT              (1u << 7)  /* MASK - mask ALERT pin when set */
+#define EMC2305_CFG_DIS_TO                  (1u << 6)  /* DIS_TO - SMBus timeout disable (I2C compat) */
+#define EMC2305_CFG_WD_EN                   (1u << 5)  /* WD_EN - enable watchdog continuous mode */
+#define EMC2305_CFG_DRECK                   (1u << 1)  /* DRECK - CLK pin drives internal clock when set (output) */
+#define EMC2305_CFG_USECK                   (1u << 0)  /* USECK - use external CLK pin as tach clock when set */
 
-// /* FAN STATUS (0x24) bits */
-// #define EMC2305_STAT_WATCH                  (1u << 7)  /* WATCH - watchdog fired (read-to-clear) */
-// #define EMC2305_STAT_DRVFAIL                (1u << 2)  /* Drive fail summary */
-// #define EMC2305_STAT_FNSPIN                 (1u << 1)  /* spin-up failure summary */
-// #define EMC2305_STAT_FNSTL                  (1u << 0)  /* stall summary */
+// Fan Status (0x24) bits
+#define EMC2305_STAT_WATCH                  (1u << 7)  /* WATCH - watchdog fired (read-to-clear) */
+#define EMC2305_STAT_DRVFAIL                (1u << 2)  /* Drive fail summary */
+#define EMC2305_STAT_FNSPIN                 (1u << 1)  /* spin-up failure summary */
+#define EMC2305_STAT_FNSTL                  (1u << 0)  /* stall summary */
 
-// /* FAN STALL (0x25) bits - F1..F5 stall */
-// #define EMC2305_FAN_STALL_F1                (1u << 0)
-// #define EMC2305_FAN_STALL_F2                (1u << 1)
-// #define EMC2305_FAN_STALL_F3                (1u << 2)
-// #define EMC2305_FAN_STALL_F4                (1u << 3)
-// #define EMC2305_FAN_STALL_F5                (1u << 4)
+// Fan Stall (0x25) bits - F1..F5 stall
+#define EMC2305_FAN_STALL_F1                (1u << 0)
+#define EMC2305_FAN_STALL_F2                (1u << 1)
+#define EMC2305_FAN_STALL_F3                (1u << 2)
+#define EMC2305_FAN_STALL_F4                (1u << 3)
+#define EMC2305_FAN_STALL_F5                (1u << 4)
 
-// /* FAN SPIN (0x26) bits - F1..F5 spin-up */
-// #define EMC2305_FAN_SPIN_F1                 (1u << 0)
-// #define EMC2305_FAN_SPIN_F2                 (1u << 1)
-// #define EMC2305_FAN_SPIN_F3                 (1u << 2)
-// #define EMC2305_FAN_SPIN_F4                 (1u << 3)
-// #define EMC2305_FAN_SPIN_F5                 (1u << 4)
+// Fan Spin (0x26) bits - F1..F5 spin-up
+#define EMC2305_FAN_SPIN_F1                 (1u << 0)
+#define EMC2305_FAN_SPIN_F2                 (1u << 1)
+#define EMC2305_FAN_SPIN_F3                 (1u << 2)
+#define EMC2305_FAN_SPIN_F4                 (1u << 3)
+#define EMC2305_FAN_SPIN_F5                 (1u << 4)
 
-// /* DRIVE FAIL (0x27) bits - F1..F5 drive fail */
-// #define EMC2305_DRIVE_FAIL_F1               (1u << 0)
-// #define EMC2305_DRIVE_FAIL_F2               (1u << 1)
-// #define EMC2305_DRIVE_FAIL_F3               (1u << 2)
-// #define EMC2305_DRIVE_FAIL_F4               (1u << 3)
-// #define EMC2305_DRIVE_FAIL_F5               (1u << 4)
+// Drive Fail (0x27) bits - F1..F5 drive fail
+#define EMC2305_DRIVE_FAIL_F1               (1u << 0)
+#define EMC2305_DRIVE_FAIL_F2               (1u << 1)
+#define EMC2305_DRIVE_FAIL_F3               (1u << 2)
+#define EMC2305_DRIVE_FAIL_F4               (1u << 3)
+#define EMC2305_DRIVE_FAIL_F5               (1u << 4)
 
-// /* FAN INTERRUPT ENABLE (0x29) bits */
-// #define EMC2305_ITEN_F1                     (1u << 0)
-// #define EMC2305_ITEN_F2                     (1u << 1)
-// #define EMC2305_ITEN_F3                     (1u << 2)
-// #define EMC2305_ITEN_F4                     (1u << 3)
-// #define EMC2305_ITEN_F5                     (1u << 4)
+// Fan Interrupt Enable (0x29) bits
+#define EMC2305_ITEN_F1                     (1u << 0)
+#define EMC2305_ITEN_F2                     (1u << 1)
+#define EMC2305_ITEN_F3                     (1u << 2)
+#define EMC2305_ITEN_F4                     (1u << 3)
+#define EMC2305_ITEN_F5                     (1u << 4)
 
-// /* PWM polarity (0x2A) bits - PLRITYn: when set polarity inverted */
-// #define EMC2305_PLRTY_FAN1                  (1u << 0)
-// #define EMC2305_PLRTY_FAN2                  (1u << 1)
-// #define EMC2305_PLRTY_FAN3                  (1u << 2)
-// #define EMC2305_PLRTY_FAN4                  (1u << 3)
-// #define EMC2305_PLRTY_FAN5                  (1u << 4)
+// PWM polarity (0x2A) bits - PLRITYn: when set PWM polarity is inverted */
+#define EMC2305_PLRTY_FAN1                  (1u << 0)
+#define EMC2305_PLRTY_FAN2                  (1u << 1)
+#define EMC2305_PLRTY_FAN3                  (1u << 2)
+#define EMC2305_PLRTY_FAN4                  (1u << 3)
+#define EMC2305_PLRTY_FAN5                  (1u << 4)
 
-// /* PWM output type (0x2B) PMOTn: push-pull when set, open-drain when clear */
-// #define EMC2305_PWMTYPE_FAN1                (1u << 0)
-// #define EMC2305_PWMTYPE_FAN2                (1u << 1)
-// #define EMC2305_PWMTYPE_FAN3                (1u << 2)
-// #define EMC2305_PWMTYPE_FAN4                (1u << 3)
-// #define EMC2305_PWMTYPE_FAN5                (1u << 4)
+// PWM output type (0x2B) PMOTn: push-pull when set, open-drain when clear
+#define EMC2305_PWMTYPE_FAN1                (1u << 0)
+#define EMC2305_PWMTYPE_FAN2                (1u << 1)
+#define EMC2305_PWMTYPE_FAN3                (1u << 2)
+#define EMC2305_PWMTYPE_FAN4                (1u << 3)
+#define EMC2305_PWMTYPE_FAN5                (1u << 4)
 
-// /* Fan Config1 (ENAGx bit in each fan CONFIG1) */
-// #define EMC2305_FAN_ENAG                    (1u << 7)  /* in each FANx CONFIG1: enable closed-loop FSC */
+// Fan Config1 (ENAGx bit in each fan CONFIG1)
+#define EMC2305_FAN_ENAG                    (1u << 7)  /* in each FANx CONFIG1: enable closed-loop FSC */
 
-// /* Fan Config2 (ENRCx, GHENx, DPTx, ERGx) helpers */
-// #define EMC2305_FAN2_ENRC                   (1u << 6)  /* ENRCx ramp-rate enable when ENAGx == 0 */
-// #define EMC2305_FAN2_GHEN                   (1u << 5)  /* glitch filter enable (TACH pin) */
-// #define EMC2305_FAN2_DPT_MASK               (0x18u)    /* bits 4..3 derivative option */
-// #define EMC2305_FAN2_ERG_MASK               (0x06u)    /* bits 2..1 error window */
+// Fan Config2 (ENRCx, GHENx, DPTx, ERGx in each fan CONFIG2)
+#define EMC2305_FAN2_ENRC                   (1u << 6)  /* ENRCx ramp-rate enable when ENAGx == 0 */
+#define EMC2305_FAN2_GHEN                   (1u << 5)  /* glitch filter enable (TACH pin) */
+#define EMC2305_FAN2_DPT_MASK               (0x18u)    /* bits 4..3 derivative option */
+#define EMC2305_FAN2_ERG_MASK               (0x06u)    /* bits 2..1 error window */
 
-// /* Product / ID */
-// #define EMC2305_PRODUCT_ID_REG              0xFDu
-// #define EMC2305_MANUFACTURER_ID             0x5Du     /* read-only fixed per datasheet */
-// #define EMC2305_DEV_EMC2305_PID             0x34u     /* FD POR value for EMC2305 */
+// Product ID
+#define EMC2305_PRODUCT_ID_REG              0xFDu
+#define EMC2305_MANUFACTURER_ID             0x5Du     /* read-only fixed per datasheet */
+#define EMC2305_DEV_EMC2305_PID             0x34u     /* FD POR value for EMC2305 */
 
 // /* Convenience constants */
 // #define EMC2305_TACH_READING_H(reg_base)    (reg_base + 0x0Eu) /* e.g. FAN1: 0x3E; used for convert helpers */
@@ -202,7 +202,13 @@ typedef struct {
 //  * - Many registers are software-lockable (SWL). See datasheet for SWL behavior.
 //  */
 
-
-
 // /* Control register bits (placeholder) */
 // #define EMC2305_CTRL_FAN_ENABLE (1u << 0)
+
+// Device Management Functions
+
+// Fan Configuration Functions
+
+// Fan Control Functions
+
+// Status & Measurement Functions

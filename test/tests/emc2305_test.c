@@ -196,8 +196,9 @@ int main(void) {
         HAL_Delay(1);
         HAL_I2C_Master_Receive(&hi2c1, 0x4D << 1, &val, 1, 100);
 
-        char buffer[20];
-        snprintf(buffer, sizeof(buffer), "%d", val);
+        char buffer[64];
+        char text[] = "Configuration: ";
+        snprintf(buffer, sizeof(buffer), "%s: %d\n", text, val);
         msgLen = sizeof(buffer) - 1;
         HAL_UART_Transmit(&huart1, (uint8_t*)buffer, msgLen, 1000);
 
@@ -214,7 +215,7 @@ int main(void) {
         HAL_I2C_Master_Transmit(&hi2c1, 0x4D << 1, (uint8_t[]) { reg, val }, 2, 100);
 
         HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_11);
-        HAL_Delay(100);
+        HAL_Delay(1000);
     }
 
     return 0;
