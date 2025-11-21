@@ -1,7 +1,11 @@
 #include "stm32xx_hal.h"
 #include "EMC2305.h"
+#include "UART.h"
+
+#include <stdio.h>
 
 I2C_HandleTypeDef hi2c1;
+UART_HandleTypeDef huart1;
 
 /**
   * @brief System Clock Configuration
@@ -68,18 +72,73 @@ int main(void) {
     };
     HAL_GPIO_Init(GPIOB, &led_init);
 
+    // UART init
+    GPIO_InitTypeDef InitStruct = { 0 };
+    RCC_PeriphCLKInitTypeDef PeriphClkInit = { 0 };
+    /* USER CODE BEGIN USART1_MspInit 0 */
+
+    /* USER CODE END USART1_MspInit 0 */
+
+    /** Initializes the peripherals clock
+    */
+    PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1;
+    PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
+    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
+    {
+        Error_Handler();
+    }
+
+    /* Peripheral clock enable */
+    __HAL_RCC_USART1_CLK_ENABLE();
+
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    /**USART1 GPIO Configuration
+    PA9     ------> USART1_TX
+    PA10     ------> USART1_RX
+    */
+    InitStruct.Pin = GPIO_PIN_9 | GPIO_PIN_10;
+    InitStruct.Mode = GPIO_MODE_AF_PP;
+    InitStruct.Pull = GPIO_NOPULL;
+    InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    InitStruct.Alternate = GPIO_AF7_USART1;
+    HAL_GPIO_Init(GPIOA, &InitStruct);
+
+    /* USER CODE BEGIN USART1_MspInit 1 */
+
+    /* USER CODE END USART1_MspInit 1 */
+
+    huart1.Instance = USART1;
+    huart1.Init.BaudRate = 115200;
+    huart1.Init.WordLength = UART_WORDLENGTH_8B;
+    huart1.Init.StopBits = UART_STOPBITS_1;
+    huart1.Init.Parity = UART_PARITY_NONE;
+    huart1.Init.Mode = UART_MODE_TX_RX;
+    huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+    huart1.Init.OverSampling = UART_OVERSAMPLING_16;
+    huart1.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+    huart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+
+    if (HAL_UART_Init(&huart1) != HAL_OK)
+    {
+        Error_Handler();
+    }
+
+    uint8_t data[] = "EMC2305 Fan Controller Test\r\n";
+    uint8_t msgLen = sizeof(data) - 1;
+    HAL_UART_Transmit(&huart1, data, msgLen, 1000);
+
     // initialize I2C pins on PSOM
     GPIO_InitTypeDef GPIO_InitStruct = { 0 };
-    RCC_PeriphCLKInitTypeDef PeriphClkInit = { 0 };
+    RCC_PeriphCLKInitTypeDef ClkInit = { 0 };
     /* USER CODE BEGIN I2C1_MspInit 0 */
 
     /* USER CODE END I2C1_MspInit 0 */
 
     /** Initializes the peripherals clock
     */
-    PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_I2C1;
-    PeriphClkInit.I2c1ClockSelection = RCC_I2C1CLKSOURCE_PCLK1;
-    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
+    ClkInit.PeriphClockSelection = RCC_PERIPHCLK_I2C1;
+    ClkInit.I2c1ClockSelection = RCC_I2C1CLKSOURCE_PCLK1;
+    if (HAL_RCCEx_PeriphCLKConfig(&ClkInit) != HAL_OK)
     {
         Error_Handler();
     }
@@ -128,7 +187,7 @@ int main(void) {
         Error_Handler();
     }
 
-    uint8_t reg = 0x20;
+    uint8_t reg = EMC2305_REG_CONFIGURATION;
     uint8_t val = 0;
 
     while (1) {
@@ -137,20 +196,25 @@ int main(void) {
         HAL_Delay(1);
         HAL_I2C_Master_Receive(&hi2c1, 0x4D << 1, &val, 1, 100);
 
+        char buffer[20];
+        snprintf(buffer, sizeof(buffer), "%d", val);
+        msgLen = sizeof(buffer) - 1;
+        HAL_UART_Transmit(&huart1, (uint8_t*)buffer, msgLen, 1000);
+
         // 1. Disable RPM/FSC for Fan2 (0x42 → 0x0B)
-        reg = 0x42; val = 0x0B;
+        reg = EMC2305_REG_FAN2_CONFIG1; val = 0x0B;
         HAL_I2C_Master_Transmit(&hi2c1, 0x4D << 1, (uint8_t[]) { reg, val }, 2, 100);
 
         // 2. OPTIONAL: Set PWM2 to push-pull instead of open drain (0x2B → bit1 = 1)
-        reg = 0x2B; val = 0x02;
-        HAL_I2C_Master_Transmit(&hi2c1, 0x4D << 1, (uint8_t[]) { reg, val }, 2, 100);
+        // reg = EMC2305_REG_PWM_OUTPUT_CONFIG; val = 0x02;
+        // HAL_I2C_Master_Transmit(&hi2c1, 0x4D << 1, (uint8_t[]) { reg, val }, 2, 100);
 
         // 3. Set PWM2 duty cycle to 50% (0x40 → 0x80)
-        reg = 0x40; val = 0x80;
+        reg = EMC2305_REG_FAN2_SETTING; val = 0x80;
         HAL_I2C_Master_Transmit(&hi2c1, 0x4D << 1, (uint8_t[]) { reg, val }, 2, 100);
 
         HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_11);
-        HAL_Delay(1);
+        HAL_Delay(100);
     }
 
     return 0;
