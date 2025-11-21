@@ -1,4 +1,5 @@
 #include "stm32xx_hal.h"
+#include "EMC2305.h"
 
 I2C_HandleTypeDef hi2c1;
 
