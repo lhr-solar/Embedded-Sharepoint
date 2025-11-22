@@ -48,6 +48,8 @@
             ] else if pkgs.stdenv.isDarwin then [
               pkgs.openocd
               pkgs.stlink
+              pkgs.gcc-arm-embedded
+              pkgs.lldb
               pkgs.openocd or null
             ] else [];
 
