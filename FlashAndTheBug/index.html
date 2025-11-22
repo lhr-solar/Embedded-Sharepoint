@@ -1022,7 +1022,7 @@ Make sure you've <a href="../SharepointSubmodule/">added Embedded Sharepoint</a>
 </ol>
 <p>Open a second terminal session to use GDB</p>
 <ol>
-<li>Run <code>gdb-multiarch build/(TARGET).elf</code>. If you aren't in root the filepath will look slightly different.</li>
+<li>Run <code>gdb-multiarch build/(TARGET).elf</code>. If you aren't in root the filepath will look slightly different. On mac you need to do <code>arm-none-eabi-gdb</code> instead of 'gdb'</li>
 <li>Verify that GDB is using the debug symbols from the <code>.elf</code> file.</li>
 <li>Run <code>tar extended-remote :3333</code> to connect to the OpenOCD GDB server.</li>
 </ol>
