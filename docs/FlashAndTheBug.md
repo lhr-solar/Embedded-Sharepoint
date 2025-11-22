@@ -156,7 +156,7 @@ To debug we'll use **OpenOCD**.
 
 Open a second terminal session to use GDB
 
-1. Run `gdb-multiarch build/(TARGET).elf`. If you aren't in root the filepath will look slightly different.
+1. Run `gdb-multiarch build/(TARGET).elf`. If you aren't in root the filepath will look slightly different. On mac you need to do `arm-none-eabi-gdb` instead of 'gdb'
 2. Verify that GDB is using the debug symbols from the `.elf` file.
 3. Run `tar extended-remote :3333` to connect to the OpenOCD GDB server.
 
