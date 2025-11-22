@@ -21,12 +21,15 @@ endif
 SHELL := /bin/bash
 
 #######################################
-# clang
+# misc
 #######################################
 IGNORED_CLANG_INPUTS = %/stm32f4xx_hal_conf.h %/stm32l4xx_hal_conf.h %/FreeRTOSConfig.h
 
 CLANG_INPUTS = $(PROJECT_C_SOURCES) $(foreach DIR, $(PROJECT_C_INCLUDES), $(wildcard $(DIR)/*))
 CLANG_INPUTS := $(filter-out $(IGNORED_CLANG_INPUTS), $(CLANG_INPUTS))
+
+MAKEFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+BEAR_ENABLE ?= 1
 
 ######################################
 # target
@@ -72,6 +75,10 @@ endif
 
 TARGET = $(PROJECT_TARGET)
 
+# We pull any embedded sharepoint feature enables from here
+CFG_FILE = stm/$(SERIES_GENERIC)/$(SERIES_LINE)/$(PROJECT_TARGET).cfg
+include $(CFG_FILE)
+
 ######################################
 # building variables
 ######################################
@@ -79,13 +86,16 @@ TARGET = $(PROJECT_TARGET)
 DEBUG = 1
 # optimization
 OPT = -Og
-
+# verbose
+VERBOSE ?= 0
 
 #######################################
 # paths
 #######################################
 # Build path
 BUILD_DIR = $(PROJECT_BUILD_DIR)
+# FreeRTOS path
+FREERTOS_PATH := middleware/FreeRTOS-Kernel
 
 ######################################
 # source
@@ -97,11 +107,11 @@ $(filter-out %template.c, $(wildcard stm/$(SERIES_GENERIC)/$(SERIES_GENERIC_CAP)
 stm/$(SERIES_GENERIC)/system_$(SERIES_GENERIC).c \
 stm/$(SERIES_GENERIC)/$(SERIES_GENERIC)_hal_init.c \
 stm/$(SERIES_GENERIC)/$(SERIES_GENERIC)_hal_timebase_tim.c \
-$(wildcard FreeRTOS-Kernel/*.c) \
-FreeRTOS-Kernel/portable/GCC/ARM_CM4F/port.c \
+$(wildcard $(FREERTOS_PATH)/*.c) \
+$(FREERTOS_PATH)/portable/GCC/ARM_CM4F/port.c \
 $(wildcard common/Src/*.c) \
 $(wildcard driver/Src/*.c) \
-$(wildcard bsp/Src/*.c)
+$(filter-out $(addprefix bsp/Src/,$(addsuffix .c,$(BSP_DISABLE))),$(wildcard bsp/Src/*.c))
 
 # ASM sources
 ASM_SOURCES =  \
@@ -140,7 +150,7 @@ CPU = -mcpu=cortex-m4
 FPU = -mfpu=fpv4-sp-d16
 
 # float-abi
-FLOAT-ABI = -mfloat-abi=hard
+FLOAT-ABI = -mfloat-abi=hard -lc -lrdimon -u _printf_float
 
 # mcu
 MCU = $(CPU) -mthumb $(FPU) $(FLOAT-ABI)
@@ -166,8 +176,8 @@ $(PROJECT_C_INCLUDES) \
 stm/$(SERIES_GENERIC)/$(SERIES_GENERIC_CAP)_HAL_Driver/Inc \
 stm/$(SERIES_GENERIC)/CMSIS/Device/ST/$(SERIES_GENERIC_CAP)/Include \
 stm/$(SERIES_GENERIC)/CMSIS/Include \
-FreeRTOS-Kernel/include \
-FreeRTOS-Kernel/portable/GCC/ARM_CM4F \
+$(FREERTOS_PATH)/include \
+$(FREERTOS_PATH)/portable/GCC/ARM_CM4F \
 common/Inc \
 driver/Inc \
 bsp/Inc
@@ -197,6 +207,9 @@ LIBS = -lc -lm -lnosys
 LIBDIR = 
 LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
 
+# default action: build all
+all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
+
 #######################################
 # build the application
 #######################################
@@ -213,33 +226,88 @@ vpath %.s $(sort $(dir $(ASM_SOURCES)))
 OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(ASMM_SOURCES:.S=.o)))
 vpath %.S $(sort $(dir $(ASMM_SOURCES)))
 
-$(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR) 
+$(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR)
+ifeq ($(BEAR_ENABLE), 1)
+	@echo $(MAKEFILE_DIR) > $(BUILD_DIR)/cc_$(notdir $@).txt
+	@echo $(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@ >> $(BUILD_DIR)/cc_$(notdir $@).txt
+endif
+
+ifeq ($(VERBOSE), 1)
 	$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
+else
+	@$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
+	@echo "CC $< -> $@"
+endif
+
+$(BUILD_DIR)/%.o: %.S Makefile | $(BUILD_DIR)
+ifeq ($(BEAR_ENABLE), 1)
+	@echo $(MAKEFILE_DIR) > $(BUILD_DIR)/cc_$(notdir $@).txt
+	@echo $(AS) -c $(CFLAGS) $< -o $@ >> $(BUILD_DIR)/cc_$(notdir $@).txt
+endif
+
+ifeq ($(VERBOSE), 1)
+	$(AS) -c $(CFLAGS) $< -o $@
+else
+	@$(AS) -c $(CFLAGS) $< -o $@
+	@echo "AS $< -> $@"
+endif
+
 
 $(BUILD_DIR)/%.o: %.s Makefile | $(BUILD_DIR)
+ifeq ($(BEAR_ENABLE), 1)
+	@echo $(MAKEFILE_DIR) > $(BUILD_DIR)/cc_$(notdir $@).txt
+	@echo $(AS) -c $(CFLAGS) $< -o $@ >> $(BUILD_DIR)/cc_$(notdir $@).txt
+endif
+
+ifeq ($(VERBOSE), 1)
 	$(AS) -c $(CFLAGS) $< -o $@
-$(BUILD_DIR)/%.o: %.S Makefile | $(BUILD_DIR)
-	$(AS) -c $(CFLAGS) $< -o $@
+else
+	@$(AS) -c $(CFLAGS) $< -o $@
+	@echo "AS $< -> $@"
+endif
 
 $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
 	@if ls $(BUILD_DIR)/*.elf 1> /dev/null 2>&1; then \
-		rm -rf $(BUILD_DIR)/stm*.elf; \
+	rm -rf $(BUILD_DIR)/stm*.elf; \
 	fi
+	
+ifeq ($(BEAR_ENABLE), 1)
+	@echo $(MAKEFILE_DIR) > $(BUILD_DIR)/cc_$(notdir $@).txt
+	@echo $(CC) $(OBJECTS) $(LDFLAGS) -o $@ >> $(BUILD_DIR)/cc_$(notdir $@).txt
+endif
 
+ifeq ($(VERBOSE), 1)
 	$(CC) $(OBJECTS) $(LDFLAGS) -o $@
-	$(SZ) $@
+else
+	@$(CC) $(OBJECTS) $(LDFLAGS) -o $@
+	@echo "LD $@"
+endif
+	@$(SZ) $@
+	@echo "Finished compiling. Jolly good!"
 
 $(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	@if ls $(BUILD_DIR)/*.hex 1> /dev/null 2>&1; then \
-		rm -rf $(BUILD_DIR)/stm*.hex; \
+	rm -rf $(BUILD_DIR)/stm*.hex; \
 	fi
+
+ifeq ($(VERBOSE), 1)
 	$(HEX) $< $@
+else
+	@$(HEX) $< $@
+	@echo "HEX $< -> $@"
+endif
 	
 $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	@if ls $(BUILD_DIR)/*.bin 1> /dev/null 2>&1; then \
-		rm -rf $(BUILD_DIR)/stm*.bin; \
+	rm -rf $(BUILD_DIR)/stm*.bin; \
 	fi
-	$(BIN) $< $@	
+
+ifeq ($(VERBOSE), 1)
+	$(BIN) $< $@
+else
+	@$(BIN) $< $@
+	@echo "BIN $< -> $@"
+endif
 	
 $(BUILD_DIR):
 	mkdir -p $@		
@@ -259,8 +327,12 @@ FLASH_FILE = $(shell find $(BUILD_DIR) -name 'stm*.bin' -exec basename {} \;)
 
 .PHONY: flash
 flash:
-	@echo "Flashing $(FLASH_FILE) to $(FLASH_ADDRESS)"
+	@echo "🔦 Flashing $(FLASH_FILE) to $(FLASH_ADDRESS)"
 	-st-flash write $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
+
+.PHONY: flash-uart
+flash-uart:
+	./flash-uart.sh $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
 
 #######################################
 # format
@@ -274,7 +346,6 @@ format:
 .PHONY: format-fix
 format-fix:
 	-clang-format -i $(FORMAT_CONFIG) $(CLANG_INPUTS)
-
 
 #######################################
 # help
@@ -294,6 +365,8 @@ help:
 #######################################
 # dependencies
 #######################################
+
+
 -include $(wildcard $(BUILD_DIR)/*.d)
 
 # *** EOF ***
