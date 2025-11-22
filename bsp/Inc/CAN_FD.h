@@ -24,3 +24,4 @@ extern FDCAN_HandleTypeDef* hfdcan3;
 can_status_t can_fd_init(FDCAN_HandleTypeDef* handle, FDCAN_FilterTypeDef* filter);
 can_status_t can_fd_deinit(FDCAN_HandleTypeDef* handle);
 can_status_t can_fd_start(FDCAN_HandleTypeDef* handle);
+can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* header, uint8_t data[], TickType_t delay_ticks);

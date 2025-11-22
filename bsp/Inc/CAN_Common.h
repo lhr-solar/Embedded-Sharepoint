@@ -49,3 +49,5 @@ typedef struct {
   bool circular;
   StaticQueue_t buffer;
 } can_recv_entry_t;
+
+void can_recv_queue_init();
