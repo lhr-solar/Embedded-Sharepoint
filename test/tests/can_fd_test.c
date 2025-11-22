@@ -116,13 +116,15 @@ static void task(void *pvParameters) {
         tx_data[0] = 0x01;
         tx_data[1] = 0x00;
 
-        if (can_fd_send(hfdcan1, &tx_header, tx_data, portMAX_DELAY) != CAN_SENT){
+        if (can_fd_send(hfdcan1, &tx_header, tx_data, portMAX_DELAY) == CAN_ERR){
             Error_Handler();
         }
-
+        
         // Success_Handler();
+        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+        HAL_Delay(100);
 
-        vTaskDelay(pdMS_TO_TICKS(500));
+        // vTaskDelay(pdMS_TO_TICKS(500));
     }
 }
 
@@ -143,6 +145,7 @@ int main(void) {
         SystemClock_Config();
     #endif
 
+
     Heartbeat_Init(); // enable LED for LED_PORT
 
     hfdcan1->Instance = FDCAN1;
@@ -160,7 +163,7 @@ int main(void) {
     hfdcan1->Init.DataSyncJumpWidth = 1;
     hfdcan1->Init.DataTimeSeg1 = 1;
     hfdcan1->Init.DataTimeSeg2 = 1;
-    hfdcan1->Init.StdFiltersNbr = 0;
+    hfdcan1->Init.StdFiltersNbr = 1;
     hfdcan1->Init.ExtFiltersNbr = 0;
     hfdcan1->Init.TxFifoQueueMode = FDCAN_TX_FIFO_OPERATION;
 

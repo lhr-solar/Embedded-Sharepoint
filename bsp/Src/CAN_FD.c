@@ -1,4 +1,5 @@
 #include "CAN_FD.h"
+#include "CAN_Common.h"
 
 // Define CAN FD handles
 #ifdef FDCAN1
@@ -104,8 +105,12 @@ can_status_t can_fd_start(FDCAN_HandleTypeDef* handle){
 
 can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* header, uint8_t data[], TickType_t delay_ticks){
 
+    if(handle == NULL || header == NULL || data == NULL){
+        return CAN_ERR;
+    }
+
     // disable interrupts while we check the status of the can mailboxes, so other interrupts done change it
-    portENTER_CRITICAL();
+    // portENTER_CRITICAL();
     // Check if there is a free can mailbox to send a message
     if(HAL_FDCAN_GetTxFifoFreeLevel(handle) >= 1){
         // if the mailbox is free, add the message to the hardware fifo
@@ -113,18 +118,17 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
             // If adding to the can fd mailbox was not succesful
 
             // enable interrupts
-            portEXIT_CRITICAL();
+            // portEXIT_CRITICAL();
             return CAN_ERR;
         }
         // enable interrupts
-        portEXIT_CRITICAL();
+        // portEXIT_CRITICAL();
         return CAN_SENT;
     }
     // hardware mailbox is full, so must add to the queue
     else{
         // enable interrupts
-        portEXIT_CRITICAL();
-        return CAN_EMPTY;
+        // portEXIT_CRITICAL();
     }
     return CAN_OK;
 }
@@ -176,7 +180,6 @@ void HAL_FDCAN_MspInit(FDCAN_HandleTypeDef* hfdcan){
     HAL_NVIC_EnableIRQ(FDCAN1_IT0_IRQn);
     HAL_NVIC_SetPriority(FDCAN1_IT1_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(FDCAN1_IT1_IRQn);
-    
 }
 
 
