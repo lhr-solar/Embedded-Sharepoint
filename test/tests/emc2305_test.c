@@ -196,7 +196,7 @@ int main(void) {
         HAL_Delay(1);
         HAL_I2C_Master_Receive(&hi2c1, 0x4D << 1, &val, 1, 100);
 
-        char buffer[64];
+        char buffer[22];
         char text[] = "Configuration: ";
         snprintf(buffer, sizeof(buffer), "%s: %d\n", text, val);
         msgLen = sizeof(buffer) - 1;

@@ -16,6 +16,26 @@ typedef struct {
 #define EMC2305_I2C_TIMEOUT 100u // 100ms default
 #endif
 
+// Device status
+typedef enum {
+    EMC2305_OK,
+    EMC2305_ERR,
+} EMC2305_Status;
+
+// Device configuration
+typedef struct {
+    // TODO(rshah): fill in config values
+} EMC2305_Config;
+
+// Fans
+typedef enum {
+    EMC2305_FAN1,
+    EMC2305_FAN2,
+    EMC2305_FAN3,
+    EMC2305_FAN4,
+    EMC2305_FAN5,
+} EMC2305_Fan;
+
 // Register map from EMC2305 datasheet
 // https://ww1.microchip.com/downloads/aemDocuments/documents/MSLD/ProductDocuments/DataSheets/EMC2301-2-3-5-Data-Sheet-DS20006532A.pdf
 
@@ -207,7 +227,26 @@ typedef struct {
 
 // Device Management Functions
 
+/**
+ * @brief   Initializes the I2C bus and validates the chip by reading the Product ID and Manufacturer ID
+ * @param   chip EMC2305 to initialize
+ * @return  OK if successful, ERR otherwise
+ */
+EMC2305_Status EMC2305_Init(EMC2305_HandleTypeDef chip);
+
+EMC2305_Status EMC2305_Reset(EMC2305_HandleTypeDef chip);
+
+EMC2305_Status EMC2305_EnableSWLock(EMC2305_HandleTypeDef chip);
+
+EMC2305_Status EMC2305_DisableSWLock(EMC2305_HandleTypeDef chip);
+
+// TODO(rshah): should break into multiple fns
+EMC2305_Status EMC2305_SetGlobalConfig(EMC2305_HandleTypeDef chip, EMC2305_Config config);
+
 // Fan Configuration Functions
+
+// TODO(rshah): how to handle clkdiv???
+EMC2305_Status EMC2305_SetPWMFrequency(EMC2305_HandleTypeDef chip, EMC2305_Fan fan);
 
 // Fan Control Functions
 
