@@ -171,9 +171,9 @@ int main() {
     adc_init_1.DMAContinuousRequests = DISABLE;
     adc_init_1.EOCSelection = ADC_EOC_SINGLE_CONV;
 
-    volatile adc_status_t s = adc_init(adc_init_1, hadc1);
+    volatile adc_status_t s = adc_init(&adc_init_1, hadc1);
     s+=0;
-    if (adc_init(adc_init_1, hadc1) != ADC_OK) error_handler(ADC_INIT_FAIL);
+    if (s != ADC_OK) error_handler(ADC_INIT_FAIL);
 
     #ifdef ADC2
     ADC_InitTypeDef adc_init_2 = {0};
@@ -190,7 +190,7 @@ int main() {
     adc_init_2.DMAContinuousRequests = DISABLE;
     adc_init_2.EOCSelection = ADC_EOC_SINGLE_CONV;
 
-    if (adc_init(adc_init_2, hadc2) != ADC_OK) error_handler(ADC_INIT_FAIL);
+    if (adc_init(&adc_init_2, hadc2) != ADC_OK) error_handler(ADC_INIT_FAIL);
     #endif
     #ifdef ADC3
     ADC_InitTypeDef adc_init_3 = {0};
@@ -207,7 +207,7 @@ int main() {
     adc_init_3.DMAContinuousRequests = DISABLE;
     adc_init_3.EOCSelection = ADC_EOC_SINGLE_CONV;
 
-    if (adc_init(adc_init_3, hadc3) != ADC_OK) error_handler(ADC_INIT_FAIL);
+    if (adc_init(&adc_init_3, hadc3) != ADC_OK) error_handler(ADC_INIT_FAIL);
     #endif
 
     // Task Creation
