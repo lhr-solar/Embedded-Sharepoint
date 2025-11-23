@@ -78,43 +78,40 @@ jobs:
               
               return None
 
-          def get_github_sub_issues(issue_number):
-              """Fetch sub-issues from GitHub using timeline API"""
-              url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/issues/{issue_number}/timeline"
+          def get_github_issue_data(issue_number):
+              """Fetch issue data from GitHub including relationships"""
+              url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/issues/{issue_number}"
               
               try:
                   response = requests.get(url, headers=github_headers)
                   response.raise_for_status()
-                  timeline = response.json()
+                  issue_data = response.json()
                   
+                  # Parse body for sub-issues and blocked_by
+                  body = issue_data.get('body', '')
+                  
+                  # Look for GitHub's sub-issue syntax in body
+                  # Format: "- [ ] #123" or "- [x] #123" in task lists
                   sub_issues = []
-                  for event in timeline:
-                      if event.get('event') == 'child_issue_added':
-                          child_issue = event.get('child_issue', {})
-                          sub_issues.append(child_issue.get('number'))
+                  for line in body.split('\n'):
+                      # Match task list items with issue references
+                      match = re.match(r'\s*-\s*\[[ xX]\]\s*#(\d+)', line)
+                      if match:
+                          sub_issues.append(int(match.group(1)))
                   
-                  return sub_issues
+                  # Look for "Blocked by #X" pattern
+                  blocked_by = []
+                  blocked_pattern = r'(?:blocked?\s+by|depends?\s+on|waiting\s+on)\s*#(\d+)'
+                  blocked_matches = re.findall(blocked_pattern, body, re.IGNORECASE)
+                  blocked_by = [int(num) for num in blocked_matches]
+                  
+                  return {
+                      'sub_issues': sub_issues,
+                      'blocked_by': blocked_by
+                  }
               except Exception as e:
-                  print(f"Error fetching sub-issues: {e}")
-                  return []
-
-          def get_github_blocked_by(issue_number):
-              """Fetch 'blocked by' dependencies from GitHub"""
-              url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/issues/{issue_number}/dependencies/blocked_by"
-              
-              try:
-                  response = requests.get(url, headers=github_headers)
-                  response.raise_for_status()
-                  dependencies = response.json()
-                  
-                  blocked_by_issues = []
-                  for dep in dependencies:
-                      blocked_by_issues.append(dep.get('number'))
-                  
-                  return blocked_by_issues
-              except Exception as e:
-                  print(f"Error fetching blocked_by dependencies: {e}")
-                  return []
+                  print(f"Error fetching issue data: {e}")
+                  return {'sub_issues': [], 'blocked_by': []}
 
           def add_comment_to_task(task_id, comment_text):
               """Add a comment to a ClickUp task"""
@@ -141,43 +138,72 @@ jobs:
                   print(f"✓ Set dependency: Task {task_id} blocked by {depends_on_task_id}")
                   return True
               except Exception as e:
+                  # Might already exist
+                  if 'already exists' in str(e).lower():
+                      print(f"  Dependency already exists")
+                      return True
                   print(f"✗ Error setting dependency: {e}")
                   return False
 
-          def create_subtask(parent_task_id, issue_number, title, body, url, status):
-              """Create a ClickUp subtask"""
-              # Escape quotes
-              title = title.replace('"', '\"')
-              body = (body or '').replace('"', '\"')
-              
-              task_data = {
-                  'name': f"[Issue #{issue_number}] {title}",
-                  'description': f"GitHub Issue: {url}\n\n{body}",
-                  'status': status,
-                  'parent': parent_task_id
-              }
-              
-              create_url = f"https://api.clickup.com/api/v2/list/{CLICKUP_LIST_ID}/task"
-              try:
-                  response = requests.post(create_url, json=task_data, headers=clickup_headers)
-                  response.raise_for_status()
-                  new_task_id = response.json()['id']
-                  print(f"✓ Created subtask {new_task_id} for issue #{issue_number}")
-                  return new_task_id
-              except Exception as e:
-                  print(f"✗ Error creating subtask: {e}")
-                  return None
-
-          def create_or_update_task(issue_number, title, body, url, status):
-              """Create or update ClickUp task"""
-              task_id = find_task_by_issue_number(issue_number)
+          def create_or_update_subtask(parent_task_id, issue_number, title, body, url, status):
+              """Create or update a ClickUp subtask under a parent task"""
+              # Check if subtask already exists
+              existing_task_id = find_task_by_issue_number(issue_number)
               
               # Escape quotes
-              title = title.replace('"', '\"')
+              title_escaped = title.replace('"', '\"')
               body_escaped = (body or '').replace('"', '\"')
               
               task_data = {
-                  'name': f"[Issue #{issue_number}] {title}",
+                  'name': f"[Issue #{issue_number}] {title_escaped}",
+                  'description': f"GitHub Issue: {url}\n\n{body_escaped}",
+                  'status': status
+              }
+              
+              if existing_task_id:
+                  # Update existing subtask
+                  update_url = f"https://api.clickup.com/api/v2/task/{existing_task_id}"
+                  try:
+                      # First set parent relationship
+                      parent_url = f"https://api.clickup.com/api/v2/task/{existing_task_id}"
+                      parent_data = {'parent': parent_task_id}
+                      requests.put(parent_url, json=parent_data, headers=clickup_headers)
+                      
+                      # Then update other fields
+                      response = requests.put(update_url, json=task_data, headers=clickup_headers)
+                      response.raise_for_status()
+                      print(f"✓ Updated subtask {existing_task_id} for issue #{issue_number}")
+                      return existing_task_id
+                  except Exception as e:
+                      print(f"✗ Error updating subtask: {e}")
+                      return None
+              else:
+                  # Create new subtask with parent relationship
+                  task_data['parent'] = parent_task_id
+                  task_data['tags'] = ['github-sub-issue']
+                  
+                  create_url = f"https://api.clickup.com/api/v2/list/{CLICKUP_LIST_ID}/task"
+                  try:
+                      response = requests.post(create_url, json=task_data, headers=clickup_headers)
+                      response.raise_for_status()
+                      new_task_id = response.json()['id']
+                      print(f"✓ Created subtask {new_task_id} for issue #{issue_number} under parent {parent_task_id}")
+                      return new_task_id
+                  except Exception as e:
+                      print(f"✗ Error creating subtask: {e}")
+                      print(f"   Response: {response.text if 'response' in locals() else 'N/A'}")
+                      return None
+
+          def create_or_update_task(issue_number, title, body, url, status):
+              """Create or update ClickUp task (parent-level task)"""
+              task_id = find_task_by_issue_number(issue_number)
+              
+              # Escape quotes
+              title_escaped = title.replace('"', '\"')
+              body_escaped = (body or '').replace('"', '\"')
+              
+              task_data = {
+                  'name': f"[Issue #{issue_number}] {title_escaped}",
                   'description': f"GitHub Issue: {url}\n\n{body_escaped}",
                   'status': status
               }
@@ -241,13 +267,14 @@ jobs:
               url = issue['html_url']
               state = issue['state']
               
-              # Fetch GitHub relationships
-              print(f"Fetching relationships for issue #{issue_number}...")
-              sub_issues = get_github_sub_issues(issue_number)
-              blocked_by_issues = get_github_blocked_by(issue_number)
+              # Parse issue body for relationships
+              print(f"Parsing relationships for issue #{issue_number}...")
+              relationships = get_github_issue_data(issue_number)
+              sub_issues = relationships['sub_issues']
+              blocked_by_issues = relationships['blocked_by']
               
-              print(f"Sub-issues: {sub_issues}")
-              print(f"Blocked by: {blocked_by_issues}")
+              print(f"  Sub-issues found: {sub_issues}")
+              print(f"  Blocked by found: {blocked_by_issues}")
               
               # Determine status
               if state == 'closed':
@@ -263,9 +290,9 @@ jobs:
               if task_id:
                   # Create ClickUp subtasks for GitHub sub-issues
                   if sub_issues:
-                      print(f"Creating {len(sub_issues)} subtasks...")
+                      print(f"Creating/updating {len(sub_issues)} subtasks...")
                       for sub_issue_num in sub_issues:
-                          # Fetch sub-issue details
+                          # Fetch sub-issue details from GitHub
                           sub_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/issues/{sub_issue_num}"
                           try:
                               sub_response = requests.get(sub_url, headers=github_headers)
@@ -273,7 +300,7 @@ jobs:
                               sub_issue = sub_response.json()
                               
                               sub_status = 'done' if sub_issue['state'] == 'closed' else 'todo'
-                              create_subtask(
+                              create_or_update_subtask(
                                   task_id,
                                   sub_issue_num,
                                   sub_issue['title'],
@@ -282,7 +309,7 @@ jobs:
                                   sub_status
                               )
                           except Exception as e:
-                              print(f"✗ Error fetching sub-issue #{sub_issue_num}: {e}")
+                              print(f"✗ Error processing sub-issue #{sub_issue_num}: {e}")
                   
                   # Set ClickUp dependencies for blocked_by relationships
                   if blocked_by_issues:
@@ -297,6 +324,10 @@ jobs:
                               )
                           else:
                               print(f"⚠ Blocking issue #{blocking_issue_num} not found in ClickUp")
+                              add_comment_to_task(
+                                  task_id,
+                                  f"Blocked by GitHub Issue #{blocking_issue_num} (not yet synced)"
+                              )
 
           # Handle PR events
           elif event_name == 'pull_request':
@@ -326,14 +357,14 @@ jobs:
               print(f"Found linked issues: {issue_numbers}")
               
               if not issue_numbers:
-                  print("No linked issues found in PR")
+                  print("No linked issues found")
               
               # Get commits
               commits = get_pr_commits(pr_number)
               commit_summary = ""
               if commits:
                   commit_summary = f"\n\nRecent commits:\n"
-                  for commit in commits[-3:]:
+                  for commit in commits[-5:]:
                       commit_msg = commit['commit']['message'].split('\n')[0]
                       commit_sha = commit['sha'][:7]
                       commit_url = commit['html_url']
