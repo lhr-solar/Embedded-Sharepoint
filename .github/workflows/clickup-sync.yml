@@ -66,17 +66,46 @@ jobs:
               
               return None
 
+          def add_comment_to_task(task_id, comment_text):
+              """Add a comment to a ClickUp task"""
+              url = f"https://api.clickup.com/api/v2/task/{task_id}/comment"
+              data = {
+                  'comment_text': comment_text
+              }
+              
+              try:
+                  response = requests.post(url, json=data, headers=headers)
+                  response.raise_for_status()
+                  print(f"✓ Added comment to task {task_id}")
+                  return True
+              except Exception as e:
+                  print(f"✗ Error adding comment: {e}")
+                  return False
+
+          def get_pr_commits(pr_number, repo_full_name):
+              """Fetch commits from a PR"""
+              url = f"https://api.github.com/repos/{repo_full_name}/pulls/{pr_number}/commits"
+              
+              try:
+                  response = requests.get(url)
+                  response.raise_for_status()
+                  commits = response.json()
+                  return commits
+              except Exception as e:
+                  print(f"✗ Error fetching commits: {e}")
+                  return []
+
           def create_or_update_task(issue_number, title, body, url, status):
               """Create or update ClickUp task"""
               task_id = find_task_by_issue_number(issue_number)
               
               # Escape quotes in title and body
-              title = title.replace('"', '\\"').replace('\n', '\\n')
-              body = (body or '').replace('"', '\\"').replace('\n', '\\n')
+              title = title.replace('"', '\"').replace('\n', '\n')
+              body = (body or '').replace('"', '\"').replace('\n', '\n')
               
               task_data = {
                   'name': f"[Issue #{issue_number}] {title}",
-                  'description': f"**GitHub Issue:** {url}\\n\\n{body}",
+                  'description': f"GitHub Issue: {url}\n\n{body}",
                   'status': status
               }
               
@@ -142,6 +171,7 @@ jobs:
               pr_state = pr['state']
               pr_merged = pr.get('merged', False)
               pr_draft = pr.get('draft', False)
+              repo_full_name = event['repository']['full_name']
               
               # Extract linked issues
               pr_body = pr.get('body', '')
@@ -165,6 +195,21 @@ jobs:
               if not issue_numbers:
                   print("No linked issues found in PR title or body")
               
+              # Get commits from PR
+              print(f"Fetching commits from PR #{pr_number}...")
+              commits = get_pr_commits(pr_number, repo_full_name)
+              
+              # Build commit summary
+              commit_summary = ""
+              if commits:
+                  commit_summary = f"\n\nRecent commits in PR #{pr_number}:\n"
+                  for commit in commits[-5:]:  # Last 5 commits
+                      commit_msg = commit['commit']['message'].split('\n')[0]  # First line only
+                      commit_sha = commit['sha'][:7]
+                      commit_url = commit['html_url']
+                      commit_author = commit['commit']['author']['name']
+                      commit_summary += f"- [`{commit_sha}`]({commit_url}) {commit_msg} - {commit_author}\n"
+              
               # Update all linked issues
               for issue_num in issue_numbers:
                   task_id = find_task_by_issue_number(int(issue_num))
@@ -181,7 +226,7 @@ jobs:
                           
                           # Add PR link if not present
                           if pr_url not in current_desc:
-                              new_desc = f"{current_desc}\\n\\n**Associated PR:** {pr_url}"
+                              new_desc = f"{current_desc}\\n\\nAssociated PR: {pr_url}"
                           else:
                               new_desc = current_desc
                           
@@ -194,6 +239,16 @@ jobs:
                           update_response = requests.put(task_url, json=update_data, headers=headers)
                           update_response.raise_for_status()
                           print(f"✓ Updated task {task_id} for issue #{issue_num} - Status: {status}")
+                          
+                          # Add comment with PR update and commits
+                          action = event.get('action', '')
+                          comment_text = f"PR #{pr_number} {action}: {pr_url}\n\nStatus: `{status}`"
+                          
+                          if commit_summary:
+                              comment_text += commit_summary
+                          
+                          add_comment_to_task(task_id, comment_text)
+                          
                       except Exception as e:
                           print(f"✗ Error updating task {task_id}: {e}")
                   else:
