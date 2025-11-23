@@ -2,7 +2,7 @@
 #include "CAN_FD.h"
 
 StaticTask_t task_buffer;
-StackType_t task_stack[configMINIMAL_STACK_SIZE];
+StackType_t task_stack[512];
 
 #define CAN_LOOPBACK_ENABLED
 
@@ -104,27 +104,25 @@ static void task(void *pvParameters) {
         FDCAN_TxHeaderTypeDef tx_header = {0};   
         tx_header.Identifier = 0x11;
         tx_header.IdType = FDCAN_STANDARD_ID;
+        tx_header.FDFormat = FDCAN_CLASSIC_CAN;
         tx_header.TxFrameType = FDCAN_DATA_FRAME;
         tx_header.DataLength = FDCAN_DLC_BYTES_8;
         tx_header.ErrorStateIndicator = FDCAN_ESI_ACTIVE;
         tx_header.BitRateSwitch = FDCAN_BRS_OFF;
-        tx_header.FDFormat = FDCAN_FD_CAN;
         tx_header.MessageMarker = 0;
 
-        // send two payloads to 0x11
+        // send x1234 to 0x11
         uint8_t tx_data[8] = {0};
-        tx_data[0] = 0x01;
-        tx_data[1] = 0x00;
+        tx_data[0] = 0x12;
+        tx_data[1] = 0x34;
 
         if (can_fd_send(hfdcan1, &tx_header, tx_data, portMAX_DELAY) == CAN_ERR){
             Error_Handler();
         }
         
-        // Success_Handler();
-        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-        HAL_Delay(100);
+        HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
 
-        // vTaskDelay(pdMS_TO_TICKS(500));
+        vTaskDelay(pdMS_TO_TICKS(500));
     }
 }
 
@@ -137,13 +135,16 @@ int main(void) {
     // System clock config can change depending on the target MCU, since the clock tree can be different
     // If you need to use a different MCU, go to cubemx and generate a new system clock config function with the system clock being 80 Mhz
     // It especially varies with nucleo vs direct MCU
-    #ifdef STM32G474xx
-        G474_SystemClockConfig();
-    #elif defined(STM32G473xx)
-        G473_SystemClockConfig();
-    #else
-        SystemClock_Config();
-    #endif
+
+    // #ifdef STM32G474xx
+    //     G474_SystemClockConfig();
+    // #elif defined(STM32G473xx)
+    //     G473_SystemClockConfig();
+    // #else
+    //     SystemClock_Config();
+    // #endif
+
+    G474_SystemClockConfig();
 
 
     Heartbeat_Init(); // enable LED for LED_PORT
@@ -151,7 +152,7 @@ int main(void) {
     hfdcan1->Instance = FDCAN1;
     hfdcan1->Init.ClockDivider = FDCAN_CLOCK_DIV1;
     hfdcan1->Init.FrameFormat = FDCAN_FRAME_CLASSIC;
-    hfdcan1->Init.Mode = FDCAN_MODE_INTERNAL_LOOPBACK;
+    hfdcan1->Init.Mode = FDCAN_MODE_NORMAL;
     hfdcan1->Init.AutoRetransmission = DISABLE;
     hfdcan1->Init.TransmitPause = DISABLE;
     hfdcan1->Init.ProtocolException = DISABLE;
@@ -163,7 +164,7 @@ int main(void) {
     hfdcan1->Init.DataSyncJumpWidth = 1;
     hfdcan1->Init.DataTimeSeg1 = 1;
     hfdcan1->Init.DataTimeSeg2 = 1;
-    hfdcan1->Init.StdFiltersNbr = 1;
+    hfdcan1->Init.StdFiltersNbr = 0;
     hfdcan1->Init.ExtFiltersNbr = 0;
     hfdcan1->Init.TxFifoQueueMode = FDCAN_TX_FIFO_OPERATION;
 
@@ -191,7 +192,7 @@ int main(void) {
     xTaskCreateStatic(
                 task,
                 "task",
-                configMINIMAL_STACK_SIZE,
+                512,
                 NULL,
                 tskIDLE_PRIORITY + 2,
                 task_stack,

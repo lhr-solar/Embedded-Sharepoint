@@ -110,7 +110,7 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
     }
 
     // disable interrupts while we check the status of the can mailboxes, so other interrupts done change it
-    // portENTER_CRITICAL();
+    portENTER_CRITICAL();
     // Check if there is a free can mailbox to send a message
     if(HAL_FDCAN_GetTxFifoFreeLevel(handle) >= 1){
         // if the mailbox is free, add the message to the hardware fifo
@@ -118,17 +118,31 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
             // If adding to the can fd mailbox was not succesful
 
             // enable interrupts
-            // portEXIT_CRITICAL();
+            portEXIT_CRITICAL();
             return CAN_ERR;
         }
         // enable interrupts
-        // portEXIT_CRITICAL();
+        portEXIT_CRITICAL();
         return CAN_SENT;
     }
     // hardware mailbox is full, so must add to the queue
     else{
         // enable interrupts
-        // portEXIT_CRITICAL();
+        portEXIT_CRITICAL();
+
+        can_tx_payload_t payload = {0};
+        payload.header = *header;
+        for (int i = 0; i < CAN_DATA_SIZE; i++) {
+            payload.data[i] = data[i];
+        }
+#ifdef FDCAN1
+        if (handle->Instance == FDCAN1) {
+            if (xQueueSend(fdcan1_send_queue, &payload, delay_ticks) != pdTRUE) {
+                return CAN_ERR;
+            }
+        }
+#endif
+
     }
     return CAN_OK;
 }
@@ -193,4 +207,19 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
     // /* Reception Error */
     // }
   }
+}
+
+void HAL_FDCAN_TxBufferCompleteCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t BufferIndexes)
+{
+    can_tx_payload_t payload;
+
+#ifdef FDCAN1
+    if (hfdcan->Instance == FDCAN1){
+        // check if data in the queue to send
+        if (xQueueReceiveFromISR(fdcan1_send_queue, &payload, NULL) == pdTRUE) {
+            if (HAL_FDCAN_AddMessageToTxFifoQ(hfdcan, &payload.header, payload.data) != HAL_OK){}
+        }
+    }
+#endif
+
 }
