@@ -1,10 +1,12 @@
 name: Sync GitHub to ClickUp
 
+
 on:
   issues:
     types: [opened, closed, reopened, edited]
   pull_request:
     types: [opened, closed, reopened, ready_for_review, synchronize]
+
 
 jobs:
   sync:
@@ -38,6 +40,7 @@ jobs:
           import requests
           import re
 
+
           # Configuration
           CLICKUP_API_TOKEN = os.environ['CLICKUP_API_TOKEN']
           CLICKUP_LIST_ID = os.environ['CLICKUP_LIST_ID']
@@ -46,6 +49,7 @@ jobs:
           event_name = os.environ['EVENT_NAME']
           repo_owner = os.environ['REPO_OWNER']
           repo_name = os.environ['REPO_NAME']
+
 
           clickup_headers = {
               'Authorization': CLICKUP_API_TOKEN,
@@ -57,6 +61,7 @@ jobs:
               'Accept': 'application/vnd.github+json',
               'X-GitHub-Api-Version': '2022-11-28'
           }
+
 
           def find_task_by_issue_number(issue_number):
               """Search for existing ClickUp task by issue number"""
@@ -77,6 +82,42 @@ jobs:
                   print(f"Error searching for task: {e}")
               
               return None
+
+
+          def find_parent_issue(issue_number):
+              """Search all issues in repo to find if this issue is a child of another"""
+              search_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/issues"
+              params = {'state': 'all', 'per_page': 100}
+              
+              try:
+                  response = requests.get(search_url, headers=github_headers, params=params)
+                  response.raise_for_status()
+                  all_issues = response.json()
+                  
+                  # Look through all issues to see if any reference this issue as a subtask
+                  for potential_parent in all_issues:
+                      if 'pull_request' in potential_parent:
+                          continue  # Skip PRs
+                      
+                      body = potential_parent.get('body', '')
+                      if not body:
+                          continue
+                      
+                      # Check if this issue is listed as a subtask in the parent's body
+                      # Format: "- [ ] #123" or "- [x] #123"
+                      pattern = rf'\s*-\s*\[[ xX]\]\s*#{issue_number}\b'
+                      if re.search(pattern, body):
+                          parent_number = potential_parent['number']
+                          print(f"Found parent issue #{parent_number} for issue #{issue_number}")
+                          return parent_number
+                  
+                  print(f"No parent issue found for #{issue_number}")
+                  return None
+                  
+              except Exception as e:
+                  print(f"Error searching for parent issue: {e}")
+                  return None
+
 
           def get_github_issue_data(issue_number):
               """Fetch issue data from GitHub including relationships"""
@@ -113,6 +154,7 @@ jobs:
                   print(f"Error fetching issue data: {e}")
                   return {'sub_issues': [], 'blocked_by': []}
 
+
           def add_comment_to_task(task_id, comment_text):
               """Add a comment to a ClickUp task"""
               url = f"https://api.clickup.com/api/v2/task/{task_id}/comment"
@@ -126,6 +168,7 @@ jobs:
               except Exception as e:
                   print(f"✗ Error adding comment: {e}")
                   return False
+
 
           def set_task_dependency(task_id, depends_on_task_id):
               """Set ClickUp task dependency (task_id blocked by depends_on_task_id)"""
@@ -145,6 +188,7 @@ jobs:
                   print(f"✗ Error setting dependency: {e}")
                   return False
 
+
           def create_or_update_subtask(parent_task_id, issue_number, title, body, url, status):
               """Create or update a ClickUp subtask under a parent task"""
               # Check if subtask already exists
@@ -157,29 +201,23 @@ jobs:
               task_data = {
                   'name': f"[Issue #{issue_number}] {title_escaped}",
                   'description': f"GitHub Issue: {url}\n\n{body_escaped}",
-                  'status': status
+                  'status': status,
+                  'parent': parent_task_id
               }
               
               if existing_task_id:
-                  # Update existing subtask
+                  # Update existing task and ensure it's a subtask of the parent
                   update_url = f"https://api.clickup.com/api/v2/task/{existing_task_id}"
                   try:
-                      # First set parent relationship
-                      parent_url = f"https://api.clickup.com/api/v2/task/{existing_task_id}"
-                      parent_data = {'parent': parent_task_id}
-                      requests.put(parent_url, json=parent_data, headers=clickup_headers)
-                      
-                      # Then update other fields
                       response = requests.put(update_url, json=task_data, headers=clickup_headers)
                       response.raise_for_status()
-                      print(f"✓ Updated subtask {existing_task_id} for issue #{issue_number}")
+                      print(f"✓ Updated subtask {existing_task_id} for issue #{issue_number} under parent {parent_task_id}")
                       return existing_task_id
                   except Exception as e:
                       print(f"✗ Error updating subtask: {e}")
                       return None
               else:
                   # Create new subtask with parent relationship
-                  task_data['parent'] = parent_task_id
                   task_data['tags'] = ['github-sub-issue']
                   
                   create_url = f"https://api.clickup.com/api/v2/list/{CLICKUP_LIST_ID}/task"
@@ -193,6 +231,7 @@ jobs:
                       print(f"✗ Error creating subtask: {e}")
                       print(f"   Response: {response.text if 'response' in locals() else 'N/A'}")
                       return None
+
 
           def create_or_update_task(issue_number, title, body, url, status):
               """Create or update ClickUp task (parent-level task)"""
@@ -233,6 +272,7 @@ jobs:
               
               return None
 
+
           def get_pr_commits(pr_number):
               """Fetch commits from a PR"""
               url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/pulls/{pr_number}/commits"
@@ -245,6 +285,7 @@ jobs:
                   print(f"✗ Error fetching commits: {e}")
                   return []
 
+
           def extract_issue_numbers(text):
               """Extract issue numbers from PR body/title"""
               if not text:
@@ -255,8 +296,10 @@ jobs:
               issue_numbers = [num for match in matches for num in match if num]
               return list(set(issue_numbers))
 
+
           # Main logic
           print(f"Event: {event_name}")
+
 
           # Handle issue events
           if event_name == 'issues':
@@ -267,14 +310,19 @@ jobs:
               url = issue['html_url']
               state = issue['state']
               
-              # Parse issue body for relationships
+              # CRITICAL: Check if this issue is a child of another issue
+              print(f"Checking if issue #{issue_number} is a child of another issue...")
+              parent_issue_number = find_parent_issue(issue_number)
+              
+              # Parse issue body for its own children and blocked_by
               print(f"Parsing relationships for issue #{issue_number}...")
               relationships = get_github_issue_data(issue_number)
               sub_issues = relationships['sub_issues']
               blocked_by_issues = relationships['blocked_by']
               
-              print(f"  Sub-issues found: {sub_issues}")
-              print(f"  Blocked by found: {blocked_by_issues}")
+              print(f"  Is child of: {parent_issue_number if parent_issue_number else 'None'}")
+              print(f"  Has children: {sub_issues}")
+              print(f"  Blocked by: {blocked_by_issues}")
               
               # Determine status
               if state == 'closed':
@@ -284,13 +332,31 @@ jobs:
               else:
                   status = 'todo'
               
-              print(f"Processing issue #{issue_number}: {title}")
-              task_id = create_or_update_task(issue_number, title, body, url, status)
+              # If this issue is a child, create it as a subtask
+              if parent_issue_number:
+                  parent_task_id = find_task_by_issue_number(parent_issue_number)
+                  if parent_task_id:
+                      print(f"Creating/updating issue #{issue_number} as subtask of #{parent_issue_number}")
+                      task_id = create_or_update_subtask(
+                          parent_task_id,
+                          issue_number,
+                          title,
+                          body,
+                          url,
+                          status
+                      )
+                  else:
+                      print(f"⚠ Parent issue #{parent_issue_number} not found in ClickUp - creating as top-level task")
+                      task_id = create_or_update_task(issue_number, title, body, url, status)
+              else:
+                  # Create as top-level task
+                  print(f"Creating/updating issue #{issue_number} as top-level task")
+                  task_id = create_or_update_task(issue_number, title, body, url, status)
               
               if task_id:
-                  # Create ClickUp subtasks for GitHub sub-issues
+                  # Create ClickUp subtasks for this issue's children
                   if sub_issues:
-                      print(f"Creating/updating {len(sub_issues)} subtasks...")
+                      print(f"Processing {len(sub_issues)} child issues...")
                       for sub_issue_num in sub_issues:
                           # Fetch sub-issue details from GitHub
                           sub_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/issues/{sub_issue_num}"
@@ -324,10 +390,7 @@ jobs:
                               )
                           else:
                               print(f"⚠ Blocking issue #{blocking_issue_num} not found in ClickUp")
-                              add_comment_to_task(
-                                  task_id,
-                                  f"Blocked by GitHub Issue #{blocking_issue_num} (not yet synced)"
-                              )
+
 
           # Handle PR events
           elif event_name == 'pull_request':
