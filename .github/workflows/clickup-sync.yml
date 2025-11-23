@@ -1,0 +1,203 @@
+name: Sync GitHub to ClickUp
+
+on:
+  issues:
+    types: [opened, closed, reopened, edited]
+  pull_request:
+    types: [opened, closed, reopened, ready_for_review, synchronize]
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: pip install requests
+      
+      - name: Sync to ClickUp
+        env:
+          CLICKUP_API_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
+          CLICKUP_LIST_ID: ${{ secrets.CLICKUP_LIST_ID }}
+          GITHUB_EVENT: ${{ toJson(github.event) }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          python - <<'EOF'
+          import os
+          import json
+          import requests
+          import re
+
+          # Configuration
+          CLICKUP_API_TOKEN = os.environ['CLICKUP_API_TOKEN']
+          CLICKUP_LIST_ID = os.environ['CLICKUP_LIST_ID']
+          event = json.loads(os.environ['GITHUB_EVENT'])
+          event_name = os.environ['EVENT_NAME']
+
+          headers = {
+              'Authorization': CLICKUP_API_TOKEN,
+              'Content-Type': 'application/json'
+          }
+
+          def find_task_by_issue_number(issue_number):
+              """Search for existing ClickUp task by issue number"""
+              url = f"https://api.clickup.com/api/v2/list/{CLICKUP_LIST_ID}/task"
+              params = {'subtasks': 'true', 'include_closed': 'true'}
+              
+              try:
+                  response = requests.get(url, headers=headers, params=params)
+                  response.raise_for_status()
+                  
+                  tasks = response.json().get('tasks', [])
+                  for task in tasks:
+                      task_name = task.get('name', '')
+                      if f"[Issue #{issue_number}]" in task_name:
+                          print(f"Found existing task: {task['id']} for issue #{issue_number}")
+                          return task['id']
+              except Exception as e:
+                  print(f"Error searching for task: {e}")
+              
+              return None
+
+          def create_or_update_task(issue_number, title, body, url, status):
+              """Create or update ClickUp task"""
+              task_id = find_task_by_issue_number(issue_number)
+              
+              # Escape quotes in title and body
+              title = title.replace('"', '\\"').replace('\n', '\\n')
+              body = (body or '').replace('"', '\\"').replace('\n', '\\n')
+              
+              task_data = {
+                  'name': f"[Issue #{issue_number}] {title}",
+                  'description': f"**GitHub Issue:** {url}\\n\\n{body}",
+                  'status': status
+              }
+              
+              if task_id:
+                  # Update existing task
+                  update_url = f"https://api.clickup.com/api/v2/task/{task_id}"
+                  try:
+                      response = requests.put(update_url, json=task_data, headers=headers)
+                      response.raise_for_status()
+                      print(f"✓ Updated task {task_id} for issue #{issue_number} - Status: {status}")
+                      return task_id
+                  except Exception as e:
+                      print(f"✗ Error updating task: {e}")
+              else:
+                  # Create new task
+                  task_data['tags'] = ['github-issue']
+                  create_url = f"https://api.clickup.com/api/v2/list/{CLICKUP_LIST_ID}/task"
+                  try:
+                      response = requests.post(create_url, json=task_data, headers=headers)
+                      response.raise_for_status()
+                      new_task_id = response.json()['id']
+                      print(f"✓ Created task {new_task_id} for issue #{issue_number} - Status: {status}")
+                      return new_task_id
+                  except Exception as e:
+                      print(f"✗ Error creating task: {e}")
+              
+              return None
+
+          def extract_issue_numbers(text):
+              """Extract issue numbers from PR body/title"""
+              if not text:
+                  return []
+              
+              # Match patterns like "Fixes #123", "Closes #45", or just "#67"
+              pattern = r'(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s*#(\d+)|#(\d+)'
+              matches = re.findall(pattern, text, re.IGNORECASE)
+              
+              # Flatten tuples and remove empty strings
+              issue_numbers = [num for match in matches for num in match if num]
+              return list(set(issue_numbers))  # Remove duplicates
+
+          # Main logic
+          print(f"Event: {event_name}")
+
+          # Handle issue events
+          if event_name == 'issues':
+              issue = event['issue']
+              issue_number = issue['number']
+              title = issue['title']
+              body = issue.get('body', '')
+              url = issue['html_url']
+              state = issue['state']
+              
+              status = 'complete' if state == 'closed' else 'Open'
+              print(f"Processing issue #{issue_number}: {title}")
+              create_or_update_task(issue_number, title, body, url, status)
+
+          # Handle PR events
+          elif event_name == 'pull_request':
+              pr = event['pull_request']
+              pr_number = pr['number']
+              pr_url = pr['html_url']
+              pr_state = pr['state']
+              pr_merged = pr.get('merged', False)
+              pr_draft = pr.get('draft', False)
+              
+              # Extract linked issues
+              pr_body = pr.get('body', '')
+              pr_title = pr['title']
+              issue_numbers = extract_issue_numbers(f"{pr_title} {pr_body}")
+              
+              # Determine status
+              if pr_merged:
+                  status = 'complete'
+              elif pr_state == 'closed':
+                  status = 'complete'
+              elif pr_state == 'open' and not pr_draft:
+                  status = 'in progress'
+              else:
+                  status = 'Open'
+              
+              print(f"PR #{pr_number} ({pr_state}, merged={pr_merged})")
+              print(f"Found linked issues: {issue_numbers}")
+              print(f"Will set status to: {status}")
+              
+              if not issue_numbers:
+                  print("No linked issues found in PR title or body")
+              
+              # Update all linked issues
+              for issue_num in issue_numbers:
+                  task_id = find_task_by_issue_number(int(issue_num))
+                  
+                  if task_id:
+                      # Get current task
+                      task_url = f"https://api.clickup.com/api/v2/task/{task_id}"
+                      try:
+                          task_response = requests.get(task_url, headers=headers)
+                          task_response.raise_for_status()
+                          
+                          task = task_response.json()
+                          current_desc = task.get('description', '')
+                          
+                          # Add PR link if not present
+                          if pr_url not in current_desc:
+                              new_desc = f"{current_desc}\\n\\n**Associated PR:** {pr_url}"
+                          else:
+                              new_desc = current_desc
+                          
+                          # Update task
+                          update_data = {
+                              'description': new_desc,
+                              'status': status
+                          }
+                          
+                          update_response = requests.put(task_url, json=update_data, headers=headers)
+                          update_response.raise_for_status()
+                          print(f"✓ Updated task {task_id} for issue #{issue_num} - Status: {status}")
+                      except Exception as e:
+                          print(f"✗ Error updating task {task_id}: {e}")
+                  else:
+                      print(f"No task found for issue #{issue_num}")
+          
+          print("Sync complete!")
+          EOF
