@@ -226,7 +226,7 @@ jobs:
                           
                           # Add PR link if not present
                           if pr_url not in current_desc:
-                              new_desc = f"{current_desc}\\n\\nAssociated PR: {pr_url}"
+                              new_desc = f"{current_desc}\n\nAssociated PR: {pr_url}"
                           else:
                               new_desc = current_desc
                           
