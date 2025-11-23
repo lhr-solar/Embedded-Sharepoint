@@ -203,7 +203,7 @@ jobs:
               commit_summary = ""
               if commits:
                   commit_summary = f"\n\nRecent commits in PR #{pr_number}:\n"
-                  for commit in commits[-5:]:  # Last 5 commits
+                  for commit in commits[-3:]:  # Last 3 commits
                       commit_msg = commit['commit']['message'].split('\n')[0]  # First line only
                       commit_sha = commit['sha'][:7]
                       commit_url = commit['html_url']
