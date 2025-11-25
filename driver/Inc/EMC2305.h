@@ -211,6 +211,7 @@ typedef enum {
  */
 EMC2305_Status EMC2305_Init(EMC2305_HandleTypeDef* chip, I2C_HandleTypeDef* hi2c, uint16_t dev_addr);
 
+
 EMC2305_Status EMC2305_Reset(EMC2305_HandleTypeDef* chip);
 
 EMC2305_Status EMC2305_EnableSWLock(EMC2305_HandleTypeDef* chip);

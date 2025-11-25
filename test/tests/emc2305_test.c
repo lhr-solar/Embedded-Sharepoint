@@ -13,10 +13,11 @@ UART_HandleTypeDef huart1;
 EMC2305_HandleTypeDef chip;
 
 
+#ifdef STM32L431xx
 /**
-  * @brief System Clock Configuration
-  * @retval None
-  */
+ * @brief System Clock Configuration
+ * @retval None
+ */
 void SystemClock_Config(void) {
     RCC_OscInitTypeDef RCC_OscInitStruct = { 0 };
     RCC_ClkInitTypeDef RCC_ClkInitStruct = { 0 };
@@ -59,6 +60,7 @@ void SystemClock_Config(void) {
         Error_Handler();
     }
 }
+#endif
 
 int main(void) {
     // initialize the HAL and system clock
