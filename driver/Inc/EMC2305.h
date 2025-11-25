@@ -7,7 +7,7 @@
 
 // Device handle
 typedef struct {
-    I2C_HandleTypeDef *hi2c;   // STM32 HAL I2C handle
+    I2C_HandleTypeDef* hi2c;   // STM32 HAL I2C handle
     uint16_t dev_addr;         // HAL convention: 7-bit address << 1
 } EMC2305_HandleTypeDef;
 
@@ -35,6 +35,16 @@ typedef enum {
     EMC2305_FAN4,
     EMC2305_FAN5,
 } EMC2305_Fan;
+
+// PWM Base Frequency
+typedef enum {
+    EMC2305_PWM_2k441 = 0b11, // 2.441 kHz
+    EMC2305_PWM_4k882 = 0b10, // 4.882 kHz
+    EMC2305_PWM_19k53 = 0b01, // 19.53 kHz
+    EMC2305_PWM_26k00 = 0b00, // 26.00 kHz
+} EMC2305_PWM_BaseFreq;
+
+// TODO(rshah): config 1/2 enums
 
 // Register map from EMC2305 datasheet
 // https://ww1.microchip.com/downloads/aemDocuments/documents/MSLD/ProductDocuments/DataSheets/EMC2301-2-3-5-Data-Sheet-DS20006532A.pdf
@@ -245,8 +255,9 @@ EMC2305_Status EMC2305_SetGlobalConfig(EMC2305_HandleTypeDef chip, EMC2305_Confi
 
 // Fan Configuration Functions
 
-// TODO(rshah): how to handle clkdiv???
-EMC2305_Status EMC2305_SetPWMFrequency(EMC2305_HandleTypeDef chip, EMC2305_Fan fan);
+EMC2305_Status EMC2305_SetPWMBaseFrequency(EMC2305_HandleTypeDef chip, EMC2305_Fan fan, EMC2305_PWM_BaseFreq freq);
+
+EMC2305_Status EMC2305_SetFanConfig(EMC2305_HandleTypeDef chip, EMC2305_Fan fan......
 
 // Fan Control Functions
 
