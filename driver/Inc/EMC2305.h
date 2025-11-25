@@ -25,7 +25,7 @@ typedef enum {
 // Device configuration
 typedef struct {
     // TODO(rshah): fill in config values
-} EMC2305_Config;
+} EMC2305_Global_Config;
 
 // Fans
 typedef enum {
@@ -44,7 +44,24 @@ typedef enum {
     EMC2305_PWM_26k00 = 0b00, // 26.00 kHz
 } EMC2305_PWM_BaseFreq;
 
-// TODO(rshah): config 1/2 enums
+typedef struct {
+    // TODO(rshah): fill in config values
+} EMC2305_Fan_Config1;
+
+typedef struct {
+    // TODO(rshah): fill in config values
+} EMC2305_Fan_Config2;
+
+typedef struct {
+    // TODO(rshah): fill in config values
+} EMC2305_SpinUp_Config;
+
+typedef enum {
+    EMC2305_PID_8X = 0b11, // 8x gain
+    EMC2305_PID_4X = 0b10, // 4x gain
+    EMC2305_PID_2X = 0b01, // 2x gain
+    EMC2305_PID_1X = 0b00, // 1x gain
+} EMC2305_PID_Gain;
 
 // Register map from EMC2305 datasheet
 // https://ww1.microchip.com/downloads/aemDocuments/documents/MSLD/ProductDocuments/DataSheets/EMC2301-2-3-5-Data-Sheet-DS20006532A.pdf
@@ -167,47 +184,12 @@ typedef enum {
 #define EMC2305_STAT_FNSPIN                 (1u << 1)  /* spin-up failure summary */
 #define EMC2305_STAT_FNSTL                  (1u << 0)  /* stall summary */
 
-// Fan Stall (0x25) bits - F1..F5 stall
-#define EMC2305_FAN_STALL_F1                (1u << 0)
-#define EMC2305_FAN_STALL_F2                (1u << 1)
-#define EMC2305_FAN_STALL_F3                (1u << 2)
-#define EMC2305_FAN_STALL_F4                (1u << 3)
-#define EMC2305_FAN_STALL_F5                (1u << 4)
-
-// Fan Spin (0x26) bits - F1..F5 spin-up
-#define EMC2305_FAN_SPIN_F1                 (1u << 0)
-#define EMC2305_FAN_SPIN_F2                 (1u << 1)
-#define EMC2305_FAN_SPIN_F3                 (1u << 2)
-#define EMC2305_FAN_SPIN_F4                 (1u << 3)
-#define EMC2305_FAN_SPIN_F5                 (1u << 4)
-
-// Drive Fail (0x27) bits - F1..F5 drive fail
-#define EMC2305_DRIVE_FAIL_F1               (1u << 0)
-#define EMC2305_DRIVE_FAIL_F2               (1u << 1)
-#define EMC2305_DRIVE_FAIL_F3               (1u << 2)
-#define EMC2305_DRIVE_FAIL_F4               (1u << 3)
-#define EMC2305_DRIVE_FAIL_F5               (1u << 4)
-
-// Fan Interrupt Enable (0x29) bits
-#define EMC2305_ITEN_F1                     (1u << 0)
-#define EMC2305_ITEN_F2                     (1u << 1)
-#define EMC2305_ITEN_F3                     (1u << 2)
-#define EMC2305_ITEN_F4                     (1u << 3)
-#define EMC2305_ITEN_F5                     (1u << 4)
-
-// PWM polarity (0x2A) bits - PLRITYn: when set PWM polarity is inverted */
-#define EMC2305_PLRTY_FAN1                  (1u << 0)
-#define EMC2305_PLRTY_FAN2                  (1u << 1)
-#define EMC2305_PLRTY_FAN3                  (1u << 2)
-#define EMC2305_PLRTY_FAN4                  (1u << 3)
-#define EMC2305_PLRTY_FAN5                  (1u << 4)
-
-// PWM output type (0x2B) PMOTn: push-pull when set, open-drain when clear
-#define EMC2305_PWMTYPE_FAN1                (1u << 0)
-#define EMC2305_PWMTYPE_FAN2                (1u << 1)
-#define EMC2305_PWMTYPE_FAN3                (1u << 2)
-#define EMC2305_PWMTYPE_FAN4                (1u << 3)
-#define EMC2305_PWMTYPE_FAN5                (1u << 4)
+// Bitmasks for Fan 1-5
+#define EMC2305_FAN1_MASK                   (1u << 0)
+#define EMC2305_FAN2_MASK                   (1u << 1)
+#define EMC2305_FAN3_MASK                   (1u << 2)
+#define EMC2305_FAN4_MASK                   (1u << 3)
+#define EMC2305_FAN5_MASK                   (1u << 4)
 
 // Fan Config1 (ENAGx bit in each fan CONFIG1)
 #define EMC2305_FAN_ENAG                    (1u << 7)  /* in each FANx CONFIG1: enable closed-loop FSC */
@@ -218,47 +200,73 @@ typedef enum {
 #define EMC2305_FAN2_DPT_MASK               (0x18u)    /* bits 4..3 derivative option */
 #define EMC2305_FAN2_ERG_MASK               (0x06u)    /* bits 2..1 error window */
 
-// Product ID
-#define EMC2305_PRODUCT_ID_REG              0xFDu
-#define EMC2305_MANUFACTURER_ID             0x5Du     /* read-only fixed per datasheet */
-#define EMC2305_DEV_EMC2305_PID             0x34u     /* FD POR value for EMC2305 */
-
-// /* Convenience constants */
-// #define EMC2305_TACH_READING_H(reg_base)    (reg_base + 0x0Eu) /* e.g. FAN1: 0x3E; used for convert helpers */
-
-// /* Notes:
-//  * - Tach targets and readings are 13-bit-ish values stored across two registers (high and low).
-//  * - PWM duty is 0..255 across Fan Setting registers.
-//  * - Many registers are software-lockable (SWL). See datasheet for SWL behavior.
-//  */
-
-// /* Control register bits (placeholder) */
-// #define EMC2305_CTRL_FAN_ENABLE (1u << 0)
-
 // Device Management Functions
 
 /**
  * @brief   Initializes the I2C bus and validates the chip by reading the Product ID and Manufacturer ID
  * @param   chip EMC2305 to initialize
+ * @param   hi2c STM32 HAL I2C handle
+ * @param   dev_addr Device address (7-bit address << 1)
  * @return  OK if successful, ERR otherwise
  */
-EMC2305_Status EMC2305_Init(EMC2305_HandleTypeDef chip);
+EMC2305_Status EMC2305_Init(EMC2305_HandleTypeDef* chip, I2C_HandleTypeDef* hi2c, uint16_t dev_addr);
 
-EMC2305_Status EMC2305_Reset(EMC2305_HandleTypeDef chip);
+EMC2305_Status EMC2305_Reset(EMC2305_HandleTypeDef* chip);
 
-EMC2305_Status EMC2305_EnableSWLock(EMC2305_HandleTypeDef chip);
+EMC2305_Status EMC2305_EnableSWLock(EMC2305_HandleTypeDef* chip);
 
-EMC2305_Status EMC2305_DisableSWLock(EMC2305_HandleTypeDef chip);
+EMC2305_Status EMC2305_DisableSWLock(EMC2305_HandleTypeDef* chip);
 
 // TODO(rshah): should break into multiple fns
-EMC2305_Status EMC2305_SetGlobalConfig(EMC2305_HandleTypeDef chip, EMC2305_Config config);
+// does this write many regs???? mahybe okat to kepe as one idkkkk
+EMC2305_Status EMC2305_SetGlobalConfig(EMC2305_HandleTypeDef* chip, EMC2305_Global_Config config);
 
 // Fan Configuration Functions
 
-EMC2305_Status EMC2305_SetPWMBaseFrequency(EMC2305_HandleTypeDef chip, EMC2305_Fan fan, EMC2305_PWM_BaseFreq freq);
+EMC2305_Status EMC2305_SetPWMBaseFrequency(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, EMC2305_PWM_BaseFreq freq);
 
-EMC2305_Status EMC2305_SetFanConfig(EMC2305_HandleTypeDef chip, EMC2305_Fan fan......
+EMC2305_Status EMC2305_SetFanConfig(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, EMC2305_Fan_Config1 config1, EMC2305_Fan_Config2 config2);
+
+EMC2305_Status EMC2305_SetMinMax(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, uint8_t min_drive, uint8_t max_step);
+
+EMC2305_Status EMC2305_SetSpinUp(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, EMC2305_SpinUp_Config config);
+
+EMC2305_Status EMC2305_SetDriveFailBand(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, uint16_t drive_fail_band);
+
+EMC2305_Status EMC2305_SetPIDGain(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, EMC2305_PID_Gain gain);
 
 // Fan Control Functions
 
+EMC2305_Status EMC2305_SetFanPWM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, uint8_t duty_cycle);
+
+EMC2305_Status EMC2305_SetFanRPM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, uint16_t rpm_target);
+
 // Status & Measurement Functions
+
+EMC2305_Status EMC2305_GetFanRPM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan);
+
+EMC2305_Status EMC2305_GetFanPWM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan);
+
+EMC2305_Status EMC2305_GetFanStatus(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan);
+
+EMC2305_Status EMC2305_GetAlertStatus(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan);
+
+// Register Read/Write Functions
+
+/**
+ * @brief   Reads a byte of data from the specified register
+ * @param   chip EMC2305 handle
+ * @param   reg Register to read from
+ * @param   data Pointer where register data will be stored
+ * @return  OK if successful, ERR otherwise
+ */
+EMC2305_Status EMC2305_ReadReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_t* data);
+
+/**
+ * @brief   Writes a byte of data to the specified register
+ * @param   chip EMC2305 handle
+ * @param   reg Register to write to
+ * @param   data Data to write
+ * @return  OK if successful, ERR otherwise
+ */
+EMC2305_Status EMC2305_WriteReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_t data);

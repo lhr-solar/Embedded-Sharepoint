@@ -4,8 +4,14 @@
 
 #include <stdio.h>
 
+#define DEFAULT_DEV_ADDR 0x4D
+#define STATUS_LED_PORT GPIOB
+#define STATUS_LED_PIN GPIO_PIN_11
+
 I2C_HandleTypeDef hi2c1;
 UART_HandleTypeDef huart1;
+EMC2305_HandleTypeDef chip;
+
 
 /**
   * @brief System Clock Configuration
@@ -68,9 +74,9 @@ int main(void) {
     GPIO_InitTypeDef led_init = {
         .Mode = GPIO_MODE_OUTPUT_PP,
         .Pull = GPIO_NOPULL,
-        .Pin = GPIO_PIN_11
+        .Pin = STATUS_LED_PIN
     };
-    HAL_GPIO_Init(GPIOB, &led_init);
+    HAL_GPIO_Init(STATUS_LED_PORT, &led_init);
 
     // UART init
     GPIO_InitTypeDef InitStruct = { 0 };
@@ -187,34 +193,66 @@ int main(void) {
         Error_Handler();
     }
 
-    uint8_t reg = EMC2305_REG_CONFIGURATION;
-    uint8_t val = 0;
+    // Initialize EMC2305
+    if (EMC2305_Init(&chip, &hi2c1, DEFAULT_DEV_ADDR << 1) != EMC2305_OK) {
+        Error_Handler();
+    }
 
     while (1) {
-        // Send I2C
-        HAL_I2C_Master_Transmit(&hi2c1, 0x4D << 1, &reg, 1, 100);
-        HAL_Delay(1);
-        HAL_I2C_Master_Receive(&hi2c1, 0x4D << 1, &val, 1, 100);
 
-        char buffer[22];
-        char text[] = "Configuration: ";
-        snprintf(buffer, sizeof(buffer), "%s: %d\n", text, val);
-        msgLen = sizeof(buffer) - 1;
-        HAL_UART_Transmit(&huart1, (uint8_t*)buffer, msgLen, 1000);
+        // uint8_t product_id = 69;
+        // EMC2305_ReadReg(&chip, EMC2305_REG_PRODUCT_ID, &product_id);
 
-        // 1. Disable RPM/FSC for Fan2 (0x42 → 0x0B)
-        reg = EMC2305_REG_FAN2_CONFIG1; val = 0x0B;
-        HAL_I2C_Master_Transmit(&hi2c1, 0x4D << 1, (uint8_t[]) { reg, val }, 2, 100);
+        // char buffer[10]; // Adjust size as needed
+        // sprintf(buffer, "%d", product_id);
+        // uint8_t msgLen = sizeof(buffer) - 1;
+        // HAL_UART_Transmit(&huart1, (uint8_t*)buffer, msgLen, 1000);
 
-        // 2. OPTIONAL: Set PWM2 to push-pull instead of open drain (0x2B → bit1 = 1)
-        // reg = EMC2305_REG_PWM_OUTPUT_CONFIG; val = 0x02;
+        // uint8_t data2[] = "\r\n";
+        // msgLen = sizeof(data2) - 1;
+        // HAL_UART_Transmit(&huart1, data2, msgLen, 1000);
+
+
+
+        // uint8_t mfg_id = 69;
+        // EMC2305_ReadReg(&chip, EMC2305_REG_PRODUCT_ID, &mfg_id);
+
+        // sprintf(buffer, "%d", mfg_id);
+        // msgLen = sizeof(buffer) - 1;
+        // HAL_UART_Transmit(&huart1, (uint8_t*)buffer, msgLen, 1000);
+
+        // msgLen = sizeof(data2) - 1;
+        // HAL_UART_Transmit(&huart1, data2, msgLen, 1000);
+
+
+
+
+        // // Send I2C
+        // HAL_I2C_Master_Transmit(&hi2c1, 0x4D << 1, &reg, 1, 100);
+        // HAL_Delay(1);
+        // HAL_I2C_Master_Receive(&hi2c1, 0x4D << 1, &val, 1, 100);
+
+
+
+        // char buffer[22];
+        // char text[] = "Configuration: ";
+        // snprintf(buffer, sizeof(buffer), "%s: %d\n", text, val);
+        // msgLen = sizeof(buffer) - 1;
+        // HAL_UART_Transmit(&huart1, (uint8_t*)buffer, msgLen, 1000);
+
+        // // 1. Disable RPM/FSC for Fan2 (0x42 → 0x0B)
+        // reg = EMC2305_REG_FAN2_CONFIG1; val = 0x0B;
         // HAL_I2C_Master_Transmit(&hi2c1, 0x4D << 1, (uint8_t[]) { reg, val }, 2, 100);
 
-        // 3. Set PWM2 duty cycle to 50% (0x40 → 0x80)
-        reg = EMC2305_REG_FAN2_SETTING; val = 0x80;
-        HAL_I2C_Master_Transmit(&hi2c1, 0x4D << 1, (uint8_t[]) { reg, val }, 2, 100);
+        // // 2. OPTIONAL: Set PWM2 to push-pull instead of open drain (0x2B → bit1 = 1)
+        // // reg = EMC2305_REG_PWM_OUTPUT_CONFIG; val = 0x02;
+        // // HAL_I2C_Master_Transmit(&hi2c1, 0x4D << 1, (uint8_t[]) { reg, val }, 2, 100);
 
-        HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_11);
+        // // 3. Set PWM2 duty cycle to 50% (0x40 → 0x80)
+        // reg = EMC2305_REG_FAN2_SETTING; val = 0x80;
+        // HAL_I2C_Master_Transmit(&hi2c1, 0x4D << 1, (uint8_t[]) { reg, val }, 2, 100);
+
+        HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN);
         HAL_Delay(1000);
     }
 
