@@ -48,13 +48,65 @@ typedef enum {
     EMC2305_PWM_26k00 = 0b00, // 26.00 kHz
 } EMC2305_PWM_BaseFreq;
 
+// Fan Configuration 1
 typedef struct {
-    // TODO(rshah): fill in config values
+    bool enable_closed_loop;
+    EMC2305_RNG range;
+    EMC2305_EDG edges;
+    EMC2305_UDT update_time;
 } EMC2305_Fan_Config1;
 
+// Range - Sets the minimum fan speed measured and reported
+typedef enum {
+    EMC2305_RNG_4000 = 0b11, // 4000 RPM minimum, TACH count multiplier = 8
+    EMC2305_RNG_2000 = 0b10, // 2000 RPM minimum, TACH count multiplier = 4
+    EMC2305_RNG_1000 = 0b01, // 1000 RPM minimum, TACH count multiplier = 2
+    EMC2305_RNG_500 = 0b00,  // 500 RPM minimum, TACH count multiplier = 1
+} EMC2305_RNG;
+
+// Edges - Sets the number of edges to sample when calculating RPM
+typedef enum {
+    EMC2305_EDG_9 = 0b11, // 9 edges sampled (4 poles) - effective Tach multiplier is 2, based on two pole fans
+    EMC2305_EDG_7 = 0b10, // 7 edges sampled (3 poles) - effective Tach multiplier is 1.5, based on two pole fans
+    EMC2305_EDG_5 = 0b01, // 5 edges sampled (2 poles) - effective Tach multiplier is 1, based on two pole fans
+    EMC2305_EDG_3 = 0b00, // 3 edges sampled (1 pole) - effective Tach multiplier is 0.5, based on two pole fans
+} EMC2305_EDG;
+
+// Update Time - Sets the PID update rate for closed loop control
+typedef enum {
+    EMC2305_UDT_100 = 0b000,  // 100 ms update interval
+    EMC2305_UDT_200 = 0b001,  // 200 ms update interval
+    EMC2305_UDT_300 = 0b010,  // 300 ms update interval
+    EMC2305_UDT_400 = 0b011,  // 400 ms update interval
+    EMC2305_UDT_500 = 0b100,  // 500 ms update interval
+    EMC2305_UDT_800 = 0b101,  // 800 ms update interval
+    EMC2305_UDT_1200 = 0b110,  // 1200 ms update interval
+    EMC2305_UDT_1600 = 0b111,  // 1600 ms update interval
+} EMC2305_UDT;
+
+// Fan Configuration 2
 typedef struct {
-    // TODO(rshah): fill in config values
+    bool enable_ramp_rate_ctl;
+    bool enable_glitch_filter;
+    EMC2305_DPT derivative_options;
+    EMC2305_ERG error_window;
 } EMC2305_Fan_Config2;
+
+// Derivative Options - Selects form of derivative used in PID
+typedef enum {
+    EMC2305_DPT_NONE = 0b00,  // No derivative term
+    EMC2305_DPT_BASIC = 0b01, // Basic derivative
+    EMC2305_DPT_STEP = 0b10,  // Step derivative
+    EMC2305_DPT_BOTH = 0b11,  // Both basic + step
+} EMC2305_DPT;
+
+// Error Window - Acceptable RPM deviation around target
+typedef enum {
+    EMC2305_ERG_0RPM = 0b00,   // 0 RPM window
+    EMC2305_ERG_50RPM = 0b01,  // ±50 RPM
+    EMC2305_ERG_100RPM = 0b10, // ±100 RPM
+    EMC2305_ERG_200RPM = 0b11, // ±200 RPM
+} EMC2305_ERG;
 
 typedef struct {
     // TODO(rshah): fill in config values
