@@ -24,7 +24,11 @@ typedef enum {
 
 // Device configuration
 typedef struct {
-    // TODO(rshah): fill in config values
+    bool alert_mask;                // Blocks the alert pin from being asserted
+    bool disable_smbus_timeout;     // Disables the SMBus Time-Out function for the SMBus client (if enabled)
+    bool watchdog_enable;           // Enables the Watchdog Timer (see Section 4.11 “Watchdog Timer”) to operate in Continuous Mode
+    bool drive_ext_clk;             // Enables the internal tachometer clock to be driven out on the CLK pin so that multiple devices can be synced to the same source
+    bool use_ext_clk;               // Enables the device to use a clock present on the CLK pin as the tachometer clock. If the DR_EXT_CLK bit is set, then this bit is ignored and the device will use the internal oscillator.
 } EMC2305_Global_Config;
 
 // Fans
@@ -221,8 +225,12 @@ EMC2305_Status EMC2305_Init(EMC2305_HandleTypeDef* chip, I2C_HandleTypeDef* hi2c
  */
 EMC2305_Status EMC2305_EnableSWLock(EMC2305_HandleTypeDef* chip);
 
-// TODO(rshah): should break into multiple fns
-// does this write many regs???? mahybe okat to kepe as one idkkkk
+/**
+ * @brief   Sets the EMC2305 global configuration register based on provided config
+ * @param   chip EMC2305 to configure
+ * @param   config Global configuration to use
+ * @return  OK if successful, ERR otherwise
+ */
 EMC2305_Status EMC2305_SetGlobalConfig(EMC2305_HandleTypeDef* chip, EMC2305_Global_Config config);
 
 // Fan Configuration Functions

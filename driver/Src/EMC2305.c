@@ -51,6 +51,38 @@ EMC2305_Status EMC2305_EnableSWLock(EMC2305_HandleTypeDef* chip) {
     return EMC2305_OK;
 }
 
+/**
+ * @brief   Sets the EMC2305 global configuration register based on provided config
+ * @param   chip EMC2305 to configure
+ * @param   config Global configuration to use
+ * @return  OK if successful, ERR otherwise
+ */
+EMC2305_Status EMC2305_SetGlobalConfig(EMC2305_HandleTypeDef* chip, EMC2305_Global_Config* config) {
+    // Set bits based on config
+    uint8_t config_bits = 0;
+    if (config->alert_mask) {
+        config_bits |= EMC2305_CFG_MASK_ALERT;
+    }
+    if (config->disable_smbus_timeout) {
+        config_bits |= EMC2305_CFG_DIS_TO;
+    }
+    if (config->watchdog_enable) {
+        config_bits |= EMC2305_CFG_WD_EN;
+    }
+    if (config->drive_ext_clk) {
+        config_bits |= EMC2305_CFG_DRECK;
+    }
+    if (config->use_ext_clk) {
+        config_bits |= EMC2305_CFG_USECK;
+    }
+
+    // Write configuration
+    if (EMC2305_WriteReg(chip, EMC2305_REG_CONFIGURATION, config_bits) != EMC2305_OK) {
+        return EMC2305_ERR;
+    }
+    return EMC2305_OK;
+}
+
 // Fan Configuration Functions
 
 // Fan Control Functions
