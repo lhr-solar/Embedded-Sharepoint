@@ -85,6 +85,72 @@ EMC2305_Status EMC2305_SetGlobalConfig(EMC2305_HandleTypeDef* chip, EMC2305_Glob
 
 // Fan Configuration Functions
 
+/**
+ * @brief   Sets the base frequency of the specified fan's PWM driver
+ * @param   chip EMC2305 to use
+ * @param   fan Fan to use (1-5)
+ * @param   freq Base frequency as specified in Section 6.10
+ * @return  OK if successful, ERR otherwise
+ */
+EMC2305_Status EMC2305_SetPWMBaseFrequency(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, EMC2305_PWM_BaseFreq freq) {
+    // Check if the user is stupid (lakshay)
+    if (fan < EMC2305_FAN1 || fan > EMC2305_FAN5) {
+        return EMC2305_ERR;
+    }
+
+    // Determine which register to use
+    uint8_t reg;
+    if ((fan == EMC2305_FAN4) || (fan == EMC2305_FAN5)) {
+        // PWM BaseF45 Register
+        reg = EMC2305_REG_PWM_BASEF45;
+    }
+    else {
+        // PWM BaseF123 Register
+        reg = EMC2305_REG_PWM_BASEF123;
+    }
+
+    // Read current value of register (need to be friendly :PPP)
+    uint8_t val = 0;
+    if (EMC2305_ReadReg(chip, reg, &val) != EMC2305_OK) {
+        return EMC2305_ERR;
+    }
+
+    // Clear and update frequency
+    switch (fan)
+    {
+    case EMC2305_FAN1:
+        val &= ~EMC2305_PWM_FAN1_MASK;
+        val |= freq << EMC2305_PWM_FAN1_SHIFT;
+        break;
+    case EMC2305_FAN2:
+        val &= ~EMC2305_PWM_FAN2_MASK;
+        val |= freq << EMC2305_PWM_FAN2_SHIFT;
+        break;
+    case EMC2305_FAN3:
+        val &= ~EMC2305_PWM_FAN3_MASK;
+        val |= freq << EMC2305_PWM_FAN3_SHIFT;
+        break;
+    case EMC2305_FAN4:
+        val &= ~EMC2305_PWM_FAN4_MASK;
+        val |= freq << EMC2305_PWM_FAN4_SHIFT;
+        break;
+    case EMC2305_FAN5:
+        val &= ~EMC2305_PWM_FAN5_MASK;
+        val |= freq << EMC2305_PWM_FAN5_SHIFT;
+        break;
+    default:
+        // lmfao
+        return EMC2305_ERR;
+        break;
+    }
+
+    // Write PWM base frequency
+    if (EMC2305_WriteReg(chip, reg, val) != EMC2305_OK) {
+        return EMC2305_ERR;
+    }
+    return EMC2305_OK;
+}
+
 // Fan Control Functions
 
 // Status & Measurement Functions

@@ -106,6 +106,8 @@ typedef enum {
 #define EMC2305_REG_FAN1_TACH_READING_H     0x3Eu // Fan 1 Tachometer Reading High Byte Register - The TACH Reading Registers describe the current tachometer reading for each of the fans (see Section 4.4 “Tachometer Measurement”). 
 #define EMC2305_REG_FAN1_TACH_READING_L     0x3Fu // Fan 1 Tachometer Reading Low Byte Register - The TACH Reading Registers describe the current tachometer reading for each of the fans (see Section 4.4 “Tachometer Measurement”). 
 
+// TODO(rshah): delete unecessary macros
+
 // Fan 2
 #define EMC2305_REG_FAN2_SETTING           0x40u // Fan 2 Drive Setting Register - The Fan Drive Setting register always displays the current setting of the respective fan driver
 #define EMC2305_REG_PWM2_DIVIDE            0x41u // Fan 2 PWM Divide Register - The PWM Divide registers determine the final frequency of the respective PWM Fan Driver. Each driver base frequency is divided by the value of the respective PWM Divide Register to determine the final frequency.
@@ -174,8 +176,21 @@ typedef enum {
 #define EMC2305_REG_FAN5_TACH_READING_H    0x7Eu // Fan 5 Tachometer Reading High Byte Register - The TACH Reading Registers describe the current tachometer reading for each of the fans (see Section 4.4 “Tachometer Measurement”).
 #define EMC2305_REG_FAN5_TACH_READING_L    0x7Fu // Fan 5 Tachometer Reading Low Byte Register - The TACH Reading Registers describe the current tachometer reading for each of the fans (see Section 4.4 “Tachometer Measurement”).
 
-// Bitmasks
-// Config (0x20) bits
+// Address offset per fan register block
+#define EMC2305_FAN_ADDRESS_OFFSET         0x10u
+
+/**
+ * @brief Calculates the register address for a specific fan (N) based on the
+ * Fan 1 register address and known offset
+ *
+ * @param fan_num The fan number (0-4 to match fan enum).
+ * @param fan1_reg_addr The address of the corresponding Fan 1 register (base)
+ * @return The calculated register address for Fan N.
+ */
+#define EMC2305_FAN_REG_ADDR(fan_num, fan1_reg_addr) ((fan1_reg_addr) + ((fan_num) * EMC2305_FAN_ADDRESS_OFFSET))
+
+ // Bitmasks
+ // Config (0x20) bits
 #define EMC2305_CFG_MASK_ALERT              (1u << 7)  /* MASK - mask ALERT pin when set */
 #define EMC2305_CFG_DIS_TO                  (1u << 6)  /* DIS_TO - SMBus timeout disable (I2C compat) */
 #define EMC2305_CFG_WD_EN                   (1u << 5)  /* WD_EN - enable watchdog continuous mode */
@@ -207,6 +222,21 @@ typedef enum {
 // Software Lock (0xEF)
 #define EMC2305_SWL                         (1u << 0)
 
+// Bit masks for PWM Base Freq
+#define EMC2305_PWM_FAN1_MASK               0x03u
+#define EMC2305_PWM_FAN2_MASK               0x0Cu
+#define EMC2305_PWM_FAN3_MASK               0x30u
+#define EMC2305_PWM_FAN4_MASK               0x03u
+#define EMC2305_PWM_FAN5_MASK               0x0Cu
+
+// Bit shifts for PWM Base Freq
+#define EMC2305_PWM_FAN1_SHIFT              0u
+#define EMC2305_PWM_FAN2_SHIFT              2u
+#define EMC2305_PWM_FAN3_SHIFT              4u
+#define EMC2305_PWM_FAN4_SHIFT              0u
+#define EMC2305_PWM_FAN5_SHIFT              2u
+
+
 // Device Management Functions
 
 /**
@@ -231,11 +261,19 @@ EMC2305_Status EMC2305_EnableSWLock(EMC2305_HandleTypeDef* chip);
  * @param   config Global configuration to use
  * @return  OK if successful, ERR otherwise
  */
-EMC2305_Status EMC2305_SetGlobalConfig(EMC2305_HandleTypeDef* chip, EMC2305_Global_Config config);
+EMC2305_Status EMC2305_SetGlobalConfig(EMC2305_HandleTypeDef* chip, EMC2305_Global_Config* config);
 
 // Fan Configuration Functions
 
+/**
+ * @brief   Sets the base frequency of the specified fan's PWM driver
+ * @param   chip EMC2305 to use
+ * @param   fan Fan to use (1-5)
+ * @param   freq Base frequency as specified in Section 6.10
+ * @return  OK if successful, ERR otherwise
+ */
 EMC2305_Status EMC2305_SetPWMBaseFrequency(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, EMC2305_PWM_BaseFreq freq);
+
 
 EMC2305_Status EMC2305_SetFanConfig(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, EMC2305_Fan_Config1 config1, EMC2305_Fan_Config2 config2);
 
