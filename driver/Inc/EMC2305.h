@@ -200,6 +200,9 @@ typedef enum {
 #define EMC2305_FAN2_DPT_MASK               (0x18u)    /* bits 4..3 derivative option */
 #define EMC2305_FAN2_ERG_MASK               (0x06u)    /* bits 2..1 error window */
 
+// Software Lock (0xEF)
+#define EMC2305_SWL                         (1u << 0)
+
 // Device Management Functions
 
 /**
@@ -211,12 +214,12 @@ typedef enum {
  */
 EMC2305_Status EMC2305_Init(EMC2305_HandleTypeDef* chip, I2C_HandleTypeDef* hi2c, uint16_t dev_addr);
 
-
-EMC2305_Status EMC2305_Reset(EMC2305_HandleTypeDef* chip);
-
+/**
+ * @brief   Software locks all SWL registers. SWL registers are now read-only until power cycle.
+ * @param   chip EMC2305 to lock
+ * @return  OK if successful, ERR otherwise
+ */
 EMC2305_Status EMC2305_EnableSWLock(EMC2305_HandleTypeDef* chip);
-
-EMC2305_Status EMC2305_DisableSWLock(EMC2305_HandleTypeDef* chip);
 
 // TODO(rshah): should break into multiple fns
 // does this write many regs???? mahybe okat to kepe as one idkkkk

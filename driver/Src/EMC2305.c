@@ -18,7 +18,9 @@ EMC2305_Status EMC2305_Init(EMC2305_HandleTypeDef* chip, I2C_HandleTypeDef* hi2c
 
     // Check Product ID
     uint8_t product_id = 0;
-    EMC2305_ReadReg(chip, EMC2305_REG_PRODUCT_ID, &product_id);
+    if (EMC2305_ReadReg(chip, EMC2305_REG_PRODUCT_ID, &product_id) != EMC2305_OK) {
+        return EMC2305_ERR;
+    }
     if ((product_id & 0b11) != 0b00) {
         // EMC2305 is id 00
         return EMC2305_ERR;
@@ -26,12 +28,26 @@ EMC2305_Status EMC2305_Init(EMC2305_HandleTypeDef* chip, I2C_HandleTypeDef* hi2c
 
     // Check Manufacturer ID
     uint8_t mfg_id = 0;
-    EMC2305_ReadReg(chip, EMC2305_REG_MANUFACTURER_ID, &mfg_id);
+    if (EMC2305_ReadReg(chip, EMC2305_REG_MANUFACTURER_ID, &mfg_id) != EMC2305_OK) {
+        return EMC2305_ERR;
+    }
     if (mfg_id != 0x5D) {
         // ur cooked lmao
         return EMC2305_ERR;
     }
 
+    return EMC2305_OK;
+}
+
+/**
+ * @brief   Software locks all SWL registers. SWL registers are now read-only until power cycle.
+ * @param   chip EMC2305 to lock
+ * @return  OK if successful, ERR otherwise
+ */
+EMC2305_Status EMC2305_EnableSWLock(EMC2305_HandleTypeDef* chip) {
+    if (EMC2305_WriteReg(chip, EMC2305_REG_SW_LOCK, EMC2305_SWL) != EMC2305_OK) {
+        return EMC2305_ERR;
+    }
     return EMC2305_OK;
 }
 
