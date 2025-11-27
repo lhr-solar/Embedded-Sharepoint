@@ -211,6 +211,39 @@ EMC2305_Status EMC2305_SetFanPWM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, u
     return EMC2305_OK;
 }
 
+/**
+ * @brief   Sets the RPM target for the control algorithm. Works only with fan speed control (FSC) enabled
+ * @param   chip EMC2305 to set
+ * @param   fan Fan to set (1-5)
+ * @param   rpm_target RPM target to set (500 to 16k)
+ * @return  OK if successful, ERR otherwise
+ */
+EMC2305_Status EMC2305_SetFanRPM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, uint16_t rpm_target) {
+    // idiot check
+    if ((rpm_target < 500) || (rpm_target > 16000)) {
+        return EMC2305_ERR;
+    }
+
+    // Convert RPM target to tachometer counts
+    // WARNING: assuming 2 poles, 32.768 measurement freq, 5 edges, multiplier = 1
+    // This is the default configuration. Reference app note (https://ww1.microchip.com/downloads/en/AppNotes/en562764.pdf)
+    uint16_t tach_target = (EMC2305_TACH_RPM_CONV * EMC2305_TACH_MULT) / rpm_target;
+
+    // Split into high and low bytes
+    tach_target &= 0x1FFF; // ensure 13-bit range
+    uint8_t high_byte = (tach_target >> 5) & 0xFF;     // bits [12:5]
+    uint8_t low_byte = (tach_target & 0x1F) << 3;      // bits [4:0]
+
+    // Must write low byte first, value is saved once high byte is written
+    if (EMC2305_WriteReg(chip, EMC2305_FAN_REG_ADDR(fan, EMC2305_REG_FAN1_TACH_TARGET_L), low_byte) != EMC2305_OK) {
+        return EMC2305_ERR;
+    }
+    if (EMC2305_WriteReg(chip, EMC2305_FAN_REG_ADDR(fan, EMC2305_REG_FAN1_TACH_TARGET_H), high_byte) != EMC2305_OK) {
+        return EMC2305_ERR;
+    }
+    return EMC2305_OK;
+}
+
 // Status & Measurement Functions
 
 // Register Read/Write Functions

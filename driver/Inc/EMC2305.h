@@ -221,6 +221,10 @@ typedef enum {
 #define EMC2305_CONFIG2_DPT_SHIFT           3u
 #define EMC2305_CONFIG2_ERG_SHIFT           1u
 
+// Conversion from RPM to tach counts (Equation 2 in SMSC AN 17.4)
+#define EMC2305_TACH_RPM_CONV               3932160u
+#define EMC2305_TACH_MULT                   1u
+
 // Device Management Functions
 
 /**
@@ -291,6 +295,13 @@ EMC2305_Status EMC2305_SetPIDGain(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, 
  */
 EMC2305_Status EMC2305_SetFanPWM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, uint8_t duty_cycle);
 
+/**
+ * @brief   Sets the RPM target for the control algorithm. Works only with fan speed control (FSC) enabled
+ * @param   chip EMC2305 to set
+ * @param   fan Fan to set (1-5)
+ * @param   rpm_target RPM target to set (500 to 16k)
+ * @return  OK if successful, ERR otherwise
+ */
 EMC2305_Status EMC2305_SetFanRPM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, uint16_t rpm_target);
 
 // Status & Measurement Functions
