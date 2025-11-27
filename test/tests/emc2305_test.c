@@ -213,7 +213,7 @@ int main(void) {
 
     // Set config1 and config2
     EMC2305_Fan_Config1 config1 = { 0 };
-    config1.enable_closed_loop = true;
+    config1.enable_closed_loop = false;
     config1.edges = EMC2305_EDG_5; // 5 edges is default for 2 pole fans
     EMC2305_Fan_Config2 config2 = { 0 };
     if (EMC2305_SetFanConfig(&chip, EMC2305_FAN2, &config1, &config2) != EMC2305_OK) {
@@ -233,10 +233,10 @@ int main(void) {
 
         // HAL_Delay(1000);
 
-        // // Set PWM2 duty cycle to 50%
-        // if (EMC2305_SetFanPWM(&chip, EMC2305_FAN2, 50) != EMC2305_OK) {
-        //     Error_Handler();
-        // };
+        // Set PWM2 duty cycle to 50%
+        if (EMC2305_SetFanPWM(&chip, EMC2305_FAN2, 50) != EMC2305_OK) {
+            Error_Handler();
+        };
 
         // HAL_Delay(1000);
 
@@ -263,7 +263,50 @@ int main(void) {
         // msgLen = sizeof(data3) - 1;
         // HAL_UART_Transmit(&huart1, data3, msgLen, 1000);
 
+
+
+        // Get current rpm
+        uint16_t rpm = EMC2305_GetFanRPM(&chip, EMC2305_FAN2);
+
+        uint8_t data3[] = "RPM:";
+        msgLen = sizeof(data3) - 1;
+        HAL_UART_Transmit(&huart1, data3, msgLen, 1000);
+
+        char buffer[6];
+        snprintf(buffer, sizeof(buffer), "%u", rpm);
+        msgLen = sizeof(buffer) - 1;
+        HAL_UART_Transmit(&huart1, (uint8_t*)buffer, msgLen, 1000);
+
+        uint8_t data4[] = "\r\n";
+        msgLen = sizeof(data4) - 1;
+        HAL_UART_Transmit(&huart1, data4, msgLen, 1000);
+
         EMC2305_SetFanRPM(&chip, EMC2305_FAN2, 1000);
+
+
+
+        // Get current pwm
+        uint8_t pwm = EMC2305_GetFanPWM(&chip, EMC2305_FAN2);
+
+        uint8_t data5[] = "PWM:";
+        msgLen = sizeof(data5) - 1;
+        HAL_UART_Transmit(&huart1, data5, msgLen, 1000);
+
+        char buffer1[4];
+        snprintf(buffer1, sizeof(buffer1), "%u", pwm);
+        msgLen = sizeof(buffer1) - 1;
+        HAL_UART_Transmit(&huart1, (uint8_t*)buffer1, msgLen, 1000);
+
+        uint8_t data6[] = "\r\n";
+        msgLen = sizeof(data6) - 1;
+        HAL_UART_Transmit(&huart1, data6, msgLen, 1000);
+
+
+
+        // // Set fan RPM to 1000
+        // EMC2305_SetFanRPM(&chip, EMC2305_FAN2, 1000);
+
+
 
         HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN);
         HAL_Delay(1000);

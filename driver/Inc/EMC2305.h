@@ -143,7 +143,7 @@ typedef enum {
 
 // Fan 1 Registers (base registers for all fans)
 #define EMC2305_REG_FAN1_SETTING            0x30u // Fan 1 Drive Setting Register - The Fan Drive Setting register always displays the current setting of the respective fan driver
-#define EMC2305_REG_PWM1_DIVIDE             0x31u // Fan 1 PWM Divide Register - The PWM Divide registers determine the final fre quency of the respective PWM Fan Driver. Each driver base frequency is divided by the value of the respective PWM Divide Register to determine the final frequency.
+#define EMC2305_REG_PWM1_DIVIDE             0x31u // Fan 1 PWM Divide Register - The PWM Divide registers determine the final frequency of the respective PWM Fan Driver. Each driver base frequency is divided by the value of the respective PWM Divide Register to determine the final frequency.
 #define EMC2305_REG_FAN1_CONFIG1            0x32u // Fan 1 Configuration Register 1 - The Fan Configuration 1 registers control the general operation of the RPM-based Fan Speed Control algorithm used for the respective Fan Driver (see Section 4.3 “RPM-Based Fan Speed Control Algorithm”).
 #define EMC2305_REG_FAN1_CONFIG2            0x33u // Fan 1 Configuration Register 2 - The Fan Configuration 2 registers control the tachometer measurement and advanced features of the RPM based Fan Speed Control algorithm (see Section 4.3 “RPM-Based Fan Speed Control Algorithm”)
 #define EMC2305_REG_GAIN1                   0x35u // Fan 1 PID Gain Register - See Section 4.3.3.2 “Setting the PID Gains”.
@@ -306,9 +306,21 @@ EMC2305_Status EMC2305_SetFanRPM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, u
 
 // Status & Measurement Functions
 
-EMC2305_Status EMC2305_GetFanRPM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan);
+/**
+ * @brief   Gets current fan RPM based on tachometer measurement
+ * @param   chip EMC2305 to get
+ * @param   fan Fan to get (1-5)
+ * @return  Measured fan RPM
+ */
+uint16_t EMC2305_GetFanRPM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan);
 
-EMC2305_Status EMC2305_GetFanPWM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan);
+/**
+ * @brief   Gets current fan driver PWM
+ * @param   chip EMC2305 to get
+ * @param   fan Fan to get (1-5)
+ * @return  Driven fan PWM
+ */
+uint8_t EMC2305_GetFanPWM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan);
 
 EMC2305_Status EMC2305_GetFanStatus(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan);
 

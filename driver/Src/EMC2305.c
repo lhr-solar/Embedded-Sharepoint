@@ -160,6 +160,10 @@ EMC2305_Status EMC2305_SetPWMBaseFrequency(EMC2305_HandleTypeDef* chip, EMC2305_
  * @return  OK if successful, ERR otherwise
  */
 EMC2305_Status EMC2305_SetFanConfig(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, EMC2305_Fan_Config1* config1, EMC2305_Fan_Config2* config2) {
+    if (fan < EMC2305_FAN1 || fan > EMC2305_FAN5) {
+        return EMC2305_ERR;
+    }
+
     // Pack config 1
     uint8_t config1_bits = 0;
     config1_bits |= (config1->enable_closed_loop << EMC2305_CONFIG1_ENAG_SHIFT);
@@ -196,6 +200,10 @@ EMC2305_Status EMC2305_SetFanConfig(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan
  * @return  OK if successful, ERR otherwise
  */
 EMC2305_Status EMC2305_SetFanPWM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, uint8_t duty_cycle) {
+    if (fan < EMC2305_FAN1 || fan > EMC2305_FAN5) {
+        return EMC2305_ERR;
+    }
+
     // oops
     if (duty_cycle > 100) {
         return EMC2305_ERR;
@@ -219,6 +227,10 @@ EMC2305_Status EMC2305_SetFanPWM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, u
  * @return  OK if successful, ERR otherwise
  */
 EMC2305_Status EMC2305_SetFanRPM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, uint16_t rpm_target) {
+    if (fan < EMC2305_FAN1 || fan > EMC2305_FAN5) {
+        return EMC2305_ERR;
+    }
+
     // idiot check
     if ((rpm_target < 500) || (rpm_target > 16000)) {
         return EMC2305_ERR;
@@ -245,6 +257,58 @@ EMC2305_Status EMC2305_SetFanRPM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, u
 }
 
 // Status & Measurement Functions
+
+/**
+ * @brief   Gets current fan RPM based on tachometer measurement
+ * @param   chip EMC2305 to get
+ * @param   fan Fan to get (1-5)
+ * @return  Measured fan RPM. UINT16_MAX on error
+ */
+uint16_t EMC2305_GetFanRPM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan) {
+    if (fan < EMC2305_FAN1 || fan > EMC2305_FAN5) {
+        return UINT16_MAX;
+    }
+
+    // Read tachometer reading high and low bytes
+    uint8_t high_byte = 0;
+    uint8_t low_byte = 0;
+    if (EMC2305_ReadReg(chip, EMC2305_FAN_REG_ADDR(fan, EMC2305_REG_FAN1_TACH_READING_H), &high_byte) != EMC2305_OK) {
+        return UINT16_MAX;
+    }
+    if (EMC2305_ReadReg(chip, EMC2305_FAN_REG_ADDR(fan, EMC2305_REG_FAN1_TACH_READING_L), &low_byte) != EMC2305_OK) {
+        return UINT16_MAX;
+    }
+
+    // Combine into tach measurement
+    uint16_t tach_reading = ((high_byte << 5) + ((low_byte >> 3) & 0x1F)) & 0x1FFF;
+
+    // Convert tachometer counts to RPM
+    uint16_t rpm = (EMC2305_TACH_RPM_CONV * EMC2305_TACH_MULT) / tach_reading;
+    return rpm;
+}
+
+/**
+ * @brief   Gets current fan driver PWM duty cycle
+ * @param   chip EMC2305 to get
+ * @param   fan Fan to get (1-5)
+ * @return  Driven fan PWM duty cycle. UINT8_MAX on error
+ */
+uint8_t EMC2305_GetFanPWM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan) {
+    if (fan < EMC2305_FAN1 || fan > EMC2305_FAN5) {
+        return UINT8_MAX;
+    }
+
+    // Read PWM from drive register
+    uint8_t val = 0;
+    if (EMC2305_ReadReg(chip, EMC2305_FAN_REG_ADDR(fan, EMC2305_REG_FAN1_SETTING), &val) != EMC2305_OK) {
+        return UINT8_MAX;
+    }
+
+    // Convert register value to duty cycle percentage
+    uint8_t pwm = (val * 100) / 255;
+
+    return pwm;
+}
 
 // Register Read/Write Functions
 
