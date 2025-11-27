@@ -48,14 +48,6 @@ typedef enum {
     EMC2305_PWM_26k00 = 0b00, // 26.00 kHz
 } EMC2305_PWM_BaseFreq;
 
-// Fan Configuration 1
-typedef struct {
-    bool enable_closed_loop;
-    EMC2305_RNG range;
-    EMC2305_EDG edges;
-    EMC2305_UDT update_time;
-} EMC2305_Fan_Config1;
-
 // Range - Sets the minimum fan speed measured and reported
 typedef enum {
     EMC2305_RNG_4000 = 0b11, // 4000 RPM minimum, TACH count multiplier = 8
@@ -84,13 +76,13 @@ typedef enum {
     EMC2305_UDT_1600 = 0b111,  // 1600 ms update interval
 } EMC2305_UDT;
 
-// Fan Configuration 2
+// Fan Configuration 1
 typedef struct {
-    bool enable_ramp_rate_ctl;
-    bool enable_glitch_filter;
-    EMC2305_DPT derivative_options;
-    EMC2305_ERG error_window;
-} EMC2305_Fan_Config2;
+    bool enable_closed_loop;
+    EMC2305_RNG range;
+    EMC2305_EDG edges;
+    EMC2305_UDT update_time;
+} EMC2305_Fan_Config1;
 
 // Derivative Options - Selects form of derivative used in PID
 typedef enum {
@@ -107,6 +99,14 @@ typedef enum {
     EMC2305_ERG_100RPM = 0b10, // ±100 RPM
     EMC2305_ERG_200RPM = 0b11, // ±200 RPM
 } EMC2305_ERG;
+
+// Fan Configuration 2
+typedef struct {
+    bool enable_ramp_rate_ctl;
+    bool enable_glitch_filter;
+    EMC2305_DPT derivative_options;
+    EMC2305_ERG error_window;
+} EMC2305_Fan_Config2;
 
 typedef struct {
     // TODO(rshah): fill in config values
@@ -141,7 +141,7 @@ typedef enum {
 #define EMC2305_REG_FAN_SPIN_STATUS         0x26u // The Fan Spin Status register indicates which fan driver has failed to spin-up (see Section 4.8 “Spin Up Rou tine”). All bits are cleared upon a read if the Error condition has been removed.
 #define EMC2305_REG_DRIVE_FAIL_STATUS       0x27u // The Fan Drive Fail Status register indicates which fan driver cannot drive to the programmed speed even at 100% duty cycle (see Section 4.4.4 “Aging Fan or Invalid Drive Detection” and Register 6-16). All bits are cleared upon a read if the Error condition has been removed.
 
-// Fan 1
+// Fan 1 Registers (base registers for all fans)
 #define EMC2305_REG_FAN1_SETTING            0x30u // Fan 1 Drive Setting Register - The Fan Drive Setting register always displays the current setting of the respective fan driver
 #define EMC2305_REG_PWM1_DIVIDE             0x31u // Fan 1 PWM Divide Register - The PWM Divide registers determine the final fre quency of the respective PWM Fan Driver. Each driver base frequency is divided by the value of the respective PWM Divide Register to determine the final frequency.
 #define EMC2305_REG_FAN1_CONFIG1            0x32u // Fan 1 Configuration Register 1 - The Fan Configuration 1 registers control the general operation of the RPM-based Fan Speed Control algorithm used for the respective Fan Driver (see Section 4.3 “RPM-Based Fan Speed Control Algorithm”).
@@ -192,15 +192,6 @@ typedef enum {
 #define EMC2305_FAN4_MASK                   (1u << 3)
 #define EMC2305_FAN5_MASK                   (1u << 4)
 
-// Fan Config1 (ENAGx bit in each fan CONFIG1)
-#define EMC2305_FAN_ENAG                    (1u << 7)  /* in each FANx CONFIG1: enable closed-loop FSC */
-
-// Fan Config2 (ENRCx, GHENx, DPTx, ERGx in each fan CONFIG2)
-#define EMC2305_FAN2_ENRC                   (1u << 6)  /* ENRCx ramp-rate enable when ENAGx == 0 */
-#define EMC2305_FAN2_GHEN                   (1u << 5)  /* glitch filter enable (TACH pin) */
-#define EMC2305_FAN2_DPT_MASK               (0x18u)    /* bits 4..3 derivative option */
-#define EMC2305_FAN2_ERG_MASK               (0x06u)    /* bits 2..1 error window */
-
 // Software Lock (0xEF)
 #define EMC2305_SWL                         (1u << 0)
 
@@ -218,6 +209,17 @@ typedef enum {
 #define EMC2305_PWM_FAN4_SHIFT              0u
 #define EMC2305_PWM_FAN5_SHIFT              2u
 
+// Bit shifts for fan configuration 1 register
+#define EMC2305_CONFIG1_ENAG_SHIFT          7u
+#define EMC2305_CONFIG1_RNG_SHIFT           5u
+#define EMC2305_CONFIG1_EDG_SHIFT           3u
+#define EMC2305_CONFIG1_UDT_SHIFT           0u
+
+// Bit shifts for fan configuration 2 register
+#define EMC2305_CONFIG2_ENRC_SHIFT          6u
+#define EMC2305_CONFIG2_GHEN_SHIFT          5u
+#define EMC2305_CONFIG2_DPT_SHIFT           3u
+#define EMC2305_CONFIG2_ERG_SHIFT           1u
 
 // Device Management Functions
 
@@ -249,22 +251,33 @@ EMC2305_Status EMC2305_SetGlobalConfig(EMC2305_HandleTypeDef* chip, EMC2305_Glob
 
 /**
  * @brief   Sets the base frequency of the specified fan's PWM driver
- * @param   chip EMC2305 to use
- * @param   fan Fan to use (1-5)
+ * @param   chip EMC2305 to set
+ * @param   fan Fan to set (1-5)
  * @param   freq Base frequency as specified in Section 6.10
  * @return  OK if successful, ERR otherwise
  */
 EMC2305_Status EMC2305_SetPWMBaseFrequency(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, EMC2305_PWM_BaseFreq freq);
 
+/**
+ * @brief   Sets the EMC2305 configuration 1 and 2 registers based on the provided config
+ * @param   chip EMC2305 to set
+ * @param   fan Fan to set (1-5)
+ * @param   config1 Configuration for register 1
+ * @param   config2 Configuration for register 2
+ * @return  OK if successful, ERR otherwise
+ */
+EMC2305_Status EMC2305_SetFanConfig(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, EMC2305_Fan_Config1* config1, EMC2305_Fan_Config2* config2);
 
-EMC2305_Status EMC2305_SetFanConfig(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, EMC2305_Fan_Config1 config1, EMC2305_Fan_Config2 config2);
-
+// TODO
 EMC2305_Status EMC2305_SetMinMax(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, uint8_t min_drive, uint8_t max_step);
 
-EMC2305_Status EMC2305_SetSpinUp(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, EMC2305_SpinUp_Config config);
+// TODO
+EMC2305_Status EMC2305_SetSpinUp(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, EMC2305_SpinUp_Config* config);
 
+// TODO
 EMC2305_Status EMC2305_SetDriveFailBand(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, uint16_t drive_fail_band);
 
+// TODO
 EMC2305_Status EMC2305_SetPIDGain(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, EMC2305_PID_Gain gain);
 
 // Fan Control Functions

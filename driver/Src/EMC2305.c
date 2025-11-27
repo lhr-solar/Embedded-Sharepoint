@@ -151,6 +151,41 @@ EMC2305_Status EMC2305_SetPWMBaseFrequency(EMC2305_HandleTypeDef* chip, EMC2305_
     return EMC2305_OK;
 }
 
+/**
+ * @brief   Sets the EMC2305 configuration 1 and 2 registers based on the provided config
+ * @param   chip EMC2305 to set
+ * @param   fan Fan to set (1-5)
+ * @param   config1 Configuration for register 1
+ * @param   config2 Configuration for register 2
+ * @return  OK if successful, ERR otherwise
+ */
+EMC2305_Status EMC2305_SetFanConfig(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, EMC2305_Fan_Config1* config1, EMC2305_Fan_Config2* config2) {
+    // Pack config 1
+    uint8_t config1_bits = 0;
+    config1_bits |= (config1->enable_closed_loop << EMC2305_CONFIG1_ENAG_SHIFT);
+    config1_bits |= (config1->range << EMC2305_CONFIG1_RNG_SHIFT);
+    config1_bits |= (config1->edges << EMC2305_CONFIG1_EDG_SHIFT);
+    config1_bits |= (config1->update_time << EMC2305_CONFIG1_UDT_SHIFT);
+
+    // Pack config 2
+    uint8_t config2_bits = 0;
+    config2_bits |= (config2->enable_ramp_rate_ctl << EMC2305_CONFIG2_ENRC_SHIFT);
+    config2_bits |= (config2->enable_glitch_filter << EMC2305_CONFIG2_GHEN_SHIFT);
+    config2_bits |= (config2->derivative_options << EMC2305_CONFIG2_DPT_SHIFT);
+    config2_bits |= (config2->error_window << EMC2305_CONFIG2_ERG_SHIFT);
+
+    // Write config 1
+    if (EMC2305_WriteReg(chip, EMC2305_FAN_REG_ADDR(fan, EMC2305_REG_FAN1_CONFIG1), config1_bits) != EMC2305_OK) {
+        return EMC2305_ERR;
+    }
+
+    // Write config 2
+    if (EMC2305_WriteReg(chip, EMC2305_FAN_REG_ADDR(fan, EMC2305_REG_FAN1_CONFIG2), config2_bits) != EMC2305_OK) {
+        return EMC2305_ERR;
+    }
+    return EMC2305_OK;
+}
+
 // Fan Control Functions
 
 // Status & Measurement Functions
