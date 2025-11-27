@@ -282,6 +282,13 @@ EMC2305_Status EMC2305_SetPIDGain(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, 
 
 // Fan Control Functions
 
+/**
+ * @brief   Sets the PWM drive of the specified fan directly. Works only with fan speed control (FSC) disabled
+ * @param   chip EMC2305 to set
+ * @param   fan Fan to set (1-5)
+ * @param   duty_cycle PWM duty cycle percentage (0 to 100)
+ * @return  OK if successful, ERR otherwise
+ */
 EMC2305_Status EMC2305_SetFanPWM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, uint8_t duty_cycle);
 
 EMC2305_Status EMC2305_SetFanRPM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, uint16_t rpm_target);

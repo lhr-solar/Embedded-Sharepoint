@@ -188,6 +188,29 @@ EMC2305_Status EMC2305_SetFanConfig(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan
 
 // Fan Control Functions
 
+/**
+ * @brief   Sets the PWM drive of the specified fan directly. Works only with fan speed control (FSC) disabled
+ * @param   chip EMC2305 to set
+ * @param   fan Fan to set (1-5)
+ * @param   duty_cycle PWM duty cycle percentage (0 to 100)
+ * @return  OK if successful, ERR otherwise
+ */
+EMC2305_Status EMC2305_SetFanPWM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, uint8_t duty_cycle) {
+    // oops
+    if (duty_cycle > 100) {
+        return EMC2305_ERR;
+    }
+
+    // Convert duty cycle percentage drive to register value using Equation 4-1: Drive = (Value/255) * 100
+    uint8_t val = (duty_cycle * 255) / 100;
+
+    // Write PWM to drive register
+    if (EMC2305_WriteReg(chip, EMC2305_FAN_REG_ADDR(fan, EMC2305_REG_FAN1_SETTING), val) != EMC2305_OK) {
+        return EMC2305_ERR;
+    }
+    return EMC2305_OK;
+}
+
 // Status & Measurement Functions
 
 // Register Read/Write Functions

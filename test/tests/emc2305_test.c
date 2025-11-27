@@ -131,10 +131,6 @@ int main(void) {
         Error_Handler();
     }
 
-    uint8_t data[] = "EMC2305 Fan Controller Test\r\n";
-    uint8_t msgLen = sizeof(data) - 1;
-    HAL_UART_Transmit(&huart1, data, msgLen, 1000);
-
     // initialize I2C pins on PSOM
     GPIO_InitTypeDef GPIO_InitStruct = { 0 };
     RCC_PeriphCLKInitTypeDef ClkInit = { 0 };
@@ -195,10 +191,30 @@ int main(void) {
         Error_Handler();
     }
 
+    uint8_t data[] = "EMC2305 Fan Controller Test\r\n";
+    uint8_t msgLen = sizeof(data) - 1;
+    HAL_UART_Transmit(&huart1, data, msgLen, 1000);
+
     // Initialize EMC2305
     if (EMC2305_Init(&chip, &hi2c1, DEFAULT_DEV_ADDR << 1) != EMC2305_OK) {
         Error_Handler();
     }
+
+    uint8_t data1[] = "Chip Initialized\r\n";
+    msgLen = sizeof(data1) - 1;
+    HAL_UART_Transmit(&huart1, data1, msgLen, 1000);
+
+    // Set config1 and config2
+    EMC2305_Fan_Config1 config1 = { 0 };
+    config1.enable_closed_loop = false;
+    EMC2305_Fan_Config2 config2 = { 0 };
+    if (EMC2305_SetFanConfig(&chip, EMC2305_FAN2, &config1, &config2) != EMC2305_OK) {
+        Error_Handler();
+    };
+
+    uint8_t data2[] = "Chip Configured\r\n";
+    msgLen = sizeof(data2) - 1;
+    HAL_UART_Transmit(&huart1, data2, msgLen, 1000);
 
     while (1) {
 
@@ -251,8 +267,50 @@ int main(void) {
         // // HAL_I2C_Master_Transmit(&hi2c1, 0x4D << 1, (uint8_t[]) { reg, val }, 2, 100);
 
         // // 3. Set PWM2 duty cycle to 50% (0x40 → 0x80)
-        // reg = EMC2305_REG_FAN2_SETTING; val = 0x80;
+        // uint8_t reg = 0x40;
+        // uint8_t reg = EMC2305_FAN_REG_ADDR(EMC2305_FAN2, EMC2305_REG_FAN1_SETTING);
+        // uint8_t val = (50 * 255) / 100;
         // HAL_I2C_Master_Transmit(&hi2c1, 0x4D << 1, (uint8_t[]) { reg, val }, 2, 100);
+
+
+
+
+        // Set PWM2 duty cycle to 25%
+        if (EMC2305_SetFanPWM(&chip, EMC2305_FAN2, 25) != EMC2305_OK) {
+            Error_Handler();
+        };
+
+        HAL_Delay(1000);
+
+        // Set PWM2 duty cycle to 50%
+        if (EMC2305_SetFanPWM(&chip, EMC2305_FAN2, 50) != EMC2305_OK) {
+            Error_Handler();
+        };
+
+        HAL_Delay(1000);
+
+        // Set PWM2 duty cycle to 75%
+        if (EMC2305_SetFanPWM(&chip, EMC2305_FAN2, 75) != EMC2305_OK) {
+            Error_Handler();
+        };
+
+        HAL_Delay(1000);
+
+        // Set PWM2 duty cycle to 100%
+        if (EMC2305_SetFanPWM(&chip, EMC2305_FAN2, 100) != EMC2305_OK) {
+            Error_Handler();
+        };
+
+        HAL_Delay(1000);
+
+        // Set PWM2 duty cycle to 0%
+        if (EMC2305_SetFanPWM(&chip, EMC2305_FAN2, 0) != EMC2305_OK) {
+            Error_Handler();
+        };
+
+        uint8_t data3[] = "Set PWM\r\n";
+        msgLen = sizeof(data3) - 1;
+        HAL_UART_Transmit(&huart1, data3, msgLen, 1000);
 
         HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN);
         HAL_Delay(1000);
