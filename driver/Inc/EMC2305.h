@@ -279,18 +279,6 @@ EMC2305_Status EMC2305_SetPWMBaseFrequency(EMC2305_HandleTypeDef* chip, EMC2305_
  */
 EMC2305_Status EMC2305_SetFanConfig(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, EMC2305_Fan_Config1* config1, EMC2305_Fan_Config2* config2);
 
-// TODO
-EMC2305_Status EMC2305_SetMinMax(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, uint8_t min_drive, uint8_t max_step);
-
-// TODO
-EMC2305_Status EMC2305_SetSpinUp(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, EMC2305_SpinUp_Config* config);
-
-// TODO
-EMC2305_Status EMC2305_SetDriveFailBand(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, uint16_t drive_fail_band);
-
-// TODO
-EMC2305_Status EMC2305_SetPIDGain(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, EMC2305_PID_Gain gain);
-
 // Fan Control Functions
 
 /**
@@ -335,8 +323,6 @@ uint8_t EMC2305_GetFanPWM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan);
  * @return  Fan status for all drivers
  */
 EMC2305_Fan_Status EMC2305_GetFanStatus(EMC2305_HandleTypeDef* chip);
-
-EMC2305_Status EMC2305_GetAlertStatus(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan);
 
 // Register Read/Write Functions
 
