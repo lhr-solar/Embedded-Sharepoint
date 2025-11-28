@@ -124,7 +124,7 @@ typedef struct {
     bool drive_failed;   // Indicates that one or more fan drivers cannot meet the programmed fan speed at maximum PWM duty cycle.
     bool spin_failed;    // Indicates that one or more fan drivers cannot spin up.
     bool stalled;        // Indicates that one or more fan drivers have stalled.
-} EMC2305_Fan_Status
+} EMC2305_Fan_Status;
 
 // Register map from EMC2305 datasheet
 // https://ww1.microchip.com/downloads/aemDocuments/documents/MSLD/ProductDocuments/DataSheets/EMC2301-2-3-5-Data-Sheet-DS20006532A.pdf

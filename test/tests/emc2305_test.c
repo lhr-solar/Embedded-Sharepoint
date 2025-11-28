@@ -63,6 +63,7 @@ void SystemClock_Config(void) {
 #endif
 
 int main(void) {
+#ifdef STM32L431xx
     // initialize the HAL and system clock
     if (HAL_Init() != HAL_OK) Error_Handler();
     SystemClock_Config();
@@ -190,6 +191,7 @@ int main(void) {
     {
         Error_Handler();
     }
+#endif
 
     uint8_t data[] = "EMC2305 Fan Controller Test\r\n";
     uint8_t msgLen = sizeof(data) - 1;
