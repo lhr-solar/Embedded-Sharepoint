@@ -213,7 +213,7 @@ int main(void) {
 
     // Set config1 and config2
     EMC2305_Fan_Config1 config1 = { 0 };
-    config1.enable_closed_loop = false;
+    config1.enable_closed_loop = false; // Set this to true if using FSC (Closed Loop RPM Control). False for using PWM directly
     config1.edges = EMC2305_EDG_5; // 5 edges is default for 2 pole fans
     EMC2305_Fan_Config2 config2 = { 0 };
     if (EMC2305_SetFanConfig(&chip, EMC2305_FAN2, &config1, &config2) != EMC2305_OK) {

@@ -310,6 +310,30 @@ uint8_t EMC2305_GetFanPWM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan) {
     return pwm;
 }
 
+/**
+ * @brief   Gets current fan status for all drivers
+ * @param   chip EMC2305 to get
+ * @return  Fan status for all drivers
+ */
+EMC2305_Fan_Status EMC2305_GetFanStatus(EMC2305_HandleTypeDef* chip) {
+    EMC2305_Fan_Status status = { 0 };
+
+    // Read fan status register
+    uint8_t val = 0;
+    if (EMC2305_ReadReg(chip, EMC2305_REG_FAN_STATUS, &val) != EMC2305_OK) {
+        // Error handling is fake :D
+        return status;
+    }
+
+    // Update status values
+    status.watchdog_fired = ((val & EMC2305_STAT_WATCH) == EMC2305_STAT_WATCH);
+    status.drive_failed = ((val & EMC2305_STAT_DRVFAIL) == EMC2305_STAT_DRVFAIL);
+    status.spin_failed = ((val & EMC2305_STAT_FNSPIN) == EMC2305_STAT_FNSPIN);
+    status.stalled = ((val & EMC2305_STAT_FNSTL) == EMC2305_STAT_FNSTL);
+
+    return status;
+}
+
 // Register Read/Write Functions
 
 /**

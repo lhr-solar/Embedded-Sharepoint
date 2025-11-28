@@ -119,6 +119,13 @@ typedef enum {
     EMC2305_PID_1X = 0b00, // 1x gain
 } EMC2305_PID_Gain;
 
+typedef struct {
+    bool watchdog_fired; // Indicates that the Watchdog Timer has expired. When this bit is set, each fan is driven to 100% duty cycle and will remain at 100% duty cycle until they are programmed. This bit is cleared when it is read.
+    bool drive_failed;   // Indicates that one or more fan drivers cannot meet the programmed fan speed at maximum PWM duty cycle.
+    bool spin_failed;    // Indicates that one or more fan drivers cannot spin up.
+    bool stalled;        // Indicates that one or more fan drivers have stalled.
+} EMC2305_Fan_Status
+
 // Register map from EMC2305 datasheet
 // https://ww1.microchip.com/downloads/aemDocuments/documents/MSLD/ProductDocuments/DataSheets/EMC2301-2-3-5-Data-Sheet-DS20006532A.pdf
 
@@ -322,7 +329,12 @@ uint16_t EMC2305_GetFanRPM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan);
  */
 uint8_t EMC2305_GetFanPWM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan);
 
-EMC2305_Status EMC2305_GetFanStatus(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan);
+/**
+ * @brief   Gets current fan status for all drivers
+ * @param   chip EMC2305 to get
+ * @return  Fan status for all drivers
+ */
+EMC2305_Fan_Status EMC2305_GetFanStatus(EMC2305_HandleTypeDef* chip);
 
 EMC2305_Status EMC2305_GetAlertStatus(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan);
 
