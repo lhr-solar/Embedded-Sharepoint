@@ -235,8 +235,8 @@ int main(void) {
 
         // HAL_Delay(1000);
 
-        // Set PWM2 duty cycle to 50%
-        if (EMC2305_SetFanPWM(&chip, EMC2305_FAN2, 50) != EMC2305_OK) {
+        // Set PWM2 duty cycle to 42%
+        if (EMC2305_SetFanPWM(&chip, EMC2305_FAN2, 42) != EMC2305_OK) {
             Error_Handler();
         };
 
@@ -299,7 +299,7 @@ int main(void) {
         msgLen = sizeof(buffer1) - 1;
         HAL_UART_Transmit(&huart1, (uint8_t*)buffer1, msgLen, 1000);
 
-        uint8_t data6[] = "\r\n";
+        uint8_t data6[] = "%\r\n";
         msgLen = sizeof(data6) - 1;
         HAL_UART_Transmit(&huart1, data6, msgLen, 1000);
 

@@ -282,6 +282,11 @@ uint16_t EMC2305_GetFanRPM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan) {
     // Combine into tach measurement
     uint16_t tach_reading = ((high_byte << 5) + ((low_byte >> 3) & 0x1F)) & 0x1FFF;
 
+    // Divide by zero bad
+    if (tach_reading == 0) {
+        return UINT16_MAX;
+    }
+
     // Convert tachometer counts to RPM
     uint16_t rpm = (EMC2305_TACH_RPM_CONV * EMC2305_TACH_MULT) / tach_reading;
     return rpm;
@@ -291,7 +296,7 @@ uint16_t EMC2305_GetFanRPM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan) {
  * @brief   Gets current fan driver PWM duty cycle
  * @param   chip EMC2305 to get
  * @param   fan Fan to get (1-5)
- * @return  Driven fan PWM duty cycle. UINT8_MAX on error
+ * @return  Driven fan PWM duty cycle (0-100). UINT8_MAX on error
  */
 uint8_t EMC2305_GetFanPWM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan) {
     if (fan < EMC2305_FAN1 || fan > EMC2305_FAN5) {
@@ -348,7 +353,6 @@ EMC2305_Status EMC2305_ReadReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_t
     if (HAL_I2C_Master_Transmit(chip->hi2c, chip->dev_addr, &reg, 1, EMC2305_I2C_TIMEOUT) != HAL_OK) {
         return EMC2305_ERR;
     }
-    HAL_Delay(1);
     // Receive response
     if (HAL_I2C_Master_Receive(chip->hi2c, chip->dev_addr, data, 1, EMC2305_I2C_TIMEOUT) != HAL_OK) {
         return EMC2305_ERR;

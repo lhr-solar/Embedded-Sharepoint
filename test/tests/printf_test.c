@@ -7,6 +7,7 @@
 StaticTask_t txTaskBuffer;
 StackType_t txTaskStack[configMINIMAL_STACK_SIZE];
 
+#ifdef STM32L431xx
 /**
   * @brief System Clock Configuration
   * @retval None
@@ -53,16 +54,17 @@ void SystemClock_Config(void) {
         Error_Handler();
     }
 }
+#endif
 
-void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
-    GPIO_InitTypeDef init = {0};
+void HAL_UART_MspGPIOInit(UART_HandleTypeDef* huart) {
+    GPIO_InitTypeDef init = { 0 };
     __HAL_RCC_GPIOA_CLK_ENABLE();
 
     /* enable port A USART2 gpio
     PA2 -> USART2_TX
     PA3 -> USART2_RX
     */
-    init.Pin = GPIO_PIN_9|GPIO_PIN_10;
+    init.Pin = GPIO_PIN_9 | GPIO_PIN_10;
     init.Mode = GPIO_MODE_AF_PP;
     init.Pull = GPIO_NOPULL;
     init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
@@ -70,7 +72,7 @@ void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
     HAL_GPIO_Init(GPIOA, &init);
 }
 
-void TxTask(void *argument){
+void TxTask(void* argument) {
     husart1->Init.BaudRate = 115200;
     husart1->Init.WordLength = UART_WORDLENGTH_8B;
     husart1->Init.StopBits = UART_STOPBITS_1;
@@ -78,10 +80,10 @@ void TxTask(void *argument){
     husart1->Init.Mode = UART_MODE_TX_RX;
     husart1->Init.HwFlowCtl = UART_HWCONTROL_NONE;
     husart1->Init.OverSampling = UART_OVERSAMPLING_16;
-    
+
     printf_init(husart1);
 
-    while(1){
+    while (1) {
         printf("Hello World! %s %d %f\n\r", "Test String", 5, 4.4);
         vTaskDelay(pdMS_TO_TICKS(100));
     }
@@ -91,13 +93,13 @@ int main(void) {
     HAL_Init();
     SystemClock_Config();
 
-    xTaskCreateStatic(TxTask, 
-                     "TX",
-                     configMINIMAL_STACK_SIZE,
-                     NULL,
-                     tskIDLE_PRIORITY + 2,
-                     txTaskStack,
-                     &txTaskBuffer);
+    xTaskCreateStatic(TxTask,
+        "TX",
+        configMINIMAL_STACK_SIZE,
+        NULL,
+        tskIDLE_PRIORITY + 2,
+        txTaskStack,
+        &txTaskBuffer);
 
     vTaskStartScheduler();
 

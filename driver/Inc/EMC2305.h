@@ -305,15 +305,15 @@ EMC2305_Status EMC2305_SetFanRPM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, u
  * @brief   Gets current fan RPM based on tachometer measurement
  * @param   chip EMC2305 to get
  * @param   fan Fan to get (1-5)
- * @return  Measured fan RPM
+ * @return  Measured fan RPM. UINT16_MAX on error
  */
 uint16_t EMC2305_GetFanRPM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan);
 
 /**
- * @brief   Gets current fan driver PWM
+ * @brief   Gets current fan driver PWM duty cycle
  * @param   chip EMC2305 to get
  * @param   fan Fan to get (1-5)
- * @return  Driven fan PWM
+ * @return  Driven fan PWM duty cycle (0-100). UINT8_MAX on error
  */
 uint8_t EMC2305_GetFanPWM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan);
 
