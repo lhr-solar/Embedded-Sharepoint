@@ -2,13 +2,16 @@
 
 #pragma once
 
-#include "stm32xx_hal.h"
 #include <stdint.h>
+
+#include "stm32xx_hal.h"
+#include "FreeRTOS.h"
 
 // Device handle
 typedef struct {
-    I2C_HandleTypeDef* hi2c;   // STM32 HAL I2C handle
-    uint16_t dev_addr;         // HAL convention: 7-bit address << 1
+    I2C_HandleTypeDef* hi2c;        // STM32 HAL I2C handle
+    uint16_t dev_addr;              // HAL convention: 7-bit address << 1
+    SemaphoreHandle_t i2c_complete; // Semaphore to signal I2C transaction complete
 } EMC2305_HandleTypeDef;
 
 // I2C Response Timeout

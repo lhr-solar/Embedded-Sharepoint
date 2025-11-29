@@ -2,6 +2,15 @@
 
 #include "EMC2305.h"
 
+// Buffer for static semaphore
+StaticSemaphore_t EMC2305_semaphore_buffer;
+
+// Some bullshit until i find a better way
+static EMC2305_HandleTypeDef* chip_I2C1 = NULL;
+static EMC2305_HandleTypeDef* chip_I2C2 = NULL;
+static EMC2305_HandleTypeDef* chip_I2C3 = NULL;
+
+
 // Device Management Functions
 
 /**
@@ -15,6 +24,25 @@ EMC2305_Status EMC2305_Init(EMC2305_HandleTypeDef* chip, I2C_HandleTypeDef* hi2c
     // Set I2C handle and device address in EMC2305 handle
     chip->hi2c = hi2c;
     chip->dev_addr = dev_addr;
+
+    // Create RTOS semaphore
+    chip->i2c_complete = xSemaphoreCreateBinaryStatic(&EMC2305_semaphore_buffer);
+    if (chip->i2c_complete == NULL) {
+        return EMC2305_ERR;
+    }
+
+    // I hate this so much
+    if (hi2c->Instance == I2C1) {
+        chip_I2C1 = chip;
+    }
+    else if (hi2c->Instance == I2C2) {
+        chip_I2C2 = chip;
+    }
+    else if (hi2c->Instance == I2C3) {
+        chip_I2C3 = chip;
+    } else {
+        return EMC2305_ERR;
+    }
 
     // Check Product ID
     uint8_t product_id = 0;
