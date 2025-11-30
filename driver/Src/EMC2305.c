@@ -40,7 +40,8 @@ EMC2305_Status EMC2305_Init(EMC2305_HandleTypeDef* chip, I2C_HandleTypeDef* hi2c
     }
     else if (hi2c->Instance == I2C3) {
         chip_I2C3 = chip;
-    } else {
+    }
+    else {
         return EMC2305_ERR;
     }
 
@@ -401,4 +402,52 @@ EMC2305_Status EMC2305_WriteReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_
         return EMC2305_ERR;
     }
     return EMC2305_OK;
+}
+
+// I2C Transmit Interrupt Callback
+void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef* hi2c) {
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+    // Get the chip using this I2C bus
+    EMC2305_HandleTypeDef* chip = NULL;
+    if (hi2c->Instance == I2C1) {
+        chip = chip_I2C1;
+    }
+    else if (hi2c->Instance == I2C2) {
+        chip = chip_I2C2;
+    }
+    else if (hi2c->Instance == I2C3) {
+        chip = chip_I2C3;
+    }
+
+    if (chip != NULL) {
+        xSemaphoreGiveFromISR(chip->i2c_complete, &xHigherPriorityTaskWoken);
+    }
+
+    // Context switch back to higher priority task if woken
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+}
+
+// I2C Receive Interrupt Callback
+void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef* hi2c) {
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+    // Get the chip using this I2C bus
+    EMC2305_HandleTypeDef* chip = NULL;
+    if (hi2c->Instance == I2C1) {
+        chip = chip_I2C1;
+    }
+    else if (hi2c->Instance == I2C2) {
+        chip = chip_I2C2;
+    }
+    else if (hi2c->Instance == I2C3) {
+        chip = chip_I2C3;
+    }
+
+    if (chip != NULL) {
+        xSemaphoreGiveFromISR(chip->i2c_complete, &xHigherPriorityTaskWoken);
+    }
+
+    // Context switch back to higher priority task if woken
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
