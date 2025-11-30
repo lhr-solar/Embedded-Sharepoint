@@ -7,6 +7,9 @@
 #include "stm32xx_hal.h"
 #include "FreeRTOS.h"
 
+// TODO: debug, remove later
+#include "printf.h"
+
 // Device handle
 typedef struct {
     I2C_HandleTypeDef* hi2c;        // STM32 HAL I2C handle

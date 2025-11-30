@@ -10,7 +10,6 @@ static EMC2305_HandleTypeDef* chip_I2C1 = NULL;
 static EMC2305_HandleTypeDef* chip_I2C2 = NULL;
 static EMC2305_HandleTypeDef* chip_I2C3 = NULL;
 
-
 // Device Management Functions
 
 /**
@@ -21,6 +20,8 @@ static EMC2305_HandleTypeDef* chip_I2C3 = NULL;
  * @return  OK if successful, ERR otherwise
  */
 EMC2305_Status EMC2305_Init(EMC2305_HandleTypeDef* chip, I2C_HandleTypeDef* hi2c, uint16_t dev_addr) {
+    printf("entered emc2305 init\r\n");
+
     // Set I2C handle and device address in EMC2305 handle
     chip->hi2c = hi2c;
     chip->dev_addr = dev_addr;
@@ -30,6 +31,9 @@ EMC2305_Status EMC2305_Init(EMC2305_HandleTypeDef* chip, I2C_HandleTypeDef* hi2c
     if (chip->i2c_complete == NULL) {
         return EMC2305_ERR;
     }
+    xSemaphoreGive(chip->i2c_complete);
+
+    printf("created sem4\r\n");
 
     // I hate this so much
     if (hi2c->Instance == I2C1) {
@@ -48,20 +52,24 @@ EMC2305_Status EMC2305_Init(EMC2305_HandleTypeDef* chip, I2C_HandleTypeDef* hi2c
     // Check Product ID
     uint8_t product_id = 0;
     if (EMC2305_ReadReg(chip, EMC2305_REG_PRODUCT_ID, &product_id) != EMC2305_OK) {
+        printf("product id read reg error");
         return EMC2305_ERR;
     }
     if ((product_id & 0b11) != 0b00) {
         // EMC2305 is id 00
+        printf("product id wrong");
         return EMC2305_ERR;
     }
 
     // Check Manufacturer ID
     uint8_t mfg_id = 0;
     if (EMC2305_ReadReg(chip, EMC2305_REG_MANUFACTURER_ID, &mfg_id) != EMC2305_OK) {
+        printf("mfg id read reg error");
         return EMC2305_ERR;
     }
     if (mfg_id != 0x5D) {
         // ur cooked lmao
+        printf("mfg id wrong");
         return EMC2305_ERR;
     }
 
@@ -378,14 +386,48 @@ EMC2305_Fan_Status EMC2305_GetFanStatus(EMC2305_HandleTypeDef* chip) {
  * @return  OK if successful, ERR otherwise
  */
 EMC2305_Status EMC2305_ReadReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_t* data) {
+    printf("entered read reg\r\n");
+
+    // Clear semaphore before starting transaction
+    if (xSemaphoreTake(chip->i2c_complete, 0) != pdTRUE) {
+        printf("failed to take sem4\r\n");
+        return EMC2305_ERR;
+    }
+
+    printf("took sem4\r\n");
+
     // Transmit register to read
-    if (HAL_I2C_Master_Transmit(chip->hi2c, chip->dev_addr, &reg, 1, EMC2305_I2C_TIMEOUT) != HAL_OK) {
+    if (HAL_I2C_Master_Transmit_IT(chip->hi2c, chip->dev_addr, &reg, 1) != HAL_OK) {
+        printf("tx errored\r\n");
         return EMC2305_ERR;
     }
+
+    printf("transmitted reg to read\r\n");
+
+    // Wait for ISR to signal completion
+    if (xSemaphoreTake(chip->i2c_complete, pdMS_TO_TICKS(EMC2305_I2C_TIMEOUT)) != pdTRUE) {
+        printf("ISR did not signal\r\n");
+        return EMC2305_ERR;
+    }
+
+    printf("ISR signaled tx complete\r\n");
+
     // Receive response
-    if (HAL_I2C_Master_Receive(chip->hi2c, chip->dev_addr, data, 1, EMC2305_I2C_TIMEOUT) != HAL_OK) {
+    if (HAL_I2C_Master_Receive_IT(chip->hi2c, chip->dev_addr, data, 1) != HAL_OK) {
+        printf("rx errored\r\n");
         return EMC2305_ERR;
     }
+
+    printf("sent recv\r\n");
+
+    // Wait for ISR to signal completion
+    if (xSemaphoreTake(chip->i2c_complete, pdMS_TO_TICKS(EMC2305_I2C_TIMEOUT)) != pdTRUE) {
+        printf("ISR did not signal\r\n");
+        return EMC2305_ERR;
+    }
+
+    printf("ISR signaled rx complete\r\n");
+
     return EMC2305_OK;
 }
 
@@ -397,10 +439,21 @@ EMC2305_Status EMC2305_ReadReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_t
  * @return  OK if successful, ERR otherwise
  */
 EMC2305_Status EMC2305_WriteReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_t data) {
-    // Transmit register + data
-    if (HAL_I2C_Master_Transmit(chip->hi2c, chip->dev_addr, (uint8_t[]) { reg, data }, 2, EMC2305_I2C_TIMEOUT) != HAL_OK) {
+    // Clear semaphore before starting transaction
+    if (xSemaphoreTake(chip->i2c_complete, 0) != pdTRUE) {
+        printf("failed to take sem4\n");
         return EMC2305_ERR;
     }
+
+    // Transmit register + data
+    if (HAL_I2C_Master_Transmit_IT(chip->hi2c, chip->dev_addr, (uint8_t[]) { reg, data }, 2) != HAL_OK) {
+        return EMC2305_ERR;
+    }
+
+    // Wait for ISR to signal completion
+    if (xSemaphoreTake(chip->i2c_complete, pdMS_TO_TICKS(EMC2305_I2C_TIMEOUT)) != pdTRUE)
+        return EMC2305_ERR;
+
     return EMC2305_OK;
 }
 
