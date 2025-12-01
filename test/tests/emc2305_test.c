@@ -1,13 +1,14 @@
 #include "stm32xx_hal.h"
 #include "EMC2305.h"
 #include "UART.h"
-#include "printf.h"
 
 #include <stdio.h>
 
 #define DEFAULT_DEV_ADDR 0x4D
-#define STATUS_LED_PORT GPIOB
-#define STATUS_LED_PIN GPIO_PIN_11
+#define STATUS_LED_PORT GPIOA
+#define STATUS_LED_PIN_1 GPIO_PIN_7
+#define STATUS_LED_PIN_2 GPIO_PIN_8
+#define STATUS_LED_PIN_3 GPIO_PIN_15
 
 I2C_HandleTypeDef hi2c1;
 EMC2305_HandleTypeDef chip;
@@ -61,6 +62,32 @@ void SystemClock_Config(void) {
     {
         Error_Handler();
     }
+}
+
+/**
+  * @brief This function handles I2C1 event interrupt.
+  */
+void I2C1_EV_IRQHandler(void) {
+    /* USER CODE BEGIN I2C1_EV_IRQn 0 */
+
+    /* USER CODE END I2C1_EV_IRQn 0 */
+    HAL_I2C_EV_IRQHandler(&hi2c1);
+    /* USER CODE BEGIN I2C1_EV_IRQn 1 */
+
+    /* USER CODE END I2C1_EV_IRQn 1 */
+}
+
+/**
+  * @brief This function handles I2C1 error interrupt.
+  */
+void I2C1_ER_IRQHandler(void) {
+    /* USER CODE BEGIN I2C1_ER_IRQn 0 */
+
+    /* USER CODE END I2C1_ER_IRQn 0 */
+    HAL_I2C_ER_IRQHandler(&hi2c1);
+    /* USER CODE BEGIN I2C1_ER_IRQn 1 */
+
+    /* USER CODE END I2C1_ER_IRQn 1 */
 }
 #endif
 
@@ -164,18 +191,39 @@ void mx_i2c_init(void) {
 
 void mx_led_init(void) {
     /* Peripheral clock enable */
+    __HAL_RCC_GPIOA_CLK_ENABLE();
     __HAL_RCC_GPIOB_CLK_ENABLE();
 
     // LED init
     GPIO_InitTypeDef led_init = {
         .Mode = GPIO_MODE_OUTPUT_PP,
         .Pull = GPIO_NOPULL,
-        .Pin = STATUS_LED_PIN
+        .Pin = GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_15,
     };
-    HAL_GPIO_Init(STATUS_LED_PORT, &led_init);
+    HAL_GPIO_Init(GPIOA, &led_init);
+
+    // LED init
+    GPIO_InitTypeDef hb_init = {
+        .Mode = GPIO_MODE_OUTPUT_PP,
+        .Pull = GPIO_NOPULL,
+        .Pin = GPIO_PIN_11,
+    };
+    HAL_GPIO_Init(GPIOB, &hb_init);
 }
 
 void EMC2305_Task(void* argument) {
+    vTaskDelay(pdMS_TO_TICKS(20));
+    
+    // HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_7);
+    // HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_8);
+    // HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_15);
+    // HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_11);
+    // vTaskDelay(pdMS_TO_TICKS(100));
+    // HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_7);
+    // HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_8);
+    // HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_15);
+    // HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_11);
+
     // Init UART printf
     husart1->Init.BaudRate = 115200;
     husart1->Init.WordLength = UART_WORDLENGTH_8B;
@@ -185,17 +233,10 @@ void EMC2305_Task(void* argument) {
     husart1->Init.HwFlowCtl = UART_HWCONTROL_NONE;
     husart1->Init.OverSampling = UART_OVERSAMPLING_16;
 
-    printf_init(husart1);
-
-    printf("EMC2305 Fan Controller Test\r\n");
-    printf("\r\n");
-
     // Initialize EMC2305
     if (EMC2305_Init(&chip, &hi2c1, DEFAULT_DEV_ADDR << 1) != EMC2305_OK) {
         Error_Handler();
     }
-
-    printf("Chip Initialized\r\n");
 
     // Set global config
     EMC2305_Global_Config config = { 0 };
@@ -212,8 +253,6 @@ void EMC2305_Task(void* argument) {
     if (EMC2305_SetFanConfig(&chip, EMC2305_FAN2, &config1, &config2) != EMC2305_OK) {
         Error_Handler();
     };
-
-    printf("Chip Configured\r\n");
 
     while (1) {
         // // Testing PWM Drive Mode
@@ -255,18 +294,17 @@ void EMC2305_Task(void* argument) {
         // HAL_UART_Transmit(&huart1, data3, msgLen, 1000);
 
         // Get current rpm
-        uint16_t rpm = EMC2305_GetFanRPM(&chip, EMC2305_FAN2);
-        printf("RPM: %u\r\n", rpm);
+        // uint16_t rpm = EMC2305_GetFanRPM(&chip, EMC2305_FAN2);
+        // printf("RPM: %u\r\n", rpm);
 
         // Set RPM to 1000
         // EMC2305_SetFanRPM(&chip, EMC2305_FAN2, 1000);
 
         // Get current pwm
-        uint8_t pwm = EMC2305_GetFanPWM(&chip, EMC2305_FAN2);
-        printf("PWM: %u\r\n", pwm);
+        // uint8_t pwm = EMC2305_GetFanPWM(&chip, EMC2305_FAN2);
+        // printf("PWM: %u\r\n", pwm);
 
-        HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN);
-        HAL_Delay(1000);
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
 
@@ -279,9 +317,9 @@ int main(void) {
     __HAL_RCC_PWR_CLK_ENABLE();
 
     // Init peripherals
-    mx_led_init();
     mx_uart_init();
     mx_i2c_init();
+    mx_led_init();
 #endif
 
     xTaskCreateStatic(EMC2305_Task,

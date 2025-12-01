@@ -10,6 +10,12 @@ static EMC2305_HandleTypeDef* chip_I2C1 = NULL;
 static EMC2305_HandleTypeDef* chip_I2C2 = NULL;
 static EMC2305_HandleTypeDef* chip_I2C3 = NULL;
 
+// TODO: for debug, REMOVE
+#define STATUS_LED_PORT GPIOA
+#define STATUS_LED_PIN_1 GPIO_PIN_7
+#define STATUS_LED_PIN_2 GPIO_PIN_8
+#define STATUS_LED_PIN_3 GPIO_PIN_15
+
 // Device Management Functions
 
 /**
@@ -20,8 +26,6 @@ static EMC2305_HandleTypeDef* chip_I2C3 = NULL;
  * @return  OK if successful, ERR otherwise
  */
 EMC2305_Status EMC2305_Init(EMC2305_HandleTypeDef* chip, I2C_HandleTypeDef* hi2c, uint16_t dev_addr) {
-    printf("entered emc2305 init\r\n");
-
     // Set I2C handle and device address in EMC2305 handle
     chip->hi2c = hi2c;
     chip->dev_addr = dev_addr;
@@ -32,8 +36,6 @@ EMC2305_Status EMC2305_Init(EMC2305_HandleTypeDef* chip, I2C_HandleTypeDef* hi2c
         return EMC2305_ERR;
     }
     xSemaphoreGive(chip->i2c_complete);
-
-    printf("created sem4\r\n");
 
     // I hate this so much
     if (hi2c->Instance == I2C1) {
@@ -52,24 +54,20 @@ EMC2305_Status EMC2305_Init(EMC2305_HandleTypeDef* chip, I2C_HandleTypeDef* hi2c
     // Check Product ID
     uint8_t product_id = 0;
     if (EMC2305_ReadReg(chip, EMC2305_REG_PRODUCT_ID, &product_id) != EMC2305_OK) {
-        printf("product id read reg error");
         return EMC2305_ERR;
     }
     if ((product_id & 0b11) != 0b00) {
         // EMC2305 is id 00
-        printf("product id wrong");
         return EMC2305_ERR;
     }
 
     // Check Manufacturer ID
     uint8_t mfg_id = 0;
     if (EMC2305_ReadReg(chip, EMC2305_REG_MANUFACTURER_ID, &mfg_id) != EMC2305_OK) {
-        printf("mfg id read reg error");
         return EMC2305_ERR;
     }
     if (mfg_id != 0x5D) {
         // ur cooked lmao
-        printf("mfg id wrong");
         return EMC2305_ERR;
     }
 
@@ -386,47 +384,34 @@ EMC2305_Fan_Status EMC2305_GetFanStatus(EMC2305_HandleTypeDef* chip) {
  * @return  OK if successful, ERR otherwise
  */
 EMC2305_Status EMC2305_ReadReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_t* data) {
-    printf("entered read reg\r\n");
+    HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_1);
 
     // Clear semaphore before starting transaction
     if (xSemaphoreTake(chip->i2c_complete, 0) != pdTRUE) {
-        printf("failed to take sem4\r\n");
         return EMC2305_ERR;
     }
 
-    printf("took sem4\r\n");
+    HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_2);
 
     // Transmit register to read
     if (HAL_I2C_Master_Transmit_IT(chip->hi2c, chip->dev_addr, &reg, 1) != HAL_OK) {
-        printf("tx errored\r\n");
         return EMC2305_ERR;
     }
-
-    printf("transmitted reg to read\r\n");
 
     // Wait for ISR to signal completion
     if (xSemaphoreTake(chip->i2c_complete, pdMS_TO_TICKS(EMC2305_I2C_TIMEOUT)) != pdTRUE) {
-        printf("ISR did not signal\r\n");
         return EMC2305_ERR;
     }
-
-    printf("ISR signaled tx complete\r\n");
 
     // Receive response
     if (HAL_I2C_Master_Receive_IT(chip->hi2c, chip->dev_addr, data, 1) != HAL_OK) {
-        printf("rx errored\r\n");
         return EMC2305_ERR;
     }
-
-    printf("sent recv\r\n");
 
     // Wait for ISR to signal completion
     if (xSemaphoreTake(chip->i2c_complete, pdMS_TO_TICKS(EMC2305_I2C_TIMEOUT)) != pdTRUE) {
-        printf("ISR did not signal\r\n");
         return EMC2305_ERR;
     }
-
-    printf("ISR signaled rx complete\r\n");
 
     return EMC2305_OK;
 }
@@ -441,7 +426,6 @@ EMC2305_Status EMC2305_ReadReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_t
 EMC2305_Status EMC2305_WriteReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_t data) {
     // Clear semaphore before starting transaction
     if (xSemaphoreTake(chip->i2c_complete, 0) != pdTRUE) {
-        printf("failed to take sem4\n");
         return EMC2305_ERR;
     }
 
@@ -459,6 +443,8 @@ EMC2305_Status EMC2305_WriteReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_
 
 // I2C Transmit Interrupt Callback
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef* hi2c) {
+    HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_3);
+
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
     // Get the chip using this I2C bus
@@ -503,4 +489,9 @@ void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef* hi2c) {
 
     // Context switch back to higher priority task if woken
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+}
+
+// I2C Error Interrupt Callback
+void HAL_I2C_ErrorCallback(I2C_HandleTypeDef* hi2c) {
+    HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_11);
 }
