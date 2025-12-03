@@ -213,7 +213,7 @@ void mx_led_init(void) {
 
 void EMC2305_Task(void* argument) {
     vTaskDelay(pdMS_TO_TICKS(20));
-    
+
     // HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_7);
     // HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_8);
     // HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_15);
@@ -247,12 +247,44 @@ void EMC2305_Task(void* argument) {
 
     // Set config1 and config2
     EMC2305_Fan_Config1 config1 = { 0 };
-    config1.enable_closed_loop = false; // Set this to true if using FSC (Closed Loop RPM Control). False for using PWM directly
+    config1.enable_closed_loop = true; // Set this to true if using FSC (Closed Loop RPM Control). False for using PWM directly
     config1.edges = EMC2305_EDG_5; // 5 edges is default for 2 pole fans
+    config1.range = EMC2305_RNG_2000;
     EMC2305_Fan_Config2 config2 = { 0 };
+    config2.enable_ramp_rate_ctl = true;
+    config2.enable_glitch_filter = true;
+    config2.error_window = EMC2305_ERG_200RPM;
+    config2.derivative_options = EMC2305_DPT_BOTH;
     if (EMC2305_SetFanConfig(&chip, EMC2305_FAN2, &config1, &config2) != EMC2305_OK) {
         Error_Handler();
     };
+
+    // Depends on the fan lol
+    if (EMC2305_SetPWMBaseFrequency(&chip, EMC2305_FAN2, EMC2305_PWM_19k53) != EMC2305_OK) {
+        Error_Handler();
+    };
+
+    // // Valid TACH idk man
+    // if (EMC2305_WriteReg(&chip, EMC2305_FAN_REG_ADDR(EMC2305_FAN2, EMC2305_REG_FAN1_VALID_TACH), 0xFF) != EMC2305_OK) {
+    //     Error_Handler();
+    // };
+
+    // Set minimum drive to 0%
+    // FUCK MICROCHIP THEY NEED TO KILL THEMSELVES
+    if (EMC2305_WriteReg(&chip, EMC2305_FAN_REG_ADDR(EMC2305_FAN2, EMC2305_REG_FAN1_MIN_DRIVE), 0x00) != EMC2305_OK) {
+        Error_Handler();
+    };
+
+    // Set PID Gain to lowest (1x)
+    // I HATE THESE BOZOS WHY IS THIS NOT THE DEFAULT
+    if (EMC2305_WriteReg(&chip, EMC2305_FAN_REG_ADDR(EMC2305_FAN2, EMC2305_REG_GAIN1), 0x00) != EMC2305_OK) {
+        Error_Handler();
+    };
+
+    // Set outputs to push-pull
+    // if (EMC2305_WriteReg(&chip, EMC2305_REG_PWM_OUTPUT_CONFIG, 0x1F) != EMC2305_OK) {
+    //     Error_Handler();
+    // };
 
     while (1) {
         // // Testing PWM Drive Mode

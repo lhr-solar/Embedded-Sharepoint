@@ -236,7 +236,7 @@ typedef struct {
 
 // Conversion from RPM to tach counts (Equation 2 in SMSC AN 17.4)
 #define EMC2305_TACH_RPM_CONV               3932160u
-#define EMC2305_TACH_MULT                   1u
+#define EMC2305_TACH_MULT                   2u
 
 // Device Management Functions
 
