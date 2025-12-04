@@ -497,7 +497,6 @@ void EMC2305_I2C_Worker_Task(void* pvParameters) {
         if (xQueueReceive(EMC2305_I2C_Queue, &msg, portMAX_DELAY) == pdTRUE) {
             status = EMC2305_OK;
             if (msg.operation == EMC2305_OP_WRITE) {
-                HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_3);
                 // Perform write operation
                 // Transmit register + data
                 if (HAL_I2C_Master_Transmit_IT(msg.chip->hi2c, msg.chip->dev_addr, (uint8_t[]) { msg.reg_addr, msg.write_data }, 2) != HAL_OK) {

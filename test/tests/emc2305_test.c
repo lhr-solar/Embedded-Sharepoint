@@ -234,6 +234,14 @@ void EMC2305_Task(void* argument) {
     printf("EMC2305 Initialized\r\n");
     vTaskDelay(pdMS_TO_TICKS(100));
 
+    // TODO: DEBUG REMOVE!
+    uint16_t rpm = EMC2305_GetFanRPM(&chip, EMC2305_FAN2);
+    printf("Measured RPM: %u\r\n", rpm);
+    while (1) {
+        rpm = EMC2305_GetFanRPM(&chip, EMC2305_FAN2);
+        printf("Measured RPM: %u\r\n", rpm);
+    }
+
     // Set global config
     EMC2305_Global_Config config = { 0 };
     config.watchdog_enable = true;
