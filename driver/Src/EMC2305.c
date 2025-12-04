@@ -35,7 +35,6 @@ EMC2305_Status EMC2305_Init(EMC2305_HandleTypeDef* chip, I2C_HandleTypeDef* hi2c
     if (chip->i2c_complete == NULL) {
         return EMC2305_ERR;
     }
-    xSemaphoreGive(chip->i2c_complete);
 
     // I hate this so much
     if (hi2c->Instance == I2C1) {
@@ -384,24 +383,19 @@ EMC2305_Fan_Status EMC2305_GetFanStatus(EMC2305_HandleTypeDef* chip) {
  * @return  OK if successful, ERR otherwise
  */
 EMC2305_Status EMC2305_ReadReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_t* data) {
-    HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_1);
-
-    // Clear semaphore before starting transaction
-    if (xSemaphoreTake(chip->i2c_complete, 0) != pdTRUE) {
-        return EMC2305_ERR;
-    }
-
-    HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_2);
-
     // Transmit register to read
     if (HAL_I2C_Master_Transmit_IT(chip->hi2c, chip->dev_addr, &reg, 1) != HAL_OK) {
+        HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_1);
         return EMC2305_ERR;
     }
 
     // Wait for ISR to signal completion
     if (xSemaphoreTake(chip->i2c_complete, pdMS_TO_TICKS(EMC2305_I2C_TIMEOUT)) != pdTRUE) {
+        HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_2);
         return EMC2305_ERR;
     }
+
+    HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_3);
 
     // Receive response
     if (HAL_I2C_Master_Receive_IT(chip->hi2c, chip->dev_addr, data, 1) != HAL_OK) {
@@ -424,11 +418,6 @@ EMC2305_Status EMC2305_ReadReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_t
  * @return  OK if successful, ERR otherwise
  */
 EMC2305_Status EMC2305_WriteReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_t data) {
-    // Clear semaphore before starting transaction
-    if (xSemaphoreTake(chip->i2c_complete, 0) != pdTRUE) {
-        return EMC2305_ERR;
-    }
-
     // Transmit register + data
     if (HAL_I2C_Master_Transmit_IT(chip->hi2c, chip->dev_addr, (uint8_t[]) { reg, data }, 2) != HAL_OK) {
         return EMC2305_ERR;
@@ -443,8 +432,6 @@ EMC2305_Status EMC2305_WriteReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_
 
 // I2C Transmit Interrupt Callback
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef* hi2c) {
-    HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_3);
-
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
     // Get the chip using this I2C bus
@@ -469,6 +456,8 @@ void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef* hi2c) {
 
 // I2C Receive Interrupt Callback
 void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef* hi2c) {
+    HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_1);
+
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
     // Get the chip using this I2C bus

@@ -151,9 +151,9 @@ void mx_i2c_init(void) {
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
     // I2C Interrupt Init
-    HAL_NVIC_SetPriority(I2C1_EV_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(I2C1_EV_IRQn, 5, 0);
     HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
-    HAL_NVIC_SetPriority(I2C1_ER_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(I2C1_ER_IRQn, 5, 0);
     HAL_NVIC_EnableIRQ(I2C1_ER_IRQn);
 
     /* Peripheral clock enable */
@@ -212,17 +212,7 @@ void mx_led_init(void) {
 }
 
 void EMC2305_Task(void* argument) {
-    vTaskDelay(pdMS_TO_TICKS(20));
-
-    // HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_7);
-    // HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_8);
-    // HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_15);
-    // HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_11);
-    // vTaskDelay(pdMS_TO_TICKS(100));
-    // HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_7);
-    // HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_8);
-    // HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_15);
-    // HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_11);
+    vTaskDelay(pdMS_TO_TICKS(250));
 
     // Init UART printf
     husart1->Init.BaudRate = 115200;
@@ -232,6 +222,8 @@ void EMC2305_Task(void* argument) {
     husart1->Init.Mode = UART_MODE_TX_RX;
     husart1->Init.HwFlowCtl = UART_HWCONTROL_NONE;
     husart1->Init.OverSampling = UART_OVERSAMPLING_16;
+
+    // printf_init(husart1);
 
     // Initialize EMC2305
     if (EMC2305_Init(&chip, &hi2c1, DEFAULT_DEV_ADDR << 1) != EMC2305_OK) {
@@ -247,7 +239,7 @@ void EMC2305_Task(void* argument) {
 
     // Set config1 and config2
     EMC2305_Fan_Config1 config1 = { 0 };
-    config1.enable_closed_loop = true; // Set this to true if using FSC (Closed Loop RPM Control). False for using PWM directly
+    config1.enable_closed_loop = false; // Set this to true if using FSC (Closed Loop RPM Control). False for using PWM directly
     config1.edges = EMC2305_EDG_5; // 5 edges is default for 2 pole fans
     config1.range = EMC2305_RNG_2000;
     EMC2305_Fan_Config2 config2 = { 0 };
