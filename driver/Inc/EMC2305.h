@@ -7,9 +7,6 @@
 #include "stm32xx_hal.h"
 #include "FreeRTOS.h"
 
-// TODO: debug, remove later
-#include "printf.h"
-
 // Device handle
 typedef struct {
     I2C_HandleTypeDef* hi2c;        // STM32 HAL I2C handle
@@ -21,6 +18,24 @@ typedef struct {
 #ifndef EMC2305_I2C_TIMEOUT
 #define EMC2305_I2C_TIMEOUT 100u // 100ms default
 #endif
+
+// I2C Operation Types
+typedef enum {
+    EMC2305_OP_WRITE,
+    EMC2305_OP_READ
+} EMC2305_I2C_OP;
+
+// I2C Message Struct
+typedef struct {
+    EMC2305_HandleTypeDef* chip;    // Chip to send to
+    EMC2305_I2C_OP operation;       // Read/Write operation
+    uint8_t reg_addr;               // Register address
+    uint8_t write_data;             // Data to write (only used for write operations)
+    uint8_t* read_data;             // Pointer for storing read data (only used for read operations)
+} EMC2305_I2C_Message;
+
+#define EMC2305_QUEUE_LENGTH 10                                 // Message queue length
+#define EMC2305_QUEUE_ITEM_SIZE sizeof(EMC2305_I2C_Message)                   // Size of queue item (message)
 
 // Device status
 typedef enum {
@@ -349,3 +364,6 @@ EMC2305_Status EMC2305_ReadReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_t
  * @return  OK if successful, ERR otherwise
  */
 EMC2305_Status EMC2305_WriteReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_t data);
+
+// Worker task to consume messages from the queue and send on I2C bus
+void EMC2305_I2C_Worker_Task(void* pvParameters);

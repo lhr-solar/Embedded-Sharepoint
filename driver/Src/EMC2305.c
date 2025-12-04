@@ -5,6 +5,18 @@
 // Buffer for static semaphore
 StaticSemaphore_t EMC2305_semaphore_buffer;
 
+// Queue of I2C messages to be sent to the EMC2305
+QueueHandle_t EMC2305_I2C_Queue;
+// Array to use as the queue's storage area
+uint8_t ucQueueStorageArea[EMC2305_QUEUE_LENGTH * EMC2305_QUEUE_ITEM_SIZE];
+// Variable to hold the queue's data structure
+static StaticQueue_t xStaticQueue;
+
+// Task buffer for I2C worker
+StaticTask_t EMC2305_I2C_TaskBuffer;
+// Task stack for I2C worker
+StackType_t EMC2305_I2C_TaskStack[configMINIMAL_STACK_SIZE];
+
 // Some bullshit until i find a better way
 static EMC2305_HandleTypeDef* chip_I2C1 = NULL;
 static EMC2305_HandleTypeDef* chip_I2C2 = NULL;
@@ -35,6 +47,21 @@ EMC2305_Status EMC2305_Init(EMC2305_HandleTypeDef* chip, I2C_HandleTypeDef* hi2c
     if (chip->i2c_complete == NULL) {
         return EMC2305_ERR;
     }
+
+    // Create RTOS queue
+    EMC2305_I2C_Queue = xQueueCreateStatic(EMC2305_QUEUE_LENGTH, EMC2305_QUEUE_ITEM_SIZE, ucQueueStorageArea, &xStaticQueue);
+    if (EMC2305_I2C_Queue == NULL) {
+        return EMC2305_ERR;
+    }
+
+    // Create I2C Worker Task
+    xTaskCreateStatic(EMC2305_I2C_Worker_Task,
+        "EMC2305 I2C Worker Task",
+        configMINIMAL_STACK_SIZE,
+        NULL,
+        tskIDLE_PRIORITY + 2,
+        EMC2305_I2C_TaskStack,
+        &EMC2305_I2C_TaskBuffer);
 
     // I hate this so much
     if (hi2c->Instance == I2C1) {
@@ -271,6 +298,7 @@ EMC2305_Status EMC2305_SetFanRPM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, u
     }
 
     // Convert RPM target to tachometer counts
+    // DO NOT CHANGE THIS NUMBER OR CALCULATION YOU WILL REGRET
     // WARNING: assuming 2 poles, 32.768 measurement freq, 5 edges, multiplier = 1
     // This is the default configuration. Reference app note (https://ww1.microchip.com/downloads/en/AppNotes/en562764.pdf)
     uint16_t tach_target = (EMC2305_TACH_RPM_CONV * EMC2305_TACH_MULT) / rpm_target;
@@ -385,17 +413,13 @@ EMC2305_Fan_Status EMC2305_GetFanStatus(EMC2305_HandleTypeDef* chip) {
 EMC2305_Status EMC2305_ReadReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_t* data) {
     // Transmit register to read
     if (HAL_I2C_Master_Transmit_IT(chip->hi2c, chip->dev_addr, &reg, 1) != HAL_OK) {
-        HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_1);
         return EMC2305_ERR;
     }
 
     // Wait for ISR to signal completion
     if (xSemaphoreTake(chip->i2c_complete, pdMS_TO_TICKS(EMC2305_I2C_TIMEOUT)) != pdTRUE) {
-        HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_2);
         return EMC2305_ERR;
     }
-
-    HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_3);
 
     // Receive response
     if (HAL_I2C_Master_Receive_IT(chip->hi2c, chip->dev_addr, data, 1) != HAL_OK) {
@@ -430,6 +454,14 @@ EMC2305_Status EMC2305_WriteReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_
     return EMC2305_OK;
 }
 
+// Worker task to consume messages from the queue and send on I2C bus
+void EMC2305_I2C_Worker_Task(void* pvParameters) {
+    while (1) {
+        HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_1);
+        vTaskDelay(500);
+    }
+}
+
 // I2C Transmit Interrupt Callback
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef* hi2c) {
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -456,8 +488,6 @@ void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef* hi2c) {
 
 // I2C Receive Interrupt Callback
 void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef* hi2c) {
-    HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_1);
-
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
     // Get the chip using this I2C bus
@@ -482,5 +512,6 @@ void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef* hi2c) {
 
 // I2C Error Interrupt Callback
 void HAL_I2C_ErrorCallback(I2C_HandleTypeDef* hi2c) {
+    // TODO: remove....
     HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_11);
 }

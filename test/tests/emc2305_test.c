@@ -1,6 +1,7 @@
 #include "stm32xx_hal.h"
 #include "EMC2305.h"
 #include "UART.h"
+#include "printf.h"
 
 #include <stdio.h>
 
@@ -223,7 +224,7 @@ void EMC2305_Task(void* argument) {
     husart1->Init.HwFlowCtl = UART_HWCONTROL_NONE;
     husart1->Init.OverSampling = UART_OVERSAMPLING_16;
 
-    // printf_init(husart1);
+    printf_init(husart1);
 
     // Initialize EMC2305
     if (EMC2305_Init(&chip, &hi2c1, DEFAULT_DEV_ADDR << 1) != EMC2305_OK) {
@@ -239,7 +240,7 @@ void EMC2305_Task(void* argument) {
 
     // Set config1 and config2
     EMC2305_Fan_Config1 config1 = { 0 };
-    config1.enable_closed_loop = false; // Set this to true if using FSC (Closed Loop RPM Control). False for using PWM directly
+    config1.enable_closed_loop = true; // Set this to true if using FSC (Closed Loop RPM Control). False for using PWM directly
     config1.edges = EMC2305_EDG_5; // 5 edges is default for 2 pole fans
     config1.range = EMC2305_RNG_2000;
     EMC2305_Fan_Config2 config2 = { 0 };
@@ -288,9 +289,9 @@ void EMC2305_Task(void* argument) {
         // HAL_Delay(1000);
 
         // Set PWM2 duty cycle to 42%
-        if (EMC2305_SetFanPWM(&chip, EMC2305_FAN2, 42) != EMC2305_OK) {
-            Error_Handler();
-        };
+        // if (EMC2305_SetFanPWM(&chip, EMC2305_FAN2, 42) != EMC2305_OK) {
+        //     Error_Handler();
+        // };
 
         // HAL_Delay(1000);
 
@@ -317,18 +318,21 @@ void EMC2305_Task(void* argument) {
         // msgLen = sizeof(data3) - 1;
         // HAL_UART_Transmit(&huart1, data3, msgLen, 1000);
 
-        // Get current rpm
-        // uint16_t rpm = EMC2305_GetFanRPM(&chip, EMC2305_FAN2);
-        // printf("RPM: %u\r\n", rpm);
+        // Set RPM to 3000
+        EMC2305_SetFanRPM(&chip, EMC2305_FAN2, 3000);
 
-        // Set RPM to 1000
-        // EMC2305_SetFanRPM(&chip, EMC2305_FAN2, 1000);
+        // Get current rpm
+        uint16_t rpm = EMC2305_GetFanRPM(&chip, EMC2305_FAN2);
+        printf("RPM: %u\r\n", rpm);
 
         // Get current pwm
         // uint8_t pwm = EMC2305_GetFanPWM(&chip, EMC2305_FAN2);
         // printf("PWM: %u\r\n", pwm);
 
-        vTaskDelay(pdMS_TO_TICKS(1000));
+        // Blink Heartbeat LED
+        HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_11);
+
+        vTaskDelay(pdMS_TO_TICKS(100));
     }
 }
 
