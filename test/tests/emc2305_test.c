@@ -213,6 +213,7 @@ void mx_led_init(void) {
 }
 
 void EMC2305_Task(void* argument) {
+    // Allow chip to power on
     vTaskDelay(pdMS_TO_TICKS(250));
 
     // Init UART printf
@@ -232,15 +233,6 @@ void EMC2305_Task(void* argument) {
     }
 
     printf("EMC2305 Initialized\r\n");
-    vTaskDelay(pdMS_TO_TICKS(100));
-
-    // TODO: DEBUG REMOVE!
-    uint16_t rpm = EMC2305_GetFanRPM(&chip, EMC2305_FAN2);
-    printf("Measured RPM: %u\r\n", rpm);
-    while (1) {
-        rpm = EMC2305_GetFanRPM(&chip, EMC2305_FAN2);
-        printf("Measured RPM: %u\r\n", rpm);
-    }
 
     // Set global config
     EMC2305_Global_Config config = { 0 };
@@ -250,7 +242,6 @@ void EMC2305_Task(void* argument) {
     }
 
     printf("Global Config Set\r\n");
-    vTaskDelay(pdMS_TO_TICKS(100));
 
     // Set config1 and config2
     EMC2305_Fan_Config1 config1 = { 0 };
@@ -351,8 +342,8 @@ void EMC2305_Task(void* argument) {
         printf("Measured RPM: %u\r\n", rpm);
 
         // Get current pwm
-        // uint8_t pwm = EMC2305_GetFanPWM(&chip, EMC2305_FAN2);
-        // printf("Drive PWM: %u\r\n", pwm);
+        uint8_t pwm = EMC2305_GetFanPWM(&chip, EMC2305_FAN2);
+        printf("Drive PWM: %u\r\n", pwm);
 
         // Blink Heartbeat LED
         HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_11);
