@@ -231,12 +231,18 @@ void EMC2305_Task(void* argument) {
         Error_Handler();
     }
 
+    printf("EMC2305 Initialized\r\n");
+    vTaskDelay(pdMS_TO_TICKS(100));
+
     // Set global config
     EMC2305_Global_Config config = { 0 };
     config.watchdog_enable = true;
     if (EMC2305_SetGlobalConfig(&chip, &config) != EMC2305_OK) {
         Error_Handler();
     }
+
+    printf("Global Config Set\r\n");
+    vTaskDelay(pdMS_TO_TICKS(100));
 
     // Set config1 and config2
     EMC2305_Fan_Config1 config1 = { 0 };
@@ -252,10 +258,14 @@ void EMC2305_Task(void* argument) {
         Error_Handler();
     };
 
+    printf("Fan 2 Config Set\r\n");
+
     // Depends on the fan lol
     if (EMC2305_SetPWMBaseFrequency(&chip, EMC2305_FAN2, EMC2305_PWM_19k53) != EMC2305_OK) {
         Error_Handler();
     };
+
+    printf("PWM Frequency set to 19.53 kHz\r\n");
 
     // // Valid TACH idk man
     // if (EMC2305_WriteReg(&chip, EMC2305_FAN_REG_ADDR(EMC2305_FAN2, EMC2305_REG_FAN1_VALID_TACH), 0xFF) != EMC2305_OK) {
@@ -268,11 +278,15 @@ void EMC2305_Task(void* argument) {
         Error_Handler();
     };
 
+    printf("Minimum Drive set to 0\r\n");
+
     // Set PID Gain to lowest (1x)
     // I HATE THESE BOZOS WHY IS THIS NOT THE DEFAULT
     if (EMC2305_WriteReg(&chip, EMC2305_FAN_REG_ADDR(EMC2305_FAN2, EMC2305_REG_GAIN1), 0x00) != EMC2305_OK) {
         Error_Handler();
     };
+
+    printf("PID Gain set to 1x\r\n");
 
     // Set outputs to push-pull
     // if (EMC2305_WriteReg(&chip, EMC2305_REG_PWM_OUTPUT_CONFIG, 0x1F) != EMC2305_OK) {
@@ -319,15 +333,18 @@ void EMC2305_Task(void* argument) {
         // HAL_UART_Transmit(&huart1, data3, msgLen, 1000);
 
         // Set RPM to 3000
-        EMC2305_SetFanRPM(&chip, EMC2305_FAN2, 3000);
+        if (EMC2305_SetFanRPM(&chip, EMC2305_FAN2, 3000) != EMC2305_OK) {
+            Error_Handler();
+        };
+        printf("RPM target set to 3000\r\n");
 
         // Get current rpm
         uint16_t rpm = EMC2305_GetFanRPM(&chip, EMC2305_FAN2);
-        printf("RPM: %u\r\n", rpm);
+        printf("Measured RPM: %u\r\n", rpm);
 
         // Get current pwm
         // uint8_t pwm = EMC2305_GetFanPWM(&chip, EMC2305_FAN2);
-        // printf("PWM: %u\r\n", pwm);
+        // printf("Drive PWM: %u\r\n", pwm);
 
         // Blink Heartbeat LED
         HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_11);

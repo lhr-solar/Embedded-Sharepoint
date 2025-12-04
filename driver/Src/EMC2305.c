@@ -2,8 +2,9 @@
 
 #include "EMC2305.h"
 
-// Buffer for static semaphore
-StaticSemaphore_t EMC2305_semaphore_buffer;
+// Buffer for static semaphores
+StaticSemaphore_t chip_semaphore_buffer;
+StaticSemaphore_t caller_semaphore_buffer;
 
 // Queue of I2C messages to be sent to the EMC2305
 QueueHandle_t EMC2305_I2C_Queue;
@@ -43,7 +44,7 @@ EMC2305_Status EMC2305_Init(EMC2305_HandleTypeDef* chip, I2C_HandleTypeDef* hi2c
     chip->dev_addr = dev_addr;
 
     // Create RTOS semaphore
-    chip->i2c_complete = xSemaphoreCreateBinaryStatic(&EMC2305_semaphore_buffer);
+    chip->i2c_complete = xSemaphoreCreateBinaryStatic(&chip_semaphore_buffer);
     if (chip->i2c_complete == NULL) {
         return EMC2305_ERR;
     }
@@ -408,29 +409,39 @@ EMC2305_Fan_Status EMC2305_GetFanStatus(EMC2305_HandleTypeDef* chip) {
  * @param   chip EMC2305 handle
  * @param   reg Register to read from
  * @param   data Pointer where register data will be stored
- * @return  OK if successful, ERR otherwise
+ * @return  OK if successful, ERR if message queue is full
  */
 EMC2305_Status EMC2305_ReadReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_t* data) {
-    // Transmit register to read
-    if (HAL_I2C_Master_Transmit_IT(chip->hi2c, chip->dev_addr, &reg, 1) != HAL_OK) {
+    // Create RTOS semaphore
+    SemaphoreHandle_t complete = xSemaphoreCreateBinaryStatic(&caller_semaphore_buffer);
+    if (complete == NULL) {
         return EMC2305_ERR;
     }
 
-    // Wait for ISR to signal completion
-    if (xSemaphoreTake(chip->i2c_complete, pdMS_TO_TICKS(EMC2305_I2C_TIMEOUT)) != pdTRUE) {
+    // Pack message struct
+    EMC2305_I2C_Message msg = {
+        .chip = chip,
+        .operation = EMC2305_OP_READ,
+        .reg_addr = reg,
+        .write_data = 0,
+        .read_data = data,
+        .complete = complete,
+    };
+
+    if (xQueueSend(EMC2305_I2C_Queue, &msg, 0) != pdTRUE) {
+        // Error if queue is full
+        vSemaphoreDelete(complete);
         return EMC2305_ERR;
     }
 
-    // Receive response
-    if (HAL_I2C_Master_Receive_IT(chip->hi2c, chip->dev_addr, data, 1) != HAL_OK) {
+    // Wait for the worker task to signal completion
+    if (xSemaphoreTake(complete, pdMS_TO_TICKS(EMC2305_I2C_TIMEOUT * 2)) != pdTRUE) {
+        // Timeout waiting for worker to finish the I2C operation
+        vSemaphoreDelete(complete);
         return EMC2305_ERR;
     }
 
-    // Wait for ISR to signal completion
-    if (xSemaphoreTake(chip->i2c_complete, pdMS_TO_TICKS(EMC2305_I2C_TIMEOUT)) != pdTRUE) {
-        return EMC2305_ERR;
-    }
-
+    vSemaphoreDelete(complete);
     return EMC2305_OK;
 }
 
@@ -439,26 +450,92 @@ EMC2305_Status EMC2305_ReadReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_t
  * @param   chip EMC2305 handle
  * @param   reg Register to write to
  * @param   data Data to write
- * @return  OK if successful, ERR otherwise
+ * @return  OK if successful, ERR if message queue is full
  */
 EMC2305_Status EMC2305_WriteReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_t data) {
-    // Transmit register + data
-    if (HAL_I2C_Master_Transmit_IT(chip->hi2c, chip->dev_addr, (uint8_t[]) { reg, data }, 2) != HAL_OK) {
+    // Create RTOS semaphore
+    SemaphoreHandle_t complete = xSemaphoreCreateBinaryStatic(&caller_semaphore_buffer);
+    if (complete == NULL) {
         return EMC2305_ERR;
     }
 
-    // Wait for ISR to signal completion
-    if (xSemaphoreTake(chip->i2c_complete, pdMS_TO_TICKS(EMC2305_I2C_TIMEOUT)) != pdTRUE)
-        return EMC2305_ERR;
+    // Pack message struct
+    EMC2305_I2C_Message msg = {
+        .chip = chip,
+        .operation = EMC2305_OP_WRITE,
+        .reg_addr = reg,
+        .write_data = data,
+        .read_data = NULL,
+    };
 
+    if (xQueueSend(EMC2305_I2C_Queue, &msg, 0) != pdTRUE) {
+        // Error if queue is full
+        vSemaphoreDelete(complete);
+        return EMC2305_ERR;
+    }
+
+    HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_2);
+
+    // Wait for the worker task to signal completion
+    if (xSemaphoreTake(complete, pdMS_TO_TICKS(EMC2305_I2C_TIMEOUT * 2)) != pdTRUE) {
+        // Timeout waiting for worker to finish the I2C operation
+        vSemaphoreDelete(complete);
+        return EMC2305_ERR;
+    }
+
+    vSemaphoreDelete(complete);
     return EMC2305_OK;
 }
 
 // Worker task to consume messages from the queue and send on I2C bus
 void EMC2305_I2C_Worker_Task(void* pvParameters) {
+    EMC2305_I2C_Message msg = { 0 };
+    EMC2305_Status status = EMC2305_OK;
+
     while (1) {
+        // Block until message enters the queue
+        if (xQueueReceive(EMC2305_I2C_Queue, &msg, portMAX_DELAY) == pdTRUE) {
+            status = EMC2305_OK;
+            if (msg.operation == EMC2305_OP_WRITE) {
+                HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_3);
+                // Perform write operation
+                // Transmit register + data
+                if (HAL_I2C_Master_Transmit_IT(msg.chip->hi2c, msg.chip->dev_addr, (uint8_t[]) { msg.reg_addr, msg.write_data }, 2) != HAL_OK) {
+                    status = EMC2305_ERR;
+                }
+
+                // Wait for ISR to signal completion
+                if ((status == EMC2305_OK) && (xSemaphoreTake(msg.chip->i2c_complete, pdMS_TO_TICKS(EMC2305_I2C_TIMEOUT)) != pdTRUE)) {
+                    status = EMC2305_ERR;
+                }
+            }
+            else if (msg.operation == EMC2305_OP_READ) {
+                // Perform read operation
+                // Transmit register to read
+                if (HAL_I2C_Master_Transmit_IT(msg.chip->hi2c, msg.chip->dev_addr, &msg.reg_addr, 1) != HAL_OK) {
+                    status = EMC2305_ERR;
+                }
+
+                // Wait for ISR to signal completion
+                if ((status == EMC2305_OK) && (xSemaphoreTake(msg.chip->i2c_complete, pdMS_TO_TICKS(EMC2305_I2C_TIMEOUT))) != pdTRUE) {
+                    status = EMC2305_ERR;
+                }
+
+                // Receive response
+                if ((status == EMC2305_OK) && (HAL_I2C_Master_Receive_IT(msg.chip->hi2c, msg.chip->dev_addr, msg.read_data, 1)) != HAL_OK) {
+                    status = EMC2305_ERR;
+                }
+
+                // Wait for ISR to signal completion
+                if ((status == EMC2305_OK) && (xSemaphoreTake(msg.chip->i2c_complete, pdMS_TO_TICKS(EMC2305_I2C_TIMEOUT)) != pdTRUE)) {
+                    status = EMC2305_ERR;
+                }
+            }
+        }
+
+        // Signal to the calling task that I2C transaction has finished
+        xSemaphoreGive(msg.complete);
         HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_1);
-        vTaskDelay(500);
     }
 }
 

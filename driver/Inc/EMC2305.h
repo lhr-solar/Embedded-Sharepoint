@@ -32,6 +32,7 @@ typedef struct {
     uint8_t reg_addr;               // Register address
     uint8_t write_data;             // Data to write (only used for write operations)
     uint8_t* read_data;             // Pointer for storing read data (only used for read operations)
+    SemaphoreHandle_t complete;     // Semaphore for calling task to wait on completion
 } EMC2305_I2C_Message;
 
 #define EMC2305_QUEUE_LENGTH 10                                 // Message queue length
@@ -352,7 +353,7 @@ EMC2305_Fan_Status EMC2305_GetFanStatus(EMC2305_HandleTypeDef* chip);
  * @param   chip EMC2305 handle
  * @param   reg Register to read from
  * @param   data Pointer where register data will be stored
- * @return  OK if successful, ERR otherwise
+ * @return  OK if successful, ERR if message queue is full
  */
 EMC2305_Status EMC2305_ReadReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_t* data);
 
@@ -361,7 +362,7 @@ EMC2305_Status EMC2305_ReadReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_t
  * @param   chip EMC2305 handle
  * @param   reg Register to write to
  * @param   data Data to write
- * @return  OK if successful, ERR otherwise
+ * @return  OK if successful, ERR if message queue is full
  */
 EMC2305_Status EMC2305_WriteReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_t data);
 
