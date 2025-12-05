@@ -14,8 +14,10 @@
 I2C_HandleTypeDef hi2c1;
 EMC2305_HandleTypeDef chip;
 
-StaticTask_t emc2305TaskBuffer;
-StackType_t emc2305TaskStack[configMINIMAL_STACK_SIZE];
+StaticTask_t emc2305TaskBuffer_1;
+StackType_t emc2305TaskStack_1[configMINIMAL_STACK_SIZE];
+StaticTask_t emc2305TaskBuffer_2;
+StackType_t emc2305TaskStack_2[configMINIMAL_STACK_SIZE];
 
 #ifdef STM32L431xx
 /**
@@ -212,7 +214,115 @@ void mx_led_init(void) {
     HAL_GPIO_Init(GPIOB, &hb_init);
 }
 
-void EMC2305_Task(void* argument) {
+void EMC2305_Task_1(void* argument) {
+    // Allow chip to power on
+    vTaskDelay(pdMS_TO_TICKS(250));
+
+    // Init UART printf
+    husart1->Init.BaudRate = 115200;
+    husart1->Init.WordLength = UART_WORDLENGTH_8B;
+    husart1->Init.StopBits = UART_STOPBITS_1;
+    husart1->Init.Parity = UART_PARITY_NONE;
+    husart1->Init.Mode = UART_MODE_TX_RX;
+    husart1->Init.HwFlowCtl = UART_HWCONTROL_NONE;
+    husart1->Init.OverSampling = UART_OVERSAMPLING_16;
+
+    printf_init(husart1);
+
+    vTaskDelay(pdMS_TO_TICKS(250));
+
+    // Initialize EMC2305
+    if (EMC2305_Init(&chip, &hi2c1, DEFAULT_DEV_ADDR << 1) != EMC2305_OK) {
+        Error_Handler();
+    }
+
+    HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_3);
+
+    printf("Task 1: EMC2305 Initialized\r\n");
+
+    // Set global config
+    EMC2305_Global_Config config = { 0 };
+    config.watchdog_enable = true;
+    if (EMC2305_SetGlobalConfig(&chip, &config) != EMC2305_OK) {
+        Error_Handler();
+    }
+
+    printf("Task 1: Global Config Set\r\n");
+
+    // Set config1 and config2
+    EMC2305_Fan_Config1 config1 = { 0 };
+    config1.enable_closed_loop = true; // Set this to true if using FSC (Closed Loop RPM Control). False for using PWM directly
+    config1.edges = EMC2305_EDG_5; // 5 edges is default for 2 pole fans
+    config1.range = EMC2305_RNG_2000;
+    EMC2305_Fan_Config2 config2 = { 0 };
+    config2.enable_ramp_rate_ctl = true;
+    config2.enable_glitch_filter = true;
+    config2.error_window = EMC2305_ERG_200RPM;
+    config2.derivative_options = EMC2305_DPT_BOTH;
+    if (EMC2305_SetFanConfig(&chip, EMC2305_FAN2, &config1, &config2) != EMC2305_OK) {
+        Error_Handler();
+    };
+
+    printf("Task 1: Fan 2 Config Set\r\n");
+
+    // Depends on the fan lol
+    if (EMC2305_SetPWMBaseFrequency(&chip, EMC2305_FAN2, EMC2305_PWM_19k53) != EMC2305_OK) {
+        Error_Handler();
+    };
+
+    printf("Task 1: PWM Frequency set to 19.53 kHz\r\n");
+
+    // Set minimum drive to 0%
+    // FUCK MICROCHIP THEY NEED TO KILL THEMSELVES
+    if (EMC2305_WriteReg(&chip, EMC2305_FAN_REG_ADDR(EMC2305_FAN2, EMC2305_REG_FAN1_MIN_DRIVE), 0x00) != EMC2305_OK) {
+        Error_Handler();
+    };
+
+    printf("Task 1: Minimum Drive set to 0\r\n");
+
+    // Set PID Gain to lowest (1x)
+    // I HATE THESE BOZOS WHY IS THIS NOT THE DEFAULT
+    if (EMC2305_WriteReg(&chip, EMC2305_FAN_REG_ADDR(EMC2305_FAN2, EMC2305_REG_GAIN1), 0x00) != EMC2305_OK) {
+        Error_Handler();
+    };
+
+    printf("Task 1: PID Gain set to 1x\r\n");
+
+    // Uncomment to set outputs to push-pull
+    // if (EMC2305_WriteReg(&chip, EMC2305_REG_PWM_OUTPUT_CONFIG, 0x1F) != EMC2305_OK) {
+    //     Error_Handler();
+    // };
+
+    while (1) {
+        // // Testing Direct PWM Drive Mode
+        // // Set PWM2 duty cycle to 25%
+        // if (EMC2305_SetFanPWM(&chip, EMC2305_FAN2, 25) != EMC2305_OK) {
+        //     Error_Handler();
+        // };
+
+        // Testing FSC Mode
+        // Set RPM to 3000
+        if (EMC2305_SetFanRPM(&chip, EMC2305_FAN2, 3000) != EMC2305_OK) {
+            Error_Handler();
+        };
+        printf("Task 1: RPM target set to 3000\r\n");
+
+        // Get current rpm
+        // uint16_t rpm = EMC2305_GetFanRPM(&chip, EMC2305_FAN2);
+        // printf("Measured RPM: %u\r\n", rpm);
+
+        // Get current pwm
+        // uint8_t pwm = EMC2305_GetFanPWM(&chip, EMC2305_FAN2);
+        // printf("Drive PWM: %u\r\n", pwm);
+
+        // Blink Heartbeat LED
+        HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_11);
+
+        vTaskDelay(pdMS_TO_TICKS(100));
+    }
+}
+
+void EMC2305_Task_2(void* argument) {
     // Allow chip to power on
     vTaskDelay(pdMS_TO_TICKS(250));
 
@@ -232,7 +342,9 @@ void EMC2305_Task(void* argument) {
         Error_Handler();
     }
 
-    printf("EMC2305 Initialized\r\n");
+    HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_2);
+
+    printf("Task 2: EMC2305 Initialized\r\n");
 
     // Set global config
     EMC2305_Global_Config config = { 0 };
@@ -241,7 +353,7 @@ void EMC2305_Task(void* argument) {
         Error_Handler();
     }
 
-    printf("Global Config Set\r\n");
+    printf("Task 2: Global Config Set\r\n");
 
     // Set config1 and config2
     EMC2305_Fan_Config1 config1 = { 0 };
@@ -257,19 +369,14 @@ void EMC2305_Task(void* argument) {
         Error_Handler();
     };
 
-    printf("Fan 2 Config Set\r\n");
+    printf("Task 2: Fan 2 Config Set\r\n");
 
     // Depends on the fan lol
     if (EMC2305_SetPWMBaseFrequency(&chip, EMC2305_FAN2, EMC2305_PWM_19k53) != EMC2305_OK) {
         Error_Handler();
     };
 
-    printf("PWM Frequency set to 19.53 kHz\r\n");
-
-    // // Valid TACH idk man
-    // if (EMC2305_WriteReg(&chip, EMC2305_FAN_REG_ADDR(EMC2305_FAN2, EMC2305_REG_FAN1_VALID_TACH), 0xFF) != EMC2305_OK) {
-    //     Error_Handler();
-    // };
+    printf("Task 2: PWM Frequency set to 19.53 kHz\r\n");
 
     // Set minimum drive to 0%
     // FUCK MICROCHIP THEY NEED TO KILL THEMSELVES
@@ -277,7 +384,7 @@ void EMC2305_Task(void* argument) {
         Error_Handler();
     };
 
-    printf("Minimum Drive set to 0\r\n");
+    printf("Task 2: Minimum Drive set to 0\r\n");
 
     // Set PID Gain to lowest (1x)
     // I HATE THESE BOZOS WHY IS THIS NOT THE DEFAULT
@@ -285,68 +392,25 @@ void EMC2305_Task(void* argument) {
         Error_Handler();
     };
 
-    printf("PID Gain set to 1x\r\n");
-
-    // Set outputs to push-pull
-    // if (EMC2305_WriteReg(&chip, EMC2305_REG_PWM_OUTPUT_CONFIG, 0x1F) != EMC2305_OK) {
-    //     Error_Handler();
-    // };
+    printf("Task 2: PID Gain set to 1x\r\n");
 
     while (1) {
-        // // Testing PWM Drive Mode
-        // // Set PWM2 duty cycle to 25%
-        // if (EMC2305_SetFanPWM(&chip, EMC2305_FAN2, 25) != EMC2305_OK) {
-        //     Error_Handler();
-        // };
-
-        // HAL_Delay(1000);
-
-        // Set PWM2 duty cycle to 42%
-        // if (EMC2305_SetFanPWM(&chip, EMC2305_FAN2, 42) != EMC2305_OK) {
-        //     Error_Handler();
-        // };
-
-        // HAL_Delay(1000);
-
-        // // Set PWM2 duty cycle to 75%
-        // if (EMC2305_SetFanPWM(&chip, EMC2305_FAN2, 75) != EMC2305_OK) {
-        //     Error_Handler();
-        // };
-
-        // HAL_Delay(1000);
-
-        // // Set PWM2 duty cycle to 100%
-        // if (EMC2305_SetFanPWM(&chip, EMC2305_FAN2, 100) != EMC2305_OK) {
-        //     Error_Handler();
-        // };
-
-        // HAL_Delay(1000);
-
-        // // Set PWM2 duty cycle to 0%
-        // if (EMC2305_SetFanPWM(&chip, EMC2305_FAN2, 0) != EMC2305_OK) {
-        //     Error_Handler();
-        // };
-
-        // uint8_t data3[] = "Set PWM\r\n";
-        // msgLen = sizeof(data3) - 1;
-        // HAL_UART_Transmit(&huart1, data3, msgLen, 1000);
-
         // Set RPM to 3000
         if (EMC2305_SetFanRPM(&chip, EMC2305_FAN2, 3000) != EMC2305_OK) {
             Error_Handler();
         };
-        printf("RPM target set to 3000\r\n");
+        printf("Task 2: RPM target set to 3000\r\n");
 
         // Get current rpm
-        uint16_t rpm = EMC2305_GetFanRPM(&chip, EMC2305_FAN2);
-        printf("Measured RPM: %u\r\n", rpm);
+        // uint16_t rpm = EMC2305_GetFanRPM(&chip, EMC2305_FAN2);
+        // printf("Measured RPM: %u\r\n", rpm);
 
         // Get current pwm
-        uint8_t pwm = EMC2305_GetFanPWM(&chip, EMC2305_FAN2);
-        printf("Drive PWM: %u\r\n", pwm);
+        // uint8_t pwm = EMC2305_GetFanPWM(&chip, EMC2305_FAN2);
+        // printf("Drive PWM: %u\r\n", pwm);
 
         // Blink Heartbeat LED
-        HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_11);
+        HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_1);
 
         vTaskDelay(pdMS_TO_TICKS(100));
     }
@@ -366,13 +430,21 @@ int main(void) {
     mx_led_init();
 #endif
 
-    xTaskCreateStatic(EMC2305_Task,
-        "EMC2305",
+    xTaskCreateStatic(EMC2305_Task_1,
+        "EMC2305 Task 1",
         configMINIMAL_STACK_SIZE,
         NULL,
         tskIDLE_PRIORITY + 2,
-        emc2305TaskStack,
-        &emc2305TaskBuffer);
+        emc2305TaskStack_1,
+        &emc2305TaskBuffer_1);
+
+    xTaskCreateStatic(EMC2305_Task_2,
+        "EMC2305 Task 2",
+        configMINIMAL_STACK_SIZE,
+        NULL,
+        tskIDLE_PRIORITY + 2,
+        emc2305TaskStack_2,
+        &emc2305TaskBuffer_2);
 
     vTaskStartScheduler();
 
