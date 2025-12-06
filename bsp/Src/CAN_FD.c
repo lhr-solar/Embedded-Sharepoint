@@ -207,7 +207,9 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 
 void HAL_FDCAN_TxBufferCompleteCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t BufferIndexes)
 {
-    can_tx_payload_t payload;
+
+    BaseType_t higherPriorityTaskWoken = pdFALSE;
+    can_tx_payload_t payload = {0};
 
 #ifdef FDCAN1
     if (hfdcan->Instance == FDCAN1){
@@ -217,5 +219,7 @@ void HAL_FDCAN_TxBufferCompleteCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t Bu
         }
     }
 #endif
+
+  portYIELD_FROM_ISR(higherPriorityTaskWoken);
 
 }
