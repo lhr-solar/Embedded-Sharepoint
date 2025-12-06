@@ -32,11 +32,12 @@ typedef struct {
     uint8_t reg_addr;               // Register address
     uint8_t write_data;             // Data to write (only used for write operations)
     uint8_t* read_data;             // Pointer for storing read data (only used for read operations)
-    SemaphoreHandle_t complete;     // Semaphore for calling task to wait on completion
+    uint8_t semaphore_index;        // Index of semaphore handle in pool
 } EMC2305_I2C_Message;
 
-#define EMC2305_QUEUE_LENGTH 10                                 // Message queue length
-#define EMC2305_QUEUE_ITEM_SIZE sizeof(EMC2305_I2C_Message)                   // Size of queue item (message)
+#define EMC2305_QUEUE_LENGTH 10                             // Message queue length
+#define EMC2305_QUEUE_ITEM_SIZE sizeof(EMC2305_I2C_Message) // Size of queue item (message)
+#define EMC2305_SEMAPHORE_POOL_SIZE EMC2305_QUEUE_LENGTH    // Number of caller semaphores (max concurrent I2C requests)
 
 // Device status
 typedef enum {

@@ -2,9 +2,16 @@
 
 #include "EMC2305.h"
 
-// Buffer for static semaphores
+// Buffers for static semaphores
 StaticSemaphore_t worker_semaphore_buffer;
-StaticSemaphore_t caller_semaphore_buffer;
+StaticSemaphore_t caller_semaphore_buffer_pool[EMC2305_SEMAPHORE_POOL_SIZE];
+// Semaphore handles for caller
+SemaphoreHandle_t caller_semaphore_handle_pool[EMC2305_SEMAPHORE_POOL_SIZE];
+// Status array to track semaphore usage
+volatile bool caller_semaphore_in_use[EMC2305_SEMAPHORE_POOL_SIZE] = { false };
+// Mutex for protecting the pool usage array
+StaticSemaphore_t caller_semaphore_pool_usage_buffer;
+SemaphoreHandle_t caller_semaphore_pool_usage_mutex;
 
 // Queue of I2C messages to be sent to the EMC2305
 QueueHandle_t EMC2305_I2C_Queue;
@@ -29,6 +36,32 @@ static EMC2305_HandleTypeDef* chip_I2C3 = NULL;
 #define STATUS_LED_PIN_2 GPIO_PIN_8
 #define STATUS_LED_PIN_3 GPIO_PIN_15
 
+// Helper function to acquire a free semaphore index from the pool
+// Returns the index (0 to N-1) or -1 if the pool is full.
+static int8_t prvAcquireFreeSemaphore(void) {
+    int8_t index = -1;
+
+    if (xSemaphoreTake(caller_semaphore_pool_usage_mutex, portMAX_DELAY) == pdTRUE) {
+        for (int i = 0; i < EMC2305_SEMAPHORE_POOL_SIZE; i++) {
+            if (caller_semaphore_in_use[i] == false) {
+                caller_semaphore_in_use[i] = true; // Mark as in use
+                index = i;
+                break;
+            }
+        }
+        xSemaphoreGive(caller_semaphore_pool_usage_mutex); // Release the mutex
+    }
+    return index;
+}
+
+// Helper function to return a semaphore to the pool
+static void prvReturnSemaphore(uint8_t index) {
+    if (xSemaphoreTake(caller_semaphore_pool_usage_mutex, portMAX_DELAY) == pdTRUE) {
+        caller_semaphore_in_use[index] = false; // Mark as free
+        xSemaphoreGive(caller_semaphore_pool_usage_mutex); // Release the mutex
+    }
+}
+
 // Device Management Functions
 
 /**
@@ -42,6 +75,20 @@ EMC2305_Status EMC2305_Init(EMC2305_HandleTypeDef* chip, I2C_HandleTypeDef* hi2c
     // Set I2C handle and device address in EMC2305 handle
     chip->hi2c = hi2c;
     chip->dev_addr = dev_addr;
+
+    // Create caller semaphore pool mutex
+    caller_semaphore_pool_usage_mutex = xSemaphoreCreateMutexStatic(&caller_semaphore_pool_usage_buffer);
+    if (caller_semaphore_pool_usage_mutex == NULL) {
+        return EMC2305_ERR;
+    }
+
+    // Create all caller semaphores in pool
+    for (int i = 0; i < EMC2305_SEMAPHORE_POOL_SIZE; i++) {
+        caller_semaphore_handle_pool[i] = xSemaphoreCreateBinaryStatic(&caller_semaphore_buffer_pool[i]);
+        if (caller_semaphore_handle_pool[i] == NULL) {
+            return EMC2305_ERR;
+        }
+    }
 
     // Create RTOS semaphore
     chip->i2c_complete = xSemaphoreCreateBinaryStatic(&worker_semaphore_buffer);
@@ -412,11 +459,19 @@ EMC2305_Fan_Status EMC2305_GetFanStatus(EMC2305_HandleTypeDef* chip) {
  * @return  OK if successful, ERR if message queue is full
  */
 EMC2305_Status EMC2305_ReadReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_t* data) {
-    // Create RTOS semaphore
-    SemaphoreHandle_t complete = xSemaphoreCreateBinaryStatic(&caller_semaphore_buffer);
+    // Acquire semaphore from the pool
+    int8_t index = prvAcquireFreeSemaphore();
+    if (index < 0) {
+        // Pool full (Queue likely full too)
+        return EMC2305_ERR;
+    }
+    SemaphoreHandle_t complete = caller_semaphore_handle_pool[index];
     if (complete == NULL) {
         return EMC2305_ERR;
     }
+
+    // Ensure semaphore is taken
+    xSemaphoreTake(complete, 0);
 
     // Pack message struct
     EMC2305_I2C_Message msg = {
@@ -425,23 +480,23 @@ EMC2305_Status EMC2305_ReadReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_t
         .reg_addr = reg,
         .write_data = 0,
         .read_data = data,
-        .complete = complete,
+        .semaphore_index = (uint8_t)index,
     };
 
     if (xQueueSend(EMC2305_I2C_Queue, &msg, 0) != pdTRUE) {
         // Error if queue is full
-        vSemaphoreDelete(complete);
+        prvReturnSemaphore(index);
         return EMC2305_ERR;
     }
 
     // Wait for the worker task to signal completion
     if (xSemaphoreTake(complete, pdMS_TO_TICKS(EMC2305_I2C_TIMEOUT * 2)) != pdTRUE) {
         // Timeout waiting for worker to finish the I2C operation
-        vSemaphoreDelete(complete);
+        prvReturnSemaphore(index);
         return EMC2305_ERR;
     }
 
-    vSemaphoreDelete(complete);
+    prvReturnSemaphore(index);
     return EMC2305_OK;
 }
 
@@ -453,11 +508,19 @@ EMC2305_Status EMC2305_ReadReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_t
  * @return  OK if successful, ERR if message queue is full
  */
 EMC2305_Status EMC2305_WriteReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_t data) {
-    // Create RTOS semaphore
-    SemaphoreHandle_t complete = xSemaphoreCreateBinaryStatic(&caller_semaphore_buffer);
+    // Acquire semaphore from the pool
+    int8_t index = prvAcquireFreeSemaphore();
+    if (index < 0) {
+        // Pool full (Queue likely full too)
+        return EMC2305_ERR;
+    }
+    SemaphoreHandle_t complete = caller_semaphore_handle_pool[index];
     if (complete == NULL) {
         return EMC2305_ERR;
     }
+
+    // Ensure semaphore is taken
+    xSemaphoreTake(complete, 0);
 
     // Pack message struct
     EMC2305_I2C_Message msg = {
@@ -466,23 +529,23 @@ EMC2305_Status EMC2305_WriteReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_
         .reg_addr = reg,
         .write_data = data,
         .read_data = NULL,
-        .complete = complete,
+        .semaphore_index = (uint8_t)index,
     };
 
     if (xQueueSend(EMC2305_I2C_Queue, &msg, 0) != pdTRUE) {
         // Error if queue is full
-        vSemaphoreDelete(complete);
+        prvReturnSemaphore(index);
         return EMC2305_ERR;
     }
 
     // Wait for the worker task to signal completion
     if (xSemaphoreTake(complete, pdMS_TO_TICKS(EMC2305_I2C_TIMEOUT * 2)) != pdTRUE) {
         // Timeout waiting for worker to finish the I2C operation
-        vSemaphoreDelete(complete);
+        prvReturnSemaphore(index);
         return EMC2305_ERR;
     }
 
-    vSemaphoreDelete(complete);
+    prvReturnSemaphore(index);
     return EMC2305_OK;
 }
 
@@ -494,7 +557,10 @@ void EMC2305_I2C_Worker_Task(void* pvParameters) {
     while (1) {
         // Block until message enters the queue
         if (xQueueReceive(EMC2305_I2C_Queue, &msg, portMAX_DELAY) == pdTRUE) {
+            // Retrieve the correct semaphore handle using the index
+            SemaphoreHandle_t complete = caller_semaphore_handle_pool[msg.semaphore_index];
             status = EMC2305_OK;
+
             if (msg.operation == EMC2305_OP_WRITE) {
                 // Perform write operation
                 // Buffer so we don't pull a stupid
@@ -530,10 +596,10 @@ void EMC2305_I2C_Worker_Task(void* pvParameters) {
                     status = EMC2305_ERR;
                 }
             }
-        }
 
-        // Signal to the calling task that I2C transaction has finished
-        xSemaphoreGive(msg.complete);
+            // Signal to the calling task that I2C transaction has finished
+            xSemaphoreGive(complete);
+        }
     }
 }
 
