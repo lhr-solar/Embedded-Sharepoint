@@ -100,16 +100,17 @@ void Success_Handler(){
 
 static void task(void *pvParameters) {
 
+    FDCAN_TxHeaderTypeDef tx_header = {0};   
+    tx_header.Identifier = 0x11;
+    tx_header.IdType = FDCAN_STANDARD_ID;
+    tx_header.FDFormat = FDCAN_CLASSIC_CAN;
+    tx_header.TxFrameType = FDCAN_DATA_FRAME;
+    tx_header.DataLength = FDCAN_DLC_BYTES_8;
+    tx_header.ErrorStateIndicator = FDCAN_ESI_ACTIVE;
+    tx_header.BitRateSwitch = FDCAN_BRS_OFF;
+    tx_header.MessageMarker = 0;
+
     while(1){
-        FDCAN_TxHeaderTypeDef tx_header = {0};   
-        tx_header.Identifier = 0x11;
-        tx_header.IdType = FDCAN_STANDARD_ID;
-        tx_header.FDFormat = FDCAN_CLASSIC_CAN;
-        tx_header.TxFrameType = FDCAN_DATA_FRAME;
-        tx_header.DataLength = FDCAN_DLC_BYTES_8;
-        tx_header.ErrorStateIndicator = FDCAN_ESI_ACTIVE;
-        tx_header.BitRateSwitch = FDCAN_BRS_OFF;
-        tx_header.MessageMarker = 0;
 
         // send x1234 to 0x11
         uint8_t tx_data[8] = {0};
@@ -152,7 +153,7 @@ int main(void) {
     hfdcan1->Instance = FDCAN1;
     hfdcan1->Init.ClockDivider = FDCAN_CLOCK_DIV1;
     hfdcan1->Init.FrameFormat = FDCAN_FRAME_CLASSIC;
-    hfdcan1->Init.Mode = FDCAN_MODE_NORMAL;
+    hfdcan1->Init.Mode = FDCAN_MODE_INTERNAL_LOOPBACK;
     hfdcan1->Init.AutoRetransmission = DISABLE;
     hfdcan1->Init.TransmitPause = DISABLE;
     hfdcan1->Init.ProtocolException = DISABLE;

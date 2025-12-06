@@ -125,6 +125,7 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
         portEXIT_CRITICAL();
         return CAN_SENT;
     }
+
     // hardware mailbox is full, so must add to the queue
     else{
         // enable interrupts
@@ -146,7 +147,6 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
     }
     return CAN_OK;
 }
-
 
 __weak void HAL_FDCAN_MspGpioInit(FDCAN_HandleTypeDef* hfdcan){
     GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -201,11 +201,7 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 {
   if((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET)
   {
-    // /* Retreive Rx messages from RX FIFO0 */
-    // if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK)
-    // {
-    // /* Reception Error */
-    // }
+
   }
 }
 
@@ -217,7 +213,7 @@ void HAL_FDCAN_TxBufferCompleteCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t Bu
     if (hfdcan->Instance == FDCAN1){
         // check if data in the queue to send
         if (xQueueReceiveFromISR(fdcan1_send_queue, &payload, NULL) == pdTRUE) {
-            if (HAL_FDCAN_AddMessageToTxFifoQ(hfdcan, &payload.header, payload.data) != HAL_OK){}
+            HAL_FDCAN_AddMessageToTxFifoQ(hfdcan, &payload.header, payload.data);
         }
     }
 #endif
