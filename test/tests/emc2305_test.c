@@ -248,12 +248,6 @@ void EMC2305_Task_1(void* argument) {
     // Block to let task 2 start first
     vTaskDelay(pdMS_TO_TICKS(250));
 
-    // Initialize EMC2305
-    // Only call from ONE task!
-    // if (EMC2305_Init(&chip, &hi2c1, DEFAULT_DEV_ADDR << 1) != EMC2305_OK) {
-    //     Error_Handler();
-    // }
-
     HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_3);
 
     printf("Task 1: EMC2305 Initialized\r\n");
@@ -357,13 +351,11 @@ void EMC2305_Task_2(void* argument) {
     printf_init(husart1);
 
     // Initialize EMC2305
+    // Only call from ONE task!
     if (EMC2305_Init(&chip, &hi2c1, DEFAULT_DEV_ADDR << 1) != EMC2305_OK) {
         Error_Handler();
     }
-
     HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_2);
-
-    printf("Task 2: EMC2305 Initialized\r\n");
 
     // Set global config
     EMC2305_Global_Config config = { 0 };
@@ -456,6 +448,8 @@ int main(void) {
     mx_i2c_init();
     mx_led_init();
 #endif
+
+    printf("Task 2: EMC2305 Initialized\r\n");
 
     xTaskCreateStatic(EMC2305_Task_1,
         "EMC2305 Task 1",
