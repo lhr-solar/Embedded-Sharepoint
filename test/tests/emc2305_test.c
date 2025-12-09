@@ -1,3 +1,6 @@
+// Test for the EMC2305 Fan Chip Driver
+// Spawns 2 tasks to test thread safe control of underlying I2C bus
+
 #include "stm32xx_hal.h"
 #include "EMC2305.h"
 #include "UART.h"
@@ -5,11 +8,24 @@
 
 #include <stdio.h>
 
+// From datasheet
 #define DEFAULT_DEV_ADDR 0x4D
+
+// LED pins for PSOM
 #define STATUS_LED_PORT GPIOA
 #define STATUS_LED_PIN_1 GPIO_PIN_7
 #define STATUS_LED_PIN_2 GPIO_PIN_8
 #define STATUS_LED_PIN_3 GPIO_PIN_15
+
+// USART pins for PSOM
+#define USART_PORT GPIOA
+#define USART_TX_PIN GPIO_PIN_9
+#define USART_RX_PIN GPIO_PIN_10
+
+// I2C pins for PSOM
+#define I2C_PORT GPIOB
+#define I2C_SCL_PIN GPIO_PIN_6
+#define I2C_SDA_PIN GPIO_PIN_7
 
 I2C_HandleTypeDef hi2c1;
 EMC2305_HandleTypeDef chip;
@@ -116,12 +132,12 @@ void mx_uart_init(void) {
     PA9     ------> USART1_TX
     PA10     ------> USART1_RX
     */
-    InitStruct.Pin = GPIO_PIN_9 | GPIO_PIN_10;
+    InitStruct.Pin = USART_TX_PIN | USART_RX_PIN;
     InitStruct.Mode = GPIO_MODE_AF_PP;
     InitStruct.Pull = GPIO_NOPULL;
     InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     InitStruct.Alternate = GPIO_AF7_USART1;
-    HAL_GPIO_Init(GPIOA, &InitStruct);
+    HAL_GPIO_Init(USART_PORT, &InitStruct);
 }
 
 void mx_i2c_init(void) {
@@ -146,12 +162,12 @@ void mx_i2c_init(void) {
     PB6     ------> I2C1_SCL
     PB7     ------> I2C1_SDA
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7;
+    GPIO_InitStruct.Pin = I2C_SCL_PIN | I2C_SDA_PIN;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF4_I2C1;
-    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+    HAL_GPIO_Init(I2C_PORT, &GPIO_InitStruct);
 
     // I2C Interrupt Init
     HAL_NVIC_SetPriority(I2C1_EV_IRQn, 5, 0);
@@ -197,15 +213,15 @@ void mx_led_init(void) {
     __HAL_RCC_GPIOA_CLK_ENABLE();
     __HAL_RCC_GPIOB_CLK_ENABLE();
 
-    // LED init
+    // Status LED init
     GPIO_InitTypeDef led_init = {
         .Mode = GPIO_MODE_OUTPUT_PP,
         .Pull = GPIO_NOPULL,
-        .Pin = GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_15,
+        .Pin = STATUS_LED_PIN_1 | STATUS_LED_PIN_2 | STATUS_LED_PIN_3,
     };
-    HAL_GPIO_Init(GPIOA, &led_init);
+    HAL_GPIO_Init(STATUS_LED_PORT, &led_init);
 
-    // LED init
+    // Heartbeat LED init
     GPIO_InitTypeDef hb_init = {
         .Mode = GPIO_MODE_OUTPUT_PP,
         .Pull = GPIO_NOPULL,
