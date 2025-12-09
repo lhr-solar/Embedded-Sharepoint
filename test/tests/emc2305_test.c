@@ -253,7 +253,7 @@ void EMC2305_Task_1(void* argument) {
 
     // Set config1 and config2
     EMC2305_Fan_Config1 config1 = { 0 };
-    config1.enable_closed_loop = true; // Set this to true if using FSC (Closed Loop RPM Control). False for using PWM directly
+    config1.enable_closed_loop = false; // Set this to true if using FSC (Closed Loop RPM Control). False for using PWM directly
     config1.edges = EMC2305_EDG_5; // 5 edges is default for 2 pole fans
     config1.range = EMC2305_RNG_2000;
     EMC2305_Fan_Config2 config2 = { 0 };
@@ -296,18 +296,19 @@ void EMC2305_Task_1(void* argument) {
     // };
 
     while (1) {
-        // // Testing Direct PWM Drive Mode
-        // // Set PWM2 duty cycle to 25%
-        // if (EMC2305_SetFanPWM(&chip, EMC2305_FAN2, 25) != EMC2305_OK) {
-        //     Error_Handler();
-        // };
+        // Testing Direct PWM Drive Mode
+        // Set PWM2 duty cycle to 25%
+        if (EMC2305_SetFanPWM(&chip, EMC2305_FAN2, 25) != EMC2305_OK) {
+            Error_Handler();
+        };
+        printf("Task 1: PWM drive set to 25%%\r\n");
 
         // Testing FSC Mode
         // Set RPM to 3000
-        if (EMC2305_SetFanRPM(&chip, EMC2305_FAN2, 3000) != EMC2305_OK) {
-            Error_Handler();
-        };
-        printf("Task 1: RPM target set to 3000\r\n");
+        // if (EMC2305_SetFanRPM(&chip, EMC2305_FAN2, 3000) != EMC2305_OK) {
+        //     Error_Handler();
+        // };
+        // printf("Task 1: RPM target set to 3000\r\n");
 
         // Get current rpm
         // uint16_t rpm = EMC2305_GetFanRPM(&chip, EMC2305_FAN2);
@@ -320,7 +321,7 @@ void EMC2305_Task_1(void* argument) {
         // Blink Heartbeat LED
         HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_11);
 
-        vTaskDelay(pdMS_TO_TICKS(100));
+        // vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
 
@@ -359,7 +360,7 @@ void EMC2305_Task_2(void* argument) {
 
     // Set config1 and config2
     EMC2305_Fan_Config1 config1 = { 0 };
-    config1.enable_closed_loop = true; // Set this to true if using FSC (Closed Loop RPM Control). False for using PWM directly
+    config1.enable_closed_loop = false; // Set this to true if using FSC (Closed Loop RPM Control). False for using PWM directly
     config1.edges = EMC2305_EDG_5; // 5 edges is default for 2 pole fans
     config1.range = EMC2305_RNG_2000;
     EMC2305_Fan_Config2 config2 = { 0 };
@@ -397,11 +398,19 @@ void EMC2305_Task_2(void* argument) {
     printf("Task 2: PID Gain set to 1x\r\n");
 
     while (1) {
-        // Set RPM to 3000
-        if (EMC2305_SetFanRPM(&chip, EMC2305_FAN2, 3000) != EMC2305_OK) {
+        // Testing Direct PWM Drive Mode
+        // Set PWM2 duty cycle to 25%
+        if (EMC2305_SetFanPWM(&chip, EMC2305_FAN2, 100) != EMC2305_OK) {
             Error_Handler();
         };
-        printf("Task 2: RPM target set to 3000\r\n");
+        printf("Task 2: PWM drive set to 100%%\r\n");
+
+        // Testing FSC mode
+        // Set RPM to 3000
+        // if (EMC2305_SetFanRPM(&chip, EMC2305_FAN2, 3000) != EMC2305_OK) {
+        //     Error_Handler();
+        // };
+        // printf("Task 2: RPM target set to 3000\r\n");
 
         // Get current rpm
         // uint16_t rpm = EMC2305_GetFanRPM(&chip, EMC2305_FAN2);
@@ -414,7 +423,7 @@ void EMC2305_Task_2(void* argument) {
         // Blink Heartbeat LED
         HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_1);
 
-        vTaskDelay(pdMS_TO_TICKS(100));
+        // vTaskDelay(pdMS_TO_TICKS(500));
     }
 }
 
@@ -444,7 +453,7 @@ int main(void) {
         "EMC2305 Task 2",
         configMINIMAL_STACK_SIZE,
         NULL,
-        tskIDLE_PRIORITY + 2,
+        tskIDLE_PRIORITY + 5,
         emc2305TaskStack_2,
         &emc2305TaskBuffer_2);
 
