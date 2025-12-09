@@ -109,12 +109,16 @@ EMC2305_Status EMC2305_Init(EMC2305_HandleTypeDef* chip, I2C_HandleTypeDef* hi2c
     if (hi2c->Instance == I2C1) {
         chip_I2C1 = chip;
     }
+#ifdef I2C2
     else if (hi2c->Instance == I2C2) {
         chip_I2C2 = chip;
     }
+#endif
+#ifdef I2C3
     else if (hi2c->Instance == I2C3) {
         chip_I2C3 = chip;
     }
+#endif
     else {
         return EMC2305_ERR;
     }
