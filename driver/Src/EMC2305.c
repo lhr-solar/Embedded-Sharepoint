@@ -610,12 +610,16 @@ void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef* hi2c) {
     if (hi2c->Instance == I2C1) {
         chip = chip_I2C1;
     }
+#ifdef I2C2
     else if (hi2c->Instance == I2C2) {
         chip = chip_I2C2;
     }
+#endif
+#ifdef I2C3
     else if (hi2c->Instance == I2C3) {
         chip = chip_I2C3;
     }
+#endif
 
     if (chip != NULL) {
         xSemaphoreGiveFromISR(chip->i2c_complete, &xHigherPriorityTaskWoken);
@@ -634,12 +638,16 @@ void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef* hi2c) {
     if (hi2c->Instance == I2C1) {
         chip = chip_I2C1;
     }
+#ifdef I2C2
     else if (hi2c->Instance == I2C2) {
         chip = chip_I2C2;
     }
+#endif
+#ifdef I2C3
     else if (hi2c->Instance == I2C3) {
         chip = chip_I2C3;
     }
+#endif
 
     if (chip != NULL) {
         xSemaphoreGiveFromISR(chip->i2c_complete, &xHigherPriorityTaskWoken);
