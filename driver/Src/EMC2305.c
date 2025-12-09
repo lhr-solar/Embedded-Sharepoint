@@ -27,8 +27,12 @@ StackType_t EMC2305_I2C_TaskStack[configMINIMAL_STACK_SIZE];
 
 // Some bullshit until i find a better way
 static EMC2305_HandleTypeDef* chip_I2C1 = NULL;
+#ifdef I2C2
 static EMC2305_HandleTypeDef* chip_I2C2 = NULL;
+#endif
+#ifdef I2C3
 static EMC2305_HandleTypeDef* chip_I2C3 = NULL;
+#endif
 
 // Helper function to acquire a free semaphore index from the pool
 // Returns the index (0 to N-1) or -1 if the pool is full.
