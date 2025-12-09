@@ -30,12 +30,6 @@ static EMC2305_HandleTypeDef* chip_I2C1 = NULL;
 static EMC2305_HandleTypeDef* chip_I2C2 = NULL;
 static EMC2305_HandleTypeDef* chip_I2C3 = NULL;
 
-// TODO: for debug, REMOVE
-#define STATUS_LED_PORT GPIOA
-#define STATUS_LED_PIN_1 GPIO_PIN_7
-#define STATUS_LED_PIN_2 GPIO_PIN_8
-#define STATUS_LED_PIN_3 GPIO_PIN_15
-
 // Helper function to acquire a free semaphore index from the pool
 // Returns the index (0 to N-1) or -1 if the pool is full.
 static int8_t prvAcquireFreeSemaphore(void) {
@@ -654,5 +648,4 @@ void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef* hi2c) {
 // I2C Error Interrupt Callback
 void HAL_I2C_ErrorCallback(I2C_HandleTypeDef* hi2c) {
     // TODO: properly recover bus....
-    HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_11);
 }
