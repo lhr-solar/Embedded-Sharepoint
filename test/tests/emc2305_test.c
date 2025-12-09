@@ -111,6 +111,7 @@ void I2C1_ER_IRQHandler(void) {
 #endif
 
 void mx_uart_init(void) {
+#ifdef STM32L431xx
     // UART init
     GPIO_InitTypeDef InitStruct = { 0 };
     RCC_PeriphCLKInitTypeDef PeriphClkInit = { 0 };
@@ -138,9 +139,11 @@ void mx_uart_init(void) {
     InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     InitStruct.Alternate = GPIO_AF7_USART1;
     HAL_GPIO_Init(USART_PORT, &InitStruct);
+#endif
 }
 
 void mx_i2c_init(void) {
+#ifdef STM32L431xx
     // initialize I2C pins on PSOM
     GPIO_InitTypeDef GPIO_InitStruct = { 0 };
     RCC_PeriphCLKInitTypeDef ClkInit = { 0 };
@@ -206,9 +209,11 @@ void mx_i2c_init(void) {
     {
         Error_Handler();
     }
+#endif
 }
 
 void mx_led_init(void) {
+#ifdef STM32L431xx
     /* Peripheral clock enable */
     __HAL_RCC_GPIOA_CLK_ENABLE();
     __HAL_RCC_GPIOB_CLK_ENABLE();
@@ -228,6 +233,7 @@ void mx_led_init(void) {
         .Pin = GPIO_PIN_11,
     };
     HAL_GPIO_Init(GPIOB, &hb_init);
+#endif
 }
 
 void EMC2305_Task_1(void* argument) {
