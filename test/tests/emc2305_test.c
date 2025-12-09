@@ -229,12 +229,14 @@ void EMC2305_Task_1(void* argument) {
 
     printf_init(husart1);
 
+    // Block to let task 2 start first
     vTaskDelay(pdMS_TO_TICKS(250));
 
     // Initialize EMC2305
-    if (EMC2305_Init(&chip, &hi2c1, DEFAULT_DEV_ADDR << 1) != EMC2305_OK) {
-        Error_Handler();
-    }
+    // Only call from ONE task!
+    // if (EMC2305_Init(&chip, &hi2c1, DEFAULT_DEV_ADDR << 1) != EMC2305_OK) {
+    //     Error_Handler();
+    // }
 
     HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_3);
 
