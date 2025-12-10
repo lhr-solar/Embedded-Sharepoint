@@ -9,8 +9,8 @@
     #define LED_PORT GPIOB
 #else
 // Most other nucleos have a heartbeat for A5
-    #define LED_PIN GPIO_PIN_6
-    #define LED_PORT GPIOB
+    #define LED_PIN GPIO_PIN_5
+    #define LED_PORT GPIOA
 #endif
 
 

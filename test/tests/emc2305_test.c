@@ -234,7 +234,7 @@ void mx_led_init(void) {
     };
     HAL_GPIO_Init(GPIOB, &hb_init);
 #endif
-}
+}   
 
 void EMC2305_Task_1(void* argument) {
     // Allow chip to power on
