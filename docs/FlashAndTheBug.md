@@ -155,8 +155,8 @@ To flash with SWD:
 Or alternatively with UART:
 1. Navigate to `test/`
 2. Flip the boot switch to EXT & press reset
-4. Run `make flash-uart`
-5. Flip the boot switch to USR & press reset
+3. Run `make flash-uart`
+4. Flip the boot switch to USR & press reset
 
 ... and you've flashed to the MCU!
 
