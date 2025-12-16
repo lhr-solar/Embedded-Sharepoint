@@ -60,6 +60,12 @@ can_status_t can_fd_init(FDCAN_HandleTypeDef* handle, FDCAN_FilterTypeDef* filte
         return CAN_ERR;
     }
 
+    for (int i = 0; i < can1_recv_entry_count; i++) {
+      can1_recv_entries[i].queue = xQueueCreateStatic(
+          can1_recv_entries[i].size, sizeof(rx_payload_t),
+          can1_recv_entries[i].storage, &can1_recv_entries[i].buffer);
+    }
+
 
 #ifdef FDCAN1
     if(handle->Instance == FDCAN1){
