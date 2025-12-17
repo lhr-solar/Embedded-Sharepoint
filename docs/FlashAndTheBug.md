@@ -100,6 +100,8 @@ UART is the simplest way to program our boards, only requiring a USB-C cable to 
 
 To connect to your board over UART, plug in a USB-C data cable to the board and your computer. Verify that the board powers up (LEDs turn on) and that you can see the USB-UART chip as a COM port in Device Manager (Windows) or using `lsusb_mac`/`lsusb` (MacOS/Linux). On WSL, use `usbipd` to bind and attach the board the same way you would for ST-Link.
 
+![Device Manager showing CP210x COM port](assets/CP210X_DeviceManager.png)
+
 When programming over UART, you'll have to use the Boot switch and Reset button on the board (PSOM shown below) to enter and exit the bootloader (special section of code that can erase/write to flash memory). When the Boot switch is set to USR, the MCU will start executing your flashed code whenever the Reset button is pressed. When the Boot switch is set to EXT, the MCU will enter the bootloader and wait for any of its peripherals to receive an erase/flash command. In this case, the command will come over UART from the USB-UART converter, but it can also come from CAN, SPI, or several other interfaces.
 
 ![Boot/Reset switches shown on the PSOM](assets/PSOM_RST_BOOT.png)
