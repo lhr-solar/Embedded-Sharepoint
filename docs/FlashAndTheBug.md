@@ -39,7 +39,11 @@ Note: The extension only works with ST-Links/Nucleos that you’ve previously co
 
 ## Hardware Interface
 
-**Serial Wire Debug** (SWD) is a two-wire protocol that is an alternative to JTAG. JTAG is the most common interface for debugging/accessing MCU registers, but it requires 4 pins to communicate while SWD only requires 2, so many ARM microcontrollers will use SWD to ease pin requirements.
+There are two main methods for programming the STM32 microcontrollers we use on our boards: **Serial Wire Debug** (SWD) and **UART**. SWD is available on any board with a 4-pin programming header. UART requires a USB-UART conversion chip, along with a USB-C port, which can be found on the PSOM and LSOM, for example.
+
+### SWD Setup
+
+SWD is a two-wire protocol that is an alternative to JTAG. JTAG is the most common interface for debugging/accessing MCU registers, but it requires 4 pins to communicate while SWD only requires 2, so many ARM microcontrollers will use SWD to ease pin requirements.
 
 To program the STM32 microcontroller with SWD, we use an **ST-Link**—a tool from STMicroelectronics that runs dedicated firmware designed to program STM32 devices.
 
@@ -52,7 +56,7 @@ If you take a look at your STM32 Nucleo you should notice **two** sections on th
     <span><span style="color: #4a90e2; font-weight: bold;">Blue</span> STM32 MCU and Peripherals</span>
 </div>
 
-### ST-Link Connector
+#### ST-Link Connector
 
 Your board may have the jumpers ON or OFF on the ST-Link Connector (**CN2**).
 
@@ -66,7 +70,7 @@ Decide whether you need jumpers based on which MCU you are trying to program.
 > ℹ️ If you're unsure, run `st-info --probe` to see the MCU you're flashing to.
 
 
-### SWD Connector
+#### SWD Connector
 
 When programming an **external** MCU (not on the Nucleo) the 6-pin SWD connector (CN4) on the ST-Link will be used. 
 
@@ -89,6 +93,18 @@ On our solar boards we have a SWD interface that looks like this
 </div>
 
 After connecting the corresponding pins you'll be able to program the MCU on your board.
+
+### UART Setup
+
+UART is the simplest way to program our boards, only requiring a USB-C cable to connect to your laptop. However, while it does allow for flashing and serial monitoring using `printf`, it does not allow you to run OpenOCD and GDB to step through your code.
+
+To connect to your board over UART, plug in a USB-C data cable to the board and your computer. Verify that the board powers up (LEDs turn on) and that you can see the USB-UART chip as a COM port in Device Manager (Windows) or using `lsusb_mac`/`lsusb` (MacOS/Linux). On WSL, use `usbipd` to bind and attach the board the same way you would for ST-Link.
+
+![Device Manager showing CP210x COM port](assets/CP210X_DeviceManager.png)
+
+When programming over UART, you'll have to use the Boot switch and Reset button on the board (PSOM shown below) to enter and exit the bootloader (special section of code that can erase/write to flash memory). When the Boot switch is set to USR, the MCU will start executing your flashed code whenever the Reset button is pressed. When the Boot switch is set to EXT, the MCU will enter the bootloader and wait for any of its peripherals to receive an erase/flash command. In this case, the command will come over UART from the USB-UART converter, but it can also come from CAN, SPI, or several other interfaces.
+
+![Boot/Reset switches shown on the PSOM](assets/PSOM_RST_BOOT.png)
 
 ## Software Tooling
 
@@ -137,10 +153,16 @@ If you don't see a similar message nor a `.elf` file in the `build/` directory, 
 
 If you ran the previous section without error then you should have a `.bin` and a `.elf` in your `build/` corresponding to your target MCU.
 
-To flash
+To flash with SWD:
 
 1. Navigate to `test/`
 2. Run `make flash`
+
+Or alternatively with UART:
+1. Navigate to `test/`
+2. Flip the boot switch to EXT & press reset
+3. Run `make flash-uart`
+4. Flip the boot switch to USR & press reset
 
 ... and you've flashed to the MCU!
 
