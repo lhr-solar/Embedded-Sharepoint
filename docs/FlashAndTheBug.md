@@ -159,6 +159,7 @@ To flash with SWD:
 2. Run `make flash`
 
 Or alternatively with UART:
+
 1. Navigate to `test/`
 2. Flip the boot switch to EXT & press reset
 3. Run `make flash-uart`
