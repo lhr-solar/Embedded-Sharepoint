@@ -114,7 +114,7 @@ int main(void)
     // --- Configure SD handle ---
     sd.hspi = &hspi2;
     sd.cs_port = GPIOB;
-    sd.cs_pin = GPIO_PIN_1;
+    sd.cs_pin = GPIO_PIN_12;
 
     // --- Initialize SPI & GPIO (includes your CS setup) ---
     if (SD_SPI_Init(&sd) != 0) {

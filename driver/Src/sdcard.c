@@ -3,12 +3,63 @@
 #include <stdint.h>
 
 extern SPI_HandleTypeDef hspi2; 
+//extern sd_handle_t sd;
+
 
 #define CMD0 0   // Reset
 #define CMD17 17 // Read single block
 #define CMD24 24 // Write single block
+#define DATA_TOKEN_CMD9  0xFE
+#define DATA_TOKEN_CMD17 0xFE
+#define DATA_TOKEN_CMD18 0xFE
+#define DATA_TOKEN_CMD24 0xFE
+#define DATA_TOKEN_CMD25 0xFC
 
+/* CS */
+void SD_Select(sd_handle_t *sd)
+{
+    HAL_GPIO_WritePin(sd->cs_port, sd->cs_pin, GPIO_PIN_RESET);
+}
 
+void SD_Deselect(sd_handle_t *sd)
+{
+    HAL_GPIO_WritePin(sd->cs_port, sd->cs_pin, GPIO_PIN_SET);
+    /* After CS high, clock at least 8 cycles (send one 0xFF) */
+    // uint8_t ff = 0xFF;
+    // HAL_SPI_Transmit(sd->hspi, &ff, 1, HAL_MAX_DELAY);
+}
+
+// /* read R1 response (poll until first non 0xFF or MSB==0) */
+/*
+R1: 0abcdefg
+     ||||||`- 1th bit (g): card is in idle state
+     |||||`-- 2th bit (f): erase sequence cleared
+     ||||`--- 3th bit (e): illigal command detected
+     |||`---- 4th bit (d): crc check error
+     ||`----- 5th bit (c): error in the sequence of erase commands
+     |`------ 6th bit (b): misaligned addres used in command
+     `------- 7th bit (a): command argument outside allowed range
+             (8th bit is always zero)
+*/
+uint8_t SD_ReadR1(sd_handle_t *sd)
+{
+    uint8_t r1;
+    // make sure FF is transmitted during receive
+    uint8_t tx = 0xFF;
+    while (1) {
+        HAL_SPI_TransmitReceive(sd->hspi, &tx, &r1, 1, HAL_MAX_DELAY);
+        if ((r1 & 0x80) == 0)     // MSB must be 0 → valid R1
+            return r1;
+    }
+}
+
+/* basic byte tx/rx (no CS handling) */
+uint8_t SD_SPI_TxRx(sd_handle_t *sd, uint8_t tx)
+{
+    uint8_t rx = 0xFF;
+    HAL_SPI_TransmitReceive(sd->hspi, &tx, &rx, 1, HAL_MAX_DELAY);
+    return rx;
+}
 
 uint8_t SD_SPI_Init(sd_handle_t *sd) {
 
@@ -19,8 +70,7 @@ uint8_t SD_SPI_Init(sd_handle_t *sd) {
     __HAL_RCC_SPI2_CLK_ENABLE();
     __HAL_RCC_GPIOB_CLK_ENABLE();
     __HAL_RCC_GPIOC_CLK_ENABLE();
-    __HAL_RCC_GPIOA_CLK_ENABLE(); //?
-
+    __HAL_RCC_GPIOA_CLK_ENABLE(); 
 
     /** SPI2 GPIO Configuration
      *  PB10 ------> SPI2_SCK
@@ -60,7 +110,7 @@ uint8_t SD_SPI_Init(sd_handle_t *sd) {
     sd->hspi->Init.CLKPolarity = SPI_POLARITY_LOW;
     sd->hspi->Init.CLKPhase = SPI_PHASE_1EDGE;
     sd->hspi->Init.NSS = SPI_NSS_SOFT;
-    sd->hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128; //before worked: 16  new worked: 64
+    sd->hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256; //before worked: 16  new worked: 64 11/30 worked: 128
     sd->hspi->Init.FirstBit = SPI_FIRSTBIT_MSB;
     sd->hspi->Init.TIMode = SPI_TIMODE_DISABLE;
     sd->hspi->Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -74,145 +124,412 @@ uint8_t SD_SPI_Init(sd_handle_t *sd) {
     return 0; // success
 }
 
-uint8_t SD_Transmit(sd_handle_t *sd, uint8_t data) {
-    // uint8_t (1 byte) received in datat;
-    // recieve 1 byte from SD card
-    // return received;
-
-    uint8_t dummy;
-
-    while (1)
-    {
-        HAL_GPIO_WritePin(sd->cs_port, sd->cs_pin, GPIO_PIN_RESET); // CS low (active)
-        HAL_SPI_TransmitReceive(&hspi2, &data, &dummy, sizeof(data), HAL_MAX_DELAY);
-        HAL_GPIO_WritePin(sd->cs_port, sd->cs_pin, GPIO_PIN_SET);   // CS high (inactive)
-        HAL_Delay(1000);
-    }
-
-    return dummy;
-}
-
-void SD_SendDummyClocks(sd_handle_t *sd) { //wakes up sd card
-    //SD_Deselect(sd);
-
-    for (int i = 0; i < 10; i++) SD_Transmit(sd, 0xFF); //worked: i<10
-    
-
-}
-
-// Wait until SD card is ready (returns 0xFF)
-static void SD_WaitNotBusy(sd_handle_t *sd) {
-    uint8_t resp;
-    do {
-        resp = SD_Transmit(sd, 0xFF);
-    } while (resp != 0xFF);
-}
-
-// Send command and return R1 response
-uint8_t SD_SendCommand(sd_handle_t *sd, uint8_t cmd, uint32_t arg, uint8_t crc) {
-    SD_WaitNotBusy(sd);       // Wait until card is ready
+/* ---------- Dummy clocks ---------- */
+void SD_SendDummyClocks(sd_handle_t *sd)
+{
+    /* Ensure CS high and send >= 80 clocks (10 bytes of 0xFF) */
     SD_Deselect(sd);
-    SD_Transmit(sd, 0xFF);    // Dummy 8 clocks
-    SD_Select(sd);
 
-    // Send command packet
-    SD_Transmit(sd, 0x40 | cmd);
-    SD_Transmit(sd, (arg >> 24) & 0xFF);
-    SD_Transmit(sd, (arg >> 16) & 0xFF);
-    SD_Transmit(sd, (arg >> 8) & 0xFF);
-    SD_Transmit(sd, arg & 0xFF);
-    SD_Transmit(sd, crc);
-
-    // Wait for R1 response (bit7 == 0)
-    uint8_t response;
-    for (int i = 0; i < 8; i++) {
-        response = SD_Transmit(sd, 0xFF);
-        if (!(response & 0x80)) break;
+    // uint8_t high = 0xFF;
+    // for(int i = 0; i < 10; i++) { // 80 clock pulses
+    //     HAL_SPI_Transmit(sd->hspi, &high, sizeof(high), HAL_MAX_DELAY);
+    // }
+    uint8_t tx = 0xFF;
+    uint8_t rx;
+    for (int i = 0; i < 10; i++) {
+        HAL_SPI_TransmitReceive(sd->hspi, &tx, &rx, sizeof(tx), HAL_MAX_DELAY);
     }
-
-    SD_Deselect(sd);
-    SD_Transmit(sd, 0xFF); // 8 more clocks after deselect
-
-    return response;
-}
-// uint8_t SD_SendCommand(sd_handle_t *sd, uint8_t cmd, uint32_t arg, uint8_t crc) {
     
-//     SD_Deselect(sd);
-//     SD_Transmit(sd, 0xFF); //use 0xFF to generate 8 SPI clock cycles.
-//     SD_Select(sd);
+}
 
-//     SD_Transmit(sd, 0x40 | cmd); //argument command 4 byte
-//     SD_Transmit(sd, arg >> 24);
-//     SD_Transmit(sd, arg >> 16);
-//     SD_Transmit(sd, arg >> 8);
-//     SD_Transmit(sd, arg);
-//     SD_Transmit(sd, crc);
+/* ---------- read N bytes by sending 0xFF ---------- */
+int SD_ReadBytes(sd_handle_t *sd, uint8_t *buff, size_t len)
+{
+    uint8_t tx = 0xFF; 
+    while (len--) {
+        if (HAL_SPI_TransmitReceive(sd->hspi, &tx, buff, 1, HAL_MAX_DELAY) != HAL_OK) return -1;
+        ++buff;
+    }
+    return 0;
+}
 
-//     uint8_t response;
-//     for (int i = 0; i < 8; i++) {
-//         response = SD_Transmit(sd, 0xFF);
-//         if (!(response & 0x80)) break;
-//     }
-//     return response;
-// }
+/* ---------- wait for not-busy (card returns 0xFF when ready) ---------- */
+int SD_WaitNotBusy(sd_handle_t *sd)
+{
+    // uint8_t v;
+    // uint8_t tx = 0xFF;
+    // for (uint32_t t = 50000; t > 0; t--) {
 
-uint8_t SD_Init(sd_handle_t *sd) {
-//uint8_t SD_Init(sd_handle_t *sd, GPIO_TypeDef* debug_port, uint16_t debug_pin) {
+    //     HAL_StatusTypeDef status =
+    //         HAL_SPI_TransmitReceive(sd->hspi, &tx, &v, 1, HAL_MAX_DELAY);
 
-    HAL_Delay(10); 
+    //     if (status != HAL_OK)
+    //         return -1;
 
-    SD_SendDummyClocks(sd);
+    //     if (v == 0xFF)
+    //         return 0;       // not busy
+    // }
 
-
-    uint8_t response;
-    int timeout = 0xFFFF;
-
-    // CMD0: go to idle state
+    // return -1;              // timeout
+    uint8_t busy;
+    //uint8_t cnt;
     do {
-        response = SD_SendCommand(sd, 0, 0, 0x95);
-    } while (response != 0x01 && --timeout);
-
-    return (timeout == 0) ? 1 : 0; // 0=OK, 1=Fail
-}
-
-
-// // Pull CS low to select SD card
-void SD_Select(sd_handle_t *sd) {
-    HAL_GPIO_WritePin(sd->cs_port, sd->cs_pin, GPIO_PIN_RESET); // LOW = active
-}
-
-// // Pull CS high to deselect SD card
-void SD_Deselect(sd_handle_t *sd) {
-    HAL_GPIO_WritePin(sd->cs_port, sd->cs_pin, GPIO_PIN_SET);   // HIGH = inactive
-}
-
-uint8_t SD_ReadSector(sd_handle_t *sd, uint32_t sector, uint8_t *buffer) {
-    if (SD_SendCommand(sd, CMD17, sector*512, 0x01) != 0x00) return 1;
-
-    while (SD_Transmit(sd, 0xFF) != 0xFE);
-
-    for (int i = 0; i < 512; i++) buffer[i] = SD_Transmit(sd, 0xFF);
-
-    SD_Transmit(sd, 0xFF);
-    SD_Transmit(sd, 0xFF);
+        if(SD_ReadBytes(sd, &busy, sizeof(busy)) < 0) {
+            return -1;
+        }
+        // cnt++;
+        // if (cnt>200){
+        //     return -1;
+        // }        
+    } while(busy != 0xFF);
 
     return 0;
 }
 
-uint8_t SD_WriteSector(sd_handle_t *sd, uint32_t sector, const uint8_t *buffer) {
-    if (SD_SendCommand(sd, CMD24, sector*512, 0x01) != 0x00) return 1;
+/* ---------- wait for a data token (e.g. 0xFE) ---------- */
+int SD_WaitDataToken(sd_handle_t *sd, uint8_t token) { 
+    uint8_t fb;
+    uint8_t tx = 0xFF;   // send dummy clocks during read
 
-    SD_Transmit(sd, 0xFE);
+    for (;;) {
+        HAL_SPI_TransmitReceive(sd->hspi, &tx, &fb, 1, HAL_MAX_DELAY);
 
-    for (int i = 0; i < 512; i++) SD_Transmit(sd, buffer[i]);
+        if (fb == token)
+            break;          // found correct data token
 
-    SD_Transmit(sd, 0xFF);
-    SD_Transmit(sd, 0xFF);
+        if (fb != 0xFF)
+            return -1;      // unexpected token → error
+    }
 
-    uint8_t response = SD_Transmit(sd, 0xFF);
-    if ((response & 0x1F) != 0x05) return 2;
+    return 0;
+}
 
-    while (SD_Transmit(sd, 0xFF) == 0);
 
+
+
+/* ---------- send a command packet and return R1 ---------- */
+/* ---------- send a command packet and return R1 ---------- */
+uint8_t SD_SendCommand(sd_handle_t *sd, uint8_t cmd, uint32_t arg, uint8_t crc)
+{
+    uint8_t packet[6];
+    packet[0] = 0x40 | (cmd & 0x3F);
+    packet[1] = (arg >> 24) & 0xFF;
+    packet[2] = (arg >> 16) & 0xFF;
+    packet[3] = (arg >> 8) & 0xFF;
+    packet[4] = arg & 0xFF;
+    packet[5] = crc;
+
+    SD_Select(sd);
+
+    /* --- FIX: Do NOT wait for busy if sending CMD0 (Reset) --- */
+    if (cmd != 0) {
+        if (SD_WaitNotBusy(sd) < 0) {
+            SD_Deselect(sd);
+            return 0xFF;
+        }
+    }
+    /* --------------------------------------------------------- */
+
+    /* Send the 6-byte command */
+    HAL_SPI_Transmit(sd->hspi, packet, sizeof(packet), HAL_MAX_DELAY);
+
+    /* Read R1 */
+    uint8_t r1 = SD_ReadR1(sd);
+
+    return r1;
+}
+
+// // SD INIT require:
+// /*
+// 1. to enter SPI mode, the host must send ≥74 dummy clocks with CS = high
+// 2. Send CMD0, puts the SD card into idle state (Expected response = 0x01 = idle)
+// 3. Send CMD8 (CHECK VOLTAGE / VERSION); send argument 0x000001AA and expect the same pattern back.
+// 4. Loop sending ACMD41 until the card leaves idle
+// Send CMD55 (prefix command), Send ACMD41 (init command) until card returns: 0x00 meaning: “Initialization complete. Ready to work.”
+// 5. Send CMD58 to read Operating Conditions Register (supported voltage)
+// */
+
+
+
+int SD_Init(sd_handle_t *sd) {
+    uint8_t res;
+    uint8_t resp[4];
+
+    // --- Step 1: Dummy Clocks ---
+    SD_Deselect(sd);
+    SD_SendDummyClocks(sd); 
+
+    // --- Step 2: CMD0 (Go Idle) ---
+    SD_Select(sd);
+    uint8_t cmd0[] = {0x40, 0x00, 0x00, 0x00, 0x00, 0x95};
+    HAL_SPI_Transmit(sd->hspi, cmd0, sizeof(cmd0), HAL_MAX_DELAY);
+    if(SD_ReadR1(sd) != 0x01) {
+        SD_Deselect(sd);
+        return -1; 
+    }
+    SD_Deselect(sd);
+
+    // --- Step 3: CMD8 (Voltage Check) ---
+    uint8_t r1 = SD_SendCommand(sd, 8, 0x000001AA, 0x87); // FIX 1: Capture return
+    if(r1 != 0x01) {
+        SD_Deselect(sd);
+        return -2;
+    }
+    if(SD_ReadBytes(sd, resp, sizeof(resp)) < 0) {
+        SD_Deselect(sd);
+        return -3; 
+    }
+
+    // --- Step 4: ACMD41 Loop (Initialize) ---
+    uint32_t tickStart = HAL_GetTick();
+    
+    for(;;) {
+        if((HAL_GetTick() - tickStart) > 1000) {
+             SD_Deselect(sd);
+             return -10;
+        }
+
+        // --- FIX 2: Capture return directly (Do not call ReadR1 again) ---
+        // Send CMD55
+        res = SD_SendCommand(sd, 55, 0, 0x65); 
+        if(res > 0x01) { 
+            SD_Deselect(sd);
+            return -5; 
+        }
+        SD_Deselect(sd);
+
+        // Send ACMD41
+        res = SD_SendCommand(sd, 41, 0x40000000, 0x77); 
+        SD_Deselect(sd);
+        
+        if(res == 0x00) break; // Success!
+        if(res > 0x01) return -6; // Error
+        
+        HAL_Delay(10);
+    }
+
+    // --- Step 5: CMD58 (Read OCR) ---
+    // --- FIX 3: Capture return directly ---
+    res = SD_SendCommand(sd, 58, 0, 0xFD);
+    if(res != 0x00) {
+        SD_Deselect(sd);
+        return -7;
+    }
+
+    if(SD_ReadBytes(sd, resp, sizeof(resp)) < 0) {
+        SD_Deselect(sd);
+        return -8;
+    }
+    SD_Deselect(sd);
+
+    // Check Power Up bit (Bit 31) only
+    if((resp[0] & 0x80) == 0) {
+        return -9;
+    }
+    
+    return 0; // Success
+}
+
+/* ---------- read / write block helpers (512 bytes) ---------- */
+int SD_ReadSingleBlock(sd_handle_t *sd, uint32_t blockNum, uint8_t *buffer)
+{
+    uint8_t resp;
+    resp = SD_SendCommand(sd, 17, blockNum, 0x01); /* CMD17 */
+    if (resp != 0x00) { SD_Deselect(sd); return -1; }
+
+    if (SD_WaitDataToken(sd, 0xFE) < 0) { SD_Deselect(sd); return -2; }
+    if (SD_ReadBytes(sd, buffer, 512) < 0) { SD_Deselect(sd); return -3; }
+
+    /* read CRC (2 bytes) */
+    uint8_t crc[2];
+    if (SD_ReadBytes(sd, crc, 2) < 0) { SD_Deselect(sd); return -4; }
+
+    SD_Deselect(sd);
+    return 0;
+}
+
+int SD_WriteSingleBlock(sd_handle_t *sd, uint32_t blockNum, const uint8_t *buffer)
+{
+    uint8_t resp;
+    resp = SD_SendCommand(sd, 24, blockNum, 0x01); /* CMD24 */
+    if (resp != 0x00) { SD_Deselect(sd); return -1; }
+
+    uint8_t token = 0xFE;
+    HAL_SPI_Transmit(sd->hspi, &token, 1, HAL_MAX_DELAY);
+    HAL_SPI_Transmit(sd->hspi, (uint8_t*)buffer, 512, HAL_MAX_DELAY);
+
+    uint8_t crc[2] = {0xFF, 0xFF};
+    HAL_SPI_Transmit(sd->hspi, crc, 2, HAL_MAX_DELAY);
+
+    uint8_t dataResp;
+    if (SD_ReadBytes(sd, &dataResp, 1) < 0) { SD_Deselect(sd); return -2; }
+    if ((dataResp & 0x1F) != 0x05) { SD_Deselect(sd); return -3; }
+
+    if (SD_WaitNotBusy(sd) < 0) { SD_Deselect(sd); return -4; }
+
+    SD_Deselect(sd);
+    return 0;
+}
+
+
+
+int SD_ReadBegin(sd_handle_t *sd, uint32_t blockNum) {
+    SD_Select(sd);
+
+    if(SD_WaitNotBusy(sd) < 0) { // keep this!
+        SD_Deselect(sd);
+        return -1;
+    }
+
+    /* CMD18 (READ_MULTIPLE_BLOCK) command */
+    uint8_t cmd[] = {
+        0x40 | 0x12 /* CMD18 */,
+        (blockNum >> 24) & 0xFF, /* ARG */
+        (blockNum >> 16) & 0xFF,
+        (blockNum >> 8) & 0xFF,
+        blockNum & 0xFF,
+        (0x7F << 1) | 1 /* CRC7 + end bit */
+    };
+    HAL_SPI_Transmit(sd->hspi, (uint8_t*)cmd, sizeof(cmd), HAL_MAX_DELAY);
+
+    if(SD_ReadR1(sd) != 0x00) {
+        SD_Deselect(sd);
+        return -2;
+    }
+
+    SD_Deselect(sd);
+    return 0;
+}
+
+int SD_ReadData(sd_handle_t *sd, uint8_t* buff) {
+    uint8_t crc[2];
+    SD_Select(sd);
+
+    if(SD_WaitDataToken(sd, DATA_TOKEN_CMD18) < 0) {
+        SD_Deselect(sd);
+        return -1;
+    }
+
+    if(SD_ReadBytes(sd, buff, 512) < 0) {
+        SD_Deselect(sd);
+        return -2;
+    }
+
+    if(SD_ReadBytes(sd, crc, 2) < 0) {
+        SD_Deselect(sd);
+        return -3;
+    }
+
+    SD_Deselect(sd);
+    return 0;
+
+}
+
+int SD_ReadEnd(sd_handle_t *sd) {
+    SD_Select(sd);
+
+    /* CMD12 (STOP_TRANSMISSION) */
+    {
+        static const uint8_t cmd[] = { 0x40 | 0x0C /* CMD12 */, 0x00, 0x00, 0x00, 0x00 /* ARG */, (0x7F << 1) | 1 };
+        HAL_SPI_Transmit(sd->hspi, (uint8_t*)cmd, sizeof(cmd), HAL_MAX_DELAY);
+    }
+
+    /*
+    The received byte immediataly following CMD12 is a stuff byte, it should be
+    discarded before receive the response of the CMD12
+    */
+    uint8_t stuffByte;
+    if(SD_ReadBytes(sd, &stuffByte, sizeof(stuffByte)) < 0) {
+        SD_Deselect(sd);
+        return -1;
+    }
+
+    if(SD_ReadR1(sd) != 0x00) {
+        SD_Deselect(sd);
+        return -2;
+    }
+    
+    SD_Deselect(sd);
+    return 0;
+}
+
+
+int SD_WriteBegin(sd_handle_t *sd, uint32_t blockNum) {
+    SD_Select(sd);
+
+    if(SD_WaitNotBusy(sd) < 0) { // keep this!
+        SD_Deselect(sd);
+        return -1;
+    }
+
+    /* CMD25 (WRITE_MULTIPLE_BLOCK) command */
+    uint8_t cmd[] = {
+        0x40 | 0x19 /* CMD25 */,
+        (blockNum >> 24) & 0xFF, /* ARG */
+        (blockNum >> 16) & 0xFF,
+        (blockNum >> 8) & 0xFF,
+        blockNum & 0xFF,
+        (0x7F << 1) | 1 /* CRC7 + end bit */
+    };
+    HAL_SPI_Transmit(sd->hspi, (uint8_t*)cmd, sizeof(cmd), HAL_MAX_DELAY);
+
+    if(SD_ReadR1(sd) != 0x00) {
+        SD_Deselect(sd);
+        return -2;
+    }
+
+    SD_Deselect(sd);
+    return 0;
+}
+
+int SD_WriteData(sd_handle_t *sd, const uint8_t* buff) {
+    SD_Select(sd);
+
+    uint8_t dataToken = DATA_TOKEN_CMD25;
+    uint8_t crc[2] = { 0xFF, 0xFF };
+    HAL_SPI_Transmit(sd->hspi, &dataToken, sizeof(dataToken), HAL_MAX_DELAY);
+    HAL_SPI_Transmit(sd->hspi, (uint8_t*)buff, 512, HAL_MAX_DELAY);
+    HAL_SPI_Transmit(sd->hspi, crc, sizeof(crc), HAL_MAX_DELAY);
+
+    /*
+        dataResp:
+        xxx0abc1
+            010 - Data accepted
+            101 - Data rejected due to CRC error
+            110 - Data rejected due to write error
+    */
+    uint8_t dataResp;
+    SD_ReadBytes(sd, &dataResp, sizeof(dataResp));
+    if((dataResp & 0x1F) != 0x05) { // data rejected
+        SD_Deselect(sd);
+        return -1;
+    }
+
+    if(SD_WaitNotBusy(sd) < 0) {
+        SD_Deselect(sd);
+        return -2;
+    }
+
+    SD_Deselect(sd);
+    return 0;
+}
+
+int SD_WriteEnd(sd_handle_t *sd) {
+    SD_Select(sd);
+
+    uint8_t stopTran = 0xFD; // stop transaction token for CMD25
+    HAL_SPI_Transmit(sd->hspi, &stopTran, sizeof(stopTran), HAL_MAX_DELAY);
+
+    // skip one byte before readyng "busy"
+    // this is required by the spec and is necessary for some real SD-cards!
+    uint8_t skipByte;
+    SD_ReadBytes(sd, &skipByte, sizeof(skipByte));
+
+    if(SD_WaitNotBusy(sd) < 0) {
+        SD_Deselect(sd);
+        return -1;
+    }
+
+    SD_Deselect(sd);
     return 0;
 }

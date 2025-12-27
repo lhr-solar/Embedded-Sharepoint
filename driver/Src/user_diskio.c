@@ -37,7 +37,9 @@
 #include "ff_gen_drv.h"
 
 #include "sdcard.h"
+//sd_handle_t sd;
 extern sd_handle_t sd;
+
 
 
 /* Private typedef -----------------------------------------------------------*/
@@ -86,13 +88,14 @@ DSTATUS USER_initialize (
 {
   /* USER CODE BEGIN INIT */
 
-    // Stat = STA_NOINIT;
-    // return Stat;
-    // return SD_SPI_Init(pdrv);
+    if(SD_Init(&sd) != 0) {
+        Stat = STA_NOINIT; // Keep it "Not Init" if failed
+        return Stat;
+    }
 
-    return (SD_Init(&sd) == 0) ? 0 : STA_NOINIT;
-    //return (SD_Init(&sd, DEBUG_PORT, DEBUG_PIN) == 0) ? 0 : STA_NOINIT;
-    
+    Stat = 0; // <--- CRITICAL FIX: Mark drive as "Ready"
+    return Stat;
+
   /* USER CODE END INIT */
 }
 
@@ -106,7 +109,7 @@ DSTATUS USER_status (
 )
 {
   /* USER CODE BEGIN STATUS */
-    Stat = STA_NOINIT;
+    // Stat = STA_NOINIT; //original includes
     return Stat;
     //return USER_SPI_status(pdrv); 
   /* USER CODE END STATUS */
@@ -128,15 +131,25 @@ DRESULT USER_read (
 )
 {
   /* USER CODE BEGIN READ */
-    //return RES_OK;
-    
-    for (UINT i = 0; i < count; i++) {
-        if (SD_ReadSector(&sd, sector + i, buff + i * 512) != 0)
-            return RES_ERROR;
+
+    if(SD_ReadBegin(&sd, sector) < 0) {
+        return RES_ERROR;
     }
+
+    while(count > 0) {
+        if(SD_ReadData(&sd, buff) < 0) {
+            return RES_ERROR;
+        }
+        buff += 512;
+        count--;
+    }
+
+    if(SD_ReadEnd(&sd) < 0) {
+        return RES_ERROR;
+    }
+
     return RES_OK;
 
-  // return (SD_ReadSector(&sd, sector, buff) == 0) ? RES_OK : RES_ERROR;
 
   /* USER CODE END READ */
 }
@@ -159,16 +172,27 @@ DRESULT USER_write (
 {
   /* USER CODE BEGIN WRITE */
   /* USER CODE HERE */
-    //return RES_OK;
-    //return (SD_WriteSector(&sd, sector, buff) == 0) ? RES_OK : RES_ERROR;
 
-    for (UINT i = 0; i < count; i++) {
-        if (SD_WriteSector(&sd, sector + i, buff + i * 512) != 0)
-            return RES_ERROR;
+
+    if(SD_WriteBegin(&sd, sector) < 0) {
+        return RES_ERROR;
     }
+
+    while(count > 0) {
+        if(SD_WriteData(&sd, buff) < 0) {
+            return RES_ERROR;
+        }
+
+        buff += 512;
+        count--;
+    }
+
+    if(SD_WriteEnd(&sd) < 0) {
+        return RES_ERROR;
+    }
+
     return RES_OK;
 
-    //return (SD_WriteSector(&sd, buff, sector, count) == 0) ? RES_OK : RES_ERROR;
 
   /* USER CODE END WRITE */
 }
@@ -189,8 +213,28 @@ DRESULT USER_ioctl (
 )
 {
   /* USER CODE BEGIN IOCTL */
-    DRESULT res = RES_ERROR;
-    return res;
+  //og
+    // DRESULT res = RES_ERROR;
+    // return res;
+
+
+  if (pdrv != 0) return RES_PARERR;
+
+    switch (cmd) {
+        case CTRL_SYNC:
+            return RES_OK; // Essential for f_close
+            
+        case GET_SECTOR_COUNT:
+            *(DWORD*)buff = 1024 * 1024 * 2; // Dummy size
+            return RES_OK;
+
+        case GET_BLOCK_SIZE:
+            *(DWORD*)buff = 1;
+            return RES_OK;
+    }
+
+    return RES_PARERR;
+    
   /* USER CODE END IOCTL */
 }
 #endif /* _USE_IOCTL == 1 */
