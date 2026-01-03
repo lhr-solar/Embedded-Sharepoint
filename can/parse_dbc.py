@@ -33,6 +33,12 @@ def generate_header(db, out_path, dbc_name):
         "",
         "#include <stdint.h>",
         "",
+        "#ifndef __weak",
+        "#define __weak __attribute__((weak))",
+        "#endif"
+        "",
+        "",
+        "",
     ]
 
     for msg in db.messages:
@@ -171,9 +177,12 @@ def generate_source(db, out_path, header_name):
             ]
 
             if signed:
-                lines.append(
-                    f"        if (raw & (1 << ({length} - 1))) raw |= ~((1 << {length}) - 1);"
-                )
+                if sig.length == 32:
+                    lines.append(f"        if (raw & (1U << 31)) raw |= ~0U;")
+                else:
+                    lines.append(
+                        f"        if (raw & (1 << ({length} - 1))) raw |= ~((1 << {length}) - 1);"
+                    )
 
             lines += [
                 f"        dst->{sig.name} = (raw * {scale}) + {offset};",
