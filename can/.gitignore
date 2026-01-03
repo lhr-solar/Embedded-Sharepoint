@@ -1,0 +1,8 @@
+
+# Prevents dump c and h files generated during parsing to be pushed
+
+*.c
+*.h
+
+# Output dir used during testing and by github action
+/output_dir
