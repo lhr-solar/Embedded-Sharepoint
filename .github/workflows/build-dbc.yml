@@ -27,4 +27,10 @@ jobs:
           pip install -r requirements.txt
           
       - name: Compile can DBCs
-        run: python can/parse_dbc.py can/output_dir can/dbc/
+        run: |
+          python can/parse_dbc.py can/output_dir can/dbc/ 
+
+          --command bash -c "
+            cd test && make clean && make TEST=uart
+          "
+          ./can/test_dbc_compilation.sh
