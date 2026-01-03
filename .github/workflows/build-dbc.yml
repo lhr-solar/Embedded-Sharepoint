@@ -27,4 +27,4 @@ jobs:
           pip install -r requirements.txt
           
       - name: Compile can DBCs
-        run: python3 ./parse_dbc.py output_dir dbc/controls.dbc
+        run: python can/parse_dbc.py can/output_dir can/dbc/controls.dbc
