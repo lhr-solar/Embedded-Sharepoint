@@ -16,15 +16,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Cache Nix
+        uses: actions/cache@v3
         with:
-          python-version: 3.12
+          path: |
+            /nix/store
+            ~/.cache/nix
+          key: nix-${{ runner.os }}-${{ hashFiles('flake.lock') }}
+          restore-keys: |
+            nix-${{ runner.os }}-
 
-      - name: Install dependencies
+      - name: Install Nix
         run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
+          sudo ./nix_install.sh
           
       - name: Compile can DBCs
         run: |
@@ -36,7 +40,6 @@ jobs:
 
       - name: Build tests
         run: |
-          nix develop
           cd test
           make clean
           make TEST=uart
