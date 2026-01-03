@@ -36,6 +36,7 @@ jobs:
 
       - name: Build tests
         run: |
+          nix develop
           cd test
           make clean
           make TEST=uart
