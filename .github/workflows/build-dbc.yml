@@ -28,9 +28,14 @@ jobs:
           
       - name: Compile can DBCs
         run: |
-          python can/parse_dbc.py can/output_dir can/dbc/ 
+          python can/parse_dbc.py can/output_dir can/dbc/
 
-          --command bash -c "
-            cd test && make clean && make TEST=uart
-          "
+      - name: Move DBCs to driver folder
+        run: |
           ./can/test_dbc_compilation.sh
+
+      - name: Build tests
+        run: |
+          cd test
+          make clean
+          make TEST=uart
