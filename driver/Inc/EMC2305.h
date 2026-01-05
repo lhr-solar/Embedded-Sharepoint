@@ -134,10 +134,6 @@ typedef struct {
     EMC2305_ERG error_window;
 } EMC2305_Fan_Config2;
 
-typedef struct {
-    // TODO(rshah): fill in config values
-} EMC2305_SpinUp_Config;
-
 typedef enum {
     EMC2305_PID_8X = 0b11, // 8x gain
     EMC2305_PID_4X = 0b10, // 4x gain
