@@ -134,6 +134,7 @@ EMC2305_Status EMC2305_Init(EMC2305_HandleTypeDef* chip, I2C_HandleTypeDef* hi2c
     }
     if ((product_id & 0b11) != 0b00) {
         // EMC2305 is id 00
+        // If we ever use other chips in the product line this will change
         return EMC2305_ERR;
     }
 
@@ -156,10 +157,7 @@ EMC2305_Status EMC2305_Init(EMC2305_HandleTypeDef* chip, I2C_HandleTypeDef* hi2c
  * @return  OK if successful, ERR otherwise
  */
 EMC2305_Status EMC2305_EnableSWLock(EMC2305_HandleTypeDef* chip) {
-    if (EMC2305_WriteReg(chip, EMC2305_REG_SW_LOCK, EMC2305_SWL) != EMC2305_OK) {
-        return EMC2305_ERR;
-    }
-    return EMC2305_OK;
+    return EMC2305_WriteReg(chip, EMC2305_REG_SW_LOCK, EMC2305_SWL);
 }
 
 /**
@@ -188,10 +186,7 @@ EMC2305_Status EMC2305_SetGlobalConfig(EMC2305_HandleTypeDef* chip, EMC2305_Glob
     }
 
     // Write configuration
-    if (EMC2305_WriteReg(chip, EMC2305_REG_CONFIGURATION, config_bits) != EMC2305_OK) {
-        return EMC2305_ERR;
-    }
-    return EMC2305_OK;
+    return EMC2305_WriteReg(chip, EMC2305_REG_CONFIGURATION, config_bits);
 }
 
 // Fan Configuration Functions
@@ -256,10 +251,7 @@ EMC2305_Status EMC2305_SetPWMBaseFrequency(EMC2305_HandleTypeDef* chip, EMC2305_
     }
 
     // Write PWM base frequency
-    if (EMC2305_WriteReg(chip, reg, val) != EMC2305_OK) {
-        return EMC2305_ERR;
-    }
-    return EMC2305_OK;
+    return EMC2305_WriteReg(chip, reg, val);
 }
 
 /**
@@ -295,10 +287,7 @@ EMC2305_Status EMC2305_SetFanConfig(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan
     }
 
     // Write config 2
-    if (EMC2305_WriteReg(chip, EMC2305_FAN_REG_ADDR(fan, EMC2305_REG_FAN1_CONFIG2), config2_bits) != EMC2305_OK) {
-        return EMC2305_ERR;
-    }
-    return EMC2305_OK;
+    return EMC2305_WriteReg(chip, EMC2305_FAN_REG_ADDR(fan, EMC2305_REG_FAN1_CONFIG2), config2_bits);
 }
 
 // Fan Control Functions
@@ -324,10 +313,7 @@ EMC2305_Status EMC2305_SetFanPWM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, u
     uint8_t val = (duty_cycle * 255) / 100;
 
     // Write PWM to drive register
-    if (EMC2305_WriteReg(chip, EMC2305_FAN_REG_ADDR(fan, EMC2305_REG_FAN1_SETTING), val) != EMC2305_OK) {
-        return EMC2305_ERR;
-    }
-    return EMC2305_OK;
+    return EMC2305_WriteReg(chip, EMC2305_FAN_REG_ADDR(fan, EMC2305_REG_FAN1_SETTING), val);
 }
 
 /**
@@ -362,10 +348,7 @@ EMC2305_Status EMC2305_SetFanRPM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, u
     if (EMC2305_WriteReg(chip, EMC2305_FAN_REG_ADDR(fan, EMC2305_REG_FAN1_TACH_TARGET_L), low_byte) != EMC2305_OK) {
         return EMC2305_ERR;
     }
-    if (EMC2305_WriteReg(chip, EMC2305_FAN_REG_ADDR(fan, EMC2305_REG_FAN1_TACH_TARGET_H), high_byte) != EMC2305_OK) {
-        return EMC2305_ERR;
-    }
-    return EMC2305_OK;
+    return EMC2305_WriteReg(chip, EMC2305_FAN_REG_ADDR(fan, EMC2305_REG_FAN1_TACH_TARGET_H), high_byte);
 }
 
 // Status & Measurement Functions
