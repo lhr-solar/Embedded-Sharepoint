@@ -258,6 +258,11 @@ typedef struct {
 #define EMC2305_TACH_RPM_CONV               3932160u
 #define EMC2305_TACH_MULT                   2u
 
+// Minimum RPM to set
+#define EMC2305_MIN_RPM                     500
+// Maximum RPM to set
+#define EMC2305_MAX_RPM                     16000
+
 // Device Management Functions
 
 /**

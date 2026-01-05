@@ -329,7 +329,7 @@ EMC2305_Status EMC2305_SetFanRPM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, u
     }
 
     // idiot check
-    if ((rpm_target < 500) || (rpm_target > 16000)) {
+    if ((rpm_target < EMC2305_MIN_RPM) || (rpm_target > EMC2305_MAX_RPM)) {
         return EMC2305_ERR;
     }
 
