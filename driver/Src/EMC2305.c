@@ -200,7 +200,7 @@ EMC2305_Status EMC2305_SetGlobalConfig(EMC2305_HandleTypeDef* chip, EMC2305_Glob
  */
 EMC2305_Status EMC2305_SetPWMBaseFrequency(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, EMC2305_PWM_BaseFreq freq) {
     // Check if the user is stupid (lakshay)
-    if (fan < EMC2305_FAN1 || fan > EMC2305_FAN5) {
+    if (EMC2305_INVALID_FAN(fan)) {
         return EMC2305_ERR;
     }
 
@@ -263,7 +263,7 @@ EMC2305_Status EMC2305_SetPWMBaseFrequency(EMC2305_HandleTypeDef* chip, EMC2305_
  * @return  OK if successful, ERR otherwise
  */
 EMC2305_Status EMC2305_SetFanConfig(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, EMC2305_Fan_Config1* config1, EMC2305_Fan_Config2* config2) {
-    if (fan < EMC2305_FAN1 || fan > EMC2305_FAN5) {
+    if (EMC2305_INVALID_FAN(fan)) {
         return EMC2305_ERR;
     }
 
@@ -300,7 +300,7 @@ EMC2305_Status EMC2305_SetFanConfig(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan
  * @return  OK if successful, ERR otherwise
  */
 EMC2305_Status EMC2305_SetFanPWM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, uint8_t duty_cycle) {
-    if (fan < EMC2305_FAN1 || fan > EMC2305_FAN5) {
+    if (EMC2305_INVALID_FAN(fan)) {
         return EMC2305_ERR;
     }
 
@@ -324,7 +324,7 @@ EMC2305_Status EMC2305_SetFanPWM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, u
  * @return  OK if successful, ERR otherwise
  */
 EMC2305_Status EMC2305_SetFanRPM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, uint16_t rpm_target) {
-    if (fan < EMC2305_FAN1 || fan > EMC2305_FAN5) {
+    if (EMC2305_INVALID_FAN(fan)) {
         return EMC2305_ERR;
     }
 
@@ -360,7 +360,7 @@ EMC2305_Status EMC2305_SetFanRPM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, u
  * @return  Measured fan RPM. UINT16_MAX on error
  */
 uint16_t EMC2305_GetFanRPM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan) {
-    if (fan < EMC2305_FAN1 || fan > EMC2305_FAN5) {
+    if (EMC2305_INVALID_FAN(fan)) {
         return UINT16_MAX;
     }
 
@@ -394,7 +394,7 @@ uint16_t EMC2305_GetFanRPM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan) {
  * @return  Driven fan PWM duty cycle (0-100). UINT8_MAX on error
  */
 uint8_t EMC2305_GetFanPWM(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan) {
-    if (fan < EMC2305_FAN1 || fan > EMC2305_FAN5) {
+    if (EMC2305_INVALID_FAN(fan)) {
         return UINT8_MAX;
     }
 

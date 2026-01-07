@@ -259,6 +259,8 @@ typedef struct {
 // Maximum RPM to set
 #define EMC2305_MAX_RPM                     16000
 
+#define EMC2305_INVALID_FAN(fan_num) (fan < EMC2305_FAN1 || fan > EMC2305_FAN5)
+
 // Device Management Functions
 
 /**

@@ -234,7 +234,7 @@ void mx_led_init(void) {
     };
     HAL_GPIO_Init(GPIOB, &hb_init);
 #endif
-}   
+}
 
 void EMC2305_Task_1(void* argument) {
     // Allow chip to power on
@@ -455,6 +455,7 @@ int main(void) {
     mx_led_init();
 #endif
 
+    HAL_GPIO_TogglePin(STATUS_LED_PORT, STATUS_LED_PIN_1);
     printf("Task 2: EMC2305 Initialized\r\n");
 
     xTaskCreateStatic(EMC2305_Task_1,
