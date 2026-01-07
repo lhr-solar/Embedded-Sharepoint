@@ -253,7 +253,7 @@ void Init_Task(void* argument) {
 
     // Initialize EMC2305
     // Only call from ONE task!
-    if (EMC2305_Init(&chip, &hi2c1, DEFAULT_DEV_ADDR << 1) != EMC2305_OK) {
+    if (EMC2305_Init(&chip, &hi2c1, DEFAULT_DEV_ADDR) != EMC2305_OK) {
         Error_Handler();
     }
 

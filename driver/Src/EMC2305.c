@@ -66,13 +66,13 @@ static void prvReturnSemaphore(uint8_t index) {
  * @brief   Initializes the I2C bus and validates the chip by reading the Product ID and Manufacturer ID
  * @param   chip EMC2305 to initialize
  * @param   hi2c STM32 HAL I2C handle
- * @param   dev_addr Device address (7-bit address << 1)
+ * @param   dev_addr Device address (not shifted - directly from datasheet)
  * @return  OK if successful, ERR otherwise
  */
 EMC2305_Status EMC2305_Init(EMC2305_HandleTypeDef* chip, I2C_HandleTypeDef* hi2c, uint16_t dev_addr) {
     // Set I2C handle and device address in EMC2305 handle
     chip->hi2c = hi2c;
-    chip->dev_addr = dev_addr;
+    chip->dev_addr = dev_addr << 1; // 7-bit i2c address << 1
 
     // Create caller semaphore pool mutex
     caller_semaphore_pool_usage_mutex = xSemaphoreCreateMutexStatic(&caller_semaphore_pool_usage_buffer);
