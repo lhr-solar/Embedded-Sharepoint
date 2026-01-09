@@ -290,6 +290,37 @@ EMC2305_Status EMC2305_SetFanConfig(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan
     return EMC2305_WriteReg(chip, EMC2305_FAN_REG_ADDR(fan, EMC2305_REG_FAN1_CONFIG2), config2_bits);
 }
 
+/**
+ * @brief   Sets the specified fan's PWM driver to open-drain or push-pull
+ * @param   chip EMC2305 to set
+ * @param   fan Fan to set (1-5)
+ * @param   open_drain Set to true for open-drain (only driven low, requires pullup) or false for push-pull (driven high and low, no pullup)
+ * @return  OK if successful, ERR otherwise
+ */
+EMC2305_Status EMC2305_SetPWMOutputMode(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, bool open_drain) {
+    if (EMC2305_INVALID_FAN(fan)) {
+        return EMC2305_ERR;
+    }
+
+    // Read current value of register (friendly)
+    uint8_t val = 0;
+    if (EMC2305_ReadReg(chip, EMC2305_FAN_REG_ADDR(fan, EMC2305_REG_PWM_OUTPUT_CONFIG), &val) != EMC2305_OK) {
+        return EMC2305_ERR;
+    }
+
+    if (open_drain == true) {
+        // Open-drain output mode
+        val &= ~(1 << fan);
+    }
+    else {
+        // Push-pull output mode
+        val |= (1 << fan);
+    }
+
+    // Write back PWM output config
+    return EMC2305_WriteReg(chip, EMC2305_FAN_REG_ADDR(fan, EMC2305_REG_PWM_OUTPUT_CONFIG), val);
+}
+
 // Fan Control Functions
 
 /**

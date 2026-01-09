@@ -308,6 +308,15 @@ EMC2305_Status EMC2305_SetPWMBaseFrequency(EMC2305_HandleTypeDef* chip, EMC2305_
  */
 EMC2305_Status EMC2305_SetFanConfig(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, EMC2305_Fan_Config1* config1, EMC2305_Fan_Config2* config2);
 
+/**
+ * @brief   Sets the specified fan's PWM driver to open-drain or push-pull
+ * @param   chip EMC2305 to set
+ * @param   fan Fan to set (1-5)
+ * @param   open_drain Set to true for open-drain (only driven low, requires pullup) or false for push-pull (driven high and low, no pullup)
+ * @return  OK if successful, ERR otherwise
+ */
+EMC2305_Status EMC2305_SetPWMOutputMode(EMC2305_HandleTypeDef* chip, EMC2305_Fan fan, bool open_drain);
+
 // Fan Control Functions
 
 /**
