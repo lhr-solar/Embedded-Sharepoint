@@ -588,8 +588,8 @@ void EMC2305_I2C_Worker_Task(void* pvParameters) {
     }
 }
 
-// I2C Transmit Interrupt Callback
-void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef* hi2c) {
+// I2C Transmit Interrupt Callback (Internal)
+void EMC2305_I2C_MasterTxCpltCallback(I2C_HandleTypeDef* hi2c) {
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
     // Get the chip using this I2C bus
@@ -616,8 +616,8 @@ void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef* hi2c) {
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
-// I2C Receive Interrupt Callback
-void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef* hi2c) {
+// I2C Receive Interrupt Callback (Internal)
+void EMC2305_I2C_MasterRxCpltCallback(I2C_HandleTypeDef* hi2c) {
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
     // Get the chip using this I2C bus
@@ -642,9 +642,4 @@ void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef* hi2c) {
 
     // Context switch back to higher priority task if woken
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-}
-
-// I2C Error Interrupt Callback
-void HAL_I2C_ErrorCallback(I2C_HandleTypeDef* hi2c) {
-    // TODO: properly recover bus....
 }

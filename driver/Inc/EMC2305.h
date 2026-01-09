@@ -375,3 +375,9 @@ EMC2305_Status EMC2305_WriteReg(EMC2305_HandleTypeDef* chip, uint8_t reg, uint8_
 
 // Worker task to consume messages from the queue and send on I2C bus
 void EMC2305_I2C_Worker_Task(void* pvParameters);
+
+// I2C Transmit Interrupt Callback (Internal)
+void EMC2305_I2C_MasterTxCpltCallback(I2C_HandleTypeDef* hi2c);
+
+// I2C Receive Interrupt Callback (Internal)
+void EMC2305_I2C_MasterRxCpltCallback(I2C_HandleTypeDef* hi2c);
