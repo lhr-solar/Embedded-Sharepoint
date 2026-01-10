@@ -304,7 +304,7 @@ EMC2305_Status EMC2305_SetPWMOutputMode(EMC2305_HandleTypeDef* chip, EMC2305_Fan
 
     // Read current value of register (friendly)
     uint8_t val = 0;
-    if (EMC2305_ReadReg(chip, EMC2305_FAN_REG_ADDR(fan, EMC2305_REG_PWM_OUTPUT_CONFIG), &val) != EMC2305_OK) {
+    if (EMC2305_ReadReg(chip, EMC2305_REG_PWM_OUTPUT_CONFIG, &val) != EMC2305_OK) {
         return EMC2305_ERR;
     }
 
@@ -318,7 +318,7 @@ EMC2305_Status EMC2305_SetPWMOutputMode(EMC2305_HandleTypeDef* chip, EMC2305_Fan
     }
 
     // Write back PWM output config
-    return EMC2305_WriteReg(chip, EMC2305_FAN_REG_ADDR(fan, EMC2305_REG_PWM_OUTPUT_CONFIG), val);
+    return EMC2305_WriteReg(chip, EMC2305_REG_PWM_OUTPUT_CONFIG, val);
 }
 
 // Fan Control Functions
