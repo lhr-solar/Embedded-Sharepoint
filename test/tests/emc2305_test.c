@@ -318,7 +318,7 @@ void EMC2305_Task_1(void* argument) {
     printf("Task 1: PID Gain set to 1x\r\n");
 
     // Set PWM output mode to open-drain
-    if (EMC2305_SetPWMOutputMode(&chip, EMC2305_FAN2, false) != EMC2305_OK) {
+    if (EMC2305_SetPWMOutputMode(&chip, EMC2305_FAN2, true) != EMC2305_OK) {
         Error_Handler();
     };
 
@@ -409,7 +409,7 @@ void EMC2305_Task_2(void* argument) {
     printf("Task 2: PID Gain set to 1x\r\n");
 
     // Set PWM output mode to open-drain
-    if (EMC2305_SetPWMOutputMode(&chip, EMC2305_FAN2, false) != EMC2305_OK) {
+    if (EMC2305_SetPWMOutputMode(&chip, EMC2305_FAN2, true) != EMC2305_OK) {
         Error_Handler();
     };
 
@@ -417,7 +417,7 @@ void EMC2305_Task_2(void* argument) {
 
     while (1) {
         // Testing Direct PWM Drive Mode
-        // Set PWM2 duty cycle to 25%
+        // Set PWM2 duty cycle to 100%
         if (EMC2305_SetFanPWM(&chip, EMC2305_FAN2, 100) != EMC2305_OK) {
             Error_Handler();
         };
