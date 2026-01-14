@@ -24,10 +24,12 @@ There is a minimal template Makefile in the template/ folder in Embedded-Sharepo
 * `BEAR_ENABLE` to make VSCode not mad at you (the red error squiggles)
 
 
-### Creating a test directive
+### Creating a test folder
 It's good to be able to test independent portions of your code instead of your whole code base at once. For example, if I have a driver just for controlling lights I should have a test file that just runs some code for my lights driver instead of the whole codebase.
 
-C expects a `main()` function as the starting point of your code, so the way we generally implement this is filtering out the main.c file where the `main()` function is implemented, and compiling your test file instead with it's own `main()` function.
+C expects a `main()` function as the starting point of your code, so the way we generally implement this is filtering out the main.c file where the `main()` function is implemented, and compiling your test file instead with it's own `main()` function.  
+
+Create a `tests/` folder to store your tests, then via your Makefile you can compile those tests into your project, by default they will not be compiled.
 
 
 ### Define SystemClock_Config
@@ -40,3 +42,4 @@ Generate a new SystemClock_Config in STM32CubeMX and add it to one of your files
 ## Examples of projects that use Embedded Sharepoint
 * [BPS-Leader](https://github.com/lhr-solar/BPS-Leader)
 * [Active-Precharge Board](https://github.com/lhr-solar/Active-Precharge-Board#)
+* [VCU](https://github.com/lhr-solar/PS-VehicleControlUnit/blob/main/Firmware/Makefile)
