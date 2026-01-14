@@ -1,10 +1,11 @@
 #!/bin/bash
+set -euo pipefail
 
 # Run Python script to generate .c and .h files
-python ./parse_dbc.py ./dbc dbc/   # make sure output dir is writable
+python ./parse_dbc.py ./output_dir dbc/daybreak   # make sure output dir is writable
 
 # Source directory (where Python script put the files)
-SRC_DIR="dbc"
+SRC_DIR="output_dir"
 
 # Destination directory (relative to current working directory)
 DEST_DIR="../driver"

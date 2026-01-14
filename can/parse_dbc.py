@@ -78,7 +78,6 @@ def generate_header(db, out_path, dbc_name):
 # ---------------------------------------------------------------------------
 # SOURCE GENERATION
 # ---------------------------------------------------------------------------
-
 def generate_source(db, out_path, header_name):
     lines = []
 
@@ -106,32 +105,47 @@ def generate_source(db, out_path, header_name):
             scale = sig.scale
             offset = sig.offset
             signed = sig.is_signed
-            endian = sig.byte_order  # 'little_endian' or 'big_endian'
+            endian = sig.byte_order
 
             raw_type = "int32_t" if signed else "uint32_t"
 
             lines += [
                 f"    /* {sig.name} */",
-                "    {",
-                f"        {raw_type} raw = ({raw_type})((src->{sig.name} - {offset}) / {scale});",
+                f"    {raw_type} raw_{sig.name} = ({raw_type})((src->{sig.name} - {offset}) / {scale});",
             ]
 
+            # ---------------- Little-endian (Intel) ----------------
             if endian == "little_endian":
                 lines += [
-                    f"        for (uint32_t i = 0; i < {length}; i++) {{",
-                    f"            uint32_t bit = {start} + i;",
-                ]
-            else:
-                lines += [
-                    f"        for (uint32_t i = 0; i < {length}; i++) {{",
-                    f"            uint32_t bit = {start} - i;",
+                    f"    for (uint32_t i = 0; i < {length}; i += 8) {{",
+                    f"        uint32_t bits_to_write = ({length} - i) > 8 ? 8 : ({length} - i);",
+                    f"        uint32_t byte_index = ({start} + i) / 8;",
+                    f"        uint32_t bit_index  = ({start} + i) % 8;",
+                    f"        dst[byte_index] |= ((raw_{sig.name} >> i) & ((1U << bits_to_write)-1)) << bit_index;",
+                    f"        // handle crossing byte boundary",
+                    f"        if (bit_index + bits_to_write > 8) {{",
+                    f"            dst[byte_index+1] |= ((raw_{sig.name} >> i) >> (8 - bit_index)) & ((1U << (bit_index + bits_to_write - 8))-1);",
+                    f"        }}",
+                    f"    }}",
                 ]
 
-            lines += [
-                "            dst[bit / 8] |= ((raw >> i) & 0x1) << (bit % 8);",
-                "        }",
-                "    }",
-            ]
+            # ---------------- Big-endian (Motorola) ----------------
+            else:
+                lines += [
+                    f"    // Big-endian (Motorola) packing",
+                    f"    uint32_t bit_pos = {start};",
+                    f"    for (uint32_t i = 0; i < {length}; i++) {{",
+                    f"        uint32_t byte_index = bit_pos / 8;",
+                    f"        uint32_t bit_index  = 7 - (bit_pos % 8);",
+                    f"        dst[byte_index] |= ((raw_{sig.name} >> i) & 0x1) << bit_index;",
+                    f"        // move to next bit according to Motorola format",
+                    f"        if (bit_index == 0) {{",
+                    f"            bit_pos += 15;  // move to MSB of next byte",
+                    f"        }} else {{",
+                    f"            bit_pos--;",
+                    f"        }}",
+                    f"    }}",
+                ]
 
         lines += [
             "}",
@@ -145,48 +159,56 @@ def generate_source(db, out_path, header_name):
         ]
 
         for sig in msg.signals:
-            start = sig.start
             length = sig.length
             scale = sig.scale
             offset = sig.offset
             signed = sig.is_signed
             endian = sig.byte_order
-
             raw_type = "int32_t" if signed else "uint32_t"
 
             lines += [
                 f"    /* {sig.name} */",
-                "    {",
-                f"        {raw_type} raw = 0;",
+                f"    {raw_type} raw_{sig.name} = 0;",
             ]
 
+            # ---------------- Little-endian (Intel) ----------------
             if endian == "little_endian":
                 lines += [
-                    f"        for (uint32_t i = 0; i < {length}; i++) {{",
-                    f"            uint32_t bit = {start} + i;",
+                    f"    for (uint32_t i = 0; i < {length}; i += 8) {{",
+                    f"        uint32_t bits_to_read = ({length} - i) > 8 ? 8 : ({length} - i);",
+                    f"        uint32_t byte_index = ({start} + i) / 8;",
+                    f"        uint32_t bit_index  = ({start} + i) % 8;",
+                    f"        raw_{sig.name} |= ((src[byte_index] >> bit_index) & ((1U << bits_to_read)-1)) << i;",
+                    f"        if (bit_index + bits_to_read > 8) {{",
+                    f"            raw_{sig.name} |= ((src[byte_index+1] & ((1U << (bit_index + bits_to_read - 8))-1)) << (8 - bit_index)) << i;",
+                    f"        }}",
+                    f"    }}",
                 ]
+
+            # ---------------- Big-endian (Motorola) ----------------
             else:
                 lines += [
-                    f"        for (uint32_t i = 0; i < {length}; i++) {{",
-                    f"            uint32_t bit = {start} - i;",
+                    f"    uint32_t bit_pos = {start};",
+                    f"    for (uint32_t i = 0; i < {length}; i++) {{",
+                    f"        uint32_t byte_index = bit_pos / 8;",
+                    f"        uint32_t bit_index  = 7 - (bit_pos % 8);",
+                    f"        raw_{sig.name} |= ((src[byte_index] >> bit_index) & 0x1) << i;",
+                    f"        if (bit_index == 0) {{",
+                    f"            bit_pos += 15;",
+                    f"        }} else {{",
+                    f"            bit_pos--;",
+                    f"        }}",
+                    f"    }}",
                 ]
 
-            lines += [
-                "            raw |= ((src[bit / 8] >> (bit % 8)) & 0x1) << i;",
-                "        }",
-            ]
-
+            # ---------------- Sign extension ----------------
             if signed:
-                if sig.length == 32:
-                    lines.append(f"        if (raw & (1U << 31)) raw |= ~0U;")
-                else:
-                    lines.append(
-                        f"        if (raw & (1 << ({length} - 1))) raw |= ~((1 << {length}) - 1);"
-                    )
+                lines.append(
+                    f"    if (raw_{sig.name} & (1U << ({length} - 1))) raw_{sig.name} |= ~((1U << {length}) - 1);"
+                )
 
             lines += [
-                f"        dst->{sig.name} = (raw * {scale}) + {offset};",
-                "    }",
+                f"    dst->{sig.name} = raw_{sig.name} * {scale} + {offset};",
             ]
 
         lines += [
