@@ -13,7 +13,7 @@ git submodule update --init --recursive
 
 ## 2. Writting a makefile for your project
 A **Makefile** is a file used to outline how you want your code to compile. There is a [Makefile](https://github.com/lhr-solar/Embedded-Sharepoint/blob/main/Makefile) that compiles all needed files for the STM32 (our microcontroller) in the top level of the Embedded Sharepoint. You need to write a Makefile to compile your project files and call the Embedded-Sharepoint Makefile.   
-A good example of this a Makefile you'd make is the sharepoint's test [Makefile](https://github.com/lhr-solar/Embedded-Sharepoint/blob/main/test/Makefile).  
+There is a minimal template Makefile in the template/ folder in Embedded-Sharepoint. Lines with `# CHANGES THIS` define where you should make changes to your Makefile.
 
 
 ### Set Project Variables

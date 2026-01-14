@@ -38,7 +38,7 @@ PROJECT_C_SOURCES = $(wildcard */Src/*.c)
 ####
 
 # build directories
-PROJECT_BUILD_DIR = Build
+PROJECT_BUILD_DIR = build
 
 # CHANGE THIS
 # Define where Embedded-Sharepoint is relative to this makefile
