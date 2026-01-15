@@ -13,7 +13,7 @@ git submodule update --init --recursive
 
 ## 2. Writting a makefile for your project
 A **Makefile** is a file used to outline how you want your code to compile. There is a [Makefile](https://github.com/lhr-solar/Embedded-Sharepoint/blob/main/Makefile) that compiles all needed files for the STM32 (our microcontroller) in the top level of the Embedded Sharepoint. You need to write a Makefile to compile your project files and call the Embedded-Sharepoint Makefile.   
-There is a minimal template Makefile in the template/ folder in Embedded-Sharepoint. Lines with `# CHANGES THIS` define where you should make changes to your Makefile.
+There is a minimal template Makefile in the template/ folder in Embedded-Sharepoint. Lines with `# CHANGES THIS` define where you should make changes to your Makefile. Feel free to make additional rules and changes to the Makefile.
 
 
 ### Set Project Variables
@@ -39,7 +39,10 @@ We define the SystemClock_Config function as "weak", which means that the functi
 
 Generate a new SystemClock_Config in STM32CubeMX and add it to one of your files in your repository. This should serve as a redefinition of the function and will override the default behavior. Make sure you are generating the code with the correct microcontroller part number in the software, and you are using an external oscillator (if generating code for one of our SOM PCBs). Instructions on how to use CubeMX can be found [here](./CubeMX.md).
 
+### Create a README
+A README.md file is very important for onboarding instructions, and to outline workflows. A README should explain how to go from cloning a repository to how to contribute code. The more descriptive the better!
+
+
 ## Examples of projects that use Embedded Sharepoint
 * [BPS-Leader](https://github.com/lhr-solar/BPS-Leader)
-* [Active-Precharge Board](https://github.com/lhr-solar/Active-Precharge-Board#)
 * [VCU](https://github.com/lhr-solar/PS-VehicleControlUnit/blob/main/Firmware/Makefile)
