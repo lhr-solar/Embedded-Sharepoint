@@ -51,7 +51,7 @@ The suggested (minimal) structure is as follows:
 
 * core (stores tasks and main)
 * drivers (stores drivers that interact with HAL, should be thread safe)
-* middleware (exteneral libraries that you're storing in your repository)
+* middleware (external libraries that you're storing in your repository)
 * tests (test files)
 * Makefile
 
