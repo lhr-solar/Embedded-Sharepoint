@@ -52,6 +52,7 @@ The suggested structure is as follows:
 * drivers (stores drivers that interact with HAL, should be thread safe)
 * middleware (exteneral libraries that you're storing in your repository)
 * tests (test files)
+These directories should all have Src/ and Inc/ folders to seperate the c header and source files.
 
 ## 4. Compiling your repository
 Code compilation must be done in a nix shell, in Embedded-Sharepoint you can normally just run
