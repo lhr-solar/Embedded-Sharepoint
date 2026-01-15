@@ -55,7 +55,7 @@ The suggested (minimal) structure is as follows:
 * tests (test files)
 * Makefile
 
-These directories should all have Src/ and Inc/ folders to seperate the c header and source files.
+These directories should all have Src/ and Inc/ folders to separate the c header and source files.
 
 ## 4. Compiling your repository
 Code compilation must be done in a nix shell, in Embedded-Sharepoint you can normally just run
