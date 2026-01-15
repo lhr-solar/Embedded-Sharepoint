@@ -71,6 +71,8 @@ else
 PROJECT_C_SOURCES := $(addprefix $(MAKEFILE_DIR)/, $(PROJECT_C_SOURCES))
 endif
 
+PRINT_DEBUG ?= false
+
 # debug
 ifeq ($(PRINT_DEBUG), true)
 $(info SOURCES: $(PROJECT_C_SOURCES))

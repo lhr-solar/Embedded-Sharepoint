@@ -3,9 +3,9 @@
 ## 1. Add Embedded-Sharepoint as a Submodule
 A **Git submodule** is a way to include one Git repository inside another. 
 Embedded-Sharepoint contains common files so it should be stored as a submodule inside your repository.
-For more information about submodules: [git submodules documentaiton](https://github.blog/open-source/git/working-with-submodules/)
+For more information about submodules: [git submodules documentaiton](https://github.blog/open-source/git/working-with-submodules/). If your repository contains more than just firmware, it's recommended to create a `firmware/` directory and place all your code and Embedded-Sharepoint in there.
 
-Whever you want to add the Embedded-Sharepoint, run: 
+Whever you want to add Embedded-Sharepoint, run: 
 ```sh
 git submodule add https://github.com/lhr-solar/Embedded-Sharepoint.git
 git submodule update --init --recursive
