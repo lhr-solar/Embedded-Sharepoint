@@ -64,7 +64,7 @@ nix develop
 ```
 since the `flake.nix` file is stored in that directory, but in your repository the flake.nix file is stored in a different directory. To enter the Nix shell when the `flake.nix` file is stored somewhere else, simply run:
 ``` sh
-nix develop [director to where flake.nix is]
+nix develop [directory to where flake.nix is]
 ```
 For example:
 ```sh
