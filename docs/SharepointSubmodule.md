@@ -47,11 +47,14 @@ A README.md file is very important for onboarding instructions, and to outline w
 ## 3. Suggested directories
 It is good practice to organize files into different folders based on how abstracted they are from the STM32's hardware. In Embedded-Sharepoint there's a folder that stores the STM32 HAL (Hardware Abstraction Library), that folder stores the low level calls to the STM32. One level above that we have drivers, which interact with the STM32 HAL, and one layer above that we have applications that interact with the driver layer and usually is where your RTOS tasks run. Also, you should have a tests/ directory to store your test files.
 
-The suggested structure is as follows:
+The suggested (minimal) structure is as follows:
+
 * core (stores tasks and main)
 * drivers (stores drivers that interact with HAL, should be thread safe)
 * middleware (exteneral libraries that you're storing in your repository)
 * tests (test files)
+* Makefile
+
 These directories should all have Src/ and Inc/ folders to seperate the c header and source files.
 
 ## 4. Compiling your repository
