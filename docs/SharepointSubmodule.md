@@ -29,7 +29,7 @@ It's good to be able to test independent portions of your code instead of your w
 
 C expects a `main()` function as the starting point of your code, so the way we generally implement this is filtering out the main.c file where the `main()` function is implemented, and compiling your test file instead with it's own `main()` function.  
 
-Create a `tests/` folder to store your tests, then via your Makefile you can compile those tests into your project, by default they will not be compiled.
+Create a `tests/` folder to store your tests, then via your Makefile you can compile those tests into your project, by default they will not be compiled. It's also good practice to add a test prefix or suffix to the name of the test file, i.e `test_can.c` to show that it's a test file, and because MacOS is case insensitive when compiling c files.
 
 
 ### Define SystemClock_Config

@@ -62,7 +62,7 @@ PROJECT_C_SOURCES := $(filter-out $(PROJECT_MAIN_DIR).c, $(PROJECT_C_SOURCES))
 # CHANGE THIS
 # This is where you store your test files. By default it's in the tests directory
 # Would recommend following this directory strcture, so you don't need to change
-# Else update this portion: " tests/$(TEST)_test.c"
+# Else update this portion: " tests/$(TEST).c"
 ####
 PROJECT_C_SOURCES := $(addprefix $(MAKEFILE_DIR)/, $(PROJECT_C_SOURCES) tests/$(TEST).c)
 ####
