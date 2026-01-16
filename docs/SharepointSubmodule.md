@@ -59,7 +59,7 @@ The `SystemClock_Config` function configures the clock that your STM32 runs on (
 
 We define the SystemClock_Config function as "weak", which means that the function can be overriden by a different implementaiton of the function. We have a default implementaiton in the stm32xx_hal_init.c file, which by default initializes the internal oscillator of some specific Nucleo's clock, but since we operate with a variety of Nucleos and processors you should redefine the function for your specific usecase.
 
-Generate a new SystemClock_Config in STM32CubeMX and add it to one of your files in your repository. This should serve as a redefinition of the function and will override the default behavior. Make sure you are generating the code with the correct microcontroller part number in the software, and you are using an external oscillator (if generating code for one of our SOM PCBs). Instructions on how to use CubeMX can be found [here](./CubeMX.md).
+Generate a new SystemClock_Config in STM32CubeMX and add it to one of your files in your repository. This should serve as a redefinition of the function and will override the default behavior. Make sure you are generating the code with the correct microcontroller part number in the software, and you are using an external oscillator (if generating code for one of our SOM PCBs). Instructions on how to use CubeMX and generate a SystemClock_Config can be found [here](./CubeMX.md).
 
 ### Create a README
 A README.md file is very important for onboarding instructions, and to outline workflows. A README should explain how to go from cloning a repository to how to contribute code. The more descriptive the better!
