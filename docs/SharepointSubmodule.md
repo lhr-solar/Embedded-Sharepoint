@@ -21,7 +21,7 @@ These directories should all have Src/ and Inc/ folders to separate the c header
 ## 2. Add Embedded-Sharepoint as a Submodule
 A **Git submodule** is a way to include one Git repository inside another. 
 Embedded-Sharepoint contains common files so it should be stored as a submodule inside your repository.
-For more information about submodules: [git submodules documentaiton](https://github.blog/open-source/git/working-with-submodules/).
+For more information about submodules: [git submodules documentation](https://github.blog/open-source/git/working-with-submodules/).
 
 wherever you want to add Embedded-Sharepoint, run: 
 ```sh
