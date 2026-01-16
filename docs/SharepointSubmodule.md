@@ -23,7 +23,7 @@ A **Git submodule** is a way to include one Git repository inside another.
 Embedded-Sharepoint contains common files so it should be stored as a submodule inside your repository.
 For more information about submodules: [git submodules documentation](https://github.blog/open-source/git/working-with-submodules/).
 
-wherever you want to add Embedded-Sharepoint, run: 
+Wherever you want to add Embedded-Sharepoint, run: 
 ```sh
 git submodule add https://github.com/lhr-solar/Embedded-Sharepoint.git
 git submodule update --init --recursive
