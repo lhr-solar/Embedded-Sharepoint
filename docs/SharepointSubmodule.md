@@ -1,7 +1,7 @@
 # Adding Sharepoint To Your Project
 
 ## 1. Suggested directories
-It is good practice to organize files into different folders based on how abstracted they are from the STM32's hardware. In Embedded-Sharepoint there's a folder that stores the STM32 HAL (Hardware Abstraction Library), that folder stores the low level calls to the STM32. One level above that we have drivers, which interact with the STM32 HAL, and one layer above that we have applications that interact with the driver layer and usually is where your RTOS tasks run. Also, you should have a tests/ directory to store your test files. If your repository contains more than just firmware, it's recommended to create a `firmware/` directory and place all your code and Embedded-Sharepoint in there.
+It is good practice to organize files into folders based on their abstraction from the STM32 hardware. Embedded-Sharepoint contains a folder for the STM32 HAL (Hardware Abstraction Library), which holds low-level calls to the STM32. Above this are drivers that interact with the HAL, and then applications that use the drivers. This application layer is where your RTOS tasks typically run. You should also have a `tests/` directory. If your repository contains more than just firmware, it's recommended to create a `firmware/` directory for all your code, including Embedded-Sharepoint.
 
 The suggested (minimal) structure is as follows:
 
