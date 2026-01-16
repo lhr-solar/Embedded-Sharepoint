@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../LHRs.ico">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.618322db.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -397,10 +397,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#creating-a-test-directive" class="md-nav__link">
+  <a href="#create-a-mainc" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Creating a test directive
+        Create a main.c
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creating-a-test-folder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creating a test folder
       
     </span>
   </a>
@@ -418,8 +429,41 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#create-a-readme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create a README
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-suggested-directories" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Suggested directories
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-compiling-your-repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Compiling your repository
+      
+    </span>
+  </a>
   
 </li>
       
@@ -639,10 +683,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#creating-a-test-directive" class="md-nav__link">
+  <a href="#create-a-mainc" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Creating a test directive
+        Create a main.c
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creating-a-test-folder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creating a test folder
       
     </span>
   </a>
@@ -660,8 +715,41 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#create-a-readme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create a README
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-suggested-directories" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Suggested directories
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-compiling-your-repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Compiling your repository
+      
+    </span>
+  </a>
   
 </li>
       
@@ -697,14 +785,14 @@
 <h2 id="1-add-embedded-sharepoint-as-a-submodule">1. Add Embedded-Sharepoint as a Submodule</h2>
 <p>A <strong>Git submodule</strong> is a way to include one Git repository inside another. 
 Embedded-Sharepoint contains common files so it should be stored as a submodule inside your repository.
-For more information about submodules: <a href="https://github.blog/open-source/git/working-with-submodules/">git submodules documentaiton</a></p>
-<p>Whever you want to add the Embedded-Sharepoint, run: </p>
+For more information about submodules: <a href="https://github.blog/open-source/git/working-with-submodules/">git submodules documentaiton</a>. If your repository contains more than just firmware, it's recommended to create a <code>firmware/</code> directory and place all your code and Embedded-Sharepoint in there.</p>
+<p>Whever you want to add Embedded-Sharepoint, run: </p>
 <pre><code class="language-sh">git submodule add https://github.com/lhr-solar/Embedded-Sharepoint.git
 git submodule update --init --recursive
 </code></pre>
 <h2 id="2-writting-a-makefile-for-your-project">2. Writting a makefile for your project</h2>
 <p>A <strong>Makefile</strong> is a file used to outline how you want your code to compile. There is a <a href="https://github.com/lhr-solar/Embedded-Sharepoint/blob/main/Makefile">Makefile</a> that compiles all needed files for the STM32 (our microcontroller) in the top level of the Embedded Sharepoint. You need to write a Makefile to compile your project files and call the Embedded-Sharepoint Makefile. <br />
-A good example of this a Makefile you'd make is the sharepoint's test <a href="https://github.com/lhr-solar/Embedded-Sharepoint/blob/main/test/Makefile">Makefile</a>.  </p>
+There is a minimal template Makefile in the template/ folder in Embedded-Sharepoint. Lines with <code># CHANGE THIS</code> define where you should make changes to your Makefile. Move the template Makefile to the same directory as your firmware, and rename it to just be called <code>Makefile</code></p>
 <h3 id="set-project-variables">Set Project Variables</h3>
 <ul>
 <li><code>PROJECT_TARGET</code>: The STM32 part number (e.g., <code>stm32f446ret</code>)</li>
@@ -713,17 +801,47 @@ A good example of this a Makefile you'd make is the sharepoint's test <a href="h
 <li><code>PROJECT_BUILD_DIR</code>: Where to place build outputs</li>
 <li><code>BEAR_ENABLE</code> to make VSCode not mad at you (the red error squiggles)</li>
 </ul>
-<h3 id="creating-a-test-directive">Creating a test directive</h3>
+<h3 id="create-a-mainc">Create a main.c</h3>
+<p>Your code begins from the <code>main()</code> function, and if there is no <code>main()</code> function defined the code will not compile. The <code>main()</code> function does not necessarily have to be located in a file named <code>main.c</code> but it is good practice. If you want to use any stm32 related header files, please include the <code>stm32xx_hal.h</code> header file.</p>
+<h3 id="creating-a-test-folder">Creating a test folder</h3>
 <p>It's good to be able to test independent portions of your code instead of your whole code base at once. For example, if I have a driver just for controlling lights I should have a test file that just runs some code for my lights driver instead of the whole codebase.</p>
-<p>C expects a <code>main()</code> function as the starting point of your code, so the way we generally implement this is filtering out the main.c file where the <code>main()</code> function is implemented, and compiling your test file instead with it's own <code>main()</code> function.</p>
+<p>C expects a <code>main()</code> function as the starting point of your code, so the way we generally implement this is filtering out the main.c file where the <code>main()</code> function is implemented, and compiling your test file instead with it's own <code>main()</code> function.  </p>
+<p>Create a <code>tests/</code> folder to store your tests, then via your Makefile you can compile those tests into your project, by default they will not be compiled. It's also good practice to add a test prefix or suffix to the name of the test file, e.g. <code>test_can.c</code> to show that it's a test file, and to avoid issues on case-insensitive filesystems like on macOS.</p>
 <h3 id="define-systemclock_config">Define SystemClock_Config</h3>
 <p>The <code>SystemClock_Config</code> function configures the clock that your STM32 runs on (things like clock frequency, clock source, etc). If the clock is not setup properly then you risk unexepected behavior since a lot of low level embedded code runs using the system clock. We normally run the system clock at <strong>80mhz</strong>.</p>
 <p>We define the SystemClock_Config function as "weak", which means that the function can be overriden by a different implementaiton of the function. We have a default implementaiton in the stm32xx_hal_init.c file, which by default initializes the internal oscillator of some specific Nucleo's clock, but since we operate with a variety of Nucleos and processors you should redefine the function for your specific usecase.</p>
 <p>Generate a new SystemClock_Config in STM32CubeMX and add it to one of your files in your repository. This should serve as a redefinition of the function and will override the default behavior. Make sure you are generating the code with the correct microcontroller part number in the software, and you are using an external oscillator (if generating code for one of our SOM PCBs). Instructions on how to use CubeMX can be found <a href="../CubeMX/">here</a>.</p>
+<h3 id="create-a-readme">Create a README</h3>
+<p>A README.md file is very important for onboarding instructions, and to outline workflows. A README should explain how to go from cloning a repository to how to contribute code. The more descriptive the better!</p>
+<h2 id="3-suggested-directories">3. Suggested directories</h2>
+<p>It is good practice to organize files into different folders based on how abstracted they are from the STM32's hardware. In Embedded-Sharepoint there's a folder that stores the STM32 HAL (Hardware Abstraction Library), that folder stores the low level calls to the STM32. One level above that we have drivers, which interact with the STM32 HAL, and one layer above that we have applications that interact with the driver layer and usually is where your RTOS tasks run. Also, you should have a tests/ directory to store your test files.</p>
+<p>The suggested (minimal) structure is as follows:</p>
+<ul>
+<li>core (stores tasks and main)</li>
+<li>drivers (stores drivers that interact with HAL, should be thread safe)</li>
+<li>middleware (external libraries that you're storing in your repository)</li>
+<li>tests (test files)</li>
+<li>Makefile</li>
+</ul>
+<p>These directories should all have Src/ and Inc/ folders to separate the c header and source files.</p>
+<h2 id="4-compiling-your-repository">4. Compiling your repository</h2>
+<p>Code compilation must be done in a nix shell, in Embedded-Sharepoint you can normally just run</p>
+<pre><code class="language-sh">nix develop
+</code></pre>
+<p>since the <code>flake.nix</code> file is stored in that directory, but in your repository the flake.nix file is stored in a different directory. To enter the Nix shell when the <code>flake.nix</code> file is stored somewhere else, simply run:</p>
+<pre><code class="language-sh">nix develop [directory to where flake.nix is]
+</code></pre>
+<p>For example:</p>
+<pre><code class="language-sh">nix develop ./Embedded-Sharepoint
+</code></pre>
+<p>Once you're in the nix shell, run </p>
+<pre><code class="language-sh">make
+</code></pre>
+<p>in the same directory as your new Makefile.</p>
 <h2 id="examples-of-projects-that-use-embedded-sharepoint">Examples of projects that use Embedded Sharepoint</h2>
 <ul>
 <li><a href="https://github.com/lhr-solar/BPS-Leader">BPS-Leader</a></li>
-<li><a href="https://github.com/lhr-solar/Active-Precharge-Board#">Active-Precharge Board</a></li>
+<li><a href="https://github.com/lhr-solar/PS-VehicleControlUnit/blob/main/Firmware/Makefile">VCU</a></li>
 </ul>
 
 
@@ -774,10 +892,10 @@ A good example of this a Makefile you'd make is the sharepoint's test <a href="h
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
