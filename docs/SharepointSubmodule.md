@@ -1,22 +1,42 @@
 # Adding Sharepoint To Your Project
 
-## 1. Add Embedded-Sharepoint as a Submodule
+## 1. Suggested directories
+It is good practice to organize files into different folders based on how abstracted they are from the STM32's hardware. In Embedded-Sharepoint there's a folder that stores the STM32 HAL (Hardware Abstraction Library), that folder stores the low level calls to the STM32. One level above that we have drivers, which interact with the STM32 HAL, and one layer above that we have applications that interact with the driver layer and usually is where your RTOS tasks run. Also, you should have a tests/ directory to store your test files. If your repository contains more than just firmware, it's recommended to create a `firmware/` directory and place all your code and Embedded-Sharepoint in there.
+
+The suggested (minimal) structure is as follows:
+
+
+```text
+.
+├── Embedded-Sharepoint/  #  Don't create this folder manually, it'll be created in the next step
+├── Makefile              # The makefile that you write
+├── core/                 # Stores tasks and main application logic
+├── drivers/              # Drivers
+├── middleware/           # External libraries stored in the repository
+└── tests/                # Unit and integration tests
+```
+
+These directories should all have Src/ and Inc/ folders to separate the c header and source files.
+
+## 2. Add Embedded-Sharepoint as a Submodule
 A **Git submodule** is a way to include one Git repository inside another. 
 Embedded-Sharepoint contains common files so it should be stored as a submodule inside your repository.
-For more information about submodules: [git submodules documentaiton](https://github.blog/open-source/git/working-with-submodules/). If your repository contains more than just firmware, it's recommended to create a `firmware/` directory and place all your code and Embedded-Sharepoint in there.
+For more information about submodules: [git submodules documentaiton](https://github.blog/open-source/git/working-with-submodules/).
 
-Whever you want to add Embedded-Sharepoint, run: 
+wherever you want to add Embedded-Sharepoint, run: 
 ```sh
 git submodule add https://github.com/lhr-solar/Embedded-Sharepoint.git
 git submodule update --init --recursive
 ```
 
-## 2. Writting a makefile for your project
-A **Makefile** is a file used to outline how you want your code to compile. There is a [Makefile](https://github.com/lhr-solar/Embedded-Sharepoint/blob/main/Makefile) that compiles all needed files for the STM32 (our microcontroller) in the top level of the Embedded Sharepoint. You need to write a Makefile to compile your project files and call the Embedded-Sharepoint Makefile.   
-There is a minimal template Makefile in the template/ folder in Embedded-Sharepoint. Lines with `# CHANGE THIS` define where you should make changes to your Makefile. Move the template Makefile to the same directory as your firmware, and rename it to just be called `Makefile`
+## 3. Writting a makefile for your project
+A **Makefile** is a file used to outline how you want your code to compile. There is a [Makefile](https://github.com/lhr-solar/Embedded-Sharepoint/blob/main/Makefile) that compiles all needed files for the STM32 (our microcontroller) in the top level of the Embedded Sharepoint. You need to write another Makefile to compile your project files and call the Embedded-Sharepoint Makefile.   
+There is a minimal template Makefile in the template/ folder in Embedded-Sharepoint. Lines with `#❗ CHANGE THIS ❗` define where you should make changes to your Makefile. Move the template Makefile to the same directory as your firmware, and rename it to just be called `Makefile`
 
 
 ### Set Project Variables
+Below are sevearl variables that the Embedded-Sharepoint Makefile uses to compile your code, these variables are used in the template Makefile, and you can update them.
+
 * `PROJECT_TARGET`: The STM32 part number (e.g., `stm32f446ret`)
 * `PROJECT_C_SOURCES`: List of your C source files
 * `PROJECT_C_INCLUDES`: List of your include directories
@@ -28,7 +48,7 @@ Your code begins from the `main()` function, and if there is no `main()` functio
 
 
 ### Creating a test folder
-It's good to be able to test independent portions of your code instead of your whole code base at once. For example, if I have a driver just for controlling lights I should have a test file that just runs some code for my lights driver instead of the whole codebase.
+It's good to be able to test independent portions of your code instead of your whole code base at once. For example, if I have a driver just for controlling lights I should have a test file that just runs some code for my lights driver instead of the whole codebase which could be running a lot of things other than lights.
 
 C expects a `main()` function as the starting point of your code, so the way we generally implement this is filtering out the main.c file where the `main()` function is implemented, and compiling your test file instead with it's own `main()` function.  
 
@@ -43,19 +63,6 @@ Generate a new SystemClock_Config in STM32CubeMX and add it to one of your files
 
 ### Create a README
 A README.md file is very important for onboarding instructions, and to outline workflows. A README should explain how to go from cloning a repository to how to contribute code. The more descriptive the better!
-
-## 3. Suggested directories
-It is good practice to organize files into different folders based on how abstracted they are from the STM32's hardware. In Embedded-Sharepoint there's a folder that stores the STM32 HAL (Hardware Abstraction Library), that folder stores the low level calls to the STM32. One level above that we have drivers, which interact with the STM32 HAL, and one layer above that we have applications that interact with the driver layer and usually is where your RTOS tasks run. Also, you should have a tests/ directory to store your test files.
-
-The suggested (minimal) structure is as follows:
-
-* core (stores tasks and main)
-* drivers (stores drivers that interact with HAL, should be thread safe)
-* middleware (external libraries that you're storing in your repository)
-* tests (test files)
-* Makefile
-
-These directories should all have Src/ and Inc/ folders to separate the c header and source files.
 
 ## 4. Compiling your repository
 Code compilation must be done in a nix shell, in Embedded-Sharepoint you can normally just run
