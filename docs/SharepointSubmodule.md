@@ -35,7 +35,7 @@ There is a minimal template Makefile in the template/ folder in Embedded-Sharepo
 
 
 ### Set Project Variables
-Below are sevearl variables that the Embedded-Sharepoint Makefile uses to compile your code, these variables are used in the template Makefile, and you can update them.
+Below are several variables that the Embedded-Sharepoint Makefile uses to compile your code, these variables are used in the template Makefile, and you can update them.
 
 * `PROJECT_TARGET`: The STM32 part number (e.g., `stm32f446ret`)
 * `PROJECT_C_SOURCES`: List of your C source files
