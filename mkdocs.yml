@@ -20,6 +20,9 @@ nav:
   - CAN Messages:
       - Signals & Messages: 'DBC.md'
 
+  - Drivers:
+      - EMC2305 Fan Controller: 'EMC2305.md'
+
 plugins:
   - macros:
       include_dir: docs/ 
