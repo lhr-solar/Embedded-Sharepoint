@@ -7,7 +7,7 @@ The suggested (minimal) structure is as follows:
 
 
 ```text
-.
+Firmware/
 ├── Embedded-Sharepoint/  #  Don't create this folder manually, it'll be created in the next step
 ├── Makefile              # The makefile that you write
 ├── core/                 # Stores tasks and main application logic
@@ -41,7 +41,7 @@ Below are several variables that the Embedded-Sharepoint Makefile uses to compil
 * `PROJECT_C_SOURCES`: List of your C source files
 * `PROJECT_C_INCLUDES`: List of your include directories
 * `PROJECT_BUILD_DIR`: Where to place build outputs
-* `BEAR_ENABLE` to make VSCode not mad at you (the red error squiggles)
+* `BEAR_ENABLE` to make VSCode not mad at you (the red error squiggles). Bear is by default enabled, but you can set it to 0 to turn it off
 
 ### Create a main.c
 Your code begins from the `main()` function, and if there is no `main()` function defined the code will not compile. The `main()` function does not necessarily have to be located in a file named `main.c` but it is good practice. If you want to use any stm32 related header files, please include the `stm32xx_hal.h` header file.
@@ -61,8 +61,6 @@ We define the SystemClock_Config function as "weak", which means that the functi
 
 Generate a new SystemClock_Config in STM32CubeMX and add it to one of your files in your repository. This should serve as a redefinition of the function and will override the default behavior. Make sure you are generating the code with the correct microcontroller part number in the software, and you are using an external oscillator (if generating code for one of our SOM PCBs). Instructions on how to use CubeMX and generate a SystemClock_Config can be found [here](./CubeMX.md).
 
-### Create a README
-A README.md file is very important for onboarding instructions, and to outline workflows. A README should explain how to go from cloning a repository to how to contribute code. The more descriptive the better!
 
 ## 4. Compiling your repository
 Code compilation must be done in a nix shell, in Embedded-Sharepoint you can normally just run
@@ -84,6 +82,9 @@ make
 in the same directory as your new Makefile.
 
 If you do not want to type that out everytime, you can create a bash script that runs the nix develop command and hardcodes the directory where the nix file is. See this example in [VCU](https://github.com/lhr-solar/PS-VehicleControlUnit/blob/main/Firmware/run_nix.sh)
+
+## 5. Create a README
+A README.md file is very important for onboarding instructions, and to outline workflows. A README should explain how to go from cloning a repository to how to contribute code. The more descriptive the better!
 
 
 ## Examples of projects that use Embedded Sharepoint
