@@ -1,10 +1,8 @@
 #include "sdcard.h"
-#include "stm32l4xx_hal.h"
 #include <stdint.h>
+#include "stm32xx_hal.h"
 
 extern SPI_HandleTypeDef hspi2; 
-//extern sd_handle_t sd;
-
 
 #define CMD0 0   // Reset
 #define CMD17 17 // Read single block
@@ -24,9 +22,7 @@ void SD_Select(sd_handle_t *sd)
 void SD_Deselect(sd_handle_t *sd)
 {
     HAL_GPIO_WritePin(sd->cs_port, sd->cs_pin, GPIO_PIN_SET);
-    /* After CS high, clock at least 8 cycles (send one 0xFF) */
-    // uint8_t ff = 0xFF;
-    // HAL_SPI_Transmit(sd->hspi, &ff, 1, HAL_MAX_DELAY);
+
 }
 
 // /* read R1 response (poll until first non 0xFF or MSB==0) */
@@ -106,11 +102,11 @@ uint8_t SD_SPI_Init(sd_handle_t *sd) {
     sd->hspi->Instance = SPI2;
     sd->hspi->Init.Mode = SPI_MODE_MASTER;
     sd->hspi->Init.Direction = SPI_DIRECTION_2LINES;
-    sd->hspi->Init.DataSize = SPI_DATASIZE_8BIT; // before 8 BIT
+    sd->hspi->Init.DataSize = SPI_DATASIZE_8BIT; 
     sd->hspi->Init.CLKPolarity = SPI_POLARITY_LOW;
     sd->hspi->Init.CLKPhase = SPI_PHASE_1EDGE;
     sd->hspi->Init.NSS = SPI_NSS_SOFT;
-    sd->hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256; //before worked: 16  new worked: 64 11/30 worked: 128
+    sd->hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256; 
     sd->hspi->Init.FirstBit = SPI_FIRSTBIT_MSB;
     sd->hspi->Init.TIMode = SPI_TIMODE_DISABLE;
     sd->hspi->Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -205,9 +201,6 @@ int SD_WaitDataToken(sd_handle_t *sd, uint8_t token) {
 }
 
 
-
-
-/* ---------- send a command packet and return R1 ---------- */
 /* ---------- send a command packet and return R1 ---------- */
 uint8_t SD_SendCommand(sd_handle_t *sd, uint8_t cmd, uint32_t arg, uint8_t crc)
 {
@@ -309,7 +302,6 @@ int SD_Init(sd_handle_t *sd) {
     }
 
     // --- Step 5: CMD58 (Read OCR) ---
-    // --- FIX 3: Capture return directly ---
     res = SD_SendCommand(sd, 58, 0, 0xFD);
     if(res != 0x00) {
         SD_Deselect(sd);
@@ -434,10 +426,6 @@ int SD_ReadEnd(sd_handle_t *sd) {
         HAL_SPI_Transmit(sd->hspi, (uint8_t*)cmd, sizeof(cmd), HAL_MAX_DELAY);
     }
 
-    /*
-    The received byte immediataly following CMD12 is a stuff byte, it should be
-    discarded before receive the response of the CMD12
-    */
     uint8_t stuffByte;
     if(SD_ReadBytes(sd, &stuffByte, sizeof(stuffByte)) < 0) {
         SD_Deselect(sd);
@@ -521,7 +509,6 @@ int SD_WriteEnd(sd_handle_t *sd) {
     HAL_SPI_Transmit(sd->hspi, &stopTran, sizeof(stopTran), HAL_MAX_DELAY);
 
     // skip one byte before readyng "busy"
-    // this is required by the spec and is necessary for some real SD-cards!
     uint8_t skipByte;
     SD_ReadBytes(sd, &skipByte, sizeof(skipByte));
 

@@ -1,4 +1,4 @@
-#include "stm32l4xx_hal.h" 
+#include "stm32xx_hal.h"
 #include "fatfs.h"
 #include "ffconf.h"
 #include "ff.h"
@@ -33,7 +33,7 @@ void LED_Init(void);
 
 char buffer[128]; // Buffer for reading back
 
-// use led to test if write is done ! 
+// use led to test if write is done 
 // LED pin (onboard LED, e.g., PA5)
 #define LED_PORT GPIOA
 #define LED_PIN  GPIO_PIN_5

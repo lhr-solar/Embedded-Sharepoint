@@ -89,11 +89,11 @@ DSTATUS USER_initialize (
   /* USER CODE BEGIN INIT */
 
     if(SD_Init(&sd) != 0) {
-        Stat = STA_NOINIT; // Keep it "Not Init" if failed
+        Stat = STA_NOINIT; // "Not Init" if failed
         return Stat;
     }
 
-    Stat = 0; // <--- CRITICAL FIX: Mark drive as "Ready"
+    Stat = 0; //  Mark drive as "Ready"
     return Stat;
 
   /* USER CODE END INIT */
@@ -109,10 +109,9 @@ DSTATUS USER_status (
 )
 {
   /* USER CODE BEGIN STATUS */
-    // Stat = STA_NOINIT; //original includes
     return Stat;
-    //return USER_SPI_status(pdrv); 
-  /* USER CODE END STATUS */
+
+    /* USER CODE END STATUS */
 }
 
 /**
@@ -213,16 +212,12 @@ DRESULT USER_ioctl (
 )
 {
   /* USER CODE BEGIN IOCTL */
-  //og
-    // DRESULT res = RES_ERROR;
-    // return res;
-
 
   if (pdrv != 0) return RES_PARERR;
 
     switch (cmd) {
         case CTRL_SYNC:
-            return RES_OK; // Essential for f_close
+            return RES_OK; 
             
         case GET_SECTOR_COUNT:
             *(DWORD*)buff = 1024 * 1024 * 2; // Dummy size
