@@ -5,6 +5,52 @@
 #include <stdint.h>
 #include <stddef.h>
 
+/*  SPI CONFIGURATION  */
+
+/* 1. Configuration for YOUR BOARD (STM32L476RG) */
+/* Keeps your current wiring: PB10 (SCK), PC2 (MISO), PC3 (MOSI) */
+#if defined(STM32L476xx)
+    #define SD_SPI_HANDLE           SPI2
+    #define SD_SPI_CLK_ENABLE()     __HAL_RCC_SPI2_CLK_ENABLE()
+    #define SD_SPI_AF               GPIO_AF5_SPI2
+
+    /* Port Definitions (Mixed B and C) */
+    #define SD_SCK_PORT             GPIOB
+    #define SD_MISO_PORT            GPIOC
+    #define SD_MOSI_PORT            GPIOC
+    
+    #define SD_SCK_PIN              GPIO_PIN_10
+    #define SD_MISO_PIN             GPIO_PIN_2
+    #define SD_MOSI_PIN             GPIO_PIN_3
+
+    /* Enable BOTH Port B and Port C clocks */
+    #define SD_GPIO_CLK_ENABLE()    do { __HAL_RCC_GPIOB_CLK_ENABLE(); __HAL_RCC_GPIOC_CLK_ENABLE(); } while(0)
+
+
+/* 2. Configuration for BUILD SERVER (L432KC) & G4 Series */
+/* Uses Standard SPI1 (PA5, PA6, PA7) */
+#elif defined(STM32L432xx) || defined(STM32G4xx)
+    #define SD_SPI_HANDLE           SPI1
+    #define SD_SPI_CLK_ENABLE()     __HAL_RCC_SPI1_CLK_ENABLE()
+    #define SD_SPI_AF               GPIO_AF5_SPI1
+
+    /* Port Definitions (All Port A) */
+    #define SD_SCK_PORT             GPIOA
+    #define SD_MISO_PORT            GPIOA
+    #define SD_MOSI_PORT            GPIOA
+
+    #define SD_SCK_PIN              GPIO_PIN_5
+    #define SD_MISO_PIN             GPIO_PIN_6
+    #define SD_MOSI_PIN             GPIO_PIN_7
+
+    /* Enable just Port A clock */
+    #define SD_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOA_CLK_ENABLE()
+
+#else
+    #error "Target MCU not supported"
+#endif
+
+
 /* --- SD Card Command Definitions --- */
 #define SD_CMD_BASE     0x40  // Start bit (0100 0000)
 #define DATA_TOKEN_CMD18 0xFE

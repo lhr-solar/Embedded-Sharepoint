@@ -43,47 +43,44 @@ uint8_t SD_ReadR1(sd_handle_t *sd)
 
 uint8_t SD_SPI_Init(sd_handle_t *sd) {
 
-    /*Creates a structure to configure GPIO pins.*/
     GPIO_InitTypeDef GPIO_InitStruct = {0};
 
-    /* Enable peripheral clocks */
-    __HAL_RCC_SPI2_CLK_ENABLE();
-    __HAL_RCC_GPIOB_CLK_ENABLE();
-    __HAL_RCC_GPIOC_CLK_ENABLE();
-    __HAL_RCC_GPIOA_CLK_ENABLE(); 
+    /* 1. Enable Clocks (Uses the Macros from sdcard.h) */
+    SD_SPI_CLK_ENABLE();       // Enables SPI1 or SPI2
+    SD_GPIO_CLK_ENABLE();      // Enables GPIOA or (GPIOB & GPIOC)
 
-    /** SPI2 GPIO Configuration
-     *  PB10 ------> SPI2_SCK
-     *  PC2  ------> SPI2_MISO
-     *  PC3  ------> SPI2_MOSI
-     */
-
-    //SPI2_MISO: PC2   SPI2_MOSI: PC3
-    GPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_3;
+    /* 2. Configure SCK Pin */
+    GPIO_InitStruct.Pin = SD_SCK_PIN;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
-    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+    GPIO_InitStruct.Alternate = SD_SPI_AF;
+    HAL_GPIO_Init(SD_SCK_PORT, &GPIO_InitStruct);
 
-    //SPI2_SCK:  PB10
-    GPIO_InitStruct.Pin = GPIO_PIN_10;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
-    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+    /* 3. Configure MISO Pin */
+    GPIO_InitStruct.Pin = SD_MISO_PIN;
+    HAL_GPIO_Init(SD_MISO_PORT, &GPIO_InitStruct);
 
-    /* --- CS pin setup --- */
-    HAL_GPIO_WritePin(sd->cs_port, sd->cs_pin, GPIO_PIN_SET); // CS high (inactive)
+    /* 4. Configure MOSI Pin */
+    GPIO_InitStruct.Pin = SD_MOSI_PIN;
+    HAL_GPIO_Init(SD_MOSI_PORT, &GPIO_InitStruct);
+
+    /* 5. Configure CS Pin (Dynamic based on struct) */
+    // Ensure the specific CS port clock is on (Safety check)
+    if(sd->cs_port == GPIOA) __HAL_RCC_GPIOA_CLK_ENABLE();
+    else if(sd->cs_port == GPIOB) __HAL_RCC_GPIOB_CLK_ENABLE();
+    else if(sd->cs_port == GPIOC) __HAL_RCC_GPIOC_CLK_ENABLE();
+    
+    HAL_GPIO_WritePin(sd->cs_port, sd->cs_pin, GPIO_PIN_SET); // CS High (Inactive)
     GPIO_InitStruct.Pin = sd->cs_pin;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Alternate = 0; // No AF for CS
     HAL_GPIO_Init(sd->cs_port, &GPIO_InitStruct);
 
-    /* --- SPI peripheral configuration --- */
-    sd->hspi->Instance = SPI2;
+    /* 6. Configure SPI Peripheral */
+    sd->hspi->Instance = SD_SPI_HANDLE;  // SPI1 or SPI2
     sd->hspi->Init.Mode = SPI_MODE_MASTER;
     sd->hspi->Init.Direction = SPI_DIRECTION_2LINES;
     sd->hspi->Init.DataSize = SPI_DATASIZE_8BIT; 
@@ -98,10 +95,10 @@ uint8_t SD_SPI_Init(sd_handle_t *sd) {
     sd->hspi->Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
     sd->hspi->Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
 
-    if (HAL_SPI_Init(sd->hspi) != HAL_OK) { // starts the SPI hardware with the config above.
-        return 1; // failed
+    if (HAL_SPI_Init(sd->hspi) != HAL_OK) { 
+        return 1; // Failed
     }
-    return 0; // success
+    return 0; // Success
 }
 
 /* ---------- Dummy clocks ---------- */
