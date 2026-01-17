@@ -27,9 +27,9 @@
     #define SD_GPIO_CLK_ENABLE()    do { __HAL_RCC_GPIOB_CLK_ENABLE(); __HAL_RCC_GPIOC_CLK_ENABLE(); } while(0)
 
 
-/* 2. Configuration for BUILD SERVER (L432KC) & G4 Series */
+/* 2. Catch-All for ANY OTHER L4 or G4 Chip (L432, L431, G431, etc.) */
 /* Uses Standard SPI1 (PA5, PA6, PA7) */
-#elif defined(STM32L432xx) || defined(STM32G4xx)
+#elif defined(STM32L4xx) || defined(STM32G4xx)
     #define SD_SPI_HANDLE           SPI1
     #define SD_SPI_CLK_ENABLE()     __HAL_RCC_SPI1_CLK_ENABLE()
     #define SD_SPI_AF               GPIO_AF5_SPI1
