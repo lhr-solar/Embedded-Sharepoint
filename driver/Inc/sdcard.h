@@ -23,6 +23,9 @@
     #define SD_MISO_PIN             GPIO_PIN_2
     #define SD_MOSI_PIN             GPIO_PIN_3
 
+    #define SD_CS_PORT              GPIOB
+    #define SD_CS_PIN               GPIO_PIN_12
+
     /* Enable BOTH Port B and Port C clocks */
     #define SD_GPIO_CLK_ENABLE()    do { __HAL_RCC_GPIOB_CLK_ENABLE(); __HAL_RCC_GPIOC_CLK_ENABLE(); } while(0)
 
@@ -42,6 +45,9 @@
     #define SD_SCK_PIN              GPIO_PIN_5
     #define SD_MISO_PIN             GPIO_PIN_6
     #define SD_MOSI_PIN             GPIO_PIN_7
+
+    #define SD_CS_PORT              GPIOA
+    #define SD_CS_PIN               GPIO_PIN_4
 
     /* Enable just Port A clock */
     #define SD_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOA_CLK_ENABLE()

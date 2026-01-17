@@ -12,7 +12,7 @@
 UART_HandleTypeDef huart1;
 
 sd_handle_t sd;
-SPI_HandleTypeDef hspi2;
+SPI_HandleTypeDef hspi_handle;
 
 // FatFs objects
 FATFS fs;
@@ -27,8 +27,8 @@ UINT br, bw;
 // Forward declarations
 void SystemClock_Config(void);
 void Error_Handler(void);
-void MX_GPIO_Init(void);
-void MX_SPI2_Init(void);
+// void MX_GPIO_Init(void);
+// void MX_SPI2_Init(void);
 void LED_Init(void);
 
 char buffer[128]; // Buffer for reading back
@@ -43,18 +43,27 @@ int main(void)
     // --- 1. Hardware Init ---
     HAL_Init();
     SystemClock_Config();
-    MX_GPIO_Init();
-    MX_SPI2_Init();
+    // MX_GPIO_Init();
+    // MX_SPI2_Init();
     LED_Init(); 
 
     // --- 2. Link the handle ---
-    sd.hspi = &hspi2;
-    sd.cs_port = GPIOB;       
-    sd.cs_pin  = GPIO_PIN_12; 
+    sd.hspi = &hspi_handle;
+    sd.cs_port = SD_CS_PORT;       
+    sd.cs_pin  = SD_CS_PIN; 
 
     // Turn LED OFF to start
     HAL_GPIO_WritePin(DEBUG_PORT, DEBUG_PIN, GPIO_PIN_RESET);
     HAL_Delay(100);
+
+    // Calls SD_SPI_INIT() internally
+    if (SD_Init(&sd) != 0) {
+         // Initialization Error: Fast Blink
+         while(1) {
+            HAL_GPIO_TogglePin(DEBUG_PORT, DEBUG_PIN);
+            HAL_Delay(50);
+         }
+    }
 
     // --- 3. Init FatFs Middleware ---
     MX_FATFS_Init(); 
@@ -209,74 +218,4 @@ void SystemClock_Config(void)
     {
         Error_Handler();
     }
-}
-
-void MX_SPI2_Init(void)
-{
-  /* SPI2 parameter configuration*/
-  hspi2.Instance = SPI2;
-  hspi2.Init.Mode = SPI_MODE_MASTER;
-  hspi2.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi2.Init.DataSize = SPI_DATASIZE_8BIT;
-  hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
-  hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi2.Init.NSS = SPI_NSS_SOFT;
-  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
-  hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
-  hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
-  hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-  hspi2.Init.CRCPolynomial = 7;
-  hspi2.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
-  hspi2.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
-  if (HAL_SPI_Init(&hspi2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN SPI2_Init 2 */
-
-  /* USER CODE END SPI2_Init 2 */
-
-}
-
-void MX_GPIO_Init(void)
-{
-    /*Creates a structure to configure GPIO pins.*/
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-    /* Enable peripheral clocks */
-    __HAL_RCC_SPI2_CLK_ENABLE();
-    __HAL_RCC_GPIOB_CLK_ENABLE();
-    __HAL_RCC_GPIOC_CLK_ENABLE();
-    __HAL_RCC_GPIOA_CLK_ENABLE(); 
-
-    /** SPI2 GPIO Configuration
-     *  PB10 ------> SPI2_SCK
-     *  PC2  ------> SPI2_MISO
-     *  PC3  ------> SPI2_MOSI
-     */
-
-    //SPI2_MISO: PC2   SPI2_MOSI: PC3
-    GPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_3;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
-    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-    //SPI2_SCK:  PB10
-    GPIO_InitStruct.Pin = GPIO_PIN_10;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
-    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-    /* --- CS pin setup --- */
-    GPIO_InitStruct.Pin = GPIO_PIN_12;
-    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET); // CS high (inactive)
-
 }

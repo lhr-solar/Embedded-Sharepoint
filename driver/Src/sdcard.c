@@ -215,6 +215,12 @@ uint8_t SD_SendCommand(sd_handle_t *sd, uint8_t cmd, uint32_t arg, uint8_t crc)
 
 
 int8_t SD_Init(sd_handle_t *sd) {
+
+    // This uses the Macros to pick SPI1 or SPI2 automatically.
+    if (SD_SPI_Init(sd) != 0) {
+        return -1; // Hardware Init Failed
+    }
+    
     uint8_t res;
     uint8_t resp[4];
 
