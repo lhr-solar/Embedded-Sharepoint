@@ -89,4 +89,4 @@ A README.md file is very important for onboarding instructions, and to outline w
 
 ## Examples of projects that use Embedded Sharepoint
 * [BPS-Leader](https://github.com/lhr-solar/BPS-Leader)
-* [VCU](https://github.com/lhr-solar/PS-VehicleControlUnit/blob/main/Firmware/Makefile)
+* [VCU](https://github.com/lhr-solar/PS-VehicleControlUnit)
