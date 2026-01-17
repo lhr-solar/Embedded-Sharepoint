@@ -92,8 +92,12 @@ uint8_t SD_SPI_Init(sd_handle_t *sd) {
     sd->hspi->Init.TIMode = SPI_TIMODE_DISABLE;
     sd->hspi->Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
     sd->hspi->Init.CRCPolynomial = 7;
-    sd->hspi->Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
-    sd->hspi->Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
+
+    /* These settings only exist on newer chips (L4, G4). */
+    #if defined(STM32L4xx) || defined(STM32G4xx)
+        sd->hspi->Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
+        sd->hspi->Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
+    #endif
 
     if (HAL_SPI_Init(sd->hspi) != HAL_OK) { 
         return 1; // Failed
@@ -220,7 +224,7 @@ int8_t SD_Init(sd_handle_t *sd) {
     if (SD_SPI_Init(sd) != 0) {
         return -1; // Hardware Init Failed
     }
-    
+
     uint8_t res;
     uint8_t resp[4];
 
