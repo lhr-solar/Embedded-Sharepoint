@@ -61,7 +61,7 @@ The following are files and directories you should not be pushing:
 
 * `.DS_Store` these are mac dump files that are generated in every directory
 * `build/` this is where compiled c files are placed by default, if you change the directory in the Makefile this needs to be updated
-* `.venv/` this is where python environment files are stored, and are usually user and 0S depdendent
+* `.venv/` this is where python environment files are stored, and are usually user and OS dependent
 
 
 ## 4. Add necessary functions
