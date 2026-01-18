@@ -35,7 +35,7 @@ Ensure that the link you're using to add this submodule is the HTTPs link and no
 A **Makefile** is a file used to outline how you want your code to compile. There is a [Makefile](https://github.com/lhr-solar/Embedded-Sharepoint/blob/main/Makefile) that compiles all needed files for the STM32 (our microcontroller) in the top level of the Embedded Sharepoint. You need to write another Makefile to compile your project files and call the Embedded-Sharepoint Makefile.   
 There is a minimal template Makefile in the template/ folder in Embedded-Sharepoint. Lines with `#❗ CHANGE THIS ❗` define where you should make changes to your Makefile. Move the template Makefile to the same directory as your firmware, and rename it to just be called `Makefile`. 
 
-For a more in depth tutorial, I suggests visiting this article on [Makefiles](https://makefiletutorial.com/)
+For a more in depth tutorial, I suggest visiting this article on [Makefiles](https://makefiletutorial.com/)
 
 
 ### Set Project Variables
@@ -87,7 +87,7 @@ in the same directory as your new Makefile.
 
 If you do not want to type that out everytime, you can create a bash script that runs the nix develop command and hardcodes the directory where the nix file is. See this example in [VCU](https://github.com/lhr-solar/PS-VehicleControlUnit/blob/main/Firmware/run_nix.sh)
 
-## 5. Create a README
+## 6. Create a README
 A README.md file is very important for onboarding instructions, and to outline workflows. A README should explain how to go from cloning a repository to how to contribute code. The more descriptive the better!
 
 
