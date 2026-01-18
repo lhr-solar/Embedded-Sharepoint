@@ -54,7 +54,7 @@ C expects a `main()` function as the starting point of your code, so the way we 
 
 Create a `tests/` folder to store your tests, then via your Makefile you can compile those tests into your project, by default they will not be compiled. It's also good practice to add a test prefix or suffix to the name of the test file, e.g. `test_can.c` to show that it's a test file, and to avoid issues on case-insensitive filesystems like on macOS.
 
-## 4. Add necessary c functions
+## 4. Add necessary functions
 ### Create a main.c
 Your code begins from the `main()` function, and if there is no `main()` function defined the code will not compile. The `main()` function does not necessarily have to be located in a file named `main.c` but it is good practice. If you want to use any stm32 related header files, please include the `stm32xx_hal.h` header file.
 
@@ -63,7 +63,7 @@ The `SystemClock_Config` function configures the clock that your STM32 runs on (
 
 We define the SystemClock_Config function as "weak", which means that the function can be overriden by a different implementaiton of the function. We have a default implementaiton in the stm32xx_hal_init.c file, which by default initializes the internal oscillator of some specific Nucleo's clock, but since we operate with a variety of Nucleos and processors you should redefine the function for your specific usecase.
 
-Generate a new SystemClock_Config in STM32CubeMX and add it to one of your files in your repository. This should serve as a redefinition of the function and will override the default behavior. Make sure you are generating the code with the correct microcontroller part number in the software, and you are using an external oscillator (if generating code for one of our SOM PCBs). Instructions on how to use CubeMX and generate a SystemClock_Config can be found [here](./CubeMX.md).
+Generate a new SystemClock_Config in STM32CubeMX and add it to one of your files in your repository (suggested is your main.c). This should serve as a redefinition of the function and will override the default behavior. Make sure you are generating the code with the correct microcontroller part number in the software, and you are using an external oscillator (if generating code for one of our SOM PCBs). Instructions on how to use CubeMX and generate a SystemClock_Config can be found [here](./CubeMX.md).
 
 
 ## 5. Compiling your repository
