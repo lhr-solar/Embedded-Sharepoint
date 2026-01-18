@@ -1,0 +1,24 @@
+
+# Python
+*venv
+__pycache__/
+.env
+
+# Mac specific files
+.DS_Store
+
+# Vim
+*.swp
+compile_commands.json
+
+# Nix
+flake.lock
+
+# Documentation toolset
+docs/doxygen/
+site/*
+!site/empty.a
+Zone.Identifier
+
+# VSCode settings
+.vscode/*

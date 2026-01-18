@@ -54,6 +54,16 @@ C expects a `main()` function as the starting point of your code, so the way we 
 
 Create a `tests/` folder to store your tests, then via your Makefile you can compile those tests into your project, by default they will not be compiled. It's also good practice to add a test prefix or suffix to the name of the test file, e.g. `test_can.c` to show that it's a test file, and to avoid issues on case-insensitive filesystems like on macOS.
 
+### Copy the .gitignore
+A lot of junk files are generated during compilation, many of those files should not be pushed so we tell git to ignore these files. A `.gitignore` file tells which files or directories to ignore, so they are not pushed to the remote repository. There is a template .gitignore file in the template/ directory, which you should place in your firmware/ directory. You are also free to add what's in the template to your already existing .gitignore file. 
+
+The following are files and directories you should not be pushing:
+
+* `.DS_Store` these are mac dump files that are generated in every directory
+* `build/` this is where compiled c files are placed by default, if you change the directory in the Makefile this needs to be updated
+* `.venv/` this is where python environment files are stored, and are usually user and 0S depdendent
+
+
 ## 4. Add necessary functions
 ### Create a main.c
 Your code begins from the `main()` function, and if there is no `main()` function defined the code will not compile. The `main()` function does not necessarily have to be located in a file named `main.c` but it is good practice. If you want to use any stm32 related header files, please include the `stm32xx_hal.h` header file.
