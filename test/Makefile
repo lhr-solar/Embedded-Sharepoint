@@ -69,3 +69,7 @@ help:
 	@echo "Available targets:"
 	@echo "  docs     - Generate documentation using mkdocs."
 	$(MAKE) -C $(BUILD_MAKEFILE_DIR) help
+
+.PHONY: editor
+dbc-editor:
+	cd ../middleware/dbc-editor && python3 -m http.server 8000 & open http://localhost:8000/dbc-editor.html
