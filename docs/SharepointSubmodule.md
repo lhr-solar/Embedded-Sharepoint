@@ -117,7 +117,7 @@ The following are files and directories you should not be pushing:
 Your code begins from the `main()` function, and if there is no `main()` function defined the code will not compile. The `main()` function does not necessarily have to be located in a file named `main.c` but it is good practice. If you want to use any stm32 related header files, please include the `stm32xx_hal.h` header file.
 
 ### Define SystemClock_Config
-The `SystemClock_Config` function configures the clock that your STM32 runs on (things like clock frequency, clock source, etc). If the clock is not setup properly then you risk unexepected behavior since a lot of low level embedded code runs using the system clock. We normally run the system clock at **80mhz**.
+The `SystemClock_Config` function configures the clock that your STM32 runs on (things like clock frequency, clock source, etc). If the clock is not setup properly then you risk unexpected behavior since a lot of low level embedded code runs using the system clock. We normally run the system clock at **80mhz**.
 
 We define the SystemClock_Config function as "weak", which means that the function can be overridden by a different implementation of the function. We have a default implementation in the stm32xx_hal_init.c file, which by default initializes the internal oscillator of some specific Nucleo's clock, but since we operate with a variety of Nucleos and processors you should redefine the function for your specific usecase.
 
