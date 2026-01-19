@@ -13,21 +13,25 @@
       
       
       
+        <link rel="prev" href="../STM32_Ports/">
       
       
-      <link rel="icon" href="/LHRs.ico">
+        <link rel="next" href="../DBC/">
+      
+      
+      <link rel="icon" href="../LHRs.ico">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.17">
     
     
       
-        <title>Embedded Sharepoint Documentation</title>
+        <title>Workflow - Embedded Sharepoint Documentation</title>
       
     
     
-      <link rel="stylesheet" href="/assets/stylesheets/main.7e37652d.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e37652d.min.css">
       
         
-        <link rel="stylesheet" href="/assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -46,7 +50,7 @@
       
     
     
-    <script>__md_scope=new URL("/",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -71,6 +75,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#editing-can-dbc-files" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -83,7 +92,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/." title="Embedded Sharepoint Documentation" class="md-header__button md-logo" aria-label="Embedded Sharepoint Documentation" data-md-component="logo">
+    <a href=".." title="Embedded Sharepoint Documentation" class="md-header__button md-logo" aria-label="Embedded Sharepoint Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -103,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              Workflow
             
           </span>
         </div>
@@ -193,7 +202,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/." title="Embedded Sharepoint Documentation" class="md-nav__button md-logo" aria-label="Embedded Sharepoint Documentation" data-md-component="logo">
+    <a href=".." title="Embedded Sharepoint Documentation" class="md-nav__button md-logo" aria-label="Embedded Sharepoint Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -211,7 +220,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -233,7 +242,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/Installation/" class="md-nav__link">
+      <a href="../Installation/" class="md-nav__link">
         
   
   
@@ -255,7 +264,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/FlashAndTheBug/" class="md-nav__link">
+      <a href="../FlashAndTheBug/" class="md-nav__link">
         
   
   
@@ -277,7 +286,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/SharepointSubmodule/" class="md-nav__link">
+      <a href="../SharepointSubmodule/" class="md-nav__link">
         
   
   
@@ -299,7 +308,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/CubeMX/" class="md-nav__link">
+      <a href="../CubeMX/" class="md-nav__link">
         
   
   
@@ -321,7 +330,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/STM32_Ports/" class="md-nav__link">
+      <a href="../STM32_Ports/" class="md-nav__link">
         
   
   
@@ -340,18 +349,20 @@
       
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
         
           
           <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
@@ -367,7 +378,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             CAN Messages
@@ -378,10 +389,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="/dbcEditor/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Workflow
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -392,6 +425,77 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-a-can-dbc-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      What is a CAN DBC file
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-edit-can-dbc-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      How to edit CAN DBC files
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#suggestions-for-structuring-can-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      Suggestions for structuring CAN messages
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Suggestions for structuring CAN messages">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#can-message-packing" class="md-nav__link">
+    <span class="md-ellipsis">
+      CAN message packing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#can-multiplexing" class="md-nav__link">
+    <span class="md-ellipsis">
+      CAN multiplexing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -404,7 +508,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/DBC/" class="md-nav__link">
+      <a href="../DBC/" class="md-nav__link">
         
   
   
@@ -472,7 +576,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/EMC2305/" class="md-nav__link">
+      <a href="../EMC2305/" class="md-nav__link">
         
   
   
@@ -512,6 +616,67 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-a-can-dbc-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      What is a CAN DBC file
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-edit-can-dbc-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      How to edit CAN DBC files
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#suggestions-for-structuring-can-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      Suggestions for structuring CAN messages
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Suggestions for structuring CAN messages">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#can-message-packing" class="md-nav__link">
+    <span class="md-ellipsis">
+      CAN message packing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#can-multiplexing" class="md-nav__link">
+    <span class="md-ellipsis">
+      CAN multiplexing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -523,8 +688,46 @@
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset">
                 
-  <h1>404 - Not found</h1>
+                  
 
+
+
+<h1 id="editing-can-dbc-files">Editing CAN DBC files</h1>
+<h2 id="what-is-a-can-dbc-file">What is a CAN DBC file</h2>
+<p>A CAN DBC file stores encodings for CAN messages. CAN messages are grouped into IDs with a length, and then messages have specific signals which have a length and start bit. A CAN message signal stores how a value is packed into raw CAN data, including its bit position, size, scaling factor, offset, and units.  </p>
+<p>For example, we have Contactor Sense CAN message with an ID of <code>0x400</code>. There are various signals in this message like the state of the Array Contactor, which has a length of 1 bit and stored in the 6th bit.</p>
+<p><a href="https://www.csselectronics.com/pages/can-dbc-file-database-intro">CAN DBC intro</a></p>
+<h2 id="how-to-edit-can-dbc-files">How to edit CAN DBC files</h2>
+<p>To edit CAN DBC files, we use an online <a href="https://www.csselectronics.com/pages/dbc-editor-can-bus-database">DBC editor</a> from CSS Electronics. We also forked the files to Embedded-Sharepoint in the <code>middleware/dbc-editor</code> directory.  </p>
+<p>To open the CAN DBC editor you can do one of the following:</p>
+<ul>
+<li>Open the CAN DBC editor website linked above</li>
+<li>Open the <code>dbc-editor.html</code> file located in <code>middleware/dbc-editor</code></li>
+<li>Run <code>make dbc-editor</code> in the Makefile in <code>tests/</code></li>
+</ul>
+<p>From the DBC editor you can open and edit any dbc file, all of which are stored in the <code>can/dbc</code> directory.</p>
+<p>Ensure that your CAN message type is set to standard, and the length of the message (DLC) is not above 8 bytes.</p>
+<h2 id="suggestions-for-structuring-can-messages">Suggestions for structuring CAN messages</h2>
+<p>When structuring CAN messages, consider which other devices on the CAN bus are using that message. </p>
+<h3 id="can-message-packing">CAN message packing</h3>
+<p>It is usually beneficial to pack as much related data as possible into a single CAN message. Devices on the bus are often limited by the number of CAN IDs they can store in hardware filters, so reducing the total number of unique message IDs helps avoid exhausting filter slots.</p>
+<p>As long as the message length remains under 8 bytes (for Classical CAN), there is little downside to using more bytes in a single frame.</p>
+<h3 id="can-multiplexing">CAN multiplexing</h3>
+<p>CAN message multiplexing allows multiple logical message layouts to share the same CAN ID. A <strong>multiplexor signal</strong> is used to indicate which set of signals is valid for a given frame.</p>
+<p>For example, instead of having an ID for every battery module's voltage, you can allocate a set of bits to indicate which module the message is about.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
               </article>
             </div>
           
@@ -560,10 +763,10 @@
     
     
       
-      <script id="__config" type="application/json">{"base": "/", "features": [], "search": "/assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="/assets/javascripts/bundle.92b07e13.min.js"></script>
+      <script src="../assets/javascripts/bundle.92b07e13.min.js"></script>
       
     
   </body>
