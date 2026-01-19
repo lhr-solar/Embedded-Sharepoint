@@ -18,6 +18,8 @@ To open the CAN DBC editor you can do one of the following:
 
 From the DBC editor you can open and edit any dbc file, all of which are stored in the `can/dbc` directory.
 
+Ensure that your CAN message type is set to standard, and the length of the message (DLC) is not above 8 bytes.
+
 ## Suggestions for structuring CAN messages
 When structuring CAN messages, consider which other devices on the CAN bus are using that message. 
 
