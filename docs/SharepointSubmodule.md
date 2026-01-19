@@ -42,9 +42,9 @@ For a more in depth tutorial, I suggest visiting this article on [Makefiles](htt
 This section explains common Makefile syntax used in the template Makefile.
 
 #### Comments
-Any line becomes a comment by adding `#` When adding comments, it's suggested to make them on a seperate line from actual Makefile code, i.e avoid
+Any line becomes a comment by adding `#` When adding comments, it's suggested to make them on a separate line from actual Makefile code, i.e avoid
 ```make
-PROJECT_TARGET ?= stm32g473xx # this line contaisn the project target
+PROJECT_TARGET ?= stm32g473xx # this line contains the project target
 ``` 
 and instead do
 ```make
@@ -64,7 +64,7 @@ This by default sets the `PROJECT_TARGET` to be `stm32g473xx`, but by running
 ```sh
 make PROJECT_TARGET=stm32l432cbt
 ```
-The `PROJECT_TARGET` will be overriden to `stm32l432cbt`
+The `PROJECT_TARGET` will be overridden to `stm32l432cbt`
 
 #### Variable Expansion 
 Variables are referenced using `$(VAR)` or `${VAR}` (both are valid).
@@ -84,7 +84,7 @@ Instead of setting these manually, you can do a `wildcard` search and add all fi
 ```make
 PROJECT_C_SOURCES = $(wildcard */Src/*.c)
 ```
-This looks through all the directories, and adds all c files in any `Src` folder
+This looks through all immediate subdirectories for a `Src` folder and adds all `.c` files found within.
 
 ### Set Project Variables
 Below are several variables that the Embedded-Sharepoint Makefile uses to compile your code, these variables are used in the template Makefile, and you can update them.
@@ -117,9 +117,9 @@ The following are files and directories you should not be pushing:
 Your code begins from the `main()` function, and if there is no `main()` function defined the code will not compile. The `main()` function does not necessarily have to be located in a file named `main.c` but it is good practice. If you want to use any stm32 related header files, please include the `stm32xx_hal.h` header file.
 
 ### Define SystemClock_Config
-The `SystemClock_Config` function configures the clock that your STM32 runs on (things like clock frequency, clock source, etc). If the clock is not setup properly then you risk unexepected behavior since a lot of low level embedded code runs using the system clock. We normally run the system clock at **80mhz**.
+The `SystemClock_Config` function configures the clock that your STM32 runs on (things like clock frequency, clock source, etc). If the clock is not setup properly then you risk unexpected behavior since a lot of low level embedded code runs using the system clock. We normally run the system clock at **80mhz**.
 
-We define the SystemClock_Config function as "weak", which means that the function can be overriden by a different implementaiton of the function. We have a default implementaiton in the stm32xx_hal_init.c file, which by default initializes the internal oscillator of some specific Nucleo's clock, but since we operate with a variety of Nucleos and processors you should redefine the function for your specific usecase.
+We define the SystemClock_Config function as "weak", which means that the function can be overridden by a different implementation of the function. We have a default implementation in the stm32xx_hal_init.c file, which by default initializes the internal oscillator of some specific Nucleo's clock, but since we operate with a variety of Nucleos and processors you should redefine the function for your specific usecase.
 
 Generate a new SystemClock_Config in STM32CubeMX and add it to one of your files in your repository (suggested is your main.c). This should serve as a redefinition of the function and will override the default behavior. Make sure you are generating the code with the correct microcontroller part number in the software, and you are using an external oscillator (if generating code for one of our SOM PCBs). Instructions on how to use CubeMX and generate a SystemClock_Config can be found [here](./CubeMX.md).
 
