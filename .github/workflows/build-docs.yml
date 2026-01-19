@@ -2,8 +2,7 @@ name: Build and Deploy Sharepoint Documentation to GitHub Pages
 
 on:
   push:
-    branches:
-      - main
+  pull_request:
 
 permissions:
   contents: write
@@ -23,23 +22,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt-get install -y doxygen graphviz
           pip install --upgrade pip
           pip install -r requirements.txt
           
-      - name: Generate DBC Table
-        run: python docs/generate_dbc_table.py
-  
-      - name: Generate STM32 Ports Documentation
-        run: python docs/generate_stm_ports.py
-
-      - name: Build MkDocs site
-        run: mkdocs build
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./site
-          publish_branch: gh-pages
-          keep_files: true
+      - name: Check duplicate CAN IDs
+        run: python can/check_duplicate_can_ids.py

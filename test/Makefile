@@ -72,4 +72,4 @@ help:
 
 .PHONY: editor
 dbc-editor:
-	cd ../middleware/dbc-editor && python3 -m http.server 8000 & open http://localhost:8000/dbc-editor.html
+	cd ../middleware/dbc-editor && open dbc-editor.html

@@ -19,3 +19,9 @@ To open the CAN DBC editor you can do one of the following:
 From the DBC editor you can open and edit any dbc file, all of which are stored in the `can/dbc` directory.
 
 ## Suggestions for structuring CAN messages
+When structuring CAN messages, consider which other devices on the CAN bus are using that message. 
+
+### CAN message packing
+It's usually beneficial to pack as much data into one CAN message at once. Devices on our bus are often limited by the number of discrete IDs they can store in its CAN filter, so packing more data into single messages is beneficial to not run out of CAN filter slots. There is not much cost to more bytes in a CAN message (as long as it's under 8 bytes).
+
+### CAN multiplexing
