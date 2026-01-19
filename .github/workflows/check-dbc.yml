@@ -2,8 +2,7 @@ name: Run checks on CAN DBCs
 
 on:
   push:
-    branches:
-      - main
+  pull_request:
 
 permissions:
   contents: write
