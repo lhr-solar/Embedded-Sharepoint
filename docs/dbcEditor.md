@@ -22,6 +22,11 @@ From the DBC editor you can open and edit any dbc file, all of which are stored 
 When structuring CAN messages, consider which other devices on the CAN bus are using that message. 
 
 ### CAN message packing
-It's usually beneficial to pack as much data into one CAN message at once. Devices on our bus are often limited by the number of discrete IDs they can store in its CAN filter, so packing more data into single messages is beneficial to not run out of CAN filter slots. There is not much cost to more bytes in a CAN message (as long as it's under 8 bytes).
+It is usually beneficial to pack as much related data as possible into a single CAN message. Devices on the bus are often limited by the number of CAN IDs they can store in hardware filters, so reducing the total number of unique message IDs helps avoid exhausting filter slots.
+
+As long as the message length remains under 8 bytes (for Classical CAN), there is little downside to using more bytes in a single frame.
 
 ### CAN multiplexing
+CAN message multiplexing allows multiple logical message layouts to share the same CAN ID. A **multiplexor signal** is used to indicate which set of signals is valid for a given frame.
+
+For example, instead of having an ID for every battery module's voltage, you can allocate a set of bits to indicate which module the message is about it.
