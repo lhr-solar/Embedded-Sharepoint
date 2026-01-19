@@ -16,4 +16,6 @@ To open the CAN DBC editor you can do one of the following:
 * Open the `dbc-editor.html` file located in `middleware/dbc-editor`
 * Run `make dbc-editor` in the Makefile in `tests/`
 
+From the DBC editor you can open and edit any dbc file, all of which are stored in the `can/dbc` directory.
+
 ## Suggestions for structuring CAN messages
