@@ -37,6 +37,54 @@ There is a minimal template Makefile in the template/ folder in Embedded-Sharepo
 
 For a more in depth tutorial, I suggest visiting this article on [Makefiles](https://makefiletutorial.com/)
 
+### Basic Makefile syntax
+
+This section explains common Makefile syntax used in the template Makefile.
+
+#### Comments
+Any line becomes a comment by adding `#` When adding comments, it's suggested to make them on a seperate line from actual Makefile code, i.e avoid
+```make
+PROJECT_TARGET ?= stm32g473xx # this line contaisn the project target
+``` 
+and instead do
+```make
+# this line contaisn the project target
+PROJECT_TARGET ?= stm32g473xx 
+``` 
+This is because Makefiles can sometimes compile the comments into the command and break directories. 
+
+#### Conditional Assignments (`?=`)
+The `?=` operator assigns a value **only if the variable is not already set**.  
+This allows variables to be overridden from the command line.
+
+```make
+PROJECT_TARGET ?= stm32g473xx
+```
+This by default sets the `PROJECT_TARGET` to be `stm32g473xx`, but by running
+```sh
+make PROJECT_TARGET=stm32l432cbt
+```
+The `PROJECT_TARGET` will be overriden to `stm32l432cbt`
+
+#### Variable Expansion 
+Variables are referenced using `$(VAR)` or `${VAR}` (both are valid).
+```make
+$(MAKE) -C $(BUILD_MAKEFILE_DIR) all
+@echo "Building ${PROJECT_TARGET}"
+```
+
+#### Wildcards
+Makefiles commonly store multiple files or directories as space-separated lists.
+```make
+PROJECT_C_INCLUDES = core/Inc drivers/Inc
+PROJECT_C_SOURCES  = core/Src/main.c drivers/Src/can.c
+```
+Instead of setting these manually, you can do a `wildcard` search and add all files that meet certain criteria.
+
+```make
+PROJECT_C_SOURCES = $(wildcard */Src/*.c)
+```
+This looks through all the directories, and adds all c files in any `Src` folder
 
 ### Set Project Variables
 Below are several variables that the Embedded-Sharepoint Makefile uses to compile your code, these variables are used in the template Makefile, and you can update them.
