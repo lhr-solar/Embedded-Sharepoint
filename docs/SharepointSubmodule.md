@@ -64,7 +64,7 @@ This by default sets the `PROJECT_TARGET` to be `stm32g473xx`, but by running
 ```sh
 make PROJECT_TARGET=stm32l432cbt
 ```
-The `PROJECT_TARGET` will be overriden to `stm32l432cbt`
+The `PROJECT_TARGET` will be overridden to `stm32l432cbt`
 
 #### Variable Expansion 
 Variables are referenced using `$(VAR)` or `${VAR}` (both are valid).
