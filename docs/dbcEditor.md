@@ -29,4 +29,4 @@ As long as the message length remains under 8 bytes (for Classical CAN), there i
 ### CAN multiplexing
 CAN message multiplexing allows multiple logical message layouts to share the same CAN ID. A **multiplexor signal** is used to indicate which set of signals is valid for a given frame.
 
-For example, instead of having an ID for every battery module's voltage, you can allocate a set of bits to indicate which module the message is about it.
+For example, instead of having an ID for every battery module's voltage, you can allocate a set of bits to indicate which module the message is about.
