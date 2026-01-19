@@ -9,7 +9,6 @@ __pycache__/
 
 # Vim
 *.swp
-compile_commands.json
 
 # Nix
 flake.lock
