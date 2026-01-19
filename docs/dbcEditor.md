@@ -13,7 +13,7 @@ To edit CAN DBC files, we use an online [DBC editor](https://www.csselectronics.
 To open the CAN DBC editor you can do one of the following:
 
 * Open the CAN DBC editor website linked above
-* Open the `dbc-editor.html` file located in `Embedded-Sharepoint/middleware/dbc-editor`
+* Open the `dbc-editor.html` file located in `middleware/dbc-editor`
 * Run `make dbc-editor` in the Makefile in `tests/`
 
 ## Suggestions for structuring CAN messages
