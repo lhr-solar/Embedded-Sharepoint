@@ -26,4 +26,6 @@ jobs:
           pip install -r requirements.txt
           
       - name: Check duplicate CAN IDs
-        run: python can/check_duplicate_can_ids.py
+        run: |
+          cd can/
+          python check_duplicate_can_ids.py dbc/Mcqueen
