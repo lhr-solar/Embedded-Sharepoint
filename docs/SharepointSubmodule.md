@@ -84,7 +84,7 @@ Instead of setting these manually, you can do a `wildcard` search and add all fi
 ```make
 PROJECT_C_SOURCES = $(wildcard */Src/*.c)
 ```
-This looks through all the directories, and adds all c files in any `Src` folder
+This looks through all immediate subdirectories for a `Src` folder and adds all `.c` files found within.
 
 ### Set Project Variables
 Below are several variables that the Embedded-Sharepoint Makefile uses to compile your code, these variables are used in the template Makefile, and you can update them.
