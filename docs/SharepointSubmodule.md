@@ -44,7 +44,7 @@ This section explains common Makefile syntax used in the template Makefile.
 #### Comments
 Any line becomes a comment by adding `#` When adding comments, it's suggested to make them on a separate line from actual Makefile code, i.e avoid
 ```make
-PROJECT_TARGET ?= stm32g473xx # this line contaisn the project target
+PROJECT_TARGET ?= stm32g473xx # this line contains the project target
 ``` 
 and instead do
 ```make
