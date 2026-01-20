@@ -20,7 +20,11 @@ nav:
   - STM32 Ports: 'STM32_Ports.md'
 
   - CAN Messages:
+      - Workflow: 'dbcEditor.md'
       - Signals & Messages: 'DBC.md'
+
+  - Drivers:
+      - EMC2305 Fan Controller: 'EMC2305.md'
 
 plugins:
   - macros:
