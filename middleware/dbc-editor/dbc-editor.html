@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="stylesheet" href="dbc-editor.css">
+</head>
+
+<body>
+  <!-- partial:index.partial.html -->
+  <div id="dbc-root">
+    <header class="dbc-header">
+      <button id="dbc-open-button" class="dbc-header-button" type="button">open DBC</button>
+      <button id="dbc-download-button" class="dbc-header-button" type="button">
+        download DBC
+      </button>
+
+      <input id="dbc-file-input" type="file" accept=".dbc" hidden />
+      <p style="color:#787878;">
+        <a href="https://canlogger.csselectronics.com/dbc-editor/v133/dbc-editor.html" target="_blank" style="color:#787878;">full screen</a> |
+        <a href="https://www.csselectronics.com/pages/dbc-editor-can-bus-database" style="color:#787878;">latest version</a> | v1.3.3 | <a href="https://canlogger.csselectronics.com/dbc-editor/v133/dbc-editor.zip" style="color:#787878;">download</a> | &#169; <a style="color:#787878;" href="https://www.csselectronics.com/">CSS Electronics</a>
+      </p>
+
+    </header>
+
+    <div id="dbc-can-messages-header" class="dbc-table-header">
+      <div class="dbc-table-header-name">CAN messages</div>
+
+      <div class="dbc-table-header-buttons">
+        <span class="dbc-add-button" title="Add message">+</span>
+        <span class="dbc-remove-button" title="Remove selected message">-</span>
+      </div>
+    </div>
+    <div id="dbc-can-messages-container" class="dbc-table-container">
+      <div class="dbc-scrollable-container dbc-v-scroll">
+        <div class="dbc-v-scroll-line"></div>
+
+        <div class="dbc-scrollable">
+          <table id="dbc-can-messages-table" class="dbc-table">
+            <thead id="dbc-can-messages-head">
+              <tr>
+                <th></th>
+                <th></th>
+                <th>Name</th>
+                <th>
+                  CAN ID
+                  <select id="dbc-number-format-select" class="dbc-select">
+                    <option value="hex">HEX</option>
+                    <option value="dec">DEC</option>
+                  </select>
+                </th>
+                <th>Type</th>
+                <th>DLC</th>
+                <th>Comment</th>
+              </tr>
+            </thead>
+
+            <tbody id="dbc-can-messages-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="dbc-can-signals-header" class="dbc-table-header">
+      <div class="dbc-table-header-name">
+        CAN signals (<span class="dbc-selected-message-name"></span>)
+      </div>
+
+      <div class="dbc-table-header-buttons">
+        <span class="dbc-add-button" title="Add signal">+</span>
+        <span class="dbc-remove-button" title="Remove selected signal">-</span>
+      </div>
+    </div>
+    <div id="dbc-can-signals-container" class="dbc-table-container">
+      <div class="dbc-scrollable-container dbc-hv-scroll">
+        <div class="dbc-h-scroll-line"></div>
+        <div class="dbc-v-scroll-line"></div>
+
+        <div class="dbc-scrollable">
+          <table id="dbc-can-signals-table" class="dbc-table">
+            <thead id="dbc-can-signals-head">
+              <tr>
+                <th></th>
+                <th></th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Order</th>
+                <th>Mode</th>
+                <th>Multiplexor</th>
+                <th>Multiplex value</th>
+                <th><abbr style="text-decoration: none !important;
+  										border: none !important;" title="“The start bit shown in the editor equals the start bit of the DBC file.
+For Intel signals, this reflects the Least Significant Bit (LSB), while for 
+Motorola, it reflects the Most Significant Bit (MSB)”"> Start</abbr>
+                <th>Length</th>
+                <th>Factor</th>
+                <th>Offset</th>
+                <th>Min</th>
+                <th>Max</th>
+                <th>Unit</th>
+                <th>Comment</th>
+              </tr>
+            </thead>
+
+            <tbody id="dbc-can-signals-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="dbc-collapsible-header">
+        <div class="dbc-collapsible-header-name dbc-colored">CAN signal preview</div>
+        <div class="dbc-collapse-button dbc-collapsed"></div>
+      </div>
+      <div id="dbc-can-signal-preview" class="dbc-collapsible-area dbc-hidden">
+        <div class="dbc-scrollable-container dbc-v-scroll">
+          <div class="dbc-v-scroll-line"></div>
+
+          <div class="dbc-scrollable">
+            <div id="dbc-byte-number-container">
+              <div id="dbc-byte-number">Byte number</div>
+            </div>
+
+            <table id="dbc-bit-indices-table" class="dbc-mini-table">
+              <thead id="dbc-bit-indices-head">
+                <tr>
+                  <th></th>
+                  <th colspan="8">Editor bit indices </th>
+                </tr>
+                <tr>
+                  <th></th>
+                  <th>7</th>
+                  <th>6</th>
+                  <th>5</th>
+                  <th>4</th>
+                  <th>3</th>
+                  <th>2</th>
+                  <th>1</th>
+                  <th>0</th>
+
+                </tr>
+              </thead>
+              <tbody id="dbc-bit-indices-body"></tbody>
+            </table>
+            <div class="dbc-v-line"></div>
+            <table id="dbc-can-frame-table" class="dbc-mini-table-can">
+              <thead id="dbc-can-frame-head">
+                <tr>
+                  <th></th>
+                  <th colspan="2">CAN frame</th>
+                  <th colspan="8">Bit data values</th>
+                </tr>
+
+                <tr>
+                  <th></th>
+                  <th>Data (HEX)</th>
+                  <th>Data (BIN)</th>
+                  <th>7</th>
+                  <th>6</th>
+                  <th>5</th>
+                  <th>4</th>
+                  <th>3</th>
+                  <th>2</th>
+                  <th>1</th>
+                  <th>0</th>
+                </tr>
+              </thead>
+
+              <tbody id="dbc-can-frame-body"></tbody>
+            </table>
+
+            <table id="dbc-signal-mask-table" class="dbc-mini-table">
+              <thead id="dbc-signal-mask-head">
+                <tr>
+                  <th colspan="8">Signal mask (BIN)</th>
+                </tr>
+
+                <tr></tr>
+
+                <tr>
+                  <th>7</th>
+                  <th>6</th>
+                  <th>5</th>
+                  <th>4</th>
+                  <th>3</th>
+                  <th>2</th>
+                  <th>1</th>
+                  <th>0</th>
+                </tr>
+              </thead>
+
+              <tbody id="dbc-signal-mask-body"></tbody>
+            </table>
+
+            <div id="dbc-result-container" class="dbc-colored">
+              <div id="dbc-result-warning" style="display: none; color: red; font-weight: bold;">
+                Signal preview only supported for bit lengths < 54 bits
+              </div>
+              <div id="dbc-result-preview">
+                <div>
+                  Data = 0b<span id="dbc-result-data-bin"></span> = 0x<span id="dbc-result-data-hex"></span> =
+                  <span id="dbc-result-data-dec"></span>
+                </div>
+
+                <div>
+                  Physical value = <span id="dbc-result-value-factor"></span> *
+                  <span id="dbc-result-value-dec"></span> +
+                  <span id="dbc-result-value-offset"></span> =
+                  <span id="dbc-result-value" class="dbc-bold"></span>
+                  <span id="dbc-result-value-unit" class="dbc-bold"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="dbc-preview-header" class="dbc-table-header">
+      <div class="dbc-table-header-name">
+        DBC preview (<span class="dbc-selected-message-name"></span>)
+      </div>
+    </div>
+    <div id="dbc-preview-container" class="dbc-table-container">
+      <div class="dbc-scrollable-container dbc-hv-scroll">
+        <div class="dbc-h-scroll-line"></div>
+        <div class="dbc-v-scroll-line"></div>
+
+        <div class="dbc-scrollable">
+          <pre id="dbc-preview"></pre>
+        </div>
+      </div>
+    </div>
+
+    <div id="dbc-modal-backdrop" class="dbc-invisible">
+      <div id="dbc-modal">
+        <div id="dbc-modal-close">x</div>
+        <div id="dbc-modal-content"></div>
+        <div id="dbc-modal-actions"></div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  </div>
+  <!-- partial -->
+  <script src="dbc-editor.js" type="application/javascript"></script>
+  <script src="diff.js" type="application/javascript"></script>
+
+</body>
+
+</html>
