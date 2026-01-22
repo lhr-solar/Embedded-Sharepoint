@@ -2,58 +2,59 @@ VERSION ""
 
 
 NS_ : 
-		NS_DESC_
-		CM_
-		BA_DEF_
-		BA_
-		VAL_
-		CAT_DEF_
-		CAT_
-		FILTER
-		BA_DEF_DEF_
-		EV_DATA_
-		ENVVAR_DATA_
-		SGTYPE_
-		SGTYPE_VAL_
-		BA_DEF_SGTYPE_
-		BA_SGTYPE_
-		SIG_TYPE_REF_
-		VAL_TABLE_
-		SIG_GROUP_
-		SIG_VALTYPE_
-		SIGTYPE_VALTYPE_
-		BO_TX_BU_
-		BA_DEF_REL_
-		BA_REL_
-		BA_DEF_DEF_REL_
-		BU_SG_REL_
-		BU_EV_REL_
-		BU_BO_REL_
-		SG_MUL_VAL_
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
 
 BS_:
 
-BU_:
+BU_: LV_Carrier
 
 
-BO_ 1536 LV_Carrier_Status: 2 Vector__XXX
-	SG_ LTC4421_HVDCDC_Selected : 0|1@1+ (1,0) [0|1] "" Vector__XXX
-	SG_ LTC4421_HVDCDC_Fault : 1|1@1+ (1,0) [0|1] "" Vector__XXX
-	SG_ LTC4421_HVDCDC_Valid : 2|1@1+ (1,0) [0|1] "" Vector__XXX
-	SG_ LTC4421_SuppBatt_Selected : 3|1@1+ (1,0) [0|1] "" Vector__XXX
-	SG_ LTC4421_SuppBatt_Fault : 4|1@1+ (1,0) [0|1] "" Vector__XXX
-	SG_ LTC4421_SuppBatt_Valid : 5|1@1+ (1,0) [0|1] "" Vector__XXX
-	SG_ LV_EN_SupplementalBattery : 6|1@1+ (1,0) [0|1] "" Vector__XXX
-	SG_ LV_EN_PowerSupply : 7|1@1+ (1,0) [0|1] "" Vector__XXX
+BO_ 1536 LV_Carrier_Status: 2 LV_Carrier
+ SG_ LTC4421_HVDCDC_Selected : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LTC4421_HVDCDC_Fault : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LTC4421_HVDCDC_Valid : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LTC4421_SuppBatt_Selected : 3|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LTC4421_SuppBatt_Fault : 4|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LTC4421_SuppBatt_Valid : 5|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LV_EN_SupplementalBattery : 6|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LV_EN_PowerSupply : 7|1@1+ (1,0) [0|1] "" Vector__XXX
 
-BO_ 1537 Supplemental_Battery_Status: 8 Vector__XXX
-	SG_ Supplemental_Battery_Voltage : 0|16@1+ (1,0) [0|40] "V" Vector__XXX
+BO_ 1537 Supp_Battery_Status: 8 LV_Carrier
+ SG_ Supplemental_Battery_Voltage : 0|16@1+ (1,0) [0|40] "V" Vector__XXX
 
-BO_ 1538 Supplemental_Battery_Charger_Sta: 8 Vector__XXX
-	SG_ SuppCharger_Status : 0|2@1+ (0,0) [0|0] "" Vector__XXX
-	SG_ Supplemental_Battery_Current : 16|16@1- (1,0) [-2300|28700] "mA" Vector__XXX
-	SG_ Supplemental_DCDC_Voltage : 32|16@1+ (1,0) [0|26] "V" Vector__XXX
-	SG_ Supplemental_DCDC_Current : 48|16@1- (1,0) [-2300|28700] "mA" Vector__XXX
+BO_ 1538 Supp_Battery_Charger_Status: 8 LV_Carrier
+ SG_ SuppCharger_Status : 0|2@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Supplemental_Battery_Current : 16|16@1- (1,0) [-2300|28700] "mA" Vector__XXX
+ SG_ Supplemental_DCDC_Voltage : 32|16@1+ (1,0) [0|26] "V" Vector__XXX
+ SG_ Supplemental_DCDC_Current : 48|16@1- (1,0) [-2300|28700] "mA" Vector__XXX
+
 
 
 CM_ SG_ 1536 LTC4421_HVDCDC_Selected "The LTC4421's channel selected signal for the HV DCDC";
@@ -61,21 +62,21 @@ CM_ SG_ 1537 Supplemental_Battery_Voltage "Supplemental Battery voltage in V";
 CM_ SG_ 1538 SuppCharger_Status "00 - Charging disabled, 01 - Charge done, 10 - Charge in progress, 11 - Charge fault detected";
 BA_DEF_ SG_  "SPN" INT 0 524287;
 BA_DEF_ BO_  "VFrameFormat" ENUM  "StandardCAN","ExtendedCAN","reserved","J1939PG";
-BA_DEF_  "DatabaseVersion" STRING ;
-BA_DEF_  "BusType" STRING ;
-BA_DEF_  "ProtocolType" STRING ;
 BA_DEF_  "DatabaseCompiler" STRING ;
+BA_DEF_  "ProtocolType" STRING ;
+BA_DEF_  "BusType" STRING ;
+BA_DEF_  "DatabaseVersion" STRING ;
 BA_DEF_DEF_  "SPN" 0;
 BA_DEF_DEF_  "VFrameFormat" "J1939PG";
-BA_DEF_DEF_  "DatabaseVersion" "DEMO PLUS";
-BA_DEF_DEF_  "BusType" "";
-BA_DEF_DEF_  "ProtocolType" "";
 BA_DEF_DEF_  "DatabaseCompiler" "";
+BA_DEF_DEF_  "ProtocolType" "";
+BA_DEF_DEF_  "BusType" "";
+BA_DEF_DEF_  "DatabaseVersion" "DEMO PLUS";
+BA_ "DatabaseCompiler" "CSS ELECTRONICS (WWW.CSSELECTRONICS.COM)";
 BA_ "ProtocolType" "J1939";
 BA_ "BusType" "CAN";
-BA_ "DatabaseCompiler" "CSS ELECTRONICS (WWW.CSSELECTRONICS.COM)";
 BA_ "DatabaseVersion" "1.0.0";
-BA_ "VFrameFormat" BO_ 1536 3;
-BA_ "VFrameFormat" BO_ 1537 3;
-BA_ "SPN" SG_ 1536 EngineSpeed 190;
-BA_ "SPN" SG_ 1537 WheelBasedVehicleSpeed 84;
+BA_ "VFrameFormat" BO_ 1536 0;
+BA_ "VFrameFormat" BO_ 1537 0;
+BA_ "VFrameFormat" BO_ 1538 0;
+
