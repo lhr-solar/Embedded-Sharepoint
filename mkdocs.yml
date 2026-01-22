@@ -13,7 +13,6 @@ plugins:
   - macros:
       include_dir: docs/ 
   - search:
-      prebuild_index: true
       lang: en
   - mkdoxy:
       projects:
@@ -62,7 +61,7 @@ plugins:
         - docs/gen-dbc-table.py
         - docs/gen-nav.py
   - literate-nav:
-      nav_file: docs/nav.md
+      nav_file: nav.md
   - redirects:
       redirect_maps: {}
 

@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 
 STM_DIR = Path("stm")
-OUTPUT_MD = Path("docs/STM32_Ports.md")
+OUTPUT_MD = Path("STM32_Ports.md")
 
 def find_flash_ld_files(stm_dir):
     flash_ld_names = []

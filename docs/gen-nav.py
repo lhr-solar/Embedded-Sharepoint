@@ -48,7 +48,9 @@ for file in mkdocs_gen_files.files:
             nav[key] = file_posix
 
 # --- Write merged nav ---
-with mkdocs_gen_files.open(existing_nav_file, "w") as f:
+with mkdocs_gen_files.open("nav.md", "w") as f:
     lit_nav = nav.build_literate_nav()
-    print("".join(lit_nav))
+    # If you uncomment this line it's only for debugging and the 
+    # nav will default to the ass sidebar
+    # print("".join(lit_nav))
     f.writelines("".join(lit_nav))
