@@ -7,5 +7,5 @@
 * CAN Messages
     * [Signals & Messages](DBC.md)
     * [DBC Editor](dbcEditor.md)
-* BSP Documentation
+* Drivers Documentation
     * [EMC2305 Usage Guide](EMC2305.md)
