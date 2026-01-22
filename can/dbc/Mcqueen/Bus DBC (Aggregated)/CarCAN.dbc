@@ -33,8 +33,24 @@ NS_ :
 
 BS_:
 
-BU_: MPPT_A LV_Carrier
+BU_: MPPT_B MPPT_A LV_Carrier
 
+
+BO_ 529 MPPT_33_0_Status: 5 MPPT_B
+ SG_ MPPT_Enabled : 16|8@1- (1,0) [0|0] "" Vector__XXX
+ SG_ MPPT_HeatsinkTemperature : 39|8@0- (1,0) [-128|127] "C" Vector__XXX
+ SG_ MPPT_AmbientTemperature : 31|8@0- (1,0) [-128|127] "C" Vector__XXX
+ SG_ MPPT_Fault : 8|8@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ MPPT_Mode : 0|8@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 528 MPPT_33_0_Power: 8 MPPT_B
+ SG_ MPPT_Iout : 55|16@0- (0.0005,0) [0|0] "A" Vector__XXX
+ SG_ MPPT_Vout : 39|16@0- (0.01,0) [-327.68|327.67] "V" Vector__XXX
+ SG_ MPPT_Iin : 23|16@0- (0.0005,0) [-16.384|16.3835] "A" Vector__XXX
+ SG_ MPPT_Vin : 7|16@0- (0.01,0) [-327.68|327.67] "V" Vector__XXX
+
+BO_ 537 MPPT_33_0_SetMode: 1 MPPT_B
+ SG_ Boost_Enable : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 513 MPPT_32_0_Status: 5 MPPT_A
  SG_ MPPT_Enabled : 16|8@1- (1,0) [0|0] "" Vector__XXX
