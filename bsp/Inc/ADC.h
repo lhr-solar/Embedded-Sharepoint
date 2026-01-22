@@ -77,7 +77,7 @@ extern ADC_HandleTypeDef* hadc3;
  *
  * @return adc_status_t  Returns ADC_OK on success or an appropriate error code.
  */
-adc_status_t adc_init(ADC_InitTypeDef init, ADC_HandleTypeDef* hadc);
+adc_status_t adc_init(ADC_InitTypeDef *init, ADC_HandleTypeDef* hadc);
 
 /**
  * @brief Reads a value from the specified ADC channel.
