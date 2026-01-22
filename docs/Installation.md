@@ -8,6 +8,8 @@ Please ensure you've done the following before moving on:
 - Set up your GitHub account and [SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent).
     - You need to both generate an ssh key and [add](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account) it to your github account
 - Been added to the lhr-solar organization as a member. Ask one of your leads to do so.
+- Install [STM32CubeProgrammer](https://www.st.com/en/development-tools/stm32cubeprog.html)
+- Install [drivers](https://www.silabs.com/software-and-tools/usb-to-uart-bridge-vcp-drivers?tab=downloads) for the CP210x USB to UART bridge (needed to flash boards using USB)
 
 Any line that starts with `#` is a comment and you don't need to run it. 
 ```sh

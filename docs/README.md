@@ -7,7 +7,6 @@ Welcome to the Embedded Sharepoint! Embedded-Sharepoint contains the shared embe
 ### Installation
 Follow the installation instructions for your specific platform, found [here](./Installation.md)
 
-## Directory Structure
 
 ## Command Usage
 The Makefile in the top level directory compiles all needed files for the STM32, it is not meant to be called directly, instead you must call it from a different Makefile
