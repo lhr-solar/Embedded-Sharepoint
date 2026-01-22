@@ -5,7 +5,7 @@
 * [CubeMX](CubeMX.md)
 * [STM32 Ports](STM32_Ports.md)
 * CAN Messages
+    * [Editing DBC Files](dbcEditor.md)
     * [Signals & Messages](DBC.md)
-    * [DBC Editor](dbcEditor.md)
 * Drivers Documentation
     * [EMC2305 Usage Guide](EMC2305.md)

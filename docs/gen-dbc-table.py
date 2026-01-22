@@ -4,7 +4,7 @@ from pathlib import Path
 import cantools
 
 # ----- CONFIG -----
-DBC_DIR = Path("can/dbc")      # Folder containing your .dbc files
+DBC_DIR = Path("can/dbc/Mcqueen")      # Folder containing your .dbc files
 OUTPUT_MD = Path("DBC.md")        # Output markdown file
 GITHUB_DBC_BASE = "https://github.com/lhr-solar/Embedded-Sharepoint/tree/main/can/dbc"
 # ------------------
