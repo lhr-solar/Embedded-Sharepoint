@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="printf_8h" kind="file" language="C++">
+    <compoundname>printf.h</compoundname>
+    <includes local="no">stdbool.h</includes>
+    <includes local="yes">UART.h</includes>
+    <incdepgraph>
+      <node id="1">
+        <label>driver/Inc/printf.h</label>
+        <link refid="printf_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>UART.h</label>
+      </node>
+      <node id="2">
+        <label>stdbool.h</label>
+      </node>
+    </incdepgraph>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="printf_8h_1a98631211a4a8aee62f572375d5b637be" prot="public" static="no" extern="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int printf</definition>
+        <argsstring>(const char *format,...)</argsstring>
+        <name>printf</name>
+        <param>
+          <type>const char *</type>
+          <declname>format</declname>
+        </param>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/printf.h" line="6" column="12" declfile="driver/Inc/printf.h" declline="6" declcolumn="12"/>
+      </memberdef>
+      <memberdef kind="function" id="printf_8h_1a5c48433db9c04031772d5b36e6c4411d" prot="public" static="no" extern="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int scanf</definition>
+        <argsstring>(const char *format,...)</argsstring>
+        <name>scanf</name>
+        <param>
+          <type>const char *</type>
+          <declname>format</declname>
+        </param>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/printf.h" line="7" column="12" declfile="driver/Inc/printf.h" declline="7" declcolumn="12"/>
+      </memberdef>
+      <memberdef kind="function" id="printf_8h_1a553be9d5cfd229f0ce30075aee33ea28" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool printf_init</definition>
+        <argsstring>(UART_HandleTypeDef *huart)</argsstring>
+        <name>printf_init</name>
+        <param>
+          <type>UART_HandleTypeDef *</type>
+          <declname>huart</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/printf.h" line="9" column="6" declfile="driver/Inc/printf.h" declline="9" declcolumn="6"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdbool.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;UART.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight></codeline>
+<codeline lineno="6" refid="printf_8h_1a98631211a4a8aee62f572375d5b637be" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="printf_8h_1a98631211a4a8aee62f572375d5b637be" kindref="member">printf</ref><sp/>(<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*<sp/>format,<sp/>...<sp/>);</highlight></codeline>
+<codeline lineno="7" refid="printf_8h_1a5c48433db9c04031772d5b36e6c4411d" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="printf_8h_1a5c48433db9c04031772d5b36e6c4411d" kindref="member">scanf</ref><sp/><sp/>(<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*<sp/>format,<sp/>...<sp/>);</highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight></codeline>
+<codeline lineno="9" refid="printf_8h_1a553be9d5cfd229f0ce30075aee33ea28" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="printf_8h_1a553be9d5cfd229f0ce30075aee33ea28" kindref="member">printf_init</ref>(UART_HandleTypeDef<sp/>*huart);</highlight></codeline>
+    </programlisting>
+    <location file="driver/Inc/printf.h"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,349 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="UART_8h" kind="file" language="C++">
+    <compoundname>UART.h</compoundname>
+    <includes local="yes">stm32xx_hal.h</includes>
+    <incdepgraph>
+      <node id="1">
+        <label>bsp/Inc/UART.h</label>
+        <link refid="UART_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>stm32xx_hal.h</label>
+      </node>
+    </incdepgraph>
+    <sectiondef kind="enum">
+      <memberdef kind="enum" id="UART_8h_1af7d6a356f1601c95992ab6990320fd35" prot="public" static="no" strong="no">
+        <type></type>
+        <name>uart_status_t</name>
+        <enumvalue id="UART_8h_1af7d6a356f1601c95992ab6990320fd35a6a641fc3fa375d4bf149fb18fc290b55" prot="public">
+          <name>UART_ERR</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="UART_8h_1af7d6a356f1601c95992ab6990320fd35a525187963c0aaa465f2a35b30b894d07" prot="public">
+          <name>UART_OK</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="UART_8h_1af7d6a356f1601c95992ab6990320fd35a9928134997b763cbf346c8f3e14d9128" prot="public">
+          <name>UART_SENT</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="UART_8h_1af7d6a356f1601c95992ab6990320fd35acfb8d3a96884efae4bd347830bd8a4c4" prot="public">
+          <name>UART_RECV</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="UART_8h_1af7d6a356f1601c95992ab6990320fd35ac2ecba679f3dca11555b66d448198d0c" prot="public">
+          <name>UART_EMPTY</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/UART.h" line="53" column="1" bodyfile="bsp/Inc/UART.h" bodystart="53" bodyend="59"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="UART_8h_1a1847d0a7e7670fccc3a7ffac3ba1e016" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref></type>
+        <definition>uart_status_t uart_init</definition>
+        <argsstring>(UART_HandleTypeDef *handle)</argsstring>
+        <name>uart_init</name>
+        <param>
+          <type>UART_HandleTypeDef *</type>
+          <declname>handle</declname>
+        </param>
+        <briefdescription>
+<para>Initializes the specified UART peripheral. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>handle</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the UART handle. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>uart_status_t Returns UART_OK on success, UART_ERR on failure. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/UART.h" line="88" column="15" declfile="bsp/Inc/UART.h" declline="88" declcolumn="15"/>
+      </memberdef>
+      <memberdef kind="function" id="UART_8h_1a3e4de921d10fbf0a69f2e9466530e732" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref></type>
+        <definition>uart_status_t uart_deinit</definition>
+        <argsstring>(UART_HandleTypeDef *handle)</argsstring>
+        <name>uart_deinit</name>
+        <param>
+          <type>UART_HandleTypeDef *</type>
+          <declname>handle</declname>
+        </param>
+        <briefdescription>
+<para>Deinitializes the specified UART peripheral. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>handle</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the UART handle. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>uart_status_t Returns UART_OK on success, UART_ERR on failure. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/UART.h" line="96" column="15" declfile="bsp/Inc/UART.h" declline="96" declcolumn="15"/>
+      </memberdef>
+      <memberdef kind="function" id="UART_8h_1a71553a13e21823d5ca910beb2abacb32" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref></type>
+        <definition>uart_status_t uart_send</definition>
+        <argsstring>(UART_HandleTypeDef *handle, const uint8_t *data, uint8_t length, TickType_t delay_ticks)</argsstring>
+        <name>uart_send</name>
+        <param>
+          <type>UART_HandleTypeDef *</type>
+          <declname>handle</declname>
+        </param>
+        <param>
+          <type>const uint8_t *</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>uint8_t</type>
+          <declname>length</declname>
+        </param>
+        <param>
+          <type>TickType_t</type>
+          <declname>delay_ticks</declname>
+        </param>
+        <briefdescription>
+<para>Transmits data over UART. If a transmission is in progress, data will be queued. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>handle</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the UART handle. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>data</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the buffer containing data to send. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>length</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of bytes to transmit. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>delay_ticks</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Ticks to wait if TX queue is full (0 = no wait, portMAX_DELAY = wait indefinitely). </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>uart_status_t Returns UART_SENT on queued/sent, UART_ERR on failure. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/UART.h" line="107" column="15" declfile="bsp/Inc/UART.h" declline="107" declcolumn="15"/>
+      </memberdef>
+      <memberdef kind="function" id="UART_8h_1aa8ffbc96e17f61846c7b405b69488f18" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref></type>
+        <definition>uart_status_t uart_recv</definition>
+        <argsstring>(UART_HandleTypeDef *handle, uint8_t *data, uint8_t length, TickType_t delay_ticks)</argsstring>
+        <name>uart_recv</name>
+        <param>
+          <type>UART_HandleTypeDef *</type>
+          <declname>handle</declname>
+        </param>
+        <param>
+          <type>uint8_t *</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>uint8_t</type>
+          <declname>length</declname>
+        </param>
+        <param>
+          <type>TickType_t</type>
+          <declname>delay_ticks</declname>
+        </param>
+        <briefdescription>
+<para>Receives data from UART RX queue. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>handle</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the UART handle. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>data</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to buffer where received data will be stored. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>length</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of bytes to read. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>delay_ticks</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Ticks to wait for data (0 = non-blocking, portMAX_DELAY = block until available). </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>uart_status_t Returns UART_RECV on success, UART_EMPTY if RX queue empty, UART_ERR on failure. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/UART.h" line="118" column="15" declfile="bsp/Inc/UART.h" declline="118" declcolumn="15"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Provides functions for initializing, sending, receiving, and managing UART peripherals. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This file contains the API for working with UART (Universal Asynchronous Receiver/Transmitter) peripherals in an embedded system, including initialization, data transmission, reception, and queue-based handling (e.g., with FreeRTOS). The functions support flexible configuration of UART instances and integration with user-provided GPIO initialization.</para>
+<para><bold>Initialization</bold>:</para>
+<para><itemizedlist>
+<listitem><para>Call <computeroutput><ref refid="UART_8h_1a1847d0a7e7670fccc3a7ffac3ba1e016" kindref="member">uart_init()</ref></computeroutput> to configure and initialize a specific UART peripheral.</para>
+</listitem><listitem><para>Provide the UART configuration structure and handle for the target peripheral.</para>
+</listitem><listitem><para>Returns a status code indicating success or failure.</para>
+</listitem></itemizedlist>
+</para>
+<para><bold>Data Transmission</bold>:</para>
+<para><itemizedlist>
+<listitem><para>Call <computeroutput><ref refid="UART_8h_1a71553a13e21823d5ca910beb2abacb32" kindref="member">uart_send()</ref></computeroutput> to queue data for transmission over the UART.</para>
+</listitem><listitem><para>The function will transmit when the peripheral is available.</para>
+</listitem></itemizedlist>
+</para>
+<para><bold>Data Reception</bold>:</para>
+<para><itemizedlist>
+<listitem><para>Call <computeroutput><ref refid="UART_8h_1aa8ffbc96e17f61846c7b405b69488f18" kindref="member">uart_recv()</ref></computeroutput> to read received data from the RX queue.</para>
+</listitem><listitem><para>Specify the number of bytes to read.</para>
+</listitem></itemizedlist>
+</para>
+<para><bold>Deinitialization</bold>:</para>
+<para><itemizedlist>
+<listitem><para>Call <computeroutput><ref refid="UART_8h_1a3e4de921d10fbf0a69f2e9466530e732" kindref="member">uart_deinit()</ref></computeroutput> to reset the UART peripheral and release resources.</para>
+</listitem></itemizedlist>
+</para>
+<para><simplesect kind="note"><para></para>
+</simplesect>
+<itemizedlist>
+<listitem><para>The functions <computeroutput>HAL_UART_MspGPIOInit()</computeroutput> and <computeroutput>HAL_UART_MspGPIODeInit()</computeroutput> must be overridden by the user to provide GPIO initialization/deinitialization for the selected UART, including enabling clocks and calling <computeroutput>HAL_GPIO_Init()</computeroutput> with the correct <computeroutput>GPIO_InitTypeDef</computeroutput>.</para>
+</listitem><listitem><para>Each UART peripheral is currently intended for use by a single task since only one receive queue exists. </para>
+</listitem></itemizedlist>
+</para>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>UART_H_</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>UART_H_</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;stm32xx_hal.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>!defined(UART4)<sp/>&amp;&amp;<sp/>!defined(USART1)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/>#error<sp/>&quot;[CONFIG]<sp/>UART<sp/>not<sp/>enabled<sp/>on<sp/>this<sp/>chip.&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>UART4<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Return<sp/>codes<sp/>for<sp/>UART<sp/>operations</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="53" refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="54" refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35a6a641fc3fa375d4bf149fb18fc290b55" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35a6a641fc3fa375d4bf149fb18fc290b55" kindref="member">UART_ERR</ref>,</highlight></codeline>
+<codeline lineno="55" refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35a525187963c0aaa465f2a35b30b894d07" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35a525187963c0aaa465f2a35b30b894d07" kindref="member">UART_OK</ref>,</highlight></codeline>
+<codeline lineno="56" refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35a9928134997b763cbf346c8f3e14d9128" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35a9928134997b763cbf346c8f3e14d9128" kindref="member">UART_SENT</ref>,</highlight></codeline>
+<codeline lineno="57" refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35acfb8d3a96884efae4bd347830bd8a4c4" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35acfb8d3a96884efae4bd347830bd8a4c4" kindref="member">UART_RECV</ref>,</highlight></codeline>
+<codeline lineno="58" refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35ac2ecba679f3dca11555b66d448198d0c" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35ac2ecba679f3dca11555b66d448198d0c" kindref="member">UART_EMPTY</ref>,</highlight></codeline>
+<codeline lineno="59"><highlight class="normal">}<sp/><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref>;</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"></highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight><highlight class="comment">//<sp/>uart<sp/>handlers</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>UART4</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="63"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>UART_HandleTypeDef*<sp/>huart4;</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>UART4<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>UART5</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>UART_HandleTypeDef*<sp/>huart5;</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>UART5<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="69"><highlight class="normal"></highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>USART1</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="71"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>UART_HandleTypeDef*<sp/>husart1;</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>USART1<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>USART2</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="75"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>UART_HandleTypeDef*<sp/>husart2;</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>USART2<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="77"><highlight class="normal"></highlight></codeline>
+<codeline lineno="78"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>USART3</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>UART_HandleTypeDef*<sp/>husart3;</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>USART3<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="81"><highlight class="normal"></highlight></codeline>
+<codeline lineno="88" refid="UART_8h_1a1847d0a7e7670fccc3a7ffac3ba1e016" refkind="member"><highlight class="normal"><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref><sp/><ref refid="UART_8h_1a1847d0a7e7670fccc3a7ffac3ba1e016" kindref="member">uart_init</ref>(UART_HandleTypeDef*<sp/>handle);</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"></highlight></codeline>
+<codeline lineno="96" refid="UART_8h_1a3e4de921d10fbf0a69f2e9466530e732" refkind="member"><highlight class="normal"><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref><sp/><ref refid="UART_8h_1a3e4de921d10fbf0a69f2e9466530e732" kindref="member">uart_deinit</ref>(UART_HandleTypeDef*<sp/>handle);</highlight></codeline>
+<codeline lineno="97"><highlight class="normal"></highlight></codeline>
+<codeline lineno="107" refid="UART_8h_1a71553a13e21823d5ca910beb2abacb32" refkind="member"><highlight class="normal"><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref><sp/><ref refid="UART_8h_1a71553a13e21823d5ca910beb2abacb32" kindref="member">uart_send</ref>(UART_HandleTypeDef*<sp/>handle,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint8_t*<sp/>data,<sp/>uint8_t<sp/>length,<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"></highlight></codeline>
+<codeline lineno="118" refid="UART_8h_1aa8ffbc96e17f61846c7b405b69488f18" refkind="member"><highlight class="normal"><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref><sp/><ref refid="UART_8h_1aa8ffbc96e17f61846c7b405b69488f18" kindref="member">uart_recv</ref>(UART_HandleTypeDef*<sp/>handle,<sp/>uint8_t*<sp/>data,<sp/>uint8_t<sp/>length,<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
+<codeline lineno="119"><highlight class="normal"></highlight></codeline>
+<codeline lineno="120"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>UART_H_<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
+    </programlisting>
+    <location file="bsp/Inc/UART.h"/>
+  </compounddef>
+</doxygen>

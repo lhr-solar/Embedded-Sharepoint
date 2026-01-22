@@ -1,0 +1,319 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="ADC_8h" kind="file" language="C++">
+    <compoundname>ADC.h</compoundname>
+    <includes local="yes">stm32xx_hal.h</includes>
+    <includes local="yes">FreeRTOS.h</includes>
+    <includes local="yes">queue.h</includes>
+    <includes local="yes">semphr.h</includes>
+    <incdepgraph>
+      <node id="1">
+        <label>bsp/Inc/ADC.h</label>
+        <link refid="ADC_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>FreeRTOS.h</label>
+      </node>
+      <node id="4">
+        <label>queue.h</label>
+      </node>
+      <node id="5">
+        <label>semphr.h</label>
+      </node>
+      <node id="2">
+        <label>stm32xx_hal.h</label>
+      </node>
+    </incdepgraph>
+    <sectiondef kind="enum">
+      <memberdef kind="enum" id="ADC_8h_1a2a6a6e8349f02b5b357746a44166280c" prot="public" static="no" strong="no">
+        <type></type>
+        <name>adc_status_t</name>
+        <enumvalue id="ADC_8h_1a2a6a6e8349f02b5b357746a44166280ca58c6c49250945a68ba73bfe0428bc8b9" prot="public">
+          <name>ADC_OK</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="ADC_8h_1a2a6a6e8349f02b5b357746a44166280ca7e986c4c85cccb23929409914bbeaf7d" prot="public">
+          <name>ADC_INIT_FAIL</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="ADC_8h_1a2a6a6e8349f02b5b357746a44166280ca4b815a2e811451218dada0dfe02daa62" prot="public">
+          <name>ADC_DEINIT_FAIL</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="ADC_8h_1a2a6a6e8349f02b5b357746a44166280ca17153fe264a0868b7c003463fc02c82c" prot="public">
+          <name>ADC_CHANNEL_CONFIG_FAIL</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="ADC_8h_1a2a6a6e8349f02b5b357746a44166280ca889d0460b7ccb9e3260b6ba2ae134d9a" prot="public">
+          <name>ADC_INTERRUPT_BUSY</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="ADC_8h_1a2a6a6e8349f02b5b357746a44166280ca5134a117384387ad568e47edb741349d" prot="public">
+          <name>ADC_INTERRUPT_TIMEOUT</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="ADC_8h_1a2a6a6e8349f02b5b357746a44166280cae4c164e447d917034d2a8be9ed5050ad" prot="public">
+          <name>ADC_INTERRUPT_ERROR</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="ADC_8h_1a2a6a6e8349f02b5b357746a44166280ca39962f1ad4291ddf543bea23eb9cb9f4" prot="public">
+          <name>ADC_QUEUE_FULL</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/ADC.h" line="47" column="1" bodyfile="bsp/Inc/ADC.h" bodystart="47" bodyend="57"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="ADC_8h_1ac5e19f5884436af48e51d03d387c528c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280c" kindref="member">adc_status_t</ref></type>
+        <definition>adc_status_t adc_init</definition>
+        <argsstring>(ADC_InitTypeDef *init, ADC_HandleTypeDef *hadc)</argsstring>
+        <name>adc_init</name>
+        <param>
+          <type>ADC_InitTypeDef *</type>
+          <declname>init</declname>
+        </param>
+        <param>
+          <type>ADC_HandleTypeDef *</type>
+          <declname>hadc</declname>
+        </param>
+        <briefdescription>
+<para>Initializes the ADC peripheral with the specified configuration. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function sets up the ADC hardware according to the parameters in the initialization structure and prepares it for subsequent conversions.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>init</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>ADC initialization structure containing configuration parameters. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>hadc</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the ADC handle structure.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>adc_status_t Returns ADC_OK on success or an appropriate error code. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/ADC.h" line="80" column="14" declfile="bsp/Inc/ADC.h" declline="80" declcolumn="14"/>
+      </memberdef>
+      <memberdef kind="function" id="ADC_8h_1ae33dfb81b03a4b81c607347162ac5422" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280c" kindref="member">adc_status_t</ref></type>
+        <definition>adc_status_t adc_read</definition>
+        <argsstring>(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef *h, QueueHandle_t *q)</argsstring>
+        <name>adc_read</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>channel</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>samplingTime</declname>
+        </param>
+        <param>
+          <type>ADC_HandleTypeDef *</type>
+          <declname>h</declname>
+        </param>
+        <param>
+          <type>QueueHandle_t *</type>
+          <declname>q</declname>
+        </param>
+        <briefdescription>
+<para>Reads a value from the specified ADC channel. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function triggers a conversion on the given channel and stores the converted result in the provided queue. It supports both blocking and non-blocking operation depending on configuration.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>channel</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>ADC channel to read from. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>samplingTime</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>ADC sampling time (in ADC clock cycles). </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>h</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the ADC handle structure. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>q</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the user-provided queue handle for result storage.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>adc_status_t Returns ADC_OK on success or an appropriate error code. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/ADC.h" line="96" column="14" declfile="bsp/Inc/ADC.h" declline="96" declcolumn="14"/>
+      </memberdef>
+      <memberdef kind="function" id="ADC_8h_1ac2d2036424929332c6b0f6e7f9dd3feb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280c" kindref="member">adc_status_t</ref></type>
+        <definition>adc_status_t adc_deinit</definition>
+        <argsstring>(ADC_HandleTypeDef *h)</argsstring>
+        <name>adc_deinit</name>
+        <param>
+          <type>ADC_HandleTypeDef *</type>
+          <declname>h</declname>
+        </param>
+        <briefdescription>
+<para>Deinitializes the ADC peripheral. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function releases resources used by the ADC and resets it to its default uninitialized state.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>h</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the ADC handle structure.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>adc_status_t Returns ADC_OK on success or an appropriate error code. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/ADC.h" line="108" column="14" declfile="bsp/Inc/ADC.h" declline="108" declcolumn="14"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Provides functions for initializing, reading, and managing ADC peripherals. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This file contains the API for working with ADC (Analog-to-Digital Converter) peripherals in an embedded system, including initialization, reading channels, and queue-based data handling (e.g., with FreeRTOS). The functions support flexible configuration of ADC instances, sampling times, and data storage mechanisms.</para>
+<para><bold>Initialization</bold>:</para>
+<para><itemizedlist>
+<listitem><para>Call <computeroutput><ref refid="ADC_8h_1ac5e19f5884436af48e51d03d387c528c" kindref="member">adc_init()</ref></computeroutput> to configure and initialize a specific ADC instance.</para>
+</listitem><listitem><para>Provide the ADC configuration structure and handle for the target peripheral.</para>
+</listitem><listitem><para>Returns a status code indicating success or failure.</para>
+</listitem></itemizedlist>
+</para>
+<para><bold>Reading ADC Values</bold>:</para>
+<para><itemizedlist>
+<listitem><para>Call <computeroutput><ref refid="ADC_8h_1ae33dfb81b03a4b81c607347162ac5422" kindref="member">adc_read()</ref></computeroutput> to sample a channel on the ADC.</para>
+</listitem><listitem><para>Provide the channel number, sampling time, ADC handle, and storage/queue reference.</para>
+</listitem><listitem><para>Returns a status code indicating success or failure.</para>
+</listitem></itemizedlist>
+</para>
+<para><bold>Data Retrieval</bold>:</para>
+<para><itemizedlist>
+<listitem><para>If using queues, use standard FreeRTOS queue functions (e.g., <computeroutput>xQueueReceive()</computeroutput>) to retrieve ADC readings.</para>
+</listitem><listitem><para>Supports both blocking and non-blocking behavior depending on the chosen timeout.</para>
+</listitem></itemizedlist>
+</para>
+<para><simplesect kind="note"><para>This driver is designed to work with multiple ADC instances and supports integration with an RTOS for asynchronous data handling. </para>
+</simplesect>
+</para>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>_ADC_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>_ADC_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;stm32xx_hal.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;FreeRTOS.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;queue.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;semphr.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight></codeline>
+<codeline lineno="47" refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280c" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="48" refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280ca58c6c49250945a68ba73bfe0428bc8b9" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280ca58c6c49250945a68ba73bfe0428bc8b9" kindref="member">ADC_OK</ref>,</highlight></codeline>
+<codeline lineno="49" refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280ca7e986c4c85cccb23929409914bbeaf7d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280ca7e986c4c85cccb23929409914bbeaf7d" kindref="member">ADC_INIT_FAIL</ref>,</highlight></codeline>
+<codeline lineno="50" refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280ca4b815a2e811451218dada0dfe02daa62" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280ca4b815a2e811451218dada0dfe02daa62" kindref="member">ADC_DEINIT_FAIL</ref>,</highlight></codeline>
+<codeline lineno="51" refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280ca17153fe264a0868b7c003463fc02c82c" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280ca17153fe264a0868b7c003463fc02c82c" kindref="member">ADC_CHANNEL_CONFIG_FAIL</ref>,</highlight></codeline>
+<codeline lineno="52" refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280ca889d0460b7ccb9e3260b6ba2ae134d9a" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280ca889d0460b7ccb9e3260b6ba2ae134d9a" kindref="member">ADC_INTERRUPT_BUSY</ref>,</highlight></codeline>
+<codeline lineno="53" refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280ca5134a117384387ad568e47edb741349d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280ca5134a117384387ad568e47edb741349d" kindref="member">ADC_INTERRUPT_TIMEOUT</ref>,</highlight></codeline>
+<codeline lineno="54" refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280cae4c164e447d917034d2a8be9ed5050ad" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280cae4c164e447d917034d2a8be9ed5050ad" kindref="member">ADC_INTERRUPT_ERROR</ref>,</highlight></codeline>
+<codeline lineno="55" refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280ca39962f1ad4291ddf543bea23eb9cb9f4" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280ca39962f1ad4291ddf543bea23eb9cb9f4" kindref="member">ADC_QUEUE_FULL</ref>,</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"></highlight></codeline>
+<codeline lineno="57"><highlight class="normal">}<sp/><ref refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280c" kindref="member">adc_status_t</ref>;</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"></highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>ADC1</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>ADC_HandleTypeDef*<sp/>hadc1;</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>ADC1<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>ADC2</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="63"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>ADC_HandleTypeDef*<sp/>hadc2;</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>ADC2<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>ADC3</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>ADC_HandleTypeDef*<sp/>hadc3;</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>ADC3<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="68"><highlight class="normal"></highlight></codeline>
+<codeline lineno="80" refid="ADC_8h_1ac5e19f5884436af48e51d03d387c528c" refkind="member"><highlight class="normal"><ref refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280c" kindref="member">adc_status_t</ref><sp/><ref refid="ADC_8h_1ac5e19f5884436af48e51d03d387c528c" kindref="member">adc_init</ref>(ADC_InitTypeDef<sp/>*init,<sp/>ADC_HandleTypeDef*<sp/>hadc);</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"></highlight></codeline>
+<codeline lineno="96" refid="ADC_8h_1ae33dfb81b03a4b81c607347162ac5422" refkind="member"><highlight class="normal"><ref refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280c" kindref="member">adc_status_t</ref><sp/><ref refid="ADC_8h_1ae33dfb81b03a4b81c607347162ac5422" kindref="member">adc_read</ref>(uint32_t<sp/>channel,<sp/>uint32_t<sp/>samplingTime,<sp/>ADC_HandleTypeDef<sp/>*h,<sp/>QueueHandle_t<sp/>*q);</highlight></codeline>
+<codeline lineno="97"><highlight class="normal"></highlight></codeline>
+<codeline lineno="108" refid="ADC_8h_1ac2d2036424929332c6b0f6e7f9dd3feb" refkind="member"><highlight class="normal"><ref refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280c" kindref="member">adc_status_t</ref><sp/><ref refid="ADC_8h_1ac2d2036424929332c6b0f6e7f9dd3feb" kindref="member">adc_deinit</ref>(ADC_HandleTypeDef<sp/>*h);</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"></highlight></codeline>
+<codeline lineno="110"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+    </programlisting>
+    <location file="bsp/Inc/ADC.h"/>
+  </compounddef>
+</doxygen>

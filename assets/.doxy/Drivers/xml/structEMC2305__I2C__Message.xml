@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structEMC2305__I2C__Message" kind="struct" language="C++" prot="public">
+    <compoundname>EMC2305_I2C_Message</compoundname>
+    <includes refid="EMC2305_8h" local="no">EMC2305.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structEMC2305__I2C__Message_1a34ecfb22eaca3890c72356c563d293b5" prot="public" static="no" mutable="no">
+        <type><ref refid="structEMC2305__HandleTypeDef" kindref="compound">EMC2305_HandleTypeDef</ref> *</type>
+        <definition>EMC2305_HandleTypeDef* EMC2305_I2C_Message::chip</definition>
+        <argsstring></argsstring>
+        <name>chip</name>
+        <qualifiedname>EMC2305_I2C_Message::chip</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/EMC2305.h" line="30" column="27" bodyfile="driver/Inc/EMC2305.h" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structEMC2305__I2C__Message_1ad8f52d222800b5156a989b8ebd4e3c31" prot="public" static="no" mutable="no">
+        <type><ref refid="EMC2305_8h_1a62a7d34d9619d86de025e603f82f29a0" kindref="member">EMC2305_I2C_OP</ref></type>
+        <definition>EMC2305_I2C_OP EMC2305_I2C_Message::operation</definition>
+        <argsstring></argsstring>
+        <name>operation</name>
+        <qualifiedname>EMC2305_I2C_Message::operation</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/EMC2305.h" line="31" column="20" bodyfile="driver/Inc/EMC2305.h" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structEMC2305__I2C__Message_1a63d140d53e8d8fdb6013d5a13c4e43ab" prot="public" static="no" mutable="no">
+        <type>uint8_t</type>
+        <definition>uint8_t EMC2305_I2C_Message::reg_addr</definition>
+        <argsstring></argsstring>
+        <name>reg_addr</name>
+        <qualifiedname>EMC2305_I2C_Message::reg_addr</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/EMC2305.h" line="32" column="13" bodyfile="driver/Inc/EMC2305.h" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structEMC2305__I2C__Message_1ae750273054a8e9c0e7d8e9d3ff0a4a9d" prot="public" static="no" mutable="no">
+        <type>uint8_t</type>
+        <definition>uint8_t EMC2305_I2C_Message::write_data</definition>
+        <argsstring></argsstring>
+        <name>write_data</name>
+        <qualifiedname>EMC2305_I2C_Message::write_data</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/EMC2305.h" line="33" column="13" bodyfile="driver/Inc/EMC2305.h" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structEMC2305__I2C__Message_1afefe21602800bfa2b8238e096fe4d31b" prot="public" static="no" mutable="no">
+        <type>uint8_t *</type>
+        <definition>uint8_t* EMC2305_I2C_Message::read_data</definition>
+        <argsstring></argsstring>
+        <name>read_data</name>
+        <qualifiedname>EMC2305_I2C_Message::read_data</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/EMC2305.h" line="34" column="13" bodyfile="driver/Inc/EMC2305.h" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structEMC2305__I2C__Message_1a9f417fe1c66d46fdf881f7036663752a" prot="public" static="no" mutable="no">
+        <type>uint8_t</type>
+        <definition>uint8_t EMC2305_I2C_Message::semaphore_index</definition>
+        <argsstring></argsstring>
+        <name>semaphore_index</name>
+        <qualifiedname>EMC2305_I2C_Message::semaphore_index</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/EMC2305.h" line="35" column="13" bodyfile="driver/Inc/EMC2305.h" bodystart="35" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="2">
+        <label>EMC2305_HandleTypeDef</label>
+        <link refid="structEMC2305__HandleTypeDef"/>
+      </node>
+      <node id="1">
+        <label>EMC2305_I2C_Message</label>
+        <link refid="structEMC2305__I2C__Message"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>chip</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="driver/Inc/EMC2305.h" line="29" column="1" bodyfile="driver/Inc/EMC2305.h" bodystart="29" bodyend="36"/>
+    <listofallmembers>
+      <member refid="structEMC2305__I2C__Message_1a34ecfb22eaca3890c72356c563d293b5" prot="public" virt="non-virtual"><scope>EMC2305_I2C_Message</scope><name>chip</name></member>
+      <member refid="structEMC2305__I2C__Message_1ad8f52d222800b5156a989b8ebd4e3c31" prot="public" virt="non-virtual"><scope>EMC2305_I2C_Message</scope><name>operation</name></member>
+      <member refid="structEMC2305__I2C__Message_1afefe21602800bfa2b8238e096fe4d31b" prot="public" virt="non-virtual"><scope>EMC2305_I2C_Message</scope><name>read_data</name></member>
+      <member refid="structEMC2305__I2C__Message_1a63d140d53e8d8fdb6013d5a13c4e43ab" prot="public" virt="non-virtual"><scope>EMC2305_I2C_Message</scope><name>reg_addr</name></member>
+      <member refid="structEMC2305__I2C__Message_1a9f417fe1c66d46fdf881f7036663752a" prot="public" virt="non-virtual"><scope>EMC2305_I2C_Message</scope><name>semaphore_index</name></member>
+      <member refid="structEMC2305__I2C__Message_1ae750273054a8e9c0e7d8e9d3ff0a4a9d" prot="public" virt="non-virtual"><scope>EMC2305_I2C_Message</scope><name>write_data</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

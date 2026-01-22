@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structEMC2305__Fan__Config2" kind="struct" language="C++" prot="public">
+    <compoundname>EMC2305_Fan_Config2</compoundname>
+    <includes refid="EMC2305_8h" local="no">EMC2305.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structEMC2305__Fan__Config2_1a2687c63ca36290078cb6f27c0b922551" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool EMC2305_Fan_Config2::enable_ramp_rate_ctl</definition>
+        <argsstring></argsstring>
+        <name>enable_ramp_rate_ctl</name>
+        <qualifiedname>EMC2305_Fan_Config2::enable_ramp_rate_ctl</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/EMC2305.h" line="131" column="10" bodyfile="driver/Inc/EMC2305.h" bodystart="131" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structEMC2305__Fan__Config2_1a12fd9a02dd50d50c090dad00a8987f7e" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool EMC2305_Fan_Config2::enable_glitch_filter</definition>
+        <argsstring></argsstring>
+        <name>enable_glitch_filter</name>
+        <qualifiedname>EMC2305_Fan_Config2::enable_glitch_filter</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/EMC2305.h" line="132" column="10" bodyfile="driver/Inc/EMC2305.h" bodystart="132" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structEMC2305__Fan__Config2_1addddc4366dcb7bb94685794d72f5dc18" prot="public" static="no" mutable="no">
+        <type><ref refid="EMC2305_8h_1a268f13e45f871d6a3dc10d3e7c038101" kindref="member">EMC2305_DPT</ref></type>
+        <definition>EMC2305_DPT EMC2305_Fan_Config2::derivative_options</definition>
+        <argsstring></argsstring>
+        <name>derivative_options</name>
+        <qualifiedname>EMC2305_Fan_Config2::derivative_options</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/EMC2305.h" line="133" column="17" bodyfile="driver/Inc/EMC2305.h" bodystart="133" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structEMC2305__Fan__Config2_1a42c12800a8e62fc834c8514172a20b30" prot="public" static="no" mutable="no">
+        <type><ref refid="EMC2305_8h_1af9215fdc65aefb36521e6ec49a9030ca" kindref="member">EMC2305_ERG</ref></type>
+        <definition>EMC2305_ERG EMC2305_Fan_Config2::error_window</definition>
+        <argsstring></argsstring>
+        <name>error_window</name>
+        <qualifiedname>EMC2305_Fan_Config2::error_window</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/EMC2305.h" line="134" column="17" bodyfile="driver/Inc/EMC2305.h" bodystart="134" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="driver/Inc/EMC2305.h" line="130" column="1" bodyfile="driver/Inc/EMC2305.h" bodystart="130" bodyend="135"/>
+    <listofallmembers>
+      <member refid="structEMC2305__Fan__Config2_1addddc4366dcb7bb94685794d72f5dc18" prot="public" virt="non-virtual"><scope>EMC2305_Fan_Config2</scope><name>derivative_options</name></member>
+      <member refid="structEMC2305__Fan__Config2_1a12fd9a02dd50d50c090dad00a8987f7e" prot="public" virt="non-virtual"><scope>EMC2305_Fan_Config2</scope><name>enable_glitch_filter</name></member>
+      <member refid="structEMC2305__Fan__Config2_1a2687c63ca36290078cb6f27c0b922551" prot="public" virt="non-virtual"><scope>EMC2305_Fan_Config2</scope><name>enable_ramp_rate_ctl</name></member>
+      <member refid="structEMC2305__Fan__Config2_1a42c12800a8e62fc834c8514172a20b30" prot="public" virt="non-virtual"><scope>EMC2305_Fan_Config2</scope><name>error_window</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

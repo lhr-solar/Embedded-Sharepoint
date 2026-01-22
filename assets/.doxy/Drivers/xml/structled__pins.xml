@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structled__pins" kind="struct" language="C++" prot="public">
+    <compoundname>led_pins</compoundname>
+    <includes refid="SevenSegment_8h" local="no">SevenSegment.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structled__pins_1a5c0d02187b359c85da456fc78e1e5895" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t led_pins::Pin</definition>
+        <argsstring></argsstring>
+        <name>Pin</name>
+        <qualifiedname>led_pins::Pin</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/SevenSegment.h" line="11" column="13" bodyfile="driver/Inc/SevenSegment.h" bodystart="11" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structled__pins_1a9c16d693f4d4e212bb2ad76b922a1b16" prot="public" static="no" mutable="no">
+        <type>GPIO_TypeDef *</type>
+        <definition>GPIO_TypeDef* led_pins::Port</definition>
+        <argsstring></argsstring>
+        <name>Port</name>
+        <qualifiedname>led_pins::Port</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/SevenSegment.h" line="12" column="17" bodyfile="driver/Inc/SevenSegment.h" bodystart="12" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="driver/Inc/SevenSegment.h" line="10" column="1" bodyfile="driver/Inc/SevenSegment.h" bodystart="10" bodyend="13"/>
+    <listofallmembers>
+      <member refid="structled__pins_1a5c0d02187b359c85da456fc78e1e5895" prot="public" virt="non-virtual"><scope>led_pins</scope><name>Pin</name></member>
+      <member refid="structled__pins_1a9c16d693f4d4e212bb2ad76b922a1b16" prot="public" virt="non-virtual"><scope>led_pins</scope><name>Port</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

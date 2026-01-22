@@ -1,0 +1,238 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="SevenSegment_8h" kind="file" language="C++">
+    <compoundname>SevenSegment.h</compoundname>
+    <includes local="yes">stm32xx_hal.h</includes>
+    <incdepgraph>
+      <node id="1">
+        <label>driver/Inc/SevenSegment.h</label>
+        <link refid="SevenSegment_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>stm32xx_hal.h</label>
+      </node>
+    </incdepgraph>
+    <innerclass refid="structled__pins" prot="public">led_pins</innerclass>
+    <sectiondef kind="define">
+      <memberdef kind="define" id="SevenSegment_8h_1a28fe36c5363479783340e0f921aa4116" prot="public" static="no">
+        <name>NUMBER_SEVEN_SEGMENTS</name>
+        <initializer>2</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/SevenSegment.h" line="6" column="9" bodyfile="driver/Inc/SevenSegment.h" bodystart="6" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="SevenSegment_8h_1a02177381c49128b4f2223b3d302c9b94" prot="public" static="no">
+        <name>NUMBER_SEGMENTS</name>
+        <initializer>7</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/SevenSegment.h" line="7" column="9" bodyfile="driver/Inc/SevenSegment.h" bodystart="7" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="SevenSegment_8h_1a55bfdcfe7613d75fb48ec99c7bf4dd5e" prot="public" static="no">
+        <name>MAX_NUM</name>
+        <initializer>99</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/SevenSegment.h" line="8" column="9" bodyfile="driver/Inc/SevenSegment.h" bodystart="8" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="enum">
+      <memberdef kind="enum" id="SevenSegment_8h_1a4f0dca78b998ba41b1799a11f1287c87" prot="public" static="no" strong="no">
+        <type></type>
+        <name>display</name>
+        <enumvalue id="SevenSegment_8h_1a4f0dca78b998ba41b1799a11f1287c87aa192f9fea728b1c40954c265cb2e9bc4" prot="public">
+          <name>display_0</name>
+          <initializer>= 0</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="SevenSegment_8h_1a4f0dca78b998ba41b1799a11f1287c87af3ffbafebaec963ba8455e04ee4c8af4" prot="public">
+          <name>display_1</name>
+          <initializer>= 1</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="SevenSegment_8h_1a4f0dca78b998ba41b1799a11f1287c87a0f8bf69b92b0341b8e5257a872f7c887" prot="public">
+          <name>display_off</name>
+          <initializer>= 2</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/SevenSegment.h" line="15" column="1" bodyfile="driver/Inc/SevenSegment.h" bodystart="15" bodyend="19"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="SevenSegment_8h_1a3f96a6c3e9b4c946423e4897105f9f7c" prot="public" static="no">
+        <type>struct <ref refid="structled__pins" kindref="compound">led_pins</ref></type>
+        <definition>typedef struct led_pins led_t</definition>
+        <argsstring></argsstring>
+        <name>led_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/SevenSegment.h" line="21" column="23" bodyfile="driver/Inc/SevenSegment.h" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="SevenSegment_8h_1aaba8c1f6196020108bd880a7e9330688" prot="public" static="no">
+        <type>enum <ref refid="SevenSegment_8h_1a4f0dca78b998ba41b1799a11f1287c87" kindref="member">display</ref></type>
+        <definition>typedef enum display display_t</definition>
+        <argsstring></argsstring>
+        <name>display_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/SevenSegment.h" line="22" column="21" bodyfile="driver/Inc/SevenSegment.h" bodystart="22" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="SevenSegment_8h_1a4532d49b3915f4cb4337609a4c936eaf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void SevenSegment_Init</definition>
+        <argsstring>()</argsstring>
+        <name>SevenSegment_Init</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/SevenSegment.h" line="26" column="6" declfile="driver/Inc/SevenSegment.h" declline="26" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="SevenSegment_8h_1aca267e1b7d59fd5efa7356af94ef2517" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint8_t</type>
+        <definition>uint8_t displayNum_SevenSegment</definition>
+        <argsstring>(display_t display, uint8_t number)</argsstring>
+        <name>displayNum_SevenSegment</name>
+        <param>
+          <type><ref refid="SevenSegment_8h_1aaba8c1f6196020108bd880a7e9330688" kindref="member">display_t</ref></type>
+          <declname>display</declname>
+        </param>
+        <param>
+          <type>uint8_t</type>
+          <declname>number</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/SevenSegment.h" line="33" column="9" declfile="driver/Inc/SevenSegment.h" declline="33" declcolumn="9"/>
+      </memberdef>
+      <memberdef kind="function" id="SevenSegment_8h_1a1497aea251cd88d378328ee89dcc7c2d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint8_t</type>
+        <definition>uint8_t displayTwoNum_SevenSegment</definition>
+        <argsstring>(uint8_t number)</argsstring>
+        <name>displayTwoNum_SevenSegment</name>
+        <param>
+          <type>uint8_t</type>
+          <declname>number</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/SevenSegment.h" line="36" column="9" declfile="driver/Inc/SevenSegment.h" declline="36" declcolumn="9"/>
+      </memberdef>
+      <memberdef kind="function" id="SevenSegment_8h_1a99e5fe70283d86880aa585ed48ac42f1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void off_SevenSegment</definition>
+        <argsstring>(uint8_t display)</argsstring>
+        <name>off_SevenSegment</name>
+        <param>
+          <type>uint8_t</type>
+          <declname>display</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/SevenSegment.h" line="40" column="6" declfile="driver/Inc/SevenSegment.h" declline="40" declcolumn="6"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#ifndef<sp/>SEVENSEGMENTHEADER_H<sp/><sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SEVENSEGMENTHEADER_H<sp/><sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;stm32xx_hal.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight></codeline>
+<codeline lineno="6" refid="SevenSegment_8h_1a28fe36c5363479783340e0f921aa4116" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>NUMBER_SEVEN_SEGMENTS<sp/>2</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7" refid="SevenSegment_8h_1a02177381c49128b4f2223b3d302c9b94" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>NUMBER_SEGMENTS<sp/>7</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8" refid="SevenSegment_8h_1a55bfdcfe7613d75fb48ec99c7bf4dd5e" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>MAX_NUM<sp/>99</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight></codeline>
+<codeline lineno="10" refid="structled__pins" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structled__pins" kindref="compound">led_pins</ref><sp/>{<sp/></highlight></codeline>
+<codeline lineno="11" refid="structled__pins_1a5c0d02187b359c85da456fc78e1e5895" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structled__pins_1a5c0d02187b359c85da456fc78e1e5895" kindref="member">Pin</ref>;</highlight></codeline>
+<codeline lineno="12" refid="structled__pins_1a9c16d693f4d4e212bb2ad76b922a1b16" refkind="member"><highlight class="normal"><sp/><sp/><sp/>GPIO_TypeDef<sp/>*<ref refid="structled__pins_1a9c16d693f4d4e212bb2ad76b922a1b16" kindref="member">Port</ref>;</highlight></codeline>
+<codeline lineno="13"><highlight class="normal">};<sp/></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight></codeline>
+<codeline lineno="15" refid="SevenSegment_8h_1a4f0dca78b998ba41b1799a11f1287c87" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/><ref refid="SevenSegment_8h_1a4f0dca78b998ba41b1799a11f1287c87" kindref="member">display</ref><sp/>{</highlight></codeline>
+<codeline lineno="16" refid="SevenSegment_8h_1a4f0dca78b998ba41b1799a11f1287c87aa192f9fea728b1c40954c265cb2e9bc4" refkind="member"><highlight class="normal"><sp/><sp/><sp/><ref refid="SevenSegment_8h_1a4f0dca78b998ba41b1799a11f1287c87aa192f9fea728b1c40954c265cb2e9bc4" kindref="member">display_0</ref><sp/>=<sp/>0,</highlight></codeline>
+<codeline lineno="17" refid="SevenSegment_8h_1a4f0dca78b998ba41b1799a11f1287c87af3ffbafebaec963ba8455e04ee4c8af4" refkind="member"><highlight class="normal"><sp/><sp/><sp/><ref refid="SevenSegment_8h_1a4f0dca78b998ba41b1799a11f1287c87af3ffbafebaec963ba8455e04ee4c8af4" kindref="member">display_1</ref><sp/>=<sp/>1,</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/><sp/><ref refid="SevenSegment_8h_1a4f0dca78b998ba41b1799a11f1287c87a0f8bf69b92b0341b8e5257a872f7c887" kindref="member">display_off</ref><sp/>=<sp/>2</highlight></codeline>
+<codeline lineno="19" refid="SevenSegment_8h_1a4f0dca78b998ba41b1799a11f1287c87a0f8bf69b92b0341b8e5257a872f7c887" refkind="member"><highlight class="normal">};<sp/></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight></codeline>
+<codeline lineno="21" refid="SevenSegment_8h_1a3f96a6c3e9b4c946423e4897105f9f7c" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structled__pins" kindref="compound">led_pins</ref><sp/><ref refid="structled__pins" kindref="compound">led_t</ref>;</highlight></codeline>
+<codeline lineno="22" refid="SevenSegment_8h_1aaba8c1f6196020108bd880a7e9330688" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/><ref refid="SevenSegment_8h_1a4f0dca78b998ba41b1799a11f1287c87" kindref="member">display</ref><sp/><ref refid="SevenSegment_8h_1aaba8c1f6196020108bd880a7e9330688" kindref="member">display_t</ref>;</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="comment">//Initializes<sp/>the<sp/>LEDs<sp/>for<sp/>the<sp/>Seven<sp/>Segment<sp/>LED.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26" refid="SevenSegment_8h_1a4532d49b3915f4cb4337609a4c936eaf" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="SevenSegment_8h_1a4532d49b3915f4cb4337609a4c936eaf" kindref="member">SevenSegment_Init</ref>();</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="comment">/*Displays<sp/>a<sp/>number<sp/>on<sp/>the<sp/>Seven<sp/>Segment<sp/>LEDs.<sp/>Display<sp/>refers<sp/>to<sp/>display_0<sp/>or<sp/>display_1<sp/></highlight></codeline>
+<codeline lineno="30"><highlight class="comment"><sp/>and<sp/>number<sp/>is<sp/>the<sp/>number<sp/>0-99<sp/>that<sp/>the<sp/>LEDs<sp/>will<sp/>display.<sp/></highlight></codeline>
+<codeline lineno="31"><highlight class="comment"><sp/>If<sp/>the<sp/>number<sp/>is<sp/>larger<sp/>than<sp/>10,<sp/>display<sp/>input<sp/>does<sp/>not<sp/>matter<sp/>since<sp/>it<sp/>will<sp/>use<sp/>both<sp/>displays.<sp/></highlight></codeline>
+<codeline lineno="32"><highlight class="comment"><sp/>Returns<sp/>1<sp/>for<sp/>success<sp/>and<sp/>0<sp/>for<sp/>failure.*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33" refid="SevenSegment_8h_1aca267e1b7d59fd5efa7356af94ef2517" refkind="member"><highlight class="normal">uint8_t<sp/><ref refid="SevenSegment_8h_1aca267e1b7d59fd5efa7356af94ef2517" kindref="member">displayNum_SevenSegment</ref>(<ref refid="SevenSegment_8h_1aaba8c1f6196020108bd880a7e9330688" kindref="member">display_t</ref><sp/><ref refid="SevenSegment_8h_1a4f0dca78b998ba41b1799a11f1287c87" kindref="member">display</ref>,<sp/>uint8_t<sp/>number);</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight><highlight class="comment">//Displays<sp/>a<sp/>2<sp/>number<sp/>input<sp/>and<sp/>returns<sp/>0<sp/>for<sp/>failure<sp/>and<sp/>1<sp/>for<sp/>success</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="36" refid="SevenSegment_8h_1a1497aea251cd88d378328ee89dcc7c2d" refkind="member"><highlight class="normal">uint8_t<sp/><ref refid="SevenSegment_8h_1a1497aea251cd88d378328ee89dcc7c2d" kindref="member">displayTwoNum_SevenSegment</ref>(uint8_t<sp/>number);</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>This<sp/>function<sp/>turns<sp/>off<sp/>the<sp/>LEDs<sp/>in<sp/>one<sp/>or<sp/>both<sp/>displays.<sp/></highlight></codeline>
+<codeline lineno="39"><highlight class="comment">Input<sp/>is<sp/>display_0,<sp/>display_1,<sp/>or<sp/>display_off<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40" refid="SevenSegment_8h_1a99e5fe70283d86880aa585ed48ac42f1" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="SevenSegment_8h_1a99e5fe70283d86880aa585ed48ac42f1" kindref="member">off_SevenSegment</ref>(uint8_t<sp/><ref refid="SevenSegment_8h_1a4f0dca78b998ba41b1799a11f1287c87" kindref="member">display</ref>);</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">//<sp/>SEVEN_SEGMENT_H</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="driver/Inc/SevenSegment.h"/>
+  </compounddef>
+</doxygen>

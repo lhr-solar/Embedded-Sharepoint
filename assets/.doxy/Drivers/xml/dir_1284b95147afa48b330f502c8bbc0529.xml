@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="dir_1284b95147afa48b330f502c8bbc0529" kind="dir">
+    <compoundname>driver</compoundname>
+    <innerdir refid="dir_63ffe06a04b97e03324a2ad2f10a5002">driver/Inc</innerdir>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="driver/"/>
+  </compounddef>
+</doxygen>

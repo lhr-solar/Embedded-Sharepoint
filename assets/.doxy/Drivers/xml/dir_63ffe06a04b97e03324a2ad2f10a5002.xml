@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="dir_63ffe06a04b97e03324a2ad2f10a5002" kind="dir">
+    <compoundname>driver/Inc</compoundname>
+    <innerfile refid="EMC2305_8h">EMC2305.h</innerfile>
+    <innerfile refid="printf_8h">printf.h</innerfile>
+    <innerfile refid="SevenSegment_8h">SevenSegment.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="driver/Inc/"/>
+  </compounddef>
+</doxygen>

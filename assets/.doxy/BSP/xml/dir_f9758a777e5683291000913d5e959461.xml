@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="dir_f9758a777e5683291000913d5e959461" kind="dir">
+    <compoundname>bsp/Inc</compoundname>
+    <innerfile refid="ADC_8h">ADC.h</innerfile>
+    <innerfile refid="CAN_8h">CAN.h</innerfile>
+    <innerfile refid="UART_8h">UART.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="bsp/Inc/"/>
+  </compounddef>
+</doxygen>

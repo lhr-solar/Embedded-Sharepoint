@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structEMC2305__Global__Config" kind="struct" language="C++" prot="public">
+    <compoundname>EMC2305_Global_Config</compoundname>
+    <includes refid="EMC2305_8h" local="no">EMC2305.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structEMC2305__Global__Config_1a05bfa6fc25870e03b74385661099384c" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool EMC2305_Global_Config::alert_mask</definition>
+        <argsstring></argsstring>
+        <name>alert_mask</name>
+        <qualifiedname>EMC2305_Global_Config::alert_mask</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/EMC2305.h" line="53" column="10" bodyfile="driver/Inc/EMC2305.h" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structEMC2305__Global__Config_1ae4e76decbc2a0572affbf479a7382257" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool EMC2305_Global_Config::disable_smbus_timeout</definition>
+        <argsstring></argsstring>
+        <name>disable_smbus_timeout</name>
+        <qualifiedname>EMC2305_Global_Config::disable_smbus_timeout</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/EMC2305.h" line="54" column="10" bodyfile="driver/Inc/EMC2305.h" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structEMC2305__Global__Config_1ae6c8a99cb46a06b4f1a1be05fd45d545" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool EMC2305_Global_Config::watchdog_enable</definition>
+        <argsstring></argsstring>
+        <name>watchdog_enable</name>
+        <qualifiedname>EMC2305_Global_Config::watchdog_enable</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/EMC2305.h" line="55" column="10" bodyfile="driver/Inc/EMC2305.h" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structEMC2305__Global__Config_1a35d79c493a1750b132e566707c6b4a85" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool EMC2305_Global_Config::drive_ext_clk</definition>
+        <argsstring></argsstring>
+        <name>drive_ext_clk</name>
+        <qualifiedname>EMC2305_Global_Config::drive_ext_clk</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/EMC2305.h" line="56" column="10" bodyfile="driver/Inc/EMC2305.h" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structEMC2305__Global__Config_1a1b55f220f1d4c9db574af4e8f875ee2c" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool EMC2305_Global_Config::use_ext_clk</definition>
+        <argsstring></argsstring>
+        <name>use_ext_clk</name>
+        <qualifiedname>EMC2305_Global_Config::use_ext_clk</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/EMC2305.h" line="57" column="10" bodyfile="driver/Inc/EMC2305.h" bodystart="57" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="driver/Inc/EMC2305.h" line="52" column="1" bodyfile="driver/Inc/EMC2305.h" bodystart="52" bodyend="58"/>
+    <listofallmembers>
+      <member refid="structEMC2305__Global__Config_1a05bfa6fc25870e03b74385661099384c" prot="public" virt="non-virtual"><scope>EMC2305_Global_Config</scope><name>alert_mask</name></member>
+      <member refid="structEMC2305__Global__Config_1ae4e76decbc2a0572affbf479a7382257" prot="public" virt="non-virtual"><scope>EMC2305_Global_Config</scope><name>disable_smbus_timeout</name></member>
+      <member refid="structEMC2305__Global__Config_1a35d79c493a1750b132e566707c6b4a85" prot="public" virt="non-virtual"><scope>EMC2305_Global_Config</scope><name>drive_ext_clk</name></member>
+      <member refid="structEMC2305__Global__Config_1a1b55f220f1d4c9db574af4e8f875ee2c" prot="public" virt="non-virtual"><scope>EMC2305_Global_Config</scope><name>use_ext_clk</name></member>
+      <member refid="structEMC2305__Global__Config_1ae6c8a99cb46a06b4f1a1be05fd45d545" prot="public" virt="non-virtual"><scope>EMC2305_Global_Config</scope><name>watchdog_enable</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

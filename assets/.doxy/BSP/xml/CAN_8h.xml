@@ -1,0 +1,436 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="CAN_8h" kind="file" language="C++">
+    <compoundname>CAN.h</compoundname>
+    <includes local="yes">stm32xx_hal.h</includes>
+    <incdepgraph>
+      <node id="1">
+        <label>bsp/Inc/CAN.h</label>
+        <link refid="CAN_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>stm32xx_hal.h</label>
+      </node>
+    </incdepgraph>
+    <sectiondef kind="enum">
+      <memberdef kind="enum" id="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" prot="public" static="no" strong="no">
+        <type></type>
+        <name>can_status_t</name>
+        <enumvalue id="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1dabf22114c59d1a69b0796b28d3486fbf8" prot="public">
+          <name>CAN_ERR</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1dab7db0e53b737c0839be931efcb79246e" prot="public">
+          <name>CAN_OK</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1daff29dfa90428ea73bc47e54b8ee0d43e" prot="public">
+          <name>CAN_SENT</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1da51244aed50587da9655e1559b3a3daec" prot="public">
+          <name>CAN_RECV</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1da24485c2f3c00368d084bcb14d3a56bf9" prot="public">
+          <name>CAN_EMPTY</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN.h" line="56" column="1" bodyfile="bsp/Inc/CAN.h" bodystart="56" bodyend="62"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="CAN_8h_1adb98f482f84dbc90394b3878fe84d6a3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref></type>
+        <definition>can_status_t can_init</definition>
+        <argsstring>(CAN_HandleTypeDef *handle, CAN_FilterTypeDef *filter)</argsstring>
+        <name>can_init</name>
+        <param>
+          <type>CAN_HandleTypeDef *</type>
+          <declname>handle</declname>
+        </param>
+        <param>
+          <type>CAN_FilterTypeDef *</type>
+          <declname>filter</declname>
+        </param>
+        <briefdescription>
+<para>Initializes the CAN peripheral. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function initializes the CAN peripheral, sets up send/receive queues, configures the HAL CAN driver, applies the filter configuration, and enables CAN interrupts.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>handle</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the CAN handle structure. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>filter</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the CAN filter configuration structure.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>can_status_t Returns CAN_OK on success, CAN_ERR on failure. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN.h" line="89" column="14" declfile="bsp/Inc/CAN.h" declline="89" declcolumn="14"/>
+      </memberdef>
+      <memberdef kind="function" id="CAN_8h_1aeeba29faf74a0c662365149bf0f5780e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref></type>
+        <definition>can_status_t can_deinit</definition>
+        <argsstring>(CAN_HandleTypeDef *handle)</argsstring>
+        <name>can_deinit</name>
+        <param>
+          <type>CAN_HandleTypeDef *</type>
+          <declname>handle</declname>
+        </param>
+        <briefdescription>
+<para>Deinitializes the CAN peripheral. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function deinitializes the HAL CAN driver and disables CAN interrupts.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>handle</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the CAN handle structure.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>can_status_t Returns CAN_OK on success, CAN_ERR on failure. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN.h" line="100" column="14" declfile="bsp/Inc/CAN.h" declline="100" declcolumn="14"/>
+      </memberdef>
+      <memberdef kind="function" id="CAN_8h_1a95783594f75e8feb9203af4ec4e28aed" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref></type>
+        <definition>can_status_t can_start</definition>
+        <argsstring>(CAN_HandleTypeDef *handle)</argsstring>
+        <name>can_start</name>
+        <param>
+          <type>CAN_HandleTypeDef *</type>
+          <declname>handle</declname>
+        </param>
+        <briefdescription>
+<para>Starts the CAN peripheral. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Activates the CAN peripheral so it can transmit and receive messages.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>handle</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the CAN handle structure.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>can_status_t Returns CAN_OK on success, CAN_ERR on failure. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN.h" line="111" column="14" declfile="bsp/Inc/CAN.h" declline="111" declcolumn="14"/>
+      </memberdef>
+      <memberdef kind="function" id="CAN_8h_1adee9ce61f8d5f4b4cdfc97c8d7b0dafc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref></type>
+        <definition>can_status_t can_stop</definition>
+        <argsstring>(CAN_HandleTypeDef *handle)</argsstring>
+        <name>can_stop</name>
+        <param>
+          <type>CAN_HandleTypeDef *</type>
+          <declname>handle</declname>
+        </param>
+        <briefdescription>
+<para>Stops the CAN peripheral. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Stops the CAN peripheral; the configuration is preserved, but the peripheral will not process messages or trigger interrupts.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>handle</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the CAN handle structure.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>can_status_t Returns CAN_OK on success, CAN_ERR on failure. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN.h" line="123" column="14" declfile="bsp/Inc/CAN.h" declline="123" declcolumn="14"/>
+      </memberdef>
+      <memberdef kind="function" id="CAN_8h_1a5308363109455439841baf22512c415f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref></type>
+        <definition>can_status_t can_send</definition>
+        <argsstring>(CAN_HandleTypeDef *handle, const CAN_TxHeaderTypeDef *header, const uint8_t data[], TickType_t delay_ticks)</argsstring>
+        <name>can_send</name>
+        <param>
+          <type>CAN_HandleTypeDef *</type>
+          <declname>handle</declname>
+        </param>
+        <param>
+          <type>const CAN_TxHeaderTypeDef *</type>
+          <declname>header</declname>
+        </param>
+        <param>
+          <type>const uint8_t</type>
+          <declname>data</declname>
+          <array>[]</array>
+        </param>
+        <param>
+          <type>TickType_t</type>
+          <declname>delay_ticks</declname>
+        </param>
+        <briefdescription>
+<para>Sends a CAN message. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Places a CAN message into the transmit mailbox if available, otherwise queues it in the send queue for later transmission.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>handle</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the CAN handle structure. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>header</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the CAN transmit header structure. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>data</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Array containing the data to send. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>delay_ticks</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Maximum delay to wait if queue is full (FreeRTOS ticks).</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>can_status_t Returns CAN_SENT if message was successfully sent or queued, CAN_ERR on failure. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN.h" line="139" column="14" declfile="bsp/Inc/CAN.h" declline="139" declcolumn="14"/>
+      </memberdef>
+      <memberdef kind="function" id="CAN_8h_1a9891bb23cf1be1a31110671519764f74" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref></type>
+        <definition>can_status_t can_recv</definition>
+        <argsstring>(CAN_HandleTypeDef *handle, uint16_t id, CAN_RxHeaderTypeDef *header, uint8_t data[], TickType_t delay_ticks)</argsstring>
+        <name>can_recv</name>
+        <param>
+          <type>CAN_HandleTypeDef *</type>
+          <declname>handle</declname>
+        </param>
+        <param>
+          <type>uint16_t</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>CAN_RxHeaderTypeDef *</type>
+          <declname>header</declname>
+        </param>
+        <param>
+          <type>uint8_t</type>
+          <declname>data</declname>
+          <array>[]</array>
+        </param>
+        <param>
+          <type>TickType_t</type>
+          <declname>delay_ticks</declname>
+        </param>
+        <briefdescription>
+<para>Receives a CAN message. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Reads a message from the receive queue corresponding to the specified ID. Supports blocking or non-blocking behavior depending on delay_ticks.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>handle</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the CAN handle structure. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>CAN identifier of the message to receive. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>header</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to a CAN_RxHeaderTypeDef structure to store the received header. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>data</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Array to store the received data. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>delay_ticks</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Maximum delay to wait if queue is empty (FreeRTOS ticks).</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>can_status_t Returns CAN_RECV if a message was received, CAN_EMPTY if the queue was empty, CAN_ERR on failure or invalid ID. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN.h" line="159" column="14" declfile="bsp/Inc/CAN.h" declline="159" declcolumn="14"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>CAN peripheral driver for LHRS embedded systems. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This driver provides initialization, deinitialization, start/stop, sending, and receiving functionality for CAN peripherals.</para>
+<para>Function Descriptions:</para>
+<para><itemizedlist>
+<listitem><para>Init: Initializes the CAN peripheral given the configuration (does not start the CAN peripheral).</para>
+</listitem><listitem><para>DeInit: Deinitializes the CAN peripheral; resets configuration to default values.</para>
+</listitem><listitem><para>Start: Starts the CAN peripheral, enabling interrupts and message handling.</para>
+</listitem><listitem><para>Stop: Stops the CAN peripheral; configuration is unchanged, but interrupts and message handling are disabled.</para>
+</listitem><listitem><para>Send: Prepares a message to be sent when the CAN peripheral is ready (puts it into a queue).</para>
+</listitem><listitem><para>Recv: Reads a message from the queue depending on ID.</para>
+</listitem></itemizedlist>
+</para>
+<para>How to Use This Driver:</para>
+<para><orderedlist>
+<listitem><para>Init to initialize the CAN peripheral.</para>
+</listitem><listitem><para>Start to activate the CAN peripheral.</para>
+</listitem><listitem><para>Use Send, Recv, Stop, and Start as needed.</para>
+</listitem><listitem><para>DeInit to deinitialize the CAN peripheral.</para>
+</listitem></orderedlist>
+</para>
+<para>Usage Notes:</para>
+<para><itemizedlist>
+<listitem><para>CAN2 is usually a slave CAN, sharing transistors with CAN1. Ensure CAN1 is initialized before CAN2.</para>
+</listitem><listitem><para>CAN2 often shares filter banks with CAN1; carefully consider filter configurations passed to can_init.</para>
+</listitem><listitem><para>CAN3 is usually a master CAN; no sharing considerations are needed.</para>
+</listitem><listitem><para>This driver uses a macro to define which messages a CAN interface should receive. See can1_recv_entries.h for examples. Ensure entries align with filter configurations. </para>
+</listitem></itemizedlist>
+</para>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>CAN_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CAN_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;stm32xx_hal.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>!defined(CAN1)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/>#error<sp/>&quot;[CONFIG]<sp/>CAN<sp/>not<sp/>enabled<sp/>on<sp/>this<sp/>chip.&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>CAN1<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"></highlight><highlight class="comment">//<sp/>return<sp/>code<sp/>for<sp/>can<sp/>driver</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="56" refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="57" refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1dabf22114c59d1a69b0796b28d3486fbf8" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1dabf22114c59d1a69b0796b28d3486fbf8" kindref="member">CAN_ERR</ref>,<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>unsuccessful<sp/>operation</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="58" refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1dab7db0e53b737c0839be931efcb79246e" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1dab7db0e53b737c0839be931efcb79246e" kindref="member">CAN_OK</ref>,</highlight></codeline>
+<codeline lineno="59" refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1daff29dfa90428ea73bc47e54b8ee0d43e" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1daff29dfa90428ea73bc47e54b8ee0d43e" kindref="member">CAN_SENT</ref>,<sp/><sp/></highlight><highlight class="comment">//<sp/>successful<sp/>send</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="60" refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1da51244aed50587da9655e1559b3a3daec" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1da51244aed50587da9655e1559b3a3daec" kindref="member">CAN_RECV</ref>,<sp/><sp/></highlight><highlight class="comment">//<sp/>successful<sp/>recieve</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="61" refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1da24485c2f3c00368d084bcb14d3a56bf9" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1da24485c2f3c00368d084bcb14d3a56bf9" kindref="member">CAN_EMPTY</ref>,<sp/></highlight><highlight class="comment">//<sp/>recieved<sp/>nothing<sp/>with<sp/>no<sp/>errors</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal">}<sp/><ref refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref>;</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"></highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight><highlight class="comment">//<sp/>can<sp/>handlers</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>CAN1</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>CAN_HandleTypeDef*<sp/>hcan1;</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>CAN1<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="68"><highlight class="normal"></highlight></codeline>
+<codeline lineno="69"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>CAN2</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>CAN_HandleTypeDef*<sp/>hcan2;</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>CAN2<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>CAN3</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>CAN_HandleTypeDef*<sp/>hcan3;</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>CAN3<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight></codeline>
+<codeline lineno="89" refid="CAN_8h_1adb98f482f84dbc90394b3878fe84d6a3" refkind="member"><highlight class="normal"><ref refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN_8h_1adb98f482f84dbc90394b3878fe84d6a3" kindref="member">can_init</ref>(CAN_HandleTypeDef*<sp/>handle,<sp/>CAN_FilterTypeDef*<sp/>filter);</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"></highlight></codeline>
+<codeline lineno="100" refid="CAN_8h_1aeeba29faf74a0c662365149bf0f5780e" refkind="member"><highlight class="normal"><ref refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN_8h_1aeeba29faf74a0c662365149bf0f5780e" kindref="member">can_deinit</ref>(CAN_HandleTypeDef*<sp/>handle);</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"></highlight></codeline>
+<codeline lineno="111" refid="CAN_8h_1a95783594f75e8feb9203af4ec4e28aed" refkind="member"><highlight class="normal"><ref refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN_8h_1a95783594f75e8feb9203af4ec4e28aed" kindref="member">can_start</ref>(CAN_HandleTypeDef*<sp/>handle);</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"></highlight></codeline>
+<codeline lineno="123" refid="CAN_8h_1adee9ce61f8d5f4b4cdfc97c8d7b0dafc" refkind="member"><highlight class="normal"><ref refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN_8h_1adee9ce61f8d5f4b4cdfc97c8d7b0dafc" kindref="member">can_stop</ref>(CAN_HandleTypeDef*<sp/>handle);</highlight></codeline>
+<codeline lineno="124"><highlight class="normal"></highlight></codeline>
+<codeline lineno="139" refid="CAN_8h_1a5308363109455439841baf22512c415f" refkind="member"><highlight class="normal"><ref refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN_8h_1a5308363109455439841baf22512c415f" kindref="member">can_send</ref>(CAN_HandleTypeDef*<sp/>handle,</highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>CAN_TxHeaderTypeDef*<sp/>header,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint8_t<sp/>data[],</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"></highlight></codeline>
+<codeline lineno="159" refid="CAN_8h_1a9891bb23cf1be1a31110671519764f74" refkind="member"><highlight class="normal"><ref refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN_8h_1a9891bb23cf1be1a31110671519764f74" kindref="member">can_recv</ref>(CAN_HandleTypeDef*<sp/>handle,<sp/>uint16_t<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,</highlight></codeline>
+<codeline lineno="160"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>CAN_RxHeaderTypeDef*<sp/>header,<sp/>uint8_t<sp/>data[],</highlight></codeline>
+<codeline lineno="161"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
+<codeline lineno="162"><highlight class="normal"></highlight></codeline>
+<codeline lineno="163"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>CAN_H<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
+    </programlisting>
+    <location file="bsp/Inc/CAN.h"/>
+  </compounddef>
+</doxygen>

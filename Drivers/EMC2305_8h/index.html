@@ -1,0 +1,4538 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Software library shared among LHRS embedded systems">
+      
+      
+        <meta name="author" content="LHR - Solar">
+      
+      
+      
+        <link rel="prev" href="../../EMC2305/">
+      
+      
+        <link rel="next" href="../SevenSegment_8h/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../LHRs.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>EMC2305 - Embedded Sharepoint Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#file-emc2305h" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Embedded Sharepoint Documentation" class="md-header__button md-logo" aria-label="Embedded Sharepoint Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Embedded Sharepoint Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              EMC2305
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Embedded Sharepoint Documentation" class="md-nav__button md-logo" aria-label="Embedded Sharepoint Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Embedded Sharepoint Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    README
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../FlashAndTheBug/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flashing and Debugging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SharepointSubmodule/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Adding Embedded Sharepoint
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CubeMX/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CubeMX
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../STM32_Ports/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    STM32 Ports
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CAN Messages
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CAN Messages
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dbcEditor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Editing DBC Files
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DBC/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Signals & Messages
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Drivers Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Drivers Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../EMC2305/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EMC2305 Usage Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EMC2305
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EMC2305
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Classes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#public-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public Types
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#public-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public Functions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#macros" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Macros
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#public-types-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public Types Documentation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Public Types Documentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#enum-emc2305_dpt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enum EMC2305_DPT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enum-emc2305_edg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enum EMC2305_EDG
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enum-emc2305_erg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enum EMC2305_ERG
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enum-emc2305_fan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enum EMC2305_Fan
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enum-emc2305_i2c_op" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enum EMC2305_I2C_OP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enum-emc2305_pid_gain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enum EMC2305_PID_Gain
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enum-emc2305_pwm_basefreq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enum EMC2305_PWM_BaseFreq
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enum-emc2305_rng" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enum EMC2305_RNG
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enum-emc2305_status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enum EMC2305_Status
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enum-emc2305_udt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enum EMC2305_UDT
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#public-functions-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public Functions Documentation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Public Functions Documentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_enableswlock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_EnableSWLock
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_getfanpwm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_GetFanPWM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_getfanrpm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_GetFanRPM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_getfanstatus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_GetFanStatus
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_i2c_masterrxcpltcallback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_I2C_MasterRxCpltCallback
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_i2c_mastertxcpltcallback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_I2C_MasterTxCpltCallback
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_i2c_worker_task" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_I2C_Worker_Task
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_init" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_Init
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_readreg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_ReadReg
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_setfanconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_SetFanConfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_setfanpwm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_SetFanPWM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_setfanrpm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_SetFanRPM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_setglobalconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_SetGlobalConfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_setpwmbasefrequency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_SetPWMBaseFrequency
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_setpwmoutputmode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_SetPWMOutputMode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_writereg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_WriteReg
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#macro-definition-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Macro Definition Documentation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Macro Definition Documentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_cfg_dis_to" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CFG_DIS_TO
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_cfg_dreck" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CFG_DRECK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_cfg_mask_alert" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CFG_MASK_ALERT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_cfg_useck" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CFG_USECK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_cfg_wd_en" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CFG_WD_EN
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_config1_edg_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CONFIG1_EDG_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_config1_enag_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CONFIG1_ENAG_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_config1_rng_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CONFIG1_RNG_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_config1_udt_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CONFIG1_UDT_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_config2_dpt_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CONFIG2_DPT_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_config2_enrc_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CONFIG2_ENRC_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_config2_erg_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CONFIG2_ERG_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_config2_ghen_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CONFIG2_GHEN_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_fan1_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_FAN1_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_fan2_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_FAN2_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_fan3_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_FAN3_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_fan4_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_FAN4_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_fan5_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_FAN5_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_fan_address_offset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_FAN_ADDRESS_OFFSET
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_fan_reg_addr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_FAN_REG_ADDR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_i2c_timeout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_I2C_TIMEOUT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_invalid_fan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_INVALID_FAN
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_max_rpm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_MAX_RPM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_min_rpm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_MIN_RPM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_pwm_fan1_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_PWM_FAN1_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_pwm_fan1_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_PWM_FAN1_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_pwm_fan2_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_PWM_FAN2_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_pwm_fan2_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_PWM_FAN2_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_pwm_fan3_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_PWM_FAN3_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_pwm_fan3_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_PWM_FAN3_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_pwm_fan4_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_PWM_FAN4_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_pwm_fan4_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_PWM_FAN4_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_pwm_fan5_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_PWM_FAN5_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_pwm_fan5_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_PWM_FAN5_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_queue_item_size" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_QUEUE_ITEM_SIZE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_queue_length" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_QUEUE_LENGTH
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_CONFIGURATION
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_drive_fail_status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_DRIVE_FAIL_STATUS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_config1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_CONFIG1
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_config2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_CONFIG2
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_drvfail_h" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_DRVFAIL_H
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_drvfail_l" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_DRVFAIL_L
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_max_step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_MAX_STEP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_min_drive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_MIN_DRIVE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_setting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_SETTING
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_spin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_SPIN
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_tach_reading_h" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_TACH_READING_H
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_tach_reading_l" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_TACH_READING_L
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_tach_target_h" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_TACH_TARGET_H
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_tach_target_l" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_TACH_TARGET_L
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_valid_tach" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_VALID_TACH
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan_interrupt_enable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN_INTERRUPT_ENABLE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan_spin_status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN_SPIN_STATUS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan_stall_status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN_STALL_STATUS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan_status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN_STATUS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_gain1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_GAIN1
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_manufacturer_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_MANUFACTURER_ID
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_product_feat" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_PRODUCT_FEAT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_product_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_PRODUCT_ID
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_pwm1_divide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_PWM1_DIVIDE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_pwm_basef123" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_PWM_BASEF123
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_pwm_basef45" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_PWM_BASEF45
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_pwm_output_config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_PWM_OUTPUT_CONFIG
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_pwm_polarity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_PWM_POLARITY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_revision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_REVISION
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_sw_lock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_SW_LOCK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_semaphore_pool_size" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_SEMAPHORE_POOL_SIZE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_stat_drvfail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_STAT_DRVFAIL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_stat_fnspin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_STAT_FNSPIN
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_stat_fnstl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_STAT_FNSTL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_stat_watch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_STAT_WATCH
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_swl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_SWL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_tach_mult" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_TACH_MULT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_tach_rpm_conv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_TACH_RPM_CONV
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SevenSegment_8h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SevenSegment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../printf_8h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    printf
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    BSP Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    BSP Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../BSP/ADC_8h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../BSP/CAN_8h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CAN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../BSP/UART_8h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UART
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Classes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#public-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public Types
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#public-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public Functions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#macros" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Macros
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#public-types-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public Types Documentation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Public Types Documentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#enum-emc2305_dpt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enum EMC2305_DPT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enum-emc2305_edg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enum EMC2305_EDG
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enum-emc2305_erg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enum EMC2305_ERG
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enum-emc2305_fan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enum EMC2305_Fan
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enum-emc2305_i2c_op" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enum EMC2305_I2C_OP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enum-emc2305_pid_gain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enum EMC2305_PID_Gain
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enum-emc2305_pwm_basefreq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enum EMC2305_PWM_BaseFreq
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enum-emc2305_rng" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enum EMC2305_RNG
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enum-emc2305_status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enum EMC2305_Status
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enum-emc2305_udt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enum EMC2305_UDT
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#public-functions-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public Functions Documentation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Public Functions Documentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_enableswlock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_EnableSWLock
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_getfanpwm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_GetFanPWM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_getfanrpm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_GetFanRPM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_getfanstatus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_GetFanStatus
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_i2c_masterrxcpltcallback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_I2C_MasterRxCpltCallback
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_i2c_mastertxcpltcallback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_I2C_MasterTxCpltCallback
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_i2c_worker_task" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_I2C_Worker_Task
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_init" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_Init
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_readreg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_ReadReg
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_setfanconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_SetFanConfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_setfanpwm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_SetFanPWM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_setfanrpm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_SetFanRPM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_setglobalconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_SetGlobalConfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_setpwmbasefrequency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_SetPWMBaseFrequency
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_setpwmoutputmode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_SetPWMOutputMode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-emc2305_writereg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function EMC2305_WriteReg
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#macro-definition-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Macro Definition Documentation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Macro Definition Documentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_cfg_dis_to" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CFG_DIS_TO
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_cfg_dreck" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CFG_DRECK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_cfg_mask_alert" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CFG_MASK_ALERT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_cfg_useck" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CFG_USECK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_cfg_wd_en" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CFG_WD_EN
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_config1_edg_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CONFIG1_EDG_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_config1_enag_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CONFIG1_ENAG_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_config1_rng_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CONFIG1_RNG_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_config1_udt_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CONFIG1_UDT_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_config2_dpt_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CONFIG2_DPT_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_config2_enrc_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CONFIG2_ENRC_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_config2_erg_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CONFIG2_ERG_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_config2_ghen_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_CONFIG2_GHEN_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_fan1_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_FAN1_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_fan2_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_FAN2_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_fan3_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_FAN3_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_fan4_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_FAN4_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_fan5_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_FAN5_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_fan_address_offset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_FAN_ADDRESS_OFFSET
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_fan_reg_addr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_FAN_REG_ADDR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_i2c_timeout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_I2C_TIMEOUT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_invalid_fan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_INVALID_FAN
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_max_rpm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_MAX_RPM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_min_rpm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_MIN_RPM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_pwm_fan1_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_PWM_FAN1_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_pwm_fan1_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_PWM_FAN1_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_pwm_fan2_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_PWM_FAN2_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_pwm_fan2_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_PWM_FAN2_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_pwm_fan3_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_PWM_FAN3_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_pwm_fan3_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_PWM_FAN3_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_pwm_fan4_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_PWM_FAN4_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_pwm_fan4_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_PWM_FAN4_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_pwm_fan5_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_PWM_FAN5_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_pwm_fan5_shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_PWM_FAN5_SHIFT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_queue_item_size" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_QUEUE_ITEM_SIZE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_queue_length" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_QUEUE_LENGTH
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_CONFIGURATION
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_drive_fail_status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_DRIVE_FAIL_STATUS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_config1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_CONFIG1
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_config2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_CONFIG2
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_drvfail_h" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_DRVFAIL_H
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_drvfail_l" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_DRVFAIL_L
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_max_step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_MAX_STEP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_min_drive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_MIN_DRIVE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_setting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_SETTING
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_spin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_SPIN
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_tach_reading_h" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_TACH_READING_H
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_tach_reading_l" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_TACH_READING_L
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_tach_target_h" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_TACH_TARGET_H
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_tach_target_l" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_TACH_TARGET_L
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan1_valid_tach" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN1_VALID_TACH
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan_interrupt_enable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN_INTERRUPT_ENABLE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan_spin_status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN_SPIN_STATUS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan_stall_status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN_STALL_STATUS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_fan_status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_FAN_STATUS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_gain1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_GAIN1
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_manufacturer_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_MANUFACTURER_ID
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_product_feat" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_PRODUCT_FEAT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_product_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_PRODUCT_ID
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_pwm1_divide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_PWM1_DIVIDE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_pwm_basef123" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_PWM_BASEF123
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_pwm_basef45" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_PWM_BASEF45
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_pwm_output_config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_PWM_OUTPUT_CONFIG
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_pwm_polarity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_PWM_POLARITY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_revision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_REVISION
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_reg_sw_lock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_REG_SW_LOCK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_semaphore_pool_size" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_SEMAPHORE_POOL_SIZE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_stat_drvfail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_STAT_DRVFAIL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_stat_fnspin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_STAT_FNSPIN
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_stat_fnstl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_STAT_FNSTL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_stat_watch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_STAT_WATCH
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_swl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_SWL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_tach_mult" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_TACH_MULT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-emc2305_tach_rpm_conv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define EMC2305_TACH_RPM_CONV
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="file-emc2305h">File EMC2305.h</h1>
+<p><a href="../files/"><strong>FileList</strong></a> <strong>&gt;</strong> <a href="../dir_1284b95147afa48b330f502c8bbc0529/"><strong>driver</strong></a> <strong>&gt;</strong> <a href="../dir_63ffe06a04b97e03324a2ad2f10a5002/"><strong>Inc</strong></a> <strong>&gt;</strong> <a href="./"><strong>EMC2305.h</strong></a></p>
+<p><a href="../EMC2305_8h_source/">Go to the source code of this file</a></p>
+<ul>
+<li><code>#include &lt;stdint.h&gt;</code></li>
+<li><code>#include "stm32xx_hal.h"</code></li>
+<li><code>#include "FreeRTOS.h"</code></li>
+</ul>
+<h2 id="classes">Classes</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Type</th>
+<th style="text-align: left;">Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">struct</td>
+<td style="text-align: left;"><a href="../structEMC2305__Fan__Config1/"><strong>EMC2305_Fan_Config1</strong></a> <br></td>
+</tr>
+<tr>
+<td style="text-align: right;">struct</td>
+<td style="text-align: left;"><a href="../structEMC2305__Fan__Config2/"><strong>EMC2305_Fan_Config2</strong></a> <br></td>
+</tr>
+<tr>
+<td style="text-align: right;">struct</td>
+<td style="text-align: left;"><a href="../structEMC2305__Fan__Status/"><strong>EMC2305_Fan_Status</strong></a> <br></td>
+</tr>
+<tr>
+<td style="text-align: right;">struct</td>
+<td style="text-align: left;"><a href="../structEMC2305__Global__Config/"><strong>EMC2305_Global_Config</strong></a> <br></td>
+</tr>
+<tr>
+<td style="text-align: right;">struct</td>
+<td style="text-align: left;"><a href="../structEMC2305__HandleTypeDef/"><strong>EMC2305_HandleTypeDef</strong></a> <br></td>
+</tr>
+<tr>
+<td style="text-align: right;">struct</td>
+<td style="text-align: left;"><a href="../structEMC2305__I2C__Message/"><strong>EMC2305_I2C_Message</strong></a> <br></td>
+</tr>
+</tbody>
+</table>
+<h2 id="public-types">Public Types</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Type</th>
+<th style="text-align: left;">Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">enum</td>
+<td style="text-align: left;"><a href="#enum-emc2305_dpt"><strong>EMC2305_DPT</strong></a>  <br></td>
+</tr>
+<tr>
+<td style="text-align: right;">enum</td>
+<td style="text-align: left;"><a href="#enum-emc2305_edg"><strong>EMC2305_EDG</strong></a>  <br></td>
+</tr>
+<tr>
+<td style="text-align: right;">enum</td>
+<td style="text-align: left;"><a href="#enum-emc2305_erg"><strong>EMC2305_ERG</strong></a>  <br></td>
+</tr>
+<tr>
+<td style="text-align: right;">enum</td>
+<td style="text-align: left;"><a href="#enum-emc2305_fan"><strong>EMC2305_Fan</strong></a>  <br></td>
+</tr>
+<tr>
+<td style="text-align: right;">enum</td>
+<td style="text-align: left;"><a href="#enum-emc2305_i2c_op"><strong>EMC2305_I2C_OP</strong></a>  <br></td>
+</tr>
+<tr>
+<td style="text-align: right;">enum</td>
+<td style="text-align: left;"><a href="#enum-emc2305_pid_gain"><strong>EMC2305_PID_Gain</strong></a>  <br></td>
+</tr>
+<tr>
+<td style="text-align: right;">enum</td>
+<td style="text-align: left;"><a href="#enum-emc2305_pwm_basefreq"><strong>EMC2305_PWM_BaseFreq</strong></a>  <br></td>
+</tr>
+<tr>
+<td style="text-align: right;">enum</td>
+<td style="text-align: left;"><a href="#enum-emc2305_rng"><strong>EMC2305_RNG</strong></a>  <br></td>
+</tr>
+<tr>
+<td style="text-align: right;">enum</td>
+<td style="text-align: left;"><a href="#enum-emc2305_status"><strong>EMC2305_Status</strong></a>  <br></td>
+</tr>
+<tr>
+<td style="text-align: right;">enum</td>
+<td style="text-align: left;"><a href="#enum-emc2305_udt"><strong>EMC2305_UDT</strong></a>  <br></td>
+</tr>
+</tbody>
+</table>
+<h2 id="public-functions">Public Functions</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Type</th>
+<th style="text-align: left;">Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;"><a href="./#enum-emc2305_status"><strong>EMC2305_Status</strong></a></td>
+<td style="text-align: left;"><a href="#function-emc2305_enableswlock"><strong>EMC2305_EnableSWLock</strong></a> (<a href="../structEMC2305__HandleTypeDef/"><strong>EMC2305_HandleTypeDef</strong></a> * chip) <br><em>Software locks all SWL registers. SWL registers are now read-only until power cycle.</em></td>
+</tr>
+<tr>
+<td style="text-align: right;">uint8_t</td>
+<td style="text-align: left;"><a href="#function-emc2305_getfanpwm"><strong>EMC2305_GetFanPWM</strong></a> (<a href="../structEMC2305__HandleTypeDef/"><strong>EMC2305_HandleTypeDef</strong></a> * chip, <a href="./#enum-emc2305_fan"><strong>EMC2305_Fan</strong></a> fan) <br><em>Gets current fan driver PWM duty cycle.</em></td>
+</tr>
+<tr>
+<td style="text-align: right;">uint16_t</td>
+<td style="text-align: left;"><a href="#function-emc2305_getfanrpm"><strong>EMC2305_GetFanRPM</strong></a> (<a href="../structEMC2305__HandleTypeDef/"><strong>EMC2305_HandleTypeDef</strong></a> * chip, <a href="./#enum-emc2305_fan"><strong>EMC2305_Fan</strong></a> fan) <br><em>Gets current fan RPM based on tachometer measurement.</em></td>
+</tr>
+<tr>
+<td style="text-align: right;"><a href="../structEMC2305__Fan__Status/"><strong>EMC2305_Fan_Status</strong></a></td>
+<td style="text-align: left;"><a href="#function-emc2305_getfanstatus"><strong>EMC2305_GetFanStatus</strong></a> (<a href="../structEMC2305__HandleTypeDef/"><strong>EMC2305_HandleTypeDef</strong></a> * chip) <br><em>Gets current fan status for all drivers.</em></td>
+</tr>
+<tr>
+<td style="text-align: right;">void</td>
+<td style="text-align: left;"><a href="#function-emc2305_i2c_masterrxcpltcallback"><strong>EMC2305_I2C_MasterRxCpltCallback</strong></a> (I2C_HandleTypeDef * hi2c) <br></td>
+</tr>
+<tr>
+<td style="text-align: right;">void</td>
+<td style="text-align: left;"><a href="#function-emc2305_i2c_mastertxcpltcallback"><strong>EMC2305_I2C_MasterTxCpltCallback</strong></a> (I2C_HandleTypeDef * hi2c) <br></td>
+</tr>
+<tr>
+<td style="text-align: right;">void</td>
+<td style="text-align: left;"><a href="#function-emc2305_i2c_worker_task"><strong>EMC2305_I2C_Worker_Task</strong></a> (void * pvParameters) <br></td>
+</tr>
+<tr>
+<td style="text-align: right;"><a href="./#enum-emc2305_status"><strong>EMC2305_Status</strong></a></td>
+<td style="text-align: left;"><a href="#function-emc2305_init"><strong>EMC2305_Init</strong></a> (<a href="../structEMC2305__HandleTypeDef/"><strong>EMC2305_HandleTypeDef</strong></a> * chip, I2C_HandleTypeDef * hi2c, uint16_t dev_addr) <br><em>Initializes the I2C bus and validates the chip by reading the Product ID and Manufacturer ID.</em></td>
+</tr>
+<tr>
+<td style="text-align: right;"><a href="./#enum-emc2305_status"><strong>EMC2305_Status</strong></a></td>
+<td style="text-align: left;"><a href="#function-emc2305_readreg"><strong>EMC2305_ReadReg</strong></a> (<a href="../structEMC2305__HandleTypeDef/"><strong>EMC2305_HandleTypeDef</strong></a> * chip, uint8_t reg, uint8_t * data) <br><em>Reads a byte of data from the specified register.</em></td>
+</tr>
+<tr>
+<td style="text-align: right;"><a href="./#enum-emc2305_status"><strong>EMC2305_Status</strong></a></td>
+<td style="text-align: left;"><a href="#function-emc2305_setfanconfig"><strong>EMC2305_SetFanConfig</strong></a> (<a href="../structEMC2305__HandleTypeDef/"><strong>EMC2305_HandleTypeDef</strong></a> * chip, <a href="./#enum-emc2305_fan"><strong>EMC2305_Fan</strong></a> fan, <a href="../structEMC2305__Fan__Config1/"><strong>EMC2305_Fan_Config1</strong></a> * config1, <a href="../structEMC2305__Fan__Config2/"><strong>EMC2305_Fan_Config2</strong></a> * config2) <br><em>Sets the EMC2305 configuration 1 and 2 registers based on the provided config.</em></td>
+</tr>
+<tr>
+<td style="text-align: right;"><a href="./#enum-emc2305_status"><strong>EMC2305_Status</strong></a></td>
+<td style="text-align: left;"><a href="#function-emc2305_setfanpwm"><strong>EMC2305_SetFanPWM</strong></a> (<a href="../structEMC2305__HandleTypeDef/"><strong>EMC2305_HandleTypeDef</strong></a> * chip, <a href="./#enum-emc2305_fan"><strong>EMC2305_Fan</strong></a> fan, uint8_t duty_cycle) <br><em>Sets the PWM drive of the specified fan directly. Works only with fan speed control (FSC) disabled.</em></td>
+</tr>
+<tr>
+<td style="text-align: right;"><a href="./#enum-emc2305_status"><strong>EMC2305_Status</strong></a></td>
+<td style="text-align: left;"><a href="#function-emc2305_setfanrpm"><strong>EMC2305_SetFanRPM</strong></a> (<a href="../structEMC2305__HandleTypeDef/"><strong>EMC2305_HandleTypeDef</strong></a> * chip, <a href="./#enum-emc2305_fan"><strong>EMC2305_Fan</strong></a> fan, uint16_t rpm_target) <br><em>Sets the RPM target for the control algorithm. Works only with fan speed control (FSC) enabled.</em></td>
+</tr>
+<tr>
+<td style="text-align: right;"><a href="./#enum-emc2305_status"><strong>EMC2305_Status</strong></a></td>
+<td style="text-align: left;"><a href="#function-emc2305_setglobalconfig"><strong>EMC2305_SetGlobalConfig</strong></a> (<a href="../structEMC2305__HandleTypeDef/"><strong>EMC2305_HandleTypeDef</strong></a> * chip, <a href="../structEMC2305__Global__Config/"><strong>EMC2305_Global_Config</strong></a> * config) <br><em>Sets the EMC2305 global configuration register based on provided config.</em></td>
+</tr>
+<tr>
+<td style="text-align: right;"><a href="./#enum-emc2305_status"><strong>EMC2305_Status</strong></a></td>
+<td style="text-align: left;"><a href="#function-emc2305_setpwmbasefrequency"><strong>EMC2305_SetPWMBaseFrequency</strong></a> (<a href="../structEMC2305__HandleTypeDef/"><strong>EMC2305_HandleTypeDef</strong></a> * chip, <a href="./#enum-emc2305_fan"><strong>EMC2305_Fan</strong></a> fan, <a href="./#enum-emc2305_pwm_basefreq"><strong>EMC2305_PWM_BaseFreq</strong></a> freq) <br><em>Sets the base frequency of the specified fan's PWM driver.</em></td>
+</tr>
+<tr>
+<td style="text-align: right;"><a href="./#enum-emc2305_status"><strong>EMC2305_Status</strong></a></td>
+<td style="text-align: left;"><a href="#function-emc2305_setpwmoutputmode"><strong>EMC2305_SetPWMOutputMode</strong></a> (<a href="../structEMC2305__HandleTypeDef/"><strong>EMC2305_HandleTypeDef</strong></a> * chip, <a href="./#enum-emc2305_fan"><strong>EMC2305_Fan</strong></a> fan, bool open_drain) <br><em>Sets the specified fan's PWM driver to open-drain or push-pull.</em></td>
+</tr>
+<tr>
+<td style="text-align: right;"><a href="./#enum-emc2305_status"><strong>EMC2305_Status</strong></a></td>
+<td style="text-align: left;"><a href="#function-emc2305_writereg"><strong>EMC2305_WriteReg</strong></a> (<a href="../structEMC2305__HandleTypeDef/"><strong>EMC2305_HandleTypeDef</strong></a> * chip, uint8_t reg, uint8_t data) <br><em>Writes a byte of data to the specified register.</em></td>
+</tr>
+</tbody>
+</table>
+<h2 id="macros">Macros</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Type</th>
+<th style="text-align: left;">Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_cfg_dis_to"><strong>EMC2305_CFG_DIS_TO</strong></a>  <code>(1u &amp;lt;&amp;lt; 6)  /\* DIS\_TO - SMBus timeout disable (I2C compat) \*/</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_cfg_dreck"><strong>EMC2305_CFG_DRECK</strong></a>  <code>(1u &amp;lt;&amp;lt; 1)  /\* DRECK - CLK pin drives internal clock when set (output) \*/</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_cfg_mask_alert"><strong>EMC2305_CFG_MASK_ALERT</strong></a>  <code>(1u &amp;lt;&amp;lt; 7)  /\* MASK - mask ALERT pin when set \*/</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_cfg_useck"><strong>EMC2305_CFG_USECK</strong></a>  <code>(1u &amp;lt;&amp;lt; 0)  /\* USECK - use external CLK pin as tach clock when set \*/</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_cfg_wd_en"><strong>EMC2305_CFG_WD_EN</strong></a>  <code>(1u &amp;lt;&amp;lt; 5)  /\* WD\_EN - enable watchdog continuous mode \*/</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_config1_edg_shift"><strong>EMC2305_CONFIG1_EDG_SHIFT</strong></a>  <code>3u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_config1_enag_shift"><strong>EMC2305_CONFIG1_ENAG_SHIFT</strong></a>  <code>7u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_config1_rng_shift"><strong>EMC2305_CONFIG1_RNG_SHIFT</strong></a>  <code>5u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_config1_udt_shift"><strong>EMC2305_CONFIG1_UDT_SHIFT</strong></a>  <code>0u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_config2_dpt_shift"><strong>EMC2305_CONFIG2_DPT_SHIFT</strong></a>  <code>3u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_config2_enrc_shift"><strong>EMC2305_CONFIG2_ENRC_SHIFT</strong></a>  <code>6u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_config2_erg_shift"><strong>EMC2305_CONFIG2_ERG_SHIFT</strong></a>  <code>1u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_config2_ghen_shift"><strong>EMC2305_CONFIG2_GHEN_SHIFT</strong></a>  <code>5u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_fan1_mask"><strong>EMC2305_FAN1_MASK</strong></a>  <code>(1u &amp;lt;&amp;lt; 0)</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_fan2_mask"><strong>EMC2305_FAN2_MASK</strong></a>  <code>(1u &amp;lt;&amp;lt; 1)</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_fan3_mask"><strong>EMC2305_FAN3_MASK</strong></a>  <code>(1u &amp;lt;&amp;lt; 2)</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_fan4_mask"><strong>EMC2305_FAN4_MASK</strong></a>  <code>(1u &amp;lt;&amp;lt; 3)</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_fan5_mask"><strong>EMC2305_FAN5_MASK</strong></a>  <code>(1u &amp;lt;&amp;lt; 4)</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_fan_address_offset"><strong>EMC2305_FAN_ADDRESS_OFFSET</strong></a>  <code>0x10u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_fan_reg_addr"><strong>EMC2305_FAN_REG_ADDR</strong></a> (fan_num, fan1_reg_addr) <code>((fan1\_reg\_addr) + ((fan\_num) \* [**EMC2305\_FAN\_ADDRESS\_OFFSET**](EMC2305_8h.md#define-emc2305_fan_address_offset)))</code><br><em>Calculates the register address for a specific fan (N) based on the Fan 1 register address and known offset.</em></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_i2c_timeout"><strong>EMC2305_I2C_TIMEOUT</strong></a>  <code>100u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_invalid_fan"><strong>EMC2305_INVALID_FAN</strong></a> (fan_num) <code>(fan &amp;lt; EMC2305\_FAN1 \|\| fan &amp;gt; EMC2305\_FAN5)</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_max_rpm"><strong>EMC2305_MAX_RPM</strong></a>  <code>16000</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_min_rpm"><strong>EMC2305_MIN_RPM</strong></a>  <code>500</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_pwm_fan1_mask"><strong>EMC2305_PWM_FAN1_MASK</strong></a>  <code>0x03u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_pwm_fan1_shift"><strong>EMC2305_PWM_FAN1_SHIFT</strong></a>  <code>0u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_pwm_fan2_mask"><strong>EMC2305_PWM_FAN2_MASK</strong></a>  <code>0x0Cu</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_pwm_fan2_shift"><strong>EMC2305_PWM_FAN2_SHIFT</strong></a>  <code>2u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_pwm_fan3_mask"><strong>EMC2305_PWM_FAN3_MASK</strong></a>  <code>0x30u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_pwm_fan3_shift"><strong>EMC2305_PWM_FAN3_SHIFT</strong></a>  <code>4u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_pwm_fan4_mask"><strong>EMC2305_PWM_FAN4_MASK</strong></a>  <code>0x03u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_pwm_fan4_shift"><strong>EMC2305_PWM_FAN4_SHIFT</strong></a>  <code>0u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_pwm_fan5_mask"><strong>EMC2305_PWM_FAN5_MASK</strong></a>  <code>0x0Cu</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_pwm_fan5_shift"><strong>EMC2305_PWM_FAN5_SHIFT</strong></a>  <code>2u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_queue_item_size"><strong>EMC2305_QUEUE_ITEM_SIZE</strong></a>  <code>sizeof([**EMC2305\_I2C\_Message**](structEMC2305__I2C__Message.md))</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_queue_length"><strong>EMC2305_QUEUE_LENGTH</strong></a>  <code>10</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_configuration"><strong>EMC2305_REG_CONFIGURATION</strong></a>  <code>0x20u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_drive_fail_status"><strong>EMC2305_REG_DRIVE_FAIL_STATUS</strong></a>  <code>0x27u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_fan1_config1"><strong>EMC2305_REG_FAN1_CONFIG1</strong></a>  <code>0x32u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_fan1_config2"><strong>EMC2305_REG_FAN1_CONFIG2</strong></a>  <code>0x33u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_fan1_drvfail_h"><strong>EMC2305_REG_FAN1_DRVFAIL_H</strong></a>  <code>0x3Bu</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_fan1_drvfail_l"><strong>EMC2305_REG_FAN1_DRVFAIL_L</strong></a>  <code>0x3Au</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_fan1_max_step"><strong>EMC2305_REG_FAN1_MAX_STEP</strong></a>  <code>0x37u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_fan1_min_drive"><strong>EMC2305_REG_FAN1_MIN_DRIVE</strong></a>  <code>0x38u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_fan1_setting"><strong>EMC2305_REG_FAN1_SETTING</strong></a>  <code>0x30u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_fan1_spin"><strong>EMC2305_REG_FAN1_SPIN</strong></a>  <code>0x36u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_fan1_tach_reading_h"><strong>EMC2305_REG_FAN1_TACH_READING_H</strong></a>  <code>0x3Eu</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_fan1_tach_reading_l"><strong>EMC2305_REG_FAN1_TACH_READING_L</strong></a>  <code>0x3Fu</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_fan1_tach_target_h"><strong>EMC2305_REG_FAN1_TACH_TARGET_H</strong></a>  <code>0x3Du</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_fan1_tach_target_l"><strong>EMC2305_REG_FAN1_TACH_TARGET_L</strong></a>  <code>0x3Cu</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_fan1_valid_tach"><strong>EMC2305_REG_FAN1_VALID_TACH</strong></a>  <code>0x39u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_fan_interrupt_enable"><strong>EMC2305_REG_FAN_INTERRUPT_ENABLE</strong></a>  <code>0x29u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_fan_spin_status"><strong>EMC2305_REG_FAN_SPIN_STATUS</strong></a>  <code>0x26u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_fan_stall_status"><strong>EMC2305_REG_FAN_STALL_STATUS</strong></a>  <code>0x25u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_fan_status"><strong>EMC2305_REG_FAN_STATUS</strong></a>  <code>0x24u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_gain1"><strong>EMC2305_REG_GAIN1</strong></a>  <code>0x35u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_manufacturer_id"><strong>EMC2305_REG_MANUFACTURER_ID</strong></a>  <code>0xFEu</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_product_feat"><strong>EMC2305_REG_PRODUCT_FEAT</strong></a>  <code>0xFCu</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_product_id"><strong>EMC2305_REG_PRODUCT_ID</strong></a>  <code>0xFDu</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_pwm1_divide"><strong>EMC2305_REG_PWM1_DIVIDE</strong></a>  <code>0x31u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_pwm_basef123"><strong>EMC2305_REG_PWM_BASEF123</strong></a>  <code>0x2Du</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_pwm_basef45"><strong>EMC2305_REG_PWM_BASEF45</strong></a>  <code>0x2Cu</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_pwm_output_config"><strong>EMC2305_REG_PWM_OUTPUT_CONFIG</strong></a>  <code>0x2Bu</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_pwm_polarity"><strong>EMC2305_REG_PWM_POLARITY</strong></a>  <code>0x2Au</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_revision"><strong>EMC2305_REG_REVISION</strong></a>  <code>0xFFu</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_reg_sw_lock"><strong>EMC2305_REG_SW_LOCK</strong></a>  <code>0xEFu</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_semaphore_pool_size"><strong>EMC2305_SEMAPHORE_POOL_SIZE</strong></a>  <code>[**EMC2305\_QUEUE\_LENGTH**](EMC2305_8h.md#define-emc2305_queue_length)</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_stat_drvfail"><strong>EMC2305_STAT_DRVFAIL</strong></a>  <code>(1u &amp;lt;&amp;lt; 2)  /\* Drive fail summary \*/</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_stat_fnspin"><strong>EMC2305_STAT_FNSPIN</strong></a>  <code>(1u &amp;lt;&amp;lt; 1)  /\* spin-up failure summary \*/</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_stat_fnstl"><strong>EMC2305_STAT_FNSTL</strong></a>  <code>(1u &amp;lt;&amp;lt; 0)  /\* stall summary \*/</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_stat_watch"><strong>EMC2305_STAT_WATCH</strong></a>  <code>(1u &amp;lt;&amp;lt; 7)  /\* WATCH - watchdog fired (read-to-clear) \*/</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_swl"><strong>EMC2305_SWL</strong></a>  <code>(1u &amp;lt;&amp;lt; 0)</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_tach_mult"><strong>EMC2305_TACH_MULT</strong></a>  <code>2u</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-emc2305_tach_rpm_conv"><strong>EMC2305_TACH_RPM_CONV</strong></a>  <code>3932160u</code><br></td>
+</tr>
+</tbody>
+</table>
+<h2 id="public-types-documentation">Public Types Documentation</h2>
+<h3 id="enum-emc2305_dpt">enum EMC2305_DPT</h3>
+<pre><code class="language-C++">enum EMC2305_DPT {
+    EMC2305_DPT_NONE = 0b00,
+    EMC2305_DPT_BASIC = 0b01,
+    EMC2305_DPT_STEP = 0b10,
+    EMC2305_DPT_BOTH = 0b11
+};
+</code></pre>
+<hr>
+
+<h3 id="enum-emc2305_edg">enum EMC2305_EDG</h3>
+<pre><code class="language-C++">enum EMC2305_EDG {
+    EMC2305_EDG_9 = 0b11,
+    EMC2305_EDG_7 = 0b10,
+    EMC2305_EDG_5 = 0b01,
+    EMC2305_EDG_3 = 0b00
+};
+</code></pre>
+<hr>
+
+<h3 id="enum-emc2305_erg">enum EMC2305_ERG</h3>
+<pre><code class="language-C++">enum EMC2305_ERG {
+    EMC2305_ERG_0RPM = 0b00,
+    EMC2305_ERG_50RPM = 0b01,
+    EMC2305_ERG_100RPM = 0b10,
+    EMC2305_ERG_200RPM = 0b11
+};
+</code></pre>
+<hr>
+
+<h3 id="enum-emc2305_fan">enum EMC2305_Fan</h3>
+<pre><code class="language-C++">enum EMC2305_Fan {
+    EMC2305_FAN1,
+    EMC2305_FAN2,
+    EMC2305_FAN3,
+    EMC2305_FAN4,
+    EMC2305_FAN5
+};
+</code></pre>
+<hr>
+
+<h3 id="enum-emc2305_i2c_op">enum EMC2305_I2C_OP</h3>
+<pre><code class="language-C++">enum EMC2305_I2C_OP {
+    EMC2305_OP_WRITE,
+    EMC2305_OP_READ
+};
+</code></pre>
+<hr>
+
+<h3 id="enum-emc2305_pid_gain">enum EMC2305_PID_Gain</h3>
+<pre><code class="language-C++">enum EMC2305_PID_Gain {
+    EMC2305_PID_8X = 0b11,
+    EMC2305_PID_4X = 0b10,
+    EMC2305_PID_2X = 0b01,
+    EMC2305_PID_1X = 0b00
+};
+</code></pre>
+<hr>
+
+<h3 id="enum-emc2305_pwm_basefreq">enum EMC2305_PWM_BaseFreq</h3>
+<pre><code class="language-C++">enum EMC2305_PWM_BaseFreq {
+    EMC2305_PWM_2k441 = 0b11,
+    EMC2305_PWM_4k882 = 0b10,
+    EMC2305_PWM_19k53 = 0b01,
+    EMC2305_PWM_26k00 = 0b00
+};
+</code></pre>
+<hr>
+
+<h3 id="enum-emc2305_rng">enum EMC2305_RNG</h3>
+<pre><code class="language-C++">enum EMC2305_RNG {
+    EMC2305_RNG_4000 = 0b11,
+    EMC2305_RNG_2000 = 0b10,
+    EMC2305_RNG_1000 = 0b01,
+    EMC2305_RNG_500 = 0b00
+};
+</code></pre>
+<hr>
+
+<h3 id="enum-emc2305_status">enum EMC2305_Status</h3>
+<pre><code class="language-C++">enum EMC2305_Status {
+    EMC2305_OK,
+    EMC2305_ERR
+};
+</code></pre>
+<hr>
+
+<h3 id="enum-emc2305_udt">enum EMC2305_UDT</h3>
+<pre><code class="language-C++">enum EMC2305_UDT {
+    EMC2305_UDT_100 = 0b000,
+    EMC2305_UDT_200 = 0b001,
+    EMC2305_UDT_300 = 0b010,
+    EMC2305_UDT_400 = 0b011,
+    EMC2305_UDT_500 = 0b100,
+    EMC2305_UDT_800 = 0b101,
+    EMC2305_UDT_1200 = 0b110,
+    EMC2305_UDT_1600 = 0b111
+};
+</code></pre>
+<hr>
+<h2 id="public-functions-documentation">Public Functions Documentation</h2>
+<h3 id="function-emc2305_enableswlock">function EMC2305_EnableSWLock</h3>
+<p><em>Software locks all SWL registers. SWL registers are now read-only until power cycle.</em> </p>
+<pre><code class="language-C++">EMC2305_Status EMC2305_EnableSWLock (
+    EMC2305_HandleTypeDef * chip
+) 
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>chip</code> EMC2305 to lock </li>
+</ul>
+<p><strong>Returns:</strong></p>
+<p>OK if successful, ERR otherwise </p>
+<hr>
+
+<h3 id="function-emc2305_getfanpwm">function EMC2305_GetFanPWM</h3>
+<p><em>Gets current fan driver PWM duty cycle.</em> </p>
+<pre><code class="language-C++">uint8_t EMC2305_GetFanPWM (
+    EMC2305_HandleTypeDef * chip,
+    EMC2305_Fan fan
+) 
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>chip</code> EMC2305 to get </li>
+<li><code>fan</code> Fan to get (1-5) </li>
+</ul>
+<p><strong>Returns:</strong></p>
+<p>Driven fan PWM duty cycle (0-100). UINT8_MAX on error </p>
+<hr>
+
+<h3 id="function-emc2305_getfanrpm">function EMC2305_GetFanRPM</h3>
+<p><em>Gets current fan RPM based on tachometer measurement.</em> </p>
+<pre><code class="language-C++">uint16_t EMC2305_GetFanRPM (
+    EMC2305_HandleTypeDef * chip,
+    EMC2305_Fan fan
+) 
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>chip</code> EMC2305 to get </li>
+<li><code>fan</code> Fan to get (1-5) </li>
+</ul>
+<p><strong>Returns:</strong></p>
+<p>Measured fan RPM. UINT16_MAX on error </p>
+<hr>
+
+<h3 id="function-emc2305_getfanstatus">function EMC2305_GetFanStatus</h3>
+<p><em>Gets current fan status for all drivers.</em> </p>
+<pre><code class="language-C++">EMC2305_Fan_Status EMC2305_GetFanStatus (
+    EMC2305_HandleTypeDef * chip
+) 
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>chip</code> EMC2305 to get </li>
+</ul>
+<p><strong>Returns:</strong></p>
+<p>Fan status for all drivers </p>
+<hr>
+
+<h3 id="function-emc2305_i2c_masterrxcpltcallback">function EMC2305_I2C_MasterRxCpltCallback</h3>
+<pre><code class="language-C++">void EMC2305_I2C_MasterRxCpltCallback (
+    I2C_HandleTypeDef * hi2c
+) 
+</code></pre>
+<hr>
+
+<h3 id="function-emc2305_i2c_mastertxcpltcallback">function EMC2305_I2C_MasterTxCpltCallback</h3>
+<pre><code class="language-C++">void EMC2305_I2C_MasterTxCpltCallback (
+    I2C_HandleTypeDef * hi2c
+) 
+</code></pre>
+<hr>
+
+<h3 id="function-emc2305_i2c_worker_task">function EMC2305_I2C_Worker_Task</h3>
+<pre><code class="language-C++">void EMC2305_I2C_Worker_Task (
+    void * pvParameters
+) 
+</code></pre>
+<hr>
+
+<h3 id="function-emc2305_init">function EMC2305_Init</h3>
+<p><em>Initializes the I2C bus and validates the chip by reading the Product ID and Manufacturer ID.</em> </p>
+<pre><code class="language-C++">EMC2305_Status EMC2305_Init (
+    EMC2305_HandleTypeDef * chip,
+    I2C_HandleTypeDef * hi2c,
+    uint16_t dev_addr
+) 
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>chip</code> EMC2305 to initialize </li>
+<li><code>hi2c</code> STM32 HAL I2C handle </li>
+<li><code>dev_addr</code> Device address (7-bit address &lt;&lt; 1) </li>
+</ul>
+<p><strong>Returns:</strong></p>
+<p>OK if successful, ERR otherwise </p>
+<hr>
+
+<h3 id="function-emc2305_readreg">function EMC2305_ReadReg</h3>
+<p><em>Reads a byte of data from the specified register.</em> </p>
+<pre><code class="language-C++">EMC2305_Status EMC2305_ReadReg (
+    EMC2305_HandleTypeDef * chip,
+    uint8_t reg,
+    uint8_t * data
+) 
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>chip</code> EMC2305 handle </li>
+<li><code>reg</code> Register to read from </li>
+<li><code>data</code> Pointer where register data will be stored </li>
+</ul>
+<p><strong>Returns:</strong></p>
+<p>OK if successful, ERR if message queue is full </p>
+<hr>
+
+<h3 id="function-emc2305_setfanconfig">function EMC2305_SetFanConfig</h3>
+<p><em>Sets the EMC2305 configuration 1 and 2 registers based on the provided config.</em> </p>
+<pre><code class="language-C++">EMC2305_Status EMC2305_SetFanConfig (
+    EMC2305_HandleTypeDef * chip,
+    EMC2305_Fan fan,
+    EMC2305_Fan_Config1 * config1,
+    EMC2305_Fan_Config2 * config2
+) 
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>chip</code> EMC2305 to set </li>
+<li><code>fan</code> Fan to set (1-5) </li>
+<li><code>config1</code> Configuration for register 1 </li>
+<li><code>config2</code> Configuration for register 2 </li>
+</ul>
+<p><strong>Returns:</strong></p>
+<p>OK if successful, ERR otherwise </p>
+<hr>
+
+<h3 id="function-emc2305_setfanpwm">function EMC2305_SetFanPWM</h3>
+<p><em>Sets the PWM drive of the specified fan directly. Works only with fan speed control (FSC) disabled.</em> </p>
+<pre><code class="language-C++">EMC2305_Status EMC2305_SetFanPWM (
+    EMC2305_HandleTypeDef * chip,
+    EMC2305_Fan fan,
+    uint8_t duty_cycle
+) 
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>chip</code> EMC2305 to set </li>
+<li><code>fan</code> Fan to set (1-5) </li>
+<li><code>duty_cycle</code> PWM duty cycle percentage (0 to 100) </li>
+</ul>
+<p><strong>Returns:</strong></p>
+<p>OK if successful, ERR otherwise </p>
+<hr>
+
+<h3 id="function-emc2305_setfanrpm">function EMC2305_SetFanRPM</h3>
+<p><em>Sets the RPM target for the control algorithm. Works only with fan speed control (FSC) enabled.</em> </p>
+<pre><code class="language-C++">EMC2305_Status EMC2305_SetFanRPM (
+    EMC2305_HandleTypeDef * chip,
+    EMC2305_Fan fan,
+    uint16_t rpm_target
+) 
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>chip</code> EMC2305 to set </li>
+<li><code>fan</code> Fan to set (1-5) </li>
+<li><code>rpm_target</code> RPM target to set (500 to 16k) </li>
+</ul>
+<p><strong>Returns:</strong></p>
+<p>OK if successful, ERR otherwise </p>
+<hr>
+
+<h3 id="function-emc2305_setglobalconfig">function EMC2305_SetGlobalConfig</h3>
+<p><em>Sets the EMC2305 global configuration register based on provided config.</em> </p>
+<pre><code class="language-C++">EMC2305_Status EMC2305_SetGlobalConfig (
+    EMC2305_HandleTypeDef * chip,
+    EMC2305_Global_Config * config
+) 
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>chip</code> EMC2305 to configure </li>
+<li><code>config</code> Global configuration to use </li>
+</ul>
+<p><strong>Returns:</strong></p>
+<p>OK if successful, ERR otherwise </p>
+<hr>
+
+<h3 id="function-emc2305_setpwmbasefrequency">function EMC2305_SetPWMBaseFrequency</h3>
+<p><em>Sets the base frequency of the specified fan's PWM driver.</em> </p>
+<pre><code class="language-C++">EMC2305_Status EMC2305_SetPWMBaseFrequency (
+    EMC2305_HandleTypeDef * chip,
+    EMC2305_Fan fan,
+    EMC2305_PWM_BaseFreq freq
+) 
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>chip</code> EMC2305 to set </li>
+<li><code>fan</code> Fan to set (1-5) </li>
+<li><code>freq</code> Base frequency as specified in Section 6.10 </li>
+</ul>
+<p><strong>Returns:</strong></p>
+<p>OK if successful, ERR otherwise </p>
+<hr>
+
+<h3 id="function-emc2305_setpwmoutputmode">function EMC2305_SetPWMOutputMode</h3>
+<p><em>Sets the specified fan's PWM driver to open-drain or push-pull.</em> </p>
+<pre><code class="language-C++">EMC2305_Status EMC2305_SetPWMOutputMode (
+    EMC2305_HandleTypeDef * chip,
+    EMC2305_Fan fan,
+    bool open_drain
+) 
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>chip</code> EMC2305 to set </li>
+<li><code>fan</code> Fan to set (1-5) </li>
+<li><code>open_drain</code> Set to true for open-drain (only driven low, requires pullup) or false for push-pull (driven high and low, no pullup) </li>
+</ul>
+<p><strong>Returns:</strong></p>
+<p>OK if successful, ERR otherwise </p>
+<hr>
+
+<h3 id="function-emc2305_writereg">function EMC2305_WriteReg</h3>
+<p><em>Writes a byte of data to the specified register.</em> </p>
+<pre><code class="language-C++">EMC2305_Status EMC2305_WriteReg (
+    EMC2305_HandleTypeDef * chip,
+    uint8_t reg,
+    uint8_t data
+) 
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>chip</code> EMC2305 handle </li>
+<li><code>reg</code> Register to write to </li>
+<li><code>data</code> Data to write </li>
+</ul>
+<p><strong>Returns:</strong></p>
+<p>OK if successful, ERR if message queue is full </p>
+<hr>
+<h2 id="macro-definition-documentation">Macro Definition Documentation</h2>
+<h3 id="define-emc2305_cfg_dis_to">define EMC2305_CFG_DIS_TO</h3>
+<pre><code class="language-C++">#define EMC2305_CFG_DIS_TO `(1u &lt;&lt; 6)  /* DIS_TO - SMBus timeout disable (I2C compat) */`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_cfg_dreck">define EMC2305_CFG_DRECK</h3>
+<pre><code class="language-C++">#define EMC2305_CFG_DRECK `(1u &lt;&lt; 1)  /* DRECK - CLK pin drives internal clock when set (output) */`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_cfg_mask_alert">define EMC2305_CFG_MASK_ALERT</h3>
+<pre><code class="language-C++">#define EMC2305_CFG_MASK_ALERT `(1u &lt;&lt; 7)  /* MASK - mask ALERT pin when set */`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_cfg_useck">define EMC2305_CFG_USECK</h3>
+<pre><code class="language-C++">#define EMC2305_CFG_USECK `(1u &lt;&lt; 0)  /* USECK - use external CLK pin as tach clock when set */`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_cfg_wd_en">define EMC2305_CFG_WD_EN</h3>
+<pre><code class="language-C++">#define EMC2305_CFG_WD_EN `(1u &lt;&lt; 5)  /* WD_EN - enable watchdog continuous mode */`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_config1_edg_shift">define EMC2305_CONFIG1_EDG_SHIFT</h3>
+<pre><code class="language-C++">#define EMC2305_CONFIG1_EDG_SHIFT `3u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_config1_enag_shift">define EMC2305_CONFIG1_ENAG_SHIFT</h3>
+<pre><code class="language-C++">#define EMC2305_CONFIG1_ENAG_SHIFT `7u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_config1_rng_shift">define EMC2305_CONFIG1_RNG_SHIFT</h3>
+<pre><code class="language-C++">#define EMC2305_CONFIG1_RNG_SHIFT `5u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_config1_udt_shift">define EMC2305_CONFIG1_UDT_SHIFT</h3>
+<pre><code class="language-C++">#define EMC2305_CONFIG1_UDT_SHIFT `0u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_config2_dpt_shift">define EMC2305_CONFIG2_DPT_SHIFT</h3>
+<pre><code class="language-C++">#define EMC2305_CONFIG2_DPT_SHIFT `3u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_config2_enrc_shift">define EMC2305_CONFIG2_ENRC_SHIFT</h3>
+<pre><code class="language-C++">#define EMC2305_CONFIG2_ENRC_SHIFT `6u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_config2_erg_shift">define EMC2305_CONFIG2_ERG_SHIFT</h3>
+<pre><code class="language-C++">#define EMC2305_CONFIG2_ERG_SHIFT `1u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_config2_ghen_shift">define EMC2305_CONFIG2_GHEN_SHIFT</h3>
+<pre><code class="language-C++">#define EMC2305_CONFIG2_GHEN_SHIFT `5u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_fan1_mask">define EMC2305_FAN1_MASK</h3>
+<pre><code class="language-C++">#define EMC2305_FAN1_MASK `(1u &lt;&lt; 0)`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_fan2_mask">define EMC2305_FAN2_MASK</h3>
+<pre><code class="language-C++">#define EMC2305_FAN2_MASK `(1u &lt;&lt; 1)`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_fan3_mask">define EMC2305_FAN3_MASK</h3>
+<pre><code class="language-C++">#define EMC2305_FAN3_MASK `(1u &lt;&lt; 2)`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_fan4_mask">define EMC2305_FAN4_MASK</h3>
+<pre><code class="language-C++">#define EMC2305_FAN4_MASK `(1u &lt;&lt; 3)`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_fan5_mask">define EMC2305_FAN5_MASK</h3>
+<pre><code class="language-C++">#define EMC2305_FAN5_MASK `(1u &lt;&lt; 4)`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_fan_address_offset">define EMC2305_FAN_ADDRESS_OFFSET</h3>
+<pre><code class="language-C++">#define EMC2305_FAN_ADDRESS_OFFSET `0x10u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_fan_reg_addr">define EMC2305_FAN_REG_ADDR</h3>
+<p><em>Calculates the register address for a specific fan (N) based on the Fan 1 register address and known offset.</em> </p>
+<pre><code class="language-C++">#define EMC2305_FAN_REG_ADDR (
+    fan_num,
+    fan1_reg_addr
+) `((fan1_reg_addr) + ((fan_num) * EMC2305_FAN_ADDRESS_OFFSET ))`
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>fan_num</code> The fan number (0-4 to match fan enum). </li>
+<li><code>fan1_reg_addr</code> The address of the corresponding Fan 1 register (base) </li>
+</ul>
+<p><strong>Returns:</strong></p>
+<p>The calculated register address for Fan N. </p>
+<hr>
+
+<h3 id="define-emc2305_i2c_timeout">define EMC2305_I2C_TIMEOUT</h3>
+<pre><code class="language-C++">#define EMC2305_I2C_TIMEOUT `100u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_invalid_fan">define EMC2305_INVALID_FAN</h3>
+<pre><code class="language-C++">#define EMC2305_INVALID_FAN (
+    fan_num
+) `(fan &lt; EMC2305_FAN1 || fan &gt; EMC2305_FAN5 )`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_max_rpm">define EMC2305_MAX_RPM</h3>
+<pre><code class="language-C++">#define EMC2305_MAX_RPM `16000`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_min_rpm">define EMC2305_MIN_RPM</h3>
+<pre><code class="language-C++">#define EMC2305_MIN_RPM `500`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_pwm_fan1_mask">define EMC2305_PWM_FAN1_MASK</h3>
+<pre><code class="language-C++">#define EMC2305_PWM_FAN1_MASK `0x03u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_pwm_fan1_shift">define EMC2305_PWM_FAN1_SHIFT</h3>
+<pre><code class="language-C++">#define EMC2305_PWM_FAN1_SHIFT `0u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_pwm_fan2_mask">define EMC2305_PWM_FAN2_MASK</h3>
+<pre><code class="language-C++">#define EMC2305_PWM_FAN2_MASK `0x0Cu`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_pwm_fan2_shift">define EMC2305_PWM_FAN2_SHIFT</h3>
+<pre><code class="language-C++">#define EMC2305_PWM_FAN2_SHIFT `2u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_pwm_fan3_mask">define EMC2305_PWM_FAN3_MASK</h3>
+<pre><code class="language-C++">#define EMC2305_PWM_FAN3_MASK `0x30u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_pwm_fan3_shift">define EMC2305_PWM_FAN3_SHIFT</h3>
+<pre><code class="language-C++">#define EMC2305_PWM_FAN3_SHIFT `4u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_pwm_fan4_mask">define EMC2305_PWM_FAN4_MASK</h3>
+<pre><code class="language-C++">#define EMC2305_PWM_FAN4_MASK `0x03u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_pwm_fan4_shift">define EMC2305_PWM_FAN4_SHIFT</h3>
+<pre><code class="language-C++">#define EMC2305_PWM_FAN4_SHIFT `0u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_pwm_fan5_mask">define EMC2305_PWM_FAN5_MASK</h3>
+<pre><code class="language-C++">#define EMC2305_PWM_FAN5_MASK `0x0Cu`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_pwm_fan5_shift">define EMC2305_PWM_FAN5_SHIFT</h3>
+<pre><code class="language-C++">#define EMC2305_PWM_FAN5_SHIFT `2u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_queue_item_size">define EMC2305_QUEUE_ITEM_SIZE</h3>
+<pre><code class="language-C++">#define EMC2305_QUEUE_ITEM_SIZE `sizeof( EMC2305_I2C_Message )`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_queue_length">define EMC2305_QUEUE_LENGTH</h3>
+<pre><code class="language-C++">#define EMC2305_QUEUE_LENGTH `10`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_configuration">define EMC2305_REG_CONFIGURATION</h3>
+<pre><code class="language-C++">#define EMC2305_REG_CONFIGURATION `0x20u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_drive_fail_status">define EMC2305_REG_DRIVE_FAIL_STATUS</h3>
+<pre><code class="language-C++">#define EMC2305_REG_DRIVE_FAIL_STATUS `0x27u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_fan1_config1">define EMC2305_REG_FAN1_CONFIG1</h3>
+<pre><code class="language-C++">#define EMC2305_REG_FAN1_CONFIG1 `0x32u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_fan1_config2">define EMC2305_REG_FAN1_CONFIG2</h3>
+<pre><code class="language-C++">#define EMC2305_REG_FAN1_CONFIG2 `0x33u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_fan1_drvfail_h">define EMC2305_REG_FAN1_DRVFAIL_H</h3>
+<pre><code class="language-C++">#define EMC2305_REG_FAN1_DRVFAIL_H `0x3Bu`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_fan1_drvfail_l">define EMC2305_REG_FAN1_DRVFAIL_L</h3>
+<pre><code class="language-C++">#define EMC2305_REG_FAN1_DRVFAIL_L `0x3Au`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_fan1_max_step">define EMC2305_REG_FAN1_MAX_STEP</h3>
+<pre><code class="language-C++">#define EMC2305_REG_FAN1_MAX_STEP `0x37u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_fan1_min_drive">define EMC2305_REG_FAN1_MIN_DRIVE</h3>
+<pre><code class="language-C++">#define EMC2305_REG_FAN1_MIN_DRIVE `0x38u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_fan1_setting">define EMC2305_REG_FAN1_SETTING</h3>
+<pre><code class="language-C++">#define EMC2305_REG_FAN1_SETTING `0x30u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_fan1_spin">define EMC2305_REG_FAN1_SPIN</h3>
+<pre><code class="language-C++">#define EMC2305_REG_FAN1_SPIN `0x36u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_fan1_tach_reading_h">define EMC2305_REG_FAN1_TACH_READING_H</h3>
+<pre><code class="language-C++">#define EMC2305_REG_FAN1_TACH_READING_H `0x3Eu`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_fan1_tach_reading_l">define EMC2305_REG_FAN1_TACH_READING_L</h3>
+<pre><code class="language-C++">#define EMC2305_REG_FAN1_TACH_READING_L `0x3Fu`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_fan1_tach_target_h">define EMC2305_REG_FAN1_TACH_TARGET_H</h3>
+<pre><code class="language-C++">#define EMC2305_REG_FAN1_TACH_TARGET_H `0x3Du`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_fan1_tach_target_l">define EMC2305_REG_FAN1_TACH_TARGET_L</h3>
+<pre><code class="language-C++">#define EMC2305_REG_FAN1_TACH_TARGET_L `0x3Cu`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_fan1_valid_tach">define EMC2305_REG_FAN1_VALID_TACH</h3>
+<pre><code class="language-C++">#define EMC2305_REG_FAN1_VALID_TACH `0x39u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_fan_interrupt_enable">define EMC2305_REG_FAN_INTERRUPT_ENABLE</h3>
+<pre><code class="language-C++">#define EMC2305_REG_FAN_INTERRUPT_ENABLE `0x29u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_fan_spin_status">define EMC2305_REG_FAN_SPIN_STATUS</h3>
+<pre><code class="language-C++">#define EMC2305_REG_FAN_SPIN_STATUS `0x26u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_fan_stall_status">define EMC2305_REG_FAN_STALL_STATUS</h3>
+<pre><code class="language-C++">#define EMC2305_REG_FAN_STALL_STATUS `0x25u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_fan_status">define EMC2305_REG_FAN_STATUS</h3>
+<pre><code class="language-C++">#define EMC2305_REG_FAN_STATUS `0x24u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_gain1">define EMC2305_REG_GAIN1</h3>
+<pre><code class="language-C++">#define EMC2305_REG_GAIN1 `0x35u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_manufacturer_id">define EMC2305_REG_MANUFACTURER_ID</h3>
+<pre><code class="language-C++">#define EMC2305_REG_MANUFACTURER_ID `0xFEu`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_product_feat">define EMC2305_REG_PRODUCT_FEAT</h3>
+<pre><code class="language-C++">#define EMC2305_REG_PRODUCT_FEAT `0xFCu`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_product_id">define EMC2305_REG_PRODUCT_ID</h3>
+<pre><code class="language-C++">#define EMC2305_REG_PRODUCT_ID `0xFDu`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_pwm1_divide">define EMC2305_REG_PWM1_DIVIDE</h3>
+<pre><code class="language-C++">#define EMC2305_REG_PWM1_DIVIDE `0x31u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_pwm_basef123">define EMC2305_REG_PWM_BASEF123</h3>
+<pre><code class="language-C++">#define EMC2305_REG_PWM_BASEF123 `0x2Du`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_pwm_basef45">define EMC2305_REG_PWM_BASEF45</h3>
+<pre><code class="language-C++">#define EMC2305_REG_PWM_BASEF45 `0x2Cu`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_pwm_output_config">define EMC2305_REG_PWM_OUTPUT_CONFIG</h3>
+<pre><code class="language-C++">#define EMC2305_REG_PWM_OUTPUT_CONFIG `0x2Bu`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_pwm_polarity">define EMC2305_REG_PWM_POLARITY</h3>
+<pre><code class="language-C++">#define EMC2305_REG_PWM_POLARITY `0x2Au`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_revision">define EMC2305_REG_REVISION</h3>
+<pre><code class="language-C++">#define EMC2305_REG_REVISION `0xFFu`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_reg_sw_lock">define EMC2305_REG_SW_LOCK</h3>
+<pre><code class="language-C++">#define EMC2305_REG_SW_LOCK `0xEFu`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_semaphore_pool_size">define EMC2305_SEMAPHORE_POOL_SIZE</h3>
+<pre><code class="language-C++">#define EMC2305_SEMAPHORE_POOL_SIZE `EMC2305_QUEUE_LENGTH`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_stat_drvfail">define EMC2305_STAT_DRVFAIL</h3>
+<pre><code class="language-C++">#define EMC2305_STAT_DRVFAIL `(1u &lt;&lt; 2)  /* Drive fail summary */`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_stat_fnspin">define EMC2305_STAT_FNSPIN</h3>
+<pre><code class="language-C++">#define EMC2305_STAT_FNSPIN `(1u &lt;&lt; 1)  /* spin-up failure summary */`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_stat_fnstl">define EMC2305_STAT_FNSTL</h3>
+<pre><code class="language-C++">#define EMC2305_STAT_FNSTL `(1u &lt;&lt; 0)  /* stall summary */`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_stat_watch">define EMC2305_STAT_WATCH</h3>
+<pre><code class="language-C++">#define EMC2305_STAT_WATCH `(1u &lt;&lt; 7)  /* WATCH - watchdog fired (read-to-clear) */`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_swl">define EMC2305_SWL</h3>
+<pre><code class="language-C++">#define EMC2305_SWL `(1u &lt;&lt; 0)`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_tach_mult">define EMC2305_TACH_MULT</h3>
+<pre><code class="language-C++">#define EMC2305_TACH_MULT `2u`
+</code></pre>
+<hr>
+
+<h3 id="define-emc2305_tach_rpm_conv">define EMC2305_TACH_RPM_CONV</h3>
+<pre><code class="language-C++">#define EMC2305_TACH_RPM_CONV `3932160u`
+</code></pre>
+<hr>
+
+<hr />
+<p>The documentation for this class was generated from the following file <code>driver/Inc/EMC2305.h</code></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

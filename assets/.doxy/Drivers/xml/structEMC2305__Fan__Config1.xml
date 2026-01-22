@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structEMC2305__Fan__Config1" kind="struct" language="C++" prot="public">
+    <compoundname>EMC2305_Fan_Config1</compoundname>
+    <includes refid="EMC2305_8h" local="no">EMC2305.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structEMC2305__Fan__Config1_1ac7d027f3e5d937055f42fb5025d30be7" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool EMC2305_Fan_Config1::enable_closed_loop</definition>
+        <argsstring></argsstring>
+        <name>enable_closed_loop</name>
+        <qualifiedname>EMC2305_Fan_Config1::enable_closed_loop</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/EMC2305.h" line="107" column="10" bodyfile="driver/Inc/EMC2305.h" bodystart="107" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structEMC2305__Fan__Config1_1a45a16dbf1146e4e0c846f36eece14687" prot="public" static="no" mutable="no">
+        <type><ref refid="EMC2305_8h_1a4c31f765772117ae1c3535cd3f18f9b2" kindref="member">EMC2305_RNG</ref></type>
+        <definition>EMC2305_RNG EMC2305_Fan_Config1::range</definition>
+        <argsstring></argsstring>
+        <name>range</name>
+        <qualifiedname>EMC2305_Fan_Config1::range</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/EMC2305.h" line="108" column="17" bodyfile="driver/Inc/EMC2305.h" bodystart="108" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structEMC2305__Fan__Config1_1ada65fbe3a082837a52f5b8d9156da344" prot="public" static="no" mutable="no">
+        <type><ref refid="EMC2305_8h_1a814f28ebd662e7bfc67f70d83c7229ab" kindref="member">EMC2305_EDG</ref></type>
+        <definition>EMC2305_EDG EMC2305_Fan_Config1::edges</definition>
+        <argsstring></argsstring>
+        <name>edges</name>
+        <qualifiedname>EMC2305_Fan_Config1::edges</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/EMC2305.h" line="109" column="17" bodyfile="driver/Inc/EMC2305.h" bodystart="109" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structEMC2305__Fan__Config1_1a3cb2dc3e486fb8d6192833ceb99f780b" prot="public" static="no" mutable="no">
+        <type><ref refid="EMC2305_8h_1ada39a3496f681ea30852519ae4f17e46" kindref="member">EMC2305_UDT</ref></type>
+        <definition>EMC2305_UDT EMC2305_Fan_Config1::update_time</definition>
+        <argsstring></argsstring>
+        <name>update_time</name>
+        <qualifiedname>EMC2305_Fan_Config1::update_time</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/EMC2305.h" line="110" column="17" bodyfile="driver/Inc/EMC2305.h" bodystart="110" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="driver/Inc/EMC2305.h" line="106" column="1" bodyfile="driver/Inc/EMC2305.h" bodystart="106" bodyend="111"/>
+    <listofallmembers>
+      <member refid="structEMC2305__Fan__Config1_1ada65fbe3a082837a52f5b8d9156da344" prot="public" virt="non-virtual"><scope>EMC2305_Fan_Config1</scope><name>edges</name></member>
+      <member refid="structEMC2305__Fan__Config1_1ac7d027f3e5d937055f42fb5025d30be7" prot="public" virt="non-virtual"><scope>EMC2305_Fan_Config1</scope><name>enable_closed_loop</name></member>
+      <member refid="structEMC2305__Fan__Config1_1a45a16dbf1146e4e0c846f36eece14687" prot="public" virt="non-virtual"><scope>EMC2305_Fan_Config1</scope><name>range</name></member>
+      <member refid="structEMC2305__Fan__Config1_1a3cb2dc3e486fb8d6192833ceb99f780b" prot="public" virt="non-virtual"><scope>EMC2305_Fan_Config1</scope><name>update_time</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
