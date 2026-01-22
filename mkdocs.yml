@@ -9,40 +9,59 @@ theme:
   - scheme: slate
     primary: blue
 
-nav:
-  - Home: 'README.md'
-  - Installation: 'Installation.md'
-  - Flashing and Debugging: 'FlashAndTheBug.md'
-  - Adding Embedded Sharepoint: 'SharepointSubmodule.md'
-  - CubeMX: 'CubeMX.md'
-  - STM32 Ports: 'STM32_Ports.md'
-
-  - CAN Messages:
-      - Workflow: 'dbcEditor.md'
-      - Signals & Messages: 'DBC.md'
-
-  - Drivers:
-      - EMC2305 Fan Controller: 'EMC2305.md'
-
 plugins:
   - macros:
       include_dir: docs/ 
   - search:
-      prebuild_index: true
       lang: en
   - mkdoxy:
       projects:
-      full-doc: True
-      save-api: .mkdoxy
-      BSP:
-          src-dirs: bsp/Src/* bsp/Inc/*
-          full-doc: True
-          GENERATE_MARKDOWN: YES
-          nav-title: BSP
+        BSP:
+          src-dirs: bsp/Inc
+          full-doc: true
           doxy-cfg:
-            FILE_PATTERNS: "*.c *.h*"
-            RECURSIVE: True
-
+            RECURSIVE: true
+            EXTRACT_ALL: true          # Include everything, even if no doc
+            EXTRACT_STATIC: true       # Include static functions
+            EXTRACT_PRIVATE: true      # Include private functions
+            OPTIMIZE_OUTPUT_FOR_C: true
+            SHOW_INCLUDE_FILES: true
+            INCLUDE_FILE_COMMENTS: true  # Include top-of-file comments
+            file_patterns: "*.h*"
+            recursive: true
+        Drivers:
+          src-dirs: driver/Inc
+          full-doc: true
+          doxy-cfg:
+            RECURSIVE: true
+            EXTRACT_ALL: true          # Include everything, even if no doc
+            EXTRACT_STATIC: true       # Include static functions
+            EXTRACT_PRIVATE: true      # Include private functions
+            OPTIMIZE_OUTPUT_FOR_C: true
+            SHOW_INCLUDE_FILES: true
+            INCLUDE_FILE_COMMENTS: true  # Include top-of-file comments
+            file_patterns: "*.h*"
+            recursive: true
+        Middleware:
+          src-dirs: middleware/Inc
+          full-doc: true
+          doxy-cfg:
+            RECURSIVE: true
+            EXTRACT_ALL: true          # Include everything, even if no doc
+            EXTRACT_STATIC: true       # Include static functions
+            EXTRACT_PRIVATE: true      # Include private functions
+            OPTIMIZE_OUTPUT_FOR_C: true
+            SHOW_INCLUDE_FILES: true
+            INCLUDE_FILE_COMMENTS: true  # Include top-of-file comments
+            file_patterns: "*.h*"
+            recursive: true
+  - gen-files:
+      scripts:
+        - docs/gen-stm-ports.py
+        - docs/gen-dbc-table.py
+        - docs/gen-nav.py
+  - literate-nav:
+      nav_file: nav.md
   - redirects:
       redirect_maps: {}
 
