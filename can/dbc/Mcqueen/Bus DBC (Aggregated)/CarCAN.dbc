@@ -36,22 +36,22 @@ BS_:
 BU_: PDU BPS Pump Telemetry Controls Pi_Display MPPT_C VCU Pedals MPPT_B MPPT_A LV_Carrier
 
 
-BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
- SG_ PushToTalk_Pressed : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Blinker_Right : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Blinker_Left : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Horn_Pressed : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Regen_Activate : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Gear_Reverse : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Gear_Neutral : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Gear_Forward : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Hazard_Pressed : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Regen_Enable : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Cruise_Enable : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Cruise_Set : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Ignition_Off : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Ignition_Motor : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Ignition_Array : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+BO_ 352 Driver_Input_Status: 2 Controls
+ SG_ Regen_Enable : 14|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Regen_Activate : 13|1@1+ (1,0) [0|0] ""  VCU
+ SG_ PushToTalk_Pressed : 12|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Blinker_Right : 11|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Blinker_Left : 10|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Horn_Pressed : 9|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Hazard_Pressed : 8|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Gear_Reverse : 7|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Gear_Neutral : 6|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Gear_Forward : 5|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Cruise_Set : 4|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Cruise_Enable : 3|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Ignition_Off : 2|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Ignition_Motor : 1|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Ignition_Array : 0|1@1+ (1,0) [0|0] ""  VCU
 
 BO_ 1792 Display_Cameras_Status: 2 Pi_Display
  SG_ Camera_Status_Right : 10|1@1+ (1,0) [0|0] "" Vector__XXX
@@ -59,7 +59,7 @@ BO_ 1792 Display_Cameras_Status: 2 Pi_Display
  SG_ Camera_Status_Backup : 8|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ Display_FrameRate : 0|8@1+ (1,0) [0|60] "FPS" Vector__XXX
 
-BO_ 338 Brake_Pressure: 8 Pedals
+BO_ 1616 Brake_Pressure: 8 Pedals
  SG_ Brake_Pressure_2_Voltage : 48|16@1+ (0.001,0) [0|3.3] "V"  VCU
  SG_ Brake_Pressure_2 : 32|16@1+ (0.1,0) [0|3000] "PSI"  VCU
  SG_ Brake_Pressure_1_Voltage : 16|16@1+ (0.001,0) [0|3.3] "V"  VCU
@@ -83,36 +83,36 @@ BO_ 336 Accel_Brake_Position: 5 Pedals
  SG_ Accel_Pos_Redundant : 8|8@1+ (1,0) [0|100] "Percent"  VCU
  SG_ Accel_Pos_Main : 0|8@1+ (1,0) [0|100] "Percent"  VCU
 
-BO_ 2147484177 MPPT_33_0_Status: 5 MPPT_B
+BO_ 2147484177 MPPT_B_Status: 5 MPPT_B
  SG_ MPPT_Enabled : 16|8@1- (1,0) [0|0] "" Vector__XXX
  SG_ MPPT_HeatsinkTemperature : 39|8@0- (1,0) [-128|127] "C" Vector__XXX
  SG_ MPPT_AmbientTemperature : 31|8@0- (1,0) [-128|127] "C" Vector__XXX
  SG_ MPPT_Fault : 8|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ MPPT_Mode : 0|8@1+ (1,0) [0|0] "" Vector__XXX
 
-BO_ 2147484176 MPPT_33_0_Power: 8 MPPT_B
+BO_ 2147484176 MPPT_B_Power: 8 MPPT_B
  SG_ MPPT_Iout : 55|16@0- (0.0005,0) [0|0] "A" Vector__XXX
  SG_ MPPT_Vout : 39|16@0- (0.01,0) [-327.68|327.67] "V" Vector__XXX
  SG_ MPPT_Iin : 23|16@0- (0.0005,0) [-16.384|16.3835] "A" Vector__XXX
  SG_ MPPT_Vin : 7|16@0- (0.01,0) [-327.68|327.67] "V" Vector__XXX
 
-BO_ 2147484185 MPPT_33_0_SetMode: 1 MPPT_B
+BO_ 2147484185 MPPT_B_SetMode: 1 MPPT_B
  SG_ Boost_Enable : 0|1@1+ (1,0) [0|1] ""  MPPT_B
 
-BO_ 2147484161 MPPT_32_0_Status: 5 MPPT_A
+BO_ 2147484161 MPPT_A_Status: 5 MPPT_A
  SG_ MPPT_Enabled : 16|8@1- (1,0) [0|0] "" Vector__XXX
  SG_ MPPT_HeatsinkTemperature : 39|8@0- (1,0) [-128|127] "C" Vector__XXX
  SG_ MPPT_AmbientTemperature : 31|8@0- (1,0) [-128|127] "C" Vector__XXX
  SG_ MPPT_Fault : 8|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ MPPT_Mode : 0|8@1+ (1,0) [0|0] "" Vector__XXX
 
-BO_ 2147484160 MPPT_32_0_Power: 8 MPPT_A
+BO_ 2147484160 MPPT_A_Power: 8 MPPT_A
  SG_ MPPT_Iout : 55|16@0- (0.0005,0) [0|0] "A" Vector__XXX
  SG_ MPPT_Vout : 39|16@0- (0.01,0) [-327.68|327.67] "V" Vector__XXX
  SG_ MPPT_Iin : 23|16@0- (0.0005,0) [-16.384|16.3835] "A" Vector__XXX
  SG_ MPPT_Vin : 7|16@0- (0.01,0) [-327.68|327.67] "V" Vector__XXX
 
-BO_ 2147484169 MPPT_32_0_SetMode: 1 MPPT_A
+BO_ 2147484169 MPPT_A_SetMode: 1 MPPT_A
  SG_ Boost_Enable : 0|1@1+ (1,0) [0|1] ""  MPPT_A
 
 BO_ 1536 LV_Carrier_Status: 2 LV_Carrier
@@ -136,30 +136,29 @@ BO_ 1538 Supp_Battery_Charger_Status: 8 LV_Carrier
 
 
 
-CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
-CM_ SG_ 3221225472 PushToTalk_Pressed "Push To Talk (PTT) Button Pressed";
-CM_ SG_ 3221225472 Blinker_Right "Blinker Switch in Right Position";
-CM_ SG_ 3221225472 Blinker_Left "Blinker Switch in Left Position";
-CM_ SG_ 3221225472 Horn_Pressed "Horn Button Pressed";
-CM_ SG_ 3221225472 Regen_Activate "Regen Activate Button Pressed";
-CM_ SG_ 3221225472 Gear_Reverse "Gear Switch in Reverse Position";
-CM_ SG_ 3221225472 Gear_Neutral "Gear Switch in Neutral Position";
-CM_ SG_ 3221225472 Gear_Forward "Gear Switch in Forward Position";
-CM_ SG_ 3221225472 Hazard_Pressed "Hazard Button Pressed";
-CM_ SG_ 3221225472 Regen_Enable "Regen Enable Button Pressed";
-CM_ SG_ 3221225472 Cruise_Enable "Cruise Enable Button Pressed";
-CM_ SG_ 3221225472 Cruise_Set "Cruise Set Button Pressed";
-CM_ SG_ 3221225472 Ignition_Off "Ignition Switch in Off Position";
-CM_ SG_ 3221225472 Ignition_Motor "Ignition Switch in Motor Position";
-CM_ SG_ 3221225472 Ignition_Array "Ignition Switch in Array Position";
+CM_ SG_ 352 Regen_Enable "Regen Enable Button Pressed";
+CM_ SG_ 352 Regen_Activate "Regen Activate Button Pressed";
+CM_ SG_ 352 PushToTalk_Pressed "Push To Talk (PTT) Button Pressed";
+CM_ SG_ 352 Blinker_Right "Blinker Switch in Right Position";
+CM_ SG_ 352 Blinker_Left "Blinker Switch in Left Position";
+CM_ SG_ 352 Horn_Pressed "Horn Button Pressed";
+CM_ SG_ 352 Hazard_Pressed "Hazard Button Pressed";
+CM_ SG_ 352 Gear_Reverse "Gear Switch in Reverse Position";
+CM_ SG_ 352 Gear_Neutral "Gear Switch in Neutral Position";
+CM_ SG_ 352 Gear_Forward "Gear Switch in Forward Position";
+CM_ SG_ 352 Cruise_Set "Cruise Set Button Pressed";
+CM_ SG_ 352 Cruise_Enable "Cruise Enable Button Pressed";
+CM_ SG_ 352 Ignition_Off "Ignition Switch in Off Position";
+CM_ SG_ 352 Ignition_Motor "Ignition Switch in Motor Position";
+CM_ SG_ 352 Ignition_Array "Ignition Switch in Array Position";
 CM_ SG_ 1792 Camera_Status_Right "Right Side View Camera Status (0 disconnected, 1 connected)";
 CM_ SG_ 1792 Camera_Status_Left "Left Side View Camera Status (0 disconnected, 1 connected)";
 CM_ SG_ 1792 Camera_Status_Backup "Backup Camera Status (0 disconnected, 1 connected)";
 CM_ SG_ 1792 Display_FrameRate "Dashboard Display Frame Rate (FPS)";
-CM_ SG_ 338 Brake_Pressure_2_Voltage "Brake Pressure Raw Voltage (Sensor 2)";
-CM_ SG_ 338 Brake_Pressure_2 "Brake Pressure PSI (Sensor 2)";
-CM_ SG_ 338 Brake_Pressure_1_Voltage "Brake Pressure Raw Voltage (Sensor 1)";
-CM_ SG_ 338 Brake_Pressure_1 "Brake Pressure PSI (Sensor 1)";
+CM_ SG_ 1616 Brake_Pressure_2_Voltage "Brake Pressure Raw Voltage (Sensor 2)";
+CM_ SG_ 1616 Brake_Pressure_2 "Brake Pressure PSI (Sensor 2)";
+CM_ SG_ 1616 Brake_Pressure_1_Voltage "Brake Pressure Raw Voltage (Sensor 1)";
+CM_ SG_ 1616 Brake_Pressure_1 "Brake Pressure PSI (Sensor 1)";
 CM_ SG_ 337 Brake_Pos_Voltage_Redundant "Brake Pedal Raw Voltage Measurement (Redundant Sensor)";
 CM_ SG_ 337 Brake_Pos_Voltage_Main "Brake Pedal Raw Voltage Measurement (Main Sensor)";
 CM_ SG_ 337 Accel_Pos_Voltage_Redundant "Accelerator Pedal Raw Voltage Measurement (Redundant Sensor)";
@@ -196,8 +195,9 @@ BA_DEF_DEF_  "VFrameFormat" "J1939PG";
 BA_DEF_DEF_  "MultiplexExtEnabled" "No";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
+BA_ "VFrameFormat" BO_ 352 0;
 BA_ "VFrameFormat" BO_ 1792 0;
-BA_ "VFrameFormat" BO_ 338 0;
+BA_ "VFrameFormat" BO_ 1616 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 337 100;
 BA_ "VFrameFormat" BO_ 337 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 336 100;
