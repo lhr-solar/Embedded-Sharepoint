@@ -36,6 +36,12 @@ BS_:
 BU_: Pedals MPPT_B MPPT_A LV_Carrier
 
 
+BO_ 338 Brake_Pressure: 8 Pedals
+ SG_ Brake_Pressure_2_Voltage : 48|16@1+ (0.001,0) [0|3.3] "V" Vector__XXX
+ SG_ Brake_Pressure_2 : 32|16@1+ (0.1,0) [0|3000] "PSI" Vector__XXX
+ SG_ Brake_Pressure_1_Voltage : 16|16@1+ (0.001,0) [0|3.3] "V" Vector__XXX
+ SG_ Brake_Pressure_1 : 0|16@1+ (0.1,0) [0|3000] "PSI" Vector__XXX
+
 BO_ 337 Accel_Brake_Position_Voltage: 8 Pedals
  SG_ Brake_Pos_Voltage_Redundant : 48|16@1+ (0.001,0) [0|3.3] "V" Vector__XXX
  SG_ Brake_Pos_Voltage_Main : 32|16@1+ (0.001,0) [0|3.3] "V" Vector__XXX
@@ -107,6 +113,10 @@ BO_ 1538 Supp_Battery_Charger_Status: 8 LV_Carrier
 
 
 
+CM_ SG_ 338 Brake_Pressure_2_Voltage "Brake Pressure Raw Voltage (Sensor 2)";
+CM_ SG_ 338 Brake_Pressure_2 "Brake Pressure PSI (Sensor 2)";
+CM_ SG_ 338 Brake_Pressure_1_Voltage "Brake Pressure Raw Voltage (Sensor 1)";
+CM_ SG_ 338 Brake_Pressure_1 "Brake Pressure PSI (Sensor 1)";
 CM_ SG_ 337 Brake_Pos_Voltage_Redundant "Brake Pedal Raw Voltage Measurement (Redundant Sensor)";
 CM_ SG_ 337 Brake_Pos_Voltage_Main "Brake Pedal Raw Voltage Measurement (Main Sensor)";
 CM_ SG_ 337 Accel_Pos_Voltage_Redundant "Accelerator Pedal Raw Voltage Measurement (Redundant Sensor)";
@@ -141,12 +151,16 @@ BA_DEF_DEF_  "VFrameFormat" "J1939PG";
 BA_DEF_DEF_  "MultiplexExtEnabled" "No";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
+BA_ "VFrameFormat" BO_ 338 0;
 BA_ "VFrameFormat" BO_ 337 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 337 100;
 BA_ "VFrameFormat" BO_ 336 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 336 100;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 2147484177 1000;
 BA_ "VFrameFormat" BO_ 2147484177 3;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 2147484176 500;
 BA_ "VFrameFormat" BO_ 2147484176 3;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 2147484185 -1;
 BA_ "VFrameFormat" BO_ 2147484185 3;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 2147484161 1000;
 BA_ "VFrameFormat" BO_ 2147484161 3;
