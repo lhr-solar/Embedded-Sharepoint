@@ -33,7 +33,7 @@ NS_ :
 
 BS_:
 
-BU_: VCU Pedals MPPT_B MPPT_A LV_Carrier
+BU_: PDU BPS Pump Telemetry Controls Pi_Display MPPT_C VCU Pedals MPPT_B MPPT_A LV_Carrier
 
 
 BO_ 338 Brake_Pressure: 8 Pedals
@@ -152,10 +152,10 @@ BA_DEF_DEF_  "MultiplexExtEnabled" "No";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
 BA_ "VFrameFormat" BO_ 338 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 337 100;
 BA_ "VFrameFormat" BO_ 337 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 336 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 337 100;
 BA_ "VFrameFormat" BO_ 336 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 336 100;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 2147484177 1000;
 BA_ "VFrameFormat" BO_ 2147484177 3;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 2147484176 500;
@@ -168,10 +168,10 @@ BA_ "_Cdb_Sc_CTm_Normal" BO_ 2147484160 500;
 BA_ "VFrameFormat" BO_ 2147484160 3;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 2147484169 -1;
 BA_ "VFrameFormat" BO_ 2147484169 3;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1536 250;
 BA_ "VFrameFormat" BO_ 1536 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1537 250;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1536 250;
 BA_ "VFrameFormat" BO_ 1537 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1538 250;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1537 250;
 BA_ "VFrameFormat" BO_ 1538 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1538 250;
 
