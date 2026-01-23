@@ -33,39 +33,39 @@ NS_ :
 
 BS_:
 
-BU_: MPPT_B MPPT_A LV_Carrier
+BU_: Pedals MPPT_B MPPT_A LV_Carrier
 
 
-BO_ 529 MPPT_33_0_Status: 5 MPPT_B
+BO_ 2147484177 MPPT_33_0_Status: 5 MPPT_B
  SG_ MPPT_Enabled : 16|8@1- (1,0) [0|0] "" Vector__XXX
  SG_ MPPT_HeatsinkTemperature : 39|8@0- (1,0) [-128|127] "C" Vector__XXX
  SG_ MPPT_AmbientTemperature : 31|8@0- (1,0) [-128|127] "C" Vector__XXX
  SG_ MPPT_Fault : 8|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ MPPT_Mode : 0|8@1+ (1,0) [0|0] "" Vector__XXX
 
-BO_ 528 MPPT_33_0_Power: 8 MPPT_B
+BO_ 2147484176 MPPT_33_0_Power: 8 MPPT_B
  SG_ MPPT_Iout : 55|16@0- (0.0005,0) [0|0] "A" Vector__XXX
  SG_ MPPT_Vout : 39|16@0- (0.01,0) [-327.68|327.67] "V" Vector__XXX
  SG_ MPPT_Iin : 23|16@0- (0.0005,0) [-16.384|16.3835] "A" Vector__XXX
  SG_ MPPT_Vin : 7|16@0- (0.01,0) [-327.68|327.67] "V" Vector__XXX
 
-BO_ 537 MPPT_33_0_SetMode: 1 MPPT_B
+BO_ 2147484185 MPPT_33_0_SetMode: 1 MPPT_B
  SG_ Boost_Enable : 0|1@1+ (1,0) [0|1] ""  MPPT_B
 
-BO_ 513 MPPT_32_0_Status: 5 MPPT_A
+BO_ 2147484161 MPPT_32_0_Status: 5 MPPT_A
  SG_ MPPT_Enabled : 16|8@1- (1,0) [0|0] "" Vector__XXX
  SG_ MPPT_HeatsinkTemperature : 39|8@0- (1,0) [-128|127] "C" Vector__XXX
  SG_ MPPT_AmbientTemperature : 31|8@0- (1,0) [-128|127] "C" Vector__XXX
  SG_ MPPT_Fault : 8|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ MPPT_Mode : 0|8@1+ (1,0) [0|0] "" Vector__XXX
 
-BO_ 512 MPPT_32_0_Power: 8 MPPT_A
+BO_ 2147484160 MPPT_32_0_Power: 8 MPPT_A
  SG_ MPPT_Iout : 55|16@0- (0.0005,0) [0|0] "A" Vector__XXX
  SG_ MPPT_Vout : 39|16@0- (0.01,0) [-327.68|327.67] "V" Vector__XXX
  SG_ MPPT_Iin : 23|16@0- (0.0005,0) [-16.384|16.3835] "A" Vector__XXX
  SG_ MPPT_Vin : 7|16@0- (0.01,0) [-327.68|327.67] "V" Vector__XXX
 
-BO_ 521 MPPT_32_0_SetMode: 1 MPPT_A
+BO_ 2147484169 MPPT_32_0_SetMode: 1 MPPT_A
  SG_ Boost_Enable : 0|1@1+ (1,0) [0|1] ""  MPPT_A
 
 BO_ 1536 LV_Carrier_Status: 2 LV_Carrier
@@ -109,15 +109,21 @@ BA_DEF_DEF_  "VFrameFormat" "J1939PG";
 BA_DEF_DEF_  "MultiplexExtEnabled" "No";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 529 1000;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 528 500;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 513 1000;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 512 500;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 521 -1;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1536 250;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 2147484177 1000;
+BA_ "VFrameFormat" BO_ 2147484177 3;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 2147484176 500;
+BA_ "VFrameFormat" BO_ 2147484176 3;
+BA_ "VFrameFormat" BO_ 2147484185 3;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 2147484161 1000;
+BA_ "VFrameFormat" BO_ 2147484161 3;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 2147484160 500;
+BA_ "VFrameFormat" BO_ 2147484160 3;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 2147484169 -1;
+BA_ "VFrameFormat" BO_ 2147484169 3;
 BA_ "VFrameFormat" BO_ 1536 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1537 250;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1536 250;
 BA_ "VFrameFormat" BO_ 1537 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1538 250;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1537 250;
 BA_ "VFrameFormat" BO_ 1538 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1538 250;
 
