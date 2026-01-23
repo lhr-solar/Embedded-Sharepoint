@@ -36,6 +36,12 @@ BS_:
 BU_: Pedals MPPT_B MPPT_A LV_Carrier
 
 
+BO_ 337 Accel_Brake_Position_Voltage: 8 Pedals
+ SG_ Brake_Pos_Voltage_Redundant : 48|16@1+ (0.001,0) [0|3.3] "V" Vector__XXX
+ SG_ Brake_Pos_Voltage_Main : 32|16@1+ (0.001,0) [0|3.3] "V" Vector__XXX
+ SG_ Accel_Pos_Voltage_Redundant : 16|16@1+ (0.001,0) [0|3.3] "V" Vector__XXX
+ SG_ Accel_Pos_Voltage_Main : 0|16@1+ (0.001,0) [0|3.3] "V" Vector__XXX
+
 BO_ 336 Accel_Brake_Position: 5 Pedals
  SG_ Brake_Pressure_2_Fault : 37|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ Brake_Pressure_1_Fault : 36|1@1+ (1,0) [0|0] "" Vector__XXX
@@ -101,6 +107,10 @@ BO_ 1538 Supp_Battery_Charger_Status: 8 LV_Carrier
 
 
 
+CM_ SG_ 337 Brake_Pos_Voltage_Redundant "Brake Pedal Raw Voltage Measurement (Redundant Sensor)";
+CM_ SG_ 337 Brake_Pos_Voltage_Main "Brake Pedal Raw Voltage Measurement (Main Sensor)";
+CM_ SG_ 337 Accel_Pos_Voltage_Redundant "Accelerator Pedal Raw Voltage Measurement (Redundant Sensor)";
+CM_ SG_ 337 Accel_Pos_Voltage_Main "Accelerator Pedal Raw Voltage Measurement (Main Sensor)";
 CM_ SG_ 336 Brake_Pressure_2_Fault "Brake Pressure Sensor 2 Fault (0 normal, 1 fault)";
 CM_ SG_ 336 Brake_Pressure_1_Fault "Brake Pressure Sensor 1 Fault (0 normal, 1 fault)";
 CM_ SG_ 336 Brake_Pos_Redundant_Fault "Brake Pedal Redundant Sensor Fault (0 normal, 1 fault)";
@@ -131,6 +141,7 @@ BA_DEF_DEF_  "VFrameFormat" "J1939PG";
 BA_DEF_DEF_  "MultiplexExtEnabled" "No";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
+BA_ "VFrameFormat" BO_ 337 0;
 BA_ "VFrameFormat" BO_ 336 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 2147484177 1000;
 BA_ "VFrameFormat" BO_ 2147484177 3;
