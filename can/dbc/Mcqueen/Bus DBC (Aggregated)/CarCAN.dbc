@@ -33,32 +33,32 @@ NS_ :
 
 BS_:
 
-BU_: Pedals MPPT_B MPPT_A LV_Carrier
+BU_: VCU Pedals MPPT_B MPPT_A LV_Carrier
 
 
 BO_ 338 Brake_Pressure: 8 Pedals
- SG_ Brake_Pressure_2_Voltage : 48|16@1+ (0.001,0) [0|3.3] "V" Vector__XXX
- SG_ Brake_Pressure_2 : 32|16@1+ (0.1,0) [0|3000] "PSI" Vector__XXX
- SG_ Brake_Pressure_1_Voltage : 16|16@1+ (0.001,0) [0|3.3] "V" Vector__XXX
- SG_ Brake_Pressure_1 : 0|16@1+ (0.1,0) [0|3000] "PSI" Vector__XXX
+ SG_ Brake_Pressure_2_Voltage : 48|16@1+ (0.001,0) [0|3.3] "V"  VCU
+ SG_ Brake_Pressure_2 : 32|16@1+ (0.1,0) [0|3000] "PSI"  VCU
+ SG_ Brake_Pressure_1_Voltage : 16|16@1+ (0.001,0) [0|3.3] "V"  VCU
+ SG_ Brake_Pressure_1 : 0|16@1+ (0.1,0) [0|3000] "PSI"  VCU
 
 BO_ 337 Accel_Brake_Position_Voltage: 8 Pedals
- SG_ Brake_Pos_Voltage_Redundant : 48|16@1+ (0.001,0) [0|3.3] "V" Vector__XXX
- SG_ Brake_Pos_Voltage_Main : 32|16@1+ (0.001,0) [0|3.3] "V" Vector__XXX
- SG_ Accel_Pos_Voltage_Redundant : 16|16@1+ (0.001,0) [0|3.3] "V" Vector__XXX
- SG_ Accel_Pos_Voltage_Main : 0|16@1+ (0.001,0) [0|3.3] "V" Vector__XXX
+ SG_ Brake_Pos_Voltage_Redundant : 48|16@1+ (0.001,0) [0|3.3] "V"  VCU
+ SG_ Brake_Pos_Voltage_Main : 32|16@1+ (0.001,0) [0|3.3] "V"  VCU
+ SG_ Accel_Pos_Voltage_Redundant : 16|16@1+ (0.001,0) [0|3.3] "V"  VCU
+ SG_ Accel_Pos_Voltage_Main : 0|16@1+ (0.001,0) [0|3.3] "V"  VCU
 
 BO_ 336 Accel_Brake_Position: 5 Pedals
- SG_ Brake_Pressure_2_Fault : 37|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Brake_Pressure_1_Fault : 36|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Brake_Pos_Redundant_Fault : 35|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Brake_Pos_Main_Fault : 34|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Accel_Pos_Redundant_Fault : 33|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Accel_Pos_Main_Fault : 32|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Brake_Pos_Redundant : 24|8@1+ (1,0) [0|100] "Percent" Vector__XXX
- SG_ Brake_Pos_Main : 16|8@1+ (1,0) [0|100] "Percent" Vector__XXX
- SG_ Accel_Pos_Redundant : 8|8@1+ (1,0) [0|100] "Percent" Vector__XXX
- SG_ Accel_Pos_Main : 0|8@1+ (1,0) [0|100] "Percent" Vector__XXX
+ SG_ Brake_Pressure_2_Fault : 37|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Brake_Pressure_1_Fault : 36|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Brake_Pos_Redundant_Fault : 35|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Brake_Pos_Main_Fault : 34|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Accel_Pos_Redundant_Fault : 33|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Accel_Pos_Main_Fault : 32|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Brake_Pos_Redundant : 24|8@1+ (1,0) [0|100] "Percent"  VCU
+ SG_ Brake_Pos_Main : 16|8@1+ (1,0) [0|100] "Percent"  VCU
+ SG_ Accel_Pos_Redundant : 8|8@1+ (1,0) [0|100] "Percent"  VCU
+ SG_ Accel_Pos_Main : 0|8@1+ (1,0) [0|100] "Percent"  VCU
 
 BO_ 2147484177 MPPT_33_0_Status: 5 MPPT_B
  SG_ MPPT_Enabled : 16|8@1- (1,0) [0|0] "" Vector__XXX
