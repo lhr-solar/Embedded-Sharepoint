@@ -36,7 +36,24 @@ BS_:
 BU_: PDU BPS Pump Telemetry Controls Pi_Display MPPT_C VCU Pedals MPPT_B MPPT_A LV_Carrier
 
 
-BO_ 1792 Display_Cameras_Status: 2 Vector__XXX
+BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
+ SG_ PushToTalk_Pressed : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Blinker_Right : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Blinker_Left : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Horn_Pressed : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Regen_Activate : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Gear_Reverse : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Gear_Neutral : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Gear_Forward : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Hazard_Pressed : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Regen_Enable : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Cruise_Enable : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Cruise_Set : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Ignition_Off : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Ignition_Motor : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Ignition_Array : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1792 Display_Cameras_Status: 2 Pi_Display
  SG_ Camera_Status_Right : 10|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ Camera_Status_Left : 9|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ Camera_Status_Backup : 8|1@1+ (1,0) [0|0] "" Vector__XXX
@@ -119,6 +136,22 @@ BO_ 1538 Supp_Battery_Charger_Status: 8 LV_Carrier
 
 
 
+CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
+CM_ SG_ 3221225472 PushToTalk_Pressed "Push To Talk (PTT) Button Pressed";
+CM_ SG_ 3221225472 Blinker_Right "Blinker Switch in Right Position";
+CM_ SG_ 3221225472 Blinker_Left "Blinker Switch in Left Position";
+CM_ SG_ 3221225472 Horn_Pressed "Horn Button Pressed";
+CM_ SG_ 3221225472 Regen_Activate "Regen Activate Button Pressed";
+CM_ SG_ 3221225472 Gear_Reverse "Gear Switch in Reverse Position";
+CM_ SG_ 3221225472 Gear_Neutral "Gear Switch in Neutral Position";
+CM_ SG_ 3221225472 Gear_Forward "Gear Switch in Forward Position";
+CM_ SG_ 3221225472 Hazard_Pressed "Hazard Button Pressed";
+CM_ SG_ 3221225472 Regen_Enable "Regen Enable Button Pressed";
+CM_ SG_ 3221225472 Cruise_Enable "Cruise Enable Button Pressed";
+CM_ SG_ 3221225472 Cruise_Set "Cruise Set Button Pressed";
+CM_ SG_ 3221225472 Ignition_Off "Ignition Switch in Off Position";
+CM_ SG_ 3221225472 Ignition_Motor "Ignition Switch in Motor Position";
+CM_ SG_ 3221225472 Ignition_Array "Ignition Switch in Array Position";
 CM_ SG_ 1792 Camera_Status_Right "Right Side View Camera Status (0 disconnected, 1 connected)";
 CM_ SG_ 1792 Camera_Status_Left "Left Side View Camera Status (0 disconnected, 1 connected)";
 CM_ SG_ 1792 Camera_Status_Backup "Backup Camera Status (0 disconnected, 1 connected)";
