@@ -37,6 +37,12 @@ BU_: Pedals MPPT_B MPPT_A LV_Carrier
 
 
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
+ SG_ Brake_Pressure_2_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Brake_Pressure_1_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Brake_Pos_Redundant_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Brake_Pos_Main_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Accel_Pos_Redundant_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Accel_Pos_Main_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ Brake_Pos_Redundant : 0|8@1+ (1,0) [0|100] "Percent" Vector__XXX
  SG_ Brake_Pos_Main : 0|8@1+ (1,0) [0|100] "Percent" Vector__XXX
  SG_ Accel_Pos_Redundant : 0|8@1+ (1,0) [0|100] "Percent" Vector__XXX
@@ -96,6 +102,12 @@ BO_ 1538 Supp_Battery_Charger_Status: 8 LV_Carrier
 
 
 CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
+CM_ SG_ 3221225472 Brake_Pressure_2_Fault "Brake Pressure Sensor 2 Fault (0 normal, 1 fault)";
+CM_ SG_ 3221225472 Brake_Pressure_1_Fault "Brake Pressure Sensor 1 Fault (0 normal, 1 fault)";
+CM_ SG_ 3221225472 Brake_Pos_Redundant_Fault "Brake Pedal Redundant Sensor Fault (0 normal, 1 fault)";
+CM_ SG_ 3221225472 Brake_Pos_Main_Fault "Brake Pedal Main Sensor Fault (0 normal, 1 fault)";
+CM_ SG_ 3221225472 Accel_Pos_Redundant_Fault "Accelerator Pedal Redundant Sensor Fault (0 normal, 1 fault)";
+CM_ SG_ 3221225472 Accel_Pos_Main_Fault "Accelerator Pedal Main Sensor Fault (0 normal, 1 fault)";
 CM_ SG_ 3221225472 Brake_Pos_Redundant "Brake Pedal Position (Redundant Sensor)";
 CM_ SG_ 3221225472 Brake_Pos_Main "Brake Pedal Position (Main Sensor)";
 CM_ SG_ 3221225472 Accel_Pos_Redundant "Accelerator Pedal Position (Redundant Sensor)";
