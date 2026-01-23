@@ -36,16 +36,16 @@ BS_:
 BU_: Pedals MPPT_B MPPT_A LV_Carrier
 
 
-BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
- SG_ Brake_Pressure_2_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Brake_Pressure_1_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Brake_Pos_Redundant_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Brake_Pos_Main_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Accel_Pos_Redundant_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Accel_Pos_Main_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Brake_Pos_Redundant : 0|8@1+ (1,0) [0|100] "Percent" Vector__XXX
- SG_ Brake_Pos_Main : 0|8@1+ (1,0) [0|100] "Percent" Vector__XXX
- SG_ Accel_Pos_Redundant : 0|8@1+ (1,0) [0|100] "Percent" Vector__XXX
+BO_ 336 Accel_Brake_Position: 5 Pedals
+ SG_ Brake_Pressure_2_Fault : 37|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Brake_Pressure_1_Fault : 36|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Brake_Pos_Redundant_Fault : 35|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Brake_Pos_Main_Fault : 34|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Accel_Pos_Redundant_Fault : 33|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Accel_Pos_Main_Fault : 32|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Brake_Pos_Redundant : 24|8@1+ (1,0) [0|100] "Percent" Vector__XXX
+ SG_ Brake_Pos_Main : 16|8@1+ (1,0) [0|100] "Percent" Vector__XXX
+ SG_ Accel_Pos_Redundant : 8|8@1+ (1,0) [0|100] "Percent" Vector__XXX
  SG_ Accel_Pos_Main : 0|8@1+ (1,0) [0|100] "Percent" Vector__XXX
 
 BO_ 2147484177 MPPT_33_0_Status: 5 MPPT_B
@@ -101,17 +101,16 @@ BO_ 1538 Supp_Battery_Charger_Status: 8 LV_Carrier
 
 
 
-CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
-CM_ SG_ 3221225472 Brake_Pressure_2_Fault "Brake Pressure Sensor 2 Fault (0 normal, 1 fault)";
-CM_ SG_ 3221225472 Brake_Pressure_1_Fault "Brake Pressure Sensor 1 Fault (0 normal, 1 fault)";
-CM_ SG_ 3221225472 Brake_Pos_Redundant_Fault "Brake Pedal Redundant Sensor Fault (0 normal, 1 fault)";
-CM_ SG_ 3221225472 Brake_Pos_Main_Fault "Brake Pedal Main Sensor Fault (0 normal, 1 fault)";
-CM_ SG_ 3221225472 Accel_Pos_Redundant_Fault "Accelerator Pedal Redundant Sensor Fault (0 normal, 1 fault)";
-CM_ SG_ 3221225472 Accel_Pos_Main_Fault "Accelerator Pedal Main Sensor Fault (0 normal, 1 fault)";
-CM_ SG_ 3221225472 Brake_Pos_Redundant "Brake Pedal Position (Redundant Sensor)";
-CM_ SG_ 3221225472 Brake_Pos_Main "Brake Pedal Position (Main Sensor)";
-CM_ SG_ 3221225472 Accel_Pos_Redundant "Accelerator Pedal Position (Redundant Sensor)";
-CM_ SG_ 3221225472 Accel_Pos_Main "Accelerator Pedal Position (Main Sensor)";
+CM_ SG_ 336 Brake_Pressure_2_Fault "Brake Pressure Sensor 2 Fault (0 normal, 1 fault)";
+CM_ SG_ 336 Brake_Pressure_1_Fault "Brake Pressure Sensor 1 Fault (0 normal, 1 fault)";
+CM_ SG_ 336 Brake_Pos_Redundant_Fault "Brake Pedal Redundant Sensor Fault (0 normal, 1 fault)";
+CM_ SG_ 336 Brake_Pos_Main_Fault "Brake Pedal Main Sensor Fault (0 normal, 1 fault)";
+CM_ SG_ 336 Accel_Pos_Redundant_Fault "Accelerator Pedal Redundant Sensor Fault (0 normal, 1 fault)";
+CM_ SG_ 336 Accel_Pos_Main_Fault "Accelerator Pedal Main Sensor Fault (0 normal, 1 fault)";
+CM_ SG_ 336 Brake_Pos_Redundant "Brake Pedal Position (Redundant Sensor)";
+CM_ SG_ 336 Brake_Pos_Main "Brake Pedal Position (Main Sensor)";
+CM_ SG_ 336 Accel_Pos_Redundant "Accelerator Pedal Position (Redundant Sensor)";
+CM_ SG_ 336 Accel_Pos_Main "Accelerator Pedal Position (Main Sensor)";
 CM_ SG_ 1536 LTC4421_HVDCDC_Selected "The LTC4421's channel selected signal for the HV DCDC";
 CM_ SG_ 1537 Supplemental_Battery_Voltage "Supplemental Battery voltage in V";
 CM_ SG_ 1538 SuppCharger_Status "00 - Charging disabled, 01 - Charge done, 10 - Charge in progress, 11 - Charge fault detected";
@@ -132,6 +131,7 @@ BA_DEF_DEF_  "VFrameFormat" "J1939PG";
 BA_DEF_DEF_  "MultiplexExtEnabled" "No";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
+BA_ "VFrameFormat" BO_ 336 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 2147484177 1000;
 BA_ "VFrameFormat" BO_ 2147484177 3;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 2147484176 500;
