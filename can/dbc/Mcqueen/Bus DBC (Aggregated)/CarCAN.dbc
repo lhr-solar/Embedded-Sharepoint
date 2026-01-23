@@ -36,6 +36,12 @@ BS_:
 BU_: Pedals MPPT_B MPPT_A LV_Carrier
 
 
+BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
+ SG_ Brake_Pos_Redundant : 0|8@1+ (1,0) [0|100] "Percent" Vector__XXX
+ SG_ Brake_Pos_Main : 0|8@1+ (1,0) [0|100] "Percent" Vector__XXX
+ SG_ Accel_Pos_Redundant : 0|8@1+ (1,0) [0|100] "Percent" Vector__XXX
+ SG_ Accel_Pos_Main : 0|8@1+ (1,0) [0|100] "Percent" Vector__XXX
+
 BO_ 2147484177 MPPT_33_0_Status: 5 MPPT_B
  SG_ MPPT_Enabled : 16|8@1- (1,0) [0|0] "" Vector__XXX
  SG_ MPPT_HeatsinkTemperature : 39|8@0- (1,0) [-128|127] "C" Vector__XXX
@@ -89,6 +95,11 @@ BO_ 1538 Supp_Battery_Charger_Status: 8 LV_Carrier
 
 
 
+CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
+CM_ SG_ 3221225472 Brake_Pos_Redundant "Brake Pedal Position (Redundant Sensor)";
+CM_ SG_ 3221225472 Brake_Pos_Main "Brake Pedal Position (Main Sensor)";
+CM_ SG_ 3221225472 Accel_Pos_Redundant "Accelerator Pedal Position (Redundant Sensor)";
+CM_ SG_ 3221225472 Accel_Pos_Main "Accelerator Pedal Position (Main Sensor)";
 CM_ SG_ 1536 LTC4421_HVDCDC_Selected "The LTC4421's channel selected signal for the HV DCDC";
 CM_ SG_ 1537 Supplemental_Battery_Voltage "Supplemental Battery voltage in V";
 CM_ SG_ 1538 SuppCharger_Status "00 - Charging disabled, 01 - Charge done, 10 - Charge in progress, 11 - Charge fault detected";
