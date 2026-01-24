@@ -41,6 +41,22 @@ VAL_TABLE_ HSS_Command_Type 1 "Set Current Limit" 0 "Control Switches" ;
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ HSS_Command_Type : 0|4@1+ (1,0) [0|0] "" Vector__XXX
 
+BO_ 545 MPPT_C_Status: 5 MPPT_C
+ SG_ MPPT_Enabled : 16|8@1- (1,0) [0|0] "" Vector__XXX
+ SG_ MPPT_HeatsinkTemperature : 39|8@0- (1,0) [-128|127] "C" Vector__XXX
+ SG_ MPPT_AmbientTemperature : 31|8@0- (1,0) [-128|127] "C" Vector__XXX
+ SG_ MPPT_Fault : 8|8@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ MPPT_Mode : 0|8@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 553 MPPT_C_SetMode: 1 MPPT_C
+ SG_ Boost_Enable : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 544 MPPT_C_Power: 8 MPPT_C
+ SG_ MPPT_Iout : 55|16@0- (0.0005,0) [0|0] "A" Vector__XXX
+ SG_ MPPT_Vout : 39|16@0- (0.01,0) [-327.68|327.67] "V" Vector__XXX
+ SG_ MPPT_Iin : 23|16@0- (0.0005,0) [-16.384|16.3835] "A" Vector__XXX
+ SG_ MPPT_Vin : 7|16@0- (0.01,0) [-327.68|327.67] "V" Vector__XXX
+
 BO_ 850 BBPDU_Set_Current_Limit: 4 VCU
  SG_ HSS_Current_Limit : 8|16@1+ (0.001,0) [0|8] "A"  PDU
  SG_ HSS_Channel : 4|4@1+ (1,0) [0|16] ""  PDU
@@ -284,6 +300,12 @@ BA_DEF_DEF_  "VFrameFormat" "J1939PG";
 BA_DEF_DEF_  "MultiplexExtEnabled" "No";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
+BA_ "VFrameFormat" BO_ 545 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 545 1000;
+BA_ "VFrameFormat" BO_ 553 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 553 -1;
+BA_ "VFrameFormat" BO_ 544 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 544 500;
 BA_ "VFrameFormat" BO_ 850 0;
 BA_ "VFrameFormat" BO_ 1026 0;
 BA_ "VFrameFormat" BO_ 1025 0;
