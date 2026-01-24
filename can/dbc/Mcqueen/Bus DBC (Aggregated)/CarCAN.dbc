@@ -42,8 +42,8 @@ BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ HSS_Command_Type : 0|4@1+ (1,0) [0|0] "" Vector__XXX
 
 BO_ 850 BBPDU_Set_Current_Limit: 4 VCU
- SG_ HSS_Current_Limit : 8|16@1+ (0.001,0) [0|8] "A" Vector__XXX
- SG_ HSS_Channel : 4|4@1+ (1,0) [0|16] "" Vector__XXX
+ SG_ HSS_Current_Limit : 8|16@1+ (0.001,0) [0|8] "A"  PDU
+ SG_ HSS_Channel : 4|4@1+ (1,0) [0|16] ""  PDU
 
 BO_ 1026 Radiator_FanSpeed: 8 Pump
  SG_ Radiator_Fan_Speed_Target_2 : 48|16@1+ (1,0) [0|65535] "RPM" Vector__XXX
@@ -62,22 +62,22 @@ BO_ 1024 Pump_Status_FlowRate: 6 Pump
  SG_ Pump_DutyCycle : 0|8@1+ (1,0) [0|100] "" Vector__XXX
 
 BO_ 849 BBPDU_Set_Switches: 4 VCU
- SG_ HSS_Control_1 : 24|2@1+ (1,0) [0|0] "" Vector__XXX
- SG_ HSS_Control_12 : 14|2@1+ (1,0) [0|0] "" Vector__XXX
- SG_ HSS_Control_13 : 0|2@1+ (1,0) [0|0] "" Vector__XXX
- SG_ HSS_Control_9 : 8|2@1+ (1,0) [0|0] "" Vector__XXX
- SG_ HSS_Control_8 : 22|2@1+ (1,0) [0|0] "" Vector__XXX
- SG_ HSS_Control_7 : 20|2@1+ (1,0) [0|0] "" Vector__XXX
- SG_ HSS_Control_6 : 18|2@1+ (1,0) [0|0] "" Vector__XXX
- SG_ HSS_Control_5 : 16|2@1+ (1,0) [0|0] "" Vector__XXX
- SG_ HSS_Control_4 : 30|2@1+ (1,0) [0|0] "" Vector__XXX
- SG_ HSS_Control_3 : 28|2@1+ (1,0) [0|0] "" Vector__XXX
- SG_ HSS_Control_2 : 26|2@1+ (1,0) [0|0] "" Vector__XXX
- SG_ HSS_Control_16 : 6|2@1+ (1,0) [0|0] "" Vector__XXX
- SG_ HSS_Control_15 : 4|2@1+ (1,0) [0|0] "" Vector__XXX
- SG_ HSS_Control_14 : 2|2@1+ (1,0) [0|0] "" Vector__XXX
- SG_ HSS_Control_11 : 12|2@1+ (1,0) [0|0] "" Vector__XXX
- SG_ HSS_Control_10 : 10|2@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ HSS_Control_1 : 24|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_12 : 14|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_13 : 0|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_9 : 8|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_8 : 22|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_7 : 20|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_6 : 18|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_5 : 16|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_4 : 30|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_3 : 28|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_2 : 26|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_16 : 6|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_15 : 4|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_14 : 2|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_11 : 12|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_10 : 10|2@1+ (1,0) [0|0] ""  PDU
 
 BO_ 848 BBPDU_Status: 5 PDU
  SG_ HSS_Measured_Current : 24|16@1+ (0.001,0) [0|65.535] "A" Vector__XXX
@@ -291,32 +291,32 @@ BA_ "VFrameFormat" BO_ 1024 0;
 BA_ "VFrameFormat" BO_ 849 0;
 BA_ "VFrameFormat" BO_ 848 0;
 BA_ "VFrameFormat" BO_ 352 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1792 100;
 BA_ "VFrameFormat" BO_ 1792 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1616 1000;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1792 100;
 BA_ "VFrameFormat" BO_ 1616 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 337 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1616 1000;
 BA_ "VFrameFormat" BO_ 337 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 336 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 337 100;
 BA_ "VFrameFormat" BO_ 336 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 529 1000;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 336 100;
 BA_ "VFrameFormat" BO_ 529 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 528 500;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 529 1000;
 BA_ "VFrameFormat" BO_ 528 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 537 -1;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 528 500;
 BA_ "VFrameFormat" BO_ 537 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 513 1000;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 537 -1;
 BA_ "VFrameFormat" BO_ 513 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 512 500;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 513 1000;
 BA_ "VFrameFormat" BO_ 512 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 521 -1;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 512 500;
 BA_ "VFrameFormat" BO_ 521 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 768 250;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 521 -1;
 BA_ "VFrameFormat" BO_ 768 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 769 250;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 768 250;
 BA_ "VFrameFormat" BO_ 769 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 770 250;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 769 250;
 BA_ "VFrameFormat" BO_ 770 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 770 250;
 VAL_ 3221225472 HSS_Command_Type 1 "Set Current Limit" 0 "Control Switches" ;
 VAL_ 849 HSS_Control_1 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
 VAL_ 849 HSS_Control_12 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
