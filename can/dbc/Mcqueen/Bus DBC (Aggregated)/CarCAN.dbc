@@ -41,6 +41,8 @@ VAL_TABLE_ HSS_Command_Type 1 "Set Current Limit" 0 "Control Switches" ;
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ HSS_Command_Type : 0|4@1+ (1,0) [0|0] "" Vector__XXX
 
+BO_ 1872 Telemetry_Status: 8 Telemetry
+
 BO_ 545 MPPT_C_Status: 5 MPPT_C
  SG_ MPPT_Enabled : 16|8@1- (1,0) [0|0] "" Vector__XXX
  SG_ MPPT_HeatsinkTemperature : 39|8@0- (1,0) [-128|127] "C" Vector__XXX
@@ -300,6 +302,7 @@ BA_DEF_DEF_  "VFrameFormat" "J1939PG";
 BA_DEF_DEF_  "MultiplexExtEnabled" "No";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
+BA_ "VFrameFormat" BO_ 1872 0;
 BA_ "VFrameFormat" BO_ 545 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 545 1000;
 BA_ "VFrameFormat" BO_ 553 0;
