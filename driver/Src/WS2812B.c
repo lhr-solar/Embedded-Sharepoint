@@ -21,9 +21,9 @@ status_t WS2812B_Send(uint8_t colors[], uint8_t num_leds) {
         } else sig_gen[idx++]=SEND_LOW;    // ASSERT LOW
     }
 
-    HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1, (uint32_t*) sig_gen, 24*num_leds);
+    HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1, (uint32_t*) sig_gen, num_leds*24);
     send_semphr=0; // take
-    while (!send_semphr) { } 
+    while (!send_semphr) {  } 
 
     return STATUS_SUCCESS;
 }
@@ -48,11 +48,15 @@ status_t WS2812B_Init(GPIO_TypeDef* port, uint16_t pin) {
     return STATUS_SUCCESS;
 }
 
+void PWM_PulseFinishedHalfCpltCallback(TIM_HandleTypeDef* htim) { send_semphr=1; }
+
 void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef* htim)
 {
 	HAL_TIM_PWM_Stop_DMA(htim, TIM_CHANNEL_1);
-    send_semphr=1; // release
+  send_semphr=1; // release
 }
+
+// void HAL_TIM_ErrorCallback(void) {  }
 
 /**
   * @brief TIM1 Initialization Function
@@ -136,12 +140,48 @@ static void MX_TIM1_Init(void)
 
 }
 
+/* System Clock Config */
+void SystemClock_Config(void)
+{
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+
+  /** Configure the main internal regulator output voltage
+  */
+  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
+
+  /** Initializes the RCC Oscillators according to the specified parameters
+  * in the RCC_OscInitTypeDef structure.
+  */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Initializes the CPU, AHB and APB buses clocks
+  */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
+
 /**
   * Enable DMA controller clock
   */
 static void MX_DMA_Init(void)
 {
-
   /* DMA controller clock enable */
   __HAL_RCC_DMAMUX1_CLK_ENABLE();
   __HAL_RCC_DMA1_CLK_ENABLE();
