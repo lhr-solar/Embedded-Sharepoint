@@ -34,6 +34,7 @@ NS_ :
 BS_:
 
 BU_: PDU BPS Pump Telemetry Controls Pi_Display MPPT_C VCU Pedals MPPT_B MPPT_A LV_Carrier
+VAL_TABLE_ BPS_Fault_Type 7 "Watchdog" 6 "Precharge" 5 "Estop" 4 "Overtemperature" 3 "Overcurrent" 2 "Undervoltage" 1 "Overvoltage" 0 "No fault" ;
 VAL_TABLE_ HSS_Switch_Control 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
 VAL_TABLE_ HSS_Command_Type 1 "Set Current Limit" 0 "Control Switches" ;
 
@@ -100,8 +101,8 @@ BO_ 849 BBPDU_Set_Switches: 4 VCU
 BO_ 848 BBPDU_Status: 5 PDU
  SG_ HSS_Measured_Current : 24|16@1+ (0.001,0) [0|65.535] "A" Vector__XXX
  SG_ HSS_Measured_Voltage : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ HSS_Enabled : 4|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ HSS_Fault : 5|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ HSS_Enabled : 5|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ HSS_Fault : 4|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ HSS_Channel : 0|4@1+ (1,0) [0|16] "" Vector__XXX
 
 BO_ 352 Driver_Input_Status: 2 Controls
@@ -183,7 +184,7 @@ BO_ 512 MPPT_A_Power: 8 MPPT_A
 BO_ 521 MPPT_A_SetMode: 1 MPPT_A
  SG_ Boost_Enable : 0|1@1+ (1,0) [0|1] ""  MPPT_A
 
-BO_ 768 LV_Carrier_Status: 2 LV_Carrier
+BO_ 1536 LV_Carrier_Status: 2 LV_Carrier
  SG_ LTC4421_HVDCDC_Selected : 0|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ LTC4421_HVDCDC_Fault : 1|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ LTC4421_HVDCDC_Valid : 2|1@1+ (1,0) [0|1] "" Vector__XXX
@@ -193,10 +194,10 @@ BO_ 768 LV_Carrier_Status: 2 LV_Carrier
  SG_ LV_EN_SupplementalBattery : 6|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ LV_EN_PowerSupply : 7|1@1+ (1,0) [0|1] "" Vector__XXX
 
-BO_ 769 Supp_Battery_Status: 8 LV_Carrier
+BO_ 768 Supp_Battery_Status: 8 LV_Carrier
  SG_ Supplemental_Battery_Voltage : 0|16@1+ (1,0) [0|40] "V" Vector__XXX
 
-BO_ 770 Supp_Battery_Charger_Status: 8 LV_Carrier
+BO_ 769 Supp_Battery_Charger_Status: 8 LV_Carrier
  SG_ SuppCharger_Status : 0|2@1+ (1,0) [0|0] "" Vector__XXX
  SG_ Supplemental_Battery_Current : 16|16@1- (1,0) [-2300|28700] "mA" Vector__XXX
  SG_ Supplemental_DCDC_Voltage : 32|16@1+ (1,0) [0|26] "V" Vector__XXX
@@ -280,9 +281,9 @@ CM_ SG_ 336 Brake_Pos_Redundant "Brake Pedal Position (Redundant Sensor)";
 CM_ SG_ 336 Brake_Pos_Main "Brake Pedal Position (Main Sensor)";
 CM_ SG_ 336 Accel_Pos_Redundant "Accelerator Pedal Position (Redundant Sensor)";
 CM_ SG_ 336 Accel_Pos_Main "Accelerator Pedal Position (Main Sensor)";
-CM_ SG_ 768 LTC4421_HVDCDC_Selected "The LTC4421's channel selected signal for the HV DCDC";
-CM_ SG_ 769 Supplemental_Battery_Voltage "Supplemental Battery voltage in V";
-CM_ SG_ 770 SuppCharger_Status "00 - Charging disabled, 01 - Charge done, 10 - Charge in progress, 11 - Charge fault detected";
+CM_ SG_ 1536 LTC4421_HVDCDC_Selected "The LTC4421's channel selected signal for the HV DCDC";
+CM_ SG_ 768 Supplemental_Battery_Voltage "Supplemental Battery voltage in V";
+CM_ SG_ 769 SuppCharger_Status "00 - Charging disabled, 01 - Charge done, 10 - Charge in progress, 11 - Charge fault detected";
 BA_DEF_ BO_  "_Cdb_Sc_CTm_Normal" INT 0 0;
 BA_DEF_ BO_  "_Cdb_Sc_CTm_Test" INT 0 0;
 BA_DEF_  "DatabaseVersion" STRING ;
@@ -336,12 +337,12 @@ BA_ "VFrameFormat" BO_ 512 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 512 500;
 BA_ "VFrameFormat" BO_ 521 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 521 -1;
+BA_ "VFrameFormat" BO_ 1536 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1536 250;
 BA_ "VFrameFormat" BO_ 768 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 768 250;
 BA_ "VFrameFormat" BO_ 769 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 769 250;
-BA_ "VFrameFormat" BO_ 770 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 770 250;
 VAL_ 3221225472 HSS_Command_Type 1 "Set Current Limit" 0 "Control Switches" ;
 VAL_ 849 HSS_Control_1 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
 VAL_ 849 HSS_Control_12 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
