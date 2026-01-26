@@ -40,11 +40,22 @@ VAL_TABLE_ HSS_Command_Type 1 "Set Current Limit" 0 "Control Switches" ;
 
 
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
- SG_ BPS_Pack_Voltage : 0|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
- SG_ BPS_Regen_OK : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Charge_OK : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Fault : 0|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ HSS_Command_Type : 0|4@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 4 BPS_Current: 6 BPS
+ SG_ Main_Battery_Current_RawV : 24|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ Main_Battery_Current : 0|24@1- (0.001,0) [-8388.608|8388.607] "A" Vector__XXX
+
+BO_ 1 BPS_Status: 7 BPS
+ SG_ Array_Precharge_Contactor_State : 13|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Array_Contactor_State : 12|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ HV_Plus_Contactor_State : 10|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ HV_Minus_Contactor_State : 11|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Main_Battery_Avg_Temperature : 40|16@1- (0.01,0) [-327.68|327.67] "" Vector__XXX
+ SG_ Main_Battery_Voltage : 16|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
+ SG_ BPS_Regen_OK : 9|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_Charge_OK : 8|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_Fault : 0|8@1+ (1,0) [0|0] "" Vector__XXX
 
 BO_ 1872 Telemetry_Status: 8 Telemetry
 
@@ -212,13 +223,20 @@ BO_TX_BU_ 849 : Telemetry,Pi_Display,VCU;
 
 
 CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
-CM_ SG_ 3221225472 BPS_Pack_Voltage "Total battery pack voltage as determined by the BPS";
-CM_ SG_ 3221225472 BPS_Regen_OK "BPS has determined regenerative braking is OK (0 not ok, 1 ok)";
-CM_ SG_ 3221225472 BPS_Charge_OK "BPS has determined charging the pack is OK (0 not ok, 1 ok)";
-CM_ SG_ 3221225472 BPS_Fault "BPS Fault State (0 for all clear; see value table for specific faults)";
 CM_ SG_ 3221225472 HSS_Command_Type "High Side Switch Command Type:
 0000 - Control Switches
 0001 - Set Current Limit";
+CM_ SG_ 4 Main_Battery_Current_RawV "Main battery current raw voltage as measured by the BPS";
+CM_ SG_ 4 Main_Battery_Current "Main battery current as measured by the BPS";
+CM_ SG_ 1 Array_Precharge_Contactor_State "Array Precharge Contactor State (0 open, 1 closed)";
+CM_ SG_ 1 Array_Contactor_State "Array Main Contactor State (0 open, 1 closed)";
+CM_ SG_ 1 HV_Plus_Contactor_State "HV+ Contactor State (0 open, 1 closed)";
+CM_ SG_ 1 HV_Minus_Contactor_State "HV- Contactor State (0 open, 1 closed)";
+CM_ SG_ 1 Main_Battery_Avg_Temperature "Average pack temperature as determined by the BPS";
+CM_ SG_ 1 Main_Battery_Voltage "Total battery pack voltage as determined by the BPS";
+CM_ SG_ 1 BPS_Regen_OK "BPS has determined regenerative braking is OK (0 not ok, 1 ok)";
+CM_ SG_ 1 BPS_Charge_OK "BPS has determined charging the pack is OK (0 not ok, 1 ok)";
+CM_ SG_ 1 BPS_Fault "BPS Fault State (0 for all clear; see value table for specific faults)";
 CM_ SG_ 850 HSS_Current_Limit "High Side Switch Current Limit";
 CM_ SG_ 850 HSS_Channel "High Side Switch Channel";
 CM_ SG_ 1026 Radiator_Fan_Speed_Target_2 "Target Radiator Fan 2 Speed";
@@ -311,13 +329,15 @@ BA_DEF_DEF_  "VFrameFormat" "J1939PG";
 BA_DEF_DEF_  "MultiplexExtEnabled" "No";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
+BA_ "VFrameFormat" BO_ 4 0;
+BA_ "VFrameFormat" BO_ 1 0;
 BA_ "VFrameFormat" BO_ 1872 0;
-BA_ "VFrameFormat" BO_ 545 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 545 1000;
-BA_ "VFrameFormat" BO_ 553 0;
+BA_ "VFrameFormat" BO_ 545 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 553 -1;
-BA_ "VFrameFormat" BO_ 544 0;
+BA_ "VFrameFormat" BO_ 553 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 544 500;
+BA_ "VFrameFormat" BO_ 544 0;
 BA_ "VFrameFormat" BO_ 850 0;
 BA_ "VFrameFormat" BO_ 1026 0;
 BA_ "VFrameFormat" BO_ 1025 0;
@@ -325,34 +345,34 @@ BA_ "VFrameFormat" BO_ 1024 0;
 BA_ "VFrameFormat" BO_ 849 0;
 BA_ "VFrameFormat" BO_ 848 0;
 BA_ "VFrameFormat" BO_ 352 0;
-BA_ "VFrameFormat" BO_ 1792 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 1792 100;
-BA_ "VFrameFormat" BO_ 1616 0;
+BA_ "VFrameFormat" BO_ 1792 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 1616 1000;
-BA_ "VFrameFormat" BO_ 337 0;
+BA_ "VFrameFormat" BO_ 1616 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 337 100;
-BA_ "VFrameFormat" BO_ 336 0;
+BA_ "VFrameFormat" BO_ 337 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 336 100;
-BA_ "VFrameFormat" BO_ 529 0;
+BA_ "VFrameFormat" BO_ 336 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 529 1000;
-BA_ "VFrameFormat" BO_ 528 0;
+BA_ "VFrameFormat" BO_ 529 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 528 500;
-BA_ "VFrameFormat" BO_ 537 0;
+BA_ "VFrameFormat" BO_ 528 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 537 -1;
-BA_ "VFrameFormat" BO_ 513 0;
+BA_ "VFrameFormat" BO_ 537 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 513 1000;
-BA_ "VFrameFormat" BO_ 512 0;
+BA_ "VFrameFormat" BO_ 513 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 512 500;
-BA_ "VFrameFormat" BO_ 521 0;
+BA_ "VFrameFormat" BO_ 512 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 521 -1;
-BA_ "VFrameFormat" BO_ 1536 0;
+BA_ "VFrameFormat" BO_ 521 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 1536 250;
-BA_ "VFrameFormat" BO_ 768 0;
+BA_ "VFrameFormat" BO_ 1536 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 768 250;
-BA_ "VFrameFormat" BO_ 769 0;
+BA_ "VFrameFormat" BO_ 768 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 769 250;
-VAL_ 3221225472 BPS_Fault 16 "Discharging Overcurrent" 15 "Charging Overcurrent" 14 "Estop 3" 13 "Estop 2" 12 "Estop 1" 11 "Array Pchg Contactor Sense" 10 "Array Contactor Sense" 9 "HV- Contactor Sense" 8 "HV+ Contactor Sense" 7 "Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "No Fault" ;
+BA_ "VFrameFormat" BO_ 769 0;
 VAL_ 3221225472 HSS_Command_Type 1 "Set Current Limit" 0 "Control Switches" ;
+VAL_ 1 BPS_Fault 16 "Discharging Overcurrent" 15 "Charging Overcurrent" 14 "Estop 3" 13 "Estop 2" 12 "Estop 1" 11 "Array Pchg Contactor Sense" 10 "Array Contactor Sense" 9 "HV- Contactor Sense" 8 "HV+ Contactor Sense" 7 "Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "No Fault" ;
 VAL_ 849 HSS_Control_1 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
 VAL_ 849 HSS_Control_12 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
 VAL_ 849 HSS_Control_13 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
