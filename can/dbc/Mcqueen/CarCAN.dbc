@@ -40,6 +40,10 @@ VAL_TABLE_ HSS_Command_Type 1 "Set Current Limit" 0 "Control Switches" ;
 
 
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
+ SG_ BPS_Pack_Voltage : 0|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
+ SG_ BPS_Regen_OK : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_Charge_OK : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_Fault : 0|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ HSS_Command_Type : 0|4@1+ (1,0) [0|0] "" Vector__XXX
 
 BO_ 1872 Telemetry_Status: 8 Telemetry
@@ -208,6 +212,10 @@ BO_TX_BU_ 849 : Telemetry,Pi_Display,VCU;
 
 
 CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
+CM_ SG_ 3221225472 BPS_Pack_Voltage "Total battery pack voltage as determined by the BPS";
+CM_ SG_ 3221225472 BPS_Regen_OK "BPS has determined regenerative braking is OK (0 not ok, 1 ok)";
+CM_ SG_ 3221225472 BPS_Charge_OK "BPS has determined charging the pack is OK (0 not ok, 1 ok)";
+CM_ SG_ 3221225472 BPS_Fault "BPS Fault State (0 for all clear; see value table for specific faults)";
 CM_ SG_ 3221225472 HSS_Command_Type "High Side Switch Command Type:
 0000 - Control Switches
 0001 - Set Current Limit";
@@ -343,6 +351,7 @@ BA_ "VFrameFormat" BO_ 768 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 768 250;
 BA_ "VFrameFormat" BO_ 769 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 769 250;
+VAL_ 3221225472 BPS_Fault 16 "Discharging Overcurrent" 15 "Charging Overcurrent" 14 "Estop 3" 13 "Estop 2" 12 "Estop 1" 11 "Array Pchg Contactor Sense" 10 "Array Contactor Sense" 9 "HV- Contactor Sense" 8 "HV+ Contactor Sense" 7 "Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "No Fault" ;
 VAL_ 3221225472 HSS_Command_Type 1 "Set Current Limit" 0 "Control Switches" ;
 VAL_ 849 HSS_Control_1 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
 VAL_ 849 HSS_Control_12 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
