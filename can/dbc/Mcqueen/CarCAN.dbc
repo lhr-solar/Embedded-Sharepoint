@@ -43,7 +43,7 @@ VAL_TABLE_ HSS_Command_Type 1 "Set Current Limit" 0 "Control Switches" ;
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ HSS_Command_Type : 0|4@1+ (1,0) [0|0] "" Vector__XXX
 
-BO_ 257 VCU_Precharge_Voltages: 6 Vector__XXX
+BO_ 33 VCU_Precharge_Voltages: 6 Vector__XXX
  SG_ Precharge_Motor_Voltage : 24|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
  SG_ Precharge_Battery_Voltage : 0|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
 
@@ -58,7 +58,7 @@ BO_ 16 VCU_Status: 3 VCU
  SG_ VCU_FSM_State : 16|4@1+ (1,0) [0|0] "" Vector__XXX
  SG_ VCU_Fault : 0|8@1+ (1,0) [0|0] "" Vector__XXX
 
-BO_ 256 BPS_Precharge_Voltages: 6 BPS
+BO_ 32 BPS_Precharge_Voltages: 6 BPS
  SG_ Precharge_Battery_Voltage : 0|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
  SG_ Precharge_Array_Voltage : 24|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
 
@@ -151,7 +151,7 @@ BO_ 848 BBPDU_Status: 5 PDU
  SG_ HSS_Fault : 4|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ HSS_Channel : 0|4@1+ (1,0) [0|16] "" Vector__XXX
 
-BO_ 352 Driver_Input_Status: 2 Controls
+BO_ 96 Driver_Input_Status: 2 Controls
  SG_ Regen_Enable : 14|1@1+ (1,0) [0|0] ""  VCU
  SG_ Regen_Activate : 13|1@1+ (1,0) [0|0] ""  VCU
  SG_ PushToTalk_Pressed : 12|1@1+ (1,0) [0|0] "" Vector__XXX
@@ -180,13 +180,13 @@ BO_ 1616 Brake_Pressure: 8 Pedals
  SG_ Brake_Pressure_1_Voltage : 16|16@1+ (0.001,0) [0|3.3] "V"  VCU
  SG_ Brake_Pressure_1 : 0|16@1+ (0.1,0) [0|3000] "PSI"  VCU
 
-BO_ 337 Accel_Brake_Position_Voltage: 8 Pedals
+BO_ 81 Accel_Brake_Position_Voltage: 8 Pedals
  SG_ Brake_Pos_Voltage_Redundant : 48|16@1+ (0.001,0) [0|3.3] "V"  VCU
  SG_ Brake_Pos_Voltage_Main : 32|16@1+ (0.001,0) [0|3.3] "V"  VCU
  SG_ Accel_Pos_Voltage_Redundant : 16|16@1+ (0.001,0) [0|3.3] "V"  VCU
  SG_ Accel_Pos_Voltage_Main : 0|16@1+ (0.001,0) [0|3.3] "V"  VCU
 
-BO_ 336 Accel_Brake_Position: 5 Pedals
+BO_ 80 Accel_Brake_Position: 5 Pedals
  SG_ Brake_Pressure_2_Fault : 37|1@1+ (1,0) [0|0] ""  VCU
  SG_ Brake_Pressure_1_Fault : 36|1@1+ (1,0) [0|0] ""  VCU
  SG_ Brake_Pos_Redundant_Fault : 35|1@1+ (1,0) [0|0] ""  VCU
@@ -257,8 +257,8 @@ CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CA
 CM_ SG_ 3221225472 HSS_Command_Type "High Side Switch Command Type:
 0000 - Control Switches
 0001 - Set Current Limit";
-CM_ SG_ 257 Precharge_Motor_Voltage "Motor controller DC bus voltage as measured by active precharge circuitry";
-CM_ SG_ 257 Precharge_Battery_Voltage "Battery voltage as measured by active precharge circuitry";
+CM_ SG_ 33 Precharge_Motor_Voltage "Motor controller DC bus voltage as measured by active precharge circuitry";
+CM_ SG_ 33 Precharge_Battery_Voltage "Battery voltage as measured by active precharge circuitry";
 CM_ SG_ 16 VCU_Regen_Active "VCU is actively applying regenerative braking";
 CM_ SG_ 16 VCU_Regen_OK "VCU has determined regenerative braking can be applied";
 CM_ SG_ 16 VCU_Pedals_OK "VCU is receiving valid data from accel/brake pedal position sensors";
@@ -268,8 +268,8 @@ CM_ SG_ 16 Motor_Contactor_State "Motor Main Contactor State (0 open, 1 closed)"
 CM_ SG_ 16 Motor_Ready_To_Drive "VCU has determined the motor controller is ready to receive torque commands";
 CM_ SG_ 16 VCU_FSM_State "VCU finite state machine current state (TODO: value table when states finalized)";
 CM_ SG_ 16 VCU_Fault "VCU Fault State (0 for all clear; see value table for specific faults)";
-CM_ SG_ 256 Precharge_Battery_Voltage "Battery voltage as measured by active precharge circuitry";
-CM_ SG_ 256 Precharge_Array_Voltage "Array voltage as measured by active precharge circuitry";
+CM_ SG_ 32 Precharge_Battery_Voltage "Battery voltage as measured by active precharge circuitry";
+CM_ SG_ 32 Precharge_Array_Voltage "Array voltage as measured by active precharge circuitry";
 CM_ SG_ 3 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
 CM_ SG_ 3 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
 CM_ SG_ 3 BPS_VoltTemp_ID "BPS VoltTemp ID";
@@ -321,21 +321,21 @@ CM_ SG_ 848 HSS_Measured_Voltage "High Side Switch Voltage";
 CM_ SG_ 848 HSS_Enabled "High Side Switch Output Status (0 off, 1 on)";
 CM_ SG_ 848 HSS_Fault "High Side Switch Fault Status (0 normal, 1 faulted)";
 CM_ SG_ 848 HSS_Channel "High Side Switch Channel";
-CM_ SG_ 352 Regen_Enable "Regen Enable Button Pressed";
-CM_ SG_ 352 Regen_Activate "Regen Activate Button Pressed";
-CM_ SG_ 352 PushToTalk_Pressed "Push To Talk (PTT) Button Pressed";
-CM_ SG_ 352 Blinker_Right "Blinker Switch in Right Position";
-CM_ SG_ 352 Blinker_Left "Blinker Switch in Left Position";
-CM_ SG_ 352 Horn_Pressed "Horn Button Pressed";
-CM_ SG_ 352 Hazard_Pressed "Hazard Button Pressed";
-CM_ SG_ 352 Gear_Reverse "Gear Switch in Reverse Position";
-CM_ SG_ 352 Gear_Neutral "Gear Switch in Neutral Position";
-CM_ SG_ 352 Gear_Forward "Gear Switch in Forward Position";
-CM_ SG_ 352 Cruise_Set "Cruise Set Button Pressed";
-CM_ SG_ 352 Cruise_Enable "Cruise Enable Button Pressed";
-CM_ SG_ 352 Ignition_Off "Ignition Switch in Off Position";
-CM_ SG_ 352 Ignition_Motor "Ignition Switch in Motor Position";
-CM_ SG_ 352 Ignition_Array "Ignition Switch in Array Position";
+CM_ SG_ 96 Regen_Enable "Regen Enable Button Pressed";
+CM_ SG_ 96 Regen_Activate "Regen Activate Button Pressed";
+CM_ SG_ 96 PushToTalk_Pressed "Push To Talk (PTT) Button Pressed";
+CM_ SG_ 96 Blinker_Right "Blinker Switch in Right Position";
+CM_ SG_ 96 Blinker_Left "Blinker Switch in Left Position";
+CM_ SG_ 96 Horn_Pressed "Horn Button Pressed";
+CM_ SG_ 96 Hazard_Pressed "Hazard Button Pressed";
+CM_ SG_ 96 Gear_Reverse "Gear Switch in Reverse Position";
+CM_ SG_ 96 Gear_Neutral "Gear Switch in Neutral Position";
+CM_ SG_ 96 Gear_Forward "Gear Switch in Forward Position";
+CM_ SG_ 96 Cruise_Set "Cruise Set Button Pressed";
+CM_ SG_ 96 Cruise_Enable "Cruise Enable Button Pressed";
+CM_ SG_ 96 Ignition_Off "Ignition Switch in Off Position";
+CM_ SG_ 96 Ignition_Motor "Ignition Switch in Motor Position";
+CM_ SG_ 96 Ignition_Array "Ignition Switch in Array Position";
 CM_ SG_ 1792 Camera_Status_Right "Right Side View Camera Status (0 disconnected, 1 connected)";
 CM_ SG_ 1792 Camera_Status_Left "Left Side View Camera Status (0 disconnected, 1 connected)";
 CM_ SG_ 1792 Camera_Status_Backup "Backup Camera Status (0 disconnected, 1 connected)";
@@ -344,20 +344,20 @@ CM_ SG_ 1616 Brake_Pressure_2_Voltage "Brake Pressure Raw Voltage (Sensor 2)";
 CM_ SG_ 1616 Brake_Pressure_2 "Brake Pressure PSI (Sensor 2)";
 CM_ SG_ 1616 Brake_Pressure_1_Voltage "Brake Pressure Raw Voltage (Sensor 1)";
 CM_ SG_ 1616 Brake_Pressure_1 "Brake Pressure PSI (Sensor 1)";
-CM_ SG_ 337 Brake_Pos_Voltage_Redundant "Brake Pedal Raw Voltage Measurement (Redundant Sensor)";
-CM_ SG_ 337 Brake_Pos_Voltage_Main "Brake Pedal Raw Voltage Measurement (Main Sensor)";
-CM_ SG_ 337 Accel_Pos_Voltage_Redundant "Accelerator Pedal Raw Voltage Measurement (Redundant Sensor)";
-CM_ SG_ 337 Accel_Pos_Voltage_Main "Accelerator Pedal Raw Voltage Measurement (Main Sensor)";
-CM_ SG_ 336 Brake_Pressure_2_Fault "Brake Pressure Sensor 2 Fault (0 normal, 1 fault)";
-CM_ SG_ 336 Brake_Pressure_1_Fault "Brake Pressure Sensor 1 Fault (0 normal, 1 fault)";
-CM_ SG_ 336 Brake_Pos_Redundant_Fault "Brake Pedal Redundant Sensor Fault (0 normal, 1 fault)";
-CM_ SG_ 336 Brake_Pos_Main_Fault "Brake Pedal Main Sensor Fault (0 normal, 1 fault)";
-CM_ SG_ 336 Accel_Pos_Redundant_Fault "Accelerator Pedal Redundant Sensor Fault (0 normal, 1 fault)";
-CM_ SG_ 336 Accel_Pos_Main_Fault "Accelerator Pedal Main Sensor Fault (0 normal, 1 fault)";
-CM_ SG_ 336 Brake_Pos_Redundant "Brake Pedal Position (Redundant Sensor)";
-CM_ SG_ 336 Brake_Pos_Main "Brake Pedal Position (Main Sensor)";
-CM_ SG_ 336 Accel_Pos_Redundant "Accelerator Pedal Position (Redundant Sensor)";
-CM_ SG_ 336 Accel_Pos_Main "Accelerator Pedal Position (Main Sensor)";
+CM_ SG_ 81 Brake_Pos_Voltage_Redundant "Brake Pedal Raw Voltage Measurement (Redundant Sensor)";
+CM_ SG_ 81 Brake_Pos_Voltage_Main "Brake Pedal Raw Voltage Measurement (Main Sensor)";
+CM_ SG_ 81 Accel_Pos_Voltage_Redundant "Accelerator Pedal Raw Voltage Measurement (Redundant Sensor)";
+CM_ SG_ 81 Accel_Pos_Voltage_Main "Accelerator Pedal Raw Voltage Measurement (Main Sensor)";
+CM_ SG_ 80 Brake_Pressure_2_Fault "Brake Pressure Sensor 2 Fault (0 normal, 1 fault)";
+CM_ SG_ 80 Brake_Pressure_1_Fault "Brake Pressure Sensor 1 Fault (0 normal, 1 fault)";
+CM_ SG_ 80 Brake_Pos_Redundant_Fault "Brake Pedal Redundant Sensor Fault (0 normal, 1 fault)";
+CM_ SG_ 80 Brake_Pos_Main_Fault "Brake Pedal Main Sensor Fault (0 normal, 1 fault)";
+CM_ SG_ 80 Accel_Pos_Redundant_Fault "Accelerator Pedal Redundant Sensor Fault (0 normal, 1 fault)";
+CM_ SG_ 80 Accel_Pos_Main_Fault "Accelerator Pedal Main Sensor Fault (0 normal, 1 fault)";
+CM_ SG_ 80 Brake_Pos_Redundant "Brake Pedal Position (Redundant Sensor)";
+CM_ SG_ 80 Brake_Pos_Main "Brake Pedal Position (Main Sensor)";
+CM_ SG_ 80 Accel_Pos_Redundant "Accelerator Pedal Position (Redundant Sensor)";
+CM_ SG_ 80 Accel_Pos_Main "Accelerator Pedal Position (Main Sensor)";
 CM_ SG_ 1536 LTC4421_HVDCDC_Selected "The LTC4421's channel selected signal for the HV DCDC";
 CM_ SG_ 768 Supplemental_Battery_Voltage "Supplemental Battery voltage in V";
 CM_ SG_ 769 SuppCharger_Status "00 - Charging disabled, 01 - Charge done, 10 - Charge in progress, 11 - Charge fault detected";
@@ -380,9 +380,9 @@ BA_DEF_DEF_  "VFrameFormat" "J1939PG";
 BA_DEF_DEF_  "MultiplexExtEnabled" "No";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
-BA_ "VFrameFormat" BO_ 257 0;
+BA_ "VFrameFormat" BO_ 33 0;
 BA_ "VFrameFormat" BO_ 16 0;
-BA_ "VFrameFormat" BO_ 256 0;
+BA_ "VFrameFormat" BO_ 32 0;
 BA_ "VFrameFormat" BO_ 3 0;
 BA_ "VFrameFormat" BO_ 2 0;
 BA_ "VFrameFormat" BO_ 4 0;
@@ -405,16 +405,16 @@ BA_ "VFrameFormat" BO_ 1280 0;
 BA_ "VFrameFormat" BO_ 849 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 848 100;
 BA_ "VFrameFormat" BO_ 848 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 352 100;
-BA_ "VFrameFormat" BO_ 352 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 96 100;
+BA_ "VFrameFormat" BO_ 96 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 1792 100;
 BA_ "VFrameFormat" BO_ 1792 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 1616 1000;
 BA_ "VFrameFormat" BO_ 1616 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 337 100;
-BA_ "VFrameFormat" BO_ 337 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 336 100;
-BA_ "VFrameFormat" BO_ 336 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 81 100;
+BA_ "VFrameFormat" BO_ 81 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 80 100;
+BA_ "VFrameFormat" BO_ 80 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 529 1000;
 BA_ "VFrameFormat" BO_ 529 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 528 500;
