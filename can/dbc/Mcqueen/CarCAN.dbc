@@ -42,6 +42,11 @@ VAL_TABLE_ HSS_Command_Type 1 "Set Current Limit" 0 "Control Switches" ;
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ HSS_Command_Type : 0|4@1+ (1,0) [0|0] "" Vector__XXX
 
+BO_ 2 BPS_Voltage_Array: 4 BPS
+ SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ BPS_Voltage_Tap_ID : 3|5@1+ (1,0) [0|31] "" Vector__XXX
+ SG_ BPS_VoltTemp_ID : 0|3@1+ (1,0) [0|7] "" Vector__XXX
+
 BO_ 4 BPS_Current: 6 BPS
  SG_ Main_Battery_Current_RawV : 24|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ Main_Battery_Current : 0|24@1- (0.001,0) [-8388.608|8388.607] "A" Vector__XXX
@@ -226,6 +231,9 @@ CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CA
 CM_ SG_ 3221225472 HSS_Command_Type "High Side Switch Command Type:
 0000 - Control Switches
 0001 - Set Current Limit";
+CM_ SG_ 2 BPS_Voltage_Tap_Data "Voltage tap measurement for the specified VoltTemp and Tap ID";
+CM_ SG_ 2 BPS_Voltage_Tap_ID "BPS Voltage Tap ID (4 taps per VoltTemp)";
+CM_ SG_ 2 BPS_VoltTemp_ID "BPS VoltTemp ID";
 CM_ SG_ 4 Main_Battery_Current_RawV "Main battery current raw voltage as measured by the BPS";
 CM_ SG_ 4 Main_Battery_Current "Main battery current as measured by the BPS";
 CM_ SG_ 1 Array_Precharge_Contactor_State "Array Precharge Contactor State (0 open, 1 closed)";
@@ -329,6 +337,7 @@ BA_DEF_DEF_  "VFrameFormat" "J1939PG";
 BA_DEF_DEF_  "MultiplexExtEnabled" "No";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
+BA_ "VFrameFormat" BO_ 2 0;
 BA_ "VFrameFormat" BO_ 4 0;
 BA_ "VFrameFormat" BO_ 1 0;
 BA_ "VFrameFormat" BO_ 1872 0;
