@@ -34,31 +34,46 @@ NS_ :
 BS_:
 
 BU_: PDU BPS Pump Telemetry Controls Pi_Display MPPT_C VCU Pedals MPPT_B MPPT_A LV_Carrier
+VAL_TABLE_ VCU_Fault_Type 6 "Motor HV Undervoltage" 5 "Motor HV Overvoltage" 4 "Motor Controller Fault" 3 "Motor Precharge Timeout" 2 "Motor Pchg Contactor Sense" 1 "Motor Contactor Sense" 0 "No Fault" ;
 VAL_TABLE_ BPS_Fault_Type 16 "Discharging Overcurrent" 15 "Charging Overcurrent" 14 "Estop 3" 13 "Estop 2" 12 "Estop 1" 11 "Array Pchg Contactor Sense" 10 "Array Contactor Sense" 9 "HV- Contactor Sense" 8 "HV+ Contactor Sense" 7 "Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "No Fault" ;
 VAL_TABLE_ HSS_Switch_Control 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
 VAL_TABLE_ HSS_Command_Type 1 "Set Current Limit" 0 "Control Switches" ;
 
 
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
- SG_ Precharge_Motor_Voltage : 0|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
  SG_ HSS_Command_Type : 0|4@1+ (1,0) [0|0] "" Vector__XXX
 
-BO_ 256 BPS_Precharge_Voltages: 6 Vector__XXX
+BO_ 257 VCU_Precharge_Voltages: 6 Vector__XXX
+ SG_ Precharge_Motor_Voltage : 24|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
+ SG_ Precharge_Battery_Voltage : 0|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
+
+BO_ 16 VCU_Status: 3 VCU
+ SG_ VCU_Regen_Active : 14|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ VCU_Regen_OK : 13|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ VCU_Pedals_OK : 12|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ VCU_Driver_Input_OK : 11|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Motor_Precharge_Contactor_State : 9|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Motor_Contactor_State : 8|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Motor_Ready_To_Drive : 10|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ VCU_FSM_State : 16|4@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ VCU_Fault : 0|8@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 256 BPS_Precharge_Voltages: 6 BPS
  SG_ Precharge_Battery_Voltage : 0|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
  SG_ Precharge_Array_Voltage : 24|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
 
-BO_ 3 BPS_Temperature_Array: 6 Vector__XXX
+BO_ 3 BPS_Temperature_Array: 5 BPS
  SG_ BPS_Temperature_Tap_RawV : 24|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Temperature_Tap_Data : 8|16@1- (0.01,0) [-327.68|327.67] "C" Vector__XXX
  SG_ BPS_VoltTemp_ID : 0|3@1+ (1,0) [0|7] "" Vector__XXX
  SG_ BPS_Tap_ID : 3|5@1+ (1,0) [0|31] "" Vector__XXX
 
-BO_ 2 BPS_Voltage_Array: 4 BPS
+BO_ 2 BPS_Voltage_Array: 3 BPS
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Tap_ID : 3|5@1+ (1,0) [0|31] "" Vector__XXX
  SG_ BPS_VoltTemp_ID : 0|3@1+ (1,0) [0|7] "" Vector__XXX
 
-BO_ 4 BPS_Pack_Current: 6 BPS
+BO_ 4 BPS_Pack_Current: 5 BPS
  SG_ Main_Battery_Current_RawV : 24|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ Main_Battery_Current : 0|24@1- (0.001,0) [-8388.608|8388.607] "A" Vector__XXX
 
@@ -95,17 +110,17 @@ BO_ 850 BBPDU_Set_Current_Limit: 4 VCU
  SG_ HSS_Current_Limit : 8|16@1+ (0.001,0) [0|8] "A"  PDU
  SG_ HSS_Channel : 4|4@1+ (1,0) [0|16] ""  PDU
 
-BO_ 1026 Radiator_FanSpeed: 8 Pump
+BO_ 1282 Radiator_FanSpeed: 8 Pump
  SG_ Radiator_Fan_Speed_Target_2 : 48|16@1+ (1,0) [0|65535] "RPM" Vector__XXX
  SG_ Radiator_Fan_Speed_Target_1 : 32|16@1+ (1,0) [0|65535] "RPM" Vector__XXX
  SG_ Radiator_Fan_Speed_Measurement_2 : 16|16@1+ (1,0) [0|65535] "RPM" Vector__XXX
  SG_ Radiator_Fan_Speed_Measurement_1 : 0|16@1+ (1,0) [0|65535] "RPM" Vector__XXX
 
-BO_ 1025 Coolant_Temperature: 4 Pump
+BO_ 1281 Coolant_Temperature: 4 Pump
  SG_ Coolant_Temperature_2 : 16|16@1- (0.01,0) [-327.68|327.67] "C" Vector__XXX
  SG_ Coolant_Temperature_1 : 0|16@1- (0.01,0) [-327.68|327.67] "C" Vector__XXX
 
-BO_ 1024 Pump_Status_FlowRate: 6 Pump
+BO_ 1280 Pump_Status_FlowRate: 6 Pump
  SG_ Pump_Fault : 8|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ FlowRate_2 : 32|16@1+ (0.001,0) [0|65.535] "L/min" Vector__XXX
  SG_ FlowRate_1 : 16|16@1+ (0.001,0) [0|65.535] "L/min" Vector__XXX
@@ -239,10 +254,20 @@ BO_TX_BU_ 849 : Telemetry,Pi_Display,VCU;
 
 
 CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
-CM_ SG_ 3221225472 Precharge_Motor_Voltage "Motor controller DC bus voltage as measured by active precharge circuitry";
 CM_ SG_ 3221225472 HSS_Command_Type "High Side Switch Command Type:
 0000 - Control Switches
 0001 - Set Current Limit";
+CM_ SG_ 257 Precharge_Motor_Voltage "Motor controller DC bus voltage as measured by active precharge circuitry";
+CM_ SG_ 257 Precharge_Battery_Voltage "Battery voltage as measured by active precharge circuitry";
+CM_ SG_ 16 VCU_Regen_Active "VCU is actively applying regenerative braking";
+CM_ SG_ 16 VCU_Regen_OK "VCU has determined regenerative braking can be applied";
+CM_ SG_ 16 VCU_Pedals_OK "VCU is receiving valid data from accel/brake pedal position sensors";
+CM_ SG_ 16 VCU_Driver_Input_OK "VCU is receiving valid data from driver inputs (dash/steering)";
+CM_ SG_ 16 Motor_Precharge_Contactor_State "Motor Precharge Contactor State (0 open, 1 closed)";
+CM_ SG_ 16 Motor_Contactor_State "Motor Main Contactor State (0 open, 1 closed)";
+CM_ SG_ 16 Motor_Ready_To_Drive "VCU has determined the motor controller is ready to receive torque commands";
+CM_ SG_ 16 VCU_FSM_State "VCU finite state machine current state (TODO: value table when states finalized)";
+CM_ SG_ 16 VCU_Fault "VCU Fault State (0 for all clear; see value table for specific faults)";
 CM_ SG_ 256 Precharge_Battery_Voltage "Battery voltage as measured by active precharge circuitry";
 CM_ SG_ 256 Precharge_Array_Voltage "Array voltage as measured by active precharge circuitry";
 CM_ SG_ 3 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
@@ -265,16 +290,16 @@ CM_ SG_ 1 BPS_Charge_OK "BPS has determined charging the pack is OK (0 not ok, 1
 CM_ SG_ 1 BPS_Fault "BPS Fault State (0 for all clear; see value table for specific faults)";
 CM_ SG_ 850 HSS_Current_Limit "High Side Switch Current Limit";
 CM_ SG_ 850 HSS_Channel "High Side Switch Channel";
-CM_ SG_ 1026 Radiator_Fan_Speed_Target_2 "Target Radiator Fan 2 Speed";
-CM_ SG_ 1026 Radiator_Fan_Speed_Target_1 "Target Radiator Fan 1 Speed";
-CM_ SG_ 1026 Radiator_Fan_Speed_Measurement_2 "Measured Radiator Fan 2 Speed";
-CM_ SG_ 1026 Radiator_Fan_Speed_Measurement_1 "Measured Radiator Fan 1 Speed";
-CM_ SG_ 1025 Coolant_Temperature_2 "Cooling Loop Temperature Sensor 2 Measurement";
-CM_ SG_ 1025 Coolant_Temperature_1 "Cooling Loop Temperature Sensor 1 Measurement";
-CM_ SG_ 1024 Pump_Fault "Cooling Pump Fault (0 normal, 1 fault)";
-CM_ SG_ 1024 FlowRate_2 "Cooling Loop Flow Rate Sensor 2 Measurement";
-CM_ SG_ 1024 FlowRate_1 "Cooling Loop Flow Rate Sensor 1 Measurement";
-CM_ SG_ 1024 Pump_DutyCycle "Cooling Pump Duty Cycle";
+CM_ SG_ 1282 Radiator_Fan_Speed_Target_2 "Target Radiator Fan 2 Speed";
+CM_ SG_ 1282 Radiator_Fan_Speed_Target_1 "Target Radiator Fan 1 Speed";
+CM_ SG_ 1282 Radiator_Fan_Speed_Measurement_2 "Measured Radiator Fan 2 Speed";
+CM_ SG_ 1282 Radiator_Fan_Speed_Measurement_1 "Measured Radiator Fan 1 Speed";
+CM_ SG_ 1281 Coolant_Temperature_2 "Cooling Loop Temperature Sensor 2 Measurement";
+CM_ SG_ 1281 Coolant_Temperature_1 "Cooling Loop Temperature Sensor 1 Measurement";
+CM_ SG_ 1280 Pump_Fault "Cooling Pump Fault (0 normal, 1 fault)";
+CM_ SG_ 1280 FlowRate_2 "Cooling Loop Flow Rate Sensor 2 Measurement";
+CM_ SG_ 1280 FlowRate_1 "Cooling Loop Flow Rate Sensor 1 Measurement";
+CM_ SG_ 1280 Pump_DutyCycle "Cooling Pump Duty Cycle";
 CM_ SG_ 849 HSS_Control_1 "High Side Switch Control - Channel 1";
 CM_ SG_ 849 HSS_Control_12 "High Side Switch Control - Channel 12";
 CM_ SG_ 849 HSS_Control_13 "High Side Switch Control - Channel 13";
@@ -336,8 +361,8 @@ CM_ SG_ 336 Accel_Pos_Main "Accelerator Pedal Position (Main Sensor)";
 CM_ SG_ 1536 LTC4421_HVDCDC_Selected "The LTC4421's channel selected signal for the HV DCDC";
 CM_ SG_ 768 Supplemental_Battery_Voltage "Supplemental Battery voltage in V";
 CM_ SG_ 769 SuppCharger_Status "00 - Charging disabled, 01 - Charge done, 10 - Charge in progress, 11 - Charge fault detected";
-BA_DEF_ BO_  "_Cdb_Sc_CTm_Normal" INT 0 0;
 BA_DEF_ BO_  "_Cdb_Sc_CTm_Test" INT 0 0;
+BA_DEF_ BO_  "_Cdb_Sc_CTm_Normal" INT 0 0;
 BA_DEF_  "DatabaseVersion" STRING ;
 BA_DEF_  "ProtocolType" STRING ;
 BA_DEF_  "DatabaseCompiler" STRING ;
@@ -345,8 +370,8 @@ BA_DEF_ SG_  "SPN" INT 0 524287;
 BA_DEF_ BO_  "VFrameFormat" ENUM  "StandardCAN","ExtendedCAN","reserved","J1939PG";
 BA_DEF_  "MultiplexExtEnabled" ENUM  "No","Yes";
 BA_DEF_  "BusType" STRING ;
-BA_DEF_DEF_  "_Cdb_Sc_CTm_Normal" 0;
 BA_DEF_DEF_  "_Cdb_Sc_CTm_Test" 0;
+BA_DEF_DEF_  "_Cdb_Sc_CTm_Normal" 0;
 BA_DEF_DEF_  "DatabaseVersion" "DEMO PLUS";
 BA_DEF_DEF_  "ProtocolType" "";
 BA_DEF_DEF_  "DatabaseCompiler" "";
@@ -355,11 +380,14 @@ BA_DEF_DEF_  "VFrameFormat" "J1939PG";
 BA_DEF_DEF_  "MultiplexExtEnabled" "No";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
+BA_ "VFrameFormat" BO_ 257 0;
+BA_ "VFrameFormat" BO_ 16 0;
 BA_ "VFrameFormat" BO_ 256 0;
 BA_ "VFrameFormat" BO_ 3 0;
 BA_ "VFrameFormat" BO_ 2 0;
 BA_ "VFrameFormat" BO_ 4 0;
 BA_ "VFrameFormat" BO_ 1 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1872 1000;
 BA_ "VFrameFormat" BO_ 1872 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 545 1000;
 BA_ "VFrameFormat" BO_ 545 0;
@@ -368,11 +396,16 @@ BA_ "VFrameFormat" BO_ 553 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 544 500;
 BA_ "VFrameFormat" BO_ 544 0;
 BA_ "VFrameFormat" BO_ 850 0;
-BA_ "VFrameFormat" BO_ 1026 0;
-BA_ "VFrameFormat" BO_ 1025 0;
-BA_ "VFrameFormat" BO_ 1024 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1282 100;
+BA_ "VFrameFormat" BO_ 1282 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1281 100;
+BA_ "VFrameFormat" BO_ 1281 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1280 100;
+BA_ "VFrameFormat" BO_ 1280 0;
 BA_ "VFrameFormat" BO_ 849 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 848 100;
 BA_ "VFrameFormat" BO_ 848 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 352 100;
 BA_ "VFrameFormat" BO_ 352 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 1792 100;
 BA_ "VFrameFormat" BO_ 1792 0;
@@ -401,6 +434,7 @@ BA_ "VFrameFormat" BO_ 768 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 769 250;
 BA_ "VFrameFormat" BO_ 769 0;
 VAL_ 3221225472 HSS_Command_Type 1 "Set Current Limit" 0 "Control Switches" ;
+VAL_ 16 VCU_Fault 6 "Motor HV Undervoltage" 5 "Motor HV Overvoltage" 4 "Motor Controller Fault" 3 "Motor Precharge Timeout" 2 "Motor Pchg Contactor Sense" 1 "Motor Contactor Sense" 0 "No Fault" ;
 VAL_ 1 BPS_Fault 16 "Discharging Overcurrent" 15 "Charging Overcurrent" 14 "Estop 3" 13 "Estop 2" 12 "Estop 1" 11 "Array Pchg Contactor Sense" 10 "Array Contactor Sense" 9 "HV- Contactor Sense" 8 "HV+ Contactor Sense" 7 "Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "No Fault" ;
 VAL_ 849 HSS_Control_1 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
 VAL_ 849 HSS_Control_12 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
