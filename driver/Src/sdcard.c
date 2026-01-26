@@ -105,7 +105,7 @@ uint8_t SD_SPI_Init(sd_handle_t *sd) {
     return 0; // Success
 }
 
-/* ---------- Dummy clocks ---------- */
+/* Dummy clocks */
 void SD_SendDummyClocks(sd_handle_t *sd)
 {
     /* Ensure CS high and send >= 80 clocks (10 bytes of 0xFF) */
@@ -119,10 +119,9 @@ void SD_SendDummyClocks(sd_handle_t *sd)
     
 }
 
-/* ---------- read N bytes by sending 0xFF ---------- */
+/* read N bytes by sending 0xFF */
 int8_t SD_ReadBytes(sd_handle_t *sd, uint8_t *buff, size_t len)
 {
-    /* --- 1. Sanity Checks (Requested by Lakshay983) --- */
     if (buff == NULL) {
         return -1; // Error: Buffer is null
     }
@@ -131,8 +130,7 @@ int8_t SD_ReadBytes(sd_handle_t *sd, uint8_t *buff, size_t len)
         return -1; // Error: Length is zero
     }
 
-    /* --- 2. Main Logic --- */
-    uint8_t tx = SD_DUMMY_BYTE; // Using the macro we just made
+    uint8_t tx = SD_DUMMY_BYTE; 
     
     while (len--) {
         if (HAL_SPI_TransmitReceive(sd->hspi, &tx, buff, 1, HAL_MAX_DELAY) != HAL_OK) {
@@ -145,7 +143,7 @@ int8_t SD_ReadBytes(sd_handle_t *sd, uint8_t *buff, size_t len)
 
 }
 
-/* ---------- wait for not-busy (card returns 0xFF when ready) ---------- */
+/* wait for not-busy (card returns 0xFF when ready) */
 int8_t SD_WaitNotBusy(sd_handle_t *sd)
 {
     uint8_t busy;
@@ -153,16 +151,22 @@ int8_t SD_WaitNotBusy(sd_handle_t *sd)
         if(SD_ReadBytes(sd, &busy, sizeof(busy)) < 0) {
             return -1;
         }
+
+        // thread safe:
+        // If busy (0x00), let the RTOS switch to another task for 1ms
+        if (busy != SD_DUMMY_BYTE) {
+            vTaskDelay(1); // Yield
+        }
      
     } while(busy != SD_DUMMY_BYTE);
 
     return 0;
 }
 
-/* ---------- wait for a data token (e.g. 0xFE) ---------- */
+/* wait for a data token (e.g. 0xFE) */
 int8_t SD_WaitDataToken(sd_handle_t *sd, uint8_t token) { 
     uint8_t fb;
-    uint8_t tx = SD_DUMMY_BYTE;   // send dummy clocks during read
+    uint8_t tx = SD_DUMMY_BYTE;  
 
     for (;;) {
         HAL_SPI_TransmitReceive(sd->hspi, &tx, &fb, 1, HAL_MAX_DELAY);
@@ -177,7 +181,7 @@ int8_t SD_WaitDataToken(sd_handle_t *sd, uint8_t token) {
     return 0;
 }
 
-/* ---------- send a command packet and return R1 ---------- */
+/* send a command packet and return R1 */
 uint8_t SD_SendCommand(sd_handle_t *sd, uint8_t cmd, uint32_t arg, uint8_t crc)
 {
     uint8_t packet[6];
@@ -219,6 +223,13 @@ uint8_t SD_SendCommand(sd_handle_t *sd, uint8_t cmd, uint32_t arg, uint8_t crc)
 
 
 int8_t SD_Init(sd_handle_t *sd) {
+
+    // thread safe RTOS init:
+    // Create a Mutex statically 
+    sd->mutex = xSemaphoreCreateMutexStatic(&sd->mutexBuffer);
+    if (sd->mutex == NULL) {
+        return -99; // Error creating mutex
+    }
 
     // This uses the Macros to pick SPI1 or SPI2 automatically.
     if (SD_SPI_Init(sd) != 0) {
@@ -305,26 +316,67 @@ int8_t SD_Init(sd_handle_t *sd) {
 /* read / write block helpers (512 bytes) */
 int8_t SD_ReadSingleBlock(sd_handle_t *sd, uint32_t blockNum, uint8_t *buffer)
 {
+
+    // thread safe:
+    // Take lock Wait forever (portMAX_DELAY) until it's free.
+    if (xSemaphoreTake(sd->mutex, portMAX_DELAY) != pdTRUE) {
+        return -100; // RTOS error
+    }
+    
     uint8_t resp;
     resp = SD_SendCommand(sd, SD_CMD17, blockNum, 0x01); /* CMD17 */
-    if (resp != 0x00) { SD_Deselect(sd); return -1; }
 
-    if (SD_WaitDataToken(sd, 0xFE) < 0) { SD_Deselect(sd); return -2; }
-    if (SD_ReadBytes(sd, buffer, SD_BLOCK_SIZE) < 0) { SD_Deselect(sd); return -3; }
+    // thread safe:
+    if (resp != 0x00) { 
+        SD_Deselect(sd); 
+        xSemaphoreGive(sd->mutex); 
+        return -1; 
+    }
 
-    /* read CRC (2 bytes) */
+    if (SD_WaitDataToken(sd, 0xFE) < 0) { 
+        SD_Deselect(sd); 
+        xSemaphoreGive(sd->mutex); 
+        return -2; 
+    }
+    
+    if (SD_ReadBytes(sd, buffer, SD_BLOCK_SIZE) < 0) { 
+        SD_Deselect(sd); 
+        xSemaphoreGive(sd->mutex); 
+        return -3; 
+    }
+
     uint8_t crc[2];
-    if (SD_ReadBytes(sd, crc, 2) < 0) { SD_Deselect(sd); return -4; }
+    if (SD_ReadBytes(sd, crc, 2) < 0) { 
+        SD_Deselect(sd); 
+        xSemaphoreGive(sd->mutex); 
+        return -4; 
+    }
 
     SD_Deselect(sd);
+
+    // Release the lock
+    xSemaphoreGive(sd->mutex);
     return 0;
+
 }
 
 int8_t SD_WriteSingleBlock(sd_handle_t *sd, uint32_t blockNum, const uint8_t *buffer)
 {
+    // thread safe:
+    // Take the lock
+    if (xSemaphoreTake(sd->mutex, portMAX_DELAY) != pdTRUE) {
+        return -100;
+    }
+
     uint8_t resp;
     resp = SD_SendCommand(sd, SD_CMD24, blockNum, 0x01); /* CMD24 */
-    if (resp != 0x00) { SD_Deselect(sd); return -1; }
+
+    // thread safe:
+    if (resp != 0x00) { 
+        SD_Deselect(sd); 
+        xSemaphoreGive(sd->mutex); 
+        return -1; 
+    }
 
     uint8_t token = 0xFE;
     HAL_SPI_Transmit(sd->hspi, &token, 1, HAL_MAX_DELAY);
@@ -334,38 +386,60 @@ int8_t SD_WriteSingleBlock(sd_handle_t *sd, uint32_t blockNum, const uint8_t *bu
     HAL_SPI_Transmit(sd->hspi, crc, 2, HAL_MAX_DELAY);
 
     uint8_t dataResp;
-    if (SD_ReadBytes(sd, &dataResp, 1) < 0) { SD_Deselect(sd); return -2; }
-    if ((dataResp & 0x1F) != 0x05) { SD_Deselect(sd); return -3; }
+    if (SD_ReadBytes(sd, &dataResp, 1) < 0) { 
+        SD_Deselect(sd); 
+        xSemaphoreGive(sd->mutex); 
+        return -2; 
+    }
+    
+    if ((dataResp & 0x1F) != 0x05) { 
+        SD_Deselect(sd); 
+        xSemaphoreGive(sd->mutex); 
+        return -3; 
+    }
 
-    if (SD_WaitNotBusy(sd) < 0) { SD_Deselect(sd); return -4; }
+    if (SD_WaitNotBusy(sd) < 0) { 
+        SD_Deselect(sd); 
+        xSemaphoreGive(sd->mutex); 
+        return -4; 
+    }
 
     SD_Deselect(sd);
+    
+    // Release the lock
+    xSemaphoreGive(sd->mutex);
     return 0;
 }
 
 
 
 int8_t SD_ReadBegin(sd_handle_t *sd, uint32_t blockNum) {
+   
+    // thread safe:
+    // 1. Lock Mutex
+    if (xSemaphoreTake(sd->mutex, portMAX_DELAY) != pdTRUE) return -100;
+
     SD_Select(sd);
 
-    if(SD_WaitNotBusy(sd) < 0) { // keep this!
+    if(SD_WaitNotBusy(sd) < 0) { 
         SD_Deselect(sd);
+        xSemaphoreGive(sd->mutex); // Unlock on fail
         return -1;
     }
 
-    /* CMD18 (READ_MULTIPLE_BLOCK) command */
     uint8_t cmd[] = {
-        SD_CMD_BASE | SD_CMD18 /* CMD18 */,
-        (blockNum >> 24) & 0xFF, /* ARG */
+        SD_CMD_BASE | SD_CMD18,
+        (blockNum >> 24) & 0xFF,
         (blockNum >> 16) & 0xFF,
         (blockNum >> 8) & 0xFF,
         blockNum & 0xFF,
-        (0x7F << 1) | 1 /* CRC7 + end bit */
+        (0x7F << 1) | 1 
     };
     HAL_SPI_Transmit(sd->hspi, (uint8_t*)cmd, sizeof(cmd), HAL_MAX_DELAY);
 
     if(SD_ReadR1(sd) != 0x00) {
         SD_Deselect(sd);
+        xSemaphoreGive(sd->mutex); // Unlock on fail
         return -2;
     }
 
@@ -401,32 +475,49 @@ int8_t SD_ReadEnd(sd_handle_t *sd) {
     SD_Select(sd);
 
     /* CMD12 (STOP_TRANSMISSION) */
-    {
-        static const uint8_t cmd[] = { SD_CMD_BASE | SD_CMD12 /* CMD12 */, 0x00, 0x00, 0x00, 0x00 /* ARG */, (0x7F << 1) | 1 };
-        HAL_SPI_Transmit(sd->hspi, (uint8_t*)cmd, sizeof(cmd), HAL_MAX_DELAY);
-    }
+    static const uint8_t cmd[] = { SD_CMD_BASE | SD_CMD12 /* CMD12 */, 0x00, 0x00, 0x00, 0x00 /* ARG */, (0x7F << 1) | 1 };
+    HAL_SPI_Transmit(sd->hspi, (uint8_t*)cmd, sizeof(cmd), HAL_MAX_DELAY);
 
     uint8_t stuffByte;
     if(SD_ReadBytes(sd, &stuffByte, sizeof(stuffByte)) < 0) {
         SD_Deselect(sd);
+        
+        // thread safe:
+        xSemaphoreGive(sd->mutex); // Unlock!
+
         return -1;
     }
 
     if(SD_ReadR1(sd) != 0x00) {
         SD_Deselect(sd);
+
+        // thread safe:
+        xSemaphoreGive(sd->mutex); // Unlock!
+
         return -2;
     }
     
     SD_Deselect(sd);
+
+    // thread safe:
+    xSemaphoreGive(sd->mutex); // Unlock!
+
     return 0;
 }
 
 
 int8_t SD_WriteBegin(sd_handle_t *sd, uint32_t blockNum) {
+    // thread safe: Lock Mutex
+    if (xSemaphoreTake(sd->mutex, portMAX_DELAY) != pdTRUE) return -100;
+
     SD_Select(sd);
 
     if(SD_WaitNotBusy(sd) < 0) { 
         SD_Deselect(sd);
+
+        // thread safe:
+        xSemaphoreGive(sd->mutex); // Unlock!
+
         return -1;
     }
 
@@ -443,6 +534,10 @@ int8_t SD_WriteBegin(sd_handle_t *sd, uint32_t blockNum) {
 
     if(SD_ReadR1(sd) != 0x00) {
         SD_Deselect(sd);
+
+        // thread safe:
+        xSemaphoreGive(sd->mutex); // Unlock!
+
         return -2;
     }
 
@@ -494,9 +589,15 @@ int8_t SD_WriteEnd(sd_handle_t *sd) {
 
     if(SD_WaitNotBusy(sd) < 0) {
         SD_Deselect(sd);
+        
+        // thread safe:
+        xSemaphoreGive(sd->mutex); // Unlock!
+
         return -1;
     }
 
     SD_Deselect(sd);
+    // thread safe:
+    xSemaphoreGive(sd->mutex); // Unlock!
     return 0;
 }

@@ -3,153 +3,130 @@
 #include "ffconf.h"
 #include "ff.h"
 #include "user_diskio.h"
+#include "fatfs.h"
 #include "sdcard.h"
 #include <string.h>
 #include <stdio.h>
-#include <stdarg.h>
 
-// UART handle for debug printing
-UART_HandleTypeDef huart1;
+// thread safe:
+#include "FreeRTOS.h"
+#include "task.h"
 
+/* handles */
 sd_handle_t sd;
 SPI_HandleTypeDef hspi_handle;
-
-// FatFs objects
 FATFS fs;
-FIL fil;
-FIL logFile;   
-FRESULT fr;
-UINT br, bw;
 
-#define DEBUG_PIN GPIO_PIN_5
-#define DEBUG_PORT GPIOA
+StaticTask_t xTask1Buffer;
+StackType_t xTask1Stack[1024]; 
+TaskHandle_t hTask1;
 
-// Forward declarations
-void SystemClock_Config(void);
-void Error_Handler(void);
-void LED_Init(void);
+StaticTask_t xTask2Buffer;
+StackType_t xTask2Stack[1024];
+TaskHandle_t hTask2;
 
-char buffer[128]; // Buffer for reading back
-
-// use led to test if write is done 
-// LED pin (onboard LED, e.g., PA5)
+/* pin def*/
 #define LED_PORT GPIOA
-#define LED_PIN  GPIO_PIN_5
+#define LED_PIN  GPIO_PIN_5 
+
+void SystemClock_Config(void);
+void LED_Init(void);
+void Task1_Entry(void *params);
+void Task2_Entry(void *params);
 
 int main(void)
 {
-    // 1. Hardware Init
+    /* Hardware Init */
     HAL_Init();
     SystemClock_Config();
-    // MX_GPIO_Init();
-    // MX_SPI2_Init();
-    LED_Init(); 
+    LED_Init();
 
-    // 2. Link the handle 
+    /* Link SD Handle */
     sd.hspi = &hspi_handle;
-    sd.cs_port = SD_CS_PORT;       
-    sd.cs_pin  = SD_CS_PIN; 
+    sd.cs_port = SD_CS_PORT; 
+    sd.cs_pin  = SD_CS_PIN;
+    
+    // Task 1: Writes every 200ms
+    xTaskCreateStatic(Task1_Entry, "WriteTask1", 1024, NULL, tskIDLE_PRIORITY + 1, xTask1Stack, &xTask1Buffer);
+    
+    // Task 2: Writes every 250ms
+    xTaskCreateStatic(Task2_Entry, "WriteTask2", 1024, NULL, tskIDLE_PRIORITY + 1, xTask2Stack, &xTask2Buffer);
 
-    // Turn LED OFF to start
-    HAL_GPIO_WritePin(DEBUG_PORT, DEBUG_PIN, GPIO_PIN_RESET);
-    HAL_Delay(100);
+    /* Scheduler */
+    vTaskStartScheduler();
 
-    // Calls SD_SPI_INIT() internally
+    while(1); 
+}
+
+void Task1_Entry(void *params)
+{
+    // Initialize SD Card 
     if (SD_Init(&sd) != 0) {
-         // Initialization Error: Fast Blink
-         while(1) {
-            HAL_GPIO_TogglePin(DEBUG_PORT, DEBUG_PIN);
-            HAL_Delay(50);
-         }
+        // Fail:
+        for(;;) 
+        {
+            HAL_GPIO_TogglePin(LED_PORT, LED_PIN); vTaskDelay(50); 
+        }
     }
 
-    // 3. Init FatFs Middleware
+    //  Init FatFs Middleware 
     MX_FATFS_Init(); 
 
-    // 4. Mount Drive
-    // If this fails: LED blinks FAST (100ms) 5 times
+    // Mount Filesystem
     if(f_mount(&fs, "", 1) != FR_OK) {
-        for(int i=0; i<5; i++) { 
-            HAL_GPIO_TogglePin(DEBUG_PORT, DEBUG_PIN); 
-            HAL_Delay(100); 
+        // Fail:
+        for(;;) 
+        { 
+            HAL_GPIO_TogglePin(LED_PORT, LED_PIN); vTaskDelay(500); 
         }
-        return -1;
-    }
-    
-    // 5. Prepare Data 
-    char writeBuff[] = "Hello SD Card! This is a test log.\r\n";
-
-    // 6. Open File 
-    if(f_open(&logFile, "log.txt", FA_OPEN_ALWAYS | FA_WRITE | FA_OPEN_APPEND) != FR_OK) {
-        // for(int i=0; i<2; i++) { 
-        //     HAL_GPIO_TogglePin(DEBUG_PORT, DEBUG_PIN); 
-        //     HAL_Delay(1000); 
-        // }
-        return -2;
     }
 
-    // 7. Write to File
-    unsigned int bytesWritten;
-    FRESULT res = f_write(&logFile, writeBuff, strlen(writeBuff), &bytesWritten);
-    
-    if(res != FR_OK || bytesWritten == 0) {
-        f_close(&logFile);
-        // for(int i=0; i<3; i++) {
-        //      HAL_GPIO_TogglePin(DEBUG_PORT, DEBUG_PIN); 
-        //      HAL_Delay(500); 
-        // }
-        return -3;
-    }
+    FIL f1;
+    char *data = "Task 1 done\r\n";
+    UINT bw;
 
-    // 8. Close File (Saves Data)
-    f_close(&logFile);
+    for(;;)
+    {
+        // test blink
+        HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
 
-    // 9. Unmount
-    f_mount(NULL, "", 0);
-
-    // SUCCESS 
-    // LED Toggles
-    // while(1) {
-    //     HAL_GPIO_TogglePin(DEBUG_PORT, DEBUG_PIN);
-    //     HAL_Delay(200);
-    // }
-    
-    // 1. Clear the buffer to prove we are really reading
-    char readBuff[128] = {0}; 
-    unsigned int bytesRead;
-
-    // 2. Open the file for READING
-    if(f_open(&logFile, "log.txt", FA_READ) != FR_OK) {
-        // Error opening for read
-        while(1) { HAL_GPIO_TogglePin(DEBUG_PORT, DEBUG_PIN); HAL_Delay(100); } 
-    }
-
-    // 3. Read the data
-    if(f_read(&logFile, readBuff, sizeof(readBuff)-1, &bytesRead) != FR_OK) {
-        // Error reading
-        f_close(&logFile);
-        while(1) { HAL_GPIO_TogglePin(DEBUG_PORT, DEBUG_PIN); HAL_Delay(100); }
-    }
-
-    // 4. Close
-    f_close(&logFile);
-
-    // 5. Verify!
-    // If the first letter is 'H' (from "Hello"), Blink SLOWLY to celebrate
-    if(readBuff[0] == 'H') {
-        while(1) {
-            HAL_GPIO_TogglePin(DEBUG_PORT, DEBUG_PIN);
-            HAL_Delay(1000); // Slow, happy blink
+        // 1. Open File
+        if (f_open(&f1, "LOG1.TXT", FA_OPEN_ALWAYS | FA_WRITE | FA_OPEN_APPEND) == FR_OK) {
+            
+            // 2. Write Data
+            f_write(&f1, data, strlen(data), &bw);
+            
+            // 3. Close (Save)
+            f_close(&f1);
         }
+
+        // Wait 200ms
+        vTaskDelay(200);
     }
 }
 
-// Error handler
-void Error_Handler(void)
+void Task2_Entry(void *params)
 {
-    while (1)
+    // Wait a bit for Task 1 to finish Init
+    vTaskDelay(500);
+
+    FIL f2;
+    char *data = "Task 2 done\r\n";
+    UINT bw;
+
+    for(;;)
     {
-        HAL_Delay(100);
+        // 1. Open File
+        if (f_open(&f2, "LOG2.TXT", FA_OPEN_ALWAYS | FA_WRITE | FA_OPEN_APPEND) == FR_OK)
+        {
+            // 2. Write Data
+            f_write(&f2, data, strlen(data), &bw);
+            
+            // 3. Close
+            f_close(&f2);
+        }
+
+        vTaskDelay(250);
     }
 }
 

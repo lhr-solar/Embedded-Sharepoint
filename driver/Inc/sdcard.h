@@ -5,6 +5,10 @@
 #include <stdint.h>
 #include <stddef.h>
 
+// thread safe:
+#include "FreeRTOS.h"
+#include "semphr.h"
+
 /*  SPI CONFIGURATION  */
 
 /* 1. Configuration for YOUR BOARD (STM32L476RG) */
@@ -79,6 +83,11 @@ typedef struct {
     SPI_HandleTypeDef *hspi;
     GPIO_TypeDef *cs_port;
     uint16_t cs_pin;
+
+    // thread safe:
+    SemaphoreHandle_t mutex;       // The lock
+    StaticSemaphore_t mutexBuffer; // Static memory for the lock
+
 } sd_handle_t;
 
 /* Low-level helpers */
@@ -107,12 +116,12 @@ uint8_t SD_WriteSector(sd_handle_t *sd, uint32_t sector, const uint8_t *buffer);
 
 // Read Multiple Blocks
 int8_t SD_ReadBegin(sd_handle_t *sd, uint32_t blockNum);
-int8_t SD_ReadData(sd_handle_t *sd, uint8_t* buff); // sizeof(buff) == 512!
+int8_t SD_ReadData(sd_handle_t *sd, uint8_t* buff); 
 int8_t SD_ReadEnd(sd_handle_t *sd);
 
 // Write Multiple Blocks
 int8_t SD_WriteBegin(sd_handle_t *sd, uint32_t blockNum);
-int8_t SD_WriteData(sd_handle_t *sd, const uint8_t* buff); // sizeof(buff) == 512!
+int8_t SD_WriteData(sd_handle_t *sd, const uint8_t* buff); 
 int8_t SD_WriteEnd(sd_handle_t *sd);
 
 
