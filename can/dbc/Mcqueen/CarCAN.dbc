@@ -40,7 +40,12 @@ VAL_TABLE_ HSS_Command_Type 1 "Set Current Limit" 0 "Control Switches" ;
 
 
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
+ SG_ Precharge_Motor_Voltage : 0|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
  SG_ HSS_Command_Type : 0|4@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 256 BPS_Precharge_Voltages: 6 Vector__XXX
+ SG_ Precharge_Battery_Voltage : 0|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
+ SG_ Precharge_Array_Voltage : 24|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
 
 BO_ 3 BPS_Temperature_Array: 6 Vector__XXX
  SG_ BPS_Temperature_Tap_RawV : 24|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
@@ -234,9 +239,12 @@ BO_TX_BU_ 849 : Telemetry,Pi_Display,VCU;
 
 
 CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
+CM_ SG_ 3221225472 Precharge_Motor_Voltage "Motor controller DC bus voltage as measured by active precharge circuitry";
 CM_ SG_ 3221225472 HSS_Command_Type "High Side Switch Command Type:
 0000 - Control Switches
 0001 - Set Current Limit";
+CM_ SG_ 256 Precharge_Battery_Voltage "Battery voltage as measured by active precharge circuitry";
+CM_ SG_ 256 Precharge_Array_Voltage "Array voltage as measured by active precharge circuitry";
 CM_ SG_ 3 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
 CM_ SG_ 3 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
 CM_ SG_ 3 BPS_VoltTemp_ID "BPS VoltTemp ID";
@@ -347,6 +355,7 @@ BA_DEF_DEF_  "VFrameFormat" "J1939PG";
 BA_DEF_DEF_  "MultiplexExtEnabled" "No";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
+BA_ "VFrameFormat" BO_ 256 0;
 BA_ "VFrameFormat" BO_ 3 0;
 BA_ "VFrameFormat" BO_ 2 0;
 BA_ "VFrameFormat" BO_ 4 0;
