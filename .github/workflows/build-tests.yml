@@ -28,5 +28,5 @@ jobs:
       - name: Clean & Build tests
         run: |
           nix develop --accept-flake-config --command bash -c "
-            cd test && make clean && python3 makeAllTests.sh
+            cd test && make clean && python3 makeAllTests.py
           "
