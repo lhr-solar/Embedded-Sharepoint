@@ -43,7 +43,7 @@ VAL_TABLE_ HSS_Command_Type 1 "Set Current Limit" 0 "Control Switches" ;
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ HSS_Command_Type : 0|4@1+ (1,0) [0|0] "" Vector__XXX
 
-BO_ 33 VCU_Precharge_Voltages: 6 Vector__XXX
+BO_ 33 VCU_Precharge_Voltages: 6 VCU
  SG_ Precharge_Motor_Voltage : 24|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
  SG_ Precharge_Battery_Voltage : 0|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
 
@@ -387,52 +387,52 @@ BA_ "VFrameFormat" BO_ 3 0;
 BA_ "VFrameFormat" BO_ 2 0;
 BA_ "VFrameFormat" BO_ 4 0;
 BA_ "VFrameFormat" BO_ 1 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1872 1000;
 BA_ "VFrameFormat" BO_ 1872 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 545 1000;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1872 1000;
 BA_ "VFrameFormat" BO_ 545 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 553 -1;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 545 1000;
 BA_ "VFrameFormat" BO_ 553 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 544 500;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 553 -1;
 BA_ "VFrameFormat" BO_ 544 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 544 500;
 BA_ "VFrameFormat" BO_ 850 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1282 100;
 BA_ "VFrameFormat" BO_ 1282 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1281 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1282 100;
 BA_ "VFrameFormat" BO_ 1281 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1280 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1281 100;
 BA_ "VFrameFormat" BO_ 1280 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1280 100;
 BA_ "VFrameFormat" BO_ 849 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 848 100;
 BA_ "VFrameFormat" BO_ 848 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 96 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 848 100;
 BA_ "VFrameFormat" BO_ 96 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1792 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 96 100;
 BA_ "VFrameFormat" BO_ 1792 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1616 1000;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1792 100;
 BA_ "VFrameFormat" BO_ 1616 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 81 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1616 1000;
 BA_ "VFrameFormat" BO_ 81 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 80 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 81 100;
 BA_ "VFrameFormat" BO_ 80 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 529 1000;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 80 100;
 BA_ "VFrameFormat" BO_ 529 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 528 500;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 529 1000;
 BA_ "VFrameFormat" BO_ 528 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 537 -1;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 528 500;
 BA_ "VFrameFormat" BO_ 537 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 513 1000;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 537 -1;
 BA_ "VFrameFormat" BO_ 513 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 512 500;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 513 1000;
 BA_ "VFrameFormat" BO_ 512 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 521 -1;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 512 500;
 BA_ "VFrameFormat" BO_ 521 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1536 250;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 521 -1;
 BA_ "VFrameFormat" BO_ 1536 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 768 250;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1536 250;
 BA_ "VFrameFormat" BO_ 768 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 769 250;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 768 250;
 BA_ "VFrameFormat" BO_ 769 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 769 250;
 VAL_ 3221225472 HSS_Command_Type 1 "Set Current Limit" 0 "Control Switches" ;
 VAL_ 16 VCU_Fault 6 "Motor HV Undervoltage" 5 "Motor HV Overvoltage" 4 "Motor Controller Fault" 3 "Motor Precharge Timeout" 2 "Motor Pchg Contactor Sense" 1 "Motor Contactor Sense" 0 "No Fault" ;
 VAL_ 1 BPS_Fault 16 "Discharging Overcurrent" 15 "Charging Overcurrent" 14 "Estop 3" 13 "Estop 2" 12 "Estop 1" 11 "Array Pchg Contactor Sense" 10 "Array Contactor Sense" 9 "HV- Contactor Sense" 8 "HV+ Contactor Sense" 7 "Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "No Fault" ;
