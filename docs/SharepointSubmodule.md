@@ -153,10 +153,10 @@ A GitHub Action is an automated workflow that runs on GitHub’s servers in resp
 
 ### Writing a test compilation script
 
-We primarily use GitHub Actions to run build checks on code before we merge it in, your Github action should make sure your main and all tests compile. There is a template python script to compile all test files located in `/template`, where lines with `#❗ CHANGE THIS ❗` show where you should change the script to run. 
+We primarily use GitHub Actions to run build checks on code before we merge it in, your GitHub action should make sure your main and all tests compile. There is a template python script to compile all test files located in `/template`, where lines with `#❗ CHANGE THIS ❗` show where you should change the script to run. 
 
 ### Creating the build action
-To create a github action, you need to make a `workflows` folder in the `.github` folder and create a `.yml` file that defines your github action. Github will then run your action whenever the event your action specifies happens.
+To create a GitHub action, you need to make a `workflows` folder in the `.github` folder and create a `.yml` file that defines your GitHub action. GitHub will then run your action whenever the event your action specifies happens.
 
 ### Examples of GitHub Actions
 * [VCU](https://github.com/lhr-solar/PS-VehicleControlUnit/blob/main/.github/workflows/build-tests.yml)
