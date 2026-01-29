@@ -39,7 +39,14 @@ def find_tests(tests_dir: Path):
 
     tests = []
     for cfile in tests_dir.glob("*.c"):
+        # ❗ CHANGE THIS ❗
+        # Your c test files might be named like "example_test.c, " but you want to compile them as "example"
+        # Write the code to clean the filename here then apppend to tests list
+        # The string you append should match what you'd put into make TEST=[]
+        ####
         tests.append(cfile)
+
+        ###
 
     if not tests:
         error("Something is horribly wrong. No test files found in the tests directory.")
