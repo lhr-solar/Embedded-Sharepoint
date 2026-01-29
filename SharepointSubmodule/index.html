@@ -557,6 +557,56 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#7-creating-github-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Creating GitHub Actions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Creating GitHub Actions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#writing-a-test-compilation-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Writing a test compilation script
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creating-the-build-action" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creating the build action
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples-of-github-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples of GitHub Actions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#examples-of-projects-that-use-embedded-sharepoint" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1264,6 +1314,56 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#7-creating-github-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Creating GitHub Actions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Creating GitHub Actions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#writing-a-test-compilation-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Writing a test compilation script
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creating-the-build-action" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creating the build action
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples-of-github-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples of GitHub Actions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#examples-of-projects-that-use-embedded-sharepoint" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1396,6 +1496,17 @@ PROJECT_C_SOURCES  = core/Src/main.c drivers/Src/can.c
 <p>If you do not want to type that out everytime, you can create a bash script that runs the nix develop command and hardcodes the directory where the nix file is. See this example in <a href="https://github.com/lhr-solar/PS-VehicleControlUnit/blob/main/Firmware/run_nix.sh">VCU</a></p>
 <h2 id="6-create-a-readme">6. Create a README</h2>
 <p>A README.md file is very important for onboarding instructions, and to outline workflows. A README should explain how to go from cloning a repository to how to contribute code. The more descriptive the better!</p>
+<h2 id="7-creating-github-actions">7. Creating GitHub Actions</h2>
+<p>A GitHub Action is an automated workflow that runs on GitHub’s servers in response to repository events such as pushing code, opening a pull request, or merging into a branch. Actions are commonly used to run checks like builds, tests, formatting, and static analysis so that issues are caught before code is merged.</p>
+<h3 id="writing-a-test-compilation-script">Writing a test compilation script</h3>
+<p>We primarily use GitHub Actions to run build checks on code before we merge it in, your GitHub action should make sure your main and all tests compile. There is a template python script to compile all test files located in <code>/template</code>, where lines with <code>#❗ CHANGE THIS ❗</code> show where you should change the script to run. </p>
+<h3 id="creating-the-build-action">Creating the build action</h3>
+<p>To create a GitHub action, you need to make a <code>workflows</code> folder in the <code>.github</code> folder and create a <code>.yml</code> file that defines your GitHub action. GitHub will then run your action whenever the event your action specifies happens.</p>
+<h3 id="examples-of-github-actions">Examples of GitHub Actions</h3>
+<ul>
+<li><a href="https://github.com/lhr-solar/PS-VehicleControlUnit/blob/main/.github/workflows/build-tests.yml">VCU</a></li>
+<li><a href="https://github.com/lhr-solar/Embedded-Sharepoint/tree/main/.github/workflows">Embedded-Sharepoint</a></li>
+</ul>
 <h2 id="examples-of-projects-that-use-embedded-sharepoint">Examples of projects that use Embedded Sharepoint</h2>
 <ul>
 <li><a href="https://github.com/lhr-solar/BPS-Leader">BPS-Leader</a></li>
