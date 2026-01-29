@@ -1,0 +1,111 @@
+VERSION ""
+
+
+NS_ : 
+		NS_DESC_
+		CM_
+		BA_DEF_
+		BA_
+		VAL_
+		CAT_DEF_
+		CAT_
+		FILTER
+		BA_DEF_DEF_
+		EV_DATA_
+		ENVVAR_DATA_
+		SGTYPE_
+		SGTYPE_VAL_
+		BA_DEF_SGTYPE_
+		BA_SGTYPE_
+		SIG_TYPE_REF_
+		VAL_TABLE_
+		SIG_GROUP_
+		SIG_VALTYPE_
+		SIGTYPE_VALTYPE_
+		BO_TX_BU_
+		BA_DEF_REL_
+		BA_REL_
+		BA_DEF_DEF_REL_
+		BU_SG_REL_
+		BU_EV_REL_
+		BU_BO_REL_
+		SG_MUL_VAL_
+
+BS_:
+
+BU_:
+
+
+
+BO_ 2 BPS_Trip: 1 Vector__XXX
+	SG_ BPS_Trip : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 257 BPS_All_Clea: 1 Vector__XXX
+	SG_ BPS_All_Clear : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 258 BPS_Contactor_State: 1 Vector__XXX
+	SG_ Array_Contactor : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ HV_Contactor : 2|1@0+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 259 BPS_Current: 4 Vector__XXX
+	SG_ Current : 0|32@1- (1,0) [-20000|100000] "mA" Vector__XXX
+
+BO_ 260 BPS_Voltage_Array: 5 Vector__XXX
+	SG_ Voltage_idx : 0|8@1+ (1,0) [0|31] "" Vector__XXX
+	SG_ Voltage_Value : 8|32@1+ (1,0) [0|1000000] "mV" Vector__XXX
+
+BO_ 261 BPS_Temperature_Array: 5 Vector__XXX
+	SG_ Temperature_idx : 0|8@1+ (1,0) [0|31] "" Vector__XXX
+	SG_ Temperature_Value : 8|32@1+ (1,0) [0|1000000] "mC" Vector__XXX
+
+BO_ 262 BPS_SOC: 4 Vector__XXX
+	SG_ SoC : 0|32@1+ (1,0) [0|100] "%" Vector__XXX
+
+BO_ 263 BPS_WDog_Trigger: 1 Vector__XXX
+	SG_ WDog_Trig : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 264 BPS_CAN_Error: 1 Vector__XXX
+	SG_ BPS_CAN_Error : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 265 BPS_Command: 8 Vector__XXX
+	SG_ BPS_Command : 0|32@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 267 BPS_Supplemental_Voltage: 2 Vector__XXX
+	SG_ Supplemental_Voltage : 0|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+
+BO_ 268 BPS_Charge_Enabled: 1 Vector__XXX
+	SG_ Charge_Enabled : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 269 BPS_Voltage_Summary: 8 Vector__XXX
+	SG_ Pack_Voltage : 0|24@1+ (1,0) [0|16777215] "mV" Vector__XXX
+	SG_ Voltage_Range : 24|24@1+ (1,0) [0|16777215] "mV" Vector__XXX
+	SG_ Voltage_Timestamp : 48|16@1+ (1,0) [0|65535] "ms" Vector__XXX
+
+BO_ 270 BPS_Temperature_Summary: 8 Vector__XXX
+	SG_ Average_Temp : 0|24@1+ (1,0) [0|0] "mC" Vector__XXX
+	SG_ Temperature_Range : 24|24@1+ (1,0) [0|0] "mC" Vector__XXX
+	SG_ Temperature_Timestamp : 48|16@1+ (1,0) [0|0] "ms" Vector__XXX
+
+BO_ 271 BPS_Fault_State: 1 Vector__XXX
+	SG_ BPS_Fault_State : 0|8@1+ (1,0) [0|12] "" Vector__XXX
+
+
+BA_DEF_ SG_  "SPN" INT 0 524287;
+BA_DEF_ BO_  "VFrameFormat" ENUM  "StandardCAN","ExtendedCAN","reserved","J1939PG";
+BA_DEF_  "DatabaseVersion" STRING ;
+BA_DEF_  "BusType" STRING ;
+BA_DEF_  "ProtocolType" STRING ;
+BA_DEF_  "DatabaseCompiler" STRING ;
+BA_DEF_DEF_  "SPN" 0;
+BA_DEF_DEF_  "VFrameFormat" "J1939PG";
+BA_DEF_DEF_  "DatabaseVersion" "DEMO PLUS";
+BA_DEF_DEF_  "BusType" "";
+BA_DEF_DEF_  "ProtocolType" "";
+BA_DEF_DEF_  "DatabaseCompiler" "";
+BA_ "ProtocolType" "J1939";
+BA_ "BusType" "CAN";
+BA_ "DatabaseCompiler" "CSS ELECTRONICS (WWW.CSSELECTRONICS.COM)";
+BA_ "DatabaseVersion" "1.0.0";
+BA_ "VFrameFormat" BO_ 2566844926 3;
+BA_ "SPN" SG_ 2566844926 WheelBasedVehicleSpeed 84;
+BA_ "VFrameFormat" BO_ 2147483648 3;
