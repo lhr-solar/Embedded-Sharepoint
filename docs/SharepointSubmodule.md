@@ -151,7 +151,7 @@ A README.md file is very important for onboarding instructions, and to outline w
 ## 7. Creating GitHub Actions
 A GitHub Action is an automated workflow that runs on GitHub’s servers in response to repository events such as pushing code, opening a pull request, or merging into a branch. Actions are commonly used to run checks like builds, tests, formatting, and static analysis so that issues are caught before code is merged.
 
-### Writting a test compilation script
+### Writing a test compilation script
 
 We primarily use GitHub Actions to run build checks on code before we merge it in, your Github action should make sure your main and all tests compile. There is a template python script to compile all test files located in `/template`, where lines with `#❗ CHANGE THIS ❗` show where you should change the script to run. 
 
