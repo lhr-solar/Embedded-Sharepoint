@@ -28,4 +28,4 @@ jobs:
           CLICKUP_API_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
           CLICKUP_LIST_ID: ${{ secrets.CLICKUP_LIST_ID }}
         run: |
-          python scripts/clickup-init.py
+          python .github/clickup-init.py
