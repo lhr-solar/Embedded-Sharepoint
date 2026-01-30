@@ -1,19 +1,18 @@
 import os
 import requests
-from datetime import datetime
 
-# =========================
+# =====================================================
 # Configuration (ENV VARS)
-# =========================
+# =====================================================
 
-GITHUB_REPO = os.environ["GITHUB_REPOSITORY"]
+GITHUB_REPO = os.environ["GITHUB_REPOPSITORY"]
 GITHUB_TOKEN = os.environ["GITHUB_TOKEN"]
 CLICKUP_API_TOKEN = os.environ["CLICKUP_API_TOKEN"]
 CLICKUP_LIST_ID = os.environ["CLICKUP_LIST_ID"]
 
-# =========================
+# =====================================================
 # Headers
-# =========================
+# =====================================================
 
 clickup_headers = {
     "Authorization": CLICKUP_API_TOKEN,
@@ -26,24 +25,42 @@ github_headers = {
     "X-GitHub-Api-Version": "2022-11-28",
 }
 
-# =========================
+# =====================================================
 # ClickUp helpers
-# =========================
+# =====================================================
 
-def find_task_by_issue_number(issue_number: int) -> str | None:
+def get_existing_clickup_tasks() -> dict[int, dict]:
+    """
+    Build an index of existing ClickUp tasks.
+
+    Returns:
+        issue_number -> { id, parent }
+    """
     url = f"https://api.clickup.com/api/v2/list/{CLICKUP_LIST_ID}/task"
     params = {"subtasks": "true", "include_closed": "true"}
 
     response = requests.get(url, headers=clickup_headers, params=params)
     if response.status_code != 200:
-        print(f"! Error fetching tasks: {response.text}")
-        return None
+        raise RuntimeError(f"ClickUp fetch failed: {response.text}")
+
+    index = {}
 
     for task in response.json().get("tasks", []):
-        if f"[Issue #{issue_number}]" in task.get("name", ""):
-            return task["id"]
+        name = task.get("name", "")
+        if "[Issue #" not in name:
+            continue
 
-    return None
+        try:
+            issue_number = int(name.split("[Issue #")[1].split("]")[0])
+        except Exception:
+            continue
+
+        index[issue_number] = {
+            "id": task["id"],
+            "parent": task.get("parent"),
+        }
+
+    return index
 
 
 def create_task(
@@ -80,14 +97,6 @@ def create_task(
     return None
 
 
-def add_comment_to_task(task_id: str, comment_text: str) -> bool:
-    url = f"https://api.clickup.com/api/v2/task/{task_id}/comment"
-    response = requests.post(
-        url, json={"comment_text": comment_text}, headers=clickup_headers
-    )
-    return response.status_code == 200
-
-
 def set_task_dependency(task_id: str, depends_on_task_id: str) -> bool:
     url = f"https://api.clickup.com/api/v2/task/{task_id}/dependency"
     response = requests.post(
@@ -96,9 +105,9 @@ def set_task_dependency(task_id: str, depends_on_task_id: str) -> bool:
 
     return response.status_code == 200 or "already exists" in response.text.lower()
 
-# =========================
+# =====================================================
 # GitHub helpers
-# =========================
+# =====================================================
 
 def get_blocked_by(issue_number: int) -> list[int]:
     url = f"https://api.github.com/repos/{GITHUB_REPO}/issues/{issue_number}/dependencies/blocked_by"
@@ -108,11 +117,7 @@ def get_blocked_by(issue_number: int) -> list[int]:
         print(f"! Error fetching blocked_by for #{issue_number}: {response.text}")
         return []
 
-    blockers = []
-    for issue in response.json():
-        blockers.append(issue["number"])
-
-    return blockers
+    return [issue["number"] for issue in response.json()]
 
 
 def get_all_issues_with_relationships():
@@ -138,6 +143,7 @@ def get_all_issues_with_relationships():
         all_issues.extend(batch)
         page += 1
 
+    # Filter PRs
     all_issues = [i for i in all_issues if "pull_request" not in i]
     print(f"Found {len(all_issues)} issues")
 
@@ -150,8 +156,6 @@ def get_all_issues_with_relationships():
 
         issue_map[issue_number] = {
             "issue": issue,
-            "sub_issues": [],
-            "blocked_by": deps.get("blocked_by", 0),
             "total_blocked_by": deps.get("total_blocked_by", 0),
         }
 
@@ -159,22 +163,19 @@ def get_all_issues_with_relationships():
         if parent_url:
             parent_map[issue_number] = int(parent_url.split("/")[-1])
 
-    for child, parent in parent_map.items():
-        if parent in issue_map:
-            issue_map[parent]["sub_issues"].append(child)
-
     return all_issues, issue_map, parent_map
 
-# =========================
+# =====================================================
 # Main
-# =========================
+# =====================================================
 
 def main():
     print("=" * 60)
-    print("GitHub → ClickUp Import (manual)")
+    print("GitHub → ClickUp Import (Idempotent)")
     print("=" * 60)
 
     all_issues, issue_map, parent_map = get_all_issues_with_relationships()
+    existing_tasks = get_existing_clickup_tasks()
 
     task_map = {}
     blocked_issues = []
@@ -185,9 +186,9 @@ def main():
         if issue_number in parent_map:
             continue
 
-        existing = find_task_by_issue_number(issue_number)
-        if existing:
-            task_map[issue_number] = existing
+        existing = existing_tasks.get(issue_number)
+        if existing and existing["parent"] is None:
+            task_map[issue_number] = existing["id"]
             continue
 
         issue = data["issue"]
@@ -213,16 +214,25 @@ def main():
 
     print("\nCreating subtasks...\n")
 
-    for child, parent in parent_map.items():
-        if child in task_map:
-            continue
-
+    for child, parent in sorted(parent_map.items()):
         parent_task_id = task_map.get(parent)
         if not parent_task_id:
             continue
 
+        existing = existing_tasks.get(child)
+        if existing and existing["parent"] == parent_task_id:
+            task_map[child] = existing["id"]
+            continue
+
         issue = issue_map[child]["issue"]
-        status = "done" if issue["state"] == "closed" else "todo"
+
+        if issue["state"] == "closed":
+            status = "done"
+        elif issue_map[child]["total_blocked_by"] > 0:
+            status = "blocked"
+            blocked_issues.append(child)
+        else:
+            status = "todo"
 
         task_id = create_task(
             child,
@@ -248,7 +258,7 @@ def main():
             if blocker_task_id:
                 set_task_dependency(task_id, blocker_task_id)
 
-    print("\nImport complete! Jolly good!\n")
+    print("\nImport complete ✅")
 
 if __name__ == "__main__":
     main()
