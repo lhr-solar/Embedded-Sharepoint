@@ -4,239 +4,258 @@ import sys
 import json
 import re
 import requests
-from github import Github
+from github import Github, Auth
 from time import sleep
 
 # ============================================================================
-# CONFIG
+# CONFIGURATION
 # ============================================================================
-
-CLICKUP_TOKEN = os.environ["CLICKUP_API_TOKEN"]
-CLICKUP_LIST_ID = os.environ["CLICKUP_LIST_ID"]
-GITHUB_TOKEN = os.environ["GITHUB_TOKEN"]
-GITHUB_REPO = os.environ["GITHUB_REPOSITORY"]
-EVENT_NAME = os.environ["GITHUB_EVENT_NAME"]
+CLICKUP_TOKEN = os.environ['CLICKUP_API_TOKEN']
+CLICKUP_LIST_ID = os.environ['CLICKUP_LIST_ID']
+GITHUB_TOKEN = os.environ['GITHUB_TOKEN']
+GITHUB_REPO = os.environ['GITHUB_REPOSITORY']
+EVENT_NAME = os.environ['GITHUB_EVENT_NAME']
 
 CLICKUP_API = "https://api.clickup.com/api/v2"
 GITHUB_API = "https://api.github.com"
 
-gh = Github(GITHUB_TOKEN)
+# Use the new PyGithub auth method
+gh = Github(auth=Auth.Token(GITHUB_TOKEN))
 repo = gh.get_repo(GITHUB_REPO)
 
-HEADERS = {
-    "Authorization": CLICKUP_TOKEN,
-    "Content-Type": "application/json",
-}
+# ============================================================================
+# HELPERS
+# ============================================================================
 
-# ============================================================================
-# CLICKUP HELPERS
-# ============================================================================
+def safe_text(text: str) -> str:
+    """Sanitize text for ClickUp API: ensure UTF-8 and replace invalid characters."""
+    if not text:
+        return ""
+    return text.encode('utf-8', errors='replace').decode('utf-8')
+
 
 def clickup_request(method, endpoint, **kwargs):
+    """ClickUp API request with retries for rate-limiting."""
     url = f"{CLICKUP_API}/{endpoint}"
+    headers = {"Authorization": CLICKUP_TOKEN, "Content-Type": "application/json"}
+
     for attempt in range(3):
-        r = requests.request(method, url, headers=HEADERS, **kwargs)
-        if r.status_code == 429:
-            sleep(60)
-            continue
-        r.raise_for_status()
-        return r.json() if r.content else {}
-    raise RuntimeError("ClickUp request failed")
+        try:
+            resp = requests.request(method, url, headers=headers, **kwargs)
+            if resp.status_code == 429:  # rate limit
+                sleep(60)
+                continue
+            resp.raise_for_status()
+            return resp.json() if resp.content else {}
+        except Exception as e:
+            if attempt == 2:
+                raise
+            sleep(2 ** attempt)
 
 
-def get_clickup_index():
-    """issue_num -> {id, parent}"""
+# ----------------- ClickUp operations -----------------
+def get_task_by_issue(issue_num):
+    """Get ClickUp task by GitHub issue number."""
     tasks = clickup_request(
         "GET",
         f"list/{CLICKUP_LIST_ID}/task",
-        params={"subtasks": True, "include_closed": True},
-    ).get("tasks", [])
-
-    index = {}
-    for t in tasks:
-        name = t.get("name", "")
-        if "[Issue #" not in name:
-            continue
-        try:
-            num = int(name.split("[Issue #")[1].split("]")[0])
-        except Exception:
-            continue
-
-        index.setdefault(num, []).append({
-            "id": t["id"],
-            "parent": t.get("parent"),
-        })
-
-    return index
-
-
-def resolve_task(issue_num, expected_parent, index):
-    """
-    Parent-safe task resolution.
-    Returns task_id or None.
-    """
-    for entry in index.get(issue_num, []):
-        if entry["parent"] == expected_parent:
-            return entry["id"]
+        params={"subtasks": True, "include_closed": True}
+    )
+    for task in tasks.get("tasks", []):
+        if task["name"].startswith(f"#{issue_num}:"):
+            return task["id"]
     return None
 
 
-def create_task(issue_num, title, body, status, parent=None):
+def create_task(name, desc, status="todo", parent=None):
+    """Create ClickUp task safely."""
     payload = {
-        "name": f"[Issue #{issue_num}] {title}",
-        "description": f"{body or ''}\n\n---\n[GitHub Issue]({repo.get_issue(issue_num).html_url})",
-        "status": status,
+        "name": safe_text(name),
+        "description": safe_text(desc),
+        "status": status
     }
     if parent:
         payload["parent"] = parent
-
-    task = clickup_request("POST", f"list/{CLICKUP_LIST_ID}/task", json=payload)
-    return task["id"]
+    return clickup_request("POST", f"list/{CLICKUP_LIST_ID}/task", json=payload)
 
 
-def update_task(task_id, **fields):
-    clickup_request("PUT", f"task/{task_id}", json=fields)
+def update_task(task_id, **kwargs):
+    """Update ClickUp task."""
+    return clickup_request("PUT", f"task/{task_id}", json=kwargs)
 
 
-def get_dependencies(task_id):
-    data = clickup_request("GET", f"task/{task_id}")
-    return {d["task_id"] for d in data.get("dependencies", [])}
+def add_comment(task_id, text):
+    """Add comment to ClickUp task."""
+    clickup_request("POST", f"task/{task_id}/comment", json={"comment_text": safe_text(text)})
 
 
-def add_dependency(task_id, depends_on):
-    clickup_request(
-        "POST",
-        f"task/{task_id}/dependency",
-        params={"depends_on": depends_on},
-    )
+# ----------------- GitHub relationship helpers -----------------
+def get_linked_issues(issue_num):
+    """Get relationships from GitHub (blocking, blocked_by, parent)."""
+    headers = {"Authorization": f"token {GITHUB_TOKEN}", "Accept": "application/vnd.github.v3+json"}
+    blocking = []
+    blocked_by = []
+    parent_issue = None
 
-
-def remove_dependency(task_id, depends_on):
-    clickup_request(
-        "DELETE",
-        f"task/{task_id}/dependency",
-        params={"depends_on": depends_on},
-    )
-
-# ============================================================================
-# GITHUB RELATIONSHIPS
-# ============================================================================
-
-def get_blockers(issue_num):
-    headers = {
-        "Authorization": f"Bearer {GITHUB_TOKEN}",
-        "Accept": "application/vnd.github+json",
-    }
-
-    blockers = []
     try:
-        r = requests.get(
-            f"{GITHUB_API}/repos/{GITHUB_REPO}/issues/{issue_num}/timeline",
-            headers=headers,
-        )
-        r.raise_for_status()
-        for e in r.json():
-            if e.get("event") == "blocked_by_added":
-                blockers.append(e["blocker"]["number"])
-    except Exception:
+        timeline_url = f"{GITHUB_API}/repos/{GITHUB_REPO}/issues/{issue_num}/timeline"
+        resp = requests.get(timeline_url, headers=headers)
+        resp.raise_for_status()
+        for event in resp.json():
+            if event.get("event") == "cross-referenced":
+                source = event.get("source", {})
+                if source and source.get("type") == "issue":
+                    src_issue = source.get("issue", {})
+                    src_num = src_issue.get("number")
+                    body = src_issue.get("body", "")
+                    # Detect blocking
+                    if re.search(rf'[Bb]locks?.*?#{issue_num}\b', body or ""):
+                        blocking.append(src_num)
+                    if re.search(rf'[Bb]locked by.*?#{issue_num}\b', body or ""):
+                        blocked_by.append(src_num)
+    except:
         pass
 
-    return blockers
+    # Parse body for parent issue
+    try:
+        issue = repo.get_issue(issue_num)
+        match = re.search(r'[Pp]arent.*?#(\d+)', issue.body or "")
+        if match:
+            parent_issue = int(match.group(1))
+    except:
+        pass
+
+    return blocking, blocked_by, parent_issue
 
 
-def get_parent(issue):
-    body = issue.body or ""
-    m = re.search(r"[Pp]arent.*?#(\d+)", body)
-    return int(m.group(1)) if m else None
-
-# ============================================================================
-# SYNC LOGIC
-# ============================================================================
-
-def sync_dependencies(issue_num, task_id, index):
-    github_blockers = set(get_blockers(issue_num))
-    clickup_deps = get_dependencies(task_id)
-
-    expected_deps = set()
-    for b in github_blockers:
-        blocker_task = resolve_task(b, None, index)
-        if blocker_task:
-            expected_deps.add(blocker_task)
-
-    # Add missing
-    for dep in expected_deps - clickup_deps:
-        print(f"  + Dependency: #{issue_num} depends on task {dep}")
-        add_dependency(task_id, dep)
-
-    # Remove stale
-    for dep in clickup_deps - expected_deps:
-        print(f"  - Removing stale dependency from #{issue_num}")
-        remove_dependency(task_id, dep)
+def parse_linked_issues(body):
+    """Extract linked issues from PR body."""
+    matches = re.findall(r'(?:[Cc]loses?|[Ff]ixes?|[Rr]esolves?).*?#(\d+)', body or "")
+    return [int(m) for m in matches]
 
 
-def sync_issue(issue_num, index):
+# ----------------- Sync logic -----------------
+def sync_issue_to_task(issue_num):
+    """Sync a GitHub issue to ClickUp task, respecting dependencies and parents."""
     issue = repo.get_issue(issue_num)
-    parent_num = get_parent(issue)
+    task_id = get_task_by_issue(issue_num)
 
+    blocking, blocked_by, parent_num = get_linked_issues(issue_num)
+
+    # Determine status
+    status = "to do"
+    if blocked_by and any(repo.get_issue(b).state == "open" for b in blocked_by if b):
+        status = "blocked"
+
+    # Handle parent task recursively
     parent_task_id = None
     if parent_num:
-        parent_task_id = resolve_task(parent_num, None, index)
+        parent_task_id = get_task_by_issue(parent_num)
+        if not parent_task_id:
+            sync_issue_to_task(parent_num)
+            parent_task_id = get_task_by_issue(parent_num)
 
-    status = (
-        "done" if issue.state == "closed"
-        else "blocked" if get_blockers(issue_num)
-        else "todo"
-    )
+    # Task name/description
+    task_name = f"#{issue_num}: {issue.title}"
+    task_desc = f"{issue.body or ''}\n\n---\n[GitHub Issue]({issue.html_url})"
 
-    task_id = resolve_task(issue_num, parent_task_id, index)
-
+    # Create or update task
     if not task_id:
         print(f"Creating task for issue #{issue_num}")
-        task_id = create_task(
-            issue_num, issue.title, issue.body, status, parent_task_id
-        )
-        index.setdefault(issue_num, []).append({
-            "id": task_id,
-            "parent": parent_task_id,
-        })
+        task = create_task(task_name, task_desc, status, parent_task_id)
+        task_id = task["id"]
     else:
-        update_task(task_id, status=status)
+        print(f"Updating task for issue #{issue_num}")
+        if issue.state == "closed":
+            status = "done"
+        update_task(task_id, name=task_name, description=task_desc, status=status)
 
-    sync_dependencies(issue_num, task_id, index)
+    # Update tasks that are blocked by this issue
+    for blocked_num in blocking:
+        blocked_task_id = get_task_by_issue(blocked_num)
+        if not blocked_task_id:
+            sync_issue_to_task(blocked_num)
+            blocked_task_id = get_task_by_issue(blocked_num)
+        if blocked_task_id:
+            update_task(blocked_task_id, status="blocked")
+            add_comment(blocked_task_id, f"Blocked by issue #{issue_num}")
+
+    return task_id
 
 
-def sync_pr(pr_num, index):
+def sync_pr_to_task(pr_num):
+    """Sync PR to linked issues."""
     pr = repo.get_pull(pr_num)
-    linked = re.findall(r"(?:closes|fixes|resolves)\s+#(\d+)", pr.body or "", re.I)
+    linked_issues = parse_linked_issues(pr.body)
 
-    for issue_num in map(int, linked):
-        sync_issue(issue_num, index)
-        task_id = resolve_task(issue_num, None, index)
+    commits = list(pr.get_commits())[-3:]
+    commit_text = "\n".join([
+        f"- `{c.sha[:7]}` {c.commit.message.split(chr(10))[0]} by {c.commit.author.name}"
+        for c in commits
+    ])
+
+    for issue_num in linked_issues:
+        task_id = get_task_by_issue(issue_num)
+        if not task_id:
+            sync_issue_to_task(issue_num)
+            task_id = get_task_by_issue(issue_num)
+
         if task_id:
+            _, blocked_by, _ = get_linked_issues(issue_num)
+            is_blocked = any(repo.get_issue(b).state == "open" for b in blocked_by if b)
             if pr.state == "closed" and pr.merged:
                 update_task(task_id, status="done")
+                add_comment(task_id, f"✅ PR #{pr_num} merged: {pr.html_url}")
+            elif not is_blocked:
+                update_task(task_id, status="in progress")
+                add_comment(task_id, f"🔗 PR #{pr_num}: {pr.html_url}\n\n**Recent commits:**\n{commit_text}")
+
+
+def check_unblock(issue_num):
+    """Unblock a task if all blockers are closed."""
+    _, blocked_by, _ = get_linked_issues(issue_num)
+    if all(repo.get_issue(b).state == "closed" for b in blocked_by if b):
+        task_id = get_task_by_issue(issue_num)
+        if task_id:
+            issue = repo.get_issue(issue_num)
+            has_pr = any([True for pr in issue.get_pulls()])  # Check for linked PR
+            new_status = "in progress" if has_pr else "to do"
+            update_task(task_id, status=new_status)
+            add_comment(task_id, "✅ Unblocked - all dependencies resolved")
+
 
 # ============================================================================
 # MAIN
 # ============================================================================
-
 def main():
     event = json.loads(sys.argv[1])
     action = event.get("action")
-
     print(f"Event: {EVENT_NAME}.{action}")
-
-    index = get_clickup_index()
 
     if EVENT_NAME == "issues":
         issue_num = event["issue"]["number"]
-        sync_issue(issue_num, index)
+
+        if action in ["opened", "edited", "reopened"]:
+            sync_issue_to_task(issue_num)
+        elif action == "closed":
+            task_id = get_task_by_issue(issue_num)
+            if task_id:
+                update_task(task_id, status="done")
+            # Unblock dependent issues
+            for issue in repo.get_issues(state="open"):
+                _, blocked_by, _ = get_linked_issues(issue.number)
+                if issue_num in blocked_by:
+                    check_unblock(issue.number)
 
     elif EVENT_NAME == "pull_request":
         pr_num = event["pull_request"]["number"]
-        sync_pr(pr_num, index)
+        if action in ["opened", "edited", "synchronize"]:
+            sync_pr_to_task(pr_num)
+        elif action == "closed":
+            sync_pr_to_task(pr_num)
 
     print("✓ Sync complete")
+
 
 if __name__ == "__main__":
     main()
