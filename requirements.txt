@@ -1,4 +1,10 @@
 # Dependencies for Python
 mkdocs
+mkdocs-material
+mkdoxy
 pyserial
 cantools
+mkdocs-redirects
+mkdocs-macros-plugin
+mkdocs-gen-files
+mkdocs-literate-nav
