@@ -6,7 +6,7 @@ from datetime import datetime
 # Configuration (ENV VARS)
 # =========================
 
-GITHUB_REPO = os.environ["GITHUB_REPO"]
+GITHUB_REPO = os.environ["GITHUB_REPOSITORY"]
 GITHUB_TOKEN = os.environ["GITHUB_TOKEN"]
 CLICKUP_API_TOKEN = os.environ["CLICKUP_API_TOKEN"]
 CLICKUP_LIST_ID = os.environ["CLICKUP_LIST_ID"]

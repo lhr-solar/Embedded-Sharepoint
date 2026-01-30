@@ -23,9 +23,10 @@ jobs:
 
       - name: Run ClickUp task initialization using GitHub Issues
         env:
-          GITHUB_REPO: lhr-solar/Embedded-Sharepoint
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN_PAT }}
           CLICKUP_API_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
           CLICKUP_LIST_ID: ${{ secrets.CLICKUP_LIST_ID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           python .github/clickup-init.py
