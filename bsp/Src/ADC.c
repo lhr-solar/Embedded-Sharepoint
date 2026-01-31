@@ -174,24 +174,10 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *h) {
     portYIELD_FROM_ISR(higherPriorityTaskWoken);
 }
 
-__weak void HAL_ADC_MspGPIOInit() {
-    // GPIO --- Instanstiate PA0 to test G4
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-
-    GPIO_InitTypeDef input =  {
-        .Pin = GPIO_PIN_0,
-        .Mode = GPIO_MODE_ANALOG,
-        .Pull = GPIO_NOPULL,
-    };
-
-    HAL_GPIO_Init(GPIOA, &input);
-}
-
 #if defined(STM32G4xx)
 static inline void HAL_ADC_MspG4Init(ADC_HandleTypeDef *h) {
     __HAL_RCC_SYSCFG_CLK_ENABLE();
     __HAL_RCC_PWR_CLK_ENABLE();
-    HAL_ADC_MspGPIOInit();
     
     RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
@@ -232,7 +218,6 @@ static inline void HAL_ADC_MspG4Init(ADC_HandleTypeDef *h) {
 
 #if defined(STM32L4xx)
 static inline void HAL_ADC_MspL4Init(ADC_HandleTypeDef *h) {
-    HAL_ADC_MspGPIOInit();
 
     // L4 Clock
     __HAL_RCC_ADC_CLK_ENABLE();
@@ -259,7 +244,6 @@ static inline void HAL_ADC_MspL4Init(ADC_HandleTypeDef *h) {
 #if defined(STM32F4xx)
 static inline void HAL_ADC_MspF4Init(ADC_HandleTypeDef *h) {
     // GPIO Init
-    HAL_ADC_MspGPIOInit();
 
     // F4 Clock
     if (h->Instance == ADC1) __HAL_RCC_ADC1_CLK_ENABLE();

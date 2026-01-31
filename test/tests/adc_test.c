@@ -151,9 +151,9 @@ void TestADC3(void *pvParameters) {
 }
 #endif
 
-// GPIO Inits
-void HAL_ADC_MspGPIOInit() {
-    // GPIO --- Instanstiate PA0 to test G4
+int main() {
+    // GPIO Init
+    
     __HAL_RCC_GPIOA_CLK_ENABLE();
 
     GPIO_InitTypeDef input =  {
@@ -163,9 +163,7 @@ void HAL_ADC_MspGPIOInit() {
     };
 
     HAL_GPIO_Init(GPIOA, &input);
-}
 
-int main() {
     xReadings = xQueueCreateStatic(QUEUE_LENGTH, ITEM_SIZE, qStorage, &xStaticQueue);
 
     // init ADC
