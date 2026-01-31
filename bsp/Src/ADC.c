@@ -190,8 +190,12 @@ __weak void HAL_ADC_MspGPIOInit() {
 #if defined(STM32G4xx)
 static inline void HAL_ADC_MspG4Init(ADC_HandleTypeDef *h) {
     HAL_ADC_MspGPIOInit();
+    RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
     if (h->Instance == ADC1 || h->Instance == ADC2) { 
+        PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC12;
+        PeriphClkInit.Adc12ClockSelection = RCC_ADC12CLKSOURCE_SYSCLK;
+        if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) Error_Handler();
         __HAL_RCC_ADC12_CLK_ENABLE(); 
     }   
     if (h->Instance == ADC1 || h->Instance == ADC2 || h->Instance == ADC3) {
@@ -368,34 +372,38 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef *h) {
 }
 
 #if defined(STM32L4xx) || defined(STM32G4xx)
-#ifdef ADC1_IRQn
-void ADC1_IRQHandler() {
-    HAL_ADC_IRQHandler(hadc1);
-}
-#endif
-
-#ifdef ADC1_2_IRQn
 void ADC1_2_IRQHandler() {
     HAL_ADC_IRQHandler(hadc1);
     #ifdef ADC2
-    HAL_ADC_IRQHandler(hadc2);
+        HAL_ADC_IRQHandler(hadc2);
+
     #endif
 }
-#endif
 
-#ifdef ADC3_IRQn
-void ADC3_IRQHandler() {
-    HAL_ADC_IRQHandler(hadc3);
+#ifdef ADC1_IRQHandler
+void ADC1_IRQHandler() {
+    // L4 IRQ Handler
+    HAL_ADC_IRQHandler(hadc1);
+
 }
 #endif
 
-#ifdef ADC4_IRQn
+#ifdef ADC3
+void ADC3_IRQHandler() {
+    HAL_ADC_IRQHandler(hadc3);
+
+}
+#endif
+#endif
+
+#if defined(STM32G4xx)
+#ifdef ADC4_IRQHandler
 void ADC4_IRQHandler() {
     HAL_ADC_IRQHandler(hadc4);
 }
 #endif
 
-#ifdef ADC5_IRQn
+#ifdef ADC5_IRQHandler
 void ADC5_IRQHandler() {
     HAL_ADC_IRQHandler(hadc5);
 }
@@ -416,6 +424,6 @@ void HAL_ADC_ErrorCallback(ADC_HandleTypeDef *h) {
     adc_err_code = HAL_ADC_GetError(h);
     
     // retry 
-    HAL_ADC_Stop_IT(h);
-    HAL_ADC_Start_IT(h);
+    // HAL_ADC_Stop_IT(h);
+    // HAL_ADC_Start_IT(h);
 }
