@@ -14,7 +14,7 @@
 
 /* handles */
 sd_handle_t sd;
-SPI_HandleTypeDef hspi_handle;
+SPI_HandleTypeDef hspi_user;   
 FATFS fs;
 
 StaticTask_t xTask1Buffer;
@@ -26,11 +26,32 @@ StackType_t xTask2Stack[1024];
 TaskHandle_t hTask2;
 
 /* pin def*/
+// ADAPT THESE TO YOUR BOARD
+#define USER_SPI_INSTANCE  SPI2
+#define USER_CS_PORT       GPIOB
+#define USER_CS_PIN        GPIO_PIN_12
+
+#define USER_SCK_PORT      GPIOB
+#define USER_SCK_PIN       GPIO_PIN_10
+#define USER_SCK_AF        GPIO_AF5_SPI2
+
+#define USER_MISO_PORT     GPIOC
+#define USER_MISO_PIN      GPIO_PIN_2
+#define USER_MISO_AF       GPIO_AF5_SPI2
+
+#define USER_MOSI_PORT     GPIOC
+#define USER_MOSI_PIN      GPIO_PIN_3
+#define USER_MOSI_AF       GPIO_AF5_SPI2
+
+#define LED_PORT           GPIOA
+#define LED_PIN            GPIO_PIN_5
+
 #define LED_PORT GPIOA
 #define LED_PIN  GPIO_PIN_5 
 
 void SystemClock_Config(void);
 void LED_Init(void);
+void User_Hardware_Init(void);
 void Task1_Entry(void *params);
 void Task2_Entry(void *params);
 
@@ -40,11 +61,13 @@ int main(void)
     HAL_Init();
     SystemClock_Config();
     LED_Init();
+    User_Hardware_Init();
 
     /* Link SD Handle */
-    sd.hspi = &hspi_handle;
-    sd.cs_port = SD_CS_PORT; 
-    sd.cs_pin  = SD_CS_PIN;
+    sd.hspi = &hspi_user;
+    sd.cs_port = USER_CS_PORT; 
+    sd.cs_pin  = USER_CS_PIN;
+
     
     // Task 1: Writes every 200ms
     xTaskCreateStatic(Task1_Entry, "WriteTask1", 1024, NULL, tskIDLE_PRIORITY + 1, xTask1Stack, &xTask1Buffer);
@@ -218,4 +241,73 @@ void SystemClock_Config(void)
     }
 
 #endif
+}
+
+void User_Hardware_Init(void) {
+    
+    /* 1. Enable Clocks */
+    // Note: You must enable clocks for ALL ports you use
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+    __HAL_RCC_GPIOC_CLK_ENABLE();
+    
+    // Enable SPI Clock based on your choice
+    if(USER_SPI_INSTANCE == SPI1) __HAL_RCC_SPI1_CLK_ENABLE();
+    else if(USER_SPI_INSTANCE == SPI2) __HAL_RCC_SPI2_CLK_ENABLE();
+    // else if(USER_SPI_INSTANCE == SPI3) __HAL_RCC_SPI3_CLK_ENABLE();
+
+    /* 2. Configure GPIO (SCK, MISO, MOSI) */
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+
+    // SCK
+    GPIO_InitStruct.Pin = USER_SCK_PIN;
+    GPIO_InitStruct.Alternate = USER_SCK_AF; 
+    HAL_GPIO_Init(USER_SCK_PORT, &GPIO_InitStruct);
+
+    // MISO
+    GPIO_InitStruct.Pin = USER_MISO_PIN;
+    GPIO_InitStruct.Alternate = USER_MISO_AF;
+    HAL_GPIO_Init(USER_MISO_PORT, &GPIO_InitStruct);
+
+    // MOSI
+    GPIO_InitStruct.Pin = USER_MOSI_PIN;
+    GPIO_InitStruct.Alternate = USER_MOSI_AF;
+    HAL_GPIO_Init(USER_MOSI_PORT, &GPIO_InitStruct);
+
+    /* 3. Configure Chip Select (CS) - Standard Output */
+    HAL_GPIO_WritePin(USER_CS_PORT, USER_CS_PIN, GPIO_PIN_SET); // Default High
+    GPIO_InitStruct.Pin = USER_CS_PIN;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Alternate = 0;
+    HAL_GPIO_Init(USER_CS_PORT, &GPIO_InitStruct);
+
+    /* 4. Configure SPI Peripheral */
+    hspi_user.Instance = USER_SPI_INSTANCE;
+    hspi_user.Init.Mode = SPI_MODE_MASTER;
+    hspi_user.Init.Direction = SPI_DIRECTION_2LINES;
+    hspi_user.Init.DataSize = SPI_DATASIZE_8BIT;
+    hspi_user.Init.CLKPolarity = SPI_POLARITY_LOW;
+    hspi_user.Init.CLKPhase = SPI_PHASE_1EDGE;
+    hspi_user.Init.NSS = SPI_NSS_SOFT;
+    hspi_user.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256; 
+    hspi_user.Init.FirstBit = SPI_FIRSTBIT_MSB;
+    hspi_user.Init.TIMode = SPI_TIMODE_DISABLE;
+    hspi_user.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+    
+    // STM32L4/G4 specific
+    #if defined(STM32L4xx) || defined(STM32G4xx)
+       hspi_user.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
+       hspi_user.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
+    #endif
+
+    if (HAL_SPI_Init(&hspi_user) != HAL_OK) {
+        // Init Error
+        while(1);
+    }
+    __HAL_SPI_ENABLE(&hspi_user);
 }

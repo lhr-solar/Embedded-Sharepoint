@@ -2,15 +2,20 @@
 #include <stdint.h>
 #include "stm32xx_hal.h"
 
-extern SPI_HandleTypeDef hspi2; 
-
-
 /* CS */
+/**
+ * @brief Asserts the Chip Select pin (sets it LOW).
+ * @param sd Pointer to the SD handle structure.
+ */
 void SD_Select(sd_handle_t *sd)
 {
     HAL_GPIO_WritePin(sd->cs_port, sd->cs_pin, GPIO_PIN_RESET);
 }
 
+/**
+ * @brief De-asserts the Chip Select pin (sets it HIGH).
+ * @param sd Pointer to the SD handle structure.
+ */
 void SD_Deselect(sd_handle_t *sd)
 {
     HAL_GPIO_WritePin(sd->cs_port, sd->cs_pin, GPIO_PIN_SET);
@@ -29,6 +34,11 @@ R1: 0abcdefg
      `------- 7th bit (a): command argument outside allowed range
              (8th bit is always zero)
 */
+/**
+ * @brief Reads the R1 response byte from the SD card.
+ * @param sd Pointer to the SD handle structure.
+ * @return The R1 response byte.
+ */
 uint8_t SD_ReadR1(sd_handle_t *sd)
 {
     uint8_t r1;
@@ -41,71 +51,14 @@ uint8_t SD_ReadR1(sd_handle_t *sd)
     }
 }
 
-uint8_t SD_SPI_Init(sd_handle_t *sd) {
 
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-    /* 1. Enable Clocks (Uses the Macros from sdcard.h) */
-    SD_SPI_CLK_ENABLE();       // Enables SPI1 or SPI2
-    SD_GPIO_CLK_ENABLE();      // Enables GPIOA or (GPIOB & GPIOC)
-
-    /* 2. Configure SCK Pin */
-    GPIO_InitStruct.Pin = SD_SCK_PIN;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.Alternate = SD_SPI_AF;
-    HAL_GPIO_Init(SD_SCK_PORT, &GPIO_InitStruct);
-
-    /* 3. Configure MISO Pin */
-    GPIO_InitStruct.Pin = SD_MISO_PIN;
-    HAL_GPIO_Init(SD_MISO_PORT, &GPIO_InitStruct);
-
-    /* 4. Configure MOSI Pin */
-    GPIO_InitStruct.Pin = SD_MOSI_PIN;
-    HAL_GPIO_Init(SD_MOSI_PORT, &GPIO_InitStruct);
-
-    /* 5. Configure CS Pin (Dynamic based on struct) */
-    // Ensure the specific CS port clock is on (Safety check)
-    if(sd->cs_port == GPIOA) __HAL_RCC_GPIOA_CLK_ENABLE();
-    else if(sd->cs_port == GPIOB) __HAL_RCC_GPIOB_CLK_ENABLE();
-    else if(sd->cs_port == GPIOC) __HAL_RCC_GPIOC_CLK_ENABLE();
-    
-    HAL_GPIO_WritePin(sd->cs_port, sd->cs_pin, GPIO_PIN_SET); // CS High (Inactive)
-    GPIO_InitStruct.Pin = sd->cs_pin;
-    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.Alternate = 0; // No AF for CS
-    HAL_GPIO_Init(sd->cs_port, &GPIO_InitStruct);
-
-    /* 6. Configure SPI Peripheral */
-    sd->hspi->Instance = SD_SPI_HANDLE;  // SPI1 or SPI2
-    sd->hspi->Init.Mode = SPI_MODE_MASTER;
-    sd->hspi->Init.Direction = SPI_DIRECTION_2LINES;
-    sd->hspi->Init.DataSize = SPI_DATASIZE_8BIT; 
-    sd->hspi->Init.CLKPolarity = SPI_POLARITY_LOW;
-    sd->hspi->Init.CLKPhase = SPI_PHASE_1EDGE;
-    sd->hspi->Init.NSS = SPI_NSS_SOFT;
-    sd->hspi->Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256; 
-    sd->hspi->Init.FirstBit = SPI_FIRSTBIT_MSB;
-    sd->hspi->Init.TIMode = SPI_TIMODE_DISABLE;
-    sd->hspi->Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-    sd->hspi->Init.CRCPolynomial = 7;
-
-    /* These settings only exist on newer chips (L4, G4). */
-    #if defined(STM32L4xx) || defined(STM32G4xx)
-        sd->hspi->Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
-        sd->hspi->Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
-    #endif
-
-    if (HAL_SPI_Init(sd->hspi) != HAL_OK) { 
-        return 1; // Failed
-    }
-    return 0; // Success
-}
-
-/* Dummy clocks */
+/**
+ * @brief Sends dummy clocks (0xFF) to the SD card with CS High to ensure it is ready or to force SPI mode.
+ * @note This is a mandatory requirement from the SD Physical Layer Spec.
+ * The card requires at least 74 clock cycles with CS De-asserted (High) 
+ * to stabilize power and switch from native "SD Bus Mode" to "SPI Mode".
+ * @param sd Pointer to the SD handle structure.
+ */
 void SD_SendDummyClocks(sd_handle_t *sd)
 {
     /* Ensure CS high and send >= 80 clocks (10 bytes of 0xFF) */
@@ -119,37 +72,50 @@ void SD_SendDummyClocks(sd_handle_t *sd)
     
 }
 
+/**
+ * @brief Reads a raw stream of bytes from the SD card.
+ * @param sd Pointer to the SD handle structure.
+ * @param buff Pointer to the buffer to store received data.
+ * @param len Number of bytes to read.
+ * @return SD_OK on success, or specific error code on failure.
+ */
 /* read N bytes by sending 0xFF */
 int8_t SD_ReadBytes(sd_handle_t *sd, uint8_t *buff, size_t len)
 {
     if (buff == NULL) {
-        return -1; // Error: Buffer is null
+        return SD_ERROR; // Error: Buffer is null
     }
     
     if (len == 0) {
-        return -1; // Error: Length is zero
+        return SD_ERROR; // Error: Length is zero
     }
 
     uint8_t tx = SD_DUMMY_BYTE; 
     
     while (len--) {
         if (HAL_SPI_TransmitReceive(sd->hspi, &tx, buff, 1, HAL_MAX_DELAY) != HAL_OK) {
-            return -1; // Error: SPI failure
+            return SD_ERR_SPI; // Error: SPI failure
         }
         buff++;
     }
 
-    return 0; // Success
+    return SD_OK; // Success
 
 }
 
+/**
+ * @brief Waits for the SD card to return 0xFF (Not Busy).
+ * Includes RTOS yield (vTaskDelay) to allow other tasks to run while waiting.
+ * @param sd Pointer to the SD handle structure.
+ * @return SD_OK on success, or specific error code on failure.
+ */
 /* wait for not-busy (card returns 0xFF when ready) */
 int8_t SD_WaitNotBusy(sd_handle_t *sd)
 {
     uint8_t busy;
     do {
         if(SD_ReadBytes(sd, &busy, sizeof(busy)) < 0) {
-            return -1;
+            return SD_ERR_READ;
         }
 
         // thread safe:
@@ -160,9 +126,15 @@ int8_t SD_WaitNotBusy(sd_handle_t *sd)
      
     } while(busy != SD_DUMMY_BYTE);
 
-    return 0;
+    return SD_OK;
 }
 
+/**
+ * @brief Waits for a specific data token (e.g., 0xFE) from the card.
+ * @param sd Pointer to the SD handle structure.
+ * @param token The expected token byte.
+ * @return SD_OK on success, or specific error code on failure.
+ */
 /* wait for a data token (e.g. 0xFE) */
 int8_t SD_WaitDataToken(sd_handle_t *sd, uint8_t token) { 
     uint8_t fb;
@@ -175,12 +147,20 @@ int8_t SD_WaitDataToken(sd_handle_t *sd, uint8_t token) {
             break;          // found correct data token
 
         if (fb != SD_DUMMY_BYTE)
-            return -1;      // unexpected token → error
+            return SD_ERROR;      // unexpected token → error
     }
 
-    return 0;
+    return SD_OK;
 }
 
+/**
+ * @brief Sends a command to the SD card and reads the R1 response.
+ * @param sd Pointer to the SD handle structure.
+ * @param cmd The command index (e.g., SD_CMD0).
+ * @param arg The 32-bit argument for the command.
+ * @param crc The CRC byte for the command.
+ * @return The R1 response byte.
+ */
 /* send a command packet and return R1 */
 uint8_t SD_SendCommand(sd_handle_t *sd, uint8_t cmd, uint32_t arg, uint8_t crc)
 {
@@ -204,36 +184,23 @@ uint8_t SD_SendCommand(sd_handle_t *sd, uint8_t cmd, uint32_t arg, uint8_t crc)
     /* Send the 6-byte command */
     HAL_SPI_Transmit(sd->hspi, packet, sizeof(packet), HAL_MAX_DELAY);
 
-    /* Read R1 */
-    uint8_t r1 = SD_ReadR1(sd);
-
-    return r1;
+    return SD_ReadR1(sd);
 }
 
-// // SD INIT require:
-// /*
-// 1. to enter SPI mode, the host must send ≥74 dummy clocks with CS = high
-// 2. Send CMD0, puts the SD card into idle state (Expected response = 0x01 = idle)
-// 3. Send CMD8 (CHECK VOLTAGE / VERSION); send argument 0x000001AA and expect the same pattern back.
-// 4. Loop sending ACMD41 until the card leaves idle
-// Send CMD55 (prefix command), Send ACMD41 (init command) until card returns: 0x00 meaning: “Initialization complete. Ready to work.”
-// 5. Send CMD58 to read Operating Conditions Register (supported voltage)
-// */
-
-
-
+/**
+ * @brief Initializes the SD card driver, sets up the mutex, and performs the SD startup sequence.
+ * @note The user MUST initialize the SPI Peripheral (hspi) and all associated GPIOs (SCK, MISO, MOSI, CS) before calling this function.
+ * The CS pin should be configured as Output Push-Pull, initially High.
+ * @param sd Pointer to the SD handle structure.
+ * @return SD_OK on success, or specific error code on failure.
+ */
 int8_t SD_Init(sd_handle_t *sd) {
 
     // thread safe RTOS init:
     // Create a Mutex statically 
     sd->mutex = xSemaphoreCreateMutexStatic(&sd->mutexBuffer);
     if (sd->mutex == NULL) {
-        return -99; // Error creating mutex
-    }
-
-    // This uses the Macros to pick SPI1 or SPI2 automatically.
-    if (SD_SPI_Init(sd) != 0) {
-        return -1; // Hardware Init Failed
+        return SD_ERR_MUTEX; // Error creating mutex
     }
 
     uint8_t res;
@@ -249,7 +216,7 @@ int8_t SD_Init(sd_handle_t *sd) {
     HAL_SPI_Transmit(sd->hspi, cmd0, sizeof(cmd0), HAL_MAX_DELAY);
     if(SD_ReadR1(sd) != 0x01) {
         SD_Deselect(sd);
-        return -1; 
+        return SD_ERROR; 
     }
     SD_Deselect(sd);
 
@@ -257,11 +224,11 @@ int8_t SD_Init(sd_handle_t *sd) {
     uint8_t r1 = SD_SendCommand(sd, 8, 0x000001AA, 0x87); // Capture return
     if(r1 != 0x01) {
         SD_Deselect(sd);
-        return -2;
+        return SD_ERR_VOLTAGE;
     }
     if(SD_ReadBytes(sd, resp, sizeof(resp)) < 0) {
         SD_Deselect(sd);
-        return -3; 
+        return SD_ERR_READ; 
     }
 
     // Step 4: ACMD41 Loop (Initialize) 
@@ -270,7 +237,7 @@ int8_t SD_Init(sd_handle_t *sd) {
     for(;;) {
         if((HAL_GetTick() - tickStart) > 1000) {
              SD_Deselect(sd);
-             return -10;
+             return SD_TIMEOUT;
         }
 
         // Capture return directly
@@ -278,7 +245,7 @@ int8_t SD_Init(sd_handle_t *sd) {
         res = SD_SendCommand(sd, 55, 0, 0x65); 
         if(res > 0x01) { 
             SD_Deselect(sd);
-            return -5; 
+            return SD_ERROR; 
         }
         SD_Deselect(sd);
 
@@ -286,8 +253,10 @@ int8_t SD_Init(sd_handle_t *sd) {
         res = SD_SendCommand(sd, 41, 0x40000000, 0x77); 
         SD_Deselect(sd);
         
-        if(res == 0x00) break; // Success!
-        if(res > 0x01) return -6; // Error
+        if(res == 0x00) 
+            break; // Success!
+        if(res > 0x01) 
+            return SD_ERR_INIT_CARD; // Error
         
         HAL_Delay(10);
     }
@@ -296,31 +265,36 @@ int8_t SD_Init(sd_handle_t *sd) {
     res = SD_SendCommand(sd, 58, 0, 0xFD);
     if(res != 0x00) {
         SD_Deselect(sd);
-        return -7;
+        return SD_ERROR;
     }
 
     if(SD_ReadBytes(sd, resp, sizeof(resp)) < 0) {
         SD_Deselect(sd);
-        return -8;
+        return SD_ERR_READ;
     }
     SD_Deselect(sd);
 
     // Check Power Up bit (Bit 31) only
     if((resp[0] & 0x80) == 0) {
-        return -9;
+        return SD_ERROR;
     }
     
     return 0; // Success
 }
-
-/* read / write block helpers (512 bytes) */
+/**
+ * @brief Reads a single 512-byte block from the SD card (Thread Safe).
+ * @param sd Pointer to the SD handle structure.
+ * @param blockNum The block address to read.
+ * @param buffer Pointer to the buffer (must be at least 512 bytes).
+ * @return 0 on success, negative error code on failure.
+ */
 int8_t SD_ReadSingleBlock(sd_handle_t *sd, uint32_t blockNum, uint8_t *buffer)
 {
 
     // thread safe:
     // Take lock Wait forever (portMAX_DELAY) until it's free.
     if (xSemaphoreTake(sd->mutex, portMAX_DELAY) != pdTRUE) {
-        return -100; // RTOS error
+        return SD_ERR_LOCK_TIMEOUT; // RTOS error
     }
     
     uint8_t resp;
@@ -330,42 +304,49 @@ int8_t SD_ReadSingleBlock(sd_handle_t *sd, uint32_t blockNum, uint8_t *buffer)
     if (resp != 0x00) { 
         SD_Deselect(sd); 
         xSemaphoreGive(sd->mutex); 
-        return -1; 
+        return SD_ERROR; 
     }
 
     if (SD_WaitDataToken(sd, 0xFE) < 0) { 
         SD_Deselect(sd); 
         xSemaphoreGive(sd->mutex); 
-        return -2; 
+        return SD_ERROR; 
     }
     
     if (SD_ReadBytes(sd, buffer, SD_BLOCK_SIZE) < 0) { 
         SD_Deselect(sd); 
         xSemaphoreGive(sd->mutex); 
-        return -3; 
+        return SD_ERR_READ; 
     }
 
     uint8_t crc[2];
     if (SD_ReadBytes(sd, crc, 2) < 0) { 
         SD_Deselect(sd); 
         xSemaphoreGive(sd->mutex); 
-        return -4; 
+        return SD_ERR_READ; 
     }
 
     SD_Deselect(sd);
 
     // Release the lock
     xSemaphoreGive(sd->mutex);
-    return 0;
+    return SD_OK;
 
 }
 
+/**
+ * @brief Writes a single 512-byte block to the SD card (Thread Safe).
+ * @param sd Pointer to the SD handle structure.
+ * @param blockNum The block address to write to.
+ * @param buffer Pointer to the data to write (512 bytes).
+ * @return 0 on success, negative error code on failure.
+ */
 int8_t SD_WriteSingleBlock(sd_handle_t *sd, uint32_t blockNum, const uint8_t *buffer)
 {
     // thread safe:
     // Take the lock
     if (xSemaphoreTake(sd->mutex, portMAX_DELAY) != pdTRUE) {
-        return -100;
+        return SD_ERR_LOCK_TIMEOUT;
     }
 
     uint8_t resp;
@@ -375,7 +356,7 @@ int8_t SD_WriteSingleBlock(sd_handle_t *sd, uint32_t blockNum, const uint8_t *bu
     if (resp != 0x00) { 
         SD_Deselect(sd); 
         xSemaphoreGive(sd->mutex); 
-        return -1; 
+        return SD_ERROR; 
     }
 
     uint8_t token = 0xFE;
@@ -389,42 +370,46 @@ int8_t SD_WriteSingleBlock(sd_handle_t *sd, uint32_t blockNum, const uint8_t *bu
     if (SD_ReadBytes(sd, &dataResp, 1) < 0) { 
         SD_Deselect(sd); 
         xSemaphoreGive(sd->mutex); 
-        return -2; 
+        return SD_ERR_READ; 
     }
     
     if ((dataResp & 0x1F) != 0x05) { 
         SD_Deselect(sd); 
         xSemaphoreGive(sd->mutex); 
-        return -3; 
+        return SD_ERR_WRITE; 
     }
 
     if (SD_WaitNotBusy(sd) < 0) { 
         SD_Deselect(sd); 
         xSemaphoreGive(sd->mutex); 
-        return -4; 
+        return SD_TIMEOUT; 
     }
 
     SD_Deselect(sd);
     
     // Release the lock
     xSemaphoreGive(sd->mutex);
-    return 0;
+    return SD_OK;
 }
 
-
-
+/**
+ * @brief Starts a multi-block read operation. Locks the mutex.
+ * @param sd Pointer to the SD handle structure.
+ * @param blockNum The starting block address.
+ * @return 0 on success, negative error code on failure.
+ */
 int8_t SD_ReadBegin(sd_handle_t *sd, uint32_t blockNum) {
    
     // thread safe:
     // 1. Lock Mutex
-    if (xSemaphoreTake(sd->mutex, portMAX_DELAY) != pdTRUE) return -100;
+    if (xSemaphoreTake(sd->mutex, portMAX_DELAY) != pdTRUE) return SD_ERR_LOCK_TIMEOUT;
 
     SD_Select(sd);
 
     if(SD_WaitNotBusy(sd) < 0) { 
         SD_Deselect(sd);
         xSemaphoreGive(sd->mutex); // Unlock on fail
-        return -1;
+        return SD_TIMEOUT;
     }
 
     uint8_t cmd[] = {
@@ -440,37 +425,48 @@ int8_t SD_ReadBegin(sd_handle_t *sd, uint32_t blockNum) {
     if(SD_ReadR1(sd) != 0x00) {
         SD_Deselect(sd);
         xSemaphoreGive(sd->mutex); // Unlock on fail
-        return -2;
+        return SD_ERROR;
     }
 
     SD_Deselect(sd);
     return 0;
 }
 
+/**
+ * @brief Reads the next block of data during a multi-block read.
+ * @param sd Pointer to the SD handle structure.
+ * @param buff Pointer to the buffer (512 bytes).
+ * @return 0 on success, negative error code on failure.
+ */
 int8_t SD_ReadData(sd_handle_t *sd, uint8_t* buff) {
     uint8_t crc[2];
     SD_Select(sd);
 
     if(SD_WaitDataToken(sd, DATA_TOKEN_CMD18) < 0) {
         SD_Deselect(sd);
-        return -1;
+        return SD_ERROR;
     }
 
     if(SD_ReadBytes(sd, buff, SD_BLOCK_SIZE) < 0) {
         SD_Deselect(sd);
-        return -2;
+        return SD_ERR_READ;
     }
 
     if(SD_ReadBytes(sd, crc, 2) < 0) {
         SD_Deselect(sd);
-        return -3;
+        return SD_ERR_READ;
     }
 
     SD_Deselect(sd);
-    return 0;
+    return SD_OK;
 
 }
 
+/**
+ * @brief Ends a multi-block read operation. Unlocks the mutex.
+ * @param sd Pointer to the SD handle structure.
+ * @return 0 on success, negative error code on failure.
+ */
 int8_t SD_ReadEnd(sd_handle_t *sd) {
     SD_Select(sd);
 
@@ -485,7 +481,7 @@ int8_t SD_ReadEnd(sd_handle_t *sd) {
         // thread safe:
         xSemaphoreGive(sd->mutex); // Unlock!
 
-        return -1;
+        return SD_ERR_READ;
     }
 
     if(SD_ReadR1(sd) != 0x00) {
@@ -494,7 +490,7 @@ int8_t SD_ReadEnd(sd_handle_t *sd) {
         // thread safe:
         xSemaphoreGive(sd->mutex); // Unlock!
 
-        return -2;
+        return SD_ERR_READ;
     }
     
     SD_Deselect(sd);
@@ -502,13 +498,19 @@ int8_t SD_ReadEnd(sd_handle_t *sd) {
     // thread safe:
     xSemaphoreGive(sd->mutex); // Unlock!
 
-    return 0;
+    return SD_OK;
 }
 
-
+/**
+ * @brief Starts a multi-block write operation. Locks the mutex.
+ * @param sd Pointer to the SD handle structure.
+ * @param blockNum The starting block address.
+ * @return 0 on success, negative error code on failure.
+ */
 int8_t SD_WriteBegin(sd_handle_t *sd, uint32_t blockNum) {
     // thread safe: Lock Mutex
-    if (xSemaphoreTake(sd->mutex, portMAX_DELAY) != pdTRUE) return -100;
+    if (xSemaphoreTake(sd->mutex, portMAX_DELAY) != pdTRUE) 
+        return SD_ERR_LOCK_TIMEOUT;
 
     SD_Select(sd);
 
@@ -518,7 +520,7 @@ int8_t SD_WriteBegin(sd_handle_t *sd, uint32_t blockNum) {
         // thread safe:
         xSemaphoreGive(sd->mutex); // Unlock!
 
-        return -1;
+        return SD_TIMEOUT;
     }
 
     /* CMD25 (WRITE_MULTIPLE_BLOCK) command */
@@ -538,13 +540,19 @@ int8_t SD_WriteBegin(sd_handle_t *sd, uint32_t blockNum) {
         // thread safe:
         xSemaphoreGive(sd->mutex); // Unlock!
 
-        return -2;
+        return SD_ERROR;
     }
 
     SD_Deselect(sd);
-    return 0;
+    return SD_OK;
 }
 
+/**
+ * @brief Writes the next block of data during a multi-block write.
+ * @param sd Pointer to the SD handle structure.
+ * @param buff Pointer to the data to write (512 bytes).
+ * @return 0 on success, negative error code on failure.
+ */
 int8_t SD_WriteData(sd_handle_t *sd, const uint8_t* buff) {
     SD_Select(sd);
 
@@ -565,18 +573,23 @@ int8_t SD_WriteData(sd_handle_t *sd, const uint8_t* buff) {
     SD_ReadBytes(sd, &dataResp, sizeof(dataResp));
     if((dataResp & 0x1F) != 0x05) { // data rejected
         SD_Deselect(sd);
-        return -1;
+        return SD_ERR_WRITE;
     }
 
     if(SD_WaitNotBusy(sd) < 0) {
         SD_Deselect(sd);
-        return -2;
+        return SD_TIMEOUT;
     }
 
     SD_Deselect(sd);
-    return 0;
+    return SD_OK;
 }
 
+/**
+ * @brief Ends a multi-block write operation. Unlocks the mutex.
+ * @param sd Pointer to the SD handle structure.
+ * @return 0 on success, negative error code on failure.
+ */
 int8_t SD_WriteEnd(sd_handle_t *sd) {
     SD_Select(sd);
 
@@ -593,11 +606,11 @@ int8_t SD_WriteEnd(sd_handle_t *sd) {
         // thread safe:
         xSemaphoreGive(sd->mutex); // Unlock!
 
-        return -1;
+        return SD_TIMEOUT;
     }
 
     SD_Deselect(sd);
     // thread safe:
     xSemaphoreGive(sd->mutex); // Unlock!
-    return 0;
+    return SD_OK;
 }
