@@ -328,7 +328,7 @@ FLASH_FILE = $(shell find $(BUILD_DIR) -name 'stm*.bin' -exec basename {} \;)
 .PHONY: flash
 flash:
 	@echo "🔦 Flashing $(FLASH_FILE) to $(FLASH_ADDRESS)"
-	-st-flash write $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
+	st-flash write $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
 
 .PHONY: flash-uart
 flash-uart:
