@@ -61,7 +61,7 @@ void TestQueueFull(void *pvParameters) {
 
     // read once
     for (int i = 0; i < 11; i++) {
-        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc1, &xReadings);
+        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc1, xReadings);
         
         if (stat != ADC_OK) {
             error_handler(stat);
@@ -75,7 +75,6 @@ void TestQueueFull(void *pvParameters) {
 #endif
 
 
-
 void TestADC1(void *pvParameters) {
     // Set bkpt in error_handler();
     uint32_t reading = 0;
@@ -83,9 +82,9 @@ void TestADC1(void *pvParameters) {
     // read once
     for (int i = 0; i < 10; i++) {
         #ifdef ADC_SAMPLETIME_3CYCLES
-        adc_status_t stat = adc_read(ADC_CHANNEL_3,  ADC_SAMPLETIME_3CYCLES, hadc1, &xReadings);
+        adc_status_t stat = adc_read(ADC_CHANNEL_1,  ADC_SAMPLETIME_3CYCLES, hadc1, xReadings);
         #else
-        adc_status_t stat = adc_read(ADC_CHANNEL_3,  ADC_SAMPLETIME_2CYCLES_5, hadc1, &xReadings);
+        adc_status_t stat = adc_read(ADC_CHANNEL_1,  ADC_SAMPLETIME_2CYCLES_5, hadc1, xReadings);
         #endif
         
         if (stat != ADC_OK) {
@@ -100,7 +99,6 @@ void TestADC1(void *pvParameters) {
     success_handler();
 }
 
-
 #ifdef ADC2
 void TestADC2(void *pvParameters) {
     // Set bkpt in error_handler();
@@ -109,16 +107,16 @@ void TestADC2(void *pvParameters) {
     // read once
     for (int i = 0; i < 10; i++) {
         #ifdef ADC_SAMPLETIME_3CYCLES
-        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc2, &xReadings);
+        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc2, xReadings);
         #else
-        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_2CYCLES_5, hadc2, &xReadings);
+        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_2CYCLES_5, hadc2, xReadings);
         #endif
         
         if (stat != ADC_OK) {
             error_handler(stat);
         }
     }
-
+    
     for (int i = 0; i < 10; i++) {
         xQueueReceive(xReadings, &reading, 0);
     }
@@ -135,9 +133,9 @@ void TestADC3(void *pvParameters) {
     // read once
     for (int i = 0; i < 10; i++) {
         #ifdef ADC_SAMPLETIME_3CYCLES
-        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc3, &xReadings);
+        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc3, xReadings);
         #else
-        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_2CYCLES_5, hadc3, &xReadings);
+        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_2CYCLES_5, hadc3, xReadings);
         #endif
         
         if (stat != ADC_OK) {
@@ -154,6 +152,18 @@ void TestADC3(void *pvParameters) {
 #endif
 
 int main() {
+    // GPIO Init
+    
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+
+    GPIO_InitTypeDef input =  {
+        .Pin = GPIO_PIN_0,
+        .Mode = GPIO_MODE_ANALOG,
+        .Pull = GPIO_NOPULL,
+    };
+
+    HAL_GPIO_Init(GPIOA, &input);
+
     xReadings = xQueueCreateStatic(QUEUE_LENGTH, ITEM_SIZE, qStorage, &xStaticQueue);
 
     // init ADC
@@ -211,7 +221,6 @@ int main() {
     #endif
 
     // Task Creation
-    
 
     xTaskCreateStatic(TestADC1,
                     "ADC Test",
