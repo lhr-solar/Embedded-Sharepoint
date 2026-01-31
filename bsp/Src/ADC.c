@@ -49,6 +49,21 @@ QueueHandle_t* adc5_q;
 #ifndef ADC3_PRIO
 #define ADC3_PRIO 5
 #endif
+#endif
+
+
+#ifdef STM32G4xx
+#ifndef ADC1_PRIO
+#define ADC1_PRIO 5
+#endif
+
+#ifndef ADC2_PRIO
+#define ADC2_PRIO 5
+#endif
+
+#ifndef ADC3_PRIO
+#define ADC3_PRIO 5
+#endif
 
 #ifndef ADC4_PRIO
 #define ADC4_PRIO 5
@@ -174,7 +189,34 @@ __weak void HAL_ADC_MspGPIOInit() {
 
 #if defined(STM32G4xx)
 static inline void HAL_ADC_MspG4Init(ADC_HandleTypeDef *h) {
+    HAL_ADC_MspGPIOInit();
 
+    if (h->Instance == ADC1 || h->Instance == ADC2) { 
+        __HAL_RCC_ADC12_CLK_ENABLE(); 
+    }   
+    if (h->Instance == ADC1 || h->Instance == ADC2 || h->Instance == ADC3) {
+        __HAL_RCC_ADC345_CLK_ENABLE(); 
+    }
+
+    #if defined(ADC1) || defined(ADC2)
+    HAL_NVIC_SetPriority(ADC1_2_IRQn, ADC1_PRIO, 0);
+    HAL_NVIC_EnableIRQ(ADC1_2_IRQn);
+    #endif
+
+    #if defined(ADC3)
+    HAL_NVIC_SetPriority(ADC3_IRQn, ADC3_PRIO, 0);
+    HAL_NVIC_EnableIRQ(ADC3_IRQn);
+    #endif
+
+    #if defined(ADC4)
+    HAL_NVIC_SetPriority(ADC4_IRQn, ADC4_PRIO, 0);
+    HAL_NVIC_EnableIRQ(ADC4_IRQn);
+    #endif
+
+    #if defined(ADC5)
+    HAL_NVIC_SetPriority(ADC5_IRQn, ADC5_PRIO, 0);
+    HAL_NVIC_EnableIRQ(ADC5_IRQn);
+    #endif
 }
 #endif
 
@@ -227,7 +269,28 @@ static inline void HAL_ADC_MspF4Init(ADC_HandleTypeDef *h) {
 
 #if defined(STM32G4xx)
 static inline void HAL_ADC_MspG4DeInit(ADC_HandleTypeDef *h) {
-    
+    if (h->Instance == ADC1 || h->Instance == ADC2) { 
+        __HAL_RCC_ADC12_CLK_DISABLE(); 
+    }   
+    if (h->Instance == ADC1 || h->Instance == ADC2 || h->Instance == ADC3) {
+        __HAL_RCC_ADC345_CLK_DISABLE(); 
+    }
+
+    #if defined(ADC1) || defined(ADC2)
+    HAL_NVIC_DisableIRQ(ADC1_2_IRQn);
+    #endif
+
+    #if defined(ADC3)
+    HAL_NVIC_DisableIRQ(ADC3_IRQn);
+    #endif
+
+    #if defined(ADC4)
+    HAL_NVIC_DisableIRQ(ADC4_IRQn);
+    #endif
+
+    #if defined(ADC5)
+    HAL_NVIC_DisableIRQ(ADC5_IRQn);
+    #endif
 }
 #endif
 
@@ -304,38 +367,44 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef *h) {
     #endif
 }
 
-#if defined(STM32G4xx)
-#ifdef ADC1_2_IRQHandler
-void ADC1_2_IRQHandler() {
-    HAL_ADC_IRQHandler(hadc1);
-    HAL_ADC_IRQHandler(hadc2);
-}
-#endif
-#endif
-
-#if defined(STM32L4xx)
-#ifdef ADC1_2_IRQHandler
-void ADC1_2_IRQHandler() {
-    HAL_ADC_IRQHandler(hadc1);
-    HAL_ADC_IRQHandler(hadc2);
-}
-#endif
-
-#ifdef ADC1_IRQHandler
+#if defined(STM32L4xx) || defined(STM32G4xx)
+#ifdef ADC1_IRQn
 void ADC1_IRQHandler() {
     HAL_ADC_IRQHandler(hadc1);
 }
 #endif
 
-#ifdef ADC3
+#ifdef ADC1_2_IRQn
+void ADC1_2_IRQHandler() {
+    HAL_ADC_IRQHandler(hadc1);
+    #ifdef ADC2
+    HAL_ADC_IRQHandler(hadc2);
+    #endif
+}
+#endif
+
+#ifdef ADC3_IRQn
 void ADC3_IRQHandler() {
     HAL_ADC_IRQHandler(hadc3);
+}
+#endif
+
+#ifdef ADC4_IRQn
+void ADC4_IRQHandler() {
+    HAL_ADC_IRQHandler(hadc4);
+}
+#endif
+
+#ifdef ADC5_IRQn
+void ADC5_IRQHandler() {
+    HAL_ADC_IRQHandler(hadc5);
 }
 #endif
 #endif
 
 #if defined(STM32F4xx)
 void ADC_IRQHandler() {
+    // w simplicity
     // F4 IRQ Handler 
     HAL_ADC_IRQHandler(hadc1);
     HAL_ADC_IRQHandler(hadc2);
