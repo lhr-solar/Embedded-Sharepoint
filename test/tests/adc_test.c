@@ -223,7 +223,6 @@ int main() {
     #endif
 
     // Task Creation
-    
 
     xTaskCreateStatic(TestADC1,
                     "ADC Test",
@@ -239,5 +238,3 @@ int main() {
 
     return 0;
 }
-
-

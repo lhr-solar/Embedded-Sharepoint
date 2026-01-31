@@ -386,13 +386,13 @@ void ADC1_2_IRQHandler() {
     #endif
 }
 
-#ifdef ADC1_IRQHandler
-void ADC1_IRQHandler() {
-    // L4 IRQ Handler
-    HAL_ADC_IRQHandler(hadc1);
+// #if !defined(ADC1_2_IRQn)
+// void ADC1_IRQHandler() {
+//     // L4 IRQ Handler
+//     HAL_ADC_IRQHandler(hadc1);
 
-}
-#endif
+// }
+// #endif
 
 #ifdef ADC3
 void ADC3_IRQHandler() {
@@ -421,8 +421,12 @@ void ADC_IRQHandler() {
     // w simplicity
     // F4 IRQ Handler 
     HAL_ADC_IRQHandler(hadc1);
+    #ifdef ADC2
     HAL_ADC_IRQHandler(hadc2);
+    #endif
+    #ifdef ADC3
     HAL_ADC_IRQHandler(hadc3);
+    #endif
 }
 #endif
 
