@@ -227,14 +227,13 @@ static inline void HAL_ADC_MspF4Init(ADC_HandleTypeDef *h) {
 
 #if defined(STM32G4xx)
 static inline void HAL_ADC_MspG4DeInit(ADC_HandleTypeDef *h) {
-
+    
 }
 #endif
 
 #if defined(STM32L4xx)
 static inline void HAL_ADC_MspL4DeInit(ADC_HandleTypeDef *h) {
     // GPIO Init
-    
 
     // L4 Clock
     __HAL_RCC_ADC_CLK_DISABLE();
@@ -305,35 +304,32 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef *h) {
     #endif
 }
 
+#if defined(STM32G4xx)
+#ifdef ADC1_2_IRQHandler
+void ADC1_2_IRQHandler() {
+    HAL_ADC_IRQHandler(hadc1);
+    HAL_ADC_IRQHandler(hadc2);
+}
+#endif
+#endif
+
 #if defined(STM32L4xx)
 #ifdef ADC1_2_IRQHandler
 void ADC1_2_IRQHandler() {
-    if (ADC_FLAG_EOC & ADC1->ISR) {
-        HAL_ADC_IRQHandler(hadc1);
-    }
-    #ifdef ADC2
-    else if (ADC_FLAG_EOC & ADC2->ISR) {
-        HAL_ADC_IRQHandler(hadc2);
-    }
-    #endif
+    HAL_ADC_IRQHandler(hadc1);
+    HAL_ADC_IRQHandler(hadc2);
 }
 #endif
 
 #ifdef ADC1_IRQHandler
 void ADC1_IRQHandler() {
-    // L4 IRQ Handler
-
-    if (ADC_FLAG_EOC & ADC1->ISR) {
-        HAL_ADC_IRQHandler(hadc1);
-    }
+    HAL_ADC_IRQHandler(hadc1);
 }
 #endif
 
 #ifdef ADC3
 void ADC3_IRQHandler() {
-    if (ADC_FLAG_EOC & ADC3->ISR) {
-        HAL_ADC_IRQHandler(hadc3);
-    }
+    HAL_ADC_IRQHandler(hadc3);
 }
 #endif
 #endif
@@ -341,20 +337,9 @@ void ADC3_IRQHandler() {
 #if defined(STM32F4xx)
 void ADC_IRQHandler() {
     // F4 IRQ Handler 
-
-    if (ADC_FLAG_EOC & ADC1->SR) {
-        HAL_ADC_IRQHandler(hadc1);
-    }
-    #ifdef ADC2
-    else if (ADC_FLAG_EOC & ADC2->SR) {
-        HAL_ADC_IRQHandler(hadc2);
-    }
-    #endif
-    #ifdef ADC3
-    if (ADC_FLAG_EOC & ADC3->SR) {
-        HAL_ADC_IRQHandler(hadc3);
-    }
-    #endif
+    HAL_ADC_IRQHandler(hadc1);
+    HAL_ADC_IRQHandler(hadc2);
+    HAL_ADC_IRQHandler(hadc3);
 }
 #endif
 
