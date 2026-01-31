@@ -1,28 +1,38 @@
 /**
- * @brief File that shows how to initialize and read from ADCs using static queues and FreeRTOS tasks.
- * 
- * ---------------------
- * USAGE INSTRUCTIONS:
- * ---------------------
- * 1. **ADC Initialization**:
- *    - Call `adc_init(adc_init_struct, hadcX)` to initialize a specific ADC instance.
- *    - Parameters:
- *        - `adc_init_struct` : A fully configured `ADC_InitTypeDef` structure.
- *        - `hadcX`           : The ADC handle (`hadc1`, `hadc2`, or `hadc3`).
- *    - Returns `ADC_OK` on success, or an error status on failure.
+ * @file ADC.h
+ * @brief Provides functions for initializing, reading, and managing ADC peripherals.
  *
- * 2. **ADC Reading**:
- *    - Call `adc_read(channel, sample_time, hadcX, &queue)` to perform a read.
- *    - Parameters:
- *        - `channel`     : ADC input channel (e.g., `ADC_CHANNEL_0`, `ADC_CHANNEL_3`).
- *        - `sample_time` : Sampling time macro.
- *        - `hadcX`       : The ADC handle corresponding to the ADC you want to use.
- *        - `&queue`      : Pointer to a FreeRTOS queue (`QueueHandle_t`) to store the reading.
- *    - Returns `ADC_OK` on success, or an error status on failure.
+ * @details
+ * This file contains the API for working with ADC (Analog-to-Digital Converter) peripherals
+ * in an embedded system, including initialization, reading channels, and queue-based
+ * data handling (e.g., with FreeRTOS). The functions support flexible configuration of
+ * ADC instances, sampling times, and data storage mechanisms.
  *
- * 3. **Queue Retrieval**:
- *    - Use `xQueueReceive(queue, &reading, timeout)` to retrieve the ADC reading.
- *    - Set `timeout` to 0 for non-blocking behavior.
+ * **Initialization**:
+ *
+ *    - Call `adc_init()` to configure and initialize a specific ADC instance.
+ *
+ *    - Provide the ADC configuration structure and handle for the target peripheral.
+ *
+ *    - Returns a status code indicating success or failure.
+ *
+ * **Reading ADC Values**:
+ *
+ *    - Call `adc_read()` to sample a channel on the ADC.
+ *
+ *    - Provide the channel number, sampling time, ADC handle, and storage/queue reference.
+ *
+ *    - Returns a status code indicating success or failure.
+ *
+ * **Data Retrieval**:
+ *
+ *    - If using queues, use standard FreeRTOS queue functions (e.g., `xQueueReceive()`)
+ *      to retrieve ADC readings.
+ *
+ *    - Supports both blocking and non-blocking behavior depending on the chosen timeout.
+ *
+ * @note This driver is designed to work with multiple ADC instances and supports
+ *       integration with an RTOS for asynchronous data handling.
  */
 
 #ifndef _ADC_H
@@ -56,22 +66,45 @@ extern ADC_HandleTypeDef* hadc2;
 extern ADC_HandleTypeDef* hadc3;
 #endif /* ADC3 */
 
-adc_status_t adc_init(const ADC_InitTypeDef* init, ADC_HandleTypeDef* hadc);
-/** 
- * init             ADC_InitTypeDef* 
- * bitNum           uint8_t         number of bits in ADC
- * Vcc              double
- * rxQueue          QueueHandle_t   pointer to user-provided Queue handle
-*/
-
-
-adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef *h, QueueHandle_t *q); 
 /**
- *   channel        uint32_t        channel to read
- *   samplingTime   uint32_t        ADC sampling time
- *   blocking       bool            whether the process is blocking
-*/
+ * @brief Initializes the ADC peripheral with the specified configuration.
+ *
+ * This function sets up the ADC hardware according to the parameters in the
+ * initialization structure and prepares it for subsequent conversions.
+ *
+ * @param init     ADC initialization structure containing configuration parameters.
+ * @param hadc     Pointer to the ADC handle structure.
+ *
+ * @return adc_status_t  Returns ADC_OK on success or an appropriate error code.
+ */
+adc_status_t adc_init(ADC_InitTypeDef *init, ADC_HandleTypeDef* hadc);
 
+/**
+ * @brief Reads a value from the specified ADC channel.
+ *
+ * This function triggers a conversion on the given channel and stores the
+ * converted result in the provided queue. It supports both blocking and
+ * non-blocking operation depending on configuration.
+ *
+ * @param channel        ADC channel to read from.
+ * @param samplingTime   ADC sampling time (in ADC clock cycles).
+ * @param h              Pointer to the ADC handle structure.
+ * @param q              Pointer to the user-provided queue handle for result storage.
+ *
+ * @return adc_status_t  Returns ADC_OK on success or an appropriate error code.
+ */
+adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef *h, QueueHandle_t *q);
+
+/**
+ * @brief Deinitializes the ADC peripheral.
+ *
+ * This function releases resources used by the ADC and resets it to its default
+ * uninitialized state.
+ *
+ * @param h  Pointer to the ADC handle structure.
+ *
+ * @return adc_status_t  Returns ADC_OK on success or an appropriate error code.
+ */
 adc_status_t adc_deinit(ADC_HandleTypeDef *h);
 
 #endif

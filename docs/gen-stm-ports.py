@@ -1,8 +1,9 @@
+import mkdocs_gen_files
 import os
 from pathlib import Path
 
 STM_DIR = Path("stm")
-OUTPUT_MD = Path("docs/STM32_Ports.md")
+OUTPUT_MD = Path("STM32_Ports.md")
 
 def find_flash_ld_files(stm_dir):
     flash_ld_names = []
@@ -45,7 +46,7 @@ def main():
     series_keys = [k for k in preferred if k in grouped] + \
                   sorted([k for k in grouped.keys() if k not in preferred])
 
-    with open(OUTPUT_MD, "w") as f:
+    with mkdocs_gen_files.open(OUTPUT_MD, "w") as f:
         f.write("# List of STM32 Port Names\n\n")
         if not flash_ld_names:
             f.write("No *_FLASH.ld files found.\n")
@@ -57,7 +58,7 @@ def main():
                 f.write(f"- `{name}`\n")
                 f.write(f"    - `PROJECT_TARGET={proj_target}`\n")
             f.write("\n")
+
     print(f"Generated {OUTPUT_MD}")
 
-if __name__ == "__main__":
-    main()
+main()
