@@ -4,31 +4,31 @@
 #ifdef ADC1
 static ADC_HandleTypeDef hadc1_ = {.Instance = ADC1};
 ADC_HandleTypeDef* hadc1 = &hadc1_;
-QueueHandle_t* adc1_q;
+QueueHandle_t adc1_q;
 #endif
 
 #ifdef ADC2
 static ADC_HandleTypeDef hadc2_ = {.Instance = ADC2};
 ADC_HandleTypeDef* hadc2 = &hadc2_;
-QueueHandle_t* adc2_q;
+QueueHandle_t adc2_q;
 #endif
 
 #ifdef ADC3
 static ADC_HandleTypeDef hadc3_ = {.Instance = ADC3};
 ADC_HandleTypeDef* hadc3 = &hadc3_;
-QueueHandle_t* adc3_q;
+QueueHandle_t adc3_q;
 #endif
 
 #ifdef ADC4
 static ADC_HandleTypeDef hadc4_ = {.Instance = ADC4};
 ADC_HandleTypeDef* hadc4 = &hadc4_;
-QueueHandle_t* adc4_q;
+QueueHandle_t adc4_q;
 #endif
 
 #ifdef ADC5
 static ADC_HandleTypeDef hadc5_ = {.Instance = ADC5};
 ADC_HandleTypeDef* hadc5 = &hadc5_;
-QueueHandle_t* adc5_q;
+QueueHandle_t adc5_q;
 #endif
 
 #ifdef STM32F4xx
@@ -93,7 +93,7 @@ adc_status_t adc_deinit(ADC_HandleTypeDef *h) {
 } 
 
 
-adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef *h, QueueHandle_t *q) {
+adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef *h, QueueHandle_t q) {
     ADC_ChannelConfTypeDef sConfig = {
         .Channel = channel,
         .Rank = 1,
@@ -118,7 +118,7 @@ adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef
     #endif
     
     // Check Queue Full
-    if (uxQueueSpacesAvailable(*q) == 0) {
+    if (uxQueueSpacesAvailable(q) == 0) {
         return ADC_QUEUE_FULL;
     }
     // Configure Channel
@@ -151,7 +151,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *h) {
     Interrupt triggers this callback when the conversion is complete
     */ 
     BaseType_t higherPriorityTaskWoken = pdFALSE;
-    QueueHandle_t* q = NULL; // Queue will never be null by the call [placeholder]
+    QueueHandle_t q = NULL; // Queue will never be null by the call [placeholder]
     int rawVal;
 
     if (h->Instance == ADC1) q = adc1_q;
@@ -169,7 +169,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *h) {
     #endif
 
     rawVal = HAL_ADC_GetValue(h);
-    xQueueSendFromISR(*q, &rawVal, &higherPriorityTaskWoken);
+    xQueueSendFromISR(q, &rawVal, &higherPriorityTaskWoken);
 
     portYIELD_FROM_ISR(higherPriorityTaskWoken);
 }
@@ -198,15 +198,15 @@ static inline void HAL_ADC_MspG4Init(ADC_HandleTypeDef *h) {
     if (h->Instance == ADC1 || h->Instance == ADC2) { 
         PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC12;
         PeriphClkInit.Adc12ClockSelection = RCC_ADC12CLKSOURCE_SYSCLK;
-        if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) Error_Handler();
         __HAL_RCC_ADC12_CLK_ENABLE(); 
     }   
-    if (h->Instance == ADC1 || h->Instance == ADC2 || h->Instance == ADC3) {
+    else if (h->Instance == ADC3 || h->Instance == ADC4 || h->Instance == ADC5) {
         PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC345;
         PeriphClkInit.Adc12ClockSelection = RCC_ADC345CLKSOURCE_SYSCLK;
-        if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) Error_Handler();
         __HAL_RCC_ADC345_CLK_ENABLE(); 
     }
+
+    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) Error_Handler();
 
     #if defined(ADC1) || defined(ADC2)
     HAL_NVIC_SetPriority(ADC1_2_IRQn, ADC1_PRIO, 0);
@@ -282,7 +282,7 @@ static inline void HAL_ADC_MspG4DeInit(ADC_HandleTypeDef *h) {
     if (h->Instance == ADC1 || h->Instance == ADC2) { 
         __HAL_RCC_ADC12_CLK_DISABLE(); 
     }   
-    if (h->Instance == ADC1 || h->Instance == ADC2 || h->Instance == ADC3) {
+    if (h->Instance == ADC3 || h->Instance == ADC4 || h->Instance == ADC5) {
         __HAL_RCC_ADC345_CLK_DISABLE(); 
     }
 
@@ -386,14 +386,6 @@ void ADC1_2_IRQHandler() {
     #endif
 }
 
-// #if !defined(ADC1_2_IRQn)
-// void ADC1_IRQHandler() {
-//     // L4 IRQ Handler
-//     HAL_ADC_IRQHandler(hadc1);
-
-// }
-// #endif
-
 #ifdef ADC3
 void ADC3_IRQHandler() {
     HAL_ADC_IRQHandler(hadc3);
@@ -433,7 +425,7 @@ void ADC_IRQHandler() {
 void HAL_ADC_ErrorCallback(ADC_HandleTypeDef *h) {
     adc_err_code = HAL_ADC_GetError(h);
     
-    // retry 
+    // TODO:retry
     // HAL_ADC_Stop_IT(h);
     // HAL_ADC_Start_IT(h);
 }

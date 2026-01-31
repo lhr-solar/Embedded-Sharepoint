@@ -61,7 +61,7 @@ void TestQueueFull(void *pvParameters) {
 
     // read once
     for (int i = 0; i < 11; i++) {
-        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc1, &xReadings);
+        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc1, xReadings);
         
         if (stat != ADC_OK) {
             error_handler(stat);
@@ -82,9 +82,9 @@ void TestADC1(void *pvParameters) {
     // read once
     for (int i = 0; i < 10; i++) {
         #ifdef ADC_SAMPLETIME_3CYCLES
-        adc_status_t stat = adc_read(ADC_CHANNEL_1,  ADC_SAMPLETIME_3CYCLES, hadc1, &xReadings);
+        adc_status_t stat = adc_read(ADC_CHANNEL_1,  ADC_SAMPLETIME_3CYCLES, hadc1, xReadings);
         #else
-        adc_status_t stat = adc_read(ADC_CHANNEL_1,  ADC_SAMPLETIME_2CYCLES_5, hadc1, &xReadings);
+        adc_status_t stat = adc_read(ADC_CHANNEL_1,  ADC_SAMPLETIME_2CYCLES_5, hadc1, xReadings);
         #endif
         
         if (stat != ADC_OK) {
@@ -107,9 +107,9 @@ void TestADC2(void *pvParameters) {
     // read once
     for (int i = 0; i < 10; i++) {
         #ifdef ADC_SAMPLETIME_3CYCLES
-        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc2, &xReadings);
+        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc2, xReadings);
         #else
-        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_2CYCLES_5, hadc2, &xReadings);
+        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_2CYCLES_5, hadc2, xReadings);
         #endif
         
         if (stat != ADC_OK) {
@@ -133,9 +133,9 @@ void TestADC3(void *pvParameters) {
     // read once
     for (int i = 0; i < 10; i++) {
         #ifdef ADC_SAMPLETIME_3CYCLES
-        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc3, &xReadings);
+        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc3, xReadings);
         #else
-        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_2CYCLES_5, hadc3, &xReadings);
+        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_2CYCLES_5, hadc3, xReadings);
         #endif
         
         if (stat != ADC_OK) {

@@ -67,10 +67,10 @@ extern ADC_HandleTypeDef* hadc3;
 #endif /* ADC3 */
 #ifdef ADC4
 extern ADC_HandleTypeDef* hadc4;
-#endif /* ADC2 */
+#endif /* ADC4 */
 #ifdef ADC5
 extern ADC_HandleTypeDef* hadc5;
-#endif /* ADC3 */
+#endif /* ADC5 */
 
 /**
  * @brief Initializes the ADC peripheral with the specified configuration.
@@ -99,7 +99,7 @@ adc_status_t adc_init(ADC_InitTypeDef *init, ADC_HandleTypeDef* hadc);
  *
  * @return adc_status_t  Returns ADC_OK on success or an appropriate error code.
  */
-adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef *h, QueueHandle_t *q);
+adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef *h, QueueHandle_t q);
 
 /**
  * @brief Deinitializes the ADC peripheral.
