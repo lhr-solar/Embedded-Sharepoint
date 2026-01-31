@@ -293,8 +293,17 @@ void User_Hardware_Init(void) {
     
     // Enable SPI Clock based on your choice
     if(USER_SPI_INSTANCE == SPI1) __HAL_RCC_SPI1_CLK_ENABLE();
-    else if(USER_SPI_INSTANCE == SPI2) __HAL_RCC_SPI2_CLK_ENABLE();
-    // else if(USER_SPI_INSTANCE == SPI3) __HAL_RCC_SPI3_CLK_ENABLE();
+    #ifdef SPI2
+        else if(USER_SPI_INSTANCE == SPI2) {
+            __HAL_RCC_SPI2_CLK_ENABLE();
+        }
+    #endif
+
+    #ifdef SPI3
+        else if(USER_SPI_INSTANCE == SPI3) {
+            __HAL_RCC_SPI3_CLK_ENABLE();
+        }
+    #endif
 
     /* 2. Configure GPIO (SCK, MISO, MOSI) */
     GPIO_InitTypeDef GPIO_InitStruct = {0};
