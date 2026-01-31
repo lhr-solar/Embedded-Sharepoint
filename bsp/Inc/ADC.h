@@ -65,6 +65,12 @@ extern ADC_HandleTypeDef* hadc2;
 #ifdef ADC3
 extern ADC_HandleTypeDef* hadc3;
 #endif /* ADC3 */
+#ifdef ADC4
+extern ADC_HandleTypeDef* hadc4;
+#endif /* ADC2 */
+#ifdef ADC5
+extern ADC_HandleTypeDef* hadc5;
+#endif /* ADC3 */
 
 /**
  * @brief Initializes the ADC peripheral with the specified configuration.

@@ -19,6 +19,18 @@ ADC_HandleTypeDef* hadc3 = &hadc3_;
 QueueHandle_t* adc3_q;
 #endif
 
+#ifdef ADC4
+static ADC_HandleTypeDef hadc4_ = {.Instance = ADC4};
+ADC_HandleTypeDef* hadc4 = &hadc4_;
+QueueHandle_t* adc4_q;
+#endif
+
+#ifdef ADC5
+static ADC_HandleTypeDef hadc5_ = {.Instance = ADC5};
+ADC_HandleTypeDef* hadc5 = &hadc5_;
+QueueHandle_t* adc5_q;
+#endif
+
 #ifdef STM32F4xx
 #ifndef ADC_PRIO
 #define ADC_PRIO 5
@@ -36,6 +48,14 @@ QueueHandle_t* adc3_q;
 
 #ifndef ADC3_PRIO
 #define ADC3_PRIO 5
+#endif
+
+#ifndef ADC4_PRIO
+#define ADC4_PRIO 5
+#endif
+
+#ifndef ADC5_PRIO
+#define ADC5_PRIO 5
 #endif
 #endif
 
@@ -74,6 +94,12 @@ adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef
     #endif
     #ifdef ADC3
     if (h->Instance == ADC3) adc3_q = q;
+    #endif
+    #ifdef ADC4
+    if (h->Instance == ADC4) adc4_q = q;
+    #endif
+    #ifdef ADC5
+    if (h->Instance == ADC5) adc5_q = q;
     #endif
     
     // Check Queue Full
@@ -120,6 +146,12 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *h) {
     #ifdef ADC3
     if (h->Instance == ADC3) q = adc3_q;
     #endif
+    #ifdef ADC4
+    if (h->Instance == ADC4) q = adc4_q;
+    #endif
+    #ifdef ADC5
+    if (h->Instance == ADC5) q = adc5_q;
+    #endif
 
     rawVal = HAL_ADC_GetValue(h);
     xQueueSendFromISR(*q, &rawVal, &higherPriorityTaskWoken);
@@ -139,6 +171,12 @@ __weak void HAL_ADC_MspGPIOInit() {
 
     HAL_GPIO_Init(GPIOA, &input);
 }
+
+#if defined(STM32G4xx)
+static inline void HAL_ADC_MspG4Init(ADC_HandleTypeDef *h) {
+
+}
+#endif
 
 #if defined(STM32L4xx)
 static inline void HAL_ADC_MspL4Init(ADC_HandleTypeDef *h) {
@@ -187,6 +225,12 @@ static inline void HAL_ADC_MspF4Init(ADC_HandleTypeDef *h) {
 }
 #endif
 
+#if defined(STM32G4xx)
+static inline void HAL_ADC_MspG4DeInit(ADC_HandleTypeDef *h) {
+
+}
+#endif
+
 #if defined(STM32L4xx)
 static inline void HAL_ADC_MspL4DeInit(ADC_HandleTypeDef *h) {
     // GPIO Init
@@ -228,6 +272,11 @@ static inline void HAL_ADC_MspF4DeInit(ADC_HandleTypeDef *h) {
 #endif
 
 void HAL_ADC_MspInit(ADC_HandleTypeDef *h) {
+    // G4
+    #ifdef STM32G4xx
+    HAL_ADC_MspG4Init(h);
+    #endif
+    
     // L4
     #ifdef STM32L4xx
     HAL_ADC_MspL4Init(h);
@@ -240,6 +289,11 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *h) {
 }
 
 void HAL_ADC_MspDeInit(ADC_HandleTypeDef *h) {
+    // G4
+    #ifdef STM32G4xx
+    HAL_ADC_MspG4DeInit(h);
+    #endif
+
     // L4
     #ifdef STM32L4xx
     HAL_ADC_MspL4DeInit(h);
