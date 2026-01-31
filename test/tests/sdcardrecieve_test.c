@@ -24,27 +24,29 @@ UINT br, bw;
 
 /* pin def*/
 // ADAPT THESE TO YOUR BOARD
-#define USER_SPI_INSTANCE  SPI2
-#define USER_CS_PORT       GPIOB
-#define USER_CS_PIN        GPIO_PIN_12
+#if defined(STM32L476xx)
+    #define USER_SPI_INSTANCE  SPI2
+    #define USER_CS_PORT       GPIOB
+    #define USER_CS_PIN        GPIO_PIN_12
 
-#define USER_SCK_PORT      GPIOB
-#define USER_SCK_PIN       GPIO_PIN_10
-#define USER_SCK_AF        GPIO_AF5_SPI2
+    #define USER_SCK_PORT      GPIOB
+    #define USER_SCK_PIN       GPIO_PIN_10
+    #define USER_SCK_AF        GPIO_AF5_SPI2
 
-#define USER_MISO_PORT     GPIOC
-#define USER_MISO_PIN      GPIO_PIN_2
-#define USER_MISO_AF       GPIO_AF5_SPI2
+    #define USER_MISO_PORT     GPIOC
+    #define USER_MISO_PIN      GPIO_PIN_2
+    #define USER_MISO_AF       GPIO_AF5_SPI2
 
-#define USER_MOSI_PORT     GPIOC
-#define USER_MOSI_PIN      GPIO_PIN_3
-#define USER_MOSI_AF       GPIO_AF5_SPI2
+    #define USER_MOSI_PORT     GPIOC
+    #define USER_MOSI_PIN      GPIO_PIN_3
+    #define USER_MOSI_AF       GPIO_AF5_SPI2
 
-#define LED_PORT           GPIOA
-#define LED_PIN            GPIO_PIN_5
+    #define LED_PORT           GPIOA
+    #define LED_PIN            GPIO_PIN_5
 
-#define LED_PORT GPIOA
-#define LED_PIN  GPIO_PIN_5 
+    #define LED_PORT GPIOA
+    #define LED_PIN  GPIO_PIN_5 
+#endif
 
 // Forward declarations
 void SystemClock_Config(void);
