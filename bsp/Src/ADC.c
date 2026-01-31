@@ -175,11 +175,11 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *h) {
 }
 
 __weak void HAL_ADC_MspGPIOInit() {
-    // GPIO --- Instanstiate PA3
+    // GPIO --- Instanstiate PA0 to test G4
     __HAL_RCC_GPIOA_CLK_ENABLE();
-
+    
     GPIO_InitTypeDef input =  {
-        .Pin = GPIO_PIN_3,
+        .Pin = GPIO_PIN_0,
         .Mode = GPIO_MODE_ANALOG,
         .Pull = GPIO_NOPULL,
     };
@@ -199,6 +199,9 @@ static inline void HAL_ADC_MspG4Init(ADC_HandleTypeDef *h) {
         __HAL_RCC_ADC12_CLK_ENABLE(); 
     }   
     if (h->Instance == ADC1 || h->Instance == ADC2 || h->Instance == ADC3) {
+        PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC345;
+        PeriphClkInit.Adc12ClockSelection = RCC_ADC345CLKSOURCE_SYSCLK;
+        if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) Error_Handler();
         __HAL_RCC_ADC345_CLK_ENABLE(); 
     }
 
