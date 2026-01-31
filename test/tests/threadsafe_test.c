@@ -49,6 +49,26 @@ TaskHandle_t hTask2;
 
     #define LED_PORT GPIOA
     #define LED_PIN  GPIO_PIN_5 
+
+#else
+    #define USER_SPI_INSTANCE  SPI1
+    #define USER_CS_PORT       GPIOA
+    #define USER_CS_PIN        GPIO_PIN_4
+
+    #define USER_SCK_PORT      GPIOA
+    #define USER_SCK_PIN       GPIO_PIN_5
+    #define USER_SCK_AF        GPIO_AF5_SPI1
+
+    #define USER_MISO_PORT     GPIOA
+    #define USER_MISO_PIN      GPIO_PIN_6
+    #define USER_MISO_AF       GPIO_AF5_SPI1
+
+    #define USER_MOSI_PORT     GPIOA
+    #define USER_MOSI_PIN      GPIO_PIN_7
+    #define USER_MOSI_AF       GPIO_AF5_SPI1
+
+    #define LED_PORT           GPIOA
+    #define LED_PIN            GPIO_PIN_5
 #endif
 
 void SystemClock_Config(void);
