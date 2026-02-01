@@ -98,6 +98,8 @@ can_status_t can_fd_deinit(FDCAN_HandleTypeDef* handle){
 can_status_t can_fd_start(FDCAN_HandleTypeDef* handle){
 
     // activate interrupts for rx and tx interrupts
+
+    // todo: should prolly add FDCAN_IT_TX_FIFO_EMPTY
     if(HAL_FDCAN_ActivateNotification(handle, FDCAN_IT_RX_FIFO0_NEW_MESSAGE | FDCAN_IT_TX_COMPLETE, 0) != HAL_OK){
         return CAN_ERR;
     }
@@ -216,6 +218,7 @@ void HAL_FDCAN_TxBufferCompleteCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t Bu
 
 }
 
+// defintions of FDCAN interrupt handlers
 #ifdef FDCAN1
 void FDCAN1_IT0_IRQHandler(void){
     HAL_FDCAN_IRQHandler(hfdcan1); 
