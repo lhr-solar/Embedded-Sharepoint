@@ -209,9 +209,10 @@ void HAL_FDCAN_TxBufferCompleteCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t Bu
     }
 #endif
 
-can_fd_tx_complete_hook(hfdcan, BufferIndexes);
+    // optional callback the user can implement (by default does nothing)
+    can_fd_tx_complete_hook(hfdcan, BufferIndexes);
 
-portYIELD_FROM_ISR(higherPriorityTaskWoken);
+    portYIELD_FROM_ISR(higherPriorityTaskWoken);
 
 }
 
