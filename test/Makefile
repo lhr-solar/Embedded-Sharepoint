@@ -83,3 +83,7 @@ endif
 .PHONY: dbc-editor
 dbc-editor:
 	cd ../middleware/dbc-editor && $(OPEN_CMD) dbc-editor.html
+
+.PHONY: debug
+debug:
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) debug

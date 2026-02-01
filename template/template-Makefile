@@ -124,13 +124,22 @@ else
 endif
 	$(BEAR_PREFIX) $(MAKE) -C $(BUILD_MAKEFILE_DIR) all -j
 	@echo -e "${GREEN}Compiled! Splendid! Jolly Good!!${NC}"
-#---------------------------------
 
 
 #-------------------------------
 # Flash
 flash: 	
 	$(MAKE) -C $(BUILD_MAKEFILE_DIR) flash
+
+#-------------------------------
+# Flash via UART
+flash-uart: 	
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) flash-uart
+
+#-------------------------------
+# Flash
+debug: 	
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) debug
 
 #-------------- 
 # Documentation
