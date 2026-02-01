@@ -137,7 +137,7 @@ flash-uart:
 	$(MAKE) -C $(BUILD_MAKEFILE_DIR) flash-uart
 
 #-------------------------------
-# Flash
+# OpenOCD debug
 debug: 	
 	$(MAKE) -C $(BUILD_MAKEFILE_DIR) debug
 
