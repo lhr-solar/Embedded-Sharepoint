@@ -154,61 +154,12 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
     return CAN_OK;
 }
 
-// __weak void HAL_FDCAN_MspGpioInit(FDCAN_HandleTypeDef* hfdcan){
-//     GPIO_InitTypeDef GPIO_InitStruct = {0};
-// #ifdef FDCAN1
-//     if(hfdcan->Instance==FDCAN1){
-//         __HAL_RCC_GPIOA_CLK_ENABLE();
-
-//         /**
-//         FDCAN1 GPIO Configuration
-//         PA11     ------> FDCAN1_RX
-//         PA12     ------> FDCAN1_TX
-//         */
-//         GPIO_InitStruct.Pin = GPIO_PIN_11|GPIO_PIN_12;
-//         GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-//         GPIO_InitStruct.Pull = GPIO_NOPULL;
-//         GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-//         GPIO_InitStruct.Alternate = GPIO_AF9_FDCAN1;
-//         HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-//     }
-// #endif /* FDCAN1 */
-
-// }
-
-// void HAL_FDCAN_MspInit(FDCAN_HandleTypeDef* hfdcan){
-//     RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
-
-// #ifdef FDCAN1
-//     if(hfdcan->Instance==FDCAN1)
-//     {
-//         PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_FDCAN;
-//         PeriphClkInit.FdcanClockSelection = RCC_FDCANCLKSOURCE_PCLK1;
-//         if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
-//         {
-//             Error_Handler();
-//         }
-//         __HAL_RCC_FDCAN_CLK_ENABLE();
-    
-//     }
-// #endif /* FDCAN1 */ 
-//     HAL_FDCAN_MspGpioInit(hfdcan);
-
-//     /* FDCAN1 interrupt Init */
-//     // TODO: make this configurable depending on the FDCAN instance
-//     HAL_NVIC_SetPriority(FDCAN1_IT0_IRQn, 0, 0);
-//     HAL_NVIC_EnableIRQ(FDCAN1_IT0_IRQn);
-//     HAL_NVIC_SetPriority(FDCAN1_IT1_IRQn, 0, 0);
-//     HAL_NVIC_EnableIRQ(FDCAN1_IT1_IRQn);
-// }
-
-
 void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 {
-  if((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET)
-  {
+//   if((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET)
+//   {
 
-  }
+//   }
 }
 
 void HAL_FDCAN_TxBufferCompleteCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t BufferIndexes)
@@ -226,6 +177,46 @@ void HAL_FDCAN_TxBufferCompleteCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t Bu
     }
 #endif
 
+#ifdef FDCAN2
+    if (hfdcan->Instance == FDCAN2){
+        // check if data in the queue to send
+        if (xQueueReceiveFromISR(fdcan2_send_queue, &payload, NULL) == pdTRUE) {
+            HAL_FDCAN_AddMessageToTxFifoQ(hfdcan, &payload.header, payload.data);
+        }
+    }
+#endif
+
+#ifdef FDCAN3
+    if (hfdcan->Instance == FDCAN3){
+        // check if data in the queue to send
+        if (xQueueReceiveFromISR(fdcan3_send_queue, &payload, NULL) == pdTRUE) {
+            HAL_FDCAN_AddMessageToTxFifoQ(hfdcan, &payload.header, payload.data);
+        }
+    }
+#endif
+
   portYIELD_FROM_ISR(higherPriorityTaskWoken);
 
+}
+
+
+void FDCAN1_IT0_IRQHandler(void){
+    HAL_FDCAN_IRQHandler(hfdcan1); 
+}
+void FDCAN1_IT1_IRQHandler(void){
+    HAL_FDCAN_IRQHandler(hfdcan1); 
+}
+
+void FDCAN2_IT0_IRQHandler(void){
+    HAL_FDCAN_IRQHandler(hfdcan2); 
+}
+void FDCAN2_IT1_IRQHandler(void){
+    HAL_FDCAN_IRQHandler(hfdcan2); 
+}
+
+void FDCAN3_IT0_IRQHandler(void){
+    HAL_FDCAN_IRQHandler(hfdcan3); 
+}
+void FDCAN3_IT1_IRQHandler(void){
+    HAL_FDCAN_IRQHandler(hfdcan3); 
 }
