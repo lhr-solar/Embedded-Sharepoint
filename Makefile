@@ -369,6 +369,7 @@ help:
 #######################################	
 .PHONY: debug
 debug:
+	@echo "🔬 Using $(OPENOCD_CFG_FILE)"
 	openocd -f $(OPENOCD_CFG_FILE)
 
 #######################################
