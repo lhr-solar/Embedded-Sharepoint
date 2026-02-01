@@ -26,4 +26,6 @@ can_status_t can_fd_deinit(FDCAN_HandleTypeDef* handle);
 can_status_t can_fd_start(FDCAN_HandleTypeDef* handle);
 can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* header, uint8_t data[], TickType_t delay_ticks);
 
-void can_fd_tx_complete_hook();
+void can_fd_tx_complete_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t BufferIndexes);
+
+void can_fd_rx_callback_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs);

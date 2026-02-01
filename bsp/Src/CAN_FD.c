@@ -154,12 +154,26 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
     return CAN_OK;
 }
 
+__weak void can_fd_rx_callback_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
+{
+    /* Prevent unused argument(s) compilation warning */
+    UNUSED(hfdcan);
+    UNUSED(RxFifo0ITs); 
+}
+
 void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 {
   if((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET)
   {
     
   }
+}
+
+__weak void can_fd_tx_complete_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t BufferIndexes)
+{
+    /* Prevent unused argument(s) compilation warning */
+    UNUSED(hfdcan);
+    UNUSED(BufferIndexes);
 }
 
 void HAL_FDCAN_TxBufferCompleteCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t BufferIndexes)
@@ -195,28 +209,35 @@ void HAL_FDCAN_TxBufferCompleteCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t Bu
     }
 #endif
 
-  portYIELD_FROM_ISR(higherPriorityTaskWoken);
+can_fd_tx_complete_hook(hfdcan, BufferIndexes);
+
+portYIELD_FROM_ISR(higherPriorityTaskWoken);
 
 }
 
-
+#ifdef FDCAN1
 void FDCAN1_IT0_IRQHandler(void){
     HAL_FDCAN_IRQHandler(hfdcan1); 
 }
 void FDCAN1_IT1_IRQHandler(void){
     HAL_FDCAN_IRQHandler(hfdcan1); 
 }
+#endif
 
+#ifdef FDCAN2
 void FDCAN2_IT0_IRQHandler(void){
     HAL_FDCAN_IRQHandler(hfdcan2); 
 }
 void FDCAN2_IT1_IRQHandler(void){
     HAL_FDCAN_IRQHandler(hfdcan2); 
 }
+#endif
 
+#ifdef FDCAN3
 void FDCAN3_IT0_IRQHandler(void){
     HAL_FDCAN_IRQHandler(hfdcan3); 
 }
 void FDCAN3_IT1_IRQHandler(void){
     HAL_FDCAN_IRQHandler(hfdcan3); 
 }
+#endif
