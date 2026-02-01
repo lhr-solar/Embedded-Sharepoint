@@ -83,7 +83,3 @@ endif
 .PHONY: dbc-editor
 dbc-editor:
 	cd ../middleware/dbc-editor && $(OPEN_CMD) dbc-editor.html
-
-.PHONY: debug
-debug:
-	cd ../ && openocd -f openocd-stm32g4x.cfg
