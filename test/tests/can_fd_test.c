@@ -204,14 +204,14 @@ int main(void) {
     // System clock config can change depending on the target MCU, since the clock tree can be different
     // If you need to use a different MCU, go to cubemx and generate a new system clock config function with the system clock being 80 Mhz
     // It especially varies with nucleo vs direct MCU
-
-    #ifdef STM32G474xx
-        G474_SystemClockConfig();
-    #elif defined(STM32G473xx)
-        G473_SystemClockConfig();
-    #else
-        SystemClock_Config();
-    #endif
+    G473_SystemClockConfig();
+    // #ifdef STM32G474xx
+    //     G474_SystemClockConfig();
+    // #elif defined(STM32G473xx)
+    //     G473_SystemClockConfig();
+    // #else
+    //     SystemClock_Config();
+    // #endif
 
 
 
@@ -261,14 +261,14 @@ int main(void) {
     hfdcan2->Instance = FDCAN2;
     hfdcan2->Init.ClockDivider = FDCAN_CLOCK_DIV1;
     hfdcan2->Init.FrameFormat = FDCAN_FRAME_CLASSIC;
-    hfdcan2->Init.Mode = FDCAN_MODE_NORMAL;
+    hfdcan2->Init.Mode = FDCAN_MODE_EXTERNAL_LOOPBACK;
     hfdcan2->Init.AutoRetransmission = DISABLE;
     hfdcan2->Init.TransmitPause = DISABLE;
     hfdcan2->Init.ProtocolException = DISABLE;
     hfdcan2->Init.NominalPrescaler = 20;
     hfdcan2->Init.NominalSyncJumpWidth = 1;
     hfdcan2->Init.NominalTimeSeg1 = 13;
-    hfdcan2->Init.NominalTimeSeg2 = 1;
+    hfdcan2->Init.NominalTimeSeg2 = 2;
     hfdcan2->Init.DataPrescaler = 1;
     hfdcan2->Init.DataSyncJumpWidth = 1;
     hfdcan2->Init.DataTimeSeg1 = 1;
