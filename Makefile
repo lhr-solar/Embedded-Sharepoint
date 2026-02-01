@@ -79,6 +79,8 @@ TARGET = $(PROJECT_TARGET)
 CFG_FILE = stm/$(SERIES_GENERIC)/$(SERIES_LINE)/$(PROJECT_TARGET).cfg
 include $(CFG_FILE)
 
+OPENOCD_CFG_FILE := openocd-$(patsubst %xx,%x,$(SERIES_GENERIC)).cfg
+
 ######################################
 # building variables
 ######################################
@@ -362,6 +364,14 @@ help:
 	@echo "  format       - Run clang-format."
 	@echo "  format-fix   - Run clang-format and apply fixes."
 
+
+#######################################
+# openocd
+#######################################	
+.PHONY: debug
+debug:
+	@echo "🔬 Using $(OPENOCD_CFG_FILE)"
+	openocd -f $(OPENOCD_CFG_FILE)
 
 #######################################
 # dependencies
