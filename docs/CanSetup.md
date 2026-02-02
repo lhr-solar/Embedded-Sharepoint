@@ -19,7 +19,7 @@ Functionality wise, the code for CAN FD and bxCAN are very similar, so we can ha
 Please read the [CubeMX Overview](./CubeMX.md) page first to understand how CubeMX works
 
 ### Baud rate configuration
-For two devices to communicate on the same CAN bus, the baud rates of those CAN devices have to the same. 
+For two devices to communicate on the same CAN bus, the baud rates of those CAN devices have to be the same. 
 
 We normally configure baud rate for 250kbps.  
 
@@ -46,7 +46,7 @@ So the values I normally suggest using these values for 250kbps:
 - Nominal Time Seg1: 13
 - Nominal Time Seg2: 2
 
-You'll see the baud rate you've configured in the ```Nominal Buad Rate``` field in bit/s. If you're configuring for 250kbps you should see 250000 bit/s.
+You'll see the baud rate you've configured in the ```Nominal Baud Rate``` field in bit/s. If you're configuring for 250kbps you should see 250000 bit/s.
 
 
 ## Configuring the CAN driver

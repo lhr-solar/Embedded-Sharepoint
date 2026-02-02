@@ -163,5 +163,3 @@ static can_recv_entry_t can3_recv_entries[] = {};
 static const uint32_t can3_recv_entry_count = 0;
 #endif /* can3_recv_entries.h */
 #endif /* CAN3 */
-
-void can_recv_queue_init();

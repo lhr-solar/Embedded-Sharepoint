@@ -11,15 +11,15 @@
 // can handlers
 #ifdef FDCAN1
 extern FDCAN_HandleTypeDef* hfdcan1;
-#endif /* CAN1 */
+#endif /* FDCAN1 */
 
 #ifdef FDCAN2
 extern FDCAN_HandleTypeDef* hfdcan2;
-#endif /* CAN2 */
+#endif /* FDCAN2 */
 
 #ifdef FDCAN3
 extern FDCAN_HandleTypeDef* hfdcan3;
-#endif /* CAN3 */
+#endif /* FDCAN3 */
 
 can_status_t can_fd_init(FDCAN_HandleTypeDef* handle, FDCAN_FilterTypeDef* filter);
 can_status_t can_fd_deinit(FDCAN_HandleTypeDef* handle);
