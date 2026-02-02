@@ -407,9 +407,7 @@ void ADC_IRQHandler() {
 #endif
 
 void HAL_ADC_ErrorCallback(ADC_HandleTypeDef *h) {
-    adc_err_code = HAL_ADC_GetError(h);
+    adc_err_code = h->ErrorCode;
     
-    // TODO:retry
-    // HAL_ADC_Stop_IT(h);
-    // HAL_ADC_Start_IT(h);
+    // todo
 }
