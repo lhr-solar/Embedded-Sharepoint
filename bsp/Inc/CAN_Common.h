@@ -1,8 +1,6 @@
 #pragma once
 
 #include "stm32xx_hal.h"
-#include "FreeRTOS.h"
-#include "queue.h"
 
 #if !defined(CAN1) && !defined(FDCAN1)
   #error "[CONFIG] CAN not enabled on this chip."

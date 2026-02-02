@@ -195,6 +195,63 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
     return CAN_OK;
 }
 
+can_status_t can_recv(FDCAN_HandleTypeDef* handle, uint16_t id, FDCAN_RxHeaderTypeDef* header, uint8_t data[], TickType_t delay_ticks){
+    can_rx_payload_t payload = {0};
+    bool valid_id = false;
+    can_recv_entry_t* can_recv_entries = NULL;
+    uint32_t can_recv_entry_count = 0;
+    #ifdef CAN1
+    if (handle->Instance == CAN1) {
+        can_recv_entry_count = can1_recv_entry_count;
+        can_recv_entries = can1_recv_entries;
+    }
+    #endif
+    #ifdef CAN2
+    if (handle->Instance == CAN2) {
+        can_recv_entry_count = can2_recv_entry_count;
+        can_recv_entries = can2_recv_entries;
+    }
+    #endif
+    #ifdef CAN3
+    if (handle->Instance == CAN3) {
+        can_recv_entry_count = can3_recv_entry_count;
+        can_recv_entries = can3_recv_entries;
+    }
+    #endif
+    if(can_recv_entries != NULL){
+        for(uint32_t i = 0; i < can_recv_entry_count; i++){
+        if (can_recv_entries[i].id == id) {
+            valid_id = true;
+
+            // if delay_ticks == portMAX_DELAY thread blocks, 
+            // other values of delay_ticks are delays
+            if (xQueueReceive(can_recv_entries[i].queue, &payload, delay_ticks) ==
+                errQUEUE_EMPTY) {
+            return CAN_EMPTY;
+            }
+    
+            break;
+        }
+        }
+    }
+    else{
+        return CAN_ERR;
+    }
+
+    // decode payload if it is valid and message recieved
+    if (valid_id) {
+        *header = payload.header;
+        for (int i = 0; i < CAN_DATA_SIZE; i++) {
+        data[i] = payload.data[i];
+        }
+
+        return CAN_RECV;
+
+    } else {
+        return CAN_ERR;
+    }
+}
+
 __weak void can_fd_rx_callback_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 {
     /* Prevent unused argument(s) compilation warning */
@@ -205,10 +262,77 @@ __weak void can_fd_rx_callback_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo
 void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 {
     can_fd_rx_callback_hook(hfdcan, RxFifo0ITs);
+    can_rx_payload_t payload = {0};
+    BaseType_t higherPriorityTaskWoken = pdFALSE;
 
     if((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET)
     {
-        
+        while(HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &payload.header, payload.data) == HAL_OK)
+        {
+            // FDCAN1
+            if (hfdcan->Instance == FDCAN1) {
+            for (int i = 0; i < can1_recv_entry_count; i++) {
+                if (can1_recv_entries[i].id == payload.header.Identifier) {
+                if (can1_recv_entries[i].circular){
+                    xQueueSendCircularBufferFromISR(
+                    can1_recv_entries[i].queue, 
+                    &payload, 
+                    &higherPriorityTaskWoken, 
+                    sizeof(can_rx_payload_t)
+                    );
+                } else {
+                    xQueueSendFromISR(can1_recv_entries[i].queue, &payload,
+                                    &higherPriorityTaskWoken);
+                }
+            break;
+                }
+            }
+            }
+
+            // FDCAN2
+            #ifdef FDCAN2
+            else if (hfdcan->Instance == FDCAN2) {
+            for (int i = 0; i < can2_recv_entry_count; i++) {
+                if (can2_recv_entries[i].id == payload.header.Identifier) {
+                if (can2_recv_entries[i].circular){
+                    xQueueSendCircularBufferFromISR(
+                    can2_recv_entries[i].queue, 
+                    &payload, 
+                    &higherPriorityTaskWoken, 
+                    sizeof(can_rx_payload_t)
+                    );
+                } else {
+                    xQueueSendFromISR(can2_recv_entries[i].queue, &payload,
+                                    &higherPriorityTaskWoken);
+                }
+            break;
+                }
+            }
+            }
+            #endif /* FDCAN2 */
+
+            // FDCAN3
+            #ifdef FDCAN3
+            if (hfdcan->Instance == FDCAN3) {
+            for (int i = 0; i < can3_recv_entry_count; i++) {
+                if (can3_recv_entries[i].id == payload.header.Identifier) {
+                if (can3_recv_entries[i].circular){
+                    xQueueSendCircularBufferFromISR(
+                    can3_recv_entries[i].queue, 
+                    &payload, 
+                    &higherPriorityTaskWoken, 
+                    sizeof(can_rx_payload_t)
+                    );
+                } else {
+                    xQueueSendFromISR(can3_recv_entries[i].queue, &payload,
+                                    &higherPriorityTaskWoken);
+                }
+            break;
+                }
+            }
+            }
+            #endif /* FDCAN3 */
+        }
     }
     
     can_fd_rx_callback_hook(hfdcan, RxFifo0ITs);
