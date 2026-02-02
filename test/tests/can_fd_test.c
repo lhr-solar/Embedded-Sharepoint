@@ -14,6 +14,54 @@ StackType_t task_stack[512];
 #define LED_PIN GPIO_PIN_3
 #define LED_PORT GPIOC
 
+#define CAN_TX_PROFILE_PORT GPIOA
+#define CAN_TX_PROFILE_PIN GPIO_PIN_10
+
+#define CAN_RX_PROFILE_PORT GPIOB
+#define CAN_RX_PROFILE_PIN GPIO_PIN_4
+
+void can_profile_pins_init(){
+    GPIO_InitTypeDef tx_pin_config = {
+        .Mode = GPIO_MODE_OUTPUT_PP,
+        .Pull = GPIO_NOPULL,
+        .Pin = CAN_TX_PROFILE_PIN
+    };
+
+    switch ((uint32_t)CAN_TX_PROFILE_PORT) {
+        case (uint32_t)GPIOA:
+            __HAL_RCC_GPIOA_CLK_ENABLE();
+            break;
+        case (uint32_t)GPIOB:
+            __HAL_RCC_GPIOB_CLK_ENABLE();
+            break;
+        case (uint32_t)GPIOC:
+            __HAL_RCC_GPIOC_CLK_ENABLE();
+            break;
+    }
+
+    HAL_GPIO_Init(CAN_TX_PROFILE_PORT, &tx_pin_config);
+
+    GPIO_InitTypeDef rx_pin_config = {
+        .Mode = GPIO_MODE_OUTPUT_PP,
+        .Pull = GPIO_NOPULL,
+        .Pin = CAN_RX_PROFILE_PIN
+    };
+
+    switch ((uint32_t)CAN_RX_PROFILE_PORT) {
+        case (uint32_t)GPIOA:
+            __HAL_RCC_GPIOA_CLK_ENABLE();
+            break;
+        case (uint32_t)GPIOB:
+            __HAL_RCC_GPIOB_CLK_ENABLE();
+            break;
+        case (uint32_t)GPIOC:
+            __HAL_RCC_GPIOC_CLK_ENABLE();
+            break;
+    }
+    HAL_GPIO_Init(CAN_RX_PROFILE_PORT, &rx_pin_config);
+}
+
+
 // Initialize clock for heartbeat LED port
 void Heartbeat_Init() {
     GPIO_InitTypeDef led_config = {
@@ -35,7 +83,6 @@ void Heartbeat_Init() {
     }
     
     HAL_GPIO_Init(LED_PORT, &led_config);
-
 }
 
 
@@ -188,9 +235,26 @@ static void task(void *pvParameters) {
 #endif
         
         HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
-
         vTaskDelay(pdMS_TO_TICKS(500));
     }
+}
+
+void can_fd_tx_complete_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t BufferIndexes){
+    static uint8_t trippleToggle = 0; // toggle twice at the start, and then toggle once at the end (trippleToggle = 1)
+    if(trippleToggle == 0){
+        HAL_GPIO_TogglePin(CAN_TX_PROFILE_PORT, CAN_TX_PROFILE_PIN);
+    }
+    trippleToggle = 1;
+    HAL_GPIO_TogglePin(CAN_TX_PROFILE_PORT, CAN_TX_PROFILE_PIN);
+}
+
+void can_fd_rx_callback_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs){
+    static uint8_t trippleToggle = 0; // toggle twice at the start, and then toggle once at the end (trippleToggle = 1)
+    if(trippleToggle == 0){
+        HAL_GPIO_TogglePin(CAN_RX_PROFILE_PORT, CAN_RX_PROFILE_PIN);
+    }
+    trippleToggle = 1;
+    HAL_GPIO_TogglePin(CAN_RX_PROFILE_PORT, CAN_RX_PROFILE_PIN);
 }
 
 int main(void) {
@@ -214,6 +278,7 @@ int main(void) {
 
 
     Heartbeat_Init(); // enable LED for LED_PORT
+    can_profile_pins_init(); // enable pins we toggle during interrupts
 
 #ifdef FDCAN1
     hfdcan1->Instance = FDCAN1;
@@ -231,7 +296,7 @@ int main(void) {
     hfdcan1->Init.DataSyncJumpWidth = 1;
     hfdcan1->Init.DataTimeSeg1 = 1;
     hfdcan1->Init.DataTimeSeg2 = 1;
-    hfdcan1->Init.StdFiltersNbr = 0;
+    hfdcan1->Init.StdFiltersNbr = 1;
     hfdcan1->Init.ExtFiltersNbr = 0;
     hfdcan1->Init.TxFifoQueueMode = FDCAN_TX_FIFO_OPERATION;
 
@@ -271,7 +336,7 @@ int main(void) {
     hfdcan2->Init.DataSyncJumpWidth = 1;
     hfdcan2->Init.DataTimeSeg1 = 1;
     hfdcan2->Init.DataTimeSeg2 = 1;
-    hfdcan2->Init.StdFiltersNbr = 0;
+    hfdcan2->Init.StdFiltersNbr = 1;
     hfdcan2->Init.ExtFiltersNbr = 0;
     hfdcan2->Init.TxFifoQueueMode = FDCAN_TX_FIFO_OPERATION;
 
@@ -311,7 +376,7 @@ int main(void) {
     hfdcan3->Init.DataSyncJumpWidth = 1;
     hfdcan3->Init.DataTimeSeg1 = 1;
     hfdcan3->Init.DataTimeSeg2 = 1;
-    hfdcan3->Init.StdFiltersNbr = 0;
+    hfdcan3->Init.StdFiltersNbr = 1;
     hfdcan3->Init.ExtFiltersNbr = 0;
     hfdcan3->Init.TxFifoQueueMode = FDCAN_TX_FIFO_OPERATION;
 

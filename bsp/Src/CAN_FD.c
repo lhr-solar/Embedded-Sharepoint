@@ -60,18 +60,16 @@ can_status_t can_fd_init(FDCAN_HandleTypeDef* handle, FDCAN_FilterTypeDef* filte
         return CAN_ERR;
     }
 
-    // for (int i = 0; i < can1_recv_entry_count; i++) {
-    //   can1_recv_entries[i].queue = xQueueCreateStatic(
-    //       can1_recv_entries[i].size, sizeof(rx_payload_t),
-    //       can1_recv_entries[i].storage, &can1_recv_entries[i].buffer);
-    // }
-
-
 #ifdef FDCAN1
     if(handle->Instance == FDCAN1){
         fdcan1_send_queue =
         xQueueCreateStatic(FDCAN1_SEND_QUEUE_SIZE, sizeof(can_tx_payload_t),
                            fdcan1_send_queue_storage, &fdcan1_send_queue_buffer);
+        for (int i = 0; i < can1_recv_entry_count; i++) {
+      can1_recv_entries[i].queue = xQueueCreateStatic(
+          can1_recv_entries[i].size, sizeof(can_rx_payload_t),
+          can1_recv_entries[i].storage, &can1_recv_entries[i].buffer);
+        }
     }
 #endif
 #ifdef FDCAN2
@@ -79,6 +77,12 @@ can_status_t can_fd_init(FDCAN_HandleTypeDef* handle, FDCAN_FilterTypeDef* filte
         fdcan2_send_queue =
         xQueueCreateStatic(FDCAN2_SEND_QUEUE_SIZE, sizeof(can_tx_payload_t),
                            fdcan2_send_queue_storage, &fdcan2_send_queue_buffer);
+
+        for (int i = 0; i < can2_recv_entry_count; i++) {
+        can2_recv_entries[i].queue = xQueueCreateStatic(
+            can2_recv_entries[i].size, sizeof(can_rx_payload_t),
+            can2_recv_entries[i].storage, &can2_recv_entries[i].buffer);
+        }
     }
 #endif
 #ifdef FDCAN3
@@ -86,18 +90,38 @@ can_status_t can_fd_init(FDCAN_HandleTypeDef* handle, FDCAN_FilterTypeDef* filte
         fdcan3_send_queue =
         xQueueCreateStatic(FDCAN3_SEND_QUEUE_SIZE, sizeof(can_tx_payload_t),
                            fdcan3_send_queue_storage, &fdcan3_send_queue_buffer);
+        for (int i = 0; i < can3_recv_entry_count; i++) {
+        can3_recv_entries[i].queue = xQueueCreateStatic(
+          can3_recv_entries[i].size, sizeof(can_rx_payload_t),
+          can3_recv_entries[i].storage, &can3_recv_entries[i].buffer);
+        }
     }
+    
 #endif
     return CAN_OK;
 }
 
 can_status_t can_fd_deinit(FDCAN_HandleTypeDef* handle){
-    return CAN_ERR;
+
+    // deinit HAL
+    if (HAL_FDCAN_DeInit(handle) != HAL_OK) {
+        return CAN_ERR;
+    }
+
+    // disable interrupts
+    if(HAL_FDCAN_DeactivateNotification(handle, FDCAN_IT_RX_FIFO0_NEW_MESSAGE | FDCAN_IT_TX_COMPLETE) != HAL_OK){
+        return CAN_ERR;
+    }
+
+    return CAN_OK;
 }
 
 can_status_t can_fd_start(FDCAN_HandleTypeDef* handle){
 
     // activate interrupts for rx and tx interrupts
+    if(HAL_FDCAN_ConfigInterruptLines(handle, FDCAN_ILS_SMSG, FDCAN_INTERRUPT_LINE0) != HAL_OK ){
+        return CAN_ERR;
+    }
 
     // todo: should prolly add FDCAN_IT_TX_FIFO_EMPTY
     if(HAL_FDCAN_ActivateNotification(handle, FDCAN_IT_RX_FIFO0_NEW_MESSAGE | FDCAN_IT_TX_COMPLETE, 0) != HAL_OK){
@@ -167,7 +191,6 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
         }
 #endif
 
-
     }
     return CAN_OK;
 }
@@ -181,10 +204,14 @@ __weak void can_fd_rx_callback_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo
 
 void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 {
-  if((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET)
-  {
+    can_fd_rx_callback_hook(hfdcan, RxFifo0ITs);
+
+    if((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET)
+    {
+        
+    }
     
-  }
+    can_fd_rx_callback_hook(hfdcan, RxFifo0ITs);
 }
 
 __weak void can_fd_tx_complete_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t BufferIndexes)
@@ -197,6 +224,7 @@ __weak void can_fd_tx_complete_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t Buffer
 void HAL_FDCAN_TxBufferCompleteCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t BufferIndexes)
 {
 
+    can_fd_tx_complete_hook(hfdcan, BufferIndexes);
     BaseType_t higherPriorityTaskWoken = pdFALSE;
     can_tx_payload_t payload = {0};
 
