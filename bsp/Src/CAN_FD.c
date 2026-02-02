@@ -144,6 +144,7 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
         for (int i = 0; i < CAN_DATA_SIZE; i++) {
             payload.data[i] = data[i];
         }
+        
 #ifdef FDCAN1
         if (handle->Instance == FDCAN1) {
             if (xQueueSend(fdcan1_send_queue, &payload, delay_ticks) != pdTRUE) {
@@ -151,6 +152,21 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
             }
         }
 #endif
+#ifdef FDCAN2
+        if (handle->Instance == FDCAN2) {
+            if (xQueueSend(fdcan2_send_queue, &payload, delay_ticks) != pdTRUE) {
+                return CAN_ERR;
+            }
+        }
+#endif
+#ifdef FDCAN3
+        if (handle->Instance == FDCAN3) {
+            if (xQueueSend(fdcan3_send_queue, &payload, delay_ticks) != pdTRUE) {
+                return CAN_ERR;
+            }
+        }
+#endif
+
 
     }
     return CAN_OK;
