@@ -97,25 +97,28 @@ adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef
     ADC_ChannelConfTypeDef sConfig = {
         .Channel = channel,
         .Rank = 1,
-        .SamplingTime = samplingTime
+        .SamplingTime = samplingTime,
+        .SingleDiff = ADC_SINGLE_ENDED,
+        .OffsetNumber = ADC_OFFSET_NONE,
+        .Offset = 0
     }; 
     
     // Queue Arbitration for later
     #ifdef ADC1
     if (h->Instance == ADC1) adc1_q = q;
     #endif
-    #ifdef ADC2
-    if (h->Instance == ADC2) adc2_q = q;
-    #endif
-    #ifdef ADC3
-    if (h->Instance == ADC3) adc3_q = q;
-    #endif
-    #ifdef ADC4
-    if (h->Instance == ADC4) adc4_q = q;
-    #endif
-    #ifdef ADC5
-    if (h->Instance == ADC5) adc5_q = q;
-    #endif
+    // #ifdef ADC2
+    // if (h->Instance == ADC2) adc2_q = q;
+    // #endif
+    // #ifdef ADC3
+    // if (h->Instance == ADC3) adc3_q = q;
+    // #endif
+    // #ifdef ADC4
+    // if (h->Instance == ADC4) adc4_q = q;
+    // #endif
+    // #ifdef ADC5
+    // if (h->Instance == ADC5) adc5_q = q;
+    // #endif
     
     // Check Queue Full
     if (uxQueueSpacesAvailable(q) == 0) {
@@ -125,8 +128,12 @@ adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef
     if (HAL_ADC_ConfigChannel(h, &sConfig) != HAL_OK) {
         return ADC_CHANNEL_CONFIG_FAIL;
     }
+    // volatile uint8_t hi = h->Instance->ISR;(void)hi;
+    
     // Trigger Interrupt
     HAL_StatusTypeDef adc_it_stat = HAL_ADC_Start_IT(h);
+
+    // hi = h->Instance->ISR;(void)hi;
 
     // Handling
     switch (adc_it_stat) {
@@ -155,24 +162,24 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *h) {
     int rawVal;
 
     if (h->Instance == ADC1) q = adc1_q;
-    #ifdef ADC2
-    if (h->Instance == ADC2) q = adc2_q;
-    #endif
-    #ifdef ADC3
-    if (h->Instance == ADC3) q = adc3_q;
-    #endif
-    #ifdef ADC4
-    if (h->Instance == ADC4) q = adc4_q;
-    #endif
-    #ifdef ADC5
-    if (h->Instance == ADC5) q = adc5_q;
-    #endif
+    // #ifdef ADC2
+    // if (h->Instance == ADC2) q = adc2_q;
+    // #endif
+    // #ifdef ADC3
+    // if (h->Instance == ADC3) q = adc3_q;
+    // #endif
+    // #ifdef ADC4
+    // if (h->Instance == ADC4) q = adc4_q;
+    // #endif
+    // #ifdef ADC5
+    // if (h->Instance == ADC5) q = adc5_q;
+    // #endif
 
     // ignore --- debug stuff
     volatile uint8_t ISR = h->Instance->ISR;(void) ISR;
 
     rawVal = HAL_ADC_GetValue(h); // reads DR reg
-    volatile uint32_t direct = h->Instance->DR;(void)direct;
+    // volatile uint32_t direct = h->Instance->DR;(void)direct;
 
     ISR = h->Instance->ISR;
 
@@ -192,34 +199,35 @@ static inline void HAL_ADC_MspG4Init(ADC_HandleTypeDef *h) {
         PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC12;
         PeriphClkInit.Adc12ClockSelection = RCC_ADC12CLKSOURCE_SYSCLK;
         __HAL_RCC_ADC12_CLK_ENABLE(); 
+        if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) Error_Handler();
     }   
-    else if (h->Instance == ADC3 || h->Instance == ADC4 || h->Instance == ADC5) {
-        PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC345;
-        PeriphClkInit.Adc12ClockSelection = RCC_ADC345CLKSOURCE_SYSCLK;
-        __HAL_RCC_ADC345_CLK_ENABLE(); 
-    }
+    // else if (h->Instance == ADC3 || h->Instance == ADC4 || h->Instance == ADC5) {
+    //     PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC345;
+    //     PeriphClkInit.Adc345ClockSelection = RCC_ADC345CLKSOURCE_SYSCLK;
+    //     __HAL_RCC_ADC345_CLK_ENABLE(); 
+    //     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) Error_Handler();
+    // }
 
-    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) Error_Handler();
 
     #if defined(ADC1) || defined(ADC2)
     HAL_NVIC_SetPriority(ADC1_2_IRQn, ADC1_PRIO, 0);
     HAL_NVIC_EnableIRQ(ADC1_2_IRQn);
     #endif
 
-    #if defined(ADC3)
-    HAL_NVIC_SetPriority(ADC3_IRQn, ADC3_PRIO, 0);
-    HAL_NVIC_EnableIRQ(ADC3_IRQn);
-    #endif
+    // #if defined(ADC3)
+    // HAL_NVIC_SetPriority(ADC3_IRQn, ADC3_PRIO, 0);
+    // HAL_NVIC_EnableIRQ(ADC3_IRQn);
+    // #endif
 
-    #if defined(ADC4)
-    HAL_NVIC_SetPriority(ADC4_IRQn, ADC4_PRIO, 0);
-    HAL_NVIC_EnableIRQ(ADC4_IRQn);
-    #endif
+    // #if defined(ADC4)
+    // HAL_NVIC_SetPriority(ADC4_IRQn, ADC4_PRIO, 0);
+    // HAL_NVIC_EnableIRQ(ADC4_IRQn);
+    // #endif
 
-    #if defined(ADC5)
-    HAL_NVIC_SetPriority(ADC5_IRQn, ADC5_PRIO, 0);
-    HAL_NVIC_EnableIRQ(ADC5_IRQn);
-    #endif
+    // #if defined(ADC5)
+    // HAL_NVIC_SetPriority(ADC5_IRQn, ADC5_PRIO, 0);
+    // HAL_NVIC_EnableIRQ(ADC5_IRQn);
+    // #endif
 }
 #endif
 
