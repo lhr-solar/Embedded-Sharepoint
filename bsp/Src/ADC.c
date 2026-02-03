@@ -94,9 +94,10 @@ adc_status_t adc_deinit(ADC_HandleTypeDef *h) {
 
 
 adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef *h, QueueHandle_t q) {
+    volatile uint8_t fuh = ADC_REGULAR_RANK_1;(void)fuh;
     ADC_ChannelConfTypeDef sConfig = {};
     sConfig.Channel = ADC_CHANNEL_1;
-  sConfig.Rank = ADC_REGULAR_RANK_1;
+  sConfig.Rank = ADC_REGULAR_RANK_1; 
   sConfig.SamplingTime = ADC_SAMPLETIME_2CYCLES_5;
   sConfig.SingleDiff = ADC_SINGLE_ENDED;
   sConfig.OffsetNumber = ADC_OFFSET_NONE;
