@@ -132,8 +132,12 @@ adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef
     
     // Trigger Interrupt
     HAL_StatusTypeDef adc_it_stat = HAL_ADC_Start_IT(h);
+    hi = h->Instance->ISR;(void)hi;
+    volatile uint32_t direct = h->Instance->DR;(void)direct; 
 
     hi = h->Instance->ISR;(void)hi;
+     direct = h->Instance->DR;(void)direct; 
+      hi = h->Instance->ISR;(void)hi;
 
     // Handling
     switch (adc_it_stat) {

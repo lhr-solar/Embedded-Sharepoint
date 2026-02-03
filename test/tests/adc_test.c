@@ -155,6 +155,8 @@ void TestADC3(void *pvParameters) {
 
 int main() {
     // GPIO Init
+    HAL_Init();
+    SystemClock_Config();
     
     __HAL_RCC_GPIOA_CLK_ENABLE();
 

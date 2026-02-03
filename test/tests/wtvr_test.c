@@ -1,6 +1,9 @@
 #include "stm32xx_hal.h"
+#include "FreeRTOS.h"
 
 ADC_HandleTypeDef hadc1;
+
+
 
 /* USER CODE BEGIN PV */
 
