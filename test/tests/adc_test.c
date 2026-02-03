@@ -79,6 +79,8 @@ void TestADC1(void *pvParameters) {
     // Set bkpt in error_handler();
     uint32_t reading = 0;
 
+    volatile uint8_t ISR = hadc1->Instance->ISR;(void) ISR;
+
     // read once
     for (int i = 0; i < 10; i++) {
         #ifdef ADC_SAMPLETIME_3CYCLES
@@ -184,6 +186,7 @@ int main() {
     volatile adc_status_t s = adc_init(&adc_init_1, hadc1);
     s+=0;
     if (s != ADC_OK) error_handler(ADC_INIT_FAIL);
+    HAL_ADCEx_Calibration_Start(hadc1, ADC_SINGLE_ENDED);
 
     #ifdef ADC2
     ADC_InitTypeDef adc_init_2 = {0};

@@ -168,7 +168,14 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *h) {
     if (h->Instance == ADC5) q = adc5_q;
     #endif
 
-    rawVal = HAL_ADC_GetValue(h);
+    // ignore --- debug stuff
+    volatile uint8_t ISR = h->Instance->ISR;(void) ISR;
+
+    rawVal = HAL_ADC_GetValue(h); // reads DR reg
+    volatile uint32_t direct = h->Instance->DR;(void)direct;
+
+    ISR = h->Instance->ISR;
+
     xQueueSendFromISR(q, &rawVal, &higherPriorityTaskWoken);
 
     portYIELD_FROM_ISR(higherPriorityTaskWoken);
