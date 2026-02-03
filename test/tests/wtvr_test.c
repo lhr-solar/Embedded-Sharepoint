@@ -3,11 +3,15 @@
 
 ADC_HandleTypeDef hadc1;
 
+#define STACK_SIZE 200
 
+StaticTask_t xTaskBuffer;
+StackType_t xStack[ STACK_SIZE ];
 
-/* USER CODE BEGIN PV */
+#define QUEUE_LENGTH    10
+#define ITEM_SIZE       sizeof( uint32_t )
 
-/* USER CODE END PV */
+uint8_t qStorage[QUEUE_LENGTH * ITEM_SIZE];
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
@@ -22,6 +26,10 @@ void Error_Handler(void);
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
+
+void hola(void* pvParameters) {
+    HAL_ADC_Start_IT(&hadc1);
+}
 
 /**
   * @brief  The application entry point.
@@ -59,19 +67,19 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-    /* USER CODE END WHILE */
-    volatile uint8_t ISR = hadc1.Instance->ISR; (void)ISR;
-    HAL_ADC_Start_IT(&hadc1);
-    ISR = hadc1.Instance->ISR;
 
-    ISR += 0;
-    
+  xTaskCreateStatic(hola,
+                    "ADC Test",
+                    configMINIMAL_STACK_SIZE,
+                    (void*) 1,
+                    tskIDLE_PRIORITY+4,
+                    xStack,
+                    &xTaskBuffer);
 
-    /* USER CODE BEGIN 3 */
-  }
-  /* USER CODE END 3 */
+    vTaskStartScheduler();
+
+
+
 }
 
 /**

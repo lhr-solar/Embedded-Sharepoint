@@ -36,43 +36,43 @@ static void error_handler(adc_status_t err) {
     }
 }
   
-static void success_handler(void) {
-    // blinky
+// static void success_handler(void) {
+//     // blinky
 
-    GPIO_InitTypeDef led_config = {
-        .Mode = GPIO_MODE_OUTPUT_PP,
-        .Pull = GPIO_NOPULL,
-        .Pin = GPIO_PIN_5
-    };
+//     GPIO_InitTypeDef led_config = {
+//         .Mode = GPIO_MODE_OUTPUT_PP,
+//         .Pull = GPIO_NOPULL,
+//         .Pin = GPIO_PIN_5
+//     };
     
-     // enable clock for GPIOA
-    HAL_GPIO_Init(GPIOA, &led_config); // initialize GPIOA with led_config
+//      // enable clock for GPIOA
+//     HAL_GPIO_Init(GPIOA, &led_config); // initialize GPIOA with led_config
 
-    while(1){
-        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-        HAL_Delay(500);
-    }
-  }
+//     while(1){
+//         HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+//         HAL_Delay(500);
+//     }
+//   }
 
-#ifdef ADC_SAMPLETIME_3CYCLES
-void TestQueueFull(void *pvParameters) {
-    // Set bkpt in error_handler();
-    uint32_t reading = 0;
+// #ifdef ADC_SAMPLETIME_3CYCLES
+// void TestQueueFull(void *pvParameters) {
+//     // Set bkpt in error_handler();
+//     uint32_t reading = 0;
 
-    // read once
-    for (int i = 0; i < 11; i++) {
-        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc1, xReadings);
+//     // read once
+//     for (int i = 0; i < 11; i++) {
+//         adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc1, xReadings);
         
-        if (stat != ADC_OK) {
-            error_handler(stat);
-        }
-    }
+//         if (stat != ADC_OK) {
+//             error_handler(stat);
+//         }
+//     }
 
-    // should not reach here
-    xQueueReceive(xReadings, &reading, 0);
-    success_handler();
-}
-#endif
+//     // should not reach here
+//     xQueueReceive(xReadings, &reading, 0);
+//     success_handler();
+// }
+// #endif
 
 
 void TestADC1(void *pvParameters) {
@@ -98,60 +98,60 @@ void TestADC1(void *pvParameters) {
     //     xQueueReceive(xReadings, &reading, 0);
     // }
     
-    success_handler();
+    // success_handler();
 }
 
-#ifdef ADC2
-void TestADC2(void *pvParameters) {
-    // Set bkpt in error_handler();
-    uint32_t reading = 0;
+// #ifdef ADC2
+// void TestADC2(void *pvParameters) {
+//     // Set bkpt in error_handler();
+//     uint32_t reading = 0;
 
-    // read once
-    for (int i = 0; i < 10; i++) {
-        #ifdef ADC_SAMPLETIME_3CYCLES
-        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc2, xReadings);
-        #else
-        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_2CYCLES_5, hadc2, xReadings);
-        #endif
+//     // read once
+//     for (int i = 0; i < 10; i++) {
+//         #ifdef ADC_SAMPLETIME_3CYCLES
+//         adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc2, xReadings);
+//         #else
+//         adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_2CYCLES_5, hadc2, xReadings);
+//         #endif
         
-        if (stat != ADC_OK) {
-            error_handler(stat);
-        }
-    }
+//         if (stat != ADC_OK) {
+//             error_handler(stat);
+//         }
+//     }
     
-    for (int i = 0; i < 10; i++) {
-        xQueueReceive(xReadings, &reading, 0);
-    }
+//     for (int i = 0; i < 10; i++) {
+//         xQueueReceive(xReadings, &reading, 0);
+//     }
     
-    success_handler();
-}
-#endif
+//     success_handler();
+// }
+// #endif
 
-#ifdef ADC3
-void TestADC3(void *pvParameters) {
-    // Set bkpt in error_handler();
-    uint32_t reading = 0;
+// #ifdef ADC3
+// void TestADC3(void *pvParameters) {
+//     // Set bkpt in error_handler();
+//     uint32_t reading = 0;
 
-    // read once
-    for (int i = 0; i < 10; i++) {
-        #ifdef ADC_SAMPLETIME_3CYCLES
-        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc3, xReadings);
-        #else
-        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_2CYCLES_5, hadc3, xReadings);
-        #endif
+//     // read once
+//     for (int i = 0; i < 10; i++) {
+//         #ifdef ADC_SAMPLETIME_3CYCLES
+//         adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc3, xReadings);
+//         #else
+//         adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_2CYCLES_5, hadc3, xReadings);
+//         #endif
         
-        if (stat != ADC_OK) {
-            error_handler(stat);
-        }
-    }
+//         if (stat != ADC_OK) {
+//             error_handler(stat);
+//         }
+//     }
 
-    for (int i = 0; i < 10; i++) {
-        xQueueReceive(xReadings, &reading, 0);
-    }
+//     for (int i = 0; i < 10; i++) {
+//         xQueueReceive(xReadings, &reading, 0);
+//     }
     
-    success_handler();
-}
-#endif
+//     success_handler();
+// }
+// #endif
 
 int main() {
     // GPIO Init
