@@ -128,12 +128,12 @@ adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef
     if (HAL_ADC_ConfigChannel(h, &sConfig) != HAL_OK) {
         return ADC_CHANNEL_CONFIG_FAIL;
     }
-    // volatile uint8_t hi = h->Instance->ISR;(void)hi;
+    volatile uint8_t hi = h->Instance->ISR;(void)hi;
     
     // Trigger Interrupt
     HAL_StatusTypeDef adc_it_stat = HAL_ADC_Start_IT(h);
 
-    // hi = h->Instance->ISR;(void)hi;
+    hi = h->Instance->ISR;(void)hi;
 
     // Handling
     switch (adc_it_stat) {
@@ -179,7 +179,8 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *h) {
     volatile uint8_t ISR = h->Instance->ISR;(void) ISR;
 
     rawVal = HAL_ADC_GetValue(h); // reads DR reg
-    // volatile uint32_t direct = h->Instance->DR;(void)direct;
+    volatile uint32_t direct = h->Instance->DR;(void)direct; // 7 --> 15
+    direct = h->Instance->DR; // 15 --> 11 
 
     ISR = h->Instance->ISR;
 

@@ -59,7 +59,12 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+    volatile uint8_t ISR = hadc1.Instance->ISR; (void)ISR;
     HAL_ADC_Start_IT(&hadc1);
+    ISR = hadc1.Instance->ISR;
+
+    ISR += 0;
+    
 
     /* USER CODE BEGIN 3 */
   }
