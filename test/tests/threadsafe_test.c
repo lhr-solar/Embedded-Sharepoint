@@ -110,7 +110,8 @@ void Task1_Entry(void *params)
         // Fail:
         for(;;) 
         {
-            HAL_GPIO_TogglePin(LED_PORT, LED_PIN); vTaskDelay(50); 
+            HAL_GPIO_TogglePin(LED_PORT, LED_PIN); 
+            vTaskDelay(50); 
         }
     }
 
@@ -122,7 +123,8 @@ void Task1_Entry(void *params)
         // Fail:
         for(;;) 
         { 
-            HAL_GPIO_TogglePin(LED_PORT, LED_PIN); vTaskDelay(500); 
+            HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
+            vTaskDelay(500); 
         }
     }
 
@@ -336,9 +338,41 @@ void User_Hardware_Init(void) {
        hspi_user.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
     #endif
 
-    if (HAL_SPI_Init(&hspi_user) != HAL_OK) {
-        // Init Error
-        while(1);
+    if (HAL_SPI_Init(&hspi_user) != HAL_OK) { 
+        while(1); 
     }
     __HAL_SPI_ENABLE(&hspi_user);
+
+    // ENABLE INTERRUPTS 
+    if (USER_SPI_INSTANCE == SPI1) {
+        HAL_NVIC_SetPriority(SPI1_IRQn, 5, 0); 
+        HAL_NVIC_EnableIRQ(SPI1_IRQn);
+    }
+    #ifdef SPI2
+    else if (USER_SPI_INSTANCE == SPI2) {
+        HAL_NVIC_SetPriority(SPI2_IRQn, 5, 0);
+        HAL_NVIC_EnableIRQ(SPI2_IRQn);
+    }
+    #endif
+    #ifdef SPI3
+    else if (USER_SPI_INSTANCE == SPI3) {
+        HAL_NVIC_SetPriority(SPI3_IRQn, 5, 0);
+        HAL_NVIC_EnableIRQ(SPI3_IRQn);
+    }
+    #endif
 }
+
+// *** IRQ HANDLERS ***
+void SPI1_IRQHandler(void) { 
+    HAL_SPI_IRQHandler(&hspi_user); 
+}
+#ifdef SPI2
+void SPI2_IRQHandler(void) { 
+    HAL_SPI_IRQHandler(&hspi_user); 
+}
+#endif
+#ifdef SPI3
+void SPI3_IRQHandler(void) { 
+    HAL_SPI_IRQHandler(&hspi_user); 
+}
+#endif

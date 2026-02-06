@@ -42,6 +42,10 @@ typedef struct {
     SemaphoreHandle_t mutex;       // Mutex for thread-safe access
     StaticSemaphore_t mutexBuffer; // Static memory buffer for the mutex
 
+    // Interrupt Synchronization (Sleep until SPI finishes)
+    SemaphoreHandle_t spi_comp_sem;       
+    StaticSemaphore_t spi_comp_buffer;
+
 } sd_handle_t;
 
 

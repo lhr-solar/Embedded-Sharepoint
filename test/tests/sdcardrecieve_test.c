@@ -81,10 +81,9 @@ int main(void)
     // 1. Hardware Init
     HAL_Init();
     SystemClock_Config();
-    // MX_GPIO_Init();
-    // MX_SPI2_Init();
     LED_Init(); 
-
+    User_Hardware_Init();
+    
     // 2. Link the handle 
     sd.hspi = &hspi_user;
     sd.cs_port = USER_CS_PORT; 

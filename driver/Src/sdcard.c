@@ -1,6 +1,77 @@
 #include "sdcard.h"
 #include <stdint.h>
 #include "stm32xx_hal.h"
+#include <string.h>
+
+// Global pointer so the ISR knows which handle to signal
+static sd_handle_t *g_sd_handle = NULL;
+
+/**
+ * @brief  Performs an SPI transfer using Interrupts and waits for completion.
+ * @note   Replaces HAL_SPI_TransmitReceive(..., HAL_MAX_DELAY).
+ * Instead of freezing the CPU, this function puts the task to SLEEP.
+ * * @param  sd   Pointer to SD handle
+ * @param  tx   Pointer to TX data (can be NULL for Read-Only)
+ * @param  rx   Pointer to RX data (can be NULL for Write-Only)
+ * @param  len  Number of bytes to transfer
+ * @return SD_OK if successful, SD_TIMEOUT if interrupt never fired.
+ */
+static SD_Status SD_SPI_TransferWait(sd_handle_t *sd, uint8_t *tx, uint8_t *rx, uint16_t len) {
+    if (len == 0) 
+        return SD_OK;
+
+    // Clear Semaphore, so no old signal
+    // Done flag 0
+    xSemaphoreTake(sd->spi_comp_sem, 0);
+
+    // Set global handle for ISR
+    g_sd_handle = sd;
+
+    // Start Non-Blocking Transfer
+    HAL_StatusTypeDef res;
+    if (tx == NULL) {
+        res = HAL_SPI_Receive_IT(sd->hspi, rx, len); // READ ONLY: HAL sends dummy bytes (0x00 or 0xFF) automatically while reading
+    } else if (rx == NULL) {
+        res = HAL_SPI_Transmit_IT(sd->hspi, tx, len); // WRITE ONLY: HAL sends data and ignores the incoming bytes
+    } else {
+        res = HAL_SPI_TransmitReceive_IT(sd->hspi, tx, rx, len); // Full Duplex: sends TX while reading RX
+    }
+
+    if (res != HAL_OK) 
+        return SD_ERR_SPI;
+
+    // Sleep until ISR is up (CPU run other tasks)
+    if (xSemaphoreTake(sd->spi_comp_sem, pdMS_TO_TICKS(1000)) != pdTRUE) {
+        HAL_SPI_Abort(sd->hspi);
+        return SD_TIMEOUT;
+    }
+
+    // Interruppt fired and data ready
+    return SD_OK;
+}
+
+// Called automatically by HAL when the SPI hardware finishes a transfer
+void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi) {
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+    // Check if this interrupt belongs to SD Card driver
+    if (g_sd_handle && g_sd_handle->hspi == hspi) {
+        //Wakes up the task
+        xSemaphoreGiveFromISR(g_sd_handle->spi_comp_sem, &xHigherPriorityTaskWoken);
+    }
+    
+    // If the SD task is high priority, switch to it immediately
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+}
+
+// Map specific callbacks to the general one
+void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi) { 
+    HAL_SPI_TxRxCpltCallback(hspi); 
+}
+
+void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi) { 
+    HAL_SPI_TxRxCpltCallback(hspi); 
+}
 
 /* CS */
 /**
@@ -44,11 +115,14 @@ uint8_t SD_ReadR1(sd_handle_t *sd)
     uint8_t r1;
     // make sure FF is transmitted during receive
     uint8_t tx = SD_DUMMY_BYTE;
-    while (1) {
-        HAL_SPI_TransmitReceive(sd->hspi, &tx, &r1, 1, HAL_MAX_DELAY);
-        if ((r1 & 0x80) == 0)     // MSB must be 0 → valid R1
-            return r1;
+    // Loop using interrupts for each byte
+    for(int i=0; i<8; i++) { 
+        if (SD_SPI_TransferWait(sd, &tx, &r1, 1) != SD_OK) 
+            return 0xFF;
+        if ((r1 & 0x80) == 0) 
+            return r1; 
     }
+    return SD_DUMMY_BYTE; 
 }
 
 
@@ -64,12 +138,13 @@ void SD_SendDummyClocks(sd_handle_t *sd)
     /* Ensure CS high and send >= 80 clocks (10 bytes of 0xFF) */
     SD_Deselect(sd);
 
-    uint8_t tx = SD_DUMMY_BYTE;
-    uint8_t rx;
-    for (int i = 0; i < 10; i++) {
-        HAL_SPI_TransmitReceive(sd->hspi, &tx, &rx, sizeof(tx), HAL_MAX_DELAY);
-    }
-    
+    // Create a buffer of 10 bytes (80 clocks)
+    uint8_t tx[10];
+    memset(tx, SD_DUMMY_BYTE, 10);
+
+    // Send all 80 clocks in one go
+    SD_SPI_TransferWait(sd, tx, NULL, 10);
+
 }
 
 /**
@@ -113,20 +188,14 @@ int8_t SD_ReadBytes(sd_handle_t *sd, uint8_t *buff, size_t len)
 int8_t SD_WaitNotBusy(sd_handle_t *sd)
 {
     uint8_t busy;
-    do {
-        if(SD_ReadBytes(sd, &busy, sizeof(busy)) < 0) {
+    for(int i=0; i<500; i++) {
+        if(SD_SPI_TransferWait(sd, NULL, &busy, 1) != SD_OK) 
             return SD_ERR_READ;
-        }
-
-        // thread safe:
-        // If busy (0x00), let the RTOS switch to another task for 1ms
-        if (busy != SD_DUMMY_BYTE) {
-            vTaskDelay(1); // Yield
-        }
-     
-    } while(busy != SD_DUMMY_BYTE);
-
-    return SD_OK;
+        if(busy == 0xFF) // line is high -> idle/ready
+            return SD_OK; // Card is ready
+        vTaskDelay(1); // Explicitly yield 1 tick to let other tasks run if not ready
+    }
+    return SD_TIMEOUT;
 }
 
 /**
@@ -140,17 +209,15 @@ int8_t SD_WaitDataToken(sd_handle_t *sd, uint8_t token) {
     uint8_t fb;
     uint8_t tx = SD_DUMMY_BYTE;  
 
-    for (;;) {
-        HAL_SPI_TransmitReceive(sd->hspi, &tx, &fb, 1, HAL_MAX_DELAY);
-
-        if (fb == token)
-            break;          // found correct data token
-
-        if (fb != SD_DUMMY_BYTE)
-            return SD_ERROR;      // unexpected token → error
+    for (int i=0; i<1000; i++) { // Safety timeout
+        if (SD_SPI_TransferWait(sd, &tx, &fb, 1) != SD_OK) 
+            return SD_ERROR;
+        if (fb == token) 
+            return SD_OK;
+        if (fb != 0xFF) 
+            return SD_ERROR; 
     }
-
-    return SD_OK;
+    return SD_TIMEOUT;
 }
 
 /**
@@ -174,16 +241,16 @@ uint8_t SD_SendCommand(sd_handle_t *sd, uint8_t cmd, uint32_t arg, uint8_t crc)
 
     SD_Select(sd);
 
+    // Commands require the card to be reayd first
     if (cmd != 0) {
-        if (SD_WaitNotBusy(sd) < 0) {
+        if (SD_WaitNotBusy(sd) != SD_OK) {
             SD_Deselect(sd);
             return SD_DUMMY_BYTE;
         }
     }
 
-    /* Send the 6-byte command */
-    HAL_SPI_Transmit(sd->hspi, packet, sizeof(packet), HAL_MAX_DELAY);
-
+    // Send 6 bytes efficiently via Interrupt
+    SD_SPI_TransferWait(sd, packet, NULL, 6);
     return SD_ReadR1(sd);
 }
 
@@ -196,91 +263,84 @@ uint8_t SD_SendCommand(sd_handle_t *sd, uint8_t cmd, uint32_t arg, uint8_t crc)
  */
 int8_t SD_Init(sd_handle_t *sd) {
 
-    // thread safe RTOS init:
-    // Create a Mutex statically 
+    // 1. Initialize Thread Safety Objects
+    // create mutex
     sd->mutex = xSemaphoreCreateMutexStatic(&sd->mutexBuffer);
-    if (sd->mutex == NULL) {
-        return SD_ERR_MUTEX; // Error creating mutex
-    }
+    if (sd->mutex == NULL) 
+        return SD_ERR_MUTEX; 
 
-    uint8_t res;
+    // 2. Initialize Interrupt Synchronization Object (NEW)
+    // create semaphore
+    sd->spi_comp_sem = xSemaphoreCreateBinaryStatic(&sd->spi_comp_buffer);
+    if (sd->spi_comp_sem == NULL) 
+        return SD_ERR_MUTEX;
+
     uint8_t resp[4];
-
-    // Step 1: Dummy Clocks 
+    
     SD_Deselect(sd);
     SD_SendDummyClocks(sd); 
 
-    // Step 2: CMD0 (Go Idle) 
+    // send CMD0
     SD_Select(sd);
-    uint8_t cmd0[] = {0x40, 0x00, 0x00, 0x00, 0x00, 0x95};
-    HAL_SPI_Transmit(sd->hspi, cmd0, sizeof(cmd0), HAL_MAX_DELAY);
-    if(SD_ReadR1(sd) != 0x01) {
-        SD_Deselect(sd);
+    uint8_t cmd0[] = {0x40, 0, 0, 0, 0, 0x95};
+    SD_SPI_TransferWait(sd, cmd0, NULL, 6); // Interrupt transfer
+    
+    if(SD_ReadR1(sd) != 0x01) { 
+        SD_Deselect(sd); 
         return SD_ERROR; 
-    }
+    } 
     SD_Deselect(sd);
 
-    // Step 3: CMD8 (Voltage Check) 
-    uint8_t r1 = SD_SendCommand(sd, 8, 0x000001AA, 0x87); // Capture return
-    if(r1 != 0x01) {
-        SD_Deselect(sd);
-        return SD_ERR_VOLTAGE;
+    // CMD8: Check voltage
+    if(SD_SendCommand(sd, 8, 0x000001AA, 0x87) != 0x01) { 
+        SD_Deselect(sd); 
+        return SD_ERR_VOLTAGE; 
     }
-    if(SD_ReadBytes(sd, resp, sizeof(resp)) < 0) {
-        SD_Deselect(sd);
+    
+    // Read 4 bytes via Interrupt
+    if(SD_SPI_TransferWait(sd, NULL, resp, 4) != SD_OK) { 
+        SD_Deselect(sd); 
         return SD_ERR_READ; 
     }
 
-    // Step 4: ACMD41 Loop (Initialize) 
+    // ACMD41: Initialize Card (Loop until Ready)
     uint32_t tickStart = HAL_GetTick();
-    
+    uint8_t res;
     for(;;) {
-        if((HAL_GetTick() - tickStart) > 1000) {
-             SD_Deselect(sd);
-             return SD_TIMEOUT;
+        if((HAL_GetTick() - tickStart) > 1000) { 
+            SD_Deselect(sd); 
+            return SD_TIMEOUT; 
         }
-
-        // Capture return directly
-        // Send CMD55
-        res = SD_SendCommand(sd, 55, 0, 0x65); 
-        if(res > 0x01) { 
-            SD_Deselect(sd);
+        if(SD_SendCommand(sd, 55, 0, 0x65) > 0x01) { 
+            SD_Deselect(sd); 
             return SD_ERROR; 
         }
         SD_Deselect(sd);
-
-        // Send ACMD41
         res = SD_SendCommand(sd, 41, 0x40000000, 0x77); 
         SD_Deselect(sd);
-        
         if(res == 0x00) 
-            break; // Success!
+            break; 
         if(res > 0x01) 
-            return SD_ERR_INIT_CARD; // Error
-        
-        HAL_Delay(10);
-    }
-
-    // Step 5: CMD58 (Read OCR) 
-    res = SD_SendCommand(sd, 58, 0, 0xFD);
-    if(res != 0x00) {
-        SD_Deselect(sd);
-        return SD_ERROR;
-    }
-
-    if(SD_ReadBytes(sd, resp, sizeof(resp)) < 0) {
-        SD_Deselect(sd);
-        return SD_ERR_READ;
-    }
-    SD_Deselect(sd);
-
-    // Check Power Up bit (Bit 31) only
-    if((resp[0] & 0x80) == 0) {
-        return SD_ERROR;
+            return SD_ERR_INIT_CARD; 
+        vTaskDelay(10);
     }
     
-    return 0; // Success
+    // CMD58: Read OCR (Operation Conditions)
+    if(SD_SendCommand(sd, 58, 0, 0xFD) != 0x00) { 
+        SD_Deselect(sd); 
+        return SD_ERROR; 
+    }
+    if(SD_SPI_TransferWait(sd, NULL, resp, 4) != SD_OK) { 
+        SD_Deselect(sd); 
+        return SD_ERR_READ; 
+    }
+    SD_Deselect(sd);
+    if((resp[0] & 0x80) == 0) 
+        return SD_ERROR; 
+    
+    return SD_OK;
 }
+
 /**
  * @brief Reads a single 512-byte block from the SD card (Thread Safe).
  * @param sd Pointer to the SD handle structure.
@@ -290,48 +350,37 @@ int8_t SD_Init(sd_handle_t *sd) {
  */
 int8_t SD_ReadSingleBlock(sd_handle_t *sd, uint32_t blockNum, uint8_t *buffer)
 {
-
-    // thread safe:
-    // Take lock Wait forever (portMAX_DELAY) until it's free.
-    if (xSemaphoreTake(sd->mutex, portMAX_DELAY) != pdTRUE) {
-        return SD_ERR_LOCK_TIMEOUT; // RTOS error
-    }
+    // 1. Acquire Mutex (Queueing behavior)
+    if (xSemaphoreTake(sd->mutex, portMAX_DELAY) != pdTRUE) 
+        return SD_ERR_LOCK_TIMEOUT;
     
-    uint8_t resp;
-    resp = SD_SendCommand(sd, SD_CMD17, blockNum, 0x01); /* CMD17 */
-
-    // thread safe:
-    if (resp != 0x00) { 
-        SD_Deselect(sd); 
-        xSemaphoreGive(sd->mutex); 
-        return SD_ERROR; 
-    }
-
-    if (SD_WaitDataToken(sd, 0xFE) < 0) { 
-        SD_Deselect(sd); 
-        xSemaphoreGive(sd->mutex); 
+    // 2. Send Command CMD17 (Read Block)
+    if (SD_SendCommand(sd, 17, blockNum, 0x01) != 0x00) { 
+        SD_Deselect(sd); xSemaphoreGive(sd->mutex); 
         return SD_ERROR; 
     }
     
-    if (SD_ReadBytes(sd, buffer, SD_BLOCK_SIZE) < 0) { 
+    // 3. Wait for the card to find the data (Token 0xFE)
+    if (SD_WaitDataToken(sd, 0xFE) != SD_OK) { 
+        SD_Deselect(sd); xSemaphoreGive(sd->mutex); 
+        return SD_ERROR; 
+    }
+    
+    // 4. READ DATA (Interrupt Driven) reads 512 bytes
+    if (SD_ReadBytes(sd, buffer, SD_BLOCK_SIZE) != SD_OK) { 
         SD_Deselect(sd); 
         xSemaphoreGive(sd->mutex); 
         return SD_ERR_READ; 
     }
 
+    // 5. Read CRC (2 bytes) 
     uint8_t crc[2];
-    if (SD_ReadBytes(sd, crc, 2) < 0) { 
-        SD_Deselect(sd); 
-        xSemaphoreGive(sd->mutex); 
-        return SD_ERR_READ; 
-    }
-
+    SD_SPI_TransferWait(sd, NULL, crc, 2);
+    
+    // 6. unlock, clean
     SD_Deselect(sd);
-
-    // Release the lock
     xSemaphoreGive(sd->mutex);
     return SD_OK;
-
 }
 
 /**
@@ -343,51 +392,51 @@ int8_t SD_ReadSingleBlock(sd_handle_t *sd, uint32_t blockNum, uint8_t *buffer)
  */
 int8_t SD_WriteSingleBlock(sd_handle_t *sd, uint32_t blockNum, const uint8_t *buffer)
 {
-    // thread safe:
-    // Take the lock
-    if (xSemaphoreTake(sd->mutex, portMAX_DELAY) != pdTRUE) {
+    // 1. lock mutex
+    if (xSemaphoreTake(sd->mutex, portMAX_DELAY) != pdTRUE) 
         return SD_ERR_LOCK_TIMEOUT;
-    }
-
-    uint8_t resp;
-    resp = SD_SendCommand(sd, SD_CMD24, blockNum, 0x01); /* CMD24 */
-
-    // thread safe:
-    if (resp != 0x00) { 
-        SD_Deselect(sd); 
-        xSemaphoreGive(sd->mutex); 
+    
+    // 2. Send Command CMD24 (Write Block)
+    if (SD_SendCommand(sd, 24, blockNum, 0x01) != 0x00) { 
+        SD_Deselect(sd); xSemaphoreGive(sd->mutex); 
         return SD_ERROR; 
     }
-
+    
+    // 3. Send Start Token (0xFE)
     uint8_t token = 0xFE;
-    HAL_SPI_Transmit(sd->hspi, &token, 1, HAL_MAX_DELAY);
-    HAL_SPI_Transmit(sd->hspi, (uint8_t*)buffer, SD_BLOCK_SIZE, HAL_MAX_DELAY);
+    SD_SPI_TransferWait(sd, &token, NULL, 1);
 
-    uint8_t crc[2] = {0xFF, 0xFF};
-    HAL_SPI_Transmit(sd->hspi, crc, 2, HAL_MAX_DELAY);
-
-    uint8_t dataResp;
-    if (SD_ReadBytes(sd, &dataResp, 1) < 0) { 
+    // 4. WRITE DATA (Interrupt Driven)
+    if (SD_SPI_TransferWait(sd, (uint8_t*)buffer, NULL, SD_BLOCK_SIZE) != SD_OK) {
         SD_Deselect(sd); 
         xSemaphoreGive(sd->mutex); 
-        return SD_ERR_READ; 
+        return SD_ERR_WRITE; 
     }
     
+    // 5. Send Dummy CRC
+    uint8_t crc[] = {0xFF, 0xFF};
+    SD_SPI_TransferWait(sd, crc, NULL, 2);
+    
+    // 6. Receive Data Response
+    uint8_t dataResp;
+    HAL_SPI_Receive(sd->hspi, &dataResp, 1, 100); 
+    
+    // Check if data was accepted (xxx00101)
     if ((dataResp & 0x1F) != 0x05) { 
         SD_Deselect(sd); 
         xSemaphoreGive(sd->mutex); 
         return SD_ERR_WRITE; 
     }
-
-    if (SD_WaitNotBusy(sd) < 0) { 
+    
+    // 7. Wait for Flash Programming 
+    if (SD_WaitNotBusy(sd) != SD_OK) { 
         SD_Deselect(sd); 
         xSemaphoreGive(sd->mutex); 
         return SD_TIMEOUT; 
     }
-
-    SD_Deselect(sd);
     
-    // Release the lock
+    // 8. unlock and clean
+    SD_Deselect(sd);
     xSemaphoreGive(sd->mutex);
     return SD_OK;
 }
@@ -412,24 +461,16 @@ int8_t SD_ReadBegin(sd_handle_t *sd, uint32_t blockNum) {
         return SD_TIMEOUT;
     }
 
-    uint8_t cmd[] = {
-        SD_CMD_BASE | SD_CMD18,
-        (blockNum >> 24) & 0xFF,
-        (blockNum >> 16) & 0xFF,
-        (blockNum >> 8) & 0xFF,
-        blockNum & 0xFF,
-        (0x7F << 1) | 1 
-    };
-    HAL_SPI_Transmit(sd->hspi, (uint8_t*)cmd, sizeof(cmd), HAL_MAX_DELAY);
-
-    if(SD_ReadR1(sd) != 0x00) {
-        SD_Deselect(sd);
-        xSemaphoreGive(sd->mutex); // Unlock on fail
-        return SD_ERROR;
+    uint8_t cmd[] = { SD_CMD_BASE | SD_CMD18, (blockNum >> 24) & 0xFF, (blockNum >> 16) & 0xFF, (blockNum >> 8) & 0xFF, blockNum & 0xFF, 0xFF };
+    SD_SPI_TransferWait(sd, cmd, NULL, 6);
+    
+    if(SD_ReadR1(sd) != 0x00) { 
+        SD_Deselect(sd); 
+        xSemaphoreGive(sd->mutex); 
+        return SD_ERROR; 
     }
-
     SD_Deselect(sd);
-    return 0;
+    return SD_OK;
 }
 
 /**
@@ -468,36 +509,16 @@ int8_t SD_ReadData(sd_handle_t *sd, uint8_t* buff) {
  * @return 0 on success, negative error code on failure.
  */
 int8_t SD_ReadEnd(sd_handle_t *sd) {
+
     SD_Select(sd);
-
-    /* CMD12 (STOP_TRANSMISSION) */
-    static const uint8_t cmd[] = { SD_CMD_BASE | SD_CMD12 /* CMD12 */, 0x00, 0x00, 0x00, 0x00 /* ARG */, (0x7F << 1) | 1 };
-    HAL_SPI_Transmit(sd->hspi, (uint8_t*)cmd, sizeof(cmd), HAL_MAX_DELAY);
-
-    uint8_t stuffByte;
-    if(SD_ReadBytes(sd, &stuffByte, sizeof(stuffByte)) < 0) {
-        SD_Deselect(sd);
-        
-        // thread safe:
-        xSemaphoreGive(sd->mutex); // Unlock!
-
-        return SD_ERR_READ;
-    }
-
-    if(SD_ReadR1(sd) != 0x00) {
-        SD_Deselect(sd);
-
-        // thread safe:
-        xSemaphoreGive(sd->mutex); // Unlock!
-
-        return SD_ERR_READ;
-    }
+    uint8_t cmd[] = { SD_CMD_BASE | 12, 0, 0, 0, 0, 0xFF };
+    SD_SPI_TransferWait(sd, cmd, NULL, 6);
     
+    uint8_t stuff;
+    HAL_SPI_Receive(sd->hspi, &stuff, 1, 10);
+    SD_ReadR1(sd);
     SD_Deselect(sd);
-
-    // thread safe:
-    xSemaphoreGive(sd->mutex); // Unlock!
-
+    xSemaphoreGive(sd->mutex); 
     return SD_OK;
 }
 
@@ -524,25 +545,13 @@ int8_t SD_WriteBegin(sd_handle_t *sd, uint32_t blockNum) {
     }
 
     /* CMD25 (WRITE_MULTIPLE_BLOCK) command */
-    uint8_t cmd[] = {
-        SD_CMD_BASE | SD_CMD25 /* CMD25 */,
-        (blockNum >> 24) & 0xFF, /* ARG */
-        (blockNum >> 16) & 0xFF,
-        (blockNum >> 8) & 0xFF,
-        blockNum & 0xFF,
-        (0x7F << 1) | 1 /* CRC7 + end bit */
-    };
-    HAL_SPI_Transmit(sd->hspi, (uint8_t*)cmd, sizeof(cmd), HAL_MAX_DELAY);
-
-    if(SD_ReadR1(sd) != 0x00) {
-        SD_Deselect(sd);
-
-        // thread safe:
-        xSemaphoreGive(sd->mutex); // Unlock!
-
-        return SD_ERROR;
+    uint8_t cmd[] = { SD_CMD_BASE | 25, (blockNum >> 24) & 0xFF, (blockNum >> 16) & 0xFF, (blockNum >> 8) & 0xFF, blockNum & 0xFF, 0xFF };
+    SD_SPI_TransferWait(sd, cmd, NULL, 6);
+    if(SD_ReadR1(sd) != 0x00) { 
+        SD_Deselect(sd); 
+        xSemaphoreGive(sd->mutex); 
+        return SD_ERROR; 
     }
-
     SD_Deselect(sd);
     return SD_OK;
 }
@@ -555,32 +564,17 @@ int8_t SD_WriteBegin(sd_handle_t *sd, uint32_t blockNum) {
  */
 int8_t SD_WriteData(sd_handle_t *sd, const uint8_t* buff) {
     SD_Select(sd);
-
-    uint8_t dataToken = DATA_TOKEN_CMD25;
-    uint8_t crc[2] = { 0xFF, 0xFF };
-    HAL_SPI_Transmit(sd->hspi, &dataToken, sizeof(dataToken), HAL_MAX_DELAY);
-    HAL_SPI_Transmit(sd->hspi, (uint8_t*)buff, SD_BLOCK_SIZE, HAL_MAX_DELAY);
-    HAL_SPI_Transmit(sd->hspi, crc, sizeof(crc), HAL_MAX_DELAY);
-
-    /*
-        dataResp:
-        xxx0abc1
-            010 - Data accepted
-            101 - Data rejected due to CRC error
-            110 - Data rejected due to write error
-    */
-    uint8_t dataResp;
-    SD_ReadBytes(sd, &dataResp, sizeof(dataResp));
-    if((dataResp & 0x1F) != 0x05) { // data rejected
-        SD_Deselect(sd);
-        return SD_ERR_WRITE;
-    }
-
-    if(SD_WaitNotBusy(sd) < 0) {
-        SD_Deselect(sd);
-        return SD_TIMEOUT;
-    }
-
+    uint8_t token = 0xFC; 
+    SD_SPI_TransferWait(sd, &token, NULL, 1);
+    SD_SPI_TransferWait(sd, (uint8_t*)buff, NULL, SD_BLOCK_SIZE);
+    
+    uint8_t crc[] = {0xFF, 0xFF};
+    SD_SPI_TransferWait(sd, crc, NULL, 2);
+    
+    uint8_t resp;
+    HAL_SPI_Receive(sd->hspi, &resp, 1, 100);
+    if((resp & 0x1F) != 0x05) { SD_Deselect(sd); return SD_ERR_WRITE; }
+    if(SD_WaitNotBusy(sd) != SD_OK) { SD_Deselect(sd); return SD_TIMEOUT; }
     SD_Deselect(sd);
     return SD_OK;
 }
@@ -591,26 +585,14 @@ int8_t SD_WriteData(sd_handle_t *sd, const uint8_t* buff) {
  * @return 0 on success, negative error code on failure.
  */
 int8_t SD_WriteEnd(sd_handle_t *sd) {
-    SD_Select(sd);
-
-    uint8_t stopTran = 0xFD; // stop transaction token for CMD25
-    HAL_SPI_Transmit(sd->hspi, &stopTran, sizeof(stopTran), HAL_MAX_DELAY);
-
-    // skip one byte before readyng "busy"
-    uint8_t skipByte;
-    SD_ReadBytes(sd, &skipByte, sizeof(skipByte));
-
-    if(SD_WaitNotBusy(sd) < 0) {
-        SD_Deselect(sd);
-        
-        // thread safe:
-        xSemaphoreGive(sd->mutex); // Unlock!
-
-        return SD_TIMEOUT;
-    }
-
+SD_Select(sd);
+    uint8_t stop = 0xFD; 
+    SD_SPI_TransferWait(sd, &stop, NULL, 1);
+    uint8_t skip;
+    HAL_SPI_Receive(sd->hspi, &skip, 1, 10);
+    
+    if(SD_WaitNotBusy(sd) != SD_OK) { SD_Deselect(sd); xSemaphoreGive(sd->mutex); return SD_TIMEOUT; }
     SD_Deselect(sd);
-    // thread safe:
-    xSemaphoreGive(sd->mutex); // Unlock!
+    xSemaphoreGive(sd->mutex); 
     return SD_OK;
 }
