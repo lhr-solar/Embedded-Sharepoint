@@ -34,7 +34,7 @@ NS_ :
 BS_:
 
 BU_: PDU BPS Pump Telemetry Controls Pi_Display MPPT_C VCU Pedals MPPT_B MPPT_A LV_Carrier
-VAL_TABLE_ LWS_CCW_Type 5 "Resets calibration status" 3 "Sets the signal LWS_Angle to 0°" ;
+VAL_TABLE_ LWS_CCW_Type 5 "Resets calibration status" 3 "Sets the signal LWS_Angle to 0ï¿½" ;
 VAL_TABLE_ VCU_Fault_Type 6 "Motor HV Undervoltage" 5 "Motor HV Overvoltage" 4 "Motor Controller Fault" 3 "Motor Precharge Timeout" 2 "Motor Pchg Contactor Sense" 1 "Motor Contactor Sense" 0 "No Fault" ;
 VAL_TABLE_ BPS_Fault_Type 16 "Discharging Overcurrent" 15 "Charging Overcurrent" 14 "Estop 3" 13 "Estop 2" 12 "Estop 1" 11 "Array Pchg Contactor Sense" 10 "Array Contactor Sense" 9 "HV- Contactor Sense" 8 "HV+ Contactor Sense" 7 "Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "No Fault" ;
 VAL_TABLE_ HSS_Switch_Control 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
@@ -162,7 +162,12 @@ BO_ 848 BBPDU_Status: 5 PDU
  SG_ HSS_Fault : 4|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ HSS_Channel : 0|4@1+ (1,0) [0|16] "" Vector__XXX
 
-BO_ 96 Driver_Input_Status: 2 Controls
+BO_ 96 Driver_Input_Status: 6 Controls
+ SG_ Steering_Sensor_TRIM : 42|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Steering_Sensor_CAL : 41|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Steering_Sensor_OK : 40|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Steering_Angle_Speed : 32|8@1+ (4,0) [0|1020] "Degrees/s" Vector__XXX
+ SG_ Steering_Angle : 16|16@1+ (0.1,0) [-3276.8|3276.7] "Degrees" Vector__XXX
  SG_ Regen_Enable : 14|1@1+ (1,0) [0|0] ""  VCU
  SG_ Regen_Activate : 13|1@1+ (1,0) [0|0] ""  VCU
  SG_ PushToTalk_Pressed : 12|1@1+ (1,0) [0|0] "" Vector__XXX
@@ -177,7 +182,7 @@ BO_ 96 Driver_Input_Status: 2 Controls
  SG_ Cruise_Enable : 3|1@1+ (1,0) [0|0] ""  VCU
  SG_ Ignition_Off : 2|1@1+ (1,0) [0|0] ""  VCU
  SG_ Ignition_Motor : 1|1@1+ (1,0) [0|0] ""  VCU
- SG_ Ignition_Array : 0|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Ignition_Array : 0|1@1+ (1,0) [0|0] ""  VCU 
 
 BO_ 1792 Display_Cameras_Status: 2 Pi_Display
  SG_ Camera_Status_Right : 10|1@1+ (1,0) [0|0] "" Vector__XXX
@@ -259,6 +264,22 @@ BO_ 769 Supp_Battery_Charger_Status: 8 LV_Carrier
  SG_ Supplemental_Battery_Current : 16|16@1- (1,0) [-2300|28700] "mA" Vector__XXX
  SG_ Supplemental_DCDC_Voltage : 32|16@1+ (1,0) [0|26] "V" Vector__XXX
  SG_ Supplemental_DCDC_Current : 48|16@1- (1,0) [-2300|28700] "mA" Vector__XXX
+
+BO_ 21 Controls_Status: 3 Vector__XXX
+ SG_ Controls  : 0|0@1+ (0,0) [0|0] "" Vector__XXX
+ SG_ Controls_Leader_Fault : 0|8@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Lighting_Faults : 8|16@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1648 Lights_Status_1: 8 Vector__XXX
+ SG_ Active_Light_Headlights : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_RTurn : 1|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_LTurn : 2|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Brake : 3|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Strobe : 4|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Lights_Faults : 8|8@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Addr_LED_Current : 16|16@1+ (0.01,0) [0|0] "A" Vector__XXX
+ SG_ LED1_Current : 32|16@1+ (0.01,0) [0|0] "A" Vector__XXX
+ SG_ LED2_Current : 48|16@1+ (0.01,0) [0|0] "A" Vector__XXX
 
 BO_TX_BU_ 850 : Telemetry,Pi_Display,VCU;
 BO_TX_BU_ 849 : Telemetry,Pi_Display,VCU;
@@ -378,6 +399,23 @@ CM_ SG_ 80 Accel_Pos_Main "Accelerator Pedal Position (Main Sensor)";
 CM_ SG_ 1536 LTC4421_HVDCDC_Selected "The LTC4421's channel selected signal for the HV DCDC";
 CM_ SG_ 768 Supplemental_Battery_Voltage "Supplemental Battery voltage in V";
 CM_ SG_ 769 SuppCharger_Status "00 - Charging disabled, 01 - Charge done, 10 - Charge in progress, 11 - Charge fault detected";
+CM_ SG_ 96 Steering_Angle "Measured steering wheel angle";
+CM_ SG_ 96 Steering_Angle_Speed "Measured steering wheel angular speed";
+CM_ SG_ 96 Steering_Sensor_OK "Sensor validity bit";
+CM_ SG_ 96 Steering_Sensor_CAL "Sensor calibration status bit";
+CM_ SG_ 96 Steering_Sensor_TRIM "Sensor trimmed bit";
+CM_ SG_ 21 Controls_Leader_Fault "Controls leader faults";
+CM_ SG_ 21 Lighting_Faults "Lighting board faults";
+CM_ BO_ 1648 "Lighting board 1";
+CM_ SG_ 1648 Active_Light_Headlights "Headlight active on board";
+CM_ SG_ 1648 Active_Light_RTurn "Right turn ind active on board";
+CM_ SG_ 1648 Active_Light_LTurn "Left turn ind active on board";
+CM_ SG_ 1648 Active_Light_Brake "Brake light active on board";
+CM_ SG_ 1648 Active_Light_Strobe "BPS Strobe active on board";
+CM_ SG_ 1648 Lights_Faults "Lighting board faults or inconsistency";
+CM_ SG_ 1648 Addr_LED_Current "Current reading for addr led";
+CM_ SG_ 1648 LED1_Current "Current reading for normal led 1";
+CM_ SG_ 1648 LED2_Current "Current reading for normal led 2";
 BA_DEF_ BO_  "_Cdb_Sc_CTm_Test" INT 0 0;
 BA_DEF_ BO_  "_Cdb_Sc_CTm_Normal" INT 0 0;
 BA_DEF_  "DatabaseVersion" STRING ;
@@ -453,9 +491,9 @@ BA_ "_Cdb_Sc_CTm_Normal" BO_ 768 250;
 BA_ "VFrameFormat" BO_ 769 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 769 250;
 VAL_ 3221225472 HSS_Command_Type 1 "Set Current Limit" 0 "Control Switches" ;
-VAL_ 1984 LWS_CCW 5 "Resets calibration status" 3 "Sets the signal LWS_Angle to 0°" ;
+VAL_ 1984 LWS_CCW 5 "Resets calibration status" 3 "Sets the signal LWS_Angle to 0ï¿½" ;
 VAL_ 16 VCU_Fault 6 "Motor HV Undervoltage" 5 "Motor HV Overvoltage" 4 "Motor Controller Fault" 3 "Motor Precharge Timeout" 2 "Motor Pchg Contactor Sense" 1 "Motor Contactor Sense" 0 "No Fault" ;
-VAL_ 1 BPS_Fault 16 "Discharging Overcurrent" 15 "Charging Overcurrent" 14 "Estop 3" 13 "Estop 2" 12 "Estop 1" 11 "Array Pchg Contactor Sense" 10 "Array Contactor Sense" 9 "HV- Contactor Sense" 8 "HV+ Contactor Sense" 7 "Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "No Fault" ;
+VAL_ 21 BPS_Fault 16 "Discharging Overcurrent" 15 "Charging Overcurrent" 14 "Estop 3" 13 "Estop 2" 12 "Estop 1" 11 "Array Pchg Contactor Sense" 10 "Array Contactor Sense" 9 "HV- Contactor Sense" 8 "HV+ Contactor Sense" 7 "Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "No Fault" ;
 VAL_ 849 HSS_Control_1 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
 VAL_ 849 HSS_Control_12 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
 VAL_ 849 HSS_Control_13 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
