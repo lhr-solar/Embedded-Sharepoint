@@ -115,7 +115,8 @@ fi
 
 # Linux-only nix-bin (skip on macOS)
 if [[ "$OS" == "Linux" ]]; then
-    sudo apt install -y nix-bin || true
+    sudo apt-get update -o Acquire::Retries=3
+    sudo apt-get install -y --fix-missing nix-bin || true
 fi
 
 # --- Add shell prompt hook for flakes ---
