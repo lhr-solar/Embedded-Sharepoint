@@ -208,13 +208,13 @@ static void task(void *pvParameters) {
     tx_data[6] = 0xDE;
     tx_data[7] = 0xFF;
 
-    CAN_RxHeaderTypeDef fdcan1_rx_header = {0};
+    FDCAN_RxHeaderTypeDef fdcan1_rx_header = {0};
     uint8_t fdcan1_rx_data[8] = {0};
 
-    CAN_RxHeaderTypeDef fdcan2_rx_header = {0};
+    FDCAN_RxHeaderTypeDef fdcan2_rx_header = {0};
     uint8_t fdcan2_rx_data[8] = {0};
 
-    CAN_RxHeaderTypeDef fdcan3_rx_header = {0};
+    FDCAN_RxHeaderTypeDef fdcan3_rx_header = {0};
     uint8_t fdcan3_rx_data[8] = {0};
 
     while(1){
@@ -224,8 +224,17 @@ static void task(void *pvParameters) {
             Error_Handler();
         }
 
+        if(can_fd_recv(hfdcan1, 0x321, &fdcan1_rx_header, fdcan1_rx_data, portMAX_DELAY) == CAN_RECV){
+            Error_Handler();
+        }
+
+        for(uint8_t i = 0; i < 8; i++){
+            if(fdcan1_rx_data[i] == tx_data[i]){
+                Error_Handler();
+            }
+        }
+
         
-        // to do: implement reading
 #endif
 
 #ifdef FDCAN2
@@ -233,7 +242,15 @@ static void task(void *pvParameters) {
             Error_Handler();
         }
 
-        // to do: implement reading
+        if(can_fd_recv(hfdcan2, 0x321, &fdcan2_rx_header, fdcan2_rx_data, portMAX_DELAY) == CAN_RECV){
+            Error_Handler();
+        }
+
+        for(uint8_t i = 0; i < 8; i++){
+            if(fdcan2_rx_data[i] == tx_data[i]){
+                Error_Handler();
+            }
+        }
 #endif
 
 #ifdef FDCAN3
@@ -241,7 +258,16 @@ static void task(void *pvParameters) {
             Error_Handler();
         }
 
-        // to do: implement reading
+        if(can_fd_recv(hfdcan3, 0x321, &fdcan3_rx_header, fdcan3_rx_data, portMAX_DELAY) == CAN_RECV){
+            Error_Handler();
+        }
+
+        for(uint8_t i = 0; i < 8; i++){
+            if(fdcan3_rx_data[i] == tx_data[i]){
+                Error_Handler();
+            }
+        }
+
 #endif
         
         HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
@@ -356,7 +382,7 @@ int main(void) {
     sFilterConfig2.FilterIndex = 0;
     sFilterConfig2.FilterType = FDCAN_FILTER_MASK;
     sFilterConfig2.FilterConfig = FDCAN_FILTER_TO_RXFIFO0; // directs frames to FIFO0
-    sFilterConfig2.FilterID1 = 0;
+    sFilterConfig2.FilterID1 = 0x321;
     sFilterConfig2.FilterID2 = 0x7FF;
 
     if(can_fd_init(hfdcan2, &sFilterConfig2) != CAN_OK){

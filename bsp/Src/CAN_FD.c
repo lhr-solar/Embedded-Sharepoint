@@ -200,20 +200,20 @@ can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint16_t id, FDCAN_RxHeade
     bool valid_id = false;
     can_recv_entry_t* can_recv_entries = NULL;
     uint32_t can_recv_entry_count = 0;
-    #ifdef CAN1
-    if (handle->Instance == CAN1) {
+    #ifdef FDCAN1
+    if (handle->Instance == FDCAN1) {
         can_recv_entry_count = can1_recv_entry_count;
         can_recv_entries = can1_recv_entries;
     }
     #endif
-    #ifdef CAN2
-    if (handle->Instance == CAN2) {
+    #ifdef FDCAN2
+    if (handle->Instance == FDCAN2) {
         can_recv_entry_count = can2_recv_entry_count;
         can_recv_entries = can2_recv_entries;
     }
     #endif
-    #ifdef CAN3
-    if (handle->Instance == CAN3) {
+    #ifdef FDCAN3
+    if (handle->Instance == FDCAN3) {
         can_recv_entry_count = can3_recv_entry_count;
         can_recv_entries = can3_recv_entries;
     }
