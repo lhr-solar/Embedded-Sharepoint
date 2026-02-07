@@ -208,6 +208,15 @@ static void task(void *pvParameters) {
     tx_data[6] = 0xDE;
     tx_data[7] = 0xFF;
 
+    CAN_RxHeaderTypeDef fdcan1_rx_header = {0};
+    uint8_t fdcan1_rx_data[8] = {0};
+
+    CAN_RxHeaderTypeDef fdcan2_rx_header = {0};
+    uint8_t fdcan2_rx_data[8] = {0};
+
+    CAN_RxHeaderTypeDef fdcan3_rx_header = {0};
+    uint8_t fdcan3_rx_data[8] = {0};
+
     while(1){
 
 #ifdef FDCAN1
@@ -215,6 +224,7 @@ static void task(void *pvParameters) {
             Error_Handler();
         }
 
+        
         // to do: implement reading
 #endif
 
