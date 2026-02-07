@@ -137,12 +137,13 @@ adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef
         return ADC_QUEUE_FULL;
     }
 
-    volatile uint8_t isr = h->Instance->ISR;(void)isr;
+    // debugging :)
+    // volatile uint8_t isr = h->Instance->ISR;(void)isr;
     
     // Trigger Interrupt
     HAL_StatusTypeDef adc_it_stat = HAL_ADC_Start_IT(h);
 
-    isr=h->Instance->ISR;
+    // isr=h->Instance->ISR;
 
     // Handling
     switch (adc_it_stat) {

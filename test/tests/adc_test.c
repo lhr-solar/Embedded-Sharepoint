@@ -168,21 +168,38 @@ int main() {
 
     xReadings = xQueueCreateStatic(QUEUE_LENGTH, ITEM_SIZE, qStorage, &xStaticQueue);
 
+    HAL_ADC_MspInit(hadc1);
+
     // init ADC
     ADC_InitTypeDef adc_init_1 = {0};
 
+    // Testing F4 Init
     adc_init_1.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
     adc_init_1.Resolution = ADC_RESOLUTION_12B;
     adc_init_1.DataAlign = ADC_DATAALIGN_RIGHT;
-    // adc_init_1.ScanConvMode = ADC_SCAN_DISABLE;
     adc_init_1.EOCSelection = ADC_EOC_SINGLE_CONV;
-    // adc_init_1.LowPowerAutoWait = DISABLE;
     adc_init_1.ContinuousConvMode = DISABLE;
     adc_init_1.NbrOfConversion = 1;
     adc_init_1.DiscontinuousConvMode = DISABLE;
     adc_init_1.ExternalTrigConv = ADC_SOFTWARE_START;
     adc_init_1.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
     adc_init_1.DMAContinuousRequests = DISABLE;
+
+    // Testing G4 Init
+    // adc_init_1.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
+    // adc_init_1.Resolution = ADC_RESOLUTION_12B;
+    // adc_init_1.DataAlign = ADC_DATAALIGN_RIGHT;
+    // adc_init_1.ScanConvMode = ADC_SCAN_DISABLE;
+    // adc_init_1.EOCSelection = ADC_EOC_SINGLE_CONV;
+    // adc_init_1.LowPowerAutoWait = DISABLE;
+    // adc_init_1.ContinuousConvMode = DISABLE;
+    // adc_init_1.NbrOfConversion = 1;
+    // adc_init_1.DiscontinuousConvMode = DISABLE;
+    // adc_init_1.ExternalTrigConv = ADC_SOFTWARE_START;
+    // adc_init_1.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+    // adc_init_1.DMAContinuousRequests = DISABLE;
+    // adc_init_1.Overrun = ADC_OVR_DATA_PRESERVED;
+    // adc_init_1.OversamplingMode = DISABLE;
 
     volatile adc_status_t s = adc_init(&adc_init_1, hadc1);
     s+=0;
@@ -195,8 +212,7 @@ int main() {
     Error_Handler();
     }
 
-    HAL_ADC_MspInit(hadc1);
-
+    
     #ifdef ADC2
     ADC_InitTypeDef adc_init_2 = {0};
 
@@ -231,18 +247,6 @@ int main() {
 
     if (adc_init(&adc_init_3, hadc3) != ADC_OK) error_handler(ADC_INIT_FAIL);
     #endif
-
-    for (int i = 0; i < 10; i++) {
-        #ifdef ADC_SAMPLETIME_3CYCLES
-        adc_status_t stat = adc_read(ADC_CHANNEL_1,  ADC_SAMPLETIME_3CYCLES, hadc1, xReadings);
-        #else
-        adc_status_t stat = adc_read(ADC_CHANNEL_1,  ADC_SAMPLETIME_2CYCLES_5, hadc1, xReadings);
-        #endif
-        
-        if (stat != ADC_OK) {
-            error_handler(stat);
-        }
-    }
 
     xTaskCreateStatic(TestADC1,
                     "ADC Test",
