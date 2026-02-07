@@ -11,7 +11,7 @@
     <member refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280cae4c164e447d917034d2a8be9ed5050ad" kind="enumvalue"><name>ADC_INTERRUPT_ERROR</name></member>
     <member refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280ca39962f1ad4291ddf543bea23eb9cb9f4" kind="enumvalue"><name>ADC_QUEUE_FULL</name></member>
     <member refid="ADC_8h_1ac5e19f5884436af48e51d03d387c528c" kind="function"><name>adc_init</name></member>
-    <member refid="ADC_8h_1ae33dfb81b03a4b81c607347162ac5422" kind="function"><name>adc_read</name></member>
+    <member refid="ADC_8h_1a3cfe5c049e623a84872022c9818382ef" kind="function"><name>adc_read</name></member>
     <member refid="ADC_8h_1ac2d2036424929332c6b0f6e7f9dd3feb" kind="function"><name>adc_deinit</name></member>
   </compound>
   <compound refid="CAN_8h" kind="file"><name>CAN.h</name>

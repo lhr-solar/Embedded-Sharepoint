@@ -62,7 +62,7 @@ _Provides functions for initializing, reading, and managing ADC peripherals._ [M
 | ---: | :--- |
 |  [**adc\_status\_t**](ADC_8h.md#enum-adc_status_t) | [**adc\_deinit**](#function-adc_deinit) (ADC\_HandleTypeDef \* h) <br>_Deinitializes the ADC peripheral._  |
 |  [**adc\_status\_t**](ADC_8h.md#enum-adc_status_t) | [**adc\_init**](#function-adc_init) (ADC\_InitTypeDef \* init, ADC\_HandleTypeDef \* hadc) <br>_Initializes the ADC peripheral with the specified configuration._  |
-|  [**adc\_status\_t**](ADC_8h.md#enum-adc_status_t) | [**adc\_read**](#function-adc_read) (uint32\_t channel, uint32\_t samplingTime, ADC\_HandleTypeDef \* h, QueueHandle\_t \* q) <br>_Reads a value from the specified ADC channel._  |
+|  [**adc\_status\_t**](ADC_8h.md#enum-adc_status_t) | [**adc\_read**](#function-adc_read) (uint32\_t channel, uint32\_t samplingTime, ADC\_HandleTypeDef \* h, QueueHandle\_t q) <br>_Reads a value from the specified ADC channel._  |
 
 
 
@@ -253,7 +253,7 @@ adc_status_t adc_read (
     uint32_t channel,
     uint32_t samplingTime,
     ADC_HandleTypeDef * h,
-    QueueHandle_t * q
+    QueueHandle_t q
 ) 
 ```
 

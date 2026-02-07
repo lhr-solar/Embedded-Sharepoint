@@ -143,12 +143,12 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bsp/Inc/ADC.h" line="80" column="14" declfile="bsp/Inc/ADC.h" declline="80" declcolumn="14"/>
+        <location file="bsp/Inc/ADC.h" line="86" column="14" declfile="bsp/Inc/ADC.h" declline="86" declcolumn="14"/>
       </memberdef>
-      <memberdef kind="function" id="ADC_8h_1ae33dfb81b03a4b81c607347162ac5422" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="ADC_8h_1a3cfe5c049e623a84872022c9818382ef" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280c" kindref="member">adc_status_t</ref></type>
         <definition>adc_status_t adc_read</definition>
-        <argsstring>(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef *h, QueueHandle_t *q)</argsstring>
+        <argsstring>(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef *h, QueueHandle_t q)</argsstring>
         <name>adc_read</name>
         <param>
           <type>uint32_t</type>
@@ -163,7 +163,7 @@
           <declname>h</declname>
         </param>
         <param>
-          <type>QueueHandle_t *</type>
+          <type>QueueHandle_t</type>
           <declname>q</declname>
         </param>
         <briefdescription>
@@ -210,7 +210,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bsp/Inc/ADC.h" line="96" column="14" declfile="bsp/Inc/ADC.h" declline="96" declcolumn="14"/>
+        <location file="bsp/Inc/ADC.h" line="102" column="14" declfile="bsp/Inc/ADC.h" declline="102" declcolumn="14"/>
       </memberdef>
       <memberdef kind="function" id="ADC_8h_1ac2d2036424929332c6b0f6e7f9dd3feb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280c" kindref="member">adc_status_t</ref></type>
@@ -241,7 +241,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bsp/Inc/ADC.h" line="108" column="14" declfile="bsp/Inc/ADC.h" declline="108" declcolumn="14"/>
+        <location file="bsp/Inc/ADC.h" line="114" column="14" declfile="bsp/Inc/ADC.h" declline="114" declcolumn="14"/>
       </memberdef>
     </sectiondef>
     <briefdescription>
@@ -258,7 +258,7 @@
 </para>
 <para><bold>Reading ADC Values</bold>:</para>
 <para><itemizedlist>
-<listitem><para>Call <computeroutput><ref refid="ADC_8h_1ae33dfb81b03a4b81c607347162ac5422" kindref="member">adc_read()</ref></computeroutput> to sample a channel on the ADC.</para>
+<listitem><para>Call <computeroutput><ref refid="ADC_8h_1a3cfe5c049e623a84872022c9818382ef" kindref="member">adc_read()</ref></computeroutput> to sample a channel on the ADC.</para>
 </listitem><listitem><para>Provide the channel number, sampling time, ADC handle, and storage/queue reference.</para>
 </listitem><listitem><para>Returns a status code indicating success or failure.</para>
 </listitem></itemizedlist>
@@ -305,14 +305,20 @@
 <codeline lineno="65"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>ADC3</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="66"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>ADC_HandleTypeDef*<sp/>hadc3;</highlight></codeline>
 <codeline lineno="67"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>ADC3<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="68"><highlight class="normal"></highlight></codeline>
-<codeline lineno="80" refid="ADC_8h_1ac5e19f5884436af48e51d03d387c528c" refkind="member"><highlight class="normal"><ref refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280c" kindref="member">adc_status_t</ref><sp/><ref refid="ADC_8h_1ac5e19f5884436af48e51d03d387c528c" kindref="member">adc_init</ref>(ADC_InitTypeDef<sp/>*init,<sp/>ADC_HandleTypeDef*<sp/>hadc);</highlight></codeline>
-<codeline lineno="81"><highlight class="normal"></highlight></codeline>
-<codeline lineno="96" refid="ADC_8h_1ae33dfb81b03a4b81c607347162ac5422" refkind="member"><highlight class="normal"><ref refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280c" kindref="member">adc_status_t</ref><sp/><ref refid="ADC_8h_1ae33dfb81b03a4b81c607347162ac5422" kindref="member">adc_read</ref>(uint32_t<sp/>channel,<sp/>uint32_t<sp/>samplingTime,<sp/>ADC_HandleTypeDef<sp/>*h,<sp/>QueueHandle_t<sp/>*q);</highlight></codeline>
-<codeline lineno="97"><highlight class="normal"></highlight></codeline>
-<codeline lineno="108" refid="ADC_8h_1ac2d2036424929332c6b0f6e7f9dd3feb" refkind="member"><highlight class="normal"><ref refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280c" kindref="member">adc_status_t</ref><sp/><ref refid="ADC_8h_1ac2d2036424929332c6b0f6e7f9dd3feb" kindref="member">adc_deinit</ref>(ADC_HandleTypeDef<sp/>*h);</highlight></codeline>
-<codeline lineno="109"><highlight class="normal"></highlight></codeline>
-<codeline lineno="110"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>ADC4</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="69"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>ADC_HandleTypeDef*<sp/>hadc4;</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>ADC4<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="71"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>ADC5</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>ADC_HandleTypeDef*<sp/>hadc5;</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>ADC5<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight></codeline>
+<codeline lineno="86" refid="ADC_8h_1ac5e19f5884436af48e51d03d387c528c" refkind="member"><highlight class="normal"><ref refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280c" kindref="member">adc_status_t</ref><sp/><ref refid="ADC_8h_1ac5e19f5884436af48e51d03d387c528c" kindref="member">adc_init</ref>(ADC_InitTypeDef<sp/>*init,<sp/>ADC_HandleTypeDef*<sp/>hadc);</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight></codeline>
+<codeline lineno="102" refid="ADC_8h_1a3cfe5c049e623a84872022c9818382ef" refkind="member"><highlight class="normal"><ref refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280c" kindref="member">adc_status_t</ref><sp/><ref refid="ADC_8h_1a3cfe5c049e623a84872022c9818382ef" kindref="member">adc_read</ref>(uint32_t<sp/>channel,<sp/>uint32_t<sp/>samplingTime,<sp/>ADC_HandleTypeDef<sp/>*h,<sp/>QueueHandle_t<sp/>q);</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"></highlight></codeline>
+<codeline lineno="114" refid="ADC_8h_1ac2d2036424929332c6b0f6e7f9dd3feb" refkind="member"><highlight class="normal"><ref refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280c" kindref="member">adc_status_t</ref><sp/><ref refid="ADC_8h_1ac2d2036424929332c6b0f6e7f9dd3feb" kindref="member">adc_deinit</ref>(ADC_HandleTypeDef<sp/>*h);</highlight></codeline>
+<codeline lineno="115"><highlight class="normal"></highlight></codeline>
+<codeline lineno="116"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
     </programlisting>
     <location file="bsp/Inc/ADC.h"/>
   </compounddef>
