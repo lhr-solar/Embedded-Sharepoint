@@ -205,12 +205,14 @@ int main() {
     s+=0;
     if (s != ADC_OK) error_handler(ADC_INIT_FAIL);
 
+    #if !defined(STM32L4xx)
     ADC_MultiModeTypeDef multimode = {0};
     multimode.Mode = ADC_MODE_INDEPENDENT;
     if (HAL_ADCEx_MultiModeConfigChannel(hadc1, &multimode) != HAL_OK)
     {
     Error_Handler();
     }
+    #endif
 
     
     #ifdef ADC2
