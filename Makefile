@@ -79,6 +79,8 @@ TARGET = $(PROJECT_TARGET)
 CFG_FILE = stm/$(SERIES_GENERIC)/$(SERIES_LINE)/$(PROJECT_TARGET).cfg
 include $(CFG_FILE)
 
+OPENOCD_CFG_FILE := openocd-$(patsubst %xx,%x,$(SERIES_GENERIC)).cfg
+
 ######################################
 # building variables
 ######################################
@@ -327,8 +329,12 @@ FLASH_FILE = $(shell find $(BUILD_DIR) -name 'stm*.bin' -exec basename {} \;)
 
 .PHONY: flash
 flash:
-	@echo "Flashing $(FLASH_FILE) to $(FLASH_ADDRESS)"
-	-st-flash write $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
+	@echo "🔦 Flashing $(FLASH_FILE) to $(FLASH_ADDRESS)"
+	st-flash write $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
+
+.PHONY: flash-uart
+flash-uart:
+	./flash-uart.sh $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
 
 #######################################
 # format
@@ -357,6 +363,14 @@ help:
 	@echo "  format       - Run clang-format."
 	@echo "  format-fix   - Run clang-format and apply fixes."
 
+
+#######################################
+# openocd
+#######################################	
+.PHONY: debug
+debug:
+	@echo "🔬 Using $(OPENOCD_CFG_FILE)"
+	openocd -f $(OPENOCD_CFG_FILE)
 
 #######################################
 # dependencies

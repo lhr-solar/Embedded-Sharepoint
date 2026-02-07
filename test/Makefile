@@ -52,11 +52,16 @@ clean:
 # generate documentation
 .PHONY: docs
 docs:
+	cd .. && mkdocs build
 	cd .. && mkdocs serve
 
 .PHONY: flash
 flash:
 	$(MAKE) -C $(BUILD_MAKEFILE_DIR) flash
+
+.PHONY: flash-uart
+flash-uart:
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) flash-uart
 
 # help
 .PHONY: help
@@ -64,3 +69,21 @@ help:
 	@echo "Available targets:"
 	@echo "  docs     - Generate documentation using mkdocs."
 	$(MAKE) -C $(BUILD_MAKEFILE_DIR) help
+
+ifeq ($(OS),Windows_NT)
+  OPEN_CMD = start
+else
+  ifeq ($(shell uname), Darwin)
+    OPEN_CMD = open
+  else
+    OPEN_CMD = xdg-open
+  endif
+endif
+
+.PHONY: dbc-editor
+dbc-editor:
+	cd ../middleware/dbc-editor && $(OPEN_CMD) dbc-editor.html
+
+.PHONY: debug
+debug:
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) debug
