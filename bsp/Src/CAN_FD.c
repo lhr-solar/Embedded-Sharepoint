@@ -200,24 +200,31 @@ can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint16_t id, FDCAN_RxHeade
     bool valid_id = false;
     can_recv_entry_t* can_recv_entries = NULL;
     uint32_t can_recv_entry_count = 0;
-    #ifdef FDCAN1
-    if (handle->Instance == FDCAN1) {
+    if(0){ // placeholder if no FDCAN peripherals are enabled
+
+    }
+    
+#ifdef FDCAN1
+    else if (handle->Instance == FDCAN1) {
         can_recv_entry_count = can1_recv_entry_count;
         can_recv_entries = can1_recv_entries;
     }
-    #endif
-    #ifdef FDCAN2
-    if (handle->Instance == FDCAN2) {
+#endif /* FDCAN1 */
+
+#ifdef FDCAN2
+    else if (handle->Instance == FDCAN2) {
         can_recv_entry_count = can2_recv_entry_count;
         can_recv_entries = can2_recv_entries;
     }
-    #endif
-    #ifdef FDCAN3
-    if (handle->Instance == FDCAN3) {
+#endif /* FDCAN2 */
+
+#ifdef FDCAN3
+    else if (handle->Instance == FDCAN3) {
         can_recv_entry_count = can3_recv_entry_count;
         can_recv_entries = can3_recv_entries;
     }
-    #endif
+#endif /* FDCAN3 */
+
     if(can_recv_entries != NULL){
         for(uint32_t i = 0; i < can_recv_entry_count; i++){
         if (can_recv_entries[i].id == id) {
@@ -252,11 +259,12 @@ can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint16_t id, FDCAN_RxHeade
     }
 }
 
-__weak void can_fd_rx_callback_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
+__weak void can_fd_rx_callback_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs, can_rx_payload_t recv_payload )
 {
     /* Prevent unused argument(s) compilation warning */
     UNUSED(hfdcan);
     UNUSED(RxFifo0ITs); 
+    UNUSED(recv_payload); 
 }
 
 void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
@@ -268,8 +276,15 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
     {
         while(HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &payload.header, payload.data) == HAL_OK)
         {
-            // FDCAN1
-            if (hfdcan->Instance == FDCAN1) {
+            if(0){
+
+            }
+
+#ifdef FDCAN1
+            else if (hfdcan->Instance == FDCAN1) {
+#ifdef FDCAN1_RECV_HOOK_EN
+            can_fd_rx_callback_hook(hfdcan, RxFifo0ITs,payload);
+#endif
             for (int i = 0; i < can1_recv_entry_count; i++) {
                 if (can1_recv_entries[i].id == payload.header.Identifier) {
                 if (can1_recv_entries[i].circular){
@@ -287,10 +302,14 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
                 }
             }
             }
+#endif /* FDCAN2 */
 
-            // FDCAN2
-            #ifdef FDCAN2
+            
+#ifdef FDCAN2
             else if (hfdcan->Instance == FDCAN2) {
+#ifdef FDCAN2_RECV_HOOK_EN
+            can_fd_rx_callback_hook(hfdcan, RxFifo0ITs,payload);
+#endif
             for (int i = 0; i < can2_recv_entry_count; i++) {
                 if (can2_recv_entries[i].id == payload.header.Identifier) {
                 if (can2_recv_entries[i].circular){
@@ -308,11 +327,14 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
                 }
             }
             }
-            #endif /* FDCAN2 */
+#endif /* FDCAN2 */
 
-            // FDCAN3
-            #ifdef FDCAN3
+#ifdef FDCAN3
             if (hfdcan->Instance == FDCAN3) {
+
+#ifdef FDCAN3_RECV_HOOK_EN
+            can_fd_rx_callback_hook(hfdcan, RxFifo0ITs,payload);
+#endif
             for (int i = 0; i < can3_recv_entry_count; i++) {
                 if (can3_recv_entries[i].id == payload.header.Identifier) {
                 if (can3_recv_entries[i].circular){
@@ -330,11 +352,10 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
                 }
             }
             }
-            #endif /* FDCAN3 */
+#endif /* FDCAN3 */
         }
     }
     
-    can_fd_rx_callback_hook(hfdcan, RxFifo0ITs);
 }
 
 __weak void can_fd_tx_complete_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t BufferIndexes)

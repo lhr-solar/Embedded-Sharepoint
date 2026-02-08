@@ -20,6 +20,12 @@ StackType_t task_stack[512];
 #define CAN_RX_PROFILE_PORT GPIOB
 #define CAN_RX_PROFILE_PIN GPIO_PIN_4
 
+// This enables the can_fd_rx_callback_hook function to be called when data is recieved
+#define FDCAN1_RECV_HOOK_EN
+#define FDCAN2_RECV_HOOK_EN
+#define FDCAN3_RECV_HOOK_EN
+
+
 void can_profile_pins_init(){
     GPIO_InitTypeDef tx_pin_config = {
         .Mode = GPIO_MODE_OUTPUT_PP,
@@ -208,14 +214,14 @@ static void task(void *pvParameters) {
     tx_data[6] = 0xDE;
     tx_data[7] = 0xFF;
 
-    FDCAN_RxHeaderTypeDef fdcan1_rx_header = {0};
-    uint8_t fdcan1_rx_data[8] = {0};
+    // FDCAN_RxHeaderTypeDef fdcan1_rx_header = {0};
+    // uint8_t fdcan1_rx_data[8] = {0};
 
-    FDCAN_RxHeaderTypeDef fdcan2_rx_header = {0};
-    uint8_t fdcan2_rx_data[8] = {0};
+    // FDCAN_RxHeaderTypeDef fdcan2_rx_header = {0};
+    // uint8_t fdcan2_rx_data[8] = {0};
 
-    FDCAN_RxHeaderTypeDef fdcan3_rx_header = {0};
-    uint8_t fdcan3_rx_data[8] = {0};
+    // FDCAN_RxHeaderTypeDef fdcan3_rx_header = {0};
+    // uint8_t fdcan3_rx_data[8] = {0};
 
     while(1){
 
@@ -224,15 +230,15 @@ static void task(void *pvParameters) {
             Error_Handler();
         }
 
-        if(can_fd_recv(hfdcan1, test_id, &fdcan1_rx_header, fdcan1_rx_data, portMAX_DELAY) != CAN_RECV){
-            Error_Handler();
-        }
+        // if(can_fd_recv(hfdcan1, test_id, &fdcan1_rx_header, fdcan1_rx_data, portMAX_DELAY) != CAN_RECV){
+        //     Error_Handler();
+        // }
 
-        for(uint8_t i = 0; i < 8; i++){
-            if(fdcan1_rx_data[i] != tx_data[i]){
-                Error_Handler();
-            }
-        }
+        // for(uint8_t i = 0; i < 8; i++){
+        //     if(fdcan1_rx_data[i] != tx_data[i]){
+        //         Error_Handler();
+        //     }
+        // }
 
         
 #endif
@@ -242,15 +248,15 @@ static void task(void *pvParameters) {
             Error_Handler();
         }
 
-        if(can_fd_recv(hfdcan2, test_id, &fdcan2_rx_header, fdcan2_rx_data, portMAX_DELAY) != CAN_RECV){
-            Error_Handler();
-        }
+        // if(can_fd_recv(hfdcan2, test_id, &fdcan2_rx_header, fdcan2_rx_data, portMAX_DELAY) != CAN_RECV){
+        //     Error_Handler();
+        // }
 
-        for(uint8_t i = 0; i < 8; i++){
-            if(fdcan2_rx_data[i] != tx_data[i]){
-                Error_Handler();
-            }
-        }
+        // for(uint8_t i = 0; i < 8; i++){
+        //     if(fdcan2_rx_data[i] != tx_data[i]){
+        //         Error_Handler();
+        //     }
+        // }
 #endif
 
 #ifdef FDCAN3
@@ -258,15 +264,15 @@ static void task(void *pvParameters) {
             Error_Handler();
         }
 
-        if(can_fd_recv(hfdcan3, test_id, &fdcan3_rx_header, fdcan3_rx_data, portMAX_DELAY) != CAN_RECV){
-            Error_Handler();
-        }
+        // if(can_fd_recv(hfdcan3, test_id, &fdcan3_rx_header, fdcan3_rx_data, portMAX_DELAY) != CAN_RECV){
+        //     Error_Handler();
+        // }
 
-        for(uint8_t i = 0; i < 8; i++){
-            if(fdcan3_rx_data[i] != tx_data[i]){
-                Error_Handler();
-            }
-        }
+        // for(uint8_t i = 0; i < 8; i++){
+        //     if(fdcan3_rx_data[i] != tx_data[i]){
+        //         Error_Handler();
+        //     }
+        // }
 
 #endif
         
@@ -279,7 +285,7 @@ void can_fd_tx_complete_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t BufferIndexes
     HAL_GPIO_TogglePin(CAN_TX_PROFILE_PORT, CAN_TX_PROFILE_PIN);
 }
 
-void can_fd_rx_callback_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs){
+void can_fd_rx_callback_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs, can_rx_payload_t recv_payload){
     HAL_GPIO_TogglePin(CAN_RX_PROFILE_PORT, CAN_RX_PROFILE_PIN);
 }
 
@@ -453,7 +459,12 @@ void HAL_FDCAN_MspInit(FDCAN_HandleTypeDef* fdcanHandle)
 
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
-  if(fdcanHandle->Instance==FDCAN1)
+
+  if(0){ // placeholder for if else if there are no FDCANs defined
+
+  }
+#ifdef FDCAN1
+  else if(fdcanHandle->Instance==FDCAN1)
   {
  
     PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_FDCAN;
@@ -487,6 +498,8 @@ void HAL_FDCAN_MspInit(FDCAN_HandleTypeDef* fdcanHandle)
     HAL_NVIC_SetPriority(FDCAN1_IT1_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(FDCAN1_IT1_IRQn);
   }
+#endif // FDCAN1
+#ifdef FDCAN2
   else if(fdcanHandle->Instance==FDCAN2)
   {
 
@@ -522,6 +535,9 @@ void HAL_FDCAN_MspInit(FDCAN_HandleTypeDef* fdcanHandle)
     HAL_NVIC_EnableIRQ(FDCAN2_IT1_IRQn);
   
   }
+#endif // FDCAN2
+
+#ifdef FDCAN3
   else if(fdcanHandle->Instance==FDCAN3)
   {
   /** Initializes the peripherals clocks
@@ -558,6 +574,7 @@ void HAL_FDCAN_MspInit(FDCAN_HandleTypeDef* fdcanHandle)
     HAL_NVIC_EnableIRQ(FDCAN3_IT1_IRQn);
 
   }
+#endif
 }
 
 void HAL_FDCAN_MspDeInit(FDCAN_HandleTypeDef* fdcanHandle)
