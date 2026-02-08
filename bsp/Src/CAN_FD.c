@@ -261,7 +261,6 @@ __weak void can_fd_rx_callback_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo
 
 void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 {
-    can_fd_rx_callback_hook(hfdcan, RxFifo0ITs);
     can_rx_payload_t payload = {0};
     BaseType_t higherPriorityTaskWoken = pdFALSE;
 
@@ -348,7 +347,6 @@ __weak void can_fd_tx_complete_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t Buffer
 void HAL_FDCAN_TxBufferCompleteCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t BufferIndexes)
 {
 
-    can_fd_tx_complete_hook(hfdcan, BufferIndexes);
     BaseType_t higherPriorityTaskWoken = pdFALSE;
     can_tx_payload_t payload = {0};
 

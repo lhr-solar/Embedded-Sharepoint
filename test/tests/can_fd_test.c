@@ -224,7 +224,7 @@ static void task(void *pvParameters) {
             Error_Handler();
         }
 
-        if(can_fd_recv(hfdcan1, 0x321, &fdcan1_rx_header, fdcan1_rx_data, portMAX_DELAY) == CAN_RECV){
+        if(can_fd_recv(hfdcan1, 0x001, &fdcan1_rx_header, fdcan1_rx_data, portMAX_DELAY) == CAN_RECV){
             Error_Handler();
         }
 
@@ -242,7 +242,7 @@ static void task(void *pvParameters) {
             Error_Handler();
         }
 
-        if(can_fd_recv(hfdcan2, 0x321, &fdcan2_rx_header, fdcan2_rx_data, portMAX_DELAY) == CAN_RECV){
+        if(can_fd_recv(hfdcan2, 0x001, &fdcan2_rx_header, fdcan2_rx_data, portMAX_DELAY) == CAN_RECV){
             Error_Handler();
         }
 
@@ -258,7 +258,7 @@ static void task(void *pvParameters) {
             Error_Handler();
         }
 
-        if(can_fd_recv(hfdcan3, 0x321, &fdcan3_rx_header, fdcan3_rx_data, portMAX_DELAY) == CAN_RECV){
+        if(can_fd_recv(hfdcan3, 0x001, &fdcan3_rx_header, fdcan3_rx_data, portMAX_DELAY) == CAN_RECV){
             Error_Handler();
         }
 
@@ -276,20 +276,10 @@ static void task(void *pvParameters) {
 }
 
 void can_fd_tx_complete_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t BufferIndexes){
-    static uint8_t trippleToggle = 0; // toggle twice at the start, and then toggle once at the end (trippleToggle = 1)
-    if(trippleToggle == 0){
-        HAL_GPIO_TogglePin(CAN_TX_PROFILE_PORT, CAN_TX_PROFILE_PIN);
-    }
-    trippleToggle = 1;
     HAL_GPIO_TogglePin(CAN_TX_PROFILE_PORT, CAN_TX_PROFILE_PIN);
 }
 
 void can_fd_rx_callback_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs){
-    static uint8_t trippleToggle = 0; // toggle twice at the start, and then toggle once at the end (trippleToggle = 1)
-    if(trippleToggle == 0){
-        HAL_GPIO_TogglePin(CAN_RX_PROFILE_PORT, CAN_RX_PROFILE_PIN);
-    }
-    trippleToggle = 1;
     HAL_GPIO_TogglePin(CAN_RX_PROFILE_PORT, CAN_RX_PROFILE_PIN);
 }
 
