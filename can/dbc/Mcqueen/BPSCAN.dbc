@@ -1,0 +1,124 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: BPS
+VAL_TABLE_ BPS_Fault_Type 16 "Discharging Overcurrent" 15 "Charging Overcurrent" 14 "Estop 3" 13 "Estop 2" 12 "Estop 1" 11 "Array Pchg Contactor Sense" 10 "Array Contactor Sense" 9 "HV- Contactor Sense" 8 "HV+ Contactor Sense" 7 "Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "No Fault" ;
+
+
+BO_ 5 BPS_Precharge_Voltages: 6 BPS
+ SG_ Precharge_Battery_Voltage : 0|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
+ SG_ Precharge_Array_Voltage : 24|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
+
+BO_ 3 BPS_Temperature_Array: 5 BPS
+ SG_ BPS_Temperature_Tap_RawV : 24|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 8|16@1- (0.01,0) [-327.68|327.67] "C" Vector__XXX
+ SG_ BPS_VoltTemp_ID : 0|3@1+ (1,0) [0|7] "" Vector__XXX
+ SG_ BPS_Tap_ID : 3|5@1+ (1,0) [0|31] "" Vector__XXX
+
+BO_ 2 BPS_Voltage_Array: 3 BPS
+ SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ BPS_Tap_ID : 3|5@1+ (1,0) [0|31] "" Vector__XXX
+ SG_ BPS_VoltTemp_ID : 0|3@1+ (1,0) [0|7] "" Vector__XXX
+
+BO_ 4 BPS_Pack_Current: 5 BPS
+ SG_ Main_Battery_Current_RawV : 24|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ Main_Battery_Current : 0|24@1- (0.001,0) [-8388.608|8388.607] "A" Vector__XXX
+
+BO_ 1 BPS_Status: 7 BPS
+ SG_ Array_Precharge_Contactor_State : 13|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Array_Contactor_State : 12|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ HV_Plus_Contactor_State : 10|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ HV_Minus_Contactor_State : 11|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Main_Battery_Avg_Temperature : 40|16@1- (0.01,0) [-327.68|327.67] "" Vector__XXX
+ SG_ Main_Battery_Voltage : 16|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
+ SG_ BPS_Regen_OK : 9|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_Charge_OK : 8|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_Fault : 0|8@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 6 BPS_VoltTemp_Faults: 5 BPS
+ SG_ BPS_Temperature_Tap_Fault : 0|32@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_VoltTemp_BQ_Fault : 32|8@1+ (1,0) [0|0] "" Vector__XXX
+
+
+
+CM_ SG_ 5 Precharge_Battery_Voltage "Battery voltage as measured by active precharge circuitry";
+CM_ SG_ 5 Precharge_Array_Voltage "Array voltage as measured by active precharge circuitry";
+CM_ SG_ 3 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
+CM_ SG_ 3 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
+CM_ SG_ 3 BPS_VoltTemp_ID "BPS VoltTemp ID";
+CM_ SG_ 3 BPS_Tap_ID "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
+CM_ SG_ 2 BPS_Voltage_Tap_Data "Voltage tap measurement for the specified VoltTemp and Tap ID";
+CM_ SG_ 2 BPS_Tap_ID "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
+CM_ SG_ 2 BPS_VoltTemp_ID "BPS VoltTemp ID";
+CM_ SG_ 4 Main_Battery_Current_RawV "Main battery current raw voltage as measured by the BPS";
+CM_ SG_ 4 Main_Battery_Current "Main battery current as measured by the BPS";
+CM_ SG_ 1 Array_Precharge_Contactor_State "Array Precharge Contactor State (0 open, 1 closed)";
+CM_ SG_ 1 Array_Contactor_State "Array Main Contactor State (0 open, 1 closed)";
+CM_ SG_ 1 HV_Plus_Contactor_State "HV+ Contactor State (0 open, 1 closed)";
+CM_ SG_ 1 HV_Minus_Contactor_State "HV- Contactor State (0 open, 1 closed)";
+CM_ SG_ 1 Main_Battery_Avg_Temperature "Average pack temperature as determined by the BPS";
+CM_ SG_ 1 Main_Battery_Voltage "Total battery pack voltage as determined by the BPS";
+CM_ SG_ 1 BPS_Regen_OK "BPS has determined regenerative braking is OK (0 not ok, 1 ok)";
+CM_ SG_ 1 BPS_Charge_OK "BPS has determined charging the pack is OK (0 not ok, 1 ok)";
+CM_ SG_ 1 BPS_Fault "BPS Fault State (0 for all clear; see value table for specific faults)";
+CM_ SG_ 6 BPS_Temperature_Tap_Fault "VoltTemp Tap Fault State (4 taps per VoltTemp) (0 no fault, 1 fault)";
+CM_ SG_ 6 BPS_VoltTemp_BQ_Fault "VoltTemp BQ Fault State (8 VoltTemps) (0 no fault, 1 fault)";
+BA_DEF_ BO_  "_Cdb_Sc_CTm_Test" INT 0 0;
+BA_DEF_ BO_  "_Cdb_Sc_CTm_Normal" INT 0 0;
+BA_DEF_  "DatabaseVersion" STRING ;
+BA_DEF_  "ProtocolType" STRING ;
+BA_DEF_  "DatabaseCompiler" STRING ;
+BA_DEF_ SG_  "SPN" INT 0 524287;
+BA_DEF_ BO_  "VFrameFormat" ENUM  "StandardCAN","ExtendedCAN","reserved","J1939PG";
+BA_DEF_  "MultiplexExtEnabled" ENUM  "No","Yes";
+BA_DEF_  "BusType" STRING ;
+BA_DEF_DEF_  "_Cdb_Sc_CTm_Test" 0;
+BA_DEF_DEF_  "_Cdb_Sc_CTm_Normal" 0;
+BA_DEF_DEF_  "DatabaseVersion" "DEMO PLUS";
+BA_DEF_DEF_  "ProtocolType" "";
+BA_DEF_DEF_  "DatabaseCompiler" "";
+BA_DEF_DEF_  "SPN" 0;
+BA_DEF_DEF_  "VFrameFormat" "J1939PG";
+BA_DEF_DEF_  "MultiplexExtEnabled" "No";
+BA_DEF_DEF_  "BusType" "";
+BA_ "BusType" "CAN";
+BA_ "VFrameFormat" BO_ 5 0;
+BA_ "VFrameFormat" BO_ 3 0;
+BA_ "VFrameFormat" BO_ 2 0;
+BA_ "VFrameFormat" BO_ 4 0;
+BA_ "VFrameFormat" BO_ 1 0;
+BA_ "VFrameFormat" BO_ 6 0;
+VAL_ 1 BPS_Fault 16 "Discharging Overcurrent" 15 "Charging Overcurrent" 14 "Estop 3" 13 "Estop 2" 12 "Estop 1" 11 "Array Pchg Contactor Sense" 10 "Array Contactor Sense" 9 "HV- Contactor Sense" 8 "HV+ Contactor Sense" 7 "Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "No Fault" ;
+
