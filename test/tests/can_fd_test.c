@@ -229,7 +229,7 @@ static void task(void *pvParameters) {
         }
 
         for(uint8_t i = 0; i < 8; i++){
-            if(fdcan1_rx_data[i] == tx_data[i]){
+            if(fdcan1_rx_data[i] != tx_data[i]){
                 Error_Handler();
             }
         }
@@ -247,7 +247,7 @@ static void task(void *pvParameters) {
         }
 
         for(uint8_t i = 0; i < 8; i++){
-            if(fdcan2_rx_data[i] == tx_data[i]){
+            if(fdcan2_rx_data[i] != tx_data[i]){
                 Error_Handler();
             }
         }
@@ -263,7 +263,7 @@ static void task(void *pvParameters) {
         }
 
         for(uint8_t i = 0; i < 8; i++){
-            if(fdcan3_rx_data[i] == tx_data[i]){
+            if(fdcan3_rx_data[i] != tx_data[i]){
                 Error_Handler();
             }
         }
