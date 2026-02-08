@@ -98,6 +98,7 @@ VERBOSE ?= 0
 BUILD_DIR = $(PROJECT_BUILD_DIR)
 # FreeRTOS path
 FREERTOS_PATH := middleware/FreeRTOS-Kernel
+FATFS_PATH := middleware/FatFs
 
 ######################################
 # source
@@ -113,6 +114,7 @@ $(wildcard $(FREERTOS_PATH)/*.c) \
 $(FREERTOS_PATH)/portable/GCC/ARM_CM4F/port.c \
 $(wildcard common/Src/*.c) \
 $(wildcard driver/Src/*.c) \
+$(wildcard $(FATFS_PATH)/Src/*.c) \
 $(filter-out $(addprefix bsp/Src/,$(addsuffix .c,$(BSP_DISABLE))),$(wildcard bsp/Src/*.c))
 
 # ASM sources
@@ -180,6 +182,7 @@ stm/$(SERIES_GENERIC)/CMSIS/Device/ST/$(SERIES_GENERIC_CAP)/Include \
 stm/$(SERIES_GENERIC)/CMSIS/Include \
 $(FREERTOS_PATH)/include \
 $(FREERTOS_PATH)/portable/GCC/ARM_CM4F \
+$(FATFS_PATH)/Inc \
 common/Inc \
 driver/Inc \
 bsp/Inc
