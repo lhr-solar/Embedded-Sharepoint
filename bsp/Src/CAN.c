@@ -1,30 +1,6 @@
 #include "CAN.h"
 #include "queue_ex.h"
 
-// 8 for now unless extended payload is supported
-#define DATA_SIZE (8)
-
-// entries in queues
-typedef struct {
-  CAN_TxHeaderTypeDef header;
-  uint8_t data[DATA_SIZE];
-} tx_payload_t;
-
-typedef struct {
-  CAN_RxHeaderTypeDef header;
-  uint8_t data[DATA_SIZE];
-} rx_payload_t;
-
-// metadata for recieve queues
-typedef struct {
-  uint16_t id;
-  uint16_t size;
-  QueueHandle_t queue;
-  uint8_t* storage;
-  bool circular;
-  StaticQueue_t buffer;
-} recv_entry_t;
-
 #ifdef CAN1
 // fallback can1 send queue size
 #ifndef CAN1_SEND_QUEUE_SIZE
@@ -39,41 +15,7 @@ CAN_HandleTypeDef* hcan1 = &hcan1_;
 static QueueHandle_t can1_send_queue = NULL;
 static StaticQueue_t can1_send_queue_buffer;
 static uint8_t
-    can1_send_queue_storage[CAN1_SEND_QUEUE_SIZE * sizeof(tx_payload_t)];
-
-#if __has_include("can1_recv_entries.h")
-// create can1 recv queue storage
-#define CAN_RECV_ENTRY(ID_, SIZE_, CIRCULAR_) \
-  static uint8_t can1_recv_queue_storage_##ID_[SIZE_ * sizeof(rx_payload_t)];
-
-#include "can1_recv_entries.h"
-
-#undef CAN_RECV_ENTRY
-
-// create can1 recv queue array
-#define CAN_RECV_ENTRY(ID_, SIZE_, CIRCULAR_)      \
-  {.id = (ID_),                         \
-   .size = (SIZE_),                     \
-   .queue = NULL,                       \
-   .storage = can1_recv_queue_storage_##ID_, \
-   .circular = (CIRCULAR_), \
-   .buffer = {{0}}},
-
-static recv_entry_t can1_recv_entries[] = {
-#include "can1_recv_entries.h"
-};
-#undef CAN_RECV_ENTRY
-
-// calculate amount of can1 recv entries
-static const uint32_t can1_recv_entry_count =
-    sizeof(can1_recv_entries) / sizeof(can1_recv_entries[0]);
-
-#else /* can1_recv_entries.h */
-// create can1 recv queue array
-static recv_entry_t can1_recv_entries[] = {};
-// calculate amount of can1 recv entries
-static const uint32_t can1_recv_entry_count = 0;
-#endif /* can1_recv_entries.h */
+    can1_send_queue_storage[CAN1_SEND_QUEUE_SIZE * sizeof(can_tx_payload_t)];
 #endif /* CAN1 */
 
 #ifdef CAN2
@@ -90,41 +32,7 @@ CAN_HandleTypeDef* hcan2 = &hcan2_;
 static QueueHandle_t can2_send_queue = NULL;
 static StaticQueue_t can2_send_queue_buffer;
 static uint8_t
-    can2_send_queue_storage[CAN2_SEND_QUEUE_SIZE * sizeof(tx_payload_t)];
-
-#if __has_include("can2_recv_entries.h")
-// create can2 recv queue storage
-#define CAN_RECV_ENTRY(ID_, SIZE_, CIRCULAR_) \
-  static uint8_t can2_recv_queue_storage_##ID_[SIZE_ * sizeof(rx_payload_t)];
-
-#include "can2_recv_entries.h"
-
-#undef CAN_RECV_ENTRY
-
-// create can2 recv queue array
-#define CAN_RECV_ENTRY(ID_, SIZE_, CIRCULAR_)      \
-  {.id = (ID_),                         \
-   .size = (SIZE_),                     \
-   .queue = NULL,                       \
-   .storage = can2_recv_queue_storage_##ID_, \
-   .circular = (CIRCULAR_), \
-   .buffer = {{0}}},
-
-static recv_entry_t can2_recv_entries[] = {
-#include "can2_recv_entries.h"
-};
-#undef CAN_RECV_ENTRY
-
-// calculate amount of can2 recv entries
-static const uint32_t can2_recv_entry_count =
-    sizeof(can2_recv_entries) / sizeof(can2_recv_entries[0]);
-
-#else /* can2_recv_entries.h */
-// create can2 recv queue array
-static recv_entry_t can2_recv_entries[] = {};
-// calculate amount of can2 recv entries
-static const uint32_t can2_recv_entry_count = 0;
-#endif /* can2_recv_entries.h */
+    can2_send_queue_storage[CAN2_SEND_QUEUE_SIZE * sizeof(can_tx_payload_t)];
 #endif /* CAN2 */
 
 #ifdef CAN3
@@ -141,41 +49,7 @@ CAN_HandleTypeDef* hcan3 = &hcan3_;
 static QueueHandle_t can3_send_queue = NULL;
 static StaticQueue_t can3_send_queue_buffer;
 static uint8_t
-    can3_send_queue_storage[CAN3_SEND_QUEUE_SIZE * sizeof(tx_payload_t)];
-
-#if __has_include("can3_recv_entries.h")
-// create recv queue storage
-#define CAN_RECV_ENTRY(ID_, SIZE_, CIRCULAR_) \
-  static uint8_t recv_queue_storage_##ID_[SIZE_ * sizeof(rx_payload_t)];
-
-#include "can3_recv_entries.h"
-
-#undef CAN_RECV_ENTRY
-
-// create can3 recv queue array
-#define CAN_RECV_ENTRY(ID_, SIZE_, CIRCULAR_)      \
-  {.id = (ID_),                         \
-   .size = (SIZE_),                     \
-   .queue = NULL,                       \
-   .storage = recv_queue_storage_##ID_, \
-   .circular = (CIRCULAR_), \
-   .buffer = {{0}}},
-
-static recv_entry_t can3_recv_entries[] = {
-#include "can3_recv_entries.h"
-};
-#undef CAN_RECV_ENTRY
-
-// calculate amount of can3 recv entries
-static const uint32_t can3_recv_entry_count =
-    sizeof(can3_recv_entries) / sizeof(can3_recv_entries[0]);
-
-#else /* can3_recv_entries.h */
-// create can3 recv queue array
-static recv_entry_t can3_recv_entries[] = {};
-// calculate amount of can3 recv entries
-static const uint32_t can3_recv_entry_count = 0;
-#endif /* can3_recv_entries.h */
+    can3_send_queue_storage[CAN3_SEND_QUEUE_SIZE * sizeof(can_tx_payload_t)];
 #endif /* CAN3 */
 
 static inline void HAL_CAN_MspF4Init(CAN_HandleTypeDef* hcan){
@@ -388,11 +262,11 @@ can_status_t can_init(CAN_HandleTypeDef* handle, CAN_FilterTypeDef* filter) {
   if (handle->Instance == CAN1) {
     // init queues
     can1_send_queue =
-        xQueueCreateStatic(CAN1_SEND_QUEUE_SIZE, sizeof(tx_payload_t),
+        xQueueCreateStatic(CAN1_SEND_QUEUE_SIZE, sizeof(can_tx_payload_t),
                            can1_send_queue_storage, &can1_send_queue_buffer);
     for (int i = 0; i < can1_recv_entry_count; i++) {
       can1_recv_entries[i].queue = xQueueCreateStatic(
-          can1_recv_entries[i].size, sizeof(rx_payload_t),
+          can1_recv_entries[i].size, sizeof(can_rx_payload_t),
           can1_recv_entries[i].storage, &can1_recv_entries[i].buffer);
     }
   }
@@ -402,11 +276,11 @@ can_status_t can_init(CAN_HandleTypeDef* handle, CAN_FilterTypeDef* filter) {
   else if (handle->Instance == CAN2) {
     // init queues
     can2_send_queue =
-        xQueueCreateStatic(CAN2_SEND_QUEUE_SIZE, sizeof(tx_payload_t),
+        xQueueCreateStatic(CAN2_SEND_QUEUE_SIZE, sizeof(can_tx_payload_t),
                            can2_send_queue_storage, &can2_send_queue_buffer);
     for (int i = 0; i < can2_recv_entry_count; i++) {
       can2_recv_entries[i].queue = xQueueCreateStatic(
-          can2_recv_entries[i].size, sizeof(rx_payload_t),
+          can2_recv_entries[i].size, sizeof(can_rx_payload_t),
           can2_recv_entries[i].storage, &can2_recv_entries[i].buffer);
     }
   }
@@ -417,11 +291,11 @@ can_status_t can_init(CAN_HandleTypeDef* handle, CAN_FilterTypeDef* filter) {
   else if (handle->Instance == CAN3) {
     // init queues
     can3_send_queue =
-        xQueueCreateStatic(CAN3_SEND_QUEUE_SIZE, sizeof(tx_payload_t),
+        xQueueCreateStatic(CAN3_SEND_QUEUE_SIZE, sizeof(can_tx_payload_t),
                            can3_send_queue_storage, &can3_send_queue_buffer);
     for (int i = 0; i < can3_recv_entry_count; i++) {
       can3_recv_entries[i].queue = xQueueCreateStatic(
-          can3_recv_entries[i].size, sizeof(rx_payload_t),
+          can3_recv_entries[i].size, sizeof(can_rx_payload_t),
           can3_recv_entries[i].storage, &can3_recv_entries[i].buffer);
     }
   }
@@ -491,17 +365,37 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
                       CAN_RxHeaderTypeDef* header, uint8_t data[],
                       TickType_t delay_ticks) {
   // recieve from queue matching id
-  rx_payload_t payload = {0};
+  can_rx_payload_t payload = {0};
   bool valid_id = false;
-  // CAN1
+
+  can_recv_entry_t* can_recv_entries = NULL;
+  uint32_t can_recv_entry_count = 0;
+#ifdef CAN1
   if (handle->Instance == CAN1) {
-    for (int i = 0; i < can1_recv_entry_count; i++) {
-      if (can1_recv_entries[i].id == id) {
+    can_recv_entry_count = can1_recv_entry_count;
+    can_recv_entries = can1_recv_entries;
+  }
+#endif
+#ifdef CAN2
+  if (handle->Instance == CAN2) {
+    can_recv_entry_count = can2_recv_entry_count;
+    can_recv_entries = can2_recv_entries;
+  }
+#endif
+#ifdef CAN3
+  if (handle->Instance == CAN3) {
+    can_recv_entry_count = can3_recv_entry_count;
+    can_recv_entries = can3_recv_entries;
+  }
+#endif
+  if(can_recv_entries != NULL){
+    for(uint32_t i = 0; i < can_recv_entry_count; i++){
+      if (can_recv_entries[i].id == id) {
         valid_id = true;
 
         // if delay_ticks == portMAX_DELAY thread blocks, 
         // other values of delay_ticks are delays
-        if (xQueueReceive(can1_recv_entries[i].queue, &payload, delay_ticks) ==
+        if (xQueueReceive(can_recv_entries[i].queue, &payload, delay_ticks) ==
             errQUEUE_EMPTY) {
           return CAN_EMPTY;
         }
@@ -510,55 +404,14 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
       }
     }
   }
-
-  // CAN2
-  #ifdef CAN2
-  else if (handle->Instance == CAN2) {
-    for (int i = 0; i < can2_recv_entry_count; i++) {
-      if (can2_recv_entries[i].id == id) {
-        valid_id = true;
-
-        // if delay_ticks == portMAX_DELAY thread blocks, 
-        // other values of delay_ticks are delays
-        if (xQueueReceive(can2_recv_entries[i].queue, &payload, delay_ticks) ==
-            errQUEUE_EMPTY) {
-          return CAN_EMPTY;
-        }
-  
-        break;
-      }
-    }
-  }
-  #endif /* CAN2 */
-
-  // CAN3
-  #ifdef CAN3
-  else if (handle->Instance == CAN3) {
-    for (int i = 0; i < can3_recv_entry_count; i++) {
-      if (can3_recv_entries[i].id == id) {
-        valid_id = true;
-
-        // if delay_ticks == portMAX_DELAY thread blocks, 
-        // other values of delay_ticks are delays
-        if (xQueueReceive(can3_recv_entries[i].queue, &payload, delay_ticks) ==
-            errQUEUE_EMPTY) {
-          return CAN_EMPTY;
-        }
-  
-        break;
-      }
-    }
-  }
-  #endif /* CAN3 */
-
-  else {
+  else{
     return CAN_ERR;
   }
 
   // decode payload if it is valid and message recieved
   if (valid_id) {
     *header = payload.header;
-    for (int i = 0; i < DATA_SIZE; i++) {
+    for (int i = 0; i < CAN_DATA_SIZE; i++) {
       data[i] = payload.data[i];
     }
 
@@ -573,7 +426,7 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
                       const CAN_TxHeaderTypeDef* header, const uint8_t data[],
                       TickType_t delay_ticks) {
 
-  // disable interrupts (do not want race conditions
+  // disable interrupts (do not want race conditions)
   // on shared resource (mailbox) between threads and
   // interrupt routines (TxComplete))
   portENTER_CRITICAL();
@@ -582,23 +435,23 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
   if (HAL_CAN_GetTxMailboxesFreeLevel(handle) >= 1) {
     uint32_t mailbox;
     if (HAL_CAN_AddTxMessage(handle, header, data, &mailbox) != HAL_OK) {
-      // disable interrupts
+      // enable interrupts
       portEXIT_CRITICAL();
 
       return CAN_ERR;
     }
 
-    // disable interrupts
+    // enable interrupts
     portEXIT_CRITICAL();
   }
   // otherwise, put into send queue
   else {
-    // disable interrupts
+    // enable interrupts
     portEXIT_CRITICAL();
     
-    tx_payload_t payload = {0};
+    can_tx_payload_t payload = {0};
     payload.header = *header;
-    for (int i = 0; i < DATA_SIZE; i++) {
+    for (int i = 0; i < CAN_DATA_SIZE; i++) {
       payload.data[i] = data[i];
     }
 
@@ -632,7 +485,7 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
 }
 
 static void transmit(CAN_HandleTypeDef* handle) {
-  tx_payload_t payload = {0};
+  can_tx_payload_t payload = {0};
   BaseType_t higherPriorityTaskWoken = pdFALSE;
 
   // receive data from send queue
@@ -690,7 +543,7 @@ void HAL_CAN_TxMailbox2CompleteCallback(CAN_HandleTypeDef* hcan) {
 }
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
-  rx_payload_t payload = {0};
+  can_rx_payload_t payload = {0};
   BaseType_t higherPriorityTaskWoken = pdFALSE;
 
   // recieve messages from queue till empty and put into recieve queues
@@ -705,7 +558,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
               can1_recv_entries[i].queue, 
               &payload, 
               &higherPriorityTaskWoken, 
-              sizeof(rx_payload_t)
+              sizeof(can_rx_payload_t)
             );
           } else {
             xQueueSendFromISR(can1_recv_entries[i].queue, &payload,
@@ -726,7 +579,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
               can2_recv_entries[i].queue, 
               &payload, 
               &higherPriorityTaskWoken, 
-              sizeof(rx_payload_t)
+              sizeof(can_rx_payload_t)
             );
           } else {
             xQueueSendFromISR(can2_recv_entries[i].queue, &payload,
@@ -748,7 +601,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
               can3_recv_entries[i].queue, 
               &payload, 
               &higherPriorityTaskWoken, 
-              sizeof(rx_payload_t)
+              sizeof(can_rx_payload_t)
             );
           } else {
             xQueueSendFromISR(can3_recv_entries[i].queue, &payload,
