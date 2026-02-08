@@ -185,9 +185,9 @@ void Success_Handler(){
 
 static void task(void *pvParameters) {
 
-
+    int test_id = 0x321;
     FDCAN_TxHeaderTypeDef tx_header = {0};   
-    tx_header.Identifier = 0x321;
+    tx_header.Identifier = test_id;
     tx_header.IdType = FDCAN_STANDARD_ID;
     tx_header.TxFrameType = FDCAN_DATA_FRAME;
     tx_header.DataLength = FDCAN_DLC_BYTES_8;
@@ -224,7 +224,7 @@ static void task(void *pvParameters) {
             Error_Handler();
         }
 
-        if(can_fd_recv(hfdcan1, 0x001, &fdcan1_rx_header, fdcan1_rx_data, portMAX_DELAY) == CAN_RECV){
+        if(can_fd_recv(hfdcan1, test_id, &fdcan1_rx_header, fdcan1_rx_data, portMAX_DELAY) != CAN_RECV){
             Error_Handler();
         }
 
@@ -242,7 +242,7 @@ static void task(void *pvParameters) {
             Error_Handler();
         }
 
-        if(can_fd_recv(hfdcan2, 0x001, &fdcan2_rx_header, fdcan2_rx_data, portMAX_DELAY) == CAN_RECV){
+        if(can_fd_recv(hfdcan2, test_id, &fdcan2_rx_header, fdcan2_rx_data, portMAX_DELAY) != CAN_RECV){
             Error_Handler();
         }
 
@@ -258,7 +258,7 @@ static void task(void *pvParameters) {
             Error_Handler();
         }
 
-        if(can_fd_recv(hfdcan3, 0x001, &fdcan3_rx_header, fdcan3_rx_data, portMAX_DELAY) == CAN_RECV){
+        if(can_fd_recv(hfdcan3, test_id, &fdcan3_rx_header, fdcan3_rx_data, portMAX_DELAY) != CAN_RECV){
             Error_Handler();
         }
 
@@ -333,8 +333,8 @@ int main(void) {
     sFilterConfig.FilterIndex = 0;
     sFilterConfig.FilterType = FDCAN_FILTER_MASK;
     sFilterConfig.FilterConfig = FDCAN_FILTER_TO_RXFIFO0; // directs frames to FIFO0
-    sFilterConfig.FilterID1 = 0;
-    sFilterConfig.FilterID2 = 0x7FF;
+    sFilterConfig.FilterID1 = 0x000;
+    sFilterConfig.FilterID2 = 0x000;
     
     if(can_fd_init(hfdcan1, &sFilterConfig) != CAN_OK){
         Error_Handler();
@@ -372,8 +372,8 @@ int main(void) {
     sFilterConfig2.FilterIndex = 0;
     sFilterConfig2.FilterType = FDCAN_FILTER_MASK;
     sFilterConfig2.FilterConfig = FDCAN_FILTER_TO_RXFIFO0; // directs frames to FIFO0
-    sFilterConfig2.FilterID1 = 0x321;
-    sFilterConfig2.FilterID2 = 0x7FF;
+    sFilterConfig2.FilterID1 = 0x000;
+    sFilterConfig2.FilterID2 = 0x000;
 
     if(can_fd_init(hfdcan2, &sFilterConfig2) != CAN_OK){
         Error_Handler();
@@ -412,8 +412,8 @@ int main(void) {
     sFilterConfig3.FilterIndex = 0;
     sFilterConfig3.FilterType = FDCAN_FILTER_MASK;
     sFilterConfig3.FilterConfig = FDCAN_FILTER_TO_RXFIFO0; // directs frames to FIFO0
-    sFilterConfig3.FilterID1 = 0;
-    sFilterConfig3.FilterID2 = 0x7FF;
+    sFilterConfig3.FilterID1 = 0x000;
+    sFilterConfig3.FilterID2 = 0x000;
 
     if(can_fd_init(hfdcan3, &sFilterConfig3) != CAN_OK){
         Error_Handler();
