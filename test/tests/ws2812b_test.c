@@ -6,6 +6,9 @@
 #define LED_PIN GPIO_PIN_3
 #define LED_PORT GPIOC
 
+#define PROFILE_PORT GPIOA
+#define PROFILE_PIN GPIO_PIN_10
+
 TIM_HandleTypeDef htim4;
 DMA_HandleTypeDef hdma_tim4_ch1;
 
@@ -21,6 +24,28 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef* timHandle);
 StaticTask_t TaskBuffer;
 StackType_t TaskStack[configMINIMAL_STACK_SIZE];
 
+
+void Profiler_Init(){
+    GPIO_InitTypeDef led_config = {
+        .Mode = GPIO_MODE_OUTPUT_PP,
+        .Pull = GPIO_NOPULL,
+        .Pin = PROFILE_PIN
+    };
+
+    switch ((uint32_t)PROFILE_PORT) {
+        case (uint32_t)GPIOA:
+            __HAL_RCC_GPIOA_CLK_ENABLE();
+            break;
+        case (uint32_t)GPIOB:
+            __HAL_RCC_GPIOB_CLK_ENABLE();
+            break;
+        case (uint32_t)GPIOC:
+            __HAL_RCC_GPIOC_CLK_ENABLE();
+            break;
+    }
+    
+    HAL_GPIO_Init(PROFILE_PORT, &led_config);
+}
 
 // Initialize clock for heartbeat LED port
 void Heartbeat_Init() {
@@ -47,9 +72,11 @@ void Heartbeat_Init() {
 
 void task(){
 
-    for(uint8_t i = 0; i < MAX_LED; i++){
-        ws2812b_set_color(&wsHandle, i, WS2812B_SOLID_OFF, portMAX_DELAY);
-    }
+    // for(uint8_t i = 0; i < MAX_LED; i++){
+    //     ws2812b_set_color(&wsHandle, i, WS2812B_SOLID_OFF, portMAX_DELAY);
+    // }
+
+    // ws2812b_set_all_leds(&wsHandle, WS2812B_SOLID_OFF, portMAX_DELAY);
 
     ws2812b_set_color(&wsHandle, 0, WS2812B_SOLID_RED, portMAX_DELAY);
     ws2812b_set_color(&wsHandle, 1, WS2812B_SOLID_GREEN, portMAX_DELAY);
@@ -68,6 +95,7 @@ void task(){
         // // ws2812b_set_solid_color(&wsHandle, 4, WS2812B_SOLID_PURPLE, portMAX_DELAY);
         // vTaskDelay(pdMS_TO_TICKS(500));
         // // ws2812b_set_solid_color(&wsHandle, 4, WS2812B_SOLID_BURNT_ORANGE, portMAX_DELAY);
+        HAL_GPIO_TogglePin(PROFILE_PORT, PROFILE_PIN);
         HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
         vTaskDelay(pdMS_TO_TICKS(500));
     }
@@ -94,7 +122,7 @@ int main(){
     );
 
     Heartbeat_Init();
-    // HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET);
+    Profiler_Init();
 
     // Create the tasks statically
     xTaskCreateStatic(task, 
@@ -184,7 +212,7 @@ void MX_DMA_Init(void)
 
   /* DMA interrupt init */
   /* DMA1_Channel1_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
 
 }

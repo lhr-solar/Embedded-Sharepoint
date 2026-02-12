@@ -42,7 +42,6 @@ ws2812b_status_t ws2812b_init(ws2812b_handle_t *ledHandler, uint8_t ledData[][NU
 
 static uint32_t ws2812b_encode_pwm(ws2812b_handle_t *ledHandler){
 
-
     /* Encode entire strip */
     uint32_t idx = 0;
     uint32_t color;
@@ -65,7 +64,33 @@ static uint32_t ws2812b_encode_pwm(ws2812b_handle_t *ledHandler){
         ledHandler->pwmBuffer[idx++] = 0;
     }
     return idx;
+}
 
+static ws2812b_status_t ws2812b_send_color(ws2812b_handle_t *ledHandler, uint32_t idx){
+
+    // indiciate that there's a new frame to send for the leds
+    if(xSemaphoreGive(ledHandler->framePendingSem) != pdTRUE){
+        return WS2812B_ERROR;
+    }
+
+    HAL_StatusTypeDef err = HAL_OK;
+    taskENTER_CRITICAL();
+    if (ledHandler->dmaActive == 0)
+    {
+        // addressable led dma is not active and we need to start the DMA transmission
+        ledHandler->dmaActive = 1;
+        err = HAL_TIM_PWM_Start_DMA(ledHandler->timerHandle, ledHandler->channel, (uint32_t *)ledHandler->pwmBuffer, idx);
+        if(err == HAL_ERROR){
+            ledHandler->dmaActive = 0;
+        }
+    }
+    taskEXIT_CRITICAL();
+
+    if(err != HAL_OK){
+        return WS2812B_ERROR;
+    }
+
+    return WS2812B_OK;
 }
 
 ws2812b_status_t ws2812b_set_color(ws2812b_handle_t *ledHandler, uint8_t led_num, ws2812b_color_t color, TickType_t delay_ticks){
@@ -96,29 +121,9 @@ ws2812b_status_t ws2812b_set_color(ws2812b_handle_t *ledHandler, uint8_t led_num
         return WS2812B_ERROR;
     }
 
-    // indiciate that there's a new frame to send for the leds
-    if(xSemaphoreGive(ledHandler->framePendingSem) != pdTRUE){
-        return WS2812B_ERROR;
-    }
+    ws2812b_status_t errStatus = ws2812b_send_color(ledHandler, idx);
 
-    HAL_StatusTypeDef err = HAL_OK;
-    taskENTER_CRITICAL();
-    if (ledHandler->dmaActive == 0)
-    {
-        // addressable led dma is not active and we need to start the DMA transmission
-        ledHandler->dmaActive = 1;
-        err = HAL_TIM_PWM_Start_DMA(ledHandler->timerHandle, ledHandler->channel, (uint32_t *)ledHandler->pwmBuffer, idx);
-        if(err == HAL_ERROR){
-            ledHandler->dmaActive = 0;
-        }
-    }
-    taskEXIT_CRITICAL();
-
-    if(err != HAL_OK){
-        return WS2812B_ERROR;
-    }
-
-    return WS2812B_OK;
+    return errStatus;
 
 }
 
@@ -146,29 +151,9 @@ ws2812b_status_t ws2812b_set_all_leds(ws2812b_handle_t *ledHandler, ws2812b_colo
         return WS2812B_ERROR;
     }
 
-    // indiciate that there's a new frame to send for the leds
-    if(xSemaphoreGive(ledHandler->framePendingSem) != pdTRUE){
-        return WS2812B_ERROR;
-    }
+    ws2812b_status_t errStatus = ws2812b_send_color(ledHandler, idx);
 
-    HAL_StatusTypeDef err = HAL_OK;
-    taskENTER_CRITICAL();
-    if (ledHandler->dmaActive == 0)
-    {
-        // addressable led dma is not active and we need to start the DMA transmission
-        ledHandler->dmaActive = 1;
-        err = HAL_TIM_PWM_Start_DMA(ledHandler->timerHandle, ledHandler->channel, (uint32_t *)ledHandler->pwmBuffer, idx);
-        if(err == HAL_ERROR){
-            ledHandler->dmaActive = 0;
-        }
-    }
-    taskEXIT_CRITICAL();
-
-    if(err != HAL_OK){
-        return WS2812B_ERROR;
-    }
-
-    return WS2812B_OK;
+    return errStatus;
 }
 
 ws2812b_status_t ws2812b_set_led_range(ws2812b_handle_t *ledHandler, uint8_t start, uint8_t end, ws2812b_color_t color, TickType_t delay_ticks){
@@ -200,29 +185,9 @@ ws2812b_status_t ws2812b_set_led_range(ws2812b_handle_t *ledHandler, uint8_t sta
         return WS2812B_ERROR;
     }
 
-    // indiciate that there's a new frame to send for the leds
-    if(xSemaphoreGive(ledHandler->framePendingSem) != pdTRUE){
-        return WS2812B_ERROR;
-    }
+    ws2812b_status_t errStatus = ws2812b_send_color(ledHandler, idx);
 
-    HAL_StatusTypeDef err = HAL_OK;
-    taskENTER_CRITICAL();
-    if (ledHandler->dmaActive == 0)
-    {
-        // addressable led dma is not active and we need to start the DMA transmission
-        ledHandler->dmaActive = 1;
-        err = HAL_TIM_PWM_Start_DMA(ledHandler->timerHandle, ledHandler->channel, (uint32_t *)ledHandler->pwmBuffer, idx);
-        if(err == HAL_ERROR){
-            ledHandler->dmaActive = 0;
-        }
-    }
-    taskEXIT_CRITICAL();
-
-    if(err != HAL_OK){
-        return WS2812B_ERROR;
-    }
-
-    return WS2812B_OK;
+    return errStatus;
 }
 
 ws2812b_status_t ws2812b_load_colors(ws2812b_handle_t *ledHandler, const ws2812b_color_t colors[], uint8_t start, uint8_t numColors, TickType_t delay_ticks){
@@ -250,40 +215,15 @@ ws2812b_status_t ws2812b_load_colors(ws2812b_handle_t *ledHandler, const ws2812b
     uint32_t idx = 0;
     idx = ws2812b_encode_pwm(ledHandler);
 
-    if(xSemaphoreGive(ledHandler->mutex) != pdTRUE){
-        return WS2812B_ERROR;
-    }
+    ws2812b_status_t errStatus = ws2812b_send_color(ledHandler, idx);
 
-    // indiciate that there's a new frame to send for the leds
-    if(xSemaphoreGive(ledHandler->framePendingSem) != pdTRUE){
-        return WS2812B_ERROR;
-    }
-
-    HAL_StatusTypeDef err = HAL_OK;
-    taskENTER_CRITICAL();
-    if (ledHandler->dmaActive == 0)
-    {
-        // addressable led dma is not active and we need to start the DMA transmission
-        ledHandler->dmaActive = 1;
-        err = HAL_TIM_PWM_Start_DMA(ledHandler->timerHandle, ledHandler->channel, (uint32_t *)ledHandler->pwmBuffer, idx);
-        if(err == HAL_ERROR){
-            ledHandler->dmaActive = 0;
-        }
-    }
-    taskEXIT_CRITICAL();
-
-    if(err != HAL_OK){
-        return WS2812B_ERROR;
-    }
-
-    return WS2812B_OK;
+    return errStatus;
 }
 
 void ws2812b_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim, ws2812b_handle_t *ledHandler,  BaseType_t *xHigherPriorityTaskWoken){
     if(ledHandler == NULL){
         return;
     }
-
 
     if (xSemaphoreTakeFromISR(ledHandler->framePendingSem, xHigherPriorityTaskWoken) == pdTRUE){
         // start the DMA transmission again
