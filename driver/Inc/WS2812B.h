@@ -24,17 +24,6 @@ typedef enum{
     WS2812B_BUSY
 }ws2812b_status_t;
 
-// typedef enum{
-//     WS2812B_SOLID_GREEN,
-//     WS2812B_SOLID_RED,
-//     WS2812B_SOLID_BLUE,
-//     WS2812B_SOLID_YELLOW,
-//     WS2812B_SOLID_BURNT_ORANGE,
-//     WS2812B_SOLID_PURPLE,
-//     WS2812B_SOLID_OFF,
-//     WS2812B_SOLID_NUM_COLORS
-// }ws2812b_solid_color_t;
-
 typedef struct{
     uint8_t red;
     uint8_t green;
@@ -74,3 +63,5 @@ ws2812b_status_t ws2812b_set_color(ws2812b_handle_t *ledHandler, uint8_t led_num
 void ws2812b_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim, ws2812b_handle_t *ledHandler,  BaseType_t *xHigherPriorityTaskWoken);
 
 ws2812b_status_t ws2812b_set_all_leds(ws2812b_handle_t *ledHandler, ws2812b_color_t color, TickType_t delay_ticks);
+
+ws2812b_status_t ws2812b_set_led_range(ws2812b_handle_t *ledHandler, uint8_t start, uint8_t end, ws2812b_color_t color, TickType_t delay_ticks);
