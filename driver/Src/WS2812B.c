@@ -35,26 +35,8 @@ ws2812b_status_t ws2812b_init(ws2812b_handle_t *ledHandler, uint8_t ledData[][NU
     return WS2812B_OK;
 }
 
-ws2812b_status_t ws2812b_set_color(ws2812b_handle_t *ledHandler, uint8_t led_num, uint8_t red, uint8_t green, uint8_t blue, TickType_t delay_ticks){
+static uint32_t ws2812b_encode_pwm(ws2812b_handle_t *ledHandler){
 
-    if (ledHandler == NULL){
-        return WS2812B_NULL_ERROR;
-    }
-
-    if (led_num >= ledHandler->numberLeds){
-        return WS2812B_ERROR;
-    } 
-
-    // take the mutex so other threads can't modify the thread
-    if(xSemaphoreTake(ledHandler->mutex, delay_ticks) != pdTRUE){
-        return WS2812B_BUSY;
-    }
-
-
-    ledHandler->ledData[led_num][WS2812B_LEDNUMBER] = led_num;
-    ledHandler->ledData[led_num][WS2812B_GREEN] = green;
-    ledHandler->ledData[led_num][WS2812B_RED] = red;
-    ledHandler->ledData[led_num][WS2812B_BLUE] = blue;
 
     /* Encode entire strip */
     uint32_t idx = 0;
@@ -77,6 +59,33 @@ ws2812b_status_t ws2812b_set_color(ws2812b_handle_t *ledHandler, uint8_t led_num
     for (uint8_t i = 0; i < WS2812_RESET_SLOTS; i++){
         ledHandler->pwmBuffer[idx++] = 0;
     }
+    return idx;
+
+}
+
+ws2812b_status_t ws2812b_set_color(ws2812b_handle_t *ledHandler, uint8_t led_num, ws2812b_color_t color, TickType_t delay_ticks){
+
+    if (ledHandler == NULL){
+        return WS2812B_NULL_ERROR;
+    }
+
+    if (led_num >= ledHandler->numberLeds){
+        return WS2812B_ERROR;
+    } 
+
+    // take the mutex so other threads can't modify the thread
+    if(xSemaphoreTake(ledHandler->mutex, delay_ticks) != pdTRUE){
+        return WS2812B_BUSY;
+    }
+
+
+    ledHandler->ledData[led_num][WS2812B_LEDNUMBER] = led_num;
+    ledHandler->ledData[led_num][WS2812B_GREEN] = color.green;
+    ledHandler->ledData[led_num][WS2812B_RED] = color.red;
+    ledHandler->ledData[led_num][WS2812B_BLUE] = color.blue;
+
+    uint32_t idx = 0;
+    idx = ws2812b_encode_pwm(ledHandler);
 
     if(xSemaphoreGive(ledHandler->mutex) != pdTRUE){
         return WS2812B_ERROR;
@@ -94,6 +103,9 @@ ws2812b_status_t ws2812b_set_color(ws2812b_handle_t *ledHandler, uint8_t led_num
         // addressable led dma is not active and we need to start the DMA transmission
         ledHandler->dmaActive = 1;
         err = HAL_TIM_PWM_Start_DMA(ledHandler->timerHandle, ledHandler->channel, (uint32_t *)ledHandler->pwmBuffer, idx);
+        if(err == HAL_ERROR){
+            ledHandler->dmaActive = 0;
+        }
     }
     taskEXIT_CRITICAL();
 
@@ -105,45 +117,54 @@ ws2812b_status_t ws2812b_set_color(ws2812b_handle_t *ledHandler, uint8_t led_num
 
 }
 
-ws2812b_status_t ws2812b_set_solid_color(ws2812b_handle_t *ledHandler, uint8_t led_num, ws2812b_solid_color_t color, TickType_t delay_ticks){
-    
-    if(ledHandler == NULL){
+ws2812b_status_t ws2812b_set_all_leds(ws2812b_handle_t *ledHandler, ws2812b_color_t color, TickType_t delay_ticks){
+    if (ledHandler == NULL){
         return WS2812B_NULL_ERROR;
     }
 
-    if(ledHandler->numberLeds <= led_num){
+    // take the mutex so other threads can't modify the thread
+    if(xSemaphoreTake(ledHandler->mutex, delay_ticks) != pdTRUE){
+        return WS2812B_BUSY;
+    }
+
+    for(uint8_t i = 0; i < ledHandler->numberLeds; i++) {
+        ledHandler->ledData[i][WS2812B_LEDNUMBER] = i;
+        ledHandler->ledData[i][WS2812B_GREEN] = color.green;
+        ledHandler->ledData[i][WS2812B_RED] = color.red;
+        ledHandler->ledData[i][WS2812B_BLUE] = color.blue;
+    }
+
+    uint32_t idx = 0;
+    idx = ws2812b_encode_pwm(ledHandler);
+
+    if(xSemaphoreGive(ledHandler->mutex) != pdTRUE){
         return WS2812B_ERROR;
     }
 
-    ws2812b_status_t errStatus = WS2812B_ERROR;
-    switch(color){
-        case WS2812B_SOLID_GREEN:
-            errStatus = ws2812b_set_color(ledHandler, led_num, 0, 255, 0, delay_ticks);
-            break;
-        case WS2812B_SOLID_RED:
-            errStatus = ws2812b_set_color(ledHandler, led_num, 255, 0, 0, delay_ticks);
-            break;
-        case WS2812B_SOLID_BLUE:
-            errStatus = ws2812b_set_color(ledHandler, led_num, 0, 0, 255, delay_ticks);
-            break;
-        case WS2812B_SOLID_YELLOW:
-            errStatus = ws2812b_set_color(ledHandler, led_num, 255, 255, 0, delay_ticks);
-            break;
-        case WS2812B_SOLID_BURNT_ORANGE:
-            errStatus = ws2812b_set_color(ledHandler, led_num, 204, 85, 0, delay_ticks);
-            break;
-        case WS2812B_SOLID_PURPLE:
-            errStatus = ws2812b_set_color(ledHandler, led_num, 128, 0, 128, delay_ticks);
-            break;
-        case WS2812B_SOLID_OFF:
-            errStatus = ws2812b_set_color(ledHandler, led_num, 0, 0, 0, delay_ticks);
-            break;
-        default:
-            errStatus = ws2812b_set_color(ledHandler, led_num, 0, 0, 0, delay_ticks);
-            break;
+    // indiciate that there's a new frame to send for the leds
+    if(xSemaphoreGive(ledHandler->framePendingSem) != pdTRUE){
+        return WS2812B_ERROR;
     }
-    return errStatus;
-} 
+
+    HAL_StatusTypeDef err = HAL_ERROR;
+    taskENTER_CRITICAL();
+    if (ledHandler->dmaActive == 0)
+    {
+        // addressable led dma is not active and we need to start the DMA transmission
+        ledHandler->dmaActive = 1;
+        err = HAL_TIM_PWM_Start_DMA(ledHandler->timerHandle, ledHandler->channel, (uint32_t *)ledHandler->pwmBuffer, idx);
+        if(err == HAL_ERROR){
+            ledHandler->dmaActive = 0;
+        }
+    }
+    taskEXIT_CRITICAL();
+
+    if(err != HAL_OK){
+        return WS2812B_ERROR;
+    }
+
+    return WS2812B_OK;
+}
 
 void ws2812b_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim, ws2812b_handle_t *ledHandler,  BaseType_t *xHigherPriorityTaskWoken){
     if(htim == NULL || ledHandler == NULL){

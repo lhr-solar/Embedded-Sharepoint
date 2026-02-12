@@ -47,16 +47,15 @@ void Heartbeat_Init() {
 
 void task(){
 
-    for(uint8_t i = 0; i < MAX_LED; i++){
-        ws2812b_set_solid_color(&wsHandle, i, WS2812B_SOLID_OFF, portMAX_DELAY);
-    }
-
-    // ws2812b_set_solid_color(&wsHandle, 0, WS2812B_SOLID_RED, portMAX_DELAY);
-    // ws2812b_set_solid_color(&wsHandle, 1, WS2812B_SOLID_BLUE, portMAX_DELAY);
-    // ws2812b_set_solid_color(&wsHandle, 2, WS2812B_SOLID_GREEN, portMAX_DELAY);
-    // ws2812b_set_solid_color(&wsHandle, 3, WS2812B_SOLID_BURNT_ORANGE, portMAX_DELAY);
-    // ws2812b_set_solid_color(&wsHandle, 4, WS2812B_SOLID_PURPLE, portMAX_DELAY);
-    // ws2812b_set_solid_color(&wsHandle, 5, WS2812B_SOLID_YELLOW, portMAX_DELAY);
+    // for(uint8_t i = 0; i < MAX_LED; i++){
+    //     ws2812b_set_color(&wsHandle, i, WS2812B_SOLID_OFF, portMAX_DELAY);
+    // }
+    ws2812b_set_color(&wsHandle, 0, WS2812B_SOLID_RED, portMAX_DELAY);
+    ws2812b_set_color(&wsHandle, 1, WS2812B_SOLID_GREEN, portMAX_DELAY);
+    ws2812b_set_color(&wsHandle, 2, WS2812B_SOLID_BLUE, portMAX_DELAY);
+    ws2812b_set_color(&wsHandle, 3, WS2812B_SOLID_PURPLE, portMAX_DELAY);
+    ws2812b_set_color(&wsHandle, 4, WS2812B_SOLID_BURNT_ORANGE, portMAX_DELAY);
+    ws2812b_set_color(&wsHandle, 5, WS2812B_SOLID_YELLOW, portMAX_DELAY);
 
 
     while(1){
