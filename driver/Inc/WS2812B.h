@@ -65,3 +65,5 @@ void ws2812b_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim, ws2812b_hand
 ws2812b_status_t ws2812b_set_all_leds(ws2812b_handle_t *ledHandler, ws2812b_color_t color, TickType_t delay_ticks);
 
 ws2812b_status_t ws2812b_set_led_range(ws2812b_handle_t *ledHandler, uint8_t start, uint8_t end, ws2812b_color_t color, TickType_t delay_ticks);
+
+ws2812b_status_t ws2812b_load_colors(ws2812b_handle_t *ledHandler, const ws2812b_color_t colors[], uint8_t start, uint8_t numColors, TickType_t delay_ticks);
