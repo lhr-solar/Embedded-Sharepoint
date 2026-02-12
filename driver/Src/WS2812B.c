@@ -40,6 +40,13 @@ ws2812b_status_t ws2812b_init(ws2812b_handle_t *ledHandler, uint8_t ledData[][NU
     return WS2812B_OK;
 }
 
+
+/**
+ * @brief Encodes the ledData field into a pwmBuffer to pass to DMA
+ * 
+ * @param ledHandler    Pointer to the ws2812b handle.
+ * @return idx          Number of elements to encode
+ */
 static uint32_t ws2812b_encode_pwm(ws2812b_handle_t *ledHandler){
 
     /* Encode entire strip */
@@ -66,6 +73,13 @@ static uint32_t ws2812b_encode_pwm(ws2812b_handle_t *ledHandler){
     return idx;
 }
 
+/**
+ * @brief Starts the DMA transmission for the led strip
+ * 
+ * @param ledHandler    Pointer to the ws2812b handle.
+ * @param idx           Number of elements to encode
+ * @return ws2812b_status_t Returns WS2812B_OK on success, and returns any other value on failure
+ */
 static ws2812b_status_t ws2812b_send_color(ws2812b_handle_t *ledHandler, uint32_t idx){
 
     if(ledHandler == NULL){

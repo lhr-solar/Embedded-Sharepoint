@@ -79,7 +79,7 @@ ws2812b_status_t ws2812b_init(ws2812b_handle_t *ledHandler, uint8_t ledData[][NU
 ws2812b_status_t ws2812b_set_color(ws2812b_handle_t *ledHandler, uint8_t led_num,  ws2812b_color_t color, TickType_t delay_ticks);
 
 /**
- * @brief Callback function 
+ * @brief Callback function that gets called in the TIM_PWM_PulseFinishedCallbac function
  * 
  * @param ledHandler                Pointer to the ws2812b handle.
  * @param timerHandle               Pointer to the timer handle.
@@ -102,8 +102,8 @@ ws2812b_status_t ws2812b_set_all_leds(ws2812b_handle_t *ledHandler, ws2812b_colo
  * @brief Sets the color of a specified range of leds in a ws2812b strip
  * 
  * @param ledHandler    Pointer to the ws2812b handle.
- * @param start         
- * @param end
+ * @param start         Starting index of the led range to set (0 indexed).
+ * @param end           Ending index of the led range to set (0 indexed).
  * @param color         Struct containing RGB value to set the led too.
  * @param delay_ticks   Ticks to wait for data (0 = non-blocking, portMAX_DELAY = block until available).
  * @return ws2812b_status_t Returns WS2812B_OK on success, and returns any other value on failure
@@ -111,10 +111,12 @@ ws2812b_status_t ws2812b_set_all_leds(ws2812b_handle_t *ledHandler, ws2812b_colo
 ws2812b_status_t ws2812b_set_led_range(ws2812b_handle_t *ledHandler, uint8_t start, uint8_t end, ws2812b_color_t color, TickType_t delay_ticks);
 
 /**
- * @brief Sets the color of all leds in a ws2812b strip
+ * @brief Loads an array of colors into the led strip
  * 
  * @param ledHandler    Pointer to the ws2812b handle.
- * @param color         An array of color structs to set the led
+ * @param color         An array of color structs that the led strip will be set too.
+ * @param start         Starting index of the led range to set (0 indexed).
+ * @param numColors     Number of elements in the colors array
  * @param delay_ticks   Ticks to wait for data (0 = non-blocking, portMAX_DELAY = block until available).
  * @return ws2812b_status_t Returns WS2812B_OK on success, and returns any other value on failure
  */
