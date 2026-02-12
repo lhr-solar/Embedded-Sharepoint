@@ -105,15 +105,53 @@ ws2812b_status_t ws2812b_set_color(ws2812b_handle_t *ledHandler, uint8_t led_num
 
 }
 
+ws2812b_status_t ws2812b_set_solid_color(ws2812b_handle_t *ledHandler, uint8_t led_num, ws2812b_solid_color_t color, TickType_t delay_ticks){
+    
+    if(ledHandler == NULL){
+        return WS2812B_NULL_ERROR;
+    }
 
-void ws2812b_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim, ws2812b_handle_t *ledHandler){
+    if(ledHandler->numberLeds <= led_num){
+        return WS2812B_ERROR;
+    }
+
+    ws2812b_status_t errStatus = WS2812B_ERROR;
+    switch(color){
+        case WS2812B_SOLID_GREEN:
+            errStatus = ws2812b_set_color(ledHandler, led_num, 0, 255, 0, delay_ticks);
+            break;
+        case WS2812B_SOLID_RED:
+            errStatus = ws2812b_set_color(ledHandler, led_num, 255, 0, 0, delay_ticks);
+            break;
+        case WS2812B_SOLID_BLUE:
+            errStatus = ws2812b_set_color(ledHandler, led_num, 0, 0, 255, delay_ticks);
+            break;
+        case WS2812B_SOLID_YELLOW:
+            errStatus = ws2812b_set_color(ledHandler, led_num, 255, 255, 0, delay_ticks);
+            break;
+        case WS2812B_SOLID_BURNT_ORANGE:
+            errStatus = ws2812b_set_color(ledHandler, led_num, 204, 85, 0, delay_ticks);
+            break;
+        case WS2812B_SOLID_PURPLE:
+            errStatus = ws2812b_set_color(ledHandler, led_num, 128, 0, 128, delay_ticks);
+            break;
+        case WS2812B_SOLID_OFF:
+            errStatus = ws2812b_set_color(ledHandler, led_num, 0, 0, 0, delay_ticks);
+            break;
+        default:
+            errStatus = ws2812b_set_color(ledHandler, led_num, 0, 0, 0, delay_ticks);
+            break;
+    }
+    return errStatus;
+} 
+
+void ws2812b_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim, ws2812b_handle_t *ledHandler,  BaseType_t *xHigherPriorityTaskWoken){
     if(htim == NULL || ledHandler == NULL){
         return;
     }
 
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
-    if (xSemaphoreTakeFromISR(ledHandler->framePendingSem, &xHigherPriorityTaskWoken) == pdTRUE){
+    if (xSemaphoreTakeFromISR(ledHandler->framePendingSem, xHigherPriorityTaskWoken) == pdTRUE){
         // start the DMA transmission again
          HAL_TIM_PWM_Start_DMA( ledHandler->timerHandle, ledHandler->channel, (uint32_t *)ledHandler->pwmBuffer, (24 * ledHandler->numberLeds) + WS2812_RESET_SLOTS);
     }
