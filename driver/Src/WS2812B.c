@@ -68,6 +68,10 @@ static uint32_t ws2812b_encode_pwm(ws2812b_handle_t *ledHandler){
 
 static ws2812b_status_t ws2812b_send_color(ws2812b_handle_t *ledHandler, uint32_t idx){
 
+    if(ledHandler == NULL){
+        return WS2812B_NULL_ERROR;
+    }
+
     // indiciate that there's a new frame to send for the leds
     if(xSemaphoreGive(ledHandler->framePendingSem) != pdTRUE){
         return WS2812B_ERROR;
