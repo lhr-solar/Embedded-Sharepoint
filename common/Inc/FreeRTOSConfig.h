@@ -73,7 +73,7 @@
 
 // Only use the idle hook if user enables it
 #ifndef configUSE_IDLE_HOOK
-  #define configUSE_IDLE_HOOK                    1  
+  #define configUSE_IDLE_HOOK                    0  
 #endif /*configUSE_IDLE_HOOK*/
 
 
