@@ -28,7 +28,6 @@
 
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
-
 /*-----------------------------------------------------------
  * Application specific definitions.
  *
@@ -70,6 +69,14 @@
 
 /* Enable queue sets for the application. */
 #define configUSE_QUEUE_SETS                     1
+
+
+#ifndef __weak
+#define __weak __attribute__((weak))
+#endif
+
+/* Weakly define the idle hook here */
+__weak void vApplicationIdleHook(void);
 
 /* Defaults to size_t for backward compatibility, but can be changed
    if lengths will always be less than the number of bytes in a size_t. */
