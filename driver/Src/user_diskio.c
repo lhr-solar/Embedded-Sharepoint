@@ -88,7 +88,7 @@ DSTATUS USER_initialize (
 {
   /* USER CODE BEGIN INIT */
 
-    if(SD_Init(&sd) != 0) {
+    if(SD_Init(&sd, 1000) != 0) {
         Stat = STA_NOINIT; // "Not Init" if failed
         return Stat;
     }
@@ -131,19 +131,19 @@ DRESULT USER_read (
 {
   /* USER CODE BEGIN READ */
 
-    if(SD_ReadBegin(&sd, sector) < 0) {
+    if(SD_ReadBegin(&sd, sector, 1000) < 0) {
         return RES_ERROR;
     }
 
     while(count > 0) {
-        if(SD_ReadData(&sd, buff) < 0) {
+        if(SD_ReadData(&sd, buff, 1000) < 0) {
             return RES_ERROR;
         }
         buff += 512;
         count--;
     }
 
-    if(SD_ReadEnd(&sd) < 0) {
+    if(SD_ReadEnd(&sd, 1000) < 0) {
         return RES_ERROR;
     }
 
@@ -173,12 +173,12 @@ DRESULT USER_write (
   /* USER CODE HERE */
 
 
-    if(SD_WriteBegin(&sd, sector) < 0) {
+    if(SD_WriteBegin(&sd, sector, 1000) < 0) {
         return RES_ERROR;
     }
 
     while(count > 0) {
-        if(SD_WriteData(&sd, buff) < 0) {
+        if(SD_WriteData(&sd, buff, 1000) < 0) {
             return RES_ERROR;
         }
 
@@ -186,7 +186,7 @@ DRESULT USER_write (
         count--;
     }
 
-    if(SD_WriteEnd(&sd) < 0) {
+    if(SD_WriteEnd(&sd, 1000) < 0) {
         return RES_ERROR;
     }
 

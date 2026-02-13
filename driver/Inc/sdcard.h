@@ -1,5 +1,4 @@
-#ifndef SDCARD_H
-#define SDCARD_H
+#pragma once
 
 #include "stm32xx_hal.h"
 #include <stdint.h>
@@ -8,6 +7,11 @@
 // thread safe:
 #include "FreeRTOS.h"
 #include "semphr.h"
+#include "queue.h"
+
+// configuration
+#define SD_DEFAULT_TIMEOUT_MS   1000
+#define SD_DEFAULT_TIMEOUT_TICKS pdMS_TO_TICKS(SD_DEFAULT_TIMEOUT_MS)
 
 /* SD Card Command Definitions */
 #define SD_CMD_BASE     0x40  // Start bit (0100 0000)
@@ -15,6 +19,9 @@
 #define DATA_TOKEN_CMD25 0xFC
 #define SD_DUMMY_BYTE   0xFF
 #define SD_BLOCK_SIZE   512   
+
+#define SD_R1_IDLE_MASK 0x80
+#define SD_DUMMY_CLOCKS_COUNT  10
 
 #define SD_CMD0         0     // GO_IDLE_STATE
 #define SD_CMD8         8     // SEND_IF_COND
@@ -26,6 +33,24 @@
 #define SD_CMD41        41    // SD_SEND_OP_COND
 #define SD_CMD55        55    // APP_CMD
 #define SD_CMD58        58    // READ_OCR
+
+#define SD_QUEUE_LENGTH  10
+#define SD_MAX_FILENAME_LEN  16
+#define SD_DEFAULT_TIMEOUT_MS  1000
+#define SD_FORMAT_BUFFER_SIZE   512  
+
+typedef enum {
+    SD_JOB_WRITE_ASYNC,
+    SD_JOB_MOUNT,
+    SD_JOB_FORMAT
+} sd_job_type_t;
+
+typedef struct {
+    sd_job_type_t type;
+    char filename[SD_MAX_FILENAME_LEN];
+    char *data;
+    uint32_t len;
+} sd_job_t;
 
 /**
  * @brief SD Card Handle Structure
@@ -46,7 +71,13 @@ typedef struct {
     SemaphoreHandle_t spi_comp_sem;       
     StaticSemaphore_t spi_comp_buffer;
 
+    // Queue
+    QueueHandle_t job_queue;
+    uint8_t queue_storage[SD_QUEUE_LENGTH * sizeof(sd_job_t)];
+    StaticQueue_t queue_buffer;
+
 } sd_handle_t;
+
 
 
 /* Status Codes (Readable Errors) */
@@ -62,50 +93,24 @@ typedef enum {
     SD_ERR_WRITE        = 8,   // Write operation failed
     SD_ERR_MUTEX        = 9,   // RTOS Mutex creation failed
     SD_ERR_LOCK_TIMEOUT = 10,  // Could not acquire Mutex in time
-} SD_Status;
+    SD_ERR_QUEUE_FULL   = 11,
+    SD_ERR_MALLOC       = 12
+} sd_status_t;
+
+/* USER API */
+
+sd_status_t USER_SD_Card_Init(sd_handle_t *sd);
+
+/* Queues a Write */
+sd_status_t USER_SD_Card_Write_Async(sd_handle_t *sd, const char *filename, const char *data);
+
+/* Reads immediately (Sync) */
+sd_status_t USER_SD_Card_Read_Sync(sd_handle_t *sd, const char *filename, char *buffer, uint32_t len);
+
+void USER_SD_Card_Worker_Task(void *params);
+
 
 /* Low-level helpers */
-
-/**
- * @brief Sends dummy clocks (0xFF) to the SD card with CS High to ensure it is ready or to force SPI mode.
- * @note This is a mandatory requirement from the SD Physical Layer Spec.
- * The card requires at least 74 clock cycles with CS De-asserted (High) 
- * to stabilize power and switch from native "SD Bus Mode" to "SPI Mode".
- * @param sd Pointer to the SD handle structure.
- */
-void SD_SendDummyClocks(sd_handle_t *sd);
-
-/**
- * @brief Waits for the SD card to return 0xFF (Not Busy).
- * Includes RTOS yield (vTaskDelay) to allow other tasks to run while waiting.
- * @param sd Pointer to the SD handle structure.
- * @return SD_OK on success, or specific error code on failure.
- */
-int8_t SD_WaitNotBusy(sd_handle_t *sd);
-
-/**
- * @brief Waits for a specific data token (e.g., 0xFE) from the card.
- * @param sd Pointer to the SD handle structure.
- * @param token The expected token byte.
- * @return SD_OK on success, or specific error code on failure.
- */
-int8_t SD_WaitDataToken(sd_handle_t *sd, uint8_t token);
-
-/**
- * @brief Reads a raw stream of bytes from the SD card.
- * @param sd Pointer to the SD handle structure.
- * @param buff Pointer to the buffer to store received data.
- * @param len Number of bytes to read.
- * @return SD_OK on success, or specific error code on failure.
- */
-int8_t SD_ReadBytes(sd_handle_t *sd, uint8_t *buff, size_t len);
-
-/**
- * @brief Reads the R1 response byte from the SD card.
- * @param sd Pointer to the SD handle structure.
- * @return The R1 response byte.
- */
-uint8_t SD_ReadR1(sd_handle_t *sd);
 
 /**
  * @brief Asserts the Chip Select pin (sets it LOW).
@@ -119,18 +124,6 @@ void SD_Select(sd_handle_t *sd);
  */
 void SD_Deselect(sd_handle_t *sd);
 
-/* Command layer */
-
-/**
- * @brief Sends a command to the SD card and reads the R1 response.
- * @param sd Pointer to the SD handle structure.
- * @param cmd The command index (e.g., SD_CMD0).
- * @param arg The 32-bit argument for the command.
- * @param crc The CRC byte for the command.
- * @return The R1 response byte.
- */
-uint8_t SD_SendCommand(sd_handle_t *sd, uint8_t cmd, uint32_t arg, uint8_t crc);
-
 /* High-level operations */
 
 /**
@@ -140,7 +133,7 @@ uint8_t SD_SendCommand(sd_handle_t *sd, uint8_t cmd, uint32_t arg, uint8_t crc);
  * @param sd Pointer to the SD handle structure.
  * @return SD_OK on success, or specific error code on failure.
  */
-int8_t SD_Init(sd_handle_t *sd);
+sd_status_t SD_Init(sd_handle_t *sd, TickType_t timeout);
 
 /**
  * @brief Reads a single 512-byte block from the SD card (Thread Safe).
@@ -149,7 +142,7 @@ int8_t SD_Init(sd_handle_t *sd);
  * @param buffer Pointer to the buffer (must be at least 512 bytes).
  * @return SD_OK on success, or specific error code on failure.
  */
-int8_t SD_ReadSingleBlock(sd_handle_t *sd, uint32_t blockNum, uint8_t *buffer);
+sd_status_t SD_ReadSingleBlock(sd_handle_t *sd, uint32_t blockNum, uint8_t *buffer, TickType_t timeout);
 
 /**
  * @brief Writes a single 512-byte block to the SD card (Thread Safe).
@@ -158,11 +151,7 @@ int8_t SD_ReadSingleBlock(sd_handle_t *sd, uint32_t blockNum, uint8_t *buffer);
  * @param buffer Pointer to the data to write (512 bytes).
  * @return SD_OK on success, or specific error code on failure.
  */
-int8_t SD_WriteSingleBlock(sd_handle_t *sd, uint32_t blockNum, const uint8_t *buffer);
-
-// Read/Write Sector are wrappers for SingleBlock in typical FatFS implementations, passes request to SD_ReadSingleBlock and SD_WriteSIngleBlock
-uint8_t SD_ReadSector(sd_handle_t *sd, uint32_t sector, uint8_t *buffer);
-uint8_t SD_WriteSector(sd_handle_t *sd, uint32_t sector, const uint8_t *buffer);
+sd_status_t SD_WriteSingleBlock(sd_handle_t *sd, uint32_t blockNum, const uint8_t *buffer, TickType_t timeout);
 
 // Read Multiple Blocks
 
@@ -172,7 +161,7 @@ uint8_t SD_WriteSector(sd_handle_t *sd, uint32_t sector, const uint8_t *buffer);
  * @param blockNum The starting block address.
  * @return SD_OK on success, or specific error code on failure.
  */
-int8_t SD_ReadBegin(sd_handle_t *sd, uint32_t blockNum);
+sd_status_t SD_ReadBegin(sd_handle_t *sd, uint32_t blockNum, TickType_t timeout);
 
 /**
  * @brief Reads the next block of data during a multi-block read.
@@ -180,14 +169,14 @@ int8_t SD_ReadBegin(sd_handle_t *sd, uint32_t blockNum);
  * @param buff Pointer to the buffer (512 bytes).
  * @return SD_OK on success, or specific error code on failure.
  */
-int8_t SD_ReadData(sd_handle_t *sd, uint8_t* buff); 
+sd_status_t SD_ReadData(sd_handle_t *sd, uint8_t* buff, TickType_t timeout); 
 
 /**
  * @brief Ends a multi-block read operation. Unlocks the mutex.
  * @param sd Pointer to the SD handle structure.
  * @return SD_OK on success, or specific error code on failure.
  */
-int8_t SD_ReadEnd(sd_handle_t *sd);
+sd_status_t SD_ReadEnd(sd_handle_t *sd, TickType_t timeout);
 
 // Write Multiple Blocks
 
@@ -197,7 +186,7 @@ int8_t SD_ReadEnd(sd_handle_t *sd);
  * @param blockNum The starting block address.
  * @return SD_OK on success, or specific error code on failure.
  */
-int8_t SD_WriteBegin(sd_handle_t *sd, uint32_t blockNum);
+sd_status_t SD_WriteBegin(sd_handle_t *sd, uint32_t blockNum, TickType_t timeout);
 
 /**
  * @brief Writes the next block of data during a multi-block write.
@@ -205,15 +194,15 @@ int8_t SD_WriteBegin(sd_handle_t *sd, uint32_t blockNum);
  * @param buff Pointer to the data to write (512 bytes).
  * @return SD_OK on success, or specific error code on failure.
  */
-int8_t SD_WriteData(sd_handle_t *sd, const uint8_t* buff); 
+sd_status_t SD_WriteData(sd_handle_t *sd, const uint8_t* buff, TickType_t timeout); 
 
 /**
  * @brief Ends a multi-block write operation. Unlocks the mutex.
  * @param sd Pointer to the SD handle structure.
  * @return SD_OK on success, or specific error code on failure.
  */
-int8_t SD_WriteEnd(sd_handle_t *sd);
+sd_status_t SD_WriteEnd(sd_handle_t *sd, TickType_t timeout);
 
 
-#endif /* SDCARD_H */
+//#endif /* SDCARD_H */
 

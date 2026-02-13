@@ -102,8 +102,8 @@ int main(void)
          }
     }
 
-    // 3. Init FatFs Middleware
-    MX_FATFS_Init(); 
+    // // 3. Init FatFs Middleware
+    // MX_FATFS_Init(); 
 
     // 4. Mount Drive
     // If this fails: LED blinks FAST (100ms) 5 times

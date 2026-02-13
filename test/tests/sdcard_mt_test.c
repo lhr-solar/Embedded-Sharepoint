@@ -25,6 +25,10 @@ StaticTask_t xTask2Buffer;
 StackType_t xTask2Stack[1024];
 TaskHandle_t hTask2;
 
+StaticTask_t xTask3Buffer;
+StackType_t xTask3Stack[configMINIMAL_STACK_SIZE]; 
+TaskHandle_t hTask3;
+
 /* pin def*/
 // ADAPT THESE TO YOUR BOARD
 #if defined(STM32L476xx)
@@ -49,6 +53,32 @@ TaskHandle_t hTask2;
 
     #define LED_PORT GPIOA
     #define LED_PIN  GPIO_PIN_5 
+
+#elif defined (lsom)
+    #define USER_SPI_INSTANCE      SPI2
+    
+    // Chip Select (NSS) - PB9
+    #define USER_CS_PORT           GPIOB
+    #define USER_CS_PIN            GPIO_PIN_9
+
+    // Serial Clock (SCK) - PB13
+    #define USER_SCK_PORT          GPIOB
+    #define USER_SCK_PIN           GPIO_PIN_13
+    #define USER_SCK_AF            GPIO_AF5_SPI2
+
+    // MISO - PB14
+    #define USER_MISO_PORT         GPIOB
+    #define USER_MISO_PIN          GPIO_PIN_14
+    #define USER_MISO_AF           GPIO_AF5_SPI2
+
+    // MOSI - PB15
+    #define USER_MOSI_PORT         GPIOB
+    #define USER_MOSI_PIN          GPIO_PIN_15
+    #define USER_MOSI_AF           GPIO_AF5_SPI2
+
+    // LED - (Keeping original as it wasn't specified in the image)
+    #define LED_PORT               GPIOA
+    #define LED_PIN                GPIO_PIN_5
 
 #else
     #define USER_SPI_INSTANCE  SPI1
@@ -76,6 +106,8 @@ void LED_Init(void);
 void User_Hardware_Init(void);
 void Task1_Entry(void *params);
 void Task2_Entry(void *params);
+void Task3_Entry(void *params); // task for high frequency
+
 
 int main(void)
 {
@@ -97,6 +129,9 @@ int main(void)
     // Task 2: Writes every 250ms
     xTaskCreateStatic(Task2_Entry, "WriteTask2", 1024, NULL, tskIDLE_PRIORITY + 1, xTask2Stack, &xTask2Buffer);
 
+    // Task 3: toggle every 10ms
+    xTaskCreateStatic(Task3_Entry, "HighFreq", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, xTask3Stack, &xTask3Buffer);
+
     /* Scheduler */
     vTaskStartScheduler();
 
@@ -106,7 +141,7 @@ int main(void)
 void Task1_Entry(void *params)
 {
     // Initialize SD Card 
-    if (SD_Init(&sd) != 0) {
+    if (USER_SD_Card_Init(&sd) != 0) {
         // Fail:
         for(;;) 
         {
@@ -115,8 +150,8 @@ void Task1_Entry(void *params)
         }
     }
 
-    //  Init FatFs Middleware 
-    MX_FATFS_Init(); 
+    // //  Init FatFs Middleware 
+    // MX_FATFS_Init(); 
 
     // Mount Filesystem
     if(f_mount(&fs, "", 1) != FR_OK) {
@@ -163,6 +198,8 @@ void Task2_Entry(void *params)
 
     for(;;)
     {
+        HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
+        
         // 1. Open File
         if (f_open(&f2, "LOG2.TXT", FA_OPEN_ALWAYS | FA_WRITE | FA_OPEN_APPEND) == FR_OK)
         {
@@ -175,6 +212,15 @@ void Task2_Entry(void *params)
 
         vTaskDelay(250);
     }
+}
+
+void Task3_Entry(void *params)
+{
+    for(;;) {
+        HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
+        vTaskDelay(10);
+    }
+
 }
 
 // GPIO for LED init
