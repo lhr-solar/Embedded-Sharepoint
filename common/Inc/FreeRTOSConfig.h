@@ -68,7 +68,7 @@
 #define configUSE_COUNTING_SEMAPHORES            1
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION  1
 
-/* Added by us */
+/* Enable queue sets for the application. */
 #define configUSE_QUEUE_SETS                     1
 
 /* Defaults to size_t for backward compatibility, but can be changed
