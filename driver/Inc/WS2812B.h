@@ -16,18 +16,17 @@
 #define WS2812_RESET_SLOTS 50
 
 
-
 typedef enum{
-    WS2812B_OK,
-    WS2812B_NULL_ERROR,
-    WS2812B_ERROR,
-    WS2812B_BUSY
+    WS2812B_OK, // WS2812B transaction completed succesfully
+    WS2812B_NULL_ERROR, // parameter is NULL
+    WS2812B_ERROR, // an error occured
+    WS2812B_BUSY // a shared resource is busy
 }ws2812b_status_t;
 
 typedef struct{
-    uint8_t red;
-    uint8_t green;
-    uint8_t blue;
+    uint8_t red; // red value
+    uint8_t green; // green value
+    uint8_t blue; // blue value
 }ws2812b_color_t;
 
 #define WS2812B_SOLID_GREEN         ((ws2812b_color_t){ .red = 0,   .green = 255,   .blue = 0 })
@@ -41,16 +40,16 @@ typedef struct{
 
 // Represents a string of leds
 typedef struct{
-    uint8_t (*ledData)[NUMBER_PWM_DATA_ELEMENTS];        // [LED][LEDNUM, G, R, B]
-    uint16_t *pwmBuffer;          // PWM bitstream
-    TIM_HandleTypeDef *timerHandle;
-    uint32_t channel; 
+    uint8_t (*ledData)[NUMBER_PWM_DATA_ELEMENTS]; // Represents the colors contained in the strip: [LED][LEDNUM, G, R, B]
+    uint16_t *pwmBuffer; // PWM bitstream of duty cycles, this is what is passed to DMA
+    TIM_HandleTypeDef *timerHandle; // The timer handle used to generate PWM
+    uint32_t channel;  // The channel associated with the pin's timer 
     uint8_t numberLeds; // the number of leds in the string
     SemaphoreHandle_t mutex; // protects multiple threads from writting to the handle
-    StaticSemaphore_t mutexBuf;
+    StaticSemaphore_t mutexBuf; // static buffer for the mutex
     volatile uint8_t dmaActive; // indicates when a dma transmission is active
     SemaphoreHandle_t framePendingSem; // indiciates that there's a new rgb frame to send
-    StaticSemaphore_t framePendingBuf;
+    StaticSemaphore_t framePendingBuf; // static buffer to store the semaphore
 }ws2812b_handle_t;
 
 
