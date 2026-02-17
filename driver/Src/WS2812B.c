@@ -103,7 +103,6 @@ static ws2812b_status_t ws2812b_send_color(ws2812b_handle_t *ledHandler, uint32_
         }
     }
     taskEXIT_CRITICAL();
-
     if(err != HAL_OK){
         return WS2812B_ERROR;
     }

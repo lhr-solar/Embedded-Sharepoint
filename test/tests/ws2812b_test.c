@@ -74,13 +74,13 @@ void task(){
     ws2812b_set_all_leds(&wsHandle, WS2812B_SOLID_OFF, portMAX_DELAY);
 
     ws2812b_set_color(&wsHandle, 0, WS2812B_SOLID_RED,          portMAX_DELAY);
-    // ws2812b_set_color(&wsHandle, 1, WS2812B_SOLID_GREEN,        portMAX_DELAY);
-    // ws2812b_set_color(&wsHandle, 2, WS2812B_SOLID_BLUE,         portMAX_DELAY);
-    // ws2812b_set_color(&wsHandle, 3, WS2812B_SOLID_PURPLE,       portMAX_DELAY);
-    // ws2812b_set_color(&wsHandle, 4, WS2812B_SOLID_BURNT_ORANGE, portMAX_DELAY);
-    // ws2812b_set_color(&wsHandle, 5, WS2812B_SOLID_YELLOW,       portMAX_DELAY);
-    // ws2812b_set_color(&wsHandle, 6, WS2812B_SOLID_RED,          portMAX_DELAY);
-    // ws2812b_set_color(&wsHandle, 7, WS2812B_SOLID_RED,          portMAX_DELAY);
+    ws2812b_set_color(&wsHandle, 1, WS2812B_SOLID_GREEN,        portMAX_DELAY);
+    ws2812b_set_color(&wsHandle, 2, WS2812B_SOLID_BLUE,         portMAX_DELAY);
+    ws2812b_set_color(&wsHandle, 3, WS2812B_SOLID_PURPLE,       portMAX_DELAY);
+    ws2812b_set_color(&wsHandle, 4, WS2812B_SOLID_BURNT_ORANGE, portMAX_DELAY);
+    ws2812b_set_color(&wsHandle, 5, WS2812B_SOLID_YELLOW,       portMAX_DELAY);
+    ws2812b_set_color(&wsHandle, 6, WS2812B_SOLID_RED,          portMAX_DELAY);
+    ws2812b_set_color(&wsHandle, 7, WS2812B_SOLID_RED,          portMAX_DELAY);
 
     while(1){
         ws2812b_set_color(&wsHandle, 4, WS2812B_SOLID_PURPLE, portMAX_DELAY);
@@ -202,7 +202,7 @@ void MX_DMA_Init(void)
 
   /* DMA interrupt init */
   /* DMA1_Channel1_IRQn interrupt configuration */
-  // HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, configLIBRARY_LOWEST_INTERRUPT_PRIORITY, 0);
+  // HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 9, 0);
   // HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
 
 }
