@@ -67,10 +67,6 @@
 #define configUSE_COUNTING_SEMAPHORES            1
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION  1
 
-/* Enable queue sets for the application. */
-#define configUSE_QUEUE_SETS                     1
-
-
 #ifndef __weak
 #define __weak __attribute__((weak))
 #endif
