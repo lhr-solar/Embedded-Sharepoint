@@ -94,7 +94,16 @@ int main(void)
     HAL_Delay(100);
 
     // Calls SD_SPI_INIT() internally
-    if (SD_Init(&sd) != 0) {
+    if (SD_Init(&sd, 1000) != 0) {
+         // Initialization Error: Fast Blink
+         while(1) {
+            HAL_GPIO_TogglePin(LED_PORT, LED_PIN); 
+            HAL_Delay(50);
+         }
+    }
+
+    // Calls SD_SPI_INIT() internally
+    if (USER_SD_Card_Init(&sd) != 0) {
          // Initialization Error: Fast Blink
          while(1) {
             HAL_GPIO_TogglePin(LED_PORT, LED_PIN); vTaskDelay(50); 
