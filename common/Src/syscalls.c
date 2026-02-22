@@ -30,11 +30,7 @@
 #include <sys/times.h>
 #include <time.h>
 
-#include "UART.h"
-#include "portmacro.h"
-
-extern int __io_putchar(int ch) __attribute__((weak));
-extern int __io_getchar(void) __attribute__((weak));
+#include "stm32xx_hal.h"
 
 char *__env[1] = {0};
 char **environ = __env;
@@ -56,22 +52,12 @@ void _exit(int status) {
 
 __weak int _read(int file, char *ptr, int len) {
   (void)file;
-  int DataIdx;
-
-  for (DataIdx = 0; DataIdx < len; DataIdx++) {
-    *ptr++ = __io_getchar();
-  }
-
+  (void)ptr;
   return len;
 }
 
 __weak int _write(int file, char *ptr, int len) {
   (void)file;
-  int DataIdx;
-
-  for (DataIdx = 0; DataIdx < len; DataIdx++) {
-    __io_putchar(*ptr++);
-  }
   return len;
 }
 

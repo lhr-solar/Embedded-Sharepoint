@@ -203,3 +203,20 @@ To view the output, open up an application like [PuTTY](https://www.chiark.green
 - For PuTTY, click Serial and enter your desired COM port. This should show up on your device manager (for Mac or Linux, run `lsusb`). Set the baud rate to what you configured the UART for. Hit the big open button at the bottom.
 - For picocom, type in `picocom -b <baud-rate> <tty-name>` and you should be set.
 
+#### Logging Library
+
+A convenient integration we've made for easier debugging is this logging header file. Credit to Clark Poon.
+
+To use the logging library, `#define LOGGING_ENABLE 1` and `#define LOGGING_LEVEL x`, where x is a number between 1 and 5. Then, `#include "log.h"`. 
+
+Now, use `log(LEVEL, ...)` to log to the console. It's the exact same variadic arguments as `printf`, but with a LEVEL argument beforehand. The way this works is that any LOGGING_LEVEL equal to or below x will be what is recorded to the console.
+
+The logging levels are as follows:
+- L_FATAL: 1
+- L_ERROR: 2
+- L_WARN: 3
+- L_INFO: 4
+- L_DEBUG: 5
+- L_TRACE: 6
+
+So, for example, if logging level 5 is selected, any logs of L_DEBUG or below will be printed (L_INFO, L_WARN, L_ERROR, L_FATAL).
