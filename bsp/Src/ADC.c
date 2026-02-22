@@ -58,10 +58,13 @@ adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef
     #endif
     #if defined(STM32G4xx) || defined(STM32L4xx)
     sConfig.Rank = ADC_REGULAR_RANK_1;
+    sConfig.SingleDiff = ADC_SINGLE_ENDED;
+    sConfig.OffsetNumber = ADC_OFFSET_NONE;
     #endif
+    sConfig.Offset = 0;
     sConfig.SamplingTime = samplingTime;
 
-    if (HAL_ADC_ConfigChannel(hadc1, &sConfig) != HAL_OK)
+    if (HAL_ADC_ConfigChannel(h, &sConfig) != HAL_OK)
     {
       Error_Handler();
     } 
