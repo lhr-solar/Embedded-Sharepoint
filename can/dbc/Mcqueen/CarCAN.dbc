@@ -1,0 +1,585 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: PDU BPS Pump Telemetry Controls Pi_Display MPPT_C VCU Pedals MPPT_B MPPT_A LV_Carrier
+VAL_TABLE_ LWS_CCW_Type 5 "Resets calibration status" 3 "Sets the signal LWS_Angle to 0°" ;
+VAL_TABLE_ VCU_Fault_Type 6 "Motor HV Undervoltage" 5 "Motor HV Overvoltage" 4 "Motor Controller Fault" 3 "Motor Precharge Timeout" 2 "Motor Pchg Contactor Sense" 1 "Motor Contactor Sense" 0 "No Fault" ;
+VAL_TABLE_ BPS_Fault_Type 16 "Discharging Overcurrent" 15 "Charging Overcurrent" 14 "Estop 3" 13 "Estop 2" 12 "Estop 1" 11 "Array Pchg Contactor Sense" 10 "Array Contactor Sense" 9 "HV- Contactor Sense" 8 "HV+ Contactor Sense" 7 "Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "No Fault" ;
+VAL_TABLE_ HSS_Switch_Control 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
+VAL_TABLE_ HSS_Command_Type 1 "Set Current Limit" 0 "Control Switches" ;
+
+
+BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
+ SG_ HSS_Command_Type : 0|4@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1654 Lighting_Board6_Status: 8 Controls
+ SG_ Active_Light_Custom3 : 15|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Custom2 : 14|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Custom1 : 13|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ LED2_Current : 48|12@1+ (1,0) [0|4000] "mA" Vector__XXX
+ SG_ LED1_Current : 32|12@1+ (1,0) [0|4000] "mA" Vector__XXX
+ SG_ Addr_LED_Current : 16|12@1+ (1,0) [0|4000] "mA" Vector__XXX
+ SG_ Active_Light_Strobe : 12|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_LTurn : 11|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_RTurn : 10|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Brake : 9|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Headlights : 8|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Lights_Faults : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 1653 Lighting_Board5_Status: 8 Controls
+ SG_ Active_Light_Custom3 : 15|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Custom2 : 14|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Custom1 : 13|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ LED2_Current : 48|12@1+ (1,0) [0|4000] "mA" Vector__XXX
+ SG_ LED1_Current : 32|12@1+ (1,0) [0|4000] "mA" Vector__XXX
+ SG_ Addr_LED_Current : 16|12@1+ (1,0) [0|4000] "mA" Vector__XXX
+ SG_ Active_Light_Strobe : 12|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_LTurn : 11|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_RTurn : 10|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Brake : 9|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Headlights : 8|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Lights_Faults : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 1652 Lighting_Board4_Status: 8 Controls
+ SG_ Active_Light_Custom3 : 15|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Custom2 : 14|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Custom1 : 13|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ LED2_Current : 48|12@1+ (1,0) [0|4000] "mA" Vector__XXX
+ SG_ LED1_Current : 32|12@1+ (1,0) [0|4000] "mA" Vector__XXX
+ SG_ Addr_LED_Current : 16|12@1+ (1,0) [0|4000] "mA" Vector__XXX
+ SG_ Active_Light_Strobe : 12|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_LTurn : 11|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_RTurn : 10|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Brake : 9|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Headlights : 8|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Lights_Faults : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 1651 Lighting_Board3_Status: 8 Controls
+ SG_ Active_Light_Custom3 : 15|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Custom2 : 14|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Custom1 : 13|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ LED2_Current : 48|12@1+ (1,0) [0|4000] "mA" Vector__XXX
+ SG_ LED1_Current : 32|12@1+ (1,0) [0|4000] "mA" Vector__XXX
+ SG_ Addr_LED_Current : 16|12@1+ (1,0) [0|4000] "mA" Vector__XXX
+ SG_ Active_Light_Strobe : 12|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_LTurn : 11|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_RTurn : 10|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Brake : 9|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Headlights : 8|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Lights_Faults : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 1650 Lighting_Board2_Status: 8 Controls
+ SG_ Active_Light_Custom3 : 15|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Custom2 : 14|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Custom1 : 13|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ LED2_Current : 48|12@1+ (1,0) [0|4000] "mA" Vector__XXX
+ SG_ LED1_Current : 32|12@1+ (1,0) [0|4000] "mA" Vector__XXX
+ SG_ Addr_LED_Current : 16|12@1+ (1,0) [0|4000] "mA" Vector__XXX
+ SG_ Active_Light_Strobe : 12|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_LTurn : 11|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_RTurn : 10|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Brake : 9|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Headlights : 8|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Lights_Faults : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 1649 Lighting_Board1_Status: 8 Controls
+ SG_ Active_Light_Custom3 : 15|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Custom2 : 14|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Custom1 : 13|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ LED2_Current : 48|12@1+ (1,0) [0|4000] "mA" Vector__XXX
+ SG_ LED1_Current : 32|12@1+ (1,0) [0|4000] "mA" Vector__XXX
+ SG_ Addr_LED_Current : 16|12@1+ (1,0) [0|4000] "mA" Vector__XXX
+ SG_ Active_Light_Strobe : 12|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_LTurn : 11|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_RTurn : 10|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Brake : 9|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Headlights : 8|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Lights_Faults : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 1648 Lighting_Board0_Status: 8 Controls
+ SG_ Active_Light_Custom3 : 15|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Custom2 : 14|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Custom1 : 13|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ LED2_Current : 48|12@1+ (1,0) [0|4000] "mA" Vector__XXX
+ SG_ LED1_Current : 32|12@1+ (1,0) [0|4000] "mA" Vector__XXX
+ SG_ Addr_LED_Current : 16|12@1+ (1,0) [0|4000] "mA" Vector__XXX
+ SG_ Active_Light_Strobe : 12|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_LTurn : 11|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_RTurn : 10|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Brake : 9|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Active_Light_Headlights : 8|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Lights_Faults : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 21 Controls_Status: 4 Controls
+ SG_ Controls_Lighting_Fault : 16|16@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Controls_Leader_Fault : 0|8@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1984 LWS_Config: 2 Controls
+ SG_ LWS_CCW : 0|3@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 688 LWS_Standard: 5 Controls
+ SG_ LWS_TRIM : 26|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ LWS_CAL : 25|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ LWS_OK : 24|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ LWS_Speed : 16|8@1+ (4,0) [0|1020] "Degrees/s" Vector__XXX
+ SG_ LWS_Angle : 0|16@1- (0.1,0) [-3276.8|3276.7] "Degrees" Vector__XXX
+
+BO_ 33 VCU_Precharge_Voltages: 6 VCU
+ SG_ Precharge_Motor_Voltage : 24|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
+ SG_ Precharge_Battery_Voltage : 0|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
+
+BO_ 16 VCU_Status: 3 VCU
+ SG_ VCU_Regen_Active : 14|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ VCU_Regen_OK : 13|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ VCU_Pedals_OK : 12|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ VCU_Driver_Input_OK : 11|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Motor_Precharge_Contactor_State : 9|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Motor_Contactor_State : 8|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Motor_Ready_To_Drive : 10|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ VCU_FSM_State : 16|4@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ VCU_Fault : 0|8@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 32 BPS_Precharge_Voltages: 6 BPS
+ SG_ Precharge_Battery_Voltage : 0|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
+ SG_ Precharge_Array_Voltage : 24|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
+
+BO_ 3 BPS_Temperature_Array: 5 BPS
+ SG_ BPS_Temperature_Tap_RawV : 24|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 8|16@1- (0.01,0) [-327.68|327.67] "C" Vector__XXX
+ SG_ BPS_VoltTemp_ID : 0|3@1+ (1,0) [0|7] "" Vector__XXX
+ SG_ BPS_Tap_ID : 3|5@1+ (1,0) [0|31] "" Vector__XXX
+
+BO_ 2 BPS_Voltage_Array: 3 BPS
+ SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ BPS_Tap_ID : 3|5@1+ (1,0) [0|31] "" Vector__XXX
+ SG_ BPS_VoltTemp_ID : 0|3@1+ (1,0) [0|7] "" Vector__XXX
+
+BO_ 4 BPS_Pack_Current: 5 BPS
+ SG_ Main_Battery_Current_RawV : 24|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ Main_Battery_Current : 0|24@1- (0.001,0) [-8388.608|8388.607] "A" Vector__XXX
+
+BO_ 1 BPS_Status: 7 BPS
+ SG_ Array_Precharge_Contactor_State : 13|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Array_Contactor_State : 12|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ HV_Plus_Contactor_State : 10|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ HV_Minus_Contactor_State : 11|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Main_Battery_Avg_Temperature : 40|16@1- (0.01,0) [-327.68|327.67] "" Vector__XXX
+ SG_ Main_Battery_Voltage : 16|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
+ SG_ BPS_Regen_OK : 9|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_Charge_OK : 8|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_Fault : 0|8@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1872 Telemetry_Status: 8 Telemetry
+
+BO_ 545 MPPT_C_Status: 5 MPPT_C
+ SG_ MPPT_Enabled : 16|8@1- (1,0) [0|0] "" Vector__XXX
+ SG_ MPPT_HeatsinkTemperature : 39|8@0- (1,0) [-128|127] "C" Vector__XXX
+ SG_ MPPT_AmbientTemperature : 31|8@0- (1,0) [-128|127] "C" Vector__XXX
+ SG_ MPPT_Fault : 8|8@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ MPPT_Mode : 0|8@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 553 MPPT_C_SetMode: 1 MPPT_C
+ SG_ Boost_Enable : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 544 MPPT_C_Power: 8 MPPT_C
+ SG_ MPPT_Iout : 55|16@0- (0.0005,0) [0|0] "A" Vector__XXX
+ SG_ MPPT_Vout : 39|16@0- (0.01,0) [-327.68|327.67] "V" Vector__XXX
+ SG_ MPPT_Iin : 23|16@0- (0.0005,0) [-16.384|16.3835] "A" Vector__XXX
+ SG_ MPPT_Vin : 7|16@0- (0.01,0) [-327.68|327.67] "V" Vector__XXX
+
+BO_ 850 BBPDU_Set_Current_Limit: 4 VCU
+ SG_ HSS_Current_Limit : 8|16@1+ (0.001,0) [0|8] "A"  PDU
+ SG_ HSS_Channel : 4|4@1+ (1,0) [0|16] ""  PDU
+
+BO_ 1282 Radiator_FanSpeed: 8 Pump
+ SG_ Radiator_Fan_Speed_Target_2 : 48|16@1+ (1,0) [0|65535] "RPM" Vector__XXX
+ SG_ Radiator_Fan_Speed_Target_1 : 32|16@1+ (1,0) [0|65535] "RPM" Vector__XXX
+ SG_ Radiator_Fan_Speed_Measurement_2 : 16|16@1+ (1,0) [0|65535] "RPM" Vector__XXX
+ SG_ Radiator_Fan_Speed_Measurement_1 : 0|16@1+ (1,0) [0|65535] "RPM" Vector__XXX
+
+BO_ 1281 Coolant_Temperature: 4 Pump
+ SG_ Coolant_Temperature_2 : 16|16@1- (0.01,0) [-327.68|327.67] "C" Vector__XXX
+ SG_ Coolant_Temperature_1 : 0|16@1- (0.01,0) [-327.68|327.67] "C" Vector__XXX
+
+BO_ 1280 Pump_Status_FlowRate: 6 Pump
+ SG_ Pump_Fault : 8|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ FlowRate_2 : 32|16@1+ (0.001,0) [0|65.535] "L/min" Vector__XXX
+ SG_ FlowRate_1 : 16|16@1+ (0.001,0) [0|65.535] "L/min" Vector__XXX
+ SG_ Pump_DutyCycle : 0|8@1+ (1,0) [0|100] "" Vector__XXX
+
+BO_ 849 BBPDU_Set_Switches: 4 VCU
+ SG_ HSS_Control_1 : 24|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_12 : 14|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_13 : 0|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_9 : 8|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_8 : 22|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_7 : 20|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_6 : 18|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_5 : 16|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_4 : 30|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_3 : 28|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_2 : 26|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_16 : 6|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_15 : 4|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_14 : 2|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_11 : 12|2@1+ (1,0) [0|0] ""  PDU
+ SG_ HSS_Control_10 : 10|2@1+ (1,0) [0|0] ""  PDU
+
+BO_ 848 BBPDU_Status: 5 PDU
+ SG_ HSS_Measured_Current : 24|16@1+ (0.001,0) [0|65.535] "A" Vector__XXX
+ SG_ HSS_Measured_Voltage : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ HSS_Enabled : 5|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ HSS_Fault : 4|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ HSS_Channel : 0|4@1+ (1,0) [0|16] "" Vector__XXX
+
+BO_ 96 Driver_Input_Status: 2 Controls
+ SG_ Regen_Enable : 14|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Regen_Activate : 13|1@1+ (1,0) [0|0] ""  VCU
+ SG_ PushToTalk_Pressed : 12|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Blinker_Right : 11|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Blinker_Left : 10|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Horn_Pressed : 9|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Hazard_Pressed : 8|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Gear_Reverse : 7|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Gear_Neutral : 6|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Gear_Forward : 5|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Cruise_Set : 4|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Cruise_Enable : 3|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Ignition_Off : 2|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Ignition_Motor : 1|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Ignition_Array : 0|1@1+ (1,0) [0|0] ""  VCU
+
+BO_ 1792 Display_Cameras_Status: 2 Pi_Display
+ SG_ Camera_Status_Right : 10|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Camera_Status_Left : 9|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Camera_Status_Backup : 8|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Display_FrameRate : 0|8@1+ (1,0) [0|60] "FPS" Vector__XXX
+
+BO_ 1616 Brake_Pressure: 8 Pedals
+ SG_ Brake_Pressure_2_Voltage : 48|16@1+ (0.001,0) [0|3.3] "V"  VCU
+ SG_ Brake_Pressure_2 : 32|16@1+ (0.1,0) [0|3000] "PSI"  VCU
+ SG_ Brake_Pressure_1_Voltage : 16|16@1+ (0.001,0) [0|3.3] "V"  VCU
+ SG_ Brake_Pressure_1 : 0|16@1+ (0.1,0) [0|3000] "PSI"  VCU
+
+BO_ 81 Accel_Brake_Position_Voltage: 8 Pedals
+ SG_ Brake_Pos_Voltage_Redundant : 48|16@1+ (0.001,0) [0|3.3] "V"  VCU
+ SG_ Brake_Pos_Voltage_Main : 32|16@1+ (0.001,0) [0|3.3] "V"  VCU
+ SG_ Accel_Pos_Voltage_Redundant : 16|16@1+ (0.001,0) [0|3.3] "V"  VCU
+ SG_ Accel_Pos_Voltage_Main : 0|16@1+ (0.001,0) [0|3.3] "V"  VCU
+
+BO_ 80 Accel_Brake_Position: 5 Pedals
+ SG_ Brake_Pressure_2_Fault : 37|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Brake_Pressure_1_Fault : 36|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Brake_Pos_Redundant_Fault : 35|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Brake_Pos_Main_Fault : 34|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Accel_Pos_Redundant_Fault : 33|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Accel_Pos_Main_Fault : 32|1@1+ (1,0) [0|0] ""  VCU
+ SG_ Brake_Pos_Redundant : 24|8@1+ (1,0) [0|100] "Percent"  VCU
+ SG_ Brake_Pos_Main : 16|8@1+ (1,0) [0|100] "Percent"  VCU
+ SG_ Accel_Pos_Redundant : 8|8@1+ (1,0) [0|100] "Percent"  VCU
+ SG_ Accel_Pos_Main : 0|8@1+ (1,0) [0|100] "Percent"  VCU
+
+BO_ 529 MPPT_B_Status: 5 MPPT_B
+ SG_ MPPT_Enabled : 16|8@1- (1,0) [0|0] "" Vector__XXX
+ SG_ MPPT_HeatsinkTemperature : 39|8@0- (1,0) [-128|127] "C" Vector__XXX
+ SG_ MPPT_AmbientTemperature : 31|8@0- (1,0) [-128|127] "C" Vector__XXX
+ SG_ MPPT_Fault : 8|8@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ MPPT_Mode : 0|8@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 528 MPPT_B_Power: 8 MPPT_B
+ SG_ MPPT_Iout : 55|16@0- (0.0005,0) [0|0] "A" Vector__XXX
+ SG_ MPPT_Vout : 39|16@0- (0.01,0) [-327.68|327.67] "V" Vector__XXX
+ SG_ MPPT_Iin : 23|16@0- (0.0005,0) [-16.384|16.3835] "A" Vector__XXX
+ SG_ MPPT_Vin : 7|16@0- (0.01,0) [-327.68|327.67] "V" Vector__XXX
+
+BO_ 537 MPPT_B_SetMode: 1 MPPT_B
+ SG_ Boost_Enable : 0|1@1+ (1,0) [0|1] ""  MPPT_B
+
+BO_ 513 MPPT_A_Status: 5 MPPT_A
+ SG_ MPPT_Enabled : 16|8@1- (1,0) [0|0] "" Vector__XXX
+ SG_ MPPT_HeatsinkTemperature : 39|8@0- (1,0) [-128|127] "C" Vector__XXX
+ SG_ MPPT_AmbientTemperature : 31|8@0- (1,0) [-128|127] "C" Vector__XXX
+ SG_ MPPT_Fault : 8|8@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ MPPT_Mode : 0|8@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 512 MPPT_A_Power: 8 MPPT_A
+ SG_ MPPT_Iout : 55|16@0- (0.0005,0) [0|0] "A" Vector__XXX
+ SG_ MPPT_Vout : 39|16@0- (0.01,0) [-327.68|327.67] "V" Vector__XXX
+ SG_ MPPT_Iin : 23|16@0- (0.0005,0) [-16.384|16.3835] "A" Vector__XXX
+ SG_ MPPT_Vin : 7|16@0- (0.01,0) [-327.68|327.67] "V" Vector__XXX
+
+BO_ 521 MPPT_A_SetMode: 1 MPPT_A
+ SG_ Boost_Enable : 0|1@1+ (1,0) [0|1] ""  MPPT_A
+
+BO_ 1536 LV_Carrier_Status: 2 LV_Carrier
+ SG_ LTC4421_HVDCDC_Selected : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LTC4421_HVDCDC_Fault : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LTC4421_HVDCDC_Valid : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LTC4421_SuppBatt_Selected : 3|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LTC4421_SuppBatt_Fault : 4|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LTC4421_SuppBatt_Valid : 5|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LV_EN_SupplementalBattery : 6|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LV_EN_PowerSupply : 7|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 768 Supp_Battery_Status: 8 LV_Carrier
+ SG_ Supplemental_Battery_Voltage : 0|16@1+ (1,0) [0|40] "V" Vector__XXX
+
+BO_ 769 Supp_Battery_Charger_Status: 8 LV_Carrier
+ SG_ SuppCharger_Status : 0|2@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Supplemental_Battery_Current : 16|16@1- (1,0) [-2300|28700] "mA" Vector__XXX
+ SG_ Supplemental_DCDC_Voltage : 32|16@1+ (1,0) [0|26] "V" Vector__XXX
+ SG_ Supplemental_DCDC_Current : 48|16@1- (1,0) [-2300|28700] "mA" Vector__XXX
+
+BO_TX_BU_ 850 : Telemetry,Pi_Display,VCU;
+BO_TX_BU_ 849 : Telemetry,Pi_Display,VCU;
+
+
+CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
+CM_ SG_ 3221225472 HSS_Command_Type "High Side Switch Command Type:
+0000 - Control Switches
+0001 - Set Current Limit";
+CM_ SG_ 1984 LWS_CCW "Steering wheel sensor command code word (see value table)";
+CM_ SG_ 688 LWS_TRIM "Steering wheel sensor trim status (0 sensor not trimmed, 1 sensor trimmed)";
+CM_ SG_ 688 LWS_CAL "Steering wheel sensor calibration status (0 sensor calibrated, 1 sensor not calibrated)";
+CM_ SG_ 688 LWS_OK "Steering wheel sensor failure status (0 sensor information invalid, 1 sensor information valid)";
+CM_ SG_ 688 LWS_Speed "Measured steering wheel angular speed";
+CM_ SG_ 688 LWS_Angle "Measured steering wheel angle";
+CM_ SG_ 33 Precharge_Motor_Voltage "Motor controller DC bus voltage as measured by active precharge circuitry";
+CM_ SG_ 33 Precharge_Battery_Voltage "Battery voltage as measured by active precharge circuitry";
+CM_ SG_ 16 VCU_Regen_Active "VCU is actively applying regenerative braking";
+CM_ SG_ 16 VCU_Regen_OK "VCU has determined regenerative braking can be applied";
+CM_ SG_ 16 VCU_Pedals_OK "VCU is receiving valid data from accel/brake pedal position sensors";
+CM_ SG_ 16 VCU_Driver_Input_OK "VCU is receiving valid data from driver inputs (dash/steering)";
+CM_ SG_ 16 Motor_Precharge_Contactor_State "Motor Precharge Contactor State (0 open, 1 closed)";
+CM_ SG_ 16 Motor_Contactor_State "Motor Main Contactor State (0 open, 1 closed)";
+CM_ SG_ 16 Motor_Ready_To_Drive "VCU has determined the motor controller is ready to receive torque commands";
+CM_ SG_ 16 VCU_FSM_State "VCU finite state machine current state (TODO: value table when states finalized)";
+CM_ SG_ 16 VCU_Fault "VCU Fault State (0 for all clear; see value table for specific faults)";
+CM_ SG_ 32 Precharge_Battery_Voltage "Battery voltage as measured by active precharge circuitry";
+CM_ SG_ 32 Precharge_Array_Voltage "Array voltage as measured by active precharge circuitry";
+CM_ SG_ 3 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
+CM_ SG_ 3 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
+CM_ SG_ 3 BPS_VoltTemp_ID "BPS VoltTemp ID";
+CM_ SG_ 3 BPS_Tap_ID "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
+CM_ SG_ 2 BPS_Voltage_Tap_Data "Voltage tap measurement for the specified VoltTemp and Tap ID";
+CM_ SG_ 2 BPS_Tap_ID "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
+CM_ SG_ 2 BPS_VoltTemp_ID "BPS VoltTemp ID";
+CM_ SG_ 4 Main_Battery_Current_RawV "Main battery current raw voltage as measured by the BPS";
+CM_ SG_ 4 Main_Battery_Current "Main battery current as measured by the BPS";
+CM_ SG_ 1 Array_Precharge_Contactor_State "Array Precharge Contactor State (0 open, 1 closed)";
+CM_ SG_ 1 Array_Contactor_State "Array Main Contactor State (0 open, 1 closed)";
+CM_ SG_ 1 HV_Plus_Contactor_State "HV+ Contactor State (0 open, 1 closed)";
+CM_ SG_ 1 HV_Minus_Contactor_State "HV- Contactor State (0 open, 1 closed)";
+CM_ SG_ 1 Main_Battery_Avg_Temperature "Average pack temperature as determined by the BPS";
+CM_ SG_ 1 Main_Battery_Voltage "Total battery pack voltage as determined by the BPS";
+CM_ SG_ 1 BPS_Regen_OK "BPS has determined regenerative braking is OK (0 not ok, 1 ok)";
+CM_ SG_ 1 BPS_Charge_OK "BPS has determined charging the pack is OK (0 not ok, 1 ok)";
+CM_ SG_ 1 BPS_Fault "BPS Fault State (0 for all clear; see value table for specific faults)";
+CM_ SG_ 850 HSS_Current_Limit "High Side Switch Current Limit";
+CM_ SG_ 850 HSS_Channel "High Side Switch Channel";
+CM_ SG_ 1282 Radiator_Fan_Speed_Target_2 "Target Radiator Fan 2 Speed";
+CM_ SG_ 1282 Radiator_Fan_Speed_Target_1 "Target Radiator Fan 1 Speed";
+CM_ SG_ 1282 Radiator_Fan_Speed_Measurement_2 "Measured Radiator Fan 2 Speed";
+CM_ SG_ 1282 Radiator_Fan_Speed_Measurement_1 "Measured Radiator Fan 1 Speed";
+CM_ SG_ 1281 Coolant_Temperature_2 "Cooling Loop Temperature Sensor 2 Measurement";
+CM_ SG_ 1281 Coolant_Temperature_1 "Cooling Loop Temperature Sensor 1 Measurement";
+CM_ SG_ 1280 Pump_Fault "Cooling Pump Fault (0 normal, 1 fault)";
+CM_ SG_ 1280 FlowRate_2 "Cooling Loop Flow Rate Sensor 2 Measurement";
+CM_ SG_ 1280 FlowRate_1 "Cooling Loop Flow Rate Sensor 1 Measurement";
+CM_ SG_ 1280 Pump_DutyCycle "Cooling Pump Duty Cycle";
+CM_ SG_ 849 HSS_Control_1 "High Side Switch Control - Channel 1";
+CM_ SG_ 849 HSS_Control_12 "High Side Switch Control - Channel 12";
+CM_ SG_ 849 HSS_Control_13 "High Side Switch Control - Channel 13";
+CM_ SG_ 849 HSS_Control_9 "High Side Switch Control - Channel 9";
+CM_ SG_ 849 HSS_Control_8 "High Side Switch Control - Channel 8";
+CM_ SG_ 849 HSS_Control_7 "High Side Switch Control - Channel 7";
+CM_ SG_ 849 HSS_Control_6 "High Side Switch Control - Channel 6";
+CM_ SG_ 849 HSS_Control_5 "High Side Switch Control - Channel 5";
+CM_ SG_ 849 HSS_Control_4 "High Side Switch Control - Channel 4";
+CM_ SG_ 849 HSS_Control_3 "High Side Switch Control - Channel 3";
+CM_ SG_ 849 HSS_Control_2 "High Side Switch Control - Channel 2";
+CM_ SG_ 849 HSS_Control_16 "High Side Switch Control - Channel 16";
+CM_ SG_ 849 HSS_Control_15 "High Side Switch Control - Channel 15";
+CM_ SG_ 849 HSS_Control_14 "High Side Switch Control - Channel 14";
+CM_ SG_ 849 HSS_Control_11 "High Side Switch Control - Channel 11";
+CM_ SG_ 849 HSS_Control_10 "High Side Switch Control - Channel 10";
+CM_ SG_ 848 HSS_Measured_Current "High Side Switch Current";
+CM_ SG_ 848 HSS_Measured_Voltage "High Side Switch Voltage";
+CM_ SG_ 848 HSS_Enabled "High Side Switch Output Status (0 off, 1 on)";
+CM_ SG_ 848 HSS_Fault "High Side Switch Fault Status (0 normal, 1 faulted)";
+CM_ SG_ 848 HSS_Channel "High Side Switch Channel";
+CM_ SG_ 96 Regen_Enable "Regen Enable Button Pressed";
+CM_ SG_ 96 Regen_Activate "Regen Activate Button Pressed";
+CM_ SG_ 96 PushToTalk_Pressed "Push To Talk (PTT) Button Pressed";
+CM_ SG_ 96 Blinker_Right "Blinker Switch in Right Position";
+CM_ SG_ 96 Blinker_Left "Blinker Switch in Left Position";
+CM_ SG_ 96 Horn_Pressed "Horn Button Pressed";
+CM_ SG_ 96 Hazard_Pressed "Hazard Button Pressed";
+CM_ SG_ 96 Gear_Reverse "Gear Switch in Reverse Position";
+CM_ SG_ 96 Gear_Neutral "Gear Switch in Neutral Position";
+CM_ SG_ 96 Gear_Forward "Gear Switch in Forward Position";
+CM_ SG_ 96 Cruise_Set "Cruise Set Button Pressed";
+CM_ SG_ 96 Cruise_Enable "Cruise Enable Button Pressed";
+CM_ SG_ 96 Ignition_Off "Ignition Switch in Off Position";
+CM_ SG_ 96 Ignition_Motor "Ignition Switch in Motor Position";
+CM_ SG_ 96 Ignition_Array "Ignition Switch in Array Position";
+CM_ SG_ 1792 Camera_Status_Right "Right Side View Camera Status (0 disconnected, 1 connected)";
+CM_ SG_ 1792 Camera_Status_Left "Left Side View Camera Status (0 disconnected, 1 connected)";
+CM_ SG_ 1792 Camera_Status_Backup "Backup Camera Status (0 disconnected, 1 connected)";
+CM_ SG_ 1792 Display_FrameRate "Dashboard Display Frame Rate (FPS)";
+CM_ SG_ 1616 Brake_Pressure_2_Voltage "Brake Pressure Raw Voltage (Sensor 2)";
+CM_ SG_ 1616 Brake_Pressure_2 "Brake Pressure PSI (Sensor 2)";
+CM_ SG_ 1616 Brake_Pressure_1_Voltage "Brake Pressure Raw Voltage (Sensor 1)";
+CM_ SG_ 1616 Brake_Pressure_1 "Brake Pressure PSI (Sensor 1)";
+CM_ SG_ 81 Brake_Pos_Voltage_Redundant "Brake Pedal Raw Voltage Measurement (Redundant Sensor)";
+CM_ SG_ 81 Brake_Pos_Voltage_Main "Brake Pedal Raw Voltage Measurement (Main Sensor)";
+CM_ SG_ 81 Accel_Pos_Voltage_Redundant "Accelerator Pedal Raw Voltage Measurement (Redundant Sensor)";
+CM_ SG_ 81 Accel_Pos_Voltage_Main "Accelerator Pedal Raw Voltage Measurement (Main Sensor)";
+CM_ SG_ 80 Brake_Pressure_2_Fault "Brake Pressure Sensor 2 Fault (0 normal, 1 fault)";
+CM_ SG_ 80 Brake_Pressure_1_Fault "Brake Pressure Sensor 1 Fault (0 normal, 1 fault)";
+CM_ SG_ 80 Brake_Pos_Redundant_Fault "Brake Pedal Redundant Sensor Fault (0 normal, 1 fault)";
+CM_ SG_ 80 Brake_Pos_Main_Fault "Brake Pedal Main Sensor Fault (0 normal, 1 fault)";
+CM_ SG_ 80 Accel_Pos_Redundant_Fault "Accelerator Pedal Redundant Sensor Fault (0 normal, 1 fault)";
+CM_ SG_ 80 Accel_Pos_Main_Fault "Accelerator Pedal Main Sensor Fault (0 normal, 1 fault)";
+CM_ SG_ 80 Brake_Pos_Redundant "Brake Pedal Position (Redundant Sensor)";
+CM_ SG_ 80 Brake_Pos_Main "Brake Pedal Position (Main Sensor)";
+CM_ SG_ 80 Accel_Pos_Redundant "Accelerator Pedal Position (Redundant Sensor)";
+CM_ SG_ 80 Accel_Pos_Main "Accelerator Pedal Position (Main Sensor)";
+CM_ SG_ 1536 LTC4421_HVDCDC_Selected "The LTC4421's channel selected signal for the HV DCDC";
+CM_ SG_ 768 Supplemental_Battery_Voltage "Supplemental Battery voltage in V";
+CM_ SG_ 769 SuppCharger_Status "00 - Charging disabled, 01 - Charge done, 10 - Charge in progress, 11 - Charge fault detected";
+BA_DEF_ BO_  "_Cdb_Sc_CTm_Test" INT 0 0;
+BA_DEF_ BO_  "_Cdb_Sc_CTm_Normal" INT 0 0;
+BA_DEF_  "DatabaseVersion" STRING ;
+BA_DEF_  "ProtocolType" STRING ;
+BA_DEF_  "DatabaseCompiler" STRING ;
+BA_DEF_ SG_  "SPN" INT 0 524287;
+BA_DEF_ BO_  "VFrameFormat" ENUM  "StandardCAN","ExtendedCAN","reserved","J1939PG";
+BA_DEF_  "MultiplexExtEnabled" ENUM  "No","Yes";
+BA_DEF_  "BusType" STRING ;
+BA_DEF_DEF_  "_Cdb_Sc_CTm_Test" 0;
+BA_DEF_DEF_  "_Cdb_Sc_CTm_Normal" 0;
+BA_DEF_DEF_  "DatabaseVersion" "DEMO PLUS";
+BA_DEF_DEF_  "ProtocolType" "";
+BA_DEF_DEF_  "DatabaseCompiler" "";
+BA_DEF_DEF_  "SPN" 0;
+BA_DEF_DEF_  "VFrameFormat" "J1939PG";
+BA_DEF_DEF_  "MultiplexExtEnabled" "No";
+BA_DEF_DEF_  "BusType" "";
+BA_ "BusType" "CAN";
+BA_ "VFrameFormat" BO_ 1654 0;
+BA_ "VFrameFormat" BO_ 1653 0;
+BA_ "VFrameFormat" BO_ 1652 0;
+BA_ "VFrameFormat" BO_ 1651 0;
+BA_ "VFrameFormat" BO_ 1650 0;
+BA_ "VFrameFormat" BO_ 1649 0;
+BA_ "VFrameFormat" BO_ 1648 0;
+BA_ "VFrameFormat" BO_ 21 0;
+BA_ "VFrameFormat" BO_ 1984 0;
+BA_ "VFrameFormat" BO_ 688 0;
+BA_ "VFrameFormat" BO_ 33 0;
+BA_ "VFrameFormat" BO_ 16 0;
+BA_ "VFrameFormat" BO_ 32 0;
+BA_ "VFrameFormat" BO_ 3 0;
+BA_ "VFrameFormat" BO_ 2 0;
+BA_ "VFrameFormat" BO_ 4 0;
+BA_ "VFrameFormat" BO_ 1 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1872 1000;
+BA_ "VFrameFormat" BO_ 1872 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 545 1000;
+BA_ "VFrameFormat" BO_ 545 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 553 -1;
+BA_ "VFrameFormat" BO_ 553 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 544 500;
+BA_ "VFrameFormat" BO_ 544 0;
+BA_ "VFrameFormat" BO_ 850 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1282 100;
+BA_ "VFrameFormat" BO_ 1282 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1281 100;
+BA_ "VFrameFormat" BO_ 1281 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1280 100;
+BA_ "VFrameFormat" BO_ 1280 0;
+BA_ "VFrameFormat" BO_ 849 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 848 100;
+BA_ "VFrameFormat" BO_ 848 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 96 100;
+BA_ "VFrameFormat" BO_ 96 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1792 100;
+BA_ "VFrameFormat" BO_ 1792 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1616 1000;
+BA_ "VFrameFormat" BO_ 1616 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 81 100;
+BA_ "VFrameFormat" BO_ 81 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 80 100;
+BA_ "VFrameFormat" BO_ 80 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 529 1000;
+BA_ "VFrameFormat" BO_ 529 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 528 500;
+BA_ "VFrameFormat" BO_ 528 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 537 -1;
+BA_ "VFrameFormat" BO_ 537 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 513 1000;
+BA_ "VFrameFormat" BO_ 513 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 512 500;
+BA_ "VFrameFormat" BO_ 512 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 521 -1;
+BA_ "VFrameFormat" BO_ 521 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1536 250;
+BA_ "VFrameFormat" BO_ 1536 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 768 250;
+BA_ "VFrameFormat" BO_ 768 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 769 250;
+BA_ "VFrameFormat" BO_ 769 0;
+VAL_ 3221225472 HSS_Command_Type 1 "Set Current Limit" 0 "Control Switches" ;
+VAL_ 1984 LWS_CCW 5 "Resets calibration status" 3 "Sets the signal LWS_Angle to 0°" ;
+VAL_ 16 VCU_Fault 6 "Motor HV Undervoltage" 5 "Motor HV Overvoltage" 4 "Motor Controller Fault" 3 "Motor Precharge Timeout" 2 "Motor Pchg Contactor Sense" 1 "Motor Contactor Sense" 0 "No Fault" ;
+VAL_ 1 BPS_Fault 16 "Discharging Overcurrent" 15 "Charging Overcurrent" 14 "Estop 3" 13 "Estop 2" 12 "Estop 1" 11 "Array Pchg Contactor Sense" 10 "Array Contactor Sense" 9 "HV- Contactor Sense" 8 "HV+ Contactor Sense" 7 "Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "No Fault" ;
+VAL_ 849 HSS_Control_1 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
+VAL_ 849 HSS_Control_12 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
+VAL_ 849 HSS_Control_13 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
+VAL_ 849 HSS_Control_9 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
+VAL_ 849 HSS_Control_8 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
+VAL_ 849 HSS_Control_7 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
+VAL_ 849 HSS_Control_6 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
+VAL_ 849 HSS_Control_5 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
+VAL_ 849 HSS_Control_4 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
+VAL_ 849 HSS_Control_3 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
+VAL_ 849 HSS_Control_2 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
+VAL_ 849 HSS_Control_16 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
+VAL_ 849 HSS_Control_15 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
+VAL_ 849 HSS_Control_14 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
+VAL_ 849 HSS_Control_11 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
+VAL_ 849 HSS_Control_10 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
+
