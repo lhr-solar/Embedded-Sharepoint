@@ -1,6 +1,9 @@
 # default project configuration
 TEST ?= main
-PROJECT_TARGET ?= stm32f446ret
+
+# default is the LSOM MCU
+PROJECT_TARGET ?= stm32g473xx
+
 BEAR_ENABLE ?= 1
 VERBOSE ?= 0
 
