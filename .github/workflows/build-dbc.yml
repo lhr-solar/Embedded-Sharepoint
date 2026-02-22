@@ -1,0 +1,47 @@
+name: Test compilation of can DBC files
+
+on:
+  push:
+    branches:
+      - can_dbc_parsing
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Cache Nix
+        uses: actions/cache@v3
+        with:
+          path: |
+            /nix/store
+            ~/.cache/nix
+          key: nix-${{ runner.os }}-${{ hashFiles('flake.lock') }}
+          restore-keys: |
+            nix-${{ runner.os }}-
+
+      - name: Install Nix
+        run: |
+          sudo ./nix_install.sh
+          
+      - name: Compile can DBCs
+        run: |
+          python can/parse_dbc.py can/output_dir can/dbc/
+
+      - name: Move DBCs to driver folder
+        run: |
+          ./can/test_dbc_compilation.sh
+
+      - name: Build tests
+        run: |
+          nix develop
+          pip install -r requirements.txt
+          cd test
+          make clean
+          make TEST=uart
