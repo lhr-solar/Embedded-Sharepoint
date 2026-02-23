@@ -4,12 +4,12 @@
 StaticTask_t task_buffer;
 StackType_t task_stack[512];
 
-#define CAN_LOOPBACK_ENABLED
+/*
+configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY is the maximum FreeRTOS priority for an interrupt 
+*/
+#define FDCAN_NVIC_PRIO configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 3
 
-// If you only want to disable loop, uncomment the line below
-// #undef CAN_LOOPBACK_ENABLED
-
-
+// LSOM has heartbeat pin defined as PC3
 // Most other nucleos have a heartbeat for A5
 #define LED_PIN GPIO_PIN_3
 #define LED_PORT GPIOC
@@ -94,7 +94,7 @@ void Heartbeat_Init() {
 
 void G474_SystemClockConfig(){
 
-    RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
   /** Configure the main internal regulator output voltage
