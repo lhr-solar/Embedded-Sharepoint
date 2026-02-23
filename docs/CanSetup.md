@@ -3,7 +3,7 @@
 ## About CAN
 
 ### CAN FD vs bxCAN
-There are two types of CAN, regular bxCAN and CAN FD. CAN FD is a variant of CAN that we can clock at a much higher frequency compared to bxCAN. The G4 series of STM32 only supports CAN FD and the F4 and L4 series only supports regular bxCAN. In order to maintain cross compatibility betwee all of our microcontrollers, we're mainly clocking our CAN at 250kpbs. CAN FD can be configured to baud rates of 1 mbps.
+There are two types of CAN, regular bxCAN and CAN FD. CAN FD is a variant of CAN that we can clock at a much higher frequency compared to bxCAN. The G4 series of STM32 only supports CAN FD and the F4 and L4 series only supports regular bxCAN. In order to maintain cross compatibility betwee all of our microcontrollers, we're mainly clocking our CAN at 250kpbs. CAN FD can be configured to baud rates of 8 mbps, while regular bxCAN can be configured up to 1 mbps.
 
 ### CAN DBCs
 A CAN DBC is a file used to store and encode CAN messages. 
@@ -30,7 +30,7 @@ Configure the CAN_TX and CAN_RX pins in ```Pinout & Configuration```
 
 Once you've configured the pins go to ```Connectivity```, and press the FDCAN peripheral.
 
-- Nominal Prescalar
+- Nominal Prescaler
 - Nominal Time Seg1
 - Nominal Time Seg2
 
@@ -40,7 +40,7 @@ To configure the baud rate you need to change the following properties in the ``
 
 You can use a calculator to calculate these time segments values given the final baud rate. [This](http://www.bittiming.can-wiki.info/) calculator works. Just enter the Clock Rate in Mhz and the bit rate in kbps.
 ![CAN baud rate configuration](assets/can_baud_rate.png). 
-So the values I normally suggest using these values for 250kbps:
+So I normally suggest using these values for 250kbps:
 
 - Nominal Prescalar: 20
 - Nominal Time Seg1: 13

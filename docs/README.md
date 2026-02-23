@@ -17,8 +17,8 @@ In the test/ directory there is a Makefile meant for just running test files. Ev
 make TEST=[name of test file without _test_ and the .c extension] PROJECT_TARGET=[name of the STM32 you want to compile for]
 
 # For example:
-make TEST=blinky PROJECT_TARGET=stm32f413rht
-# This compiles the blinky_test.c test for the STM32F413RHT
+make TEST=blinky PROJECT_TARGET=stm32g473xx
+# This compiles the blinky_test.c test for the STM32G473
 ```
 For all PROJECT_TARGET options, see the [STM32_Ports](./STM32_Ports.md) page. 
 
