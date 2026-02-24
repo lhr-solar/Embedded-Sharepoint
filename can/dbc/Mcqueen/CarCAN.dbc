@@ -43,6 +43,24 @@ VAL_TABLE_ HSS_Command_Type 1 "Set Current Limit" 0 "Control Switches" ;
 
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ HSS_Command_Type : 0|4@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_Temperature_Tap_RawV : 0|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 0|16@1- (0.01,0) [-327.68|327.67] "C" Vector__XXX
+ SG_ BPS_VoltTemp_ID : 0|3@1+ (1,0) [0|7] "" Vector__XXX
+ SG_ BPS_Tap_ID : 0|5@1+ (1,0) [0|31] "" Vector__XXX
+ SG_ BPS_Voltage_Tap_Data : 0|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ BPS_Tap_ID : 0|5@1+ (1,0) [0|31] "" Vector__XXX
+ SG_ BPS_VoltTemp_ID : 0|3@1+ (1,0) [0|7] "" Vector__XXX
+ SG_ Main_Battery_Current_RawV : 0|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ Main_Battery_Current : 0|24@1- (0.001,0) [-8388.608|8388.607] "A" Vector__XXX
+ SG_ Array_Precharge_Contactor_State : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Array_Contactor_State : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ HV_Plus_Contactor_State : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ HV_Minus_Contactor_State : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Main_Battery_Avg_Temperature : 0|16@1- (0.01,0) [-327.68|327.67] "" Vector__XXX
+ SG_ Main_Battery_Voltage : 0|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
+ SG_ BPS_Regen_OK : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_Charge_OK : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_Fault : 0|8@1+ (1,0) [0|0] "" Vector__XXX
 
 BO_ 1654 Lighting_Board6_Status: 8 Controls
  SG_ Active_Light_Custom3 : 15|1@1+ (1,0) [0|0] "" Vector__XXX
@@ -174,32 +192,6 @@ BO_ 16 VCU_Status: 3 VCU
 BO_ 32 BPS_Precharge_Voltages: 6 BPS
  SG_ Precharge_Battery_Voltage : 0|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
  SG_ Precharge_Array_Voltage : 24|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
-
-BO_ 3 BPS_Temperature_Array: 5 BPS
- SG_ BPS_Temperature_Tap_RawV : 24|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 8|16@1- (0.01,0) [-327.68|327.67] "C" Vector__XXX
- SG_ BPS_VoltTemp_ID : 0|3@1+ (1,0) [0|7] "" Vector__XXX
- SG_ BPS_Tap_ID : 3|5@1+ (1,0) [0|31] "" Vector__XXX
-
-BO_ 2 BPS_Voltage_Array: 3 BPS
- SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Tap_ID : 3|5@1+ (1,0) [0|31] "" Vector__XXX
- SG_ BPS_VoltTemp_ID : 0|3@1+ (1,0) [0|7] "" Vector__XXX
-
-BO_ 4 BPS_Pack_Current: 5 BPS
- SG_ Main_Battery_Current_RawV : 24|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ Main_Battery_Current : 0|24@1- (0.001,0) [-8388.608|8388.607] "A" Vector__XXX
-
-BO_ 1 BPS_Status: 7 BPS
- SG_ Array_Precharge_Contactor_State : 13|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Array_Contactor_State : 12|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ HV_Plus_Contactor_State : 10|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ HV_Minus_Contactor_State : 11|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Main_Battery_Avg_Temperature : 40|16@1- (0.01,0) [-327.68|327.67] "" Vector__XXX
- SG_ Main_Battery_Voltage : 16|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
- SG_ BPS_Regen_OK : 9|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Charge_OK : 8|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Fault : 0|8@1+ (1,0) [0|0] "" Vector__XXX
 
 BO_ 1872 Telemetry_Status: 8 Telemetry
 
@@ -370,6 +362,24 @@ CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CA
 CM_ SG_ 3221225472 HSS_Command_Type "High Side Switch Command Type:
 0000 - Control Switches
 0001 - Set Current Limit";
+CM_ SG_ 3221225472 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
+CM_ SG_ 3221225472 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
+CM_ SG_ 3221225472 BPS_VoltTemp_ID "BPS VoltTemp ID";
+CM_ SG_ 3221225472 BPS_Tap_ID "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
+CM_ SG_ 3221225472 BPS_Voltage_Tap_Data "Voltage tap measurement for the specified VoltTemp and Tap ID";
+CM_ SG_ 3221225472 BPS_Tap_ID "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
+CM_ SG_ 3221225472 BPS_VoltTemp_ID "BPS VoltTemp ID";
+CM_ SG_ 3221225472 Main_Battery_Current_RawV "Main battery current raw voltage as measured by the BPS";
+CM_ SG_ 3221225472 Main_Battery_Current "Main battery current as measured by the BPS";
+CM_ SG_ 3221225472 Array_Precharge_Contactor_State "Array Precharge Contactor State (0 open, 1 closed)";
+CM_ SG_ 3221225472 Array_Contactor_State "Array Main Contactor State (0 open, 1 closed)";
+CM_ SG_ 3221225472 HV_Plus_Contactor_State "HV+ Contactor State (0 open, 1 closed)";
+CM_ SG_ 3221225472 HV_Minus_Contactor_State "HV- Contactor State (0 open, 1 closed)";
+CM_ SG_ 3221225472 Main_Battery_Avg_Temperature "Average pack temperature as determined by the BPS";
+CM_ SG_ 3221225472 Main_Battery_Voltage "Total battery pack voltage as determined by the BPS";
+CM_ SG_ 3221225472 BPS_Regen_OK "BPS has determined regenerative braking is OK (0 not ok, 1 ok)";
+CM_ SG_ 3221225472 BPS_Charge_OK "BPS has determined charging the pack is OK (0 not ok, 1 ok)";
+CM_ SG_ 3221225472 BPS_Fault "BPS Fault State (0 for all clear; see value table for specific faults)";
 CM_ SG_ 1984 LWS_CCW "Steering wheel sensor command code word (see value table)";
 CM_ SG_ 688 LWS_TRIM "Steering wheel sensor trim status (0 sensor not trimmed, 1 sensor trimmed)";
 CM_ SG_ 688 LWS_CAL "Steering wheel sensor calibration status (0 sensor calibrated, 1 sensor not calibrated)";
@@ -389,24 +399,6 @@ CM_ SG_ 16 VCU_FSM_State "VCU finite state machine current state (TODO: value ta
 CM_ SG_ 16 VCU_Fault "VCU Fault State (0 for all clear; see value table for specific faults)";
 CM_ SG_ 32 Precharge_Battery_Voltage "Battery voltage as measured by active precharge circuitry";
 CM_ SG_ 32 Precharge_Array_Voltage "Array voltage as measured by active precharge circuitry";
-CM_ SG_ 3 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 3 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 3 BPS_VoltTemp_ID "BPS VoltTemp ID";
-CM_ SG_ 3 BPS_Tap_ID "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
-CM_ SG_ 2 BPS_Voltage_Tap_Data "Voltage tap measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 2 BPS_Tap_ID "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
-CM_ SG_ 2 BPS_VoltTemp_ID "BPS VoltTemp ID";
-CM_ SG_ 4 Main_Battery_Current_RawV "Main battery current raw voltage as measured by the BPS";
-CM_ SG_ 4 Main_Battery_Current "Main battery current as measured by the BPS";
-CM_ SG_ 1 Array_Precharge_Contactor_State "Array Precharge Contactor State (0 open, 1 closed)";
-CM_ SG_ 1 Array_Contactor_State "Array Main Contactor State (0 open, 1 closed)";
-CM_ SG_ 1 HV_Plus_Contactor_State "HV+ Contactor State (0 open, 1 closed)";
-CM_ SG_ 1 HV_Minus_Contactor_State "HV- Contactor State (0 open, 1 closed)";
-CM_ SG_ 1 Main_Battery_Avg_Temperature "Average pack temperature as determined by the BPS";
-CM_ SG_ 1 Main_Battery_Voltage "Total battery pack voltage as determined by the BPS";
-CM_ SG_ 1 BPS_Regen_OK "BPS has determined regenerative braking is OK (0 not ok, 1 ok)";
-CM_ SG_ 1 BPS_Charge_OK "BPS has determined charging the pack is OK (0 not ok, 1 ok)";
-CM_ SG_ 1 BPS_Fault "BPS Fault State (0 for all clear; see value table for specific faults)";
 CM_ SG_ 850 HSS_Current_Limit "High Side Switch Current Limit";
 CM_ SG_ 850 HSS_Channel "High Side Switch Channel";
 CM_ SG_ 1282 Radiator_Fan_Speed_Target_2 "Target Radiator Fan 2 Speed";
@@ -512,60 +504,56 @@ BA_ "VFrameFormat" BO_ 688 0;
 BA_ "VFrameFormat" BO_ 33 0;
 BA_ "VFrameFormat" BO_ 16 0;
 BA_ "VFrameFormat" BO_ 32 0;
-BA_ "VFrameFormat" BO_ 3 0;
-BA_ "VFrameFormat" BO_ 2 0;
-BA_ "VFrameFormat" BO_ 4 0;
-BA_ "VFrameFormat" BO_ 1 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1872 1000;
 BA_ "VFrameFormat" BO_ 1872 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 545 1000;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1872 1000;
 BA_ "VFrameFormat" BO_ 545 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 553 -1;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 545 1000;
 BA_ "VFrameFormat" BO_ 553 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 544 500;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 553 -1;
 BA_ "VFrameFormat" BO_ 544 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 544 500;
 BA_ "VFrameFormat" BO_ 850 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1282 100;
 BA_ "VFrameFormat" BO_ 1282 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1281 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1282 100;
 BA_ "VFrameFormat" BO_ 1281 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1280 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1281 100;
 BA_ "VFrameFormat" BO_ 1280 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1280 100;
 BA_ "VFrameFormat" BO_ 849 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 848 100;
 BA_ "VFrameFormat" BO_ 848 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 96 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 848 100;
 BA_ "VFrameFormat" BO_ 96 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1792 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 96 100;
 BA_ "VFrameFormat" BO_ 1792 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1616 1000;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1792 100;
 BA_ "VFrameFormat" BO_ 1616 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 81 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1616 1000;
 BA_ "VFrameFormat" BO_ 81 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 80 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 81 100;
 BA_ "VFrameFormat" BO_ 80 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 529 1000;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 80 100;
 BA_ "VFrameFormat" BO_ 529 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 528 500;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 529 1000;
 BA_ "VFrameFormat" BO_ 528 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 537 -1;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 528 500;
 BA_ "VFrameFormat" BO_ 537 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 513 1000;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 537 -1;
 BA_ "VFrameFormat" BO_ 513 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 512 500;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 513 1000;
 BA_ "VFrameFormat" BO_ 512 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 521 -1;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 512 500;
 BA_ "VFrameFormat" BO_ 521 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1536 250;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 521 -1;
 BA_ "VFrameFormat" BO_ 1536 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 768 250;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1536 250;
 BA_ "VFrameFormat" BO_ 768 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 769 250;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 768 250;
 BA_ "VFrameFormat" BO_ 769 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 769 250;
 VAL_ 3221225472 HSS_Command_Type 1 "Set Current Limit" 0 "Control Switches" ;
+VAL_ 3221225472 BPS_Fault 16 "Discharging Overcurrent" 15 "Charging Overcurrent" 14 "Estop 3" 13 "Estop 2" 12 "Estop 1" 11 "Array Pchg Contactor Sense" 10 "Array Contactor Sense" 9 "HV- Contactor Sense" 8 "HV+ Contactor Sense" 7 "Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "No Fault" ;
 VAL_ 1984 LWS_CCW 5 "Resets calibration status" 3 "Sets the signal LWS_Angle to 0°" ;
 VAL_ 16 VCU_Fault 6 "Motor HV Undervoltage" 5 "Motor HV Overvoltage" 4 "Motor Controller Fault" 3 "Motor Precharge Timeout" 2 "Motor Pchg Contactor Sense" 1 "Motor Contactor Sense" 0 "No Fault" ;
-VAL_ 1 BPS_Fault 16 "Discharging Overcurrent" 15 "Charging Overcurrent" 14 "Estop 3" 13 "Estop 2" 12 "Estop 1" 11 "Array Pchg Contactor Sense" 10 "Array Contactor Sense" 9 "HV- Contactor Sense" 8 "HV+ Contactor Sense" 7 "Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "No Fault" ;
 VAL_ 849 HSS_Control_1 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
 VAL_ 849 HSS_Control_12 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
 VAL_ 849 HSS_Control_13 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
