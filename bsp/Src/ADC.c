@@ -50,11 +50,11 @@ adc_status_t adc_deinit(ADC_HandleTypeDef *h) {
 } 
 
 
-adc_status_t adc_read(ADC_ChannelConfTypeDef* sConfig, ADC_HandleTypeDef *h, QueueHandle_t q) {
+adc_status_t adc_read(ADC_HandleTypeDef *h, ADC_ChannelConfTypeDef* sConfig, QueueHandle_t q) {
     if (sConfig == NULL || h == NULL || q == NULL) {
         return ADC_CHANNEL_CONFIG_FAIL;
     }
-    
+
     // BSP only configures channel ranks 
     #if defined(STM32F4xx)
     sConfig->Rank = 1; 

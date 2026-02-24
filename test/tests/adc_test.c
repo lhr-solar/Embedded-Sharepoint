@@ -66,7 +66,7 @@ void TestQueueFull(void *pvParameters) {
 
     // read once
     for (int i = 0; i < 10; i++) {
-        adc_status_t stat = adc_read(&sConfig, hadc1, xReadings);
+        adc_status_t stat = adc_read(hadc1, &sConfig, xReadings);
         
         if (stat != ADC_OK) {
             error_handler(stat);
@@ -75,7 +75,7 @@ void TestQueueFull(void *pvParameters) {
 
     // read once
     for (int i = 0; i < 11; i++) {
-        adc_status_t stat = adc_read(&sConfig, hadc1, xReadings);
+        adc_status_t stat = adc_read(hadc1, &sConfig, xReadings);
         
         if (stat != ADC_OK) {
             error_handler(stat);
@@ -104,7 +104,7 @@ void TestADC1(void *pvParameters) {
 
     // read once
     for (int i = 0; i < 10; i++) {
-        adc_status_t stat = adc_read(&sConfig, hadc1, xReadings);
+        adc_status_t stat = adc_read(hadc1, &sConfig, xReadings);
         
         if (stat != ADC_OK) {
             error_handler(stat);
@@ -134,7 +134,7 @@ void TestADC2(void *pvParameters) {
 
     // read once
     for (int i = 0; i < 10; i++) {
-        adc_status_t stat = adc_read(&sConfig, hadc2, xReadings);
+        adc_status_t stat = adc_read(hadc2, &sConfig, xReadings);
         
         if (stat != ADC_OK) {
             error_handler(stat);
@@ -165,7 +165,7 @@ void TestADC3(void *pvParameters) {
     
     // read once
     for (int i = 0; i < 10; i++) {
-        adc_status_t stat = adc_read(&sConfig, hadc3, xReadings);
+        adc_status_t stat = adc_read(hadc3, &sConfig, xReadings);
         
         if (stat != ADC_OK) {
             error_handler(stat);

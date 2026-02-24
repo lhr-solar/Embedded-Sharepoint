@@ -93,14 +93,14 @@ adc_status_t adc_init(ADC_InitTypeDef *init, ADC_HandleTypeDef* hadc);
  * triggers a conversion, and stores the converted result in the provided queue.
  * It supports both blocking and non-blocking operation depending on system configuration.
  *
+ * @param h         Pointer to the ADC handle structure.
  * @param sConfig   Pointer to ADC channel configuration structure. The minimum required
  *                  fields are channel and samplingTime.
- * @param h         Pointer to the ADC handle structure.
  * @param q         Pointer to the user-provided queue handle for result storage.
  *
  * @return adc_status_t  Returns ADC_OK on success or an appropriate error code.
  */
-adc_status_t adc_read(ADC_ChannelConfTypeDef* sConfig, ADC_HandleTypeDef *h, QueueHandle_t q);
+adc_status_t adc_read(ADC_HandleTypeDef *h, ADC_ChannelConfTypeDef* sConfig, QueueHandle_t q);
 
 /**
  * @brief Deinitializes the ADC peripheral.
