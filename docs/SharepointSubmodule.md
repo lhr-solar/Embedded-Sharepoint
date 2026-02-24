@@ -148,6 +148,19 @@ If you do not want to type that out everytime, you can create a bash script that
 ## 6. Create a README
 A README.md file is very important for onboarding instructions, and to outline workflows. A README should explain how to go from cloning a repository to how to contribute code. The more descriptive the better!
 
+## 7. Creating GitHub Actions
+A GitHub Action is an automated workflow that runs on GitHub’s servers in response to repository events such as pushing code, opening a pull request, or merging into a branch. Actions are commonly used to run checks like builds, tests, formatting, and static analysis so that issues are caught before code is merged.
+
+### Writing a test compilation script
+
+We primarily use GitHub Actions to run build checks on code before we merge it in, your GitHub action should make sure your main and all tests compile. There is a template python script to compile all test files located in `/template`, where lines with `#❗ CHANGE THIS ❗` show where you should change the script to run. 
+
+### Creating the build action
+To create a GitHub action, you need to make a `workflows` folder in the `.github` folder and create a `.yml` file that defines your GitHub action. GitHub will then run your action whenever the event your action specifies happens.
+
+### Examples of GitHub Actions
+* [VCU](https://github.com/lhr-solar/PS-VehicleControlUnit/blob/main/.github/workflows/build-tests.yml)
+* [Embedded-Sharepoint](https://github.com/lhr-solar/Embedded-Sharepoint/tree/main/.github/workflows)
 
 ## Examples of projects that use Embedded Sharepoint
 * [BPS-Leader](https://github.com/lhr-solar/BPS-Leader)

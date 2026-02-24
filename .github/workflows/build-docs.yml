@@ -2,8 +2,7 @@ name: Build and Deploy Sharepoint Documentation to GitHub Pages
 
 on:
   push:
-    branches:
-      - main
+  pull_request:
 
 permissions:
   contents: write
@@ -27,16 +26,12 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
           
-      - name: Generate DBC Table
-        run: python docs/generate_dbc_table.py
-  
-      - name: Generate STM32 Ports Documentation
-        run: python docs/generate_stm_ports.py
-
       - name: Build MkDocs site
         run: mkdocs build
 
+      # Only run when pushing to main
       - name: Deploy to GitHub Pages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
