@@ -60,6 +60,9 @@ adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef
     sConfig.Rank = ADC_REGULAR_RANK_1;
     #endif
     sConfig.SamplingTime = samplingTime;
+    sConfig.SingleDiff = ADC_SINGLE_ENDED;
+    sConfig.OffsetNumber = ADC_OFFSET_NONE;
+    sConfig.Offset = 0;
 
     if (HAL_ADC_ConfigChannel(hadc1, &sConfig) != HAL_OK)
     {
