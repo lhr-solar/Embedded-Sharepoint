@@ -59,8 +59,10 @@ void TestQueueFull(void *pvParameters) {
     // Set bkpt in error_handler();
     uint32_t reading = 0;
 
-    ADC_ChannelConfTypeDef sConfig = {.Channel = ADC_CHANNEL_0,
-                                      .SamplingTime = ADC_SAMPLETIME_3CYCLES};
+    ADC_ChannelConfTypeDef sConfig = {
+        .Channel = ADC_CHANNEL_1,
+        .SamplingTime = ADC_SAMPLETIME_3CYCLES
+    };
 
     // read once
     for (int i = 0; i < 10; i++) {
@@ -91,14 +93,14 @@ void TestADC1(void *pvParameters) {
     // Set bkpt in error_handler();
     uint32_t reading = 0;
 
+    ADC_ChannelConfTypeDef sConfig = {
+        .Channel = ADC_CHANNEL_1,
     #ifdef ADC_SAMPLETIME_3CYCLES
-    ADC_ChannelConfTypeDef sConfig = {.Channel = ADC_CHANNEL_1,
-                                      .SamplingTime = ADC_SAMPLETIME_3CYCLES};
-
+        .SamplingTime = ADC_SAMPLETIME_3CYCLES
     #else
-    ADC_ChannelConfTypeDef sConfig = {.Channel = ADC_CHANNEL_1,
-                                      .SamplingTime = ADC_SAMPLETIME_2CYCLES_5};
+        .SamplingTime = ADC_SAMPLETIME_2CYCLES_5
     #endif
+    };
 
     // read once
     for (int i = 0; i < 10; i++) {
@@ -121,14 +123,14 @@ void TestADC2(void *pvParameters) {
     // Set bkpt in error_handler();
     uint32_t reading = 0;
 
+    ADC_ChannelConfTypeDef sConfig = {
+        .Channel = ADC_CHANNEL_1,
     #ifdef ADC_SAMPLETIME_3CYCLES
-    ADC_ChannelConfTypeDef sConfig = {.Channel = ADC_CHANNEL_0,
-                                      .SamplingTime = ADC_SAMPLETIME_3CYCLES};
-
+        .SamplingTime = ADC_SAMPLETIME_3CYCLES
     #else
-    ADC_ChannelConfTypeDef sConfig = {.Channel = ADC_CHANNEL_0,
-                                      .SamplingTime = ADC_SAMPLETIME_2CYCLES_5};
+        .SamplingTime = ADC_SAMPLETIME_2CYCLES_5
     #endif
+    };
 
     // read once
     for (int i = 0; i < 10; i++) {
@@ -152,14 +154,14 @@ void TestADC3(void *pvParameters) {
     // Set bkpt in error_handler();
     uint32_t reading = 0;
 
+    ADC_ChannelConfTypeDef sConfig = {
+        .Channel = ADC_CHANNEL_1,
     #ifdef ADC_SAMPLETIME_3CYCLES
-    ADC_ChannelConfTypeDef sConfig = {.Channel = ADC_CHANNEL_0,
-                                      .SamplingTime = ADC_SAMPLETIME_3CYCLES};
-
+        .SamplingTime = ADC_SAMPLETIME_3CYCLES
     #else
-    ADC_ChannelConfTypeDef sConfig = {.Channel = ADC_CHANNEL_0,
-                                      .SamplingTime = ADC_SAMPLETIME_2CYCLES_5};
+        .SamplingTime = ADC_SAMPLETIME_2CYCLES_5
     #endif
+    };
     
     // read once
     for (int i = 0; i < 10; i++) {
