@@ -98,7 +98,7 @@ BO_ 3 BPS_Voltage_Temperature_1: 7 VoltTemp_1
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Tap_ID : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
-BO_ 11 BPS_Precharge_Voltages: 6 BPS_Leader
+BO_ 32 BPS_Precharge_Voltages: 6 BPS_Leader
  SG_ Precharge_Battery_Voltage : 0|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
  SG_ Precharge_Array_Voltage : 24|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
 
@@ -173,8 +173,8 @@ CM_ SG_ 3 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the s
 CM_ SG_ 3 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
 CM_ SG_ 3 BPS_Voltage_Tap_Data "Voltage tap measurement for the specified VoltTemp and Tap ID";
 CM_ SG_ 3 BPS_Tap_ID "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
-CM_ SG_ 11 Precharge_Battery_Voltage "Battery voltage as measured by active precharge circuitry";
-CM_ SG_ 11 Precharge_Array_Voltage "Array voltage as measured by active precharge circuitry";
+CM_ SG_ 32 Precharge_Battery_Voltage "Battery voltage as measured by active precharge circuitry";
+CM_ SG_ 32 Precharge_Array_Voltage "Array voltage as measured by active precharge circuitry";
 CM_ SG_ 2 BPS_Temperature_Tap_Fault "VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)";
 CM_ SG_ 2 BPS_VoltTemp_BQ_Fault "VoltTemp BQ Fault State (0 no fault, 1 fault)";
 CM_ SG_ 2 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
@@ -218,7 +218,7 @@ BA_ "VFrameFormat" BO_ 6 0;
 BA_ "VFrameFormat" BO_ 5 0;
 BA_ "VFrameFormat" BO_ 4 0;
 BA_ "VFrameFormat" BO_ 3 0;
-BA_ "VFrameFormat" BO_ 11 0;
+BA_ "VFrameFormat" BO_ 32 0;
 BA_ "VFrameFormat" BO_ 2 0;
 BA_ "VFrameFormat" BO_ 10 0;
 BA_ "VFrameFormat" BO_ 1 0;
