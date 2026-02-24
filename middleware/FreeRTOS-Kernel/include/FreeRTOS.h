@@ -281,7 +281,7 @@
 #endif
 
 #ifndef INCLUDE_xTimerPendFunctionCall
-    #define INCLUDE_xTimerPendFunctionCall    1
+    #define INCLUDE_xTimerPendFunctionCall    0
 #endif
 
 #ifndef INCLUDE_xTaskGetSchedulerState
