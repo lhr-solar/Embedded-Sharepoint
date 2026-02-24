@@ -88,18 +88,19 @@ adc_status_t adc_init(ADC_InitTypeDef *init, ADC_HandleTypeDef* hadc);
 /**
  * @brief Reads a value from the specified ADC channel.
  *
- * This function triggers a conversion on the given channel and stores the
- * converted result in the provided queue. It supports both blocking and
- * non-blocking operation depending on configuration.
+ * This function configures the ADC using the provided channel configuration
+ * (at minimum, the user must specify the channel number and sampling time),
+ * triggers a conversion, and stores the converted result in the provided queue.
+ * It supports both blocking and non-blocking operation depending on system configuration.
  *
- * @param channel        ADC channel to read from.
- * @param samplingTime   ADC sampling time (in ADC clock cycles).
- * @param h              Pointer to the ADC handle structure.
- * @param q              Pointer to the user-provided queue handle for result storage.
+ * @param sConfig   Pointer to ADC channel configuration structure. The minimum required
+ *                  fields are channel and samplingTime.
+ * @param h         Pointer to the ADC handle structure.
+ * @param q         Pointer to the user-provided queue handle for result storage.
  *
  * @return adc_status_t  Returns ADC_OK on success or an appropriate error code.
  */
-adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef *h, QueueHandle_t q);
+adc_status_t adc_read(ADC_ChannelConfTypeDef* sConfig, ADC_HandleTypeDef *h, QueueHandle_t q);
 
 /**
  * @brief Deinitializes the ADC peripheral.

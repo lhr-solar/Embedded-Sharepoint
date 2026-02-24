@@ -50,20 +50,18 @@ adc_status_t adc_deinit(ADC_HandleTypeDef *h) {
 } 
 
 
-adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef *h, QueueHandle_t q) {
-    ADC_ChannelConfTypeDef sConfig = {};
-    sConfig.Channel = channel;
+adc_status_t adc_read(ADC_ChannelConfTypeDef* sConfig, ADC_HandleTypeDef *h, QueueHandle_t q) {
+    // BSP only configures channel ranks 
     #if defined(STM32F4xx)
-    sConfig.Rank = 1; 
+    sConfig->Rank = 1; 
     #endif
     #if defined(STM32G4xx) || defined(STM32L4xx)
-    sConfig.Rank = ADC_REGULAR_RANK_1;
-    #endif
-    sConfig.SamplingTime = samplingTime;
+    sConfig->Rank = ADC_REGULAR_RANK_1;
+    #endif 
 
-    if (HAL_ADC_ConfigChannel(hadc1, &sConfig) != HAL_OK)
+    if (HAL_ADC_ConfigChannel(h, sConfig) != HAL_OK)
     {
-      Error_Handler();
+      return ADC_CHANNEL_CONFIG_FAIL;
     } 
     
     // Queue Arbitration for later

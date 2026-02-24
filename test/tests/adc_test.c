@@ -59,9 +59,21 @@ void TestQueueFull(void *pvParameters) {
     // Set bkpt in error_handler();
     uint32_t reading = 0;
 
+    ADC_ChannelConfTypeDef sConfig = {.Channel = ADC_CHANNEL_0,
+                                      .SamplingTime = ADC_SAMPLETIME_3CYCLES};
+
+    // read once
+    for (int i = 0; i < 10; i++) {
+        adc_status_t stat = adc_read(&sConfig, hadc1, xReadings);
+        
+        if (stat != ADC_OK) {
+            error_handler(stat);
+        }
+    }
+
     // read once
     for (int i = 0; i < 11; i++) {
-        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc1, xReadings);
+        adc_status_t stat = adc_read(&sConfig, hadc1, xReadings);
         
         if (stat != ADC_OK) {
             error_handler(stat);
@@ -79,13 +91,18 @@ void TestADC1(void *pvParameters) {
     // Set bkpt in error_handler();
     uint32_t reading = 0;
 
+    #ifdef ADC_SAMPLETIME_3CYCLES
+    ADC_ChannelConfTypeDef sConfig = {.Channel = ADC_CHANNEL_1,
+                                      .SamplingTime = ADC_SAMPLETIME_3CYCLES};
+
+    #else
+    ADC_ChannelConfTypeDef sConfig = {.Channel = ADC_CHANNEL_1,
+                                      .SamplingTime = ADC_SAMPLETIME_2CYCLES_5};
+    #endif
+
     // read once
     for (int i = 0; i < 10; i++) {
-        #ifdef ADC_SAMPLETIME_3CYCLES
-        adc_status_t stat = adc_read(ADC_CHANNEL_1,  ADC_SAMPLETIME_3CYCLES, hadc1, xReadings);
-        #else
-        adc_status_t stat = adc_read(ADC_CHANNEL_1,  ADC_SAMPLETIME_2CYCLES_5, hadc1, xReadings);
-        #endif
+        adc_status_t stat = adc_read(&sConfig, hadc1, xReadings);
         
         if (stat != ADC_OK) {
             error_handler(stat);
@@ -104,13 +121,18 @@ void TestADC2(void *pvParameters) {
     // Set bkpt in error_handler();
     uint32_t reading = 0;
 
+    #ifdef ADC_SAMPLETIME_3CYCLES
+    ADC_ChannelConfTypeDef sConfig = {.Channel = ADC_CHANNEL_0,
+                                      .SamplingTime = ADC_SAMPLETIME_3CYCLES};
+
+    #else
+    ADC_ChannelConfTypeDef sConfig = {.Channel = ADC_CHANNEL_0,
+                                      .SamplingTime = ADC_SAMPLETIME_2CYCLES_5};
+    #endif
+
     // read once
     for (int i = 0; i < 10; i++) {
-        #ifdef ADC_SAMPLETIME_3CYCLES
-        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc2, xReadings);
-        #else
-        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_2CYCLES_5, hadc2, xReadings);
-        #endif
+        adc_status_t stat = adc_read(&sConfig, hadc2, xReadings);
         
         if (stat != ADC_OK) {
             error_handler(stat);
@@ -130,13 +152,18 @@ void TestADC3(void *pvParameters) {
     // Set bkpt in error_handler();
     uint32_t reading = 0;
 
+    #ifdef ADC_SAMPLETIME_3CYCLES
+    ADC_ChannelConfTypeDef sConfig = {.Channel = ADC_CHANNEL_0,
+                                      .SamplingTime = ADC_SAMPLETIME_3CYCLES};
+
+    #else
+    ADC_ChannelConfTypeDef sConfig = {.Channel = ADC_CHANNEL_0,
+                                      .SamplingTime = ADC_SAMPLETIME_2CYCLES_5};
+    #endif
+    
     // read once
     for (int i = 0; i < 10; i++) {
-        #ifdef ADC_SAMPLETIME_3CYCLES
-        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_3CYCLES, hadc3, xReadings);
-        #else
-        adc_status_t stat = adc_read(ADC_CHANNEL_0,  ADC_SAMPLETIME_2CYCLES_5, hadc3, xReadings);
-        #endif
+        adc_status_t stat = adc_read(&sConfig, hadc3, xReadings);
         
         if (stat != ADC_OK) {
             error_handler(stat);
