@@ -3,7 +3,8 @@ import re
 from pathlib import Path
 import sys
 
-def sanitize_name(name):
+def sanitize_name(name: str) -> str:
+    """Sanitizes a string to be a valid C identifier."""
     name = re.sub(r'\W+', '_', name)
     if name and name[0].isdigit():
         name = "_" + name
