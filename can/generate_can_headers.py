@@ -1,14 +1,16 @@
 import cantools
+import argparse
 import re
 from pathlib import Path
-import sys
+
 
 def sanitize_name(name: str) -> str:
-    """Sanitizes a string to be a valid C identifier."""
+    """Sanitize a string to be a valid C identifier."""
     name = re.sub(r'\W+', '_', name)
     if name and name[0].isdigit():
         name = "_" + name
     return name
+
 
 def c_type_for_signal(signal):
     length = signal.length
@@ -35,6 +37,7 @@ def c_type_for_signal(signal):
         else:
             return "uint64_t"
 
+
 def generate_enum(signal, message_name):
     enum_name = sanitize_name(f"{message_name}_{signal.name}_e".lower())
 
@@ -55,6 +58,7 @@ def generate_enum(signal, message_name):
     lines.append(f"}} {enum_name};\n")
     return "\n".join(lines)
 
+
 def generate_struct(message):
     struct_name = sanitize_name(message.name.lower() + "_t")
 
@@ -69,13 +73,12 @@ def generate_struct(message):
     lines.append(f"}} {struct_name};\n")
     return "\n".join(lines)
 
-def generate_header(dbc_path, output_file=None):
-    db = cantools.database.load_file(dbc_path)
 
-    # If no output filename provided, generate default
+def generate_header(dbc_path: Path, output_file: Path | None):
+    db = cantools.database.load_file(str(dbc_path))
+
     if output_file is None:
-        input_name = Path(dbc_path).stem
-        output_file = f"{input_name}_can_msgs.h"
+        output_file = dbc_path.with_name(f"{dbc_path.stem}_can_msgs.h")
 
     can_id_macros = []
     enums = []
@@ -115,17 +118,32 @@ def generate_header(dbc_path, output_file=None):
 
     print(f"Generated: {output_file}")
 
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Generate C header files from a CAN DBC file."
+    )
+
+    parser.add_argument(
+        "dbc",
+        type=Path,
+        help="Input DBC file"
+    )
+
+    parser.add_argument(
+        "-o",
+        "--output",
+        type=Path,
+        help="Output header filename (optional)"
+    )
+
+    args = parser.parse_args()
+
+    if not args.dbc.is_file():
+        parser.error(f"DBC file not found: {args.dbc}")
+
+    generate_header(args.dbc, args.output)
+
+
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage:")
-        print("  python generate_can_headers.py input.dbc [output.h]")
-        sys.exit(1)
-
-    dbc_path = sys.argv[1]
-
-    if len(sys.argv) >= 3:
-        output_file = sys.argv[2]
-    else:
-        output_file = None
-
-    generate_header(dbc_path, output_file)
+    main()
