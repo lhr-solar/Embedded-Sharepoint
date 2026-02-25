@@ -84,7 +84,10 @@ def generate_header(dbc_path: Path, output_file: Path | None):
     enums = []
     structs = []
 
-    for message in db.messages:
+    # 🔹 Sort messages by numeric CAN ID
+    sorted_messages = sorted(db.messages, key=lambda m: m.frame_id)
+
+    for message in sorted_messages:
         msg_macro_name = sanitize_name(message.name.upper())
 
         can_id_macros.append(
