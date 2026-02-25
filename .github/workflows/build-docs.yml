@@ -2,7 +2,6 @@ name: Build and Deploy Sharepoint Documentation to GitHub Pages
 
 on:
   push:
-  pull_request:
 
 permissions:
   contents: write
