@@ -23,7 +23,7 @@ jobs:
 
       - name: Install Nix
         run: |
-          sh ./nix_install.sh
+          sudo ./nix_install.sh
 
       - name: Clean & Build tests
         run: |
