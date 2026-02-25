@@ -7,17 +7,27 @@ on:
 jobs:
   build:
     runs-on: macos-latest
-
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - uses: cachix/install-nix-action@v27
+      - name: Cache Nix
+        uses: actions/cache@v3
         with:
-          extra_nix_config: |
-            experimental-features = nix-command flakes
+          path: |
+            /nix/store
+            ~/.cache/nix
+          key: nix-${{ runner.os }}-${{ hashFiles('flake.lock') }}
+          restore-keys: |
+            nix-${{ runner.os }}-
 
-      - name: Build tests
+      - name: Install Nix
         run: |
+          sudo ./nix_install.sh
+
+      - name: Build a test on Mac
+        run: |
+          . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
           nix develop --accept-flake-config --command bash -c "
             cd test && make TEST=blinky
           "
