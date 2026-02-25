@@ -26,9 +26,7 @@ jobs:
 
       - name: Check duplicate CAN IDs
         run: |
-          cd can/
-          python check_duplicate_can_ids.py dbc/Mcqueen
+          python .github/check_duplicate_can_ids.py can/dbc/Mcqueen
       - name: Check CAN header generation
         run: |
-          cd can/
-          python validate_dbc_generation.py dbc/Mcqueen generate_can_headers.py
+          python .github/validate_dbc_generation.py can/dbc/Mcqueen can/generate_can_headers.py
