@@ -63,6 +63,10 @@ flash:
 flash-uart:
 	$(MAKE) -C $(BUILD_MAKEFILE_DIR) flash-uart
 
+.PHONY: deps
+deps:
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) deps
+
 # help
 .PHONY: help
 help:

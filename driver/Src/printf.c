@@ -1,4 +1,5 @@
 #include "printf.h"
+#include "portmacro.h"
 
 UART_HandleTypeDef *printf_huart = NULL;
 
@@ -18,6 +19,20 @@ int __io_getchar() {
         uint8_t data;
         uart_status_t ret = uart_recv(printf_huart, &data, 1, portMAX_DELAY);
         if(ret != UART_OK) return -1;
+
+        if(data == '\n'){
+            const uint8_t buf[2] = "\\n";
+            ret = uart_send(printf_huart, buf, 2, portMAX_DELAY);
+            if(ret != UART_OK) return -1;
+        } else if(data == '\r'){
+            const uint8_t buf[2] = "\\r";
+            ret = uart_send(printf_huart, buf, 2, portMAX_DELAY);
+            if(ret != UART_OK) return -1;
+        }
+
+        ret = uart_send(printf_huart, &data, 1, portMAX_DELAY);
+        if(ret != UART_OK) return -1;
+
         return data;
     }
     return -1;

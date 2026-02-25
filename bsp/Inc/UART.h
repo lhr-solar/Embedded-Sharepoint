@@ -52,10 +52,7 @@
 // Return codes for UART operations
 typedef enum {
     UART_ERR,
-    UART_OK,
-    UART_SENT,
-    UART_RECV,
-    UART_EMPTY,
+    UART_OK
 } uart_status_t;
 
 // uart handlers

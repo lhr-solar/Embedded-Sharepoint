@@ -644,7 +644,7 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
     #endif /* USART3 */
   
 
-    uart_status_t status = UART_SENT;
+    uart_status_t status = UART_OK;
 
     // Try direct transmission if possible
     portENTER_CRITICAL();
@@ -730,14 +730,14 @@ uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t lengt
     }
     #endif /* USART3 */
 
-    uart_status_t status = UART_RECV;
+    uart_status_t status = UART_OK;
     rx_payload_t receivedPayload;
     uint8_t bytes_received = 0;
 
     // Receive all requested bytes
     while (bytes_received < length) {
         if (xQueueReceive(rx_queue, &receivedPayload, delay_ticks) == errQUEUE_EMPTY) {
-            return UART_EMPTY;  // Queue empty, no more data to receive
+            return UART_OK;  // Queue empty, no more data to receive
         }
 
         // Calculate how many bytes to copy from the payload based on DATA_SIZE
