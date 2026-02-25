@@ -1,11 +1,11 @@
-name: Build Tests
+name: Test MacOS compilation
 
 on:
   push:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -24,8 +24,9 @@ jobs:
         run: |
           sudo ./nix_install.sh
 
-      - name: Clean & Build tests
+      - name: Build a test on Mac
         run: |
+          . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
           nix develop --accept-flake-config --command bash -c "
-            cd test && make clean && python3 makeAllTests.py
+            cd test && make TEST=blinky
           "
