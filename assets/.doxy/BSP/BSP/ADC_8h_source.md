@@ -48,7 +48,7 @@ extern ADC_HandleTypeDef* hadc5;
 
 adc_status_t adc_init(ADC_InitTypeDef *init, ADC_HandleTypeDef* hadc);
 
-adc_status_t adc_read(uint32_t channel, uint32_t samplingTime, ADC_HandleTypeDef *h, QueueHandle_t q);
+adc_status_t adc_read(ADC_HandleTypeDef *h, ADC_ChannelConfTypeDef* sConfig, QueueHandle_t q);
 
 adc_status_t adc_deinit(ADC_HandleTypeDef *h);
 

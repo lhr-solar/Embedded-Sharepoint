@@ -62,7 +62,7 @@ _Provides functions for initializing, reading, and managing ADC peripherals._ [M
 | ---: | :--- |
 |  [**adc\_status\_t**](ADC_8h.md#enum-adc_status_t) | [**adc\_deinit**](#function-adc_deinit) (ADC\_HandleTypeDef \* h) <br>_Deinitializes the ADC peripheral._  |
 |  [**adc\_status\_t**](ADC_8h.md#enum-adc_status_t) | [**adc\_init**](#function-adc_init) (ADC\_InitTypeDef \* init, ADC\_HandleTypeDef \* hadc) <br>_Initializes the ADC peripheral with the specified configuration._  |
-|  [**adc\_status\_t**](ADC_8h.md#enum-adc_status_t) | [**adc\_read**](#function-adc_read) (uint32\_t channel, uint32\_t samplingTime, ADC\_HandleTypeDef \* h, QueueHandle\_t q) <br>_Reads a value from the specified ADC channel._  |
+|  [**adc\_status\_t**](ADC_8h.md#enum-adc_status_t) | [**adc\_read**](#function-adc_read) (ADC\_HandleTypeDef \* h, ADC\_ChannelConfTypeDef \* sConfig, QueueHandle\_t q) <br>_Reads a value from the specified ADC channel._  |
 
 
 
@@ -250,16 +250,15 @@ adc\_status\_t Returns ADC\_OK on success or an appropriate error code.
 _Reads a value from the specified ADC channel._ 
 ```C++
 adc_status_t adc_read (
-    uint32_t channel,
-    uint32_t samplingTime,
     ADC_HandleTypeDef * h,
+    ADC_ChannelConfTypeDef * sConfig,
     QueueHandle_t q
 ) 
 ```
 
 
 
-This function triggers a conversion on the given channel and stores the converted result in the provided queue. It supports both blocking and non-blocking operation depending on configuration.
+This function configures the ADC using the provided channel configuration (at minimum, the user must specify the channel number and sampling time), triggers a conversion, and stores the converted result in the provided queue. It supports both blocking and non-blocking operation depending on system configuration.
 
 
 
@@ -267,9 +266,8 @@ This function triggers a conversion on the given channel and stores the converte
 **Parameters:**
 
 
-* `channel` ADC channel to read from. 
-* `samplingTime` ADC sampling time (in ADC clock cycles). 
 * `h` Pointer to the ADC handle structure. 
+* `sConfig` Pointer to ADC channel configuration structure. The minimum required fields are channel and samplingTime. 
 * `q` Pointer to the user-provided queue handle for result storage.
 
 
