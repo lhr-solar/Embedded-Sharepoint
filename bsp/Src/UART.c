@@ -737,7 +737,7 @@ uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t lengt
     // Receive all requested bytes
     while (bytes_received < length) {
         if (xQueueReceive(rx_queue, &receivedPayload, delay_ticks) == errQUEUE_EMPTY) {
-            return UART_OK;  // Queue empty, no more data to receive
+            return UART_EMPTY;  // Queue empty, no more data to receive
         }
 
         // Calculate how many bytes to copy from the payload based on DATA_SIZE
