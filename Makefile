@@ -207,7 +207,7 @@ LDSCRIPT = stm/$(SERIES_GENERIC)/$(SERIES_LINE)/$(SERIES_LINE_CAP)$(EXTRA_CAP)x_
 # libraries
 LIBS = -lc -lm -lnosys 
 LIBDIR = 
-LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections,--trace
+LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
 
 # default action: build all
 all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
@@ -218,7 +218,6 @@ all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET
 # default action: build all
 .PHONY: all
 all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
-deps: $(BUILD_DIR)/$(TARGET).deps
 
 # list of objects
 OBJECTS = $(addprefix $(BUILD_DIR)/,$(notdir $(C_SOURCES:.c=.o)))
@@ -282,24 +281,11 @@ endif
 ifeq ($(VERBOSE), 1)
 	$(CC) $(OBJECTS) $(LDFLAGS) -o $@
 else
-	@$(CC) $(OBJECTS) $(LDFLAGS) -o $@ 
+	@$(CC) $(OBJECTS) $(LDFLAGS) -o $@
 	@echo "LD $@"
 endif
 	@$(SZ) $@
 	@echo "Finished compiling. Jolly good!"
-
-$(BUILD_DIR)/$(TARGET).deps: $(OBJECTS) Makefile
-	@if ls $(BUILD_DIR)/*.deps 1> /dev/null 2>&1; then \
-	rm -rf $(BUILD_DIR)/stm*.deps; \
-	fi
-
-
-ifeq ($(VERBOSE), 1)
-	$(CC) $(OBJECTS) $(LDFLAGS) -Wl,--trace -o /dev/null > $@
-	@echo "$@"
-else
-	@$(CC) $(OBJECTS) $(LDFLAGS) -Wl,--trace -o /dev/null > $@
-endif
 
 $(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	@if ls $(BUILD_DIR)/*.hex 1> /dev/null 2>&1; then \
