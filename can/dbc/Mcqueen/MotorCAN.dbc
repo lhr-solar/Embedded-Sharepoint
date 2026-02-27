@@ -34,12 +34,6 @@ NS_ :
 BS_:
 
 BU_: BPS_LVBatteryMonitor Controls_MotorCommander Telemetry_Leader TPEE_MPPT_B Prohelion_WaveSculptor22 TPEE_MPPT_A Power_Precharge Controls_DriverUserInterface BPS_Leader
-VAL_TABLE_ Generic_Active 1 "Active" 0 "Inactive" ;
-VAL_TABLE_ BPS_Fault 11 "MPPT" 10 "E-STOP/Contactor" 9 "IsoSPI" 8 "Watchdog" 7 "OS" 6 "Handler" 5 "Open Wire" 4 "Over Current" 3 "Over Temperature" 2 "Overvoltage" 1 "Undervoltage" 0 "None" ;
-VAL_TABLE_ Contactor_State 1 "Closed" 0 "Open" ;
-VAL_TABLE_ Generic_EN 1 "Enabled" 0 "Disabled" ;
-VAL_TABLE_ MPPT_Fault 6 "Fault" 5 "Temperature De-rating" 4 "Constant Output Current" 3 "Constand Output Voltage" 2 "Minimum Input Current" 1 "Constand Input Current" 0 "Constand Input Voltage" ;
-VAL_TABLE_ MPPT_Mode 8 "Fault" 7 "Phase Over Current" 6 "Input Under Current" 5 "Input Over Current" 4 "Output Over Current" 3 "Output Over Voltage" 2 "Input Over Voltage" 1 "Configuration Error" 0 "OK(No Fault)" ;
 
 
 BO_ 1026 MC_PowerCommand: 4 Controls_MotorCommander
