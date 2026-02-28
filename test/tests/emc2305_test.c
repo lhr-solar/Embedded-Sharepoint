@@ -501,7 +501,7 @@ void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef* hi2c) {
 
 // I2C Receive Interrupt Callback
 void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef* hi2c) {
-    EMC2305_I2C_MasterTxCpltCallback(hi2c);
+    EMC2305_I2C_MasterRxCpltCallback(hi2c);
 }
 
 // I2C Error Interrupt Callback
