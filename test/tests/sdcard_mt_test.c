@@ -43,6 +43,27 @@ StackType_t xWorkerStack[2048]; // Worker needs large stack for FatFs
 
     #define LED_PORT           GPIOA
     #define LED_PIN            GPIO_PIN_5
+
+#elif defined(STM32G473xx) || defined(STM32G4xx)
+    #define USER_SPI_INSTANCE  SPI3
+    #define USER_CS_PORT       GPIOA
+    #define USER_CS_PIN        GPIO_PIN_10
+
+    #define USER_SCK_PORT      GPIOB
+    #define USER_SCK_PIN       GPIO_PIN_3
+    #define USER_SCK_AF        GPIO_AF6_SPI3
+
+    #define USER_MISO_PORT     GPIOB
+    #define USER_MISO_PIN      GPIO_PIN_4
+    #define USER_MISO_AF       GPIO_AF6_SPI3
+
+    #define USER_MOSI_PORT     GPIOB
+    #define USER_MOSI_PIN      GPIO_PIN_5
+    #define USER_MOSI_AF       GPIO_AF6_SPI3
+
+    #define LED_PORT           GPIOC
+    #define LED_PIN            GPIO_PIN_3
+
 #else
     #define USER_SPI_INSTANCE      SPI2
     #define USER_CS_PORT           GPIOB
@@ -78,15 +99,16 @@ void SPI2_IRQHandler(void) {
     HAL_SPI_IRQHandler(&hspi_user); 
 }
 
+void SPI3_IRQHandler(void) { 
+    HAL_SPI_IRQHandler(&hspi_user); 
+}
+
 int main(void)
 {
     HAL_Init();
     SystemClock_Config();
     LED_Init();
     User_Hardware_Init(); // Sets up SPI, Clocks, and NVIC Priority 10
-    
-    HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET);
-    
 
     /* Link SD Handle */
     sd.hspi = &hspi_user;
@@ -94,15 +116,13 @@ int main(void)
     sd.cs_pin  = USER_CS_PIN;
     
     // Initialize Queues and Mutexes
-    // Init Error = 3 Blinks (Out of RAM)
     if (USER_SD_Card_Init(&sd) != SD_OK) {
         while(1) { 
-            HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET);
-            HAL_Delay(100);
-            HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_RESET);
-            HAL_Delay(100);
-        }
+            HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET); 
+            HAL_Delay(50); }
     }
+
+    HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET); 
 
     // Create Tasks
     xTaskCreateStatic(USER_SD_Card_Worker_Task, "SD_Worker", 2048, &sd, tskIDLE_PRIORITY + 3, xWorkerStack, &xWorkerBuffer);
@@ -115,13 +135,13 @@ int main(void)
 }
 
 void Task1_Entry(void *params) {
-    char *msg = "lsom221Task 1: Async\r\n";
+    char *msg = "lsom228Task 1: Async\r\n";
     vTaskDelay(pdMS_TO_TICKS(2000)); 
 
     for(;;) {
         HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET); 
         
-        USER_SD_Card_Write_Async(&sd, "LOG1.TXT", msg, pdMS_TO_TICKS(10));
+        USER_SD_Card_Write_Async(&sd, "LSOMLOG1228.TXT", msg, pdMS_TO_TICKS(10));
 
         HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_RESET);
 
@@ -130,11 +150,11 @@ void Task1_Entry(void *params) {
 }
 
 void Task2_Entry(void *params) {
-    char *msg = "lsom221Task 2: Async\r\n";
+    char *msg = "lsom228Task 2: Async\r\n";
     vTaskDelay(pdMS_TO_TICKS(2500)); 
 
     for(;;) {
-        USER_SD_Card_Write_Async(&sd, "LOG1.TXT", msg, pdMS_TO_TICKS(10));
+        USER_SD_Card_Write_Async(&sd, "LSOMLOG1228.TXT", msg, pdMS_TO_TICKS(10));
         vTaskDelay(pdMS_TO_TICKS(250));
     }
 }
@@ -149,7 +169,10 @@ void Task3_Entry(void *params) {
 
 // GPIO for LED init
 void LED_Init(void) {
-    __HAL_RCC_GPIOC_CLK_ENABLE(); //A for l4
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+    __HAL_RCC_GPIOC_CLK_ENABLE();
+
     GPIO_InitTypeDef GPIO_InitStruct = {0};
     GPIO_InitStruct.Pin = LED_PIN;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -164,8 +187,7 @@ void SystemClock_Config(void)
     RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
 /* CONFIGURATION FOR L4 / G4 CHIPS             */
-#if defined(STM32L4xx) 
-//|| defined(STM32G4xx)
+#if defined(STM32L4xx)
 
     if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK) {
         while(1); // Error Handler
@@ -181,7 +203,6 @@ void SystemClock_Config(void)
     
     // L4 uses DIV7
     RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV7; 
-    
     RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
     RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
 
@@ -200,39 +221,39 @@ void SystemClock_Config(void)
         while(1); // Error Handler
     }
 
-#elif defined (STM32G473xx)
+#elif defined(STM32G473xx) || defined(STM32G4xx)
 
-  /** Configure the main internal regulator output voltage
-  */
-  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
+    if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK) {
+        while(1); // Error Handler
+    }
 
-  /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-  {
-    Error_Handler();
-  }
+    /** Initializes the RCC Oscillators according to the specified parameters
+     * in the RCC_OscInitTypeDef structure.
+     */
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI;
+    RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+    RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+    RCC_OscInitStruct.LSIState = RCC_LSI_ON;
+    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+    {
+        Error_Handler();
+    }
 
-  /** Initializes the CPU, AHB and APB buses clocks
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+    /** Initializes the CPU, AHB and APB buses clocks
+     */
+    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                                |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+    RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  HAL_RCCEx_EnableLSCO(RCC_LSCOSOURCE_LSI);
+    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+    {
+        Error_Handler();
+    }
+    HAL_RCCEx_EnableLSCO(RCC_LSCOSOURCE_LSI);
 
 
 /* CONFIGURATION FOR F4 CHIPS (NEW)            */
@@ -277,12 +298,16 @@ void User_Hardware_Init(void) {
     __HAL_RCC_GPIOC_CLK_ENABLE();
     
     // Force Clocks On
-    #if defined(STM32L476xx) || defined(STM32G473xx)
+    #if defined(STM32L476xx)
         __HAL_RCC_SPI2_CLK_ENABLE(); 
+    #elif defined(STM32G473xx) || defined(STM32G4xx)
+        __HAL_RCC_SPI3_CLK_ENABLE();
     #else
         __HAL_RCC_SPI1_CLK_ENABLE();
     #endif
 
+
+    
     /* Configure GPIO (SCK, MISO, MOSI, CS) */
     GPIO_InitTypeDef GPIO_InitStruct = {0};
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
@@ -307,8 +332,22 @@ void User_Hardware_Init(void) {
     GPIO_InitStruct.Alternate = 0;
     HAL_GPIO_Init(USER_CS_PORT, &GPIO_InitStruct);
 
-    /* Configure SPI Peripheral */
+    // // 1. Initialize SCK (PB3), MISO (PB4), and MOSI (PB5)
+    // GPIO_InitStruct.Pin = GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5;
+    // GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    // GPIO_InitStruct.Pull = GPIO_PULLUP; // Essential for MISO
+    // GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    // GPIO_InitStruct.Alternate = GPIO_AF6_SPI3; 
+    // HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
+    // // 2. CS Pin (PA10)
+    // HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
+    // GPIO_InitStruct.Pin = GPIO_PIN_10;
+    // GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    // GPIO_InitStruct.Pull = GPIO_NOPULL;
+    // HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    /* Configure SPI Peripheral */
     hspi_user.Instance = USER_SPI_INSTANCE;
     hspi_user.Init.Mode = SPI_MODE_MASTER;
     hspi_user.Init.Direction = SPI_DIRECTION_2LINES;
@@ -316,31 +355,42 @@ void User_Hardware_Init(void) {
     hspi_user.Init.CLKPolarity = SPI_POLARITY_LOW;
     hspi_user.Init.CLKPhase = SPI_PHASE_1EDGE;
     hspi_user.Init.NSS = SPI_NSS_SOFT;
+
+    #if defined(STM32G473xx) || defined(STM32G4xx)
+        hspi_user.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32; 
+    #else 
+        hspi_user.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256; 
+    #endif
+
     hspi_user.Init.FirstBit = SPI_FIRSTBIT_MSB;
     hspi_user.Init.TIMode = SPI_TIMODE_DISABLE;
     hspi_user.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
 
-    // Set prescaler based on chip clock to ensure 100-400kHz init
-    #if defined(STM32G473xx)
-        hspi_user.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128; 
-    #else //ex. L4
-        hspi_user.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256; 
-    #endif
+
     
     #if defined(STM32L4xx)
        hspi_user.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
        hspi_user.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
+    #elif defined(STM32G473xx) || defined(STM32G4xx)
+       hspi_user.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
+       hspi_user.Init.CRCPolynomial = 7;
+       hspi_user.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
+       hspi_user.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
     #endif
 
     if (HAL_SPI_Init(&hspi_user) != HAL_OK) { while(1); }
     __HAL_SPI_ENABLE(&hspi_user);
 
     // ENABLE INTERRUPTS (Priority 10)
-    #if defined (STM32L476xx) || defined (STM32G473xx)
+    #if defined(STM32L476xx)
         HAL_NVIC_SetPriority(SPI2_IRQn, 10, 0);
         HAL_NVIC_EnableIRQ(SPI2_IRQn);
+    #elif defined(STM32G473xx) || defined(STM32G4xx)
+        HAL_NVIC_SetPriority(SPI3_IRQn, 10, 0);
+        HAL_NVIC_EnableIRQ(SPI3_IRQn);
     #else
         HAL_NVIC_SetPriority(SPI1_IRQn, 10, 0);
         HAL_NVIC_EnableIRQ(SPI1_IRQn);
     #endif
 }
+
