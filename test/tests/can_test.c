@@ -5,6 +5,8 @@
 - receives the 4 messages and verifies correctness
 - Flashes LED if successful on all CANs
 
+- Included ClockConfig / CAN_MspInit is for PSOM
+
 */
 #include "stm32xx_hal.h"
 #include "CAN.h"
@@ -173,11 +175,12 @@ int main(void) {
   sFilterConfig.SlaveStartFilterBank = 14;
 
   // setup can1 init
-  hcan1->Init.Prescaler = 5;
-  hcan1->Init.Mode = CAN_MODE_LOOPBACK;
+  // Baud rate is 250 kbit/s
+  hcan1->Init.Prescaler = 20;
   hcan1->Init.SyncJumpWidth = CAN_SJW_1TQ;
-  hcan1->Init.TimeSeg1 = CAN_BS1_6TQ;
+  hcan1->Init.TimeSeg1 = CAN_BS1_13TQ;
   hcan1->Init.TimeSeg2 = CAN_BS2_2TQ;
+  hcan1->Init.Mode = CAN_MODE_LOOPBACK;
   hcan1->Init.TimeTriggeredMode = DISABLE;
   hcan1->Init.AutoBusOff = DISABLE;
   hcan1->Init.AutoWakeUp = DISABLE;
@@ -194,11 +197,12 @@ int main(void) {
 
   #ifdef CAN2
   // setup can2 init
-  hcan2->Init.Prescaler = 5;
-  hcan2->Init.Mode = CAN_MODE_LOOPBACK;
+  // Baud rate is 250 kbit/s
+  hcan2->Init.Prescaler = 20;
   hcan2->Init.SyncJumpWidth = CAN_SJW_1TQ;
-  hcan2->Init.TimeSeg1 = CAN_BS1_6TQ;
+  hcan2->Init.TimeSeg1 = CAN_BS1_13TQ;
   hcan2->Init.TimeSeg2 = CAN_BS2_2TQ;
+  hcan2->Init.Mode = CAN_MODE_LOOPBACK;
   hcan2->Init.TimeTriggeredMode = DISABLE;
   hcan2->Init.AutoBusOff = DISABLE;
   hcan2->Init.AutoWakeUp = DISABLE;
@@ -229,214 +233,106 @@ int main(void) {
   return 0;
 }
 
-/* -------- CAN MSP Init / DeInit -------- */
 
-#if defined(STM32F4xx)
-static inline void HAL_CAN_MspF4Init(CAN_HandleTypeDef* hcan){
-  GPIO_InitTypeDef init = {0};
-  
-  // CAN1
-  if (hcan->Instance == CAN1) {
-    // enable clocks
-    __HAL_RCC_GPIOA_CLK_ENABLE();
+/* -------- Config / CAN Init for PSOM -------- */
+#ifdef STM32L431xx
 
-    /* enable gpio
-    PA11 -> CAN1_RX
-    PA12 -> CAN1_TX
-    */
-    init.Pin = GPIO_PIN_11;
-    init.Mode = GPIO_MODE_AF_PP;
-    init.Pull = GPIO_PULLUP;
-    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    init.Alternate = GPIO_AF9_CAN1;
-    HAL_GPIO_Init(GPIOA, &init);
+/**
+ * SystemClock_Config for PSOM (80MHz)
+ */
+void SystemClock_Config(void) {
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
-    init.Pin = GPIO_PIN_12;
-    init.Mode = GPIO_MODE_AF_PP;
-    init.Pull = GPIO_NOPULL;
-    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    init.Alternate = GPIO_AF9_CAN1;
-    HAL_GPIO_Init(GPIOA, &init);
+  /** Configure the main internal regulator output voltage
+  */
+  if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK)
+  {
+    Error_Handler();
   }
 
-  // CAN2
-  #ifdef CAN2
-  else if (hcan->Instance == CAN2) {
-    // enable clocks
+  /** Initializes the RCC Oscillators according to the specified parameters
+  * in the RCC_OscInitTypeDef structure.
+  */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLM = 1;
+  RCC_OscInitStruct.PLL.PLLN = 20;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV7;
+  RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
+  RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Initializes the CPU, AHB and APB buses clocks
+  */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
+
+/**
+* @brief CAN MSP Initialization for PSOM.
+* @param hcan: CAN handle pointer
+* @retval None
+*/
+void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan) {
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+  if(hcan->Instance==CAN1) {
+    /* Peripheral clock enable */
+    __HAL_RCC_CAN1_CLK_ENABLE();
+
     __HAL_RCC_GPIOB_CLK_ENABLE();
-
-    /* enable gpio
-    PB12 -> CAN2_RX
-    PB13 -> CAN2_TX
+    /**CAN1 GPIO Configuration
+    PB8     ------> CAN1_RX
+    PB9     ------> CAN1_TX
     */
-    init.Pin = GPIO_PIN_12;
-    init.Mode = GPIO_MODE_AF_PP;
-    init.Pull = GPIO_PULLUP;
-    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    init.Alternate = GPIO_AF9_CAN2;
-    HAL_GPIO_Init(GPIOB, &init);
+    GPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_9;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Alternate = GPIO_AF9_CAN1;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-    init.Pin = GPIO_PIN_13;
-    init.Mode = GPIO_MODE_AF_PP;
-    init.Pull = GPIO_NOPULL;
-    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    init.Alternate = GPIO_AF9_CAN2;
-    HAL_GPIO_Init(GPIOB, &init);
-  }
-  #endif /* CAN2 */
-
-  // CAN3
-  #ifdef CAN3
-  else if (hcan->Instance == CAN3) {
-    // enable clocks
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-
-    /* enable gpio
-    PA8  -> CAN3_RX
-    PA15 -> CAN3_TX
-    */
-    init.Pin = GPIO_PIN_8;
-    init.Mode = GPIO_MODE_AF_PP;
-    init.Pull = GPIO_PULLUP;
-    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    init.Alternate = GPIO_AF11_CAN3;
-    HAL_GPIO_Init(GPIOA, &init);
-
-    init.Pin = GPIO_PIN_15;
-    init.Mode = GPIO_MODE_AF_PP;
-    init.Pull = GPIO_NOPULL;
-    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    init.Alternate = GPIO_AF11_CAN3;
-    HAL_GPIO_Init(GPIOA, &init);
-  }
-  #endif /* CAN3 */
-}
-#endif
-
-
-#if defined(STM32L4xx)
-static inline void HAL_CAN_MspL4Init(CAN_HandleTypeDef* hcan){
-  GPIO_InitTypeDef init = {0};
-  // CAN1
-  if (hcan->Instance == CAN1) {
-    // enable clocks
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-
-    /* enable gpio
-    PA11 -> CAN1_RX
-    PA12 -> CAN1_TX
-    */
-    init.Pin = GPIO_PIN_11;
-    init.Mode = GPIO_MODE_AF_PP;
-    init.Pull = GPIO_PULLUP;
-    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    init.Alternate = GPIO_AF9_CAN1;
-    HAL_GPIO_Init(GPIOA, &init);
-
-    init.Pin = GPIO_PIN_12;
-    init.Mode = GPIO_MODE_AF_PP;
-    init.Pull = GPIO_NOPULL;
-    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    init.Alternate = GPIO_AF9_CAN1;
-    HAL_GPIO_Init(GPIOA, &init);
+    /* CAN1 interrupt Init */
+    HAL_NVIC_SetPriority(CAN1_TX_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY, 0);
+    HAL_NVIC_EnableIRQ(CAN1_TX_IRQn);
+    HAL_NVIC_SetPriority(CAN1_RX0_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY, 0);
+    HAL_NVIC_EnableIRQ(CAN1_RX0_IRQn);
   }
 }
-#endif
 
-// CAN MSP deinit
+/**
+* @brief CAN MSP De-Initialization for PSOM.
+* @param hcan: CAN handle pointer
+* @retval None
+*/
 void HAL_CAN_MspDeInit(CAN_HandleTypeDef* hcan) {
-  // CAN1
-  if (hcan->Instance == CAN1) {
-    // disable clocks
+  if(hcan->Instance==CAN1) {
+    /* Peripheral clock disable */
     __HAL_RCC_CAN1_CLK_DISABLE();
 
-    /* disable gpio
-    PA11 -> CAN1_RX
-    PA12 -> CAN1_TX
+    /**CAN1 GPIO Configuration
+    PB8     ------> CAN1_RX
+    PB9     ------> CAN1_TX
     */
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_11);
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_12);
+    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_8|GPIO_PIN_9);
 
-    // disable interrupts
+    /* CAN1 interrupt DeInit */
     HAL_NVIC_DisableIRQ(CAN1_TX_IRQn);
     HAL_NVIC_DisableIRQ(CAN1_RX0_IRQn);
   }
-
-  // CAN2
-  #ifdef CAN2
-  else if (hcan->Instance == CAN2) {
-    // disable clocks
-    __HAL_RCC_CAN2_CLK_DISABLE();
-
-    /* disable gpio
-    PB12 -> CAN2_RX
-    PB13 -> CAN2_TX
-    */
-    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_12);
-    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_13);
-
-    // disable interrupts
-    HAL_NVIC_DisableIRQ(CAN2_TX_IRQn);
-    HAL_NVIC_DisableIRQ(CAN2_RX0_IRQn);
-  }
-  #endif /* CAN2 */
-
-  // CAN3
-  #ifdef CAN3
-  else if (hcan->Instance == CAN3) {
-    // disable clocks
-    __HAL_RCC_CAN3_CLK_DISABLE();
-
-    /* disable gpio
-    PA8  -> CAN3_RX
-    PB15 -> CAN3_TX
-    */
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_8);
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_15);
-
-    // disable interrupts
-    HAL_NVIC_DisableIRQ(CAN3_TX_IRQn);
-    HAL_NVIC_DisableIRQ(CAN3_RX0_IRQn);
-  }
-  #endif /* CAN3 */
 }
-
-// CAN MSP init
-void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan) {
-  IRQn_Type txIRQ = 0;
-  IRQn_Type rxIRQ = 0;
-  if (hcan->Instance == CAN1) {
-    __HAL_RCC_CAN1_CLK_ENABLE();
-    txIRQ = CAN1_TX_IRQn;
-    rxIRQ = CAN1_RX0_IRQn;
-  }
-  #ifdef CAN2
-  else if(hcan->Instance == CAN2){
-    __HAL_RCC_CAN2_CLK_ENABLE();
-    txIRQ = CAN2_TX_IRQn;
-    rxIRQ = CAN2_RX0_IRQn;
-  }
-  #endif
-  #ifdef CAN3
-  else if(hcan->Instance == CAN3){
-    __HAL_RCC_CAN3_CLK_ENABLE();
-    txIRQ = CAN3_TX_IRQn;
-    rxIRQ = CAN3_RX0_IRQn;
-  }
-  #endif
-
-  // configure GPIO pins for CAN
-  #if defined(STM32F4xx)
-  HAL_CAN_MspF4Init(hcan);
-  #elif defined(STM32L4xx)
-  HAL_CAN_MspL4Init(hcan);
-  #endif
-
-  // enable can interrupts
-  if(txIRQ !=0 && rxIRQ !=0){
-    HAL_NVIC_SetPriority(txIRQ, 5, 0);
-    HAL_NVIC_EnableIRQ(txIRQ);
-    HAL_NVIC_SetPriority(rxIRQ, 5, 0);
-    HAL_NVIC_EnableIRQ(rxIRQ);
-  }
-}
+#endif
