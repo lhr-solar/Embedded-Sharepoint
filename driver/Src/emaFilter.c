@@ -12,6 +12,11 @@ void ema_init(ema_filter_t *f, ema_type_t type, uint16_t k, uint8_t shift, int32
         case EMA_I16: f->y.i16 = (int16_t)initial;  break;
         case EMA_U32: f->y.u32 = (uint32_t)initial; break;
         case EMA_I32: f->y.i32 = (int32_t)initial;  break;
+        default:
+            // For safety, initialize to 0 for unknown types.
+            // An assert could also be appropriate here.
+            f->y.u32 = 0;
+            break;
     }
 }
 
