@@ -15,7 +15,6 @@
 
 #define WS2812_RESET_SLOTS 50
 
-
 typedef enum{
     WS2812B_OK, // WS2812B transaction completed succesfully
     WS2812B_NULL_ERROR, // parameter is NULL
@@ -48,7 +47,7 @@ typedef struct{
     SemaphoreHandle_t mutex; // protects multiple threads from writting to the handle
     StaticSemaphore_t mutexBuf; // static buffer for the mutex
     volatile uint8_t dmaActive; // indicates when a dma transmission is active
-    SemaphoreHandle_t framePendingSem; // indiciates that there's a new rgb frame to send
+    SemaphoreHandle_t framePendingSem; // indicates that there's a new rgb frame to send
     StaticSemaphore_t framePendingBuf; // static buffer to store the semaphore
 }ws2812b_handle_t;
 
@@ -78,7 +77,7 @@ ws2812b_status_t ws2812b_init(ws2812b_handle_t *ledHandler, uint8_t ledData[][NU
 ws2812b_status_t ws2812b_set_color(ws2812b_handle_t *ledHandler, uint8_t led_num,  ws2812b_color_t color, TickType_t delay_ticks);
 
 /**
- * @brief Callback function that gets called in the TIM_PWM_PulseFinishedCallbac function
+ * @brief Callback function that gets called in the TIM_PWM_PulseFinishedCallback function
  * 
  * @param ledHandler                Pointer to the ws2812b handle.
  * @param timerHandle               Pointer to the timer handle.

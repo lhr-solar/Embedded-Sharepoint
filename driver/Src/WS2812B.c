@@ -244,7 +244,7 @@ void ws2812b_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim, ws2812b_hand
 
     if (xSemaphoreTakeFromISR(ledHandler->framePendingSem, xHigherPriorityTaskWoken) == pdTRUE){
         // start the DMA transmission again
-         HAL_TIM_PWM_Start_DMA( ledHandler->timerHandle, ledHandler->channel, (uint32_t *)ledHandler->pwmBuffer, (24 * ledHandler->numberLeds) + WS2812_RESET_SLOTS);
+        HAL_TIM_PWM_Start_DMA( ledHandler->timerHandle, ledHandler->channel, (uint32_t *)ledHandler->pwmBuffer, (24 * ledHandler->numberLeds) + WS2812_RESET_SLOTS);
     }
     else{
         // no need to keep running the dma timer if no updated frames
