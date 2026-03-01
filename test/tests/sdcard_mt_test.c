@@ -45,21 +45,22 @@ StackType_t xWorkerStack[2048]; // Worker needs large stack for FatFs
     #define LED_PIN            GPIO_PIN_5
 
 #elif defined(STM32G473xx) || defined(STM32G4xx)
-    #define USER_SPI_INSTANCE  SPI3
+
+    #define USER_SPI_INSTANCE  SPI1
     #define USER_CS_PORT       GPIOA
-    #define USER_CS_PIN        GPIO_PIN_10
+    #define USER_CS_PIN        GPIO_PIN_4
 
-    #define USER_SCK_PORT      GPIOB
-    #define USER_SCK_PIN       GPIO_PIN_3
-    #define USER_SCK_AF        GPIO_AF6_SPI3
+    #define USER_SCK_PORT      GPIOA
+    #define USER_SCK_PIN       GPIO_PIN_5
+    #define USER_SCK_AF        GPIO_AF5_SPI1
 
-    #define USER_MISO_PORT     GPIOB
-    #define USER_MISO_PIN      GPIO_PIN_4
-    #define USER_MISO_AF       GPIO_AF6_SPI3
+    #define USER_MISO_PORT     GPIOA
+    #define USER_MISO_PIN      GPIO_PIN_6
+    #define USER_MISO_AF       GPIO_AF5_SPI1
 
-    #define USER_MOSI_PORT     GPIOB
-    #define USER_MOSI_PIN      GPIO_PIN_5
-    #define USER_MOSI_AF       GPIO_AF6_SPI3
+    #define USER_MOSI_PORT     GPIOA
+    #define USER_MOSI_PIN      GPIO_PIN_7
+    #define USER_MOSI_AF       GPIO_AF5_SPI1
 
     #define LED_PORT           GPIOC
     #define LED_PIN            GPIO_PIN_3
@@ -95,6 +96,10 @@ void Task2_Entry(void *params);
 void Task3_Entry(void *params); 
 
 // IRQ HANDLER
+void SPI1_IRQHandler(void) { 
+    HAL_SPI_IRQHandler(&hspi_user); 
+}
+
 void SPI2_IRQHandler(void) { 
     HAL_SPI_IRQHandler(&hspi_user); 
 }
@@ -301,7 +306,7 @@ void User_Hardware_Init(void) {
     #if defined(STM32L476xx)
         __HAL_RCC_SPI2_CLK_ENABLE(); 
     #elif defined(STM32G473xx) || defined(STM32G4xx)
-        __HAL_RCC_SPI3_CLK_ENABLE();
+        __HAL_RCC_SPI1_CLK_ENABLE();
     #else
         __HAL_RCC_SPI1_CLK_ENABLE();
     #endif
@@ -310,26 +315,41 @@ void User_Hardware_Init(void) {
     
     /* Configure GPIO (SCK, MISO, MOSI, CS) */
     GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+
+    // GPIO_InitStruct.Pin = USER_SCK_PIN | USER_MISO_PIN | USER_MOSI_PIN;
+    // GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    // GPIO_InitStruct.Pull = GPIO_PULLUP; 
+    // GPIO_InitStruct.Alternate = USER_MISO_AF; //CHANGE MACRO
+    // GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    // HAL_GPIO_Init(USER_MISO_PORT, &GPIO_InitStruct);
+        /* 2. Configure GPIO (SCK, MISO, MOSI) */
+
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH; 
 
+    // SCK
     GPIO_InitStruct.Pin = USER_SCK_PIN;
     GPIO_InitStruct.Alternate = USER_SCK_AF; 
     HAL_GPIO_Init(USER_SCK_PORT, &GPIO_InitStruct);
 
+    // MISO
     GPIO_InitStruct.Pin = USER_MISO_PIN;
     GPIO_InitStruct.Alternate = USER_MISO_AF;
     HAL_GPIO_Init(USER_MISO_PORT, &GPIO_InitStruct);
 
+    // MOSI
     GPIO_InitStruct.Pin = USER_MOSI_PIN;
     GPIO_InitStruct.Alternate = USER_MOSI_AF;
     HAL_GPIO_Init(USER_MOSI_PORT, &GPIO_InitStruct);
 
+
     HAL_GPIO_WritePin(USER_CS_PORT, USER_CS_PIN, GPIO_PIN_SET); 
     GPIO_InitStruct.Pin = USER_CS_PIN;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-    GPIO_InitStruct.Alternate = 0;
+    // GPIO_InitStruct.Alternate = 0;
     HAL_GPIO_Init(USER_CS_PORT, &GPIO_InitStruct);
 
     // // 1. Initialize SCK (PB3), MISO (PB4), and MOSI (PB5)
@@ -348,7 +368,8 @@ void User_Hardware_Init(void) {
     // HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
     /* Configure SPI Peripheral */
-    hspi_user.Instance = USER_SPI_INSTANCE;
+
+    hspi_user.Instance = USER_SPI_INSTANCE; //
     hspi_user.Init.Mode = SPI_MODE_MASTER;
     hspi_user.Init.Direction = SPI_DIRECTION_2LINES;
     hspi_user.Init.DataSize = SPI_DATASIZE_8BIT;
@@ -386,8 +407,8 @@ void User_Hardware_Init(void) {
         HAL_NVIC_SetPriority(SPI2_IRQn, 10, 0);
         HAL_NVIC_EnableIRQ(SPI2_IRQn);
     #elif defined(STM32G473xx) || defined(STM32G4xx)
-        HAL_NVIC_SetPriority(SPI3_IRQn, 10, 0);
-        HAL_NVIC_EnableIRQ(SPI3_IRQn);
+        HAL_NVIC_SetPriority(SPI1_IRQn, configMAX_SYSCALL_INTERRUPT_PRIORITY, 0);
+        HAL_NVIC_EnableIRQ(SPI1_IRQn);
     #else
         HAL_NVIC_SetPriority(SPI1_IRQn, 10, 0);
         HAL_NVIC_EnableIRQ(SPI1_IRQn);
