@@ -86,7 +86,7 @@ static ws2812b_status_t ws2812b_send_color(ws2812b_handle_t *ledHandler, uint32_
         return WS2812B_NULL_ERROR;
     }
 
-    // indiciate that there's a new frame to send for the leds
+    // indiciate that there's a new frame to send for the LEDs
     if(xSemaphoreGive(ledHandler->framePendingSem) != pdTRUE){
         return WS2812B_ERROR;
     }

@@ -70,7 +70,7 @@ void Heartbeat_Init() {
     HAL_GPIO_Init(LED_PORT, &led_config);
 }
 
-#define LED_SEQUNCE_SPEED 250
+#define LED_SEQUENCE_SPEED 250
 void led_sequence(){
     ws2812b_set_all_leds(&wsHandle, WS2812B_SOLID_OFF, portMAX_DELAY);
 
@@ -90,20 +90,20 @@ void led_sequence(){
         colors[i].green = colors[i].green / 6;
     }
 
-    for(int i=0; i<8; i++){
+    for(int i=0; i<MAX_LED; i++){
         ws2812b_set_color(&wsHandle, i, colors[i % (sizeof(colors)/sizeof(ws2812b_color_t))], portMAX_DELAY);
-        vTaskDelay(pdMS_TO_TICKS(LED_SEQUNCE_SPEED));
+        vTaskDelay(pdMS_TO_TICKS(LED_SEQUENCE_SPEED));
         ws2812b_set_color(&wsHandle, i, WS2812B_SOLID_OFF, portMAX_DELAY);
     }
 
     for(int j=0; j<2; j++){
-        for(int i=0; i<8; i++){
+        for(int i=0; i<MAX_LED; i++){
             ws2812b_set_color(&wsHandle, i, colors[i % (sizeof(colors)/sizeof(ws2812b_color_t))], portMAX_DELAY);
         }
 
-        vTaskDelay(pdMS_TO_TICKS(LED_SEQUNCE_SPEED/2));
+        vTaskDelay(pdMS_TO_TICKS(LED_SEQUENCE_SPEED/2));
         ws2812b_set_all_leds(&wsHandle, WS2812B_SOLID_OFF, portMAX_DELAY);
-        vTaskDelay(pdMS_TO_TICKS(LED_SEQUNCE_SPEED/2));
+        vTaskDelay(pdMS_TO_TICKS(LED_SEQUENCE_SPEED/2));
     }
 }
 

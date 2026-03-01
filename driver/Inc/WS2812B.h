@@ -16,7 +16,7 @@
 #define WS2812_RESET_SLOTS 50
 
 typedef enum{
-    WS2812B_OK, // WS2812B transaction completed succesfully
+    WS2812B_OK, // WS2812B transaction completed successfully
     WS2812B_NULL_ERROR, // parameter is NULL
     WS2812B_ERROR, // an error occured
     WS2812B_BUSY // a shared resource is busy
@@ -37,13 +37,13 @@ typedef struct{
 #define WS2812B_SOLID_OFF           ((ws2812b_color_t){ .red = 0,   .green = 0,     .blue = 0 })
 
 
-// Represents a string of leds
+// Represents a string of LEDs
 typedef struct{
     uint8_t (*ledData)[NUMBER_PWM_DATA_ELEMENTS]; // Represents the colors contained in the strip: [LED][LEDNUM, G, R, B]
     uint16_t *pwmBuffer; // PWM bitstream of duty cycles, this is what is passed to DMA
     TIM_HandleTypeDef *timerHandle; // The timer handle used to generate PWM
     uint32_t channel;  // The channel associated with the pin's timer 
-    uint8_t numberLeds; // the number of leds in the string
+    uint8_t numberLeds; // the number of LEDs in the string
     SemaphoreHandle_t mutex; // protects multiple threads from writting to the handle
     StaticSemaphore_t mutexBuf; // static buffer for the mutex
     volatile uint8_t dmaActive; // indicates when a dma transmission is active
@@ -53,14 +53,14 @@ typedef struct{
 
 
 /**
- * @brief Initializes a strip of ws2812b leds
+ * @brief Initializes a strip of ws2812b LEDs
  * 
  * @param ledHandler    Pointer to the ws2812b handle.
  * @param ledData       2D array storing per-LED color data
  * @param pwmData       Buffer used for encoded PWM waveform data.
  * @param timerHandle   Pointer to the timer handle.
  * @param channel       Timer channel used for PWM output.
- * @param numberLeds    Number of leds in a strip
+ * @param numberLeds    Number of LEDs in a strip
  * @return ws2812b_status_t Returns WS2812B_OK on success, and returns any other value on failure
  */
 ws2812b_status_t ws2812b_init(ws2812b_handle_t *ledHandler, uint8_t ledData[][NUMBER_PWM_DATA_ELEMENTS], uint16_t *pwmData, TIM_HandleTypeDef *timerHandle, uint32_t channel, uint8_t numberLeds);
@@ -87,7 +87,7 @@ ws2812b_status_t ws2812b_set_color(ws2812b_handle_t *ledHandler, uint8_t led_num
 void ws2812b_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim, ws2812b_handle_t *ledHandler,  BaseType_t *xHigherPriorityTaskWoken);
 
 /**
- * @brief Sets the color of all leds in a ws2812b strip
+ * @brief Sets the color of all LEDs in a ws2812b strip
  * 
  * @param ledHandler    Pointer to the ws2812b handle.
  * @param color         Struct containing RGB value to set the led too.
@@ -97,7 +97,7 @@ void ws2812b_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim, ws2812b_hand
 ws2812b_status_t ws2812b_set_all_leds(ws2812b_handle_t *ledHandler, ws2812b_color_t color, TickType_t delay_ticks);
 
 /**
- * @brief Sets the color of a specified range of leds in a ws2812b strip
+ * @brief Sets the color of a specified range of LEDs in a ws2812b strip
  * 
  * @param ledHandler    Pointer to the ws2812b handle.
  * @param start         Starting index of the led range to set (0 indexed).
