@@ -13,7 +13,7 @@ TIM_HandleTypeDef htim4;
 DMA_HandleTypeDef hdma_tim4_ch1;
 
 static uint8_t ledData[MAX_LED][NUMBER_PWM_DATA_ELEMENTS];
-static uint16_t pwmData[(24 * MAX_LED) + WS2812_RESET_SLOTS];
+static uint16_t pwmData[(24 * MAX_LED) + WS2812_RESET_TIME];
 static ws2812b_handle_t wsHandle;
 
 

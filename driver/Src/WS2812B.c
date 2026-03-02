@@ -67,7 +67,7 @@ static uint32_t ws2812b_encode_pwm(ws2812b_handle_t *ledHandler){
         }
     }
 
-    for (uint8_t i = 0; i < WS2812_RESET_SLOTS; i++){
+    for (uint8_t i = 0; i < WS2812_RESET_TIME; i++){
         ledHandler->pwmBuffer[idx++] = 0;
     }
     return idx;
@@ -224,9 +224,9 @@ ws2812b_status_t ws2812b_load_colors(ws2812b_handle_t *ledHandler, const ws2812b
 
     for(uint8_t i = start; i < (start+numColors); i++) {
         ledHandler->ledData[i][WS2812B_LEDNUMBER] = i;
-        ledHandler->ledData[i][WS2812B_GREEN] = colors[i].green;
-        ledHandler->ledData[i][WS2812B_RED] = colors[i].red;
-        ledHandler->ledData[i][WS2812B_BLUE] = colors[i].blue;
+        ledHandler->ledData[i][WS2812B_GREEN] = colors[i - start].green;
+        ledHandler->ledData[i][WS2812B_RED] = colors[i - start].red;
+        ledHandler->ledData[i][WS2812B_BLUE] = colors[i - start].blue;
     }
 
     uint32_t idx = 0;
@@ -244,7 +244,7 @@ void ws2812b_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim, ws2812b_hand
 
     if (xSemaphoreTakeFromISR(ledHandler->framePendingSem, xHigherPriorityTaskWoken) == pdTRUE){
         // start the DMA transmission again
-        HAL_TIM_PWM_Start_DMA( ledHandler->timerHandle, ledHandler->channel, (uint32_t *)ledHandler->pwmBuffer, (24 * ledHandler->numberLeds) + WS2812_RESET_SLOTS);
+        HAL_TIM_PWM_Start_DMA( ledHandler->timerHandle, ledHandler->channel, (uint32_t *)ledHandler->pwmBuffer, (24 * ledHandler->numberLeds) + WS2812_RESET_TIME);
     }
     else{
         // no need to keep running the dma timer if no updated frames

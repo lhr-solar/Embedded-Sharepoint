@@ -13,7 +13,7 @@
 #define WS2812_HIGH (2*WS2812B_TIMER_PERIOD_TICKS)/3
 #define WS2812_LOW WS2812B_TIMER_PERIOD_TICKS/3
 
-#define WS2812_RESET_SLOTS 50
+#define WS2812_RESET_TIME 50
 
 typedef enum{
     WS2812B_OK, // WS2812B transaction completed successfully
