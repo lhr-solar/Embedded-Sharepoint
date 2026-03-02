@@ -104,7 +104,7 @@ extern CAN_HandleTypeDef* hcan3;
 #endif /* CAN3 */
 
 /**
- * @brief Initializes the CAN peripheral.
+ * @brief Initializes the bxCAN peripheral.
  *
  * This function initializes the CAN peripheral, sets up send/receive queues,
  * configures the HAL CAN driver, applies the filter configuration, and 
@@ -118,7 +118,7 @@ extern CAN_HandleTypeDef* hcan3;
 can_status_t can_init(CAN_HandleTypeDef* handle, CAN_FilterTypeDef* filter);
 
 /**
- * @brief Deinitializes the CAN peripheral.
+ * @brief Deinitializes the bxCAN peripheral.
  *
  * This function deinitializes the HAL CAN driver and disables CAN interrupts.
  *

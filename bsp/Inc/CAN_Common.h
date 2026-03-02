@@ -6,8 +6,11 @@
   #error "[CONFIG] CAN not enabled on this chip."
 #endif
 
-// 8 for now unless extended payload is supported
-#define CAN_DATA_SIZE (8)
+// Default statically allocated size per can payload
+// If you want longer messages, redefine this macro
+#ifndef MAX_CAN_DATA_SIZE
+#define MAX_CAN_DATA_SIZE (8)
+#endif
 
 // return code for can driver
 typedef enum {
@@ -26,7 +29,7 @@ typedef struct {
 #else 
     CAN_TxHeaderTypeDef header;
 #endif
-    uint8_t data[CAN_DATA_SIZE];
+    uint8_t data[MAX_CAN_DATA_SIZE];
 } can_tx_payload_t;
 
 typedef struct {
@@ -36,7 +39,7 @@ typedef struct {
 #else
     CAN_RxHeaderTypeDef header;
 #endif
-  uint8_t data[CAN_DATA_SIZE];
+  uint8_t data[MAX_CAN_DATA_SIZE];
 } can_rx_payload_t;
 
 // metadata for recieve queues

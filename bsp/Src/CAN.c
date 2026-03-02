@@ -207,7 +207,7 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
   // decode payload if it is valid and message recieved
   if (valid_id) {
     *header = payload.header;
-    for (int i = 0; i < CAN_DATA_SIZE; i++) {
+    for (int i = 0; i < header->DLC; i++) {
       data[i] = payload.data[i];
     }
 
@@ -247,7 +247,7 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
     
     can_tx_payload_t payload = {0};
     payload.header = *header;
-    for (int i = 0; i < CAN_DATA_SIZE; i++) {
+    for (int i = 0; i < header->DLC; i++) {
       payload.data[i] = data[i];
     }
 

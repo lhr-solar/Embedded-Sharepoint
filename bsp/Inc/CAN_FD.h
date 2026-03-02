@@ -9,7 +9,7 @@
 #endif /* FDCAN1 */
 
 
-// can handlers
+// fdcan handlers
 #ifdef FDCAN1
 extern FDCAN_HandleTypeDef* hfdcan1;
 #endif /* FDCAN1 */
@@ -22,10 +22,75 @@ extern FDCAN_HandleTypeDef* hfdcan2;
 extern FDCAN_HandleTypeDef* hfdcan3;
 #endif /* FDCAN3 */
 
+
+/**
+ * @brief Initializes the FDCAN peripheral.
+ *
+ * This function initializes the FDCAN peripheral, sets up send/receive queues,
+ * configures the HAL FDCAN driver, applies the filter configuration, and 
+ * enables FDCAN interrupts.
+ *
+ * @param handle Pointer to the FDCAN handle structure.
+ * @param filter Pointer to the FDCAN filter configuration structure.
+ *
+ * @return can_status_t Returns CAN_OK on success, CAN_ERR on failure.
+ */
 can_status_t can_fd_init(FDCAN_HandleTypeDef* handle, FDCAN_FilterTypeDef* filter);
+
+/**
+ * @brief Deinitializes the FDCAN peripheral.
+ *
+ * This function deinitializes the HAL FDCAN driver and disables FDCAN interrupts.
+ *
+ * @param handle Pointer to the FDCAN handle structure.
+ *
+ * @return can_status_t Returns CAN_OK on success, CAN_ERR on failure.
+ */
 can_status_t can_fd_deinit(FDCAN_HandleTypeDef* handle);
+
+/**
+ * @brief Starts the FDCAN peripheral.
+ *
+ * Activates the FDCAN peripheral so it can transmit and receive messages.
+ *
+ * @param handle Pointer to the FDCAN handle structure.
+ *
+ * @return can_status_t Returns CAN_OK on success, CAN_ERR on failure.
+ */
 can_status_t can_fd_start(FDCAN_HandleTypeDef* handle);
+
+/**
+ * @brief Sends a FDCAN message.
+ *
+ * Places a FDCAN message into the transmit mailbox if available, otherwise
+ * queues it in the send queue for later transmission.
+ *
+ * @param handle       Pointer to the FDCAN handle structure.
+ * @param header       Pointer to the FDCAN transmit header structure.
+ * @param data         Array containing the data to send.
+ * @param delay_ticks  Maximum delay to wait if queue is full (FreeRTOS ticks).
+ *
+ * @return can_status_t Returns CAN_SENT if message was successfully sent or queued,
+ *                      CAN_ERR on failure.
+ */
 can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* header, uint8_t data[], TickType_t delay_ticks);
+
+/**
+ * @brief Receives a FDCAN message.
+ *
+ * Reads a message from the receive queue corresponding to the specified ID.
+ * Supports blocking or non-blocking behavior depending on delay_ticks.
+ *
+ * @param handle       Pointer to the FDCAN handle structure.
+ * @param id           CAN identifier of the message to receive.
+ * @param header       Pointer to a FDCAN_RxHeaderTypeDef structure to store the received header.
+ * @param data         Array to store the received data.
+ * @param delay_ticks  Maximum delay to wait if queue is empty (FreeRTOS ticks).
+ *
+ * @return can_status_t Returns CAN_RECV if a message was received,
+ *                      CAN_EMPTY if the queue was empty,
+ *                      CAN_ERR on failure or invalid ID.
+ */
 can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint16_t id, FDCAN_RxHeaderTypeDef* header, uint8_t data[], TickType_t delay_ticks);
 
 
