@@ -14,6 +14,7 @@ configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY is the maximum FreeRTOS priority fo
 #define LED_PIN GPIO_PIN_3
 #define LED_PORT GPIOC
 
+// Some pins broken out by LSOM 
 #define CAN_TX_PROFILE_PORT GPIOA
 #define CAN_TX_PROFILE_PIN GPIO_PIN_10
 

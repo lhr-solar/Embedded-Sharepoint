@@ -5,8 +5,6 @@
 ### CAN FD vs bxCAN
 There are two types of CAN, regular bxCAN and CAN FD. CAN FD is a variant of CAN that we can clock at a much higher frequency compared to bxCAN. The G4 series of STM32 only supports CAN FD and the F4 and L4 series only supports regular bxCAN. In order to maintain cross compatibility betwee all of our microcontrollers, we're mainly clocking our CAN at 250kpbs. CAN FD can be configured to baud rates of 8 mbps, while regular bxCAN can be configured up to 1 mbps.
 
-### CAN DBCs
-A CAN DBC is a file used to store and encode CAN messages. 
 
 ## CAN Driver Structure
 Functionality wise, the code for CAN FD and bxCAN are very similar, so we can have a function 
@@ -21,14 +19,14 @@ Please read the [CubeMX Overview](./CubeMX.md) page first to understand how Cube
 ### Baud rate configuration
 For two devices to communicate on the same CAN bus, the baud rates of those CAN devices have to be the same. 
 
-We normally configure baud rate for 250kbps.  
+We normally configure baud rate for 250kbps, but that may change depending on the specific bus, along with COTS devices (e.g. Elcon charger, steering angle sensor). For the 2026 LHRs vehicle, baud rates are defined in the [Wire Harness Design](https://utexas.sharepoint.com/:x:/r/sites/ENGR-LonghornRacing/_layouts/15/Doc.aspx?sourcedoc=%7BD8E24070-8FDC-4831-B8E9-E2DAC530E2E1%7D&file=2026%20Wire%20Harness%20Design.xlsx&action=default&mobileredirect=true) sheet.
 
 In CubeMX, go to the ```Clock Configuration``` tab and make sure that the SYSCLK is 80 MHz. The SYSCLK represents the system clock of the microcontroller, and most math around how timers and baud rates are configured is based on the system clock.
 ![System Clock Configuration](assets/cubemx_clock_configuration.png)
 
 Configure the CAN_TX and CAN_RX pins in ```Pinout & Configuration```
 
-Once you've configured the pins go to ```Connectivity```, and press the FDCAN peripheral.
+Once you've configured the pins go to ```Connectivity```, and press the FDCAN or CAN peripheral.
 
 - Nominal Prescaler
 - Nominal Time Seg1
