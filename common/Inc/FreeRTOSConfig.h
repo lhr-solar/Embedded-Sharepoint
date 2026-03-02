@@ -142,4 +142,7 @@ standard names. */
 
 #define configUSE_QUEUE_SETS 1
 
+// Necessary for event groups to work
+#define INCLUDE_xTimerPendFunctionCall 1
+
 #endif /* FREERTOS_CONFIG_H */

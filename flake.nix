@@ -36,6 +36,7 @@
             pkgs.gnumake
             pkgs.binutils
             pkgs.parallel
+            pkgs.sl
             pkgs.gcc-arm-embedded
             python
           ];
