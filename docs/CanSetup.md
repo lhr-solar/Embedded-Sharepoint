@@ -53,8 +53,10 @@ You'll see the baud rate you've configured in the ```Nominal Baud Rate``` field 
 
 ### 2. System Clock Config
 
-### 3. CAN recieve entries
+### 3. CAN Message Data Size
 
-### 4. CAN filter
+### 3. CAN Recieve Entries
 
-### 5. CAN init
+### 4. CAN Filter
+
+### 5. CAN Iinit
