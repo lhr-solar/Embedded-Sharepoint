@@ -10,6 +10,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Initialize submodules
+        run: git submodule update --init --recursive
+
       - name: Cache Nix
         uses: actions/cache@v3
         with:
