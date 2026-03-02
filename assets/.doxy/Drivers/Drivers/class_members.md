@@ -8,9 +8,15 @@
 * **alert\_mask** ([**EMC2305\_Global\_Config**](structEMC2305__Global__Config.md))
 
 
+## b
+
+* **blue** ([**ws2812b\_color\_t**](structws2812b__color__t.md))
+
+
 ## c
 
 * **chip** ([**EMC2305\_I2C\_Message**](structEMC2305__I2C__Message.md))
+* **channel** ([**ws2812b\_handle\_t**](structws2812b__handle__t.md))
 
 
 ## d
@@ -20,6 +26,7 @@
 * **disable\_smbus\_timeout** ([**EMC2305\_Global\_Config**](structEMC2305__Global__Config.md))
 * **drive\_ext\_clk** ([**EMC2305\_Global\_Config**](structEMC2305__Global__Config.md))
 * **dev\_addr** ([**EMC2305\_HandleTypeDef**](structEMC2305__HandleTypeDef.md))
+* **dmaActive** ([**ws2812b\_handle\_t**](structws2812b__handle__t.md))
 
 
 ## e
@@ -29,6 +36,17 @@
 * **enable\_glitch\_filter** ([**EMC2305\_Fan\_Config2**](structEMC2305__Fan__Config2.md))
 * **enable\_ramp\_rate\_ctl** ([**EMC2305\_Fan\_Config2**](structEMC2305__Fan__Config2.md))
 * **error\_window** ([**EMC2305\_Fan\_Config2**](structEMC2305__Fan__Config2.md))
+
+
+## f
+
+* **framePendingBuf** ([**ws2812b\_handle\_t**](structws2812b__handle__t.md))
+* **framePendingSem** ([**ws2812b\_handle\_t**](structws2812b__handle__t.md))
+
+
+## g
+
+* **green** ([**ws2812b\_color\_t**](structws2812b__color__t.md))
 
 
 ## h
@@ -41,6 +59,22 @@
 * **i2c\_complete** ([**EMC2305\_HandleTypeDef**](structEMC2305__HandleTypeDef.md))
 
 
+## l
+
+* **ledData** ([**ws2812b\_handle\_t**](structws2812b__handle__t.md))
+
+
+## m
+
+* **mutex** ([**ws2812b\_handle\_t**](structws2812b__handle__t.md))
+* **mutexBuf** ([**ws2812b\_handle\_t**](structws2812b__handle__t.md))
+
+
+## n
+
+* **numberLeds** ([**ws2812b\_handle\_t**](structws2812b__handle__t.md))
+
+
 ## o
 
 * **operation** ([**EMC2305\_I2C\_Message**](structEMC2305__I2C__Message.md))
@@ -50,6 +84,7 @@
 
 * **Pin** ([**led\_pins**](structled__pins.md))
 * **Port** ([**led\_pins**](structled__pins.md))
+* **pwmBuffer** ([**ws2812b\_handle\_t**](structws2812b__handle__t.md))
 
 
 ## r
@@ -57,6 +92,7 @@
 * **range** ([**EMC2305\_Fan\_Config1**](structEMC2305__Fan__Config1.md))
 * **read\_data** ([**EMC2305\_I2C\_Message**](structEMC2305__I2C__Message.md))
 * **reg\_addr** ([**EMC2305\_I2C\_Message**](structEMC2305__I2C__Message.md))
+* **red** ([**ws2812b\_color\_t**](structws2812b__color__t.md))
 
 
 ## s
@@ -64,6 +100,11 @@
 * **spin\_failed** ([**EMC2305\_Fan\_Status**](structEMC2305__Fan__Status.md))
 * **stalled** ([**EMC2305\_Fan\_Status**](structEMC2305__Fan__Status.md))
 * **semaphore\_index** ([**EMC2305\_I2C\_Message**](structEMC2305__I2C__Message.md))
+
+
+## t
+
+* **timerHandle** ([**ws2812b\_handle\_t**](structws2812b__handle__t.md))
 
 
 ## u

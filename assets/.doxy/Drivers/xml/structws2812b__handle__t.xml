@@ -1,0 +1,166 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structws2812b__handle__t" kind="struct" language="C++" prot="public">
+    <compoundname>ws2812b_handle_t</compoundname>
+    <includes refid="WS2812B_8h" local="no">WS2812B.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structws2812b__handle__t_1a1d331e1f422aa722db8018b943199f74" prot="public" static="no" mutable="no">
+        <type>uint8_t(*</type>
+        <definition>uint8_t(* ws2812b_handle_t::ledData)[NUMBER_PWM_DATA_ELEMENTS]</definition>
+        <argsstring>)[NUMBER_PWM_DATA_ELEMENTS]</argsstring>
+        <name>ledData</name>
+        <qualifiedname>ws2812b_handle_t::ledData</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="42" column="5" bodyfile="driver/Inc/WS2812B.h" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structws2812b__handle__t_1a4ef5e2d887594c24fa86e27a6f11f7a7" prot="public" static="no" mutable="no">
+        <type>uint16_t *</type>
+        <definition>uint16_t* ws2812b_handle_t::pwmBuffer</definition>
+        <argsstring></argsstring>
+        <name>pwmBuffer</name>
+        <qualifiedname>ws2812b_handle_t::pwmBuffer</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="43" column="14" bodyfile="driver/Inc/WS2812B.h" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structws2812b__handle__t_1a968af18b99edbff021e12f961cf546e8" prot="public" static="no" mutable="no">
+        <type>TIM_HandleTypeDef *</type>
+        <definition>TIM_HandleTypeDef* ws2812b_handle_t::timerHandle</definition>
+        <argsstring></argsstring>
+        <name>timerHandle</name>
+        <qualifiedname>ws2812b_handle_t::timerHandle</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="44" column="23" bodyfile="driver/Inc/WS2812B.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structws2812b__handle__t_1a5eb4604e8d0e62f49c1f8f8678099503" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t ws2812b_handle_t::channel</definition>
+        <argsstring></argsstring>
+        <name>channel</name>
+        <qualifiedname>ws2812b_handle_t::channel</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="45" column="14" bodyfile="driver/Inc/WS2812B.h" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structws2812b__handle__t_1a5de90c7cdc3fec85bc8773249753e0fe" prot="public" static="no" mutable="no">
+        <type>uint8_t</type>
+        <definition>uint8_t ws2812b_handle_t::numberLeds</definition>
+        <argsstring></argsstring>
+        <name>numberLeds</name>
+        <qualifiedname>ws2812b_handle_t::numberLeds</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="46" column="13" bodyfile="driver/Inc/WS2812B.h" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structws2812b__handle__t_1a2510078965e257de65cc65e294f7784e" prot="public" static="no" mutable="no">
+        <type>SemaphoreHandle_t</type>
+        <definition>SemaphoreHandle_t ws2812b_handle_t::mutex</definition>
+        <argsstring></argsstring>
+        <name>mutex</name>
+        <qualifiedname>ws2812b_handle_t::mutex</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="47" column="23" bodyfile="driver/Inc/WS2812B.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structws2812b__handle__t_1a1603f0d05cb6701d258cb0e8ccce9d3a" prot="public" static="no" mutable="no">
+        <type>StaticSemaphore_t</type>
+        <definition>StaticSemaphore_t ws2812b_handle_t::mutexBuf</definition>
+        <argsstring></argsstring>
+        <name>mutexBuf</name>
+        <qualifiedname>ws2812b_handle_t::mutexBuf</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="48" column="23" bodyfile="driver/Inc/WS2812B.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structws2812b__handle__t_1a2355da8877f0119de8153a9cb128c2c7" prot="public" static="no" mutable="no">
+        <type>volatile uint8_t</type>
+        <definition>volatile uint8_t ws2812b_handle_t::dmaActive</definition>
+        <argsstring></argsstring>
+        <name>dmaActive</name>
+        <qualifiedname>ws2812b_handle_t::dmaActive</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="49" column="22" bodyfile="driver/Inc/WS2812B.h" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structws2812b__handle__t_1ac6accd8eba67abb8b48363db7b72ea84" prot="public" static="no" mutable="no">
+        <type>SemaphoreHandle_t</type>
+        <definition>SemaphoreHandle_t ws2812b_handle_t::framePendingSem</definition>
+        <argsstring></argsstring>
+        <name>framePendingSem</name>
+        <qualifiedname>ws2812b_handle_t::framePendingSem</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="50" column="23" bodyfile="driver/Inc/WS2812B.h" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structws2812b__handle__t_1a125c2918578cf0dc8abc7b67e881feb4" prot="public" static="no" mutable="no">
+        <type>StaticSemaphore_t</type>
+        <definition>StaticSemaphore_t ws2812b_handle_t::framePendingBuf</definition>
+        <argsstring></argsstring>
+        <name>framePendingBuf</name>
+        <qualifiedname>ws2812b_handle_t::framePendingBuf</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="51" column="23" bodyfile="driver/Inc/WS2812B.h" bodystart="51" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="driver/Inc/WS2812B.h" line="41" column="1" bodyfile="driver/Inc/WS2812B.h" bodystart="41" bodyend="52"/>
+    <listofallmembers>
+      <member refid="structws2812b__handle__t_1a5eb4604e8d0e62f49c1f8f8678099503" prot="public" virt="non-virtual"><scope>ws2812b_handle_t</scope><name>channel</name></member>
+      <member refid="structws2812b__handle__t_1a2355da8877f0119de8153a9cb128c2c7" prot="public" virt="non-virtual"><scope>ws2812b_handle_t</scope><name>dmaActive</name></member>
+      <member refid="structws2812b__handle__t_1a125c2918578cf0dc8abc7b67e881feb4" prot="public" virt="non-virtual"><scope>ws2812b_handle_t</scope><name>framePendingBuf</name></member>
+      <member refid="structws2812b__handle__t_1ac6accd8eba67abb8b48363db7b72ea84" prot="public" virt="non-virtual"><scope>ws2812b_handle_t</scope><name>framePendingSem</name></member>
+      <member refid="structws2812b__handle__t_1a1d331e1f422aa722db8018b943199f74" prot="public" virt="non-virtual"><scope>ws2812b_handle_t</scope><name>ledData</name></member>
+      <member refid="structws2812b__handle__t_1a2510078965e257de65cc65e294f7784e" prot="public" virt="non-virtual"><scope>ws2812b_handle_t</scope><name>mutex</name></member>
+      <member refid="structws2812b__handle__t_1a1603f0d05cb6701d258cb0e8ccce9d3a" prot="public" virt="non-virtual"><scope>ws2812b_handle_t</scope><name>mutexBuf</name></member>
+      <member refid="structws2812b__handle__t_1a5de90c7cdc3fec85bc8773249753e0fe" prot="public" virt="non-virtual"><scope>ws2812b_handle_t</scope><name>numberLeds</name></member>
+      <member refid="structws2812b__handle__t_1a4ef5e2d887594c24fa86e27a6f11f7a7" prot="public" virt="non-virtual"><scope>ws2812b_handle_t</scope><name>pwmBuffer</name></member>
+      <member refid="structws2812b__handle__t_1a968af18b99edbff021e12f961cf546e8" prot="public" virt="non-virtual"><scope>ws2812b_handle_t</scope><name>timerHandle</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

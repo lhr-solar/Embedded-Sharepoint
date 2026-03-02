@@ -8,5 +8,6 @@ Here is a list of all files with brief descriptions:
     * **dir** [**Inc**](dir_63ffe06a04b97e03324a2ad2f10a5002.md)     
         * **file** [**EMC2305.h**](EMC2305_8h.md)     
         * **file** [**SevenSegment.h**](SevenSegment_8h.md)     
+        * **file** [**WS2812B.h**](WS2812B_8h.md)     
         * **file** [**printf.h**](printf_8h.md)     
 

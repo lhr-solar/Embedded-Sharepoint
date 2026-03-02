@@ -84,12 +84,29 @@
 ## m
 
 * **MAX\_NUM** ([**SevenSegment.h**](SevenSegment_8h.md))
+* **MAX\_RGB\_VAL** ([**WS2812B.h**](WS2812B_8h.md))
 
 
 ## n
 
 * **NUMBER\_SEGMENTS** ([**SevenSegment.h**](SevenSegment_8h.md))
 * **NUMBER\_SEVEN\_SEGMENTS** ([**SevenSegment.h**](SevenSegment_8h.md))
+* **NUMBER\_PWM\_DATA\_ELEMENTS** ([**WS2812B.h**](WS2812B_8h.md))
+
+
+## w
+
+* **WS2812B\_SOLID\_BLUE** ([**WS2812B.h**](WS2812B_8h.md))
+* **WS2812B\_SOLID\_BURNT\_ORANGE** ([**WS2812B.h**](WS2812B_8h.md))
+* **WS2812B\_SOLID\_GREEN** ([**WS2812B.h**](WS2812B_8h.md))
+* **WS2812B\_SOLID\_OFF** ([**WS2812B.h**](WS2812B_8h.md))
+* **WS2812B\_SOLID\_PURPLE** ([**WS2812B.h**](WS2812B_8h.md))
+* **WS2812B\_SOLID\_RED** ([**WS2812B.h**](WS2812B_8h.md))
+* **WS2812B\_SOLID\_YELLOW** ([**WS2812B.h**](WS2812B_8h.md))
+* **WS2812B\_TIMER\_PERIOD\_TICKS** ([**WS2812B.h**](WS2812B_8h.md))
+* **WS2812\_HIGH** ([**WS2812B.h**](WS2812B_8h.md))
+* **WS2812\_LOW** ([**WS2812B.h**](WS2812B_8h.md))
+* **WS2812\_RESET\_TIME** ([**WS2812B.h**](WS2812B_8h.md))
 
 
 

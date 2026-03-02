@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structws2812b__color__t" kind="struct" language="C++" prot="public">
+    <compoundname>ws2812b_color_t</compoundname>
+    <includes refid="WS2812B_8h" local="no">WS2812B.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structws2812b__color__t_1a22588dfc8253b4059847ec1e2415fca8" prot="public" static="no" mutable="no">
+        <type>uint8_t</type>
+        <definition>uint8_t ws2812b_color_t::red</definition>
+        <argsstring></argsstring>
+        <name>red</name>
+        <qualifiedname>ws2812b_color_t::red</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="26" column="13" bodyfile="driver/Inc/WS2812B.h" bodystart="26" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structws2812b__color__t_1a199543be7c71f170d4695a721ff5f231" prot="public" static="no" mutable="no">
+        <type>uint8_t</type>
+        <definition>uint8_t ws2812b_color_t::green</definition>
+        <argsstring></argsstring>
+        <name>green</name>
+        <qualifiedname>ws2812b_color_t::green</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="27" column="13" bodyfile="driver/Inc/WS2812B.h" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structws2812b__color__t_1aaeeb23041a9f9891431296430de93293" prot="public" static="no" mutable="no">
+        <type>uint8_t</type>
+        <definition>uint8_t ws2812b_color_t::blue</definition>
+        <argsstring></argsstring>
+        <name>blue</name>
+        <qualifiedname>ws2812b_color_t::blue</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="28" column="13" bodyfile="driver/Inc/WS2812B.h" bodystart="28" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="driver/Inc/WS2812B.h" line="25" column="1" bodyfile="driver/Inc/WS2812B.h" bodystart="25" bodyend="29"/>
+    <listofallmembers>
+      <member refid="structws2812b__color__t_1aaeeb23041a9f9891431296430de93293" prot="public" virt="non-virtual"><scope>ws2812b_color_t</scope><name>blue</name></member>
+      <member refid="structws2812b__color__t_1a199543be7c71f170d4695a721ff5f231" prot="public" virt="non-virtual"><scope>ws2812b_color_t</scope><name>green</name></member>
+      <member refid="structws2812b__color__t_1a22588dfc8253b4059847ec1e2415fca8" prot="public" virt="non-virtual"><scope>ws2812b_color_t</scope><name>red</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

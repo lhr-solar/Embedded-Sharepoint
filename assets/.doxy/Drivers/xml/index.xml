@@ -42,6 +42,23 @@
     <member refid="structled__pins_1a5c0d02187b359c85da456fc78e1e5895" kind="variable"><name>Pin</name></member>
     <member refid="structled__pins_1a9c16d693f4d4e212bb2ad76b922a1b16" kind="variable"><name>Port</name></member>
   </compound>
+  <compound refid="structws2812b__color__t" kind="struct"><name>ws2812b_color_t</name>
+    <member refid="structws2812b__color__t_1a22588dfc8253b4059847ec1e2415fca8" kind="variable"><name>red</name></member>
+    <member refid="structws2812b__color__t_1a199543be7c71f170d4695a721ff5f231" kind="variable"><name>green</name></member>
+    <member refid="structws2812b__color__t_1aaeeb23041a9f9891431296430de93293" kind="variable"><name>blue</name></member>
+  </compound>
+  <compound refid="structws2812b__handle__t" kind="struct"><name>ws2812b_handle_t</name>
+    <member refid="structws2812b__handle__t_1a1d331e1f422aa722db8018b943199f74" kind="variable"><name>ledData</name></member>
+    <member refid="structws2812b__handle__t_1a4ef5e2d887594c24fa86e27a6f11f7a7" kind="variable"><name>pwmBuffer</name></member>
+    <member refid="structws2812b__handle__t_1a968af18b99edbff021e12f961cf546e8" kind="variable"><name>timerHandle</name></member>
+    <member refid="structws2812b__handle__t_1a5eb4604e8d0e62f49c1f8f8678099503" kind="variable"><name>channel</name></member>
+    <member refid="structws2812b__handle__t_1a5de90c7cdc3fec85bc8773249753e0fe" kind="variable"><name>numberLeds</name></member>
+    <member refid="structws2812b__handle__t_1a2510078965e257de65cc65e294f7784e" kind="variable"><name>mutex</name></member>
+    <member refid="structws2812b__handle__t_1a1603f0d05cb6701d258cb0e8ccce9d3a" kind="variable"><name>mutexBuf</name></member>
+    <member refid="structws2812b__handle__t_1a2355da8877f0119de8153a9cb128c2c7" kind="variable"><name>dmaActive</name></member>
+    <member refid="structws2812b__handle__t_1ac6accd8eba67abb8b48363db7b72ea84" kind="variable"><name>framePendingSem</name></member>
+    <member refid="structws2812b__handle__t_1a125c2918578cf0dc8abc7b67e881feb4" kind="variable"><name>framePendingBuf</name></member>
+  </compound>
   <compound refid="EMC2305_8h" kind="file"><name>EMC2305.h</name>
     <member refid="EMC2305_8h_1aa6fa392a8017bff58f26c452656d04c0" kind="define"><name>EMC2305_I2C_TIMEOUT</name></member>
     <member refid="EMC2305_8h_1adab1131720d69e4e28bb443e6b1ba4d4" kind="define"><name>EMC2305_QUEUE_LENGTH</name></member>
@@ -204,6 +221,32 @@
     <member refid="SevenSegment_8h_1aca267e1b7d59fd5efa7356af94ef2517" kind="function"><name>displayNum_SevenSegment</name></member>
     <member refid="SevenSegment_8h_1a1497aea251cd88d378328ee89dcc7c2d" kind="function"><name>displayTwoNum_SevenSegment</name></member>
     <member refid="SevenSegment_8h_1a99e5fe70283d86880aa585ed48ac42f1" kind="function"><name>off_SevenSegment</name></member>
+  </compound>
+  <compound refid="WS2812B_8h" kind="file"><name>WS2812B.h</name>
+    <member refid="WS2812B_8h_1a8e3ced84ab9f695dfa4f844a67b89fd8" kind="define"><name>MAX_RGB_VAL</name></member>
+    <member refid="WS2812B_8h_1aae645e9c4c5bb70925c21fe9c4d3ed80" kind="define"><name>NUMBER_PWM_DATA_ELEMENTS</name></member>
+    <member refid="WS2812B_8h_1a99f2339ca2e6a50123f84a9dbb25f306" kind="define"><name>WS2812B_TIMER_PERIOD_TICKS</name></member>
+    <member refid="WS2812B_8h_1ac3fea03ca860d31b057b2baa7ab5a3b0" kind="define"><name>WS2812_HIGH</name></member>
+    <member refid="WS2812B_8h_1a73fd829420b3a221a424569bf41e7599" kind="define"><name>WS2812_LOW</name></member>
+    <member refid="WS2812B_8h_1aabc728452f270c3e3484c52278003118" kind="define"><name>WS2812_RESET_TIME</name></member>
+    <member refid="WS2812B_8h_1a618b9b56850f851b47ce62b3d8b5ea9f" kind="define"><name>WS2812B_SOLID_GREEN</name></member>
+    <member refid="WS2812B_8h_1a38a8fc9d4387580126a0e145ffebea91" kind="define"><name>WS2812B_SOLID_RED</name></member>
+    <member refid="WS2812B_8h_1af40b4bf511fe7474868840268d03acea" kind="define"><name>WS2812B_SOLID_BLUE</name></member>
+    <member refid="WS2812B_8h_1a15a0c0f91a60c77883742e17ef14fd0f" kind="define"><name>WS2812B_SOLID_YELLOW</name></member>
+    <member refid="WS2812B_8h_1a1ff3ebdda5ad5a677f374f29f48a0c76" kind="define"><name>WS2812B_SOLID_BURNT_ORANGE</name></member>
+    <member refid="WS2812B_8h_1a084098cb97fb4d9ac0dfbe481d07e6b6" kind="define"><name>WS2812B_SOLID_PURPLE</name></member>
+    <member refid="WS2812B_8h_1a11682255808ea14d4e3cc84c70331bf7" kind="define"><name>WS2812B_SOLID_OFF</name></member>
+    <member refid="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3" kind="enum"><name>ws2812b_status_t</name></member>
+    <member refid="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3a14f20ba5afcc55686257fd7eec4f8b5d" kind="enumvalue"><name>WS2812B_OK</name></member>
+    <member refid="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3a5eda339e93655b3b36f1b41f55929191" kind="enumvalue"><name>WS2812B_NULL_ERROR</name></member>
+    <member refid="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3a060927a0cc6afccbddabceb4c9c3abda" kind="enumvalue"><name>WS2812B_ERROR</name></member>
+    <member refid="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3a5379b369c5153dd3cf47020dd3654dcf" kind="enumvalue"><name>WS2812B_BUSY</name></member>
+    <member refid="WS2812B_8h_1a4d996b4731536f3a3c397a8a2ecabe94" kind="function"><name>ws2812b_init</name></member>
+    <member refid="WS2812B_8h_1ae4e909e60bfea1463bcc7eb7a151caf8" kind="function"><name>ws2812b_set_color</name></member>
+    <member refid="WS2812B_8h_1a3477ee18deccba0ec71e6a22639e95bc" kind="function"><name>ws2812b_TIM_PWM_PulseFinishedCallback</name></member>
+    <member refid="WS2812B_8h_1a588fd89ef532c1edc83ee02f1a142088" kind="function"><name>ws2812b_set_all_leds</name></member>
+    <member refid="WS2812B_8h_1ab4c4804ca90d0a1b48c976691f12b847" kind="function"><name>ws2812b_set_led_range</name></member>
+    <member refid="WS2812B_8h_1a99ef3a8871a645e05209f71cc1afc6ab" kind="function"><name>ws2812b_load_colors</name></member>
   </compound>
   <compound refid="dir_1284b95147afa48b330f502c8bbc0529" kind="dir"><name>driver</name>
   </compound>

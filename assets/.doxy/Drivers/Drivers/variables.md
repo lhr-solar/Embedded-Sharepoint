@@ -28,5 +28,10 @@
 * **led\_t** ([**SevenSegment.h**](SevenSegment_8h.md))
 
 
+## w
+
+* **ws2812b\_status\_t** ([**WS2812B.h**](WS2812B_8h.md))
+
+
 
 

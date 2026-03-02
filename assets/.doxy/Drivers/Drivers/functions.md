@@ -46,5 +46,15 @@
 * **scanf** ([**printf.h**](printf_8h.md))
 
 
+## w
+
+* **ws2812b\_TIM\_PWM\_PulseFinishedCallback** ([**WS2812B.h**](WS2812B_8h.md))
+* **ws2812b\_init** ([**WS2812B.h**](WS2812B_8h.md))
+* **ws2812b\_load\_colors** ([**WS2812B.h**](WS2812B_8h.md))
+* **ws2812b\_set\_all\_leds** ([**WS2812B.h**](WS2812B_8h.md))
+* **ws2812b\_set\_color** ([**WS2812B.h**](WS2812B_8h.md))
+* **ws2812b\_set\_led\_range** ([**WS2812B.h**](WS2812B_8h.md))
+
+
 
 

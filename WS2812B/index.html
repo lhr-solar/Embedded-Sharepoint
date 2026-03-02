@@ -1,0 +1,1425 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Software library shared among LHRS embedded systems">
+      
+      
+        <meta name="author" content="LHR - Solar">
+      
+      
+      
+        <link rel="prev" href="../EMC2305/">
+      
+      
+        <link rel="next" href="../Drivers/EMC2305_8h/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../LHRs.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
+    
+    
+      
+        <title>WS2812B Usage Guide - Embedded Sharepoint Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ws2812b-addressable-led-driver-documentation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Embedded Sharepoint Documentation" class="md-header__button md-logo" aria-label="Embedded Sharepoint Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Embedded Sharepoint Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              WS2812B Usage Guide
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Embedded Sharepoint Documentation" class="md-nav__button md-logo" aria-label="Embedded Sharepoint Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Embedded Sharepoint Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    README
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../FlashAndTheBug/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flashing and Debugging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SharepointSubmodule/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Adding Embedded Sharepoint
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CubeMX/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CubeMX
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../STM32_Ports/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    STM32 Ports
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CAN Messages
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CAN Messages
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dbcEditor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Editing DBC Files
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DBC/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Signals & Messages
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Drivers Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Drivers Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../EMC2305/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EMC2305 Usage Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WS2812B Usage Guide
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WS2812B Usage Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cubemx-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CubeMX Setup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CubeMX Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#timer-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Timer Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dma-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DMA Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generated-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generated code
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#priority-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Priority Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#driver-initialization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Driver Initialization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#callback-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Callback Function
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setting-colors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Setting Colors
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#acknowledgements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Acknowledgements
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Drivers/EMC2305_8h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EMC2305
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Drivers/SevenSegment_8h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SevenSegment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Drivers/WS2812B_8h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WS2812B
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Drivers/printf_8h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    printf
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    BSP Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    BSP Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../BSP/ADC_8h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../BSP/CAN_8h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CAN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../BSP/UART_8h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UART
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cubemx-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CubeMX Setup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CubeMX Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#timer-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Timer Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dma-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DMA Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generated-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generated code
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#priority-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Priority Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#driver-initialization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Driver Initialization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#callback-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Callback Function
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setting-colors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Setting Colors
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#acknowledgements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Acknowledgements
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="ws2812b-addressable-led-driver-documentation">WS2812B Addressable LED Driver Documentation</h1>
+<h2 id="overview">Overview</h2>
+<p>The WS2812B driver found in the driver/ folder of Embedded-Sharepoint is a thread-safe driver meant to run in a FreeRTOS task. The driver utilizes timers and a DMA channel to output the necessary PWM waveform to set the addressable LEDs to different colors. A mutex is used to ensure mutual exclusion of an addressable led strip, and a semaphore is included to indicate when a DMA transaction is done. The driver also supports multiple strings of addressable LEDs.</p>
+<p>The struct below represents a string of LEDs, </p>
+<pre><code class="language-c">typedef struct{
+    uint8_t (*ledData)[NUMBER_PWM_DATA_ELEMENTS]; // Represents the colors contained in the strip: [LED][LEDNUM, G, R, B]
+    uint16_t *pwmBuffer; // PWM bitstream of duty cycles, this is what is passed to DMA
+    TIM_HandleTypeDef *timerHandle; // The timer handle used to generate PWM
+    uint32_t channel;  // The channel associated with the pin's timer 
+    uint8_t numberLeds; // the number of LEDs in the string
+    SemaphoreHandle_t mutex; // protects multiple threads from writing to the handle
+    StaticSemaphore_t mutexBuf; // static buffer for the mutex
+    volatile uint8_t dmaActive; // indicates when a dma transmission is active
+    SemaphoreHandle_t framePendingSem; // indicates that there's a new rgb frame to send
+    StaticSemaphore_t framePendingBuf; // static buffer to store the semaphore
+}ws2812b_handle_t;
+</code></pre>
+<p>Most functions in this driver return a <code>ws2812b_status_t</code> enum which stores the success status of that function.</p>
+<pre><code class="language-c">typedef enum{
+    WS2812B_OK, // WS2812B transaction completed successfully
+    WS2812B_NULL_ERROR, // parameter is NULL
+    WS2812B_ERROR, // an error occured
+    WS2812B_BUSY // a shared resource is busy
+}ws2812b_status_t;
+</code></pre>
+<h2 id="cubemx-setup">CubeMX Setup</h2>
+<p>Before initializing the driver, you must configure your system clock, the PWM timer pin, and the DMA channel used.  </p>
+<p>Configure the system clock to <em>80mhz</em>, instructions on how to do that can be found <a href="../CubeMX/">here</a> in section 3.3.</p>
+<h3 id="timer-configuration">Timer Configuration</h3>
+<p>Enable your timer and channel in PWM mode. Below I'm using Timer 4 channel 1, and configuring it for PWM generation
+<img alt="WS2812B PWM Generation" src="../assets/ws2812b_assets/ws2812b_tim4_pwm_generation.png" /></p>
+<p>Set the counter period to be 1000, the prescaler to be 0, and counter mode to be up.
+<img alt="WS2812B Timer Configuration" src="../assets/ws2812b_assets/ws2812b_tim4_configuration.png" /></p>
+<h3 id="dma-configuration">DMA Configuration</h3>
+<ul>
+<li>Set the DMA request to be your timer and channel</li>
+<li>Set direction to be <code>Memory to Peripheral</code></li>
+<li>Set data width to be <code>Half word</code></li>
+<li>Set mode to be <code>Normal</code></li>
+</ul>
+<p><img alt="WS2812B DMA Configuration" src="../assets/ws2812b_assets/ws2812b_dma_configuration.png" /></p>
+<h3 id="generated-code">Generated code</h3>
+<p>Take the following generated functions from CubeMX:</p>
+<ul>
+<li>SystemClock_Config</li>
+<li>MX_DMA_Init</li>
+<li>HAL_TIM_PWM_MspInit</li>
+<li>MX_TIMX_Init &lt;- the X refers to which timer you're using, the test uses TIM4, so it's MX_TIM4_Init</li>
+<li>HAL_TIM_MspPostInit</li>
+<li>HAL_TIM_PWM_MspDeInit</li>
+</ul>
+<h3 id="priority-configuration">Priority Configuration</h3>
+<p>There is a max priority we can configure interrupts to be that use FreeRTOS functions. Make sure that your interrupts priority is &gt;= this variable <code>configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY</code>.  </p>
+<p>Look at the call to the NVIC Set Priority function</p>
+<pre><code class="language-sh">  # sets the DMA1_Channel1_IRQ to be 4 + configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY
+  HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 4, 0);
+</code></pre>
+<h2 id="driver-initialization">Driver Initialization</h2>
+<p>The driver can be initialized by calling the below function:</p>
+<pre><code class="language-c">ws2812b_status_t ws2812b_init(
+    ws2812b_handle_t *ledHandler, 
+    uint8_t ledData[][NUMBER_PWM_DATA_ELEMENTS], 
+    uint16_t *pwmData,  // an EMPTY and non-NULL pointer to a 
+    TIM_HandleTypeDef *timerHandle,  // the timer handle
+    uint32_t channel, // the timer channel
+    uint8_t numberLeds // Number of LEDs you want in your strip
+)
+</code></pre>
+<p>It is recommended that this function is called in the context of an RTOS task after the scheduler has started. The system clock, timer, and dma <em>must</em> be configured before calling the <code>ws2812b_init</code> function.</p>
+<p>Note that ledHandler, ledData, pwmData, timerHandle must be statically allocated by the user before it is passed into the init function, or else the driver will return <code>WS2812B_NULL_ERROR</code>.</p>
+<p>On success the init function will return <code>WS2812B_OK</code>.</p>
+<h2 id="callback-function">Callback Function</h2>
+<p>This driver makes use of the <code>HAL_TIM_PWM_PulseFinishedCallback</code> within the HAL. This interrupt is called after the PWM's duty cycle is set. To allow the user to use this interrupt for other things, this callback function is not stored in the driver, and instead it is the user's responsibility to call a specified callback function within the interrupt. The user can call <code>ws2812b_TIM_PWM_PulseFinishedCallback</code> in the interrupt service routine.</p>
+<pre><code class="language-c">// the interrupt lives inside the ISR
+void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
+{
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+    // if the timer is the one used by the ws2812b driver
+    if (htim-&gt;Instance == TIM4)
+    {
+        // call the hook function.
+        ws2812b_TIM_PWM_PulseFinishedCallback(htim, &amp;wsHandle, &amp;xHigherPriorityTaskWoken);
+    }
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+}
+</code></pre>
+<p>Note that since <code>HAL_TIM_PWM_PulseFinishedCallback</code> is an interrupt, you want to keep it short and bounded, and only use the ISR safe functions in FreeRTOS (they usually have a <code>fromISR</code> tag at the end of the function name).</p>
+<p>You need to add the DMA IRQ handler to your code as well. The DMA channel IRQ handler depends on which DMA peripheral you're using.</p>
+<pre><code class="language-sh">void DMA1_Channel1_IRQHandler(){
+    HAL_DMA_IRQHandler(&amp;hdma_tim4_ch1);
+}
+</code></pre>
+<p>Above I'm defining that if I have a channel 1 DMA interurpt, call the DMA IRQ handler for my timer and channel.</p>
+<h2 id="setting-colors">Setting Colors</h2>
+<p>After <code>ws2812b_init</code> returns successfully, the specified <code>ws2812b_handle_t</code> will contain all necessary information to set any addressable led.  </p>
+<p>Colors are encoded into the <code>ws2812b_color_t</code> struct, where the user can pass in any RGB value.</p>
+<pre><code class="language-c">typedef struct{
+    uint8_t red; // red value
+    uint8_t green; // green value
+    uint8_t blue; // blue value
+}ws2812b_color_t;
+</code></pre>
+<p>In the ws2812b header file there are many macros with pre-encoded <code>ws2812b_color_t</code> with correct RGB values.</p>
+<pre><code class="language-c">#define WS2812B_SOLID_GREEN         ((ws2812b_color_t){ .red = 0,   .green = 255,   .blue = 0 })
+#define WS2812B_SOLID_RED           ((ws2812b_color_t){ .red = 255, .green = 0,     .blue = 0 })
+#define WS2812B_SOLID_BLUE          ((ws2812b_color_t){ .red = 0,   .green = 0,     .blue = 255 })
+#define WS2812B_SOLID_YELLOW        ((ws2812b_color_t){ .red = 255, .green = 255,   .blue = 0 })
+#define WS2812B_SOLID_BURNT_ORANGE  ((ws2812b_color_t){ .red = 204, .green = 85,    .blue = 0 })
+#define WS2812B_SOLID_PURPLE        ((ws2812b_color_t){ .red = 128, .green = 0,     .blue = 128 })
+#define WS2812B_SOLID_OFF           ((ws2812b_color_t){ .red = 0,   .green = 0,     .blue = 0 })
+</code></pre>
+<p>There are many functions the user can call to set any led color</p>
+<pre><code class="language-h">
+/**
+ * @brief Sets the color for a specific led in the ws2812b strip
+ * 
+ * @param ledHandler    Pointer to the ws2812b handle.
+ * @param led_num       The led number being set (0 indexed).
+ * @param color         Struct containing RGB value to set the led too.
+ * @param delay_ticks   Ticks to wait for data (0 = non-blocking, portMAX_DELAY = block until available).
+ * @return ws2812b_status_t Returns WS2812B_OK on success, and returns any other value on failure
+ */
+ws2812b_status_t ws2812b_set_color(ws2812b_handle_t *ledHandler, uint8_t led_num,  ws2812b_color_t color, TickType_t delay_ticks);
+
+/**
+ * @brief Callback function that gets called in the TIM_PWM_PulseFinishedCallback function
+ * 
+ * @param ledHandler                Pointer to the ws2812b handle.
+ * @param timerHandle               Pointer to the timer handle.
+ * @param xHigherPriorityTaskWoken  Pointer to the highest priority task to be called next
+ * @return none
+ */
+void ws2812b_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim, ws2812b_handle_t *ledHandler,  BaseType_t *xHigherPriorityTaskWoken);
+
+/**
+ * @brief Sets the color of all LEDs in a ws2812b strip
+ * 
+ * @param ledHandler    Pointer to the ws2812b handle.
+ * @param color         Struct containing RGB value to set the led too.
+ * @param delay_ticks   Ticks to wait for data (0 = non-blocking, portMAX_DELAY = block until available).
+ * @return ws2812b_status_t Returns WS2812B_OK on success, and returns any other value on failure
+ */
+ws2812b_status_t ws2812b_set_all_leds(ws2812b_handle_t *ledHandler, ws2812b_color_t color, TickType_t delay_ticks);
+
+/**
+ * @brief Sets the color of a specified range of LEDs in a ws2812b strip
+ * 
+ * @param ledHandler    Pointer to the ws2812b handle.
+ * @param start         Starting index of the led range to set (0 indexed).
+ * @param end           Ending index of the led range to set (0 indexed).
+ * @param color         Struct containing RGB value to set the led too.
+ * @param delay_ticks   Ticks to wait for data (0 = non-blocking, portMAX_DELAY = block until available).
+ * @return ws2812b_status_t Returns WS2812B_OK on success, and returns any other value on failure
+ */
+ws2812b_status_t ws2812b_set_led_range(ws2812b_handle_t *ledHandler, uint8_t start, uint8_t end, ws2812b_color_t color, TickType_t delay_ticks);
+
+/**
+ * @brief Loads an array of colors into the led strip
+ * 
+ * @param ledHandler    Pointer to the ws2812b handle.
+ * @param color         An array of color structs that the led strip will be set too.
+ * @param start         Starting index of the led range to set (0 indexed).
+ * @param numColors     Number of elements in the colors array
+ * @param delay_ticks   Ticks to wait for data (0 = non-blocking, portMAX_DELAY = block until available).
+ * @return ws2812b_status_t Returns WS2812B_OK on success, and returns any other value on failure
+ */
+ws2812b_status_t ws2812b_load_colors(ws2812b_handle_t *ledHandler, const ws2812b_color_t colors[], uint8_t start, uint8_t numColors, TickType_t delay_ticks);
+</code></pre>
+<h2 id="examples">Examples</h2>
+<p>An example test for the LSOM can be found in <a href="https://github.com/lhr-solar/Embedded-Sharepoint/blob/main/test/tests/ws2812b_test.c">here</a></p>
+<h2 id="acknowledgements">Acknowledgements</h2>
+<p>Most of this driver is derived from this <a href="https://controllerstech.com/interface-ws2812-with-stm32/">tutorial</a> from ControllersTech.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

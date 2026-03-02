@@ -1,0 +1,714 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="WS2812B_8h" kind="file" language="C++">
+    <compoundname>WS2812B.h</compoundname>
+    <includes local="yes">stm32xx_hal.h</includes>
+    <includes local="yes">FreeRTOS.h</includes>
+    <includes local="yes">semphr.h</includes>
+    <incdepgraph>
+      <node id="1">
+        <label>driver/Inc/WS2812B.h</label>
+        <link refid="WS2812B_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>FreeRTOS.h</label>
+      </node>
+      <node id="4">
+        <label>semphr.h</label>
+      </node>
+      <node id="2">
+        <label>stm32xx_hal.h</label>
+      </node>
+    </incdepgraph>
+    <innerclass refid="structws2812b__color__t" prot="public">ws2812b_color_t</innerclass>
+    <innerclass refid="structws2812b__handle__t" prot="public">ws2812b_handle_t</innerclass>
+    <sectiondef kind="define">
+      <memberdef kind="define" id="WS2812B_8h_1a8e3ced84ab9f695dfa4f844a67b89fd8" prot="public" static="no">
+        <name>MAX_RGB_VAL</name>
+        <initializer>255</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="7" column="9" bodyfile="driver/Inc/WS2812B.h" bodystart="7" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="WS2812B_8h_1aae645e9c4c5bb70925c21fe9c4d3ed80" prot="public" static="no">
+        <name>NUMBER_PWM_DATA_ELEMENTS</name>
+        <initializer>4</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="9" column="9" bodyfile="driver/Inc/WS2812B.h" bodystart="9" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="WS2812B_8h_1a99f2339ca2e6a50123f84a9dbb25f306" prot="public" static="no">
+        <name>WS2812B_TIMER_PERIOD_TICKS</name>
+        <initializer>90</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="11" column="9" bodyfile="driver/Inc/WS2812B.h" bodystart="11" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="WS2812B_8h_1ac3fea03ca860d31b057b2baa7ab5a3b0" prot="public" static="no">
+        <name>WS2812_HIGH</name>
+        <initializer>(2*<ref refid="WS2812B_8h_1a99f2339ca2e6a50123f84a9dbb25f306" kindref="member">WS2812B_TIMER_PERIOD_TICKS</ref>)/3</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="13" column="9" bodyfile="driver/Inc/WS2812B.h" bodystart="13" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="WS2812B_8h_1a73fd829420b3a221a424569bf41e7599" prot="public" static="no">
+        <name>WS2812_LOW</name>
+        <initializer><ref refid="WS2812B_8h_1a99f2339ca2e6a50123f84a9dbb25f306" kindref="member">WS2812B_TIMER_PERIOD_TICKS</ref>/3</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="14" column="9" bodyfile="driver/Inc/WS2812B.h" bodystart="14" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="WS2812B_8h_1aabc728452f270c3e3484c52278003118" prot="public" static="no">
+        <name>WS2812_RESET_TIME</name>
+        <initializer>50</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="16" column="9" bodyfile="driver/Inc/WS2812B.h" bodystart="16" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="WS2812B_8h_1a618b9b56850f851b47ce62b3d8b5ea9f" prot="public" static="no">
+        <name>WS2812B_SOLID_GREEN</name>
+        <initializer>((<ref refid="structws2812b__color__t" kindref="compound">ws2812b_color_t</ref>){ .red = 0,   .green = 255,   .blue = 0 })</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="31" column="9" bodyfile="driver/Inc/WS2812B.h" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="WS2812B_8h_1a38a8fc9d4387580126a0e145ffebea91" prot="public" static="no">
+        <name>WS2812B_SOLID_RED</name>
+        <initializer>((<ref refid="structws2812b__color__t" kindref="compound">ws2812b_color_t</ref>){ .red = 255, .green = 0,     .blue = 0 })</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="32" column="9" bodyfile="driver/Inc/WS2812B.h" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="WS2812B_8h_1af40b4bf511fe7474868840268d03acea" prot="public" static="no">
+        <name>WS2812B_SOLID_BLUE</name>
+        <initializer>((<ref refid="structws2812b__color__t" kindref="compound">ws2812b_color_t</ref>){ .red = 0,   .green = 0,     .blue = 255 })</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="33" column="9" bodyfile="driver/Inc/WS2812B.h" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="WS2812B_8h_1a15a0c0f91a60c77883742e17ef14fd0f" prot="public" static="no">
+        <name>WS2812B_SOLID_YELLOW</name>
+        <initializer>((<ref refid="structws2812b__color__t" kindref="compound">ws2812b_color_t</ref>){ .red = 255, .green = 255,   .blue = 0 })</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="34" column="9" bodyfile="driver/Inc/WS2812B.h" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="WS2812B_8h_1a1ff3ebdda5ad5a677f374f29f48a0c76" prot="public" static="no">
+        <name>WS2812B_SOLID_BURNT_ORANGE</name>
+        <initializer>((<ref refid="structws2812b__color__t" kindref="compound">ws2812b_color_t</ref>){ .red = 204, .green = 85,    .blue = 0 })</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="35" column="9" bodyfile="driver/Inc/WS2812B.h" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="WS2812B_8h_1a084098cb97fb4d9ac0dfbe481d07e6b6" prot="public" static="no">
+        <name>WS2812B_SOLID_PURPLE</name>
+        <initializer>((<ref refid="structws2812b__color__t" kindref="compound">ws2812b_color_t</ref>){ .red = 128, .green = 0,     .blue = 128 })</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="36" column="9" bodyfile="driver/Inc/WS2812B.h" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="WS2812B_8h_1a11682255808ea14d4e3cc84c70331bf7" prot="public" static="no">
+        <name>WS2812B_SOLID_OFF</name>
+        <initializer>((<ref refid="structws2812b__color__t" kindref="compound">ws2812b_color_t</ref>){ .red = 0,   .green = 0,     .blue = 0 })</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="37" column="9" bodyfile="driver/Inc/WS2812B.h" bodystart="37" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="enum">
+      <memberdef kind="enum" id="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3" prot="public" static="no" strong="no">
+        <type></type>
+        <name>ws2812b_status_t</name>
+        <enumvalue id="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3a14f20ba5afcc55686257fd7eec4f8b5d" prot="public">
+          <name>WS2812B_OK</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3a5eda339e93655b3b36f1b41f55929191" prot="public">
+          <name>WS2812B_NULL_ERROR</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3a060927a0cc6afccbddabceb4c9c3abda" prot="public">
+          <name>WS2812B_ERROR</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3a5379b369c5153dd3cf47020dd3654dcf" prot="public">
+          <name>WS2812B_BUSY</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="18" column="1" bodyfile="driver/Inc/WS2812B.h" bodystart="18" bodyend="23"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="WS2812B_8h_1a4d996b4731536f3a3c397a8a2ecabe94" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3" kindref="member">ws2812b_status_t</ref></type>
+        <definition>ws2812b_status_t ws2812b_init</definition>
+        <argsstring>(ws2812b_handle_t *ledHandler, uint8_t ledData[][NUMBER_PWM_DATA_ELEMENTS], uint16_t *pwmData, TIM_HandleTypeDef *timerHandle, uint32_t channel, uint8_t numberLeds)</argsstring>
+        <name>ws2812b_init</name>
+        <param>
+          <type><ref refid="structws2812b__handle__t" kindref="compound">ws2812b_handle_t</ref> *</type>
+          <declname>ledHandler</declname>
+        </param>
+        <param>
+          <type>uint8_t</type>
+          <declname>ledData</declname>
+          <array>[][NUMBER_PWM_DATA_ELEMENTS]</array>
+        </param>
+        <param>
+          <type>uint16_t *</type>
+          <declname>pwmData</declname>
+        </param>
+        <param>
+          <type>TIM_HandleTypeDef *</type>
+          <declname>timerHandle</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>channel</declname>
+        </param>
+        <param>
+          <type>uint8_t</type>
+          <declname>numberLeds</declname>
+        </param>
+        <briefdescription>
+<para>Initializes a strip of ws2812b LEDs. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ledHandler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the ws2812b handle. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ledData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>2D array storing per-LED color data </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pwmData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Buffer used for encoded PWM waveform data. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>timerHandle</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the timer handle. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>channel</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Timer channel used for PWM output. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>numberLeds</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of LEDs in a strip </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>ws2812b_status_t Returns WS2812B_OK on success, and returns any other value on failure </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="66" column="18" declfile="driver/Inc/WS2812B.h" declline="66" declcolumn="18"/>
+      </memberdef>
+      <memberdef kind="function" id="WS2812B_8h_1ae4e909e60bfea1463bcc7eb7a151caf8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3" kindref="member">ws2812b_status_t</ref></type>
+        <definition>ws2812b_status_t ws2812b_set_color</definition>
+        <argsstring>(ws2812b_handle_t *ledHandler, uint8_t led_num, ws2812b_color_t color, TickType_t delay_ticks)</argsstring>
+        <name>ws2812b_set_color</name>
+        <param>
+          <type><ref refid="structws2812b__handle__t" kindref="compound">ws2812b_handle_t</ref> *</type>
+          <declname>ledHandler</declname>
+        </param>
+        <param>
+          <type>uint8_t</type>
+          <declname>led_num</declname>
+        </param>
+        <param>
+          <type><ref refid="structws2812b__color__t" kindref="compound">ws2812b_color_t</ref></type>
+          <declname>color</declname>
+        </param>
+        <param>
+          <type>TickType_t</type>
+          <declname>delay_ticks</declname>
+        </param>
+        <briefdescription>
+<para>Sets the color for a specific led in the ws2812b strip. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ledHandler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the ws2812b handle. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>led_num</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The led number being set (0 indexed). </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>color</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Struct containing RGB value to set the led too. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>delay_ticks</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Ticks to wait for data (0 = non-blocking, portMAX_DELAY = block until available). </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>ws2812b_status_t Returns WS2812B_OK on success, and returns any other value on failure </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="77" column="18" declfile="driver/Inc/WS2812B.h" declline="77" declcolumn="18"/>
+      </memberdef>
+      <memberdef kind="function" id="WS2812B_8h_1a3477ee18deccba0ec71e6a22639e95bc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ws2812b_TIM_PWM_PulseFinishedCallback</definition>
+        <argsstring>(TIM_HandleTypeDef *htim, ws2812b_handle_t *ledHandler, BaseType_t *xHigherPriorityTaskWoken)</argsstring>
+        <name>ws2812b_TIM_PWM_PulseFinishedCallback</name>
+        <param>
+          <type>TIM_HandleTypeDef *</type>
+          <declname>htim</declname>
+        </param>
+        <param>
+          <type><ref refid="structws2812b__handle__t" kindref="compound">ws2812b_handle_t</ref> *</type>
+          <declname>ledHandler</declname>
+        </param>
+        <param>
+          <type>BaseType_t *</type>
+          <declname>xHigherPriorityTaskWoken</declname>
+        </param>
+        <briefdescription>
+<para>Callback function that gets called in the TIM_PWM_PulseFinishedCallback function. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ledHandler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the ws2812b handle. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>timerHandle</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the timer handle. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>xHigherPriorityTaskWoken</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the highest priority task to be called next </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>none </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="87" column="6" declfile="driver/Inc/WS2812B.h" declline="87" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="WS2812B_8h_1a588fd89ef532c1edc83ee02f1a142088" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3" kindref="member">ws2812b_status_t</ref></type>
+        <definition>ws2812b_status_t ws2812b_set_all_leds</definition>
+        <argsstring>(ws2812b_handle_t *ledHandler, ws2812b_color_t color, TickType_t delay_ticks)</argsstring>
+        <name>ws2812b_set_all_leds</name>
+        <param>
+          <type><ref refid="structws2812b__handle__t" kindref="compound">ws2812b_handle_t</ref> *</type>
+          <declname>ledHandler</declname>
+        </param>
+        <param>
+          <type><ref refid="structws2812b__color__t" kindref="compound">ws2812b_color_t</ref></type>
+          <declname>color</declname>
+        </param>
+        <param>
+          <type>TickType_t</type>
+          <declname>delay_ticks</declname>
+        </param>
+        <briefdescription>
+<para>Sets the color of all LEDs in a ws2812b strip. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ledHandler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the ws2812b handle. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>color</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Struct containing RGB value to set the led too. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>delay_ticks</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Ticks to wait for data (0 = non-blocking, portMAX_DELAY = block until available). </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>ws2812b_status_t Returns WS2812B_OK on success, and returns any other value on failure </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="97" column="18" declfile="driver/Inc/WS2812B.h" declline="97" declcolumn="18"/>
+      </memberdef>
+      <memberdef kind="function" id="WS2812B_8h_1ab4c4804ca90d0a1b48c976691f12b847" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3" kindref="member">ws2812b_status_t</ref></type>
+        <definition>ws2812b_status_t ws2812b_set_led_range</definition>
+        <argsstring>(ws2812b_handle_t *ledHandler, uint8_t start, uint8_t end, ws2812b_color_t color, TickType_t delay_ticks)</argsstring>
+        <name>ws2812b_set_led_range</name>
+        <param>
+          <type><ref refid="structws2812b__handle__t" kindref="compound">ws2812b_handle_t</ref> *</type>
+          <declname>ledHandler</declname>
+        </param>
+        <param>
+          <type>uint8_t</type>
+          <declname>start</declname>
+        </param>
+        <param>
+          <type>uint8_t</type>
+          <declname>end</declname>
+        </param>
+        <param>
+          <type><ref refid="structws2812b__color__t" kindref="compound">ws2812b_color_t</ref></type>
+          <declname>color</declname>
+        </param>
+        <param>
+          <type>TickType_t</type>
+          <declname>delay_ticks</declname>
+        </param>
+        <briefdescription>
+<para>Sets the color of a specified range of LEDs in a ws2812b strip. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ledHandler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the ws2812b handle. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>start</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Starting index of the led range to set (0 indexed). </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>end</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Ending index of the led range to set (0 indexed). </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>color</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Struct containing RGB value to set the led too. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>delay_ticks</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Ticks to wait for data (0 = non-blocking, portMAX_DELAY = block until available). </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>ws2812b_status_t Returns WS2812B_OK on success, and returns any other value on failure </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="109" column="18" declfile="driver/Inc/WS2812B.h" declline="109" declcolumn="18"/>
+      </memberdef>
+      <memberdef kind="function" id="WS2812B_8h_1a99ef3a8871a645e05209f71cc1afc6ab" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3" kindref="member">ws2812b_status_t</ref></type>
+        <definition>ws2812b_status_t ws2812b_load_colors</definition>
+        <argsstring>(ws2812b_handle_t *ledHandler, const ws2812b_color_t colors[], uint8_t start, uint8_t numColors, TickType_t delay_ticks)</argsstring>
+        <name>ws2812b_load_colors</name>
+        <param>
+          <type><ref refid="structws2812b__handle__t" kindref="compound">ws2812b_handle_t</ref> *</type>
+          <declname>ledHandler</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structws2812b__color__t" kindref="compound">ws2812b_color_t</ref></type>
+          <declname>colors</declname>
+          <array>[]</array>
+        </param>
+        <param>
+          <type>uint8_t</type>
+          <declname>start</declname>
+        </param>
+        <param>
+          <type>uint8_t</type>
+          <declname>numColors</declname>
+        </param>
+        <param>
+          <type>TickType_t</type>
+          <declname>delay_ticks</declname>
+        </param>
+        <briefdescription>
+<para>Loads an array of colors into the led strip. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ledHandler</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the ws2812b handle. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>color</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>An array of color structs that the led strip will be set too. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>start</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Starting index of the led range to set (0 indexed). </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>numColors</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of elements in the colors array </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>delay_ticks</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Ticks to wait for data (0 = non-blocking, portMAX_DELAY = block until available). </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>ws2812b_status_t Returns WS2812B_OK on success, and returns any other value on failure </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/WS2812B.h" line="121" column="18" declfile="driver/Inc/WS2812B.h" declline="121" declcolumn="18"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;stm32xx_hal.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;FreeRTOS.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;semphr.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight></codeline>
+<codeline lineno="7" refid="WS2812B_8h_1a8e3ced84ab9f695dfa4f844a67b89fd8" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>MAX_RGB_VAL<sp/>255</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight></codeline>
+<codeline lineno="9" refid="WS2812B_8h_1aae645e9c4c5bb70925c21fe9c4d3ed80" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>NUMBER_PWM_DATA_ELEMENTS<sp/>4</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight></codeline>
+<codeline lineno="11" refid="WS2812B_8h_1a99f2339ca2e6a50123f84a9dbb25f306" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>WS2812B_TIMER_PERIOD_TICKS<sp/>90</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight></codeline>
+<codeline lineno="13" refid="WS2812B_8h_1ac3fea03ca860d31b057b2baa7ab5a3b0" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>WS2812_HIGH<sp/>(2*WS2812B_TIMER_PERIOD_TICKS)/3</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14" refid="WS2812B_8h_1a73fd829420b3a221a424569bf41e7599" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>WS2812_LOW<sp/>WS2812B_TIMER_PERIOD_TICKS/3</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight></codeline>
+<codeline lineno="16" refid="WS2812B_8h_1aabc728452f270c3e3484c52278003118" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>WS2812_RESET_TIME<sp/>50</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight></codeline>
+<codeline lineno="18" refid="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="19" refid="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3a14f20ba5afcc55686257fd7eec4f8b5d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3a14f20ba5afcc55686257fd7eec4f8b5d" kindref="member">WS2812B_OK</ref>,<sp/></highlight><highlight class="comment">//<sp/>WS2812B<sp/>transaction<sp/>completed<sp/>successfully</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20" refid="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3a5eda339e93655b3b36f1b41f55929191" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3a5eda339e93655b3b36f1b41f55929191" kindref="member">WS2812B_NULL_ERROR</ref>,<sp/></highlight><highlight class="comment">//<sp/>parameter<sp/>is<sp/>NULL</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21" refid="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3a060927a0cc6afccbddabceb4c9c3abda" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3a060927a0cc6afccbddabceb4c9c3abda" kindref="member">WS2812B_ERROR</ref>,<sp/></highlight><highlight class="comment">//<sp/>an<sp/>error<sp/>occured</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3a5379b369c5153dd3cf47020dd3654dcf" kindref="member">WS2812B_BUSY</ref><sp/></highlight><highlight class="comment">//<sp/>a<sp/>shared<sp/>resource<sp/>is<sp/>busy</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23" refid="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3a5379b369c5153dd3cf47020dd3654dcf" refkind="member"><highlight class="normal">}<ref refid="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3" kindref="member">ws2812b_status_t</ref>;</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25" refid="structws2812b__color__t" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct</highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="26" refid="structws2812b__color__t_1a22588dfc8253b4059847ec1e2415fca8" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>uint8_t<sp/><ref refid="structws2812b__color__t_1a22588dfc8253b4059847ec1e2415fca8" kindref="member">red</ref>;<sp/></highlight><highlight class="comment">//<sp/>red<sp/>value</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27" refid="structws2812b__color__t_1a199543be7c71f170d4695a721ff5f231" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>uint8_t<sp/><ref refid="structws2812b__color__t_1a199543be7c71f170d4695a721ff5f231" kindref="member">green</ref>;<sp/></highlight><highlight class="comment">//<sp/>green<sp/>value</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28" refid="structws2812b__color__t_1aaeeb23041a9f9891431296430de93293" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>uint8_t<sp/><ref refid="structws2812b__color__t_1aaeeb23041a9f9891431296430de93293" kindref="member">blue</ref>;<sp/></highlight><highlight class="comment">//<sp/>blue<sp/>value</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal">}<ref refid="structws2812b__color__t" kindref="compound">ws2812b_color_t</ref>;</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight></codeline>
+<codeline lineno="31" refid="WS2812B_8h_1a618b9b56850f851b47ce62b3d8b5ea9f" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>WS2812B_SOLID_GREEN<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>((ws2812b_color_t){<sp/>.red<sp/>=<sp/>0,<sp/><sp/><sp/>.green<sp/>=<sp/>255,<sp/><sp/><sp/>.blue<sp/>=<sp/>0<sp/>})</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32" refid="WS2812B_8h_1a38a8fc9d4387580126a0e145ffebea91" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>WS2812B_SOLID_RED<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>((ws2812b_color_t){<sp/>.red<sp/>=<sp/>255,<sp/>.green<sp/>=<sp/>0,<sp/><sp/><sp/><sp/><sp/>.blue<sp/>=<sp/>0<sp/>})</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33" refid="WS2812B_8h_1af40b4bf511fe7474868840268d03acea" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>WS2812B_SOLID_BLUE<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>((ws2812b_color_t){<sp/>.red<sp/>=<sp/>0,<sp/><sp/><sp/>.green<sp/>=<sp/>0,<sp/><sp/><sp/><sp/><sp/>.blue<sp/>=<sp/>255<sp/>})</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34" refid="WS2812B_8h_1a15a0c0f91a60c77883742e17ef14fd0f" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>WS2812B_SOLID_YELLOW<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>((ws2812b_color_t){<sp/>.red<sp/>=<sp/>255,<sp/>.green<sp/>=<sp/>255,<sp/><sp/><sp/>.blue<sp/>=<sp/>0<sp/>})</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35" refid="WS2812B_8h_1a1ff3ebdda5ad5a677f374f29f48a0c76" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>WS2812B_SOLID_BURNT_ORANGE<sp/><sp/>((ws2812b_color_t){<sp/>.red<sp/>=<sp/>204,<sp/>.green<sp/>=<sp/>85,<sp/><sp/><sp/><sp/>.blue<sp/>=<sp/>0<sp/>})</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="36" refid="WS2812B_8h_1a084098cb97fb4d9ac0dfbe481d07e6b6" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>WS2812B_SOLID_PURPLE<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>((ws2812b_color_t){<sp/>.red<sp/>=<sp/>128,<sp/>.green<sp/>=<sp/>0,<sp/><sp/><sp/><sp/><sp/>.blue<sp/>=<sp/>128<sp/>})</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="37" refid="WS2812B_8h_1a11682255808ea14d4e3cc84c70331bf7" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>WS2812B_SOLID_OFF<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>((ws2812b_color_t){<sp/>.red<sp/>=<sp/>0,<sp/><sp/><sp/>.green<sp/>=<sp/>0,<sp/><sp/><sp/><sp/><sp/>.blue<sp/>=<sp/>0<sp/>})</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Represents<sp/>a<sp/>string<sp/>of<sp/>LEDs</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41" refid="structws2812b__handle__t" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct</highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="42" refid="structws2812b__handle__t_1a1d331e1f422aa722db8018b943199f74" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>uint8_t<sp/>(*ledData)[<ref refid="WS2812B_8h_1aae645e9c4c5bb70925c21fe9c4d3ed80" kindref="member">NUMBER_PWM_DATA_ELEMENTS</ref>];<sp/></highlight><highlight class="comment">//<sp/>Represents<sp/>the<sp/>colors<sp/>contained<sp/>in<sp/>the<sp/>strip:<sp/>[LED][LEDNUM,<sp/>G,<sp/>R,<sp/>B]</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43" refid="structws2812b__handle__t_1a4ef5e2d887594c24fa86e27a6f11f7a7" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>uint16_t<sp/>*<ref refid="structws2812b__handle__t_1a4ef5e2d887594c24fa86e27a6f11f7a7" kindref="member">pwmBuffer</ref>;<sp/></highlight><highlight class="comment">//<sp/>PWM<sp/>bitstream<sp/>of<sp/>duty<sp/>cycles,<sp/>this<sp/>is<sp/>what<sp/>is<sp/>passed<sp/>to<sp/>DMA</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44" refid="structws2812b__handle__t_1a968af18b99edbff021e12f961cf546e8" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>TIM_HandleTypeDef<sp/>*<ref refid="structws2812b__handle__t_1a968af18b99edbff021e12f961cf546e8" kindref="member">timerHandle</ref>;<sp/></highlight><highlight class="comment">//<sp/>The<sp/>timer<sp/>handle<sp/>used<sp/>to<sp/>generate<sp/>PWM</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="45" refid="structws2812b__handle__t_1a5eb4604e8d0e62f49c1f8f8678099503" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="structws2812b__handle__t_1a5eb4604e8d0e62f49c1f8f8678099503" kindref="member">channel</ref>;<sp/><sp/></highlight><highlight class="comment">//<sp/>The<sp/>channel<sp/>associated<sp/>with<sp/>the<sp/>pin&apos;s<sp/>timer<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="46" refid="structws2812b__handle__t_1a5de90c7cdc3fec85bc8773249753e0fe" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>uint8_t<sp/><ref refid="structws2812b__handle__t_1a5de90c7cdc3fec85bc8773249753e0fe" kindref="member">numberLeds</ref>;<sp/></highlight><highlight class="comment">//<sp/>the<sp/>number<sp/>of<sp/>LEDs<sp/>in<sp/>the<sp/>string</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="47" refid="structws2812b__handle__t_1a2510078965e257de65cc65e294f7784e" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>SemaphoreHandle_t<sp/><ref refid="structws2812b__handle__t_1a2510078965e257de65cc65e294f7784e" kindref="member">mutex</ref>;<sp/></highlight><highlight class="comment">//<sp/>protects<sp/>multiple<sp/>threads<sp/>from<sp/>writting<sp/>to<sp/>the<sp/>handle</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="48" refid="structws2812b__handle__t_1a1603f0d05cb6701d258cb0e8ccce9d3a" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>StaticSemaphore_t<sp/><ref refid="structws2812b__handle__t_1a1603f0d05cb6701d258cb0e8ccce9d3a" kindref="member">mutexBuf</ref>;<sp/></highlight><highlight class="comment">//<sp/>static<sp/>buffer<sp/>for<sp/>the<sp/>mutex</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="49" refid="structws2812b__handle__t_1a2355da8877f0119de8153a9cb128c2c7" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">volatile</highlight><highlight class="normal"><sp/>uint8_t<sp/><ref refid="structws2812b__handle__t_1a2355da8877f0119de8153a9cb128c2c7" kindref="member">dmaActive</ref>;<sp/></highlight><highlight class="comment">//<sp/>indicates<sp/>when<sp/>a<sp/>dma<sp/>transmission<sp/>is<sp/>active</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="50" refid="structws2812b__handle__t_1ac6accd8eba67abb8b48363db7b72ea84" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>SemaphoreHandle_t<sp/><ref refid="structws2812b__handle__t_1ac6accd8eba67abb8b48363db7b72ea84" kindref="member">framePendingSem</ref>;<sp/></highlight><highlight class="comment">//<sp/>indicates<sp/>that<sp/>there&apos;s<sp/>a<sp/>new<sp/>rgb<sp/>frame<sp/>to<sp/>send</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="51" refid="structws2812b__handle__t_1a125c2918578cf0dc8abc7b67e881feb4" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>StaticSemaphore_t<sp/><ref refid="structws2812b__handle__t_1a125c2918578cf0dc8abc7b67e881feb4" kindref="member">framePendingBuf</ref>;<sp/></highlight><highlight class="comment">//<sp/>static<sp/>buffer<sp/>to<sp/>store<sp/>the<sp/>semaphore</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal">}<ref refid="structws2812b__handle__t" kindref="compound">ws2812b_handle_t</ref>;</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight></codeline>
+<codeline lineno="66" refid="WS2812B_8h_1a4d996b4731536f3a3c397a8a2ecabe94" refkind="member"><highlight class="normal"><ref refid="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3" kindref="member">ws2812b_status_t</ref><sp/><ref refid="WS2812B_8h_1a4d996b4731536f3a3c397a8a2ecabe94" kindref="member">ws2812b_init</ref>(<ref refid="structws2812b__handle__t" kindref="compound">ws2812b_handle_t</ref><sp/>*ledHandler,<sp/>uint8_t<sp/>ledData[][<ref refid="WS2812B_8h_1aae645e9c4c5bb70925c21fe9c4d3ed80" kindref="member">NUMBER_PWM_DATA_ELEMENTS</ref>],<sp/>uint16_t<sp/>*pwmData,<sp/>TIM_HandleTypeDef<sp/>*timerHandle,<sp/>uint32_t<sp/>channel,<sp/>uint8_t<sp/>numberLeds);</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight></codeline>
+<codeline lineno="77" refid="WS2812B_8h_1ae4e909e60bfea1463bcc7eb7a151caf8" refkind="member"><highlight class="normal"><ref refid="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3" kindref="member">ws2812b_status_t</ref><sp/><ref refid="WS2812B_8h_1ae4e909e60bfea1463bcc7eb7a151caf8" kindref="member">ws2812b_set_color</ref>(<ref refid="structws2812b__handle__t" kindref="compound">ws2812b_handle_t</ref><sp/>*ledHandler,<sp/>uint8_t<sp/>led_num,<sp/><sp/><ref refid="structws2812b__color__t" kindref="compound">ws2812b_color_t</ref><sp/>color,<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"></highlight></codeline>
+<codeline lineno="87" refid="WS2812B_8h_1a3477ee18deccba0ec71e6a22639e95bc" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="WS2812B_8h_1a3477ee18deccba0ec71e6a22639e95bc" kindref="member">ws2812b_TIM_PWM_PulseFinishedCallback</ref>(TIM_HandleTypeDef<sp/>*htim,<sp/><ref refid="structws2812b__handle__t" kindref="compound">ws2812b_handle_t</ref><sp/>*ledHandler,<sp/><sp/>BaseType_t<sp/>*xHigherPriorityTaskWoken);</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"></highlight></codeline>
+<codeline lineno="97" refid="WS2812B_8h_1a588fd89ef532c1edc83ee02f1a142088" refkind="member"><highlight class="normal"><ref refid="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3" kindref="member">ws2812b_status_t</ref><sp/><ref refid="WS2812B_8h_1a588fd89ef532c1edc83ee02f1a142088" kindref="member">ws2812b_set_all_leds</ref>(<ref refid="structws2812b__handle__t" kindref="compound">ws2812b_handle_t</ref><sp/>*ledHandler,<sp/><ref refid="structws2812b__color__t" kindref="compound">ws2812b_color_t</ref><sp/>color,<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"></highlight></codeline>
+<codeline lineno="109" refid="WS2812B_8h_1ab4c4804ca90d0a1b48c976691f12b847" refkind="member"><highlight class="normal"><ref refid="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3" kindref="member">ws2812b_status_t</ref><sp/><ref refid="WS2812B_8h_1ab4c4804ca90d0a1b48c976691f12b847" kindref="member">ws2812b_set_led_range</ref>(<ref refid="structws2812b__handle__t" kindref="compound">ws2812b_handle_t</ref><sp/>*ledHandler,<sp/>uint8_t<sp/>start,<sp/>uint8_t<sp/>end,<sp/><ref refid="structws2812b__color__t" kindref="compound">ws2812b_color_t</ref><sp/>color,<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"></highlight></codeline>
+<codeline lineno="121" refid="WS2812B_8h_1a99ef3a8871a645e05209f71cc1afc6ab" refkind="member"><highlight class="normal"><ref refid="WS2812B_8h_1a5f94e2142737a8425bf3d0ad4dedf5a3" kindref="member">ws2812b_status_t</ref><sp/><ref refid="WS2812B_8h_1a99ef3a8871a645e05209f71cc1afc6ab" kindref="member">ws2812b_load_colors</ref>(<ref refid="structws2812b__handle__t" kindref="compound">ws2812b_handle_t</ref><sp/>*ledHandler,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="structws2812b__color__t" kindref="compound">ws2812b_color_t</ref><sp/>colors[],<sp/>uint8_t<sp/>start,<sp/>uint8_t<sp/>numColors,<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
+    </programlisting>
+    <location file="driver/Inc/WS2812B.h"/>
+  </compounddef>
+</doxygen>
