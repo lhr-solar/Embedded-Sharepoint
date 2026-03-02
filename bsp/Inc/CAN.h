@@ -43,8 +43,7 @@
  *    See can1_recv_entries.h for examples. Ensure entries align with filter configurations.
  */
 
-#ifndef CAN_H
-#define CAN_H
+#pragma once
 
 #include "stm32xx_hal.h"
 #include "CAN_Common.h"
@@ -188,5 +187,3 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
 can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
                       CAN_RxHeaderTypeDef* header, uint8_t data[],
                       TickType_t delay_ticks);
-
-#endif /* CAN_H */
