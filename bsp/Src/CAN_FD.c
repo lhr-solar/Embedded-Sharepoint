@@ -334,8 +334,9 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
             if (hfdcan->Instance == FDCAN3) {
                 // HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_3);
 
-// #if defined(FDCAN3_RECV_HOOK_EN)
+#if defined(FDCAN3_RECV_HOOK_EN)
             can_fd_rx_callback_hook(hfdcan, RxFifo0ITs, payload);
+#endif
 
             for (int i = 0; i < can3_recv_entry_count; i++) {
                 if (can3_recv_entries[i].id == payload.header.Identifier) {
