@@ -283,9 +283,9 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 
 #ifdef FDCAN1
             else if (hfdcan->Instance == FDCAN1) {
-#if defined(FDCAN1_RECV_HOOK_EN)
+// #if defined(FDCAN1_RECV_HOOK_EN)
                 can_fd_rx_callback_hook(hfdcan, RxFifo0ITs, payload);
-#endif
+// #endif
                 for (int i = 0; i < can1_recv_entry_count; i++) {
                     if (can1_recv_entries[i].id == payload.header.Identifier) {
                         if (can1_recv_entries[i].circular){
@@ -308,9 +308,9 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
             
 #ifdef FDCAN2
             else if (hfdcan->Instance == FDCAN2) {
-#ifdef FDCAN2_RECV_HOOK_EN
+// #ifdef FDCAN2_RECV_HOOK_EN
             can_fd_rx_callback_hook(hfdcan, RxFifo0ITs, payload);
-#endif
+// #endif
             for (int i = 0; i < can2_recv_entry_count; i++) {
                 if (can2_recv_entries[i].id == payload.header.Identifier) {
                 if (can2_recv_entries[i].circular){
@@ -332,11 +332,10 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 
 #ifdef FDCAN3
             if (hfdcan->Instance == FDCAN3) {
-                // HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_3);
 
-#if defined(FDCAN3_RECV_HOOK_EN)
+// #if defined(FDCAN3_RECV_HOOK_EN)
             can_fd_rx_callback_hook(hfdcan, RxFifo0ITs, payload);
-#endif
+// #endif
 
             for (int i = 0; i < can3_recv_entry_count; i++) {
                 if (can3_recv_entries[i].id == payload.header.Identifier) {
