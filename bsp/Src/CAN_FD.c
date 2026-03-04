@@ -175,21 +175,21 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
                 return CAN_ERR;
             }
         }
-#endif
+#endif /* FDCAN1 */
 #ifdef FDCAN2
         if (handle->Instance == FDCAN2) {
             if (xQueueSend(fdcan2_send_queue, &payload, delay_ticks) != pdTRUE) {
                 return CAN_ERR;
             }
         }
-#endif
+#endif /* FDCAN2 */
 #ifdef FDCAN3
         if (handle->Instance == FDCAN3) {
             if (xQueueSend(fdcan3_send_queue, &payload, delay_ticks) != pdTRUE) {
                 return CAN_ERR;
             }
         }
-#endif
+#endif /* FDCAN3 */
 
     }
     return CAN_OK;
@@ -227,21 +227,21 @@ can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint16_t id, FDCAN_RxHeade
 
     if(can_recv_entries != NULL){
         for(uint32_t i = 0; i < can_recv_entry_count; i++){
-        if (can_recv_entries[i].id == id) {
-            valid_id = true;
+            if (can_recv_entries[i].id == id) {
+                valid_id = true;
 
-            // if delay_ticks == portMAX_DELAY thread blocks, 
-            // other values of delay_ticks are delays
-            if (xQueueReceive(can_recv_entries[i].queue, &payload, delay_ticks) ==
-                errQUEUE_EMPTY) {
-            return CAN_EMPTY;
+                // if delay_ticks == portMAX_DELAY thread blocks, 
+                // other values of delay_ticks are delays
+                if (xQueueReceive(can_recv_entries[i].queue, &payload, delay_ticks) == errQUEUE_EMPTY) {
+                    return CAN_EMPTY;
+                }
+        
+                break;
             }
-    
-            break;
-        }
         }
     }
     else{
+        // no CAN FD peripherals enabled
         return CAN_ERR;
     }
 
@@ -249,7 +249,7 @@ can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint16_t id, FDCAN_RxHeade
     if (valid_id) {
         *header = payload.header;
         for (int i = 0; i < header->DataLength; i++) {
-        data[i] = payload.data[i];
+            data[i] = payload.data[i];
         }
 
         return CAN_RECV;
@@ -278,7 +278,8 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
         {
 
             can_fd_rx_callback_hook(hfdcan, RxFifo0ITs, payload);
-            
+
+            // placeholder if no FDCAN peripherals are enabled
             if(0){
 
             }
