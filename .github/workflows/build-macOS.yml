@@ -19,9 +19,8 @@ jobs:
           restore-keys: |
             nix-${{ runner.os }}-
 
-      - name: Install Nix
-        run: |
-          sudo ./nix_install.sh
+      - name: Install Nix Action
+        uses: cachix/install-nix-action@v31
 
       - name: Build a test on Mac
         run: |
