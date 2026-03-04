@@ -277,15 +277,14 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
         while(HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &payload.header, payload.data) == HAL_OK)
         {
 
+            can_fd_rx_callback_hook(hfdcan, RxFifo0ITs, payload);
+            
             if(0){
 
             }
 
 #ifdef FDCAN1
             else if (hfdcan->Instance == FDCAN1) {
-// #if defined(FDCAN1_RECV_HOOK_EN)
-                can_fd_rx_callback_hook(hfdcan, RxFifo0ITs, payload);
-// #endif
                 for (int i = 0; i < can1_recv_entry_count; i++) {
                     if (can1_recv_entries[i].id == payload.header.Identifier) {
                         if (can1_recv_entries[i].circular){
@@ -308,9 +307,6 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
             
 #ifdef FDCAN2
             else if (hfdcan->Instance == FDCAN2) {
-// #ifdef FDCAN2_RECV_HOOK_EN
-            can_fd_rx_callback_hook(hfdcan, RxFifo0ITs, payload);
-// #endif
             for (int i = 0; i < can2_recv_entry_count; i++) {
                 if (can2_recv_entries[i].id == payload.header.Identifier) {
                 if (can2_recv_entries[i].circular){
@@ -332,11 +328,6 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 
 #ifdef FDCAN3
             if (hfdcan->Instance == FDCAN3) {
-
-// #if defined(FDCAN3_RECV_HOOK_EN)
-            can_fd_rx_callback_hook(hfdcan, RxFifo0ITs, payload);
-// #endif
-
             for (int i = 0; i < can3_recv_entry_count; i++) {
                 if (can3_recv_entries[i].id == payload.header.Identifier) {
                 if (can3_recv_entries[i].circular){
