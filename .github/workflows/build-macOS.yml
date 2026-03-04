@@ -25,8 +25,6 @@ jobs:
       - name: Build a test on Mac
         run: |
           . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-          sudo nix-env -iA nixpkgs.cacert
-          export NIX_SSL_CERT_FILE=/nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt
           nix develop --accept-flake-config --command bash -c "
             cd test && make TEST=blinky
           "
