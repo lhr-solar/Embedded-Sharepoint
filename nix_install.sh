@@ -103,7 +103,7 @@ fi
 
 # Install latest Nix
 echo -e "${GREEN}Installing latest Nix version for full flakes support...${NC}"
-nix-env -iA nixpkgs.nixVersions.latest -j auto --remove-all
+nix-env -iA nixpkgs.nixVersions.latest -j auto
 
 # Verify flake commands work
 echo -e "${GREEN}Verifying flake support...${NC}"
