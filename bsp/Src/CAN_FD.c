@@ -123,7 +123,7 @@ can_status_t can_fd_start(FDCAN_HandleTypeDef* handle){
         return CAN_ERR;
     }
 
-    // todo: should prolly add FDCAN_IT_TX_FIFO_EMPTY
+    // Interrupt triggers when a new message in the rx fifo, and when a tranmission is complete
     if(HAL_FDCAN_ActivateNotification(handle, FDCAN_IT_RX_FIFO0_NEW_MESSAGE | FDCAN_IT_TX_COMPLETE, 0) != HAL_OK){
         return CAN_ERR;
     }

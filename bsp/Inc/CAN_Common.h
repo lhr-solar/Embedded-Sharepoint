@@ -22,7 +22,7 @@ typedef enum {
 // entries in queues
 typedef struct {
     // If we're using FDCAN (stm32g4xx), use FDCAN_TxHeaderTypeDef
-#ifdef stm32g4xx
+#if defined(STM32G4xx)
     FDCAN_TxHeaderTypeDef header;
 #else 
     CAN_TxHeaderTypeDef header;
