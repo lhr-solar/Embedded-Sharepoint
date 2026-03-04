@@ -211,7 +211,7 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
       data[i] = payload.data[i];
     }
 
-    return CAN_RECV;
+    return CAN_OK;
 
   } else {
     return CAN_ERR;
@@ -277,7 +277,7 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
     #endif /* CAN3 */
   }
 
-  return CAN_SENT;
+  return CAN_OK;
 }
 
 static void transmit(CAN_HandleTypeDef* handle) {

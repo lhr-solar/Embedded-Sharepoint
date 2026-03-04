@@ -70,7 +70,7 @@ can_status_t can_fd_start(FDCAN_HandleTypeDef* handle);
  * @param data         Array containing the data to send.
  * @param delay_ticks  Maximum delay to wait if queue is full (FreeRTOS ticks).
  *
- * @return can_status_t Returns CAN_SENT if message was successfully sent or queued,
+ * @return can_status_t Returns CAN_OK if message was successfully sent or queued,
  *                      CAN_ERR on failure.
  */
 can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* header, uint8_t data[], TickType_t delay_ticks);
@@ -87,7 +87,7 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
  * @param data         Array to store the received data.
  * @param delay_ticks  Maximum delay to wait if queue is empty (FreeRTOS ticks).
  *
- * @return can_status_t Returns CAN_RECV if a message was received,
+ * @return can_status_t Returns CAN_OK if a message was received,
  *                      CAN_EMPTY if the queue was empty,
  *                      CAN_ERR on failure or invalid ID.
  */

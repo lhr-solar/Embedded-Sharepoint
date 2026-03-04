@@ -161,7 +161,7 @@ can_status_t can_stop(CAN_HandleTypeDef* handle);
  * @param data         Array containing the data to send.
  * @param delay_ticks  Maximum delay to wait if queue is full (FreeRTOS ticks).
  *
- * @return can_status_t Returns CAN_SENT if message was successfully sent or queued,
+ * @return can_status_t Returns CAN_OK if message was successfully sent or queued,
  *                      CAN_ERR on failure.
  */
 can_status_t can_send(CAN_HandleTypeDef* handle,

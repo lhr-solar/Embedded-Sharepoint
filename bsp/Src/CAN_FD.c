@@ -141,7 +141,7 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
         return CAN_ERR;
     }
 
-    // disable interrupts while we check the status of the can mailboxes, so other interrupts done change it
+    // disable interrupts while we check the status of the can mailboxes, so other interrupts don't change it
     portENTER_CRITICAL();
     // Check if there is a free can mailbox to send a message
     if(HAL_FDCAN_GetTxFifoFreeLevel(handle) >= 1){
@@ -155,7 +155,7 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
         }
         // enable interrupts
         portEXIT_CRITICAL();
-        return CAN_SENT;
+        return CAN_OK;
     }
 
     // hardware mailbox is full, so must add to the queue
@@ -252,7 +252,7 @@ can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint16_t id, FDCAN_RxHeade
             data[i] = payload.data[i];
         }
 
-        return CAN_RECV;
+        return CAN_OK;
 
     } else {
         return CAN_ERR;
@@ -295,7 +295,8 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
                             &higherPriorityTaskWoken, 
                             sizeof(can_rx_payload_t)
                             );
-                        } else {
+                        } 
+                        else {
                             xQueueSendFromISR(can1_recv_entries[i].queue, &payload,
                                             &higherPriorityTaskWoken);
                         }
@@ -310,18 +311,20 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
             else if (hfdcan->Instance == FDCAN2) {
             for (int i = 0; i < can2_recv_entry_count; i++) {
                 if (can2_recv_entries[i].id == payload.header.Identifier) {
-                if (can2_recv_entries[i].circular){
-                    xQueueSendCircularBufferFromISR(
-                    can2_recv_entries[i].queue, 
-                    &payload, 
-                    &higherPriorityTaskWoken, 
-                    sizeof(can_rx_payload_t)
-                    );
-                } else {
-                    xQueueSendFromISR(can2_recv_entries[i].queue, &payload,
-                                    &higherPriorityTaskWoken);
-                }
-            break;
+                    // if we need to wrap around
+                    if (can2_recv_entries[i].circular){
+                        xQueueSendCircularBufferFromISR(
+                        can2_recv_entries[i].queue, 
+                        &payload, 
+                        &higherPriorityTaskWoken, 
+                        sizeof(can_rx_payload_t)
+                        );
+                    } 
+                    else {
+                        xQueueSendFromISR(can2_recv_entries[i].queue, &payload,
+                                        &higherPriorityTaskWoken);
+                    }
+                    break;
                 }
             }
             }
@@ -331,18 +334,19 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
             if (hfdcan->Instance == FDCAN3) {
             for (int i = 0; i < can3_recv_entry_count; i++) {
                 if (can3_recv_entries[i].id == payload.header.Identifier) {
-                if (can3_recv_entries[i].circular){
-                    xQueueSendCircularBufferFromISR(
-                    can3_recv_entries[i].queue, 
-                    &payload, 
-                    &higherPriorityTaskWoken, 
-                    sizeof(can_rx_payload_t)
-                    );
-                } else {
-                    xQueueSendFromISR(can3_recv_entries[i].queue, &payload,
-                                    &higherPriorityTaskWoken);
-                }
-            break;
+                    if (can3_recv_entries[i].circular){
+                        xQueueSendCircularBufferFromISR(
+                        can3_recv_entries[i].queue, 
+                        &payload, 
+                        &higherPriorityTaskWoken, 
+                        sizeof(can_rx_payload_t)
+                        );
+                    } 
+                    else {
+                        xQueueSendFromISR(can3_recv_entries[i].queue, &payload,
+                                        &higherPriorityTaskWoken);
+                    }
+                    break;
                 }
             }
             }
@@ -365,8 +369,13 @@ void HAL_FDCAN_TxBufferCompleteCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t Bu
     BaseType_t higherPriorityTaskWoken = pdFALSE;
     can_tx_payload_t payload = {0};
 
+    // placeholder if no FDCAN peripheral is enabled
+    if(0){
+
+    }
+
 #ifdef FDCAN1
-    if (hfdcan->Instance == FDCAN1){
+    else if (hfdcan->Instance == FDCAN1){
         // check if data in the queue to send
         if (xQueueReceiveFromISR(fdcan1_send_queue, &payload, NULL) == pdTRUE) {
             HAL_FDCAN_AddMessageToTxFifoQ(hfdcan, &payload.header, payload.data);
@@ -375,7 +384,7 @@ void HAL_FDCAN_TxBufferCompleteCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t Bu
 #endif
 
 #ifdef FDCAN2
-    if (hfdcan->Instance == FDCAN2){
+    else if (hfdcan->Instance == FDCAN2){
         // check if data in the queue to send
         if (xQueueReceiveFromISR(fdcan2_send_queue, &payload, NULL) == pdTRUE) {
             HAL_FDCAN_AddMessageToTxFifoQ(hfdcan, &payload.header, payload.data);
@@ -384,7 +393,7 @@ void HAL_FDCAN_TxBufferCompleteCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t Bu
 #endif
 
 #ifdef FDCAN3
-    if (hfdcan->Instance == FDCAN3){
+    else if (hfdcan->Instance == FDCAN3){
         // check if data in the queue to send
         if (xQueueReceiveFromISR(fdcan3_send_queue, &payload, NULL) == pdTRUE) {
             HAL_FDCAN_AddMessageToTxFifoQ(hfdcan, &payload.header, payload.data);

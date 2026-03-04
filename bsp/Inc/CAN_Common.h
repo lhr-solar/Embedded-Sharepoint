@@ -16,8 +16,6 @@
 typedef enum {
     CAN_ERR,   // unsuccessful operation
     CAN_OK,
-    CAN_SENT,  // successful send
-    CAN_RECV,  // successful recieve
     CAN_EMPTY, // recieved nothing with no errors
 } can_status_t;
 
@@ -88,7 +86,7 @@ static can_recv_entry_t can1_recv_entries[] = {};
 // calculate amount of can1 recv entries
 static const uint32_t can1_recv_entry_count = 0;
 #endif /* can1_recv_entries.h */
-#endif /* CAN1 */
+#endif /* FDCAN1 || CAN1 */
 
 
 #if defined(CAN2) || defined(FDCAN2)
@@ -125,7 +123,7 @@ static can_recv_entry_t can2_recv_entries[] = {};
 // calculate amount of can2 recv entries
 static const uint32_t can2_recv_entry_count = 0;
 #endif /* can2_recv_entries.h */
-#endif /* CAN2 */
+#endif /* FDCAN2 || CAN2 */
 
 
 #if defined(CAN3) || defined(FDCAN3)
@@ -163,4 +161,4 @@ static can_recv_entry_t can3_recv_entries[] = {};
 // calculate amount of can3 recv entries
 static const uint32_t can3_recv_entry_count = 0;
 #endif /* can3_recv_entries.h */
-#endif /* CAN3 */
+#endif /* FDCAN3 || CAN3 */
