@@ -113,6 +113,7 @@ $(wildcard $(FREERTOS_PATH)/*.c) \
 $(FREERTOS_PATH)/portable/GCC/ARM_CM4F/port.c \
 $(wildcard common/Src/*.c) \
 $(wildcard driver/Src/*.c) \
+$(wildcard task/Src/*.c) \
 $(filter-out $(addprefix bsp/Src/,$(addsuffix .c,$(BSP_DISABLE))),$(wildcard bsp/Src/*.c))
 
 # ASM sources
@@ -182,6 +183,7 @@ $(FREERTOS_PATH)/include \
 $(FREERTOS_PATH)/portable/GCC/ARM_CM4F \
 common/Inc \
 driver/Inc \
+task/Inc \
 bsp/Inc
 
 C_INCLUDES := $(addprefix -I,$(C_INCLUDES))
@@ -189,7 +191,17 @@ C_INCLUDES := $(addprefix -I,$(C_INCLUDES))
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -Werror -Wfatal-errors -fdata-sections -ffunction-sections
 
-CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -Werror -Wfatal-errors -fdata-sections -ffunction-sections
+CFLAGS += \
+$(MCU) \
+$(C_DEFS) \
+$(C_INCLUDES) \
+$(OPT) \
+-Wall \
+-Werror \
+-Wfatal-errors \
+-fdata-sections \
+-ffunction-sections \
+-ffile-prefix-map=$(MAKEFILE_DIR)=
 
 ifeq ($(DEBUG), 1)
 CFLAGS += -g -gdwarf-2
