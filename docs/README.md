@@ -40,6 +40,8 @@ options:
   -h, --help            Show this help message and exit
 ```
 
+Default behavior is all tests for all ports.
+
 ### Flashing code
 Once your code is compiled, use the makefile in the `test/` directory to flash your built code to the microcontroller. If you are running WSL there are some extra steps to connect the STM32 to your computer, which can be found [here](./FlashAndTheBug.md).
 
