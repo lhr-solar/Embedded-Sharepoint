@@ -188,7 +188,7 @@ static rx_payload_t usart3_rx_buffer;
 
 #ifndef LPUART1_RX_QUEUE_SIZE
 #define LPUART1_RX_QUEUE_SIZE (20)
-#endif /* LPUART1_TX_QUEUE_SIZE */
+#endif /* LPUART1_RX_QUEUE_SIZE */
 
 // LPUART1 handle
 static UART_HandleTypeDef hlpuart1_ = {.Instance = LPUART1};
