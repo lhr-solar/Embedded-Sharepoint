@@ -126,7 +126,7 @@ static void task(void *pvParameters) {
 
   // receive what was sent to 0x4
   status = can_recv(hcan1, 0x4, &rx_header, rx_data, true);
-  if (status != CAN_OK && rx_data[0] != 0x4) Error_Handler();
+  if (status != CAN_OK || rx_data[0] != 0x4) Error_Handler();
   
   // send two payloads to 0x4, only the last one should be received
   tx_data[0] = 0x05;

@@ -55,7 +55,7 @@
 /* Function Descriptions:
  * Init initializes the CAN peripheral given the configuration
  (does not start the CAN peripheral)
- * DeInit deinitlaizes the CAN peripheral meaning the configuration is
+ * DeInit deinitializes the CAN peripheral meaning the configuration is
  reset (default values)
  * Start starts the CAN peripheral meaning it is able to interrupt
  and act on messages
@@ -83,7 +83,7 @@
  * CAN3 is usually a master CAN, meaning you don't have to 
  worry about sharing.
  * This driver uses a macro to define which entries a CAN
- interface should recieve on. Look at can1_recv_entries.h
+ interface should receive on. Look at can1_recv_entries.h
  for an example. Make sure these entries line up with the
  filter config.
  */
