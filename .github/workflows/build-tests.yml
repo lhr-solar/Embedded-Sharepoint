@@ -25,5 +25,6 @@ jobs:
       - name: Clean & Build tests
         run: |
           nix develop --accept-flake-config --command bash -c "
+            git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep -vE '^(docs/|dbc/)' | grep -q . && \
             cd test && make clean && python3 makeAllTests.py
           "
