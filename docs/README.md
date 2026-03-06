@@ -24,8 +24,8 @@ For all PROJECT_TARGET options, see the [STM32_Ports](./STM32_Ports.md) page.
 
 To add your own tests, add a c file ending in _test to the ```tests/tests/``` folder
 
-### Running all tests
-We have a python script that runs in our CI. Usage is as follows:
+### Compiling all tests (CI)
+We have a python script to compile all existing tests for all existing ports that runs in our CI. Usage is as follows:
 ```
 usage: makeAllTests.py [-v] [-t TESTS [TESTS ...]] [-p PORTS [PORTS ...]] [-h]
 
