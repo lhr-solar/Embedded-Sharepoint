@@ -2,6 +2,9 @@ name: Test MacOS compilation
 
 on:
   push:
+    paths-ignore:
+      - "*.md"
+      - "*.dbc"
 
 jobs:
   build:
