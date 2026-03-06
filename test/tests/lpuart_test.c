@@ -7,6 +7,8 @@
 #include "UART.h"
 #include "printf.h" // only for debugging
 
+uint8_t printf_enabled = 0;
+
 void TxTask(void *argument);
 void RxTask(void *argument);
 
@@ -89,7 +91,9 @@ void RxTask(void *argument){
             rxCount++;
 
             // Print received character
-            printf("RX[%lu]: %c\n\r", rxCount, rxBuffer);        
+            if(printf_enabled == 1){
+                printf("RX[%lu]: %c\n\r", rxCount, rxBuffer);        
+            }
         }
 
     }
@@ -118,7 +122,10 @@ int main(void) {
     hlpuart1->Init.Mode = UART_MODE_TX_RX;
     hlpuart1->Init.HwFlowCtl = UART_HWCONTROL_NONE;
     hlpuart1->Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+#ifndef STM32L4xx
+    // ClockPrescaler is not a field on my L4 uart handles
     hlpuart1->Init.ClockPrescaler = UART_PRESCALER_DIV1;
+#endif
     hlpuart1->AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
 
 #endif
@@ -132,6 +139,9 @@ int main(void) {
     }
 #endif
 
+
+// This is tested using the LSOM
+#ifdef USART3
     // initialize printf (not needed for LPUART)
     husart3->Init.BaudRate = 115200;
     husart3->Init.WordLength = UART_WORDLENGTH_8B;
@@ -142,6 +152,10 @@ int main(void) {
     husart3->Init.OverSampling = UART_OVERSAMPLING_16;
 
     printf_init(husart3);
+
+    printf_enabled = 1; // necessary for ports that don't use husart3
+
+#endif
 
 
     // Create the tasks statically
@@ -172,6 +186,7 @@ int main(void) {
 
 void HAL_UART_MspGPIOInit(UART_HandleTypeDef* huart){
     GPIO_InitTypeDef GPIO_InitStruct = {0}; 
+    UNUSED(GPIO_InitStruct);
 #ifdef LPUART1
     if(huart->Instance == LPUART1){
         __HAL_RCC_GPIOB_CLK_ENABLE();
