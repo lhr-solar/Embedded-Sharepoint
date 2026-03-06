@@ -10,3 +10,4 @@
 * Drivers Documentation
     * [EMC2305 Usage Guide](EMC2305.md)
     * [WS2812B Usage Guide](WS2812B.md)
+    * [CAN Usage Guide](canSetup.md)
