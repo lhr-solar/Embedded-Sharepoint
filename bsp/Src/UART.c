@@ -183,12 +183,12 @@ static rx_payload_t usart3_rx_buffer;
 
 #ifdef LPUART1
 #ifndef LPUART1_TX_QUEUE_SIZE
-#define LPUART1_TX_QUEUE_SIZE (10)
-#endif  /* USART3 */
+#define LPUART1_TX_QUEUE_SIZE (20)
+#endif  /* LPUART1 */
 
 #ifndef LPUART1_RX_QUEUE_SIZE
-#define LPUART1_RX_QUEUE_SIZE (10)
-#endif
+#define LPUART1_RX_QUEUE_SIZE (20)
+#endif /* LPUART1_TX_QUEUE_SIZE */
 
 // LPUART1 handle
 static UART_HandleTypeDef hlpuart1_ = {.Instance = LPUART1};
@@ -584,11 +584,23 @@ uart_status_t uart_init(UART_HandleTypeDef* handle) {
     }
     #endif /* LPUART1 */
 
+    uint8_t is_valid_uart_instance = 0;
+
+    #ifdef LPUART1
+    if(IS_LPUART_INSTANCE(handle->Instance)){
+        is_valid_uart_instance = 1;
+    }
+    #endif /* LPUART1 */
+    if(IS_UART_INSTANCE(handle->Instance) || IS_USART_INSTANCE(handle->Instance)){
+        is_valid_uart_instance = 1;
+    }
+
+    if(!is_valid_uart_instance){
+        return UART_ERR;
+    }
+
     // init HAL
-    if (!IS_UART_INSTANCE(handle->Instance) &&
-        !IS_USART_INSTANCE(handle->Instance) &&
-        !IS_LPUART_INSTANCE(handle->Instance))
-    {
+    if(HAL_UART_Init(handle) != HAL_OK){
         return UART_ERR;
     }
 
@@ -696,7 +708,7 @@ static uint8_t usart3_tx_buffer[USART3_TX_QUEUE_SIZE]; // make buffer size same 
 
 #ifdef LPUART1
 static uint8_t lpuart1_tx_buffer[LPUART1_TX_QUEUE_SIZE];
-#endif /* USART3 */
+#endif /* LPUART1 */
 
 uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t length, TickType_t delay_ticks) {
     if (length == 0 || !is_uart_initialized(handle)) { // check if UART is initialized and data length is not 0
