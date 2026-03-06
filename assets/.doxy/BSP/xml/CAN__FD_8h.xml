@@ -1,0 +1,380 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="CAN__FD_8h" kind="file" language="C++">
+    <compoundname>CAN_FD.h</compoundname>
+    <includes local="yes">stm32xx_hal.h</includes>
+    <includes refid="CAN__Common_8h" local="yes">CAN_Common.h</includes>
+    <includes local="yes">queue_ex.h</includes>
+    <incdepgraph>
+      <node id="3">
+        <label>CAN_Common.h</label>
+        <link refid="CAN__Common_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>bsp/Inc/CAN_FD.h</label>
+        <link refid="CAN__FD_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>queue_ex.h</label>
+      </node>
+      <node id="2">
+        <label>stm32xx_hal.h</label>
+      </node>
+    </incdepgraph>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="CAN__FD_8h_1ace263a51895d019f75a4cb6793abf6ac" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref></type>
+        <definition>can_status_t can_fd_init</definition>
+        <argsstring>(FDCAN_HandleTypeDef *handle, FDCAN_FilterTypeDef *filter)</argsstring>
+        <name>can_fd_init</name>
+        <param>
+          <type>FDCAN_HandleTypeDef *</type>
+          <declname>handle</declname>
+        </param>
+        <param>
+          <type>FDCAN_FilterTypeDef *</type>
+          <declname>filter</declname>
+        </param>
+        <briefdescription>
+<para>Initializes the FDCAN peripheral. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function initializes the FDCAN peripheral, sets up send/receive queues, configures the HAL FDCAN driver, applies the filter configuration, and enables FDCAN interrupts.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>handle</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the FDCAN handle structure. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>filter</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the FDCAN filter configuration structure.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>can_status_t Returns CAN_OK on success, CAN_ERR on failure. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN_FD.h" line="38" column="14" declfile="bsp/Inc/CAN_FD.h" declline="38" declcolumn="14"/>
+      </memberdef>
+      <memberdef kind="function" id="CAN__FD_8h_1a3c9b9d35e473506c11ebabd44210bcc3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref></type>
+        <definition>can_status_t can_fd_deinit</definition>
+        <argsstring>(FDCAN_HandleTypeDef *handle)</argsstring>
+        <name>can_fd_deinit</name>
+        <param>
+          <type>FDCAN_HandleTypeDef *</type>
+          <declname>handle</declname>
+        </param>
+        <briefdescription>
+<para>Deinitializes the FDCAN peripheral. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function deinitializes the HAL FDCAN driver and disables FDCAN interrupts.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>handle</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the FDCAN handle structure.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>can_status_t Returns CAN_OK on success, CAN_ERR on failure. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN_FD.h" line="49" column="14" declfile="bsp/Inc/CAN_FD.h" declline="49" declcolumn="14"/>
+      </memberdef>
+      <memberdef kind="function" id="CAN__FD_8h_1aba1a4136e01207ba7cccb5d2e0994276" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref></type>
+        <definition>can_status_t can_fd_start</definition>
+        <argsstring>(FDCAN_HandleTypeDef *handle)</argsstring>
+        <name>can_fd_start</name>
+        <param>
+          <type>FDCAN_HandleTypeDef *</type>
+          <declname>handle</declname>
+        </param>
+        <briefdescription>
+<para>Starts the FDCAN peripheral. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Activates the FDCAN peripheral so it can transmit and receive messages.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>handle</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the FDCAN handle structure.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>can_status_t Returns CAN_OK on success, CAN_ERR on failure. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN_FD.h" line="60" column="14" declfile="bsp/Inc/CAN_FD.h" declline="60" declcolumn="14"/>
+      </memberdef>
+      <memberdef kind="function" id="CAN__FD_8h_1a97b6f4d9057d197886b2af512cbbccc4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref></type>
+        <definition>can_status_t can_fd_send</definition>
+        <argsstring>(FDCAN_HandleTypeDef *handle, FDCAN_TxHeaderTypeDef *header, uint8_t data[], TickType_t delay_ticks)</argsstring>
+        <name>can_fd_send</name>
+        <param>
+          <type>FDCAN_HandleTypeDef *</type>
+          <declname>handle</declname>
+        </param>
+        <param>
+          <type>FDCAN_TxHeaderTypeDef *</type>
+          <declname>header</declname>
+        </param>
+        <param>
+          <type>uint8_t</type>
+          <declname>data</declname>
+          <array>[]</array>
+        </param>
+        <param>
+          <type>TickType_t</type>
+          <declname>delay_ticks</declname>
+        </param>
+        <briefdescription>
+<para>Sends a FDCAN message. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Places a FDCAN message into the transmit mailbox if available, otherwise queues it in the send queue for later transmission.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>handle</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the FDCAN handle structure. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>header</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the FDCAN transmit header structure. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>data</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Array containing the data to send. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>delay_ticks</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Maximum delay to wait if queue is full (FreeRTOS ticks).</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>can_status_t Returns CAN_OK if message was successfully sent or queued, CAN_ERR on failure. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN_FD.h" line="76" column="14" declfile="bsp/Inc/CAN_FD.h" declline="76" declcolumn="14"/>
+      </memberdef>
+      <memberdef kind="function" id="CAN__FD_8h_1aa94c621f0ba1d7136bfdf61a83a2c4e2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref></type>
+        <definition>can_status_t can_fd_recv</definition>
+        <argsstring>(FDCAN_HandleTypeDef *handle, uint16_t id, FDCAN_RxHeaderTypeDef *header, uint8_t data[], TickType_t delay_ticks)</argsstring>
+        <name>can_fd_recv</name>
+        <param>
+          <type>FDCAN_HandleTypeDef *</type>
+          <declname>handle</declname>
+        </param>
+        <param>
+          <type>uint16_t</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>FDCAN_RxHeaderTypeDef *</type>
+          <declname>header</declname>
+        </param>
+        <param>
+          <type>uint8_t</type>
+          <declname>data</declname>
+          <array>[]</array>
+        </param>
+        <param>
+          <type>TickType_t</type>
+          <declname>delay_ticks</declname>
+        </param>
+        <briefdescription>
+<para>Receives a FDCAN message. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Reads a message from the receive queue corresponding to the specified ID. Supports blocking or non-blocking behavior depending on delay_ticks.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>handle</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the FDCAN handle structure. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>CAN identifier of the message to receive. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>header</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to a FDCAN_RxHeaderTypeDef structure to store the received header. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>data</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Array to store the received data. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>delay_ticks</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Maximum delay to wait if queue is empty (FreeRTOS ticks).</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>can_status_t Returns CAN_OK if a message was received, CAN_EMPTY if the queue was empty, CAN_ERR on failure or invalid ID. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN_FD.h" line="94" column="14" declfile="bsp/Inc/CAN_FD.h" declline="94" declcolumn="14"/>
+      </memberdef>
+      <memberdef kind="function" id="CAN__FD_8h_1a5daea55096e97b48e604ef624239869f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void can_fd_tx_complete_hook</definition>
+        <argsstring>(FDCAN_HandleTypeDef *hfdcan, uint32_t BufferIndexes)</argsstring>
+        <name>can_fd_tx_complete_hook</name>
+        <param>
+          <type>FDCAN_HandleTypeDef *</type>
+          <declname>hfdcan</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>BufferIndexes</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN_FD.h" line="97" column="6" declfile="bsp/Inc/CAN_FD.h" declline="97" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="CAN__FD_8h_1af052a1ab45f4b3f7698a6081cbec3181" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void can_fd_rx_callback_hook</definition>
+        <argsstring>(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs, can_rx_payload_t recv_payload)</argsstring>
+        <name>can_fd_rx_callback_hook</name>
+        <param>
+          <type>FDCAN_HandleTypeDef *</type>
+          <declname>hfdcan</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>RxFifo0ITs</declname>
+        </param>
+        <param>
+          <type><ref refid="structcan__rx__payload__t" kindref="compound">can_rx_payload_t</ref></type>
+          <declname>recv_payload</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN_FD.h" line="99" column="6" declfile="bsp/Inc/CAN_FD.h" declline="99" declcolumn="6"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;stm32xx_hal.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="CAN__Common_8h" kindref="compound">CAN_Common.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;queue_ex.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>!defined(FDCAN1)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/>#error<sp/>&quot;[CONFIG]<sp/>CAN<sp/>FD<sp/>not<sp/>enabled<sp/>on<sp/>this<sp/>chip.&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>FDCAN1<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="comment">//<sp/>fdcan<sp/>handlers</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>FDCAN1</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>FDCAN_HandleTypeDef*<sp/>hfdcan1;</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>FDCAN1<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>FDCAN2</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>FDCAN_HandleTypeDef*<sp/>hfdcan2;</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>FDCAN2<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>FDCAN3</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>FDCAN_HandleTypeDef*<sp/>hfdcan3;</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>FDCAN3<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight></codeline>
+<codeline lineno="38" refid="CAN__FD_8h_1ace263a51895d019f75a4cb6793abf6ac" refkind="member"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN__FD_8h_1ace263a51895d019f75a4cb6793abf6ac" kindref="member">can_fd_init</ref>(FDCAN_HandleTypeDef*<sp/>handle,<sp/>FDCAN_FilterTypeDef*<sp/>filter);</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight></codeline>
+<codeline lineno="49" refid="CAN__FD_8h_1a3c9b9d35e473506c11ebabd44210bcc3" refkind="member"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN__FD_8h_1a3c9b9d35e473506c11ebabd44210bcc3" kindref="member">can_fd_deinit</ref>(FDCAN_HandleTypeDef*<sp/>handle);</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight></codeline>
+<codeline lineno="60" refid="CAN__FD_8h_1aba1a4136e01207ba7cccb5d2e0994276" refkind="member"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN__FD_8h_1aba1a4136e01207ba7cccb5d2e0994276" kindref="member">can_fd_start</ref>(FDCAN_HandleTypeDef*<sp/>handle);</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight></codeline>
+<codeline lineno="76" refid="CAN__FD_8h_1a97b6f4d9057d197886b2af512cbbccc4" refkind="member"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN__FD_8h_1a97b6f4d9057d197886b2af512cbbccc4" kindref="member">can_fd_send</ref>(FDCAN_HandleTypeDef*<sp/>handle,<sp/>FDCAN_TxHeaderTypeDef*<sp/>header,<sp/>uint8_t<sp/>data[],<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"></highlight></codeline>
+<codeline lineno="94" refid="CAN__FD_8h_1aa94c621f0ba1d7136bfdf61a83a2c4e2" refkind="member"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN__FD_8h_1aa94c621f0ba1d7136bfdf61a83a2c4e2" kindref="member">can_fd_recv</ref>(FDCAN_HandleTypeDef*<sp/>handle,<sp/>uint16_t<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>FDCAN_RxHeaderTypeDef*<sp/>header,<sp/>uint8_t<sp/>data[],<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"></highlight></codeline>
+<codeline lineno="96"><highlight class="normal"></highlight></codeline>
+<codeline lineno="97" refid="CAN__FD_8h_1a5daea55096e97b48e604ef624239869f" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="CAN__FD_8h_1a5daea55096e97b48e604ef624239869f" kindref="member">can_fd_tx_complete_hook</ref>(FDCAN_HandleTypeDef<sp/>*hfdcan,<sp/>uint32_t<sp/>BufferIndexes);</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"></highlight></codeline>
+<codeline lineno="99" refid="CAN__FD_8h_1af052a1ab45f4b3f7698a6081cbec3181" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="CAN__FD_8h_1af052a1ab45f4b3f7698a6081cbec3181" kindref="member">can_fd_rx_callback_hook</ref>(FDCAN_HandleTypeDef<sp/>*hfdcan,<sp/>uint32_t<sp/>RxFifo0ITs,<sp/><ref refid="structcan__rx__payload__t" kindref="compound">can_rx_payload_t</ref><sp/>recv_payload);</highlight></codeline>
+    </programlisting>
+    <location file="bsp/Inc/CAN_FD.h"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,259 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="CAN__Common_8h" kind="file" language="C++">
+    <compoundname>CAN_Common.h</compoundname>
+    <includes local="yes">stm32xx_hal.h</includes>
+    <includedby refid="CAN_8h" local="yes">bsp/Inc/CAN.h</includedby>
+    <includedby refid="CAN__FD_8h" local="yes">bsp/Inc/CAN_FD.h</includedby>
+    <incdepgraph>
+      <node id="1">
+        <label>bsp/Inc/CAN_Common.h</label>
+        <link refid="CAN__Common_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>stm32xx_hal.h</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="2">
+        <label>bsp/Inc/CAN.h</label>
+        <link refid="CAN_8h"/>
+      </node>
+      <node id="1">
+        <label>bsp/Inc/CAN_Common.h</label>
+        <link refid="CAN__Common_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>bsp/Inc/CAN_FD.h</label>
+        <link refid="CAN__FD_8h"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="structcan__tx__payload__t" prot="public">can_tx_payload_t</innerclass>
+    <innerclass refid="structcan__rx__payload__t" prot="public">can_rx_payload_t</innerclass>
+    <innerclass refid="structcan__recv__entry__t" prot="public">can_recv_entry_t</innerclass>
+    <sectiondef kind="define">
+      <memberdef kind="define" id="CAN__Common_8h_1aa91e2beab7aeaac0413227a928ca5e9a" prot="public" static="no">
+        <name>MAX_CAN_DATA_SIZE</name>
+        <initializer>(8)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN_Common.h" line="12" column="9" bodyfile="bsp/Inc/CAN_Common.h" bodystart="12" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="enum">
+      <memberdef kind="enum" id="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" prot="public" static="no" strong="no">
+        <type></type>
+        <name>can_status_t</name>
+        <enumvalue id="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1dabf22114c59d1a69b0796b28d3486fbf8" prot="public">
+          <name>CAN_ERR</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1dab7db0e53b737c0839be931efcb79246e" prot="public">
+          <name>CAN_OK</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1da24485c2f3c00368d084bcb14d3a56bf9" prot="public">
+          <name>CAN_EMPTY</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN_Common.h" line="16" column="1" bodyfile="bsp/Inc/CAN_Common.h" bodystart="16" bodyend="20"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;stm32xx_hal.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>!defined(CAN1)<sp/>&amp;&amp;<sp/>!defined(FDCAN1)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/>#error<sp/>&quot;[CONFIG]<sp/>CAN<sp/>not<sp/>enabled<sp/>on<sp/>this<sp/>chip.&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Default<sp/>statically<sp/>allocated<sp/>size<sp/>per<sp/>can<sp/>payload</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="comment">//<sp/>If<sp/>you<sp/>want<sp/>longer<sp/>messages,<sp/>redefine<sp/>this<sp/>macro</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>MAX_CAN_DATA_SIZE</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12" refid="CAN__Common_8h_1aa91e2beab7aeaac0413227a928ca5e9a" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>MAX_CAN_DATA_SIZE<sp/>(8)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="comment">//<sp/>return<sp/>code<sp/>for<sp/>can<sp/>driver</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16" refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="17" refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1dabf22114c59d1a69b0796b28d3486fbf8" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1dabf22114c59d1a69b0796b28d3486fbf8" kindref="member">CAN_ERR</ref>,<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>unsuccessful<sp/>operation</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18" refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1dab7db0e53b737c0839be931efcb79246e" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1dab7db0e53b737c0839be931efcb79246e" kindref="member">CAN_OK</ref>,</highlight></codeline>
+<codeline lineno="19" refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1da24485c2f3c00368d084bcb14d3a56bf9" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1da24485c2f3c00368d084bcb14d3a56bf9" kindref="member">CAN_EMPTY</ref>,<sp/></highlight><highlight class="comment">//<sp/>recieved<sp/>nothing<sp/>with<sp/>no<sp/>errors</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal">}<sp/><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref>;</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="comment">//<sp/>entries<sp/>in<sp/>queues</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23" refid="structcan__tx__payload__t" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>If<sp/>we&apos;re<sp/>using<sp/>FDCAN<sp/>(stm32g4xx),<sp/>use<sp/>FDCAN_TxHeaderTypeDef</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>defined(STM32G4xx)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/>FDCAN_TxHeaderTypeDef<sp/>header;</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="preprocessor">#else<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28" refid="structcan__tx__payload__t_1a2173cb846b9aa7a3ebfaa64fa851bf2d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>CAN_TxHeaderTypeDef<sp/><ref refid="structcan__tx__payload__t_1a2173cb846b9aa7a3ebfaa64fa851bf2d" kindref="member">header</ref>;</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30" refid="structcan__tx__payload__t_1a991bd3335de020b3076112b7f2445234" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>uint8_t<sp/>data[<ref refid="CAN__Common_8h_1aa91e2beab7aeaac0413227a928ca5e9a" kindref="member">MAX_CAN_DATA_SIZE</ref>];</highlight></codeline>
+<codeline lineno="31"><highlight class="normal">}<sp/><ref refid="structcan__tx__payload__t" kindref="compound">can_tx_payload_t</ref>;</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight></codeline>
+<codeline lineno="33" refid="structcan__rx__payload__t" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>If<sp/>we&apos;re<sp/>using<sp/>FDCAN<sp/>(stm32g4xx),<sp/>use<sp/>FDCAN_RxHeaderTypeDef</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>defined(STM32G4xx)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/>FDCAN_RxHeaderTypeDef<sp/>header;</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="38" refid="structcan__rx__payload__t_1a29656d3af158c0860dea159d88019a7f" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>CAN_RxHeaderTypeDef<sp/><ref refid="structcan__rx__payload__t_1a29656d3af158c0860dea159d88019a7f" kindref="member">header</ref>;</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40" refid="structcan__rx__payload__t_1a4283f3f8dc830c3692e2958a8f62c46d" refkind="member"><highlight class="normal"><sp/><sp/>uint8_t<sp/>data[<ref refid="CAN__Common_8h_1aa91e2beab7aeaac0413227a928ca5e9a" kindref="member">MAX_CAN_DATA_SIZE</ref>];</highlight></codeline>
+<codeline lineno="41"><highlight class="normal">}<sp/><ref refid="structcan__rx__payload__t" kindref="compound">can_rx_payload_t</ref>;</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight><highlight class="comment">//<sp/>metadata<sp/>for<sp/>recieve<sp/>queues</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44" refid="structcan__recv__entry__t" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="45" refid="structcan__recv__entry__t_1a1bd75304b96766f671258cdda2fca553" refkind="member"><highlight class="normal"><sp/><sp/>uint16_t<sp/><ref refid="structcan__recv__entry__t_1a1bd75304b96766f671258cdda2fca553" kindref="member">id</ref>;</highlight></codeline>
+<codeline lineno="46" refid="structcan__recv__entry__t_1a2ad7f3cfe4fd1aa272c5cb71aa84f623" refkind="member"><highlight class="normal"><sp/><sp/>uint16_t<sp/><ref refid="structcan__recv__entry__t_1a2ad7f3cfe4fd1aa272c5cb71aa84f623" kindref="member">size</ref>;</highlight></codeline>
+<codeline lineno="47" refid="structcan__recv__entry__t_1a59542b5ee5fef8962155ceaae21f9e61" refkind="member"><highlight class="normal"><sp/><sp/>QueueHandle_t<sp/><ref refid="structcan__recv__entry__t_1a59542b5ee5fef8962155ceaae21f9e61" kindref="member">queue</ref>;</highlight></codeline>
+<codeline lineno="48" refid="structcan__recv__entry__t_1a3ef21cb2a3f13496499cb27d4954d918" refkind="member"><highlight class="normal"><sp/><sp/>uint8_t*<sp/><ref refid="structcan__recv__entry__t_1a3ef21cb2a3f13496499cb27d4954d918" kindref="member">storage</ref>;</highlight></codeline>
+<codeline lineno="49" refid="structcan__recv__entry__t_1a9d3f736ae7b72164fb42fc3b90b5cd93" refkind="member"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="structcan__recv__entry__t_1a9d3f736ae7b72164fb42fc3b90b5cd93" kindref="member">circular</ref>;</highlight></codeline>
+<codeline lineno="50" refid="structcan__recv__entry__t_1a9f0b29f498add824b7003053b990434f" refkind="member"><highlight class="normal"><sp/><sp/>StaticQueue_t<sp/><ref refid="structcan__recv__entry__t_1a9f0b29f498add824b7003053b990434f" kindref="member">buffer</ref>;</highlight></codeline>
+<codeline lineno="51"><highlight class="normal">}<sp/><ref refid="structcan__recv__entry__t" kindref="compound">can_recv_entry_t</ref>;</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>defined(CAN1)<sp/>||<sp/>defined(FDCAN1)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"></highlight></codeline>
+<codeline lineno="56"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>__has_include(&quot;can1_recv_entries.h&quot;)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>can1<sp/>recv<sp/>queue<sp/>storage</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CAN_RECV_ENTRY(ID_,<sp/>SIZE_,<sp/>CIRCULAR_)<sp/>\</highlight></codeline>
+<codeline lineno="59"><highlight class="preprocessor"><sp/><sp/>static<sp/>uint8_t<sp/>can1_recv_queue_storage_##ID_[SIZE_<sp/>*<sp/>sizeof(can_rx_payload_t)];</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"></highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;can1_recv_entries.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight></codeline>
+<codeline lineno="63"><highlight class="normal"></highlight><highlight class="preprocessor">#undef<sp/>CAN_RECV_ENTRY</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>can1<sp/>recv<sp/>queue<sp/>array</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CAN_RECV_ENTRY(ID_,<sp/>SIZE_,<sp/>CIRCULAR_)<sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="67"><highlight class="preprocessor"><sp/><sp/>{.id<sp/>=<sp/>(ID_),<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="68"><highlight class="preprocessor"><sp/><sp/><sp/>.size<sp/>=<sp/>(SIZE_),<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="69"><highlight class="preprocessor"><sp/><sp/><sp/>.queue<sp/>=<sp/>NULL,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="70"><highlight class="preprocessor"><sp/><sp/><sp/>.storage<sp/>=<sp/>can1_recv_queue_storage_##ID_,<sp/>\</highlight></codeline>
+<codeline lineno="71"><highlight class="preprocessor"><sp/><sp/><sp/>.circular<sp/>=<sp/>(CIRCULAR_),<sp/>\</highlight></codeline>
+<codeline lineno="72"><highlight class="preprocessor"><sp/><sp/><sp/>.buffer<sp/>=<sp/>{{0}}},</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="structcan__recv__entry__t" kindref="compound">can_recv_entry_t</ref><sp/>can1_recv_entries[]<sp/>=<sp/>{</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;can1_recv_entries.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="76"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"></highlight><highlight class="preprocessor">#undef<sp/>CAN_RECV_ENTRY</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="78"><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal"></highlight><highlight class="comment">//<sp/>calculate<sp/>amount<sp/>of<sp/>can1<sp/>recv<sp/>entries</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint32_t<sp/>can1_recv_entry_count<sp/>=</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(can1_recv_entries)<sp/>/<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(can1_recv_entries[0]);</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"></highlight></codeline>
+<codeline lineno="83"><highlight class="normal"></highlight><highlight class="preprocessor">#else<sp/></highlight><highlight class="comment">/*<sp/>can1_recv_entries.h<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="84"><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>can1<sp/>recv<sp/>queue<sp/>array</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="85"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="structcan__recv__entry__t" kindref="compound">can_recv_entry_t</ref><sp/>can1_recv_entries[]<sp/>=<sp/>{};</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"></highlight><highlight class="comment">//<sp/>calculate<sp/>amount<sp/>of<sp/>can1<sp/>recv<sp/>entries</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint32_t<sp/>can1_recv_entry_count<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>can1_recv_entries.h<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="89"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>FDCAN1<sp/>||<sp/>CAN1<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="90"><highlight class="normal"></highlight></codeline>
+<codeline lineno="91"><highlight class="normal"></highlight></codeline>
+<codeline lineno="92"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>defined(CAN2)<sp/>||<sp/>defined(FDCAN2)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="93"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>__has_include(&quot;can2_recv_entries.h&quot;)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="94"><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>can2<sp/>recv<sp/>queue<sp/>storage</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="95"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CAN_RECV_ENTRY(ID_,<sp/>SIZE_,<sp/>CIRCULAR_)<sp/>\</highlight></codeline>
+<codeline lineno="96"><highlight class="preprocessor"><sp/><sp/>static<sp/>uint8_t<sp/>can2_recv_queue_storage_##ID_[SIZE_<sp/>*<sp/>sizeof(can_rx_payload_t)];</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="97"><highlight class="normal"></highlight></codeline>
+<codeline lineno="98"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;can2_recv_entries.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="99"><highlight class="normal"></highlight></codeline>
+<codeline lineno="100"><highlight class="normal"></highlight><highlight class="preprocessor">#undef<sp/>CAN_RECV_ENTRY</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="101"><highlight class="normal"></highlight></codeline>
+<codeline lineno="102"><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>can2<sp/>recv<sp/>queue<sp/>array</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="103"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CAN_RECV_ENTRY(ID_,<sp/>SIZE_,<sp/>CIRCULAR_)<sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="104"><highlight class="preprocessor"><sp/><sp/>{.id<sp/>=<sp/>(ID_),<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="105"><highlight class="preprocessor"><sp/><sp/><sp/>.size<sp/>=<sp/>(SIZE_),<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="106"><highlight class="preprocessor"><sp/><sp/><sp/>.queue<sp/>=<sp/>NULL,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="107"><highlight class="preprocessor"><sp/><sp/><sp/>.storage<sp/>=<sp/>can2_recv_queue_storage_##ID_,<sp/>\</highlight></codeline>
+<codeline lineno="108"><highlight class="preprocessor"><sp/><sp/><sp/>.circular<sp/>=<sp/>(CIRCULAR_),<sp/>\</highlight></codeline>
+<codeline lineno="109"><highlight class="preprocessor"><sp/><sp/><sp/>.buffer<sp/>=<sp/>{{0}}},</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="110"><highlight class="normal"></highlight></codeline>
+<codeline lineno="111"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="structcan__recv__entry__t" kindref="compound">can_recv_entry_t</ref><sp/>can2_recv_entries[]<sp/>=<sp/>{</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;can2_recv_entries.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="113"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="114"><highlight class="normal"></highlight><highlight class="preprocessor">#undef<sp/>CAN_RECV_ENTRY</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="115"><highlight class="normal"></highlight></codeline>
+<codeline lineno="116"><highlight class="normal"></highlight><highlight class="comment">//<sp/>calculate<sp/>amount<sp/>of<sp/>can2<sp/>recv<sp/>entries</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="117"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint32_t<sp/>can2_recv_entry_count<sp/>=</highlight></codeline>
+<codeline lineno="118"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(can2_recv_entries)<sp/>/<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(can2_recv_entries[0]);</highlight></codeline>
+<codeline lineno="119"><highlight class="normal"></highlight></codeline>
+<codeline lineno="120"><highlight class="normal"></highlight><highlight class="preprocessor">#else<sp/></highlight><highlight class="comment">/*<sp/>can2_recv_entries.h<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="121"><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>can2<sp/>recv<sp/>queue<sp/>array</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="122"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="structcan__recv__entry__t" kindref="compound">can_recv_entry_t</ref><sp/>can2_recv_entries[]<sp/>=<sp/>{};</highlight></codeline>
+<codeline lineno="123"><highlight class="normal"></highlight><highlight class="comment">//<sp/>calculate<sp/>amount<sp/>of<sp/>can2<sp/>recv<sp/>entries</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="124"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint32_t<sp/>can2_recv_entry_count<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>can2_recv_entries.h<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="126"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>FDCAN2<sp/>||<sp/>CAN2<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="127"><highlight class="normal"></highlight></codeline>
+<codeline lineno="128"><highlight class="normal"></highlight></codeline>
+<codeline lineno="129"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>defined(CAN3)<sp/>||<sp/>defined(FDCAN3)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="130"><highlight class="normal"></highlight></codeline>
+<codeline lineno="131"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>__has_include(&quot;can3_recv_entries.h&quot;)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="132"><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>recv<sp/>queue<sp/>storage</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="133"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CAN_RECV_ENTRY(ID_,<sp/>SIZE_,<sp/>CIRCULAR_)<sp/>\</highlight></codeline>
+<codeline lineno="134"><highlight class="preprocessor"><sp/><sp/>static<sp/>uint8_t<sp/>recv_queue_storage_##ID_[SIZE_<sp/>*<sp/>sizeof(can_rx_payload_t)];</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="135"><highlight class="normal"></highlight></codeline>
+<codeline lineno="136"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;can3_recv_entries.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="137"><highlight class="normal"></highlight></codeline>
+<codeline lineno="138"><highlight class="normal"></highlight><highlight class="preprocessor">#undef<sp/>CAN_RECV_ENTRY</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="139"><highlight class="normal"></highlight></codeline>
+<codeline lineno="140"><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>can3<sp/>recv<sp/>queue<sp/>array</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="141"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CAN_RECV_ENTRY(ID_,<sp/>SIZE_,<sp/>CIRCULAR_)<sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="142"><highlight class="preprocessor"><sp/><sp/>{.id<sp/>=<sp/>(ID_),<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="143"><highlight class="preprocessor"><sp/><sp/><sp/>.size<sp/>=<sp/>(SIZE_),<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="144"><highlight class="preprocessor"><sp/><sp/><sp/>.queue<sp/>=<sp/>NULL,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="145"><highlight class="preprocessor"><sp/><sp/><sp/>.storage<sp/>=<sp/>recv_queue_storage_##ID_,<sp/>\</highlight></codeline>
+<codeline lineno="146"><highlight class="preprocessor"><sp/><sp/><sp/>.circular<sp/>=<sp/>(CIRCULAR_),<sp/>\</highlight></codeline>
+<codeline lineno="147"><highlight class="preprocessor"><sp/><sp/><sp/>.buffer<sp/>=<sp/>{{0}}},</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="148"><highlight class="normal"></highlight></codeline>
+<codeline lineno="149"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="structcan__recv__entry__t" kindref="compound">can_recv_entry_t</ref><sp/>can3_recv_entries[]<sp/>=<sp/>{</highlight></codeline>
+<codeline lineno="150"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;can3_recv_entries.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="151"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="152"><highlight class="normal"></highlight><highlight class="preprocessor">#undef<sp/>CAN_RECV_ENTRY</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="153"><highlight class="normal"></highlight></codeline>
+<codeline lineno="154"><highlight class="normal"></highlight><highlight class="comment">//<sp/>calculate<sp/>amount<sp/>of<sp/>can3<sp/>recv<sp/>entries</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="155"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint32_t<sp/>can3_recv_entry_count<sp/>=</highlight></codeline>
+<codeline lineno="156"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(can3_recv_entries)<sp/>/<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(can3_recv_entries[0]);</highlight></codeline>
+<codeline lineno="157"><highlight class="normal"></highlight></codeline>
+<codeline lineno="158"><highlight class="normal"></highlight><highlight class="preprocessor">#else<sp/></highlight><highlight class="comment">/*<sp/>can3_recv_entries.h<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="159"><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>can3<sp/>recv<sp/>queue<sp/>array</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="160"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="structcan__recv__entry__t" kindref="compound">can_recv_entry_t</ref><sp/>can3_recv_entries[]<sp/>=<sp/>{};</highlight></codeline>
+<codeline lineno="161"><highlight class="normal"></highlight><highlight class="comment">//<sp/>calculate<sp/>amount<sp/>of<sp/>can3<sp/>recv<sp/>entries</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="162"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint32_t<sp/>can3_recv_entry_count<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="163"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>can3_recv_entries.h<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="164"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>FDCAN3<sp/>||<sp/>CAN3<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
+    </programlisting>
+    <location file="bsp/Inc/CAN_Common.h"/>
+  </compounddef>
+</doxygen>

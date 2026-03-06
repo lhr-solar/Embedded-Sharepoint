@@ -742,6 +742,34 @@
   
   
     <li class="md-nav__item">
+      <a href="canSetup.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CAN Usage Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="Drivers/EMC2305_8h/" class="md-nav__link">
         
   
@@ -879,7 +907,7 @@
   <span class="md-ellipsis">
     
   
-    BSP Documentation
+    Documentation
   
 
     
@@ -892,6 +920,88 @@
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="CanSetup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CanSetup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    BSP Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -944,6 +1054,62 @@
     
   
     CAN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="BSP/CAN__Common_8h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CAN__Common
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="BSP/CAN__FD_8h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CAN__FD
   
 
     
@@ -1143,14 +1309,15 @@
 <h2 id="command-usage">Command Usage</h2>
 <p>The Makefile in the top level directory compiles all needed files for the STM32, it is not meant to be called directly, instead you must call it from a different Makefile</p>
 <h3 id="running-tests">Running tests</h3>
-<p>In the test/ directory there is a Makefile meant for just running test files. Every test file should end with <code>_test</code>  To run a test do:</p>
+<p>In the test/ directory there is a Makefile meant for just running test files. Every test file should end with <code>_test.c</code>  To run a test do:</p>
 <pre><code class="language-sh">make TEST=[name of test file without _test_ and the .c extension] PROJECT_TARGET=[name of the STM32 you want to compile for]
 
 # For example:
-make TEST=blinky PROJECT_TARGET=stm32f413rht
-# This compiles the blinky_test.c test for the STM32F413RHT
+make TEST=blinky PROJECT_TARGET=stm32g473xx
+# This compiles the blinky_test.c test for the STM32G473
 </code></pre>
-<p>For all PROJECT_TARGET options, see the <a href="STM32_Ports/">STM32_Ports</a> page</p>
+<p>For all PROJECT_TARGET options, see the <a href="STM32_Ports/">STM32_Ports</a> page. </p>
+<p>To add your own tests, add a c file ending in _test to the <code>tests/tests/</code> folder</p>
 <h3 id="flashing-code">Flashing code</h3>
 <p>Once your code is compiled, use the makefile in the <code>test/</code> directory to flash your built code to the microcontroller. If you are running WSL there are some extra steps to connect the STM32 to your computer, which can be found <a href="FlashAndTheBug/">here</a>.</p>
 <p>Run the following command to flash:</p>

@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structcan__tx__payload__t" kind="struct" language="C++" prot="public">
+    <compoundname>can_tx_payload_t</compoundname>
+    <includes refid="CAN__Common_8h" local="no">CAN_Common.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structcan__tx__payload__t_1a2173cb846b9aa7a3ebfaa64fa851bf2d" prot="public" static="no" mutable="no">
+        <type>CAN_TxHeaderTypeDef</type>
+        <definition>CAN_TxHeaderTypeDef can_tx_payload_t::header</definition>
+        <argsstring></argsstring>
+        <name>header</name>
+        <qualifiedname>can_tx_payload_t::header</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN_Common.h" line="28" column="25" bodyfile="bsp/Inc/CAN_Common.h" bodystart="28" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcan__tx__payload__t_1a991bd3335de020b3076112b7f2445234" prot="public" static="no" mutable="no">
+        <type>uint8_t</type>
+        <definition>uint8_t can_tx_payload_t::data[MAX_CAN_DATA_SIZE]</definition>
+        <argsstring>[MAX_CAN_DATA_SIZE]</argsstring>
+        <name>data</name>
+        <qualifiedname>can_tx_payload_t::data</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN_Common.h" line="30" column="13" bodyfile="bsp/Inc/CAN_Common.h" bodystart="30" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="bsp/Inc/CAN_Common.h" line="23" column="1" bodyfile="bsp/Inc/CAN_Common.h" bodystart="23" bodyend="31"/>
+    <listofallmembers>
+      <member refid="structcan__tx__payload__t_1a991bd3335de020b3076112b7f2445234" prot="public" virt="non-virtual"><scope>can_tx_payload_t</scope><name>data</name></member>
+      <member refid="structcan__tx__payload__t_1a2173cb846b9aa7a3ebfaa64fa851bf2d" prot="public" virt="non-virtual"><scope>can_tx_payload_t</scope><name>header</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

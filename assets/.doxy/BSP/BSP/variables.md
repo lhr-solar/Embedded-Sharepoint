@@ -10,7 +10,7 @@
 
 ## c
 
-* **can\_status\_t** ([**CAN.h**](CAN_8h.md))
+* **can\_status\_t** ([**CAN\_Common.h**](CAN__Common_8h.md))
 
 
 ## u

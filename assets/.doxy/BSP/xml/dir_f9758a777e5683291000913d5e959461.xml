@@ -4,6 +4,8 @@
     <compoundname>bsp/Inc</compoundname>
     <innerfile refid="ADC_8h">ADC.h</innerfile>
     <innerfile refid="CAN_8h">CAN.h</innerfile>
+    <innerfile refid="CAN__Common_8h">CAN_Common.h</innerfile>
+    <innerfile refid="CAN__FD_8h">CAN_FD.h</innerfile>
     <innerfile refid="UART_8h">UART.h</innerfile>
     <briefdescription>
     </briefdescription>

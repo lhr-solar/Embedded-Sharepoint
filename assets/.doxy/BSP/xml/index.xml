@@ -1,5 +1,21 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.9.8" xml:lang="en-US">
+  <compound refid="structcan__recv__entry__t" kind="struct"><name>can_recv_entry_t</name>
+    <member refid="structcan__recv__entry__t_1a1bd75304b96766f671258cdda2fca553" kind="variable"><name>id</name></member>
+    <member refid="structcan__recv__entry__t_1a2ad7f3cfe4fd1aa272c5cb71aa84f623" kind="variable"><name>size</name></member>
+    <member refid="structcan__recv__entry__t_1a59542b5ee5fef8962155ceaae21f9e61" kind="variable"><name>queue</name></member>
+    <member refid="structcan__recv__entry__t_1a3ef21cb2a3f13496499cb27d4954d918" kind="variable"><name>storage</name></member>
+    <member refid="structcan__recv__entry__t_1a9d3f736ae7b72164fb42fc3b90b5cd93" kind="variable"><name>circular</name></member>
+    <member refid="structcan__recv__entry__t_1a9f0b29f498add824b7003053b990434f" kind="variable"><name>buffer</name></member>
+  </compound>
+  <compound refid="structcan__rx__payload__t" kind="struct"><name>can_rx_payload_t</name>
+    <member refid="structcan__rx__payload__t_1a29656d3af158c0860dea159d88019a7f" kind="variable"><name>header</name></member>
+    <member refid="structcan__rx__payload__t_1a4283f3f8dc830c3692e2958a8f62c46d" kind="variable"><name>data</name></member>
+  </compound>
+  <compound refid="structcan__tx__payload__t" kind="struct"><name>can_tx_payload_t</name>
+    <member refid="structcan__tx__payload__t_1a2173cb846b9aa7a3ebfaa64fa851bf2d" kind="variable"><name>header</name></member>
+    <member refid="structcan__tx__payload__t_1a991bd3335de020b3076112b7f2445234" kind="variable"><name>data</name></member>
+  </compound>
   <compound refid="ADC_8h" kind="file"><name>ADC.h</name>
     <member refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280c" kind="enum"><name>adc_status_t</name></member>
     <member refid="ADC_8h_1a2a6a6e8349f02b5b357746a44166280ca58c6c49250945a68ba73bfe0428bc8b9" kind="enumvalue"><name>ADC_OK</name></member>
@@ -15,18 +31,28 @@
     <member refid="ADC_8h_1ac2d2036424929332c6b0f6e7f9dd3feb" kind="function"><name>adc_deinit</name></member>
   </compound>
   <compound refid="CAN_8h" kind="file"><name>CAN.h</name>
-    <member refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kind="enum"><name>can_status_t</name></member>
-    <member refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1dabf22114c59d1a69b0796b28d3486fbf8" kind="enumvalue"><name>CAN_ERR</name></member>
-    <member refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1dab7db0e53b737c0839be931efcb79246e" kind="enumvalue"><name>CAN_OK</name></member>
-    <member refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1daff29dfa90428ea73bc47e54b8ee0d43e" kind="enumvalue"><name>CAN_SENT</name></member>
-    <member refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1da51244aed50587da9655e1559b3a3daec" kind="enumvalue"><name>CAN_RECV</name></member>
-    <member refid="CAN_8h_1a507b4ed3fc531e0c40aa8812174e3e1da24485c2f3c00368d084bcb14d3a56bf9" kind="enumvalue"><name>CAN_EMPTY</name></member>
     <member refid="CAN_8h_1adb98f482f84dbc90394b3878fe84d6a3" kind="function"><name>can_init</name></member>
     <member refid="CAN_8h_1aeeba29faf74a0c662365149bf0f5780e" kind="function"><name>can_deinit</name></member>
     <member refid="CAN_8h_1a95783594f75e8feb9203af4ec4e28aed" kind="function"><name>can_start</name></member>
     <member refid="CAN_8h_1adee9ce61f8d5f4b4cdfc97c8d7b0dafc" kind="function"><name>can_stop</name></member>
     <member refid="CAN_8h_1a5308363109455439841baf22512c415f" kind="function"><name>can_send</name></member>
     <member refid="CAN_8h_1a9891bb23cf1be1a31110671519764f74" kind="function"><name>can_recv</name></member>
+  </compound>
+  <compound refid="CAN__Common_8h" kind="file"><name>CAN_Common.h</name>
+    <member refid="CAN__Common_8h_1aa91e2beab7aeaac0413227a928ca5e9a" kind="define"><name>MAX_CAN_DATA_SIZE</name></member>
+    <member refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kind="enum"><name>can_status_t</name></member>
+    <member refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1dabf22114c59d1a69b0796b28d3486fbf8" kind="enumvalue"><name>CAN_ERR</name></member>
+    <member refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1dab7db0e53b737c0839be931efcb79246e" kind="enumvalue"><name>CAN_OK</name></member>
+    <member refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1da24485c2f3c00368d084bcb14d3a56bf9" kind="enumvalue"><name>CAN_EMPTY</name></member>
+  </compound>
+  <compound refid="CAN__FD_8h" kind="file"><name>CAN_FD.h</name>
+    <member refid="CAN__FD_8h_1ace263a51895d019f75a4cb6793abf6ac" kind="function"><name>can_fd_init</name></member>
+    <member refid="CAN__FD_8h_1a3c9b9d35e473506c11ebabd44210bcc3" kind="function"><name>can_fd_deinit</name></member>
+    <member refid="CAN__FD_8h_1aba1a4136e01207ba7cccb5d2e0994276" kind="function"><name>can_fd_start</name></member>
+    <member refid="CAN__FD_8h_1a97b6f4d9057d197886b2af512cbbccc4" kind="function"><name>can_fd_send</name></member>
+    <member refid="CAN__FD_8h_1aa94c621f0ba1d7136bfdf61a83a2c4e2" kind="function"><name>can_fd_recv</name></member>
+    <member refid="CAN__FD_8h_1a5daea55096e97b48e604ef624239869f" kind="function"><name>can_fd_tx_complete_hook</name></member>
+    <member refid="CAN__FD_8h_1af052a1ab45f4b3f7698a6081cbec3181" kind="function"><name>can_fd_rx_callback_hook</name></member>
   </compound>
   <compound refid="UART_8h" kind="file"><name>UART.h</name>
     <member refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kind="enum"><name>uart_status_t</name></member>

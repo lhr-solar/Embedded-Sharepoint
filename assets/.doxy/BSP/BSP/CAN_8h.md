@@ -11,6 +11,7 @@
 _CAN peripheral driver for LHRS embedded systems._ [More...](#detailed-description)
 
 * `#include "stm32xx_hal.h"`
+* `#include "CAN_Common.h"`
 
 
 
@@ -28,11 +29,6 @@ _CAN peripheral driver for LHRS embedded systems._ [More...](#detailed-descripti
 
 
 
-## Public Types
-
-| Type | Name |
-| ---: | :--- |
-| enum  | [**can\_status\_t**](#enum-can_status_t)  <br> |
 
 
 
@@ -57,12 +53,12 @@ _CAN peripheral driver for LHRS embedded systems._ [More...](#detailed-descripti
 
 | Type | Name |
 | ---: | :--- |
-|  [**can\_status\_t**](CAN_8h.md#enum-can_status_t) | [**can\_deinit**](#function-can_deinit) (CAN\_HandleTypeDef \* handle) <br>_Deinitializes the CAN peripheral._  |
-|  [**can\_status\_t**](CAN_8h.md#enum-can_status_t) | [**can\_init**](#function-can_init) (CAN\_HandleTypeDef \* handle, CAN\_FilterTypeDef \* filter) <br>_Initializes the CAN peripheral._  |
-|  [**can\_status\_t**](CAN_8h.md#enum-can_status_t) | [**can\_recv**](#function-can_recv) (CAN\_HandleTypeDef \* handle, uint16\_t id, CAN\_RxHeaderTypeDef \* header, uint8\_t data, TickType\_t delay\_ticks) <br>_Receives a CAN message._  |
-|  [**can\_status\_t**](CAN_8h.md#enum-can_status_t) | [**can\_send**](#function-can_send) (CAN\_HandleTypeDef \* handle, const CAN\_TxHeaderTypeDef \* header, const uint8\_t data, TickType\_t delay\_ticks) <br>_Sends a CAN message._  |
-|  [**can\_status\_t**](CAN_8h.md#enum-can_status_t) | [**can\_start**](#function-can_start) (CAN\_HandleTypeDef \* handle) <br>_Starts the CAN peripheral._  |
-|  [**can\_status\_t**](CAN_8h.md#enum-can_status_t) | [**can\_stop**](#function-can_stop) (CAN\_HandleTypeDef \* handle) <br>_Stops the CAN peripheral._  |
+|  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_deinit**](#function-can_deinit) (CAN\_HandleTypeDef \* handle) <br>_Deinitializes the bxCAN peripheral._  |
+|  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_init**](#function-can_init) (CAN\_HandleTypeDef \* handle, CAN\_FilterTypeDef \* filter) <br>_Initializes the bxCAN peripheral._  |
+|  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_recv**](#function-can_recv) (CAN\_HandleTypeDef \* handle, uint16\_t id, CAN\_RxHeaderTypeDef \* header, uint8\_t data, TickType\_t delay\_ticks) <br>_Receives a CAN message._  |
+|  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_send**](#function-can_send) (CAN\_HandleTypeDef \* handle, const CAN\_TxHeaderTypeDef \* header, const uint8\_t data, TickType\_t delay\_ticks) <br>_Sends a CAN message._  |
+|  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_start**](#function-can_start) (CAN\_HandleTypeDef \* handle) <br>_Starts the CAN peripheral._  |
+|  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_stop**](#function-can_stop) (CAN\_HandleTypeDef \* handle) <br>_Stops the CAN peripheral._  |
 
 
 
@@ -136,27 +132,6 @@ Usage Notes:
 
 
     
-## Public Types Documentation
-
-
-
-
-### enum can\_status\_t 
-
-```C++
-enum can_status_t {
-    CAN_ERR,
-    CAN_OK,
-    CAN_SENT,
-    CAN_RECV,
-    CAN_EMPTY
-};
-```
-
-
-
-
-<hr>
 ## Public Functions Documentation
 
 
@@ -164,7 +139,7 @@ enum can_status_t {
 
 ### function can\_deinit 
 
-_Deinitializes the CAN peripheral._ 
+_Deinitializes the bxCAN peripheral._ 
 ```C++
 can_status_t can_deinit (
     CAN_HandleTypeDef * handle
@@ -201,7 +176,7 @@ can\_status\_t Returns CAN\_OK on success, CAN\_ERR on failure.
 
 ### function can\_init 
 
-_Initializes the CAN peripheral._ 
+_Initializes the bxCAN peripheral._ 
 ```C++
 can_status_t can_init (
     CAN_HandleTypeDef * handle,
@@ -314,7 +289,7 @@ Places a CAN message into the transmit mailbox if available, otherwise queues it
 
 **Returns:**
 
-can\_status\_t Returns CAN\_SENT if message was successfully sent or queued, CAN\_ERR on failure. 
+can\_status\_t Returns CAN\_OK if message was successfully sent or queued, CAN\_ERR on failure. 
 
 
 

@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structcan__recv__entry__t" kind="struct" language="C++" prot="public">
+    <compoundname>can_recv_entry_t</compoundname>
+    <includes refid="CAN__Common_8h" local="no">CAN_Common.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structcan__recv__entry__t_1a1bd75304b96766f671258cdda2fca553" prot="public" static="no" mutable="no">
+        <type>uint16_t</type>
+        <definition>uint16_t can_recv_entry_t::id</definition>
+        <argsstring></argsstring>
+        <name>id</name>
+        <qualifiedname>can_recv_entry_t::id</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN_Common.h" line="45" column="12" bodyfile="bsp/Inc/CAN_Common.h" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcan__recv__entry__t_1a2ad7f3cfe4fd1aa272c5cb71aa84f623" prot="public" static="no" mutable="no">
+        <type>uint16_t</type>
+        <definition>uint16_t can_recv_entry_t::size</definition>
+        <argsstring></argsstring>
+        <name>size</name>
+        <qualifiedname>can_recv_entry_t::size</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN_Common.h" line="46" column="12" bodyfile="bsp/Inc/CAN_Common.h" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcan__recv__entry__t_1a59542b5ee5fef8962155ceaae21f9e61" prot="public" static="no" mutable="no">
+        <type>QueueHandle_t</type>
+        <definition>QueueHandle_t can_recv_entry_t::queue</definition>
+        <argsstring></argsstring>
+        <name>queue</name>
+        <qualifiedname>can_recv_entry_t::queue</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN_Common.h" line="47" column="17" bodyfile="bsp/Inc/CAN_Common.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcan__recv__entry__t_1a3ef21cb2a3f13496499cb27d4954d918" prot="public" static="no" mutable="no">
+        <type>uint8_t *</type>
+        <definition>uint8_t* can_recv_entry_t::storage</definition>
+        <argsstring></argsstring>
+        <name>storage</name>
+        <qualifiedname>can_recv_entry_t::storage</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN_Common.h" line="48" column="11" bodyfile="bsp/Inc/CAN_Common.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcan__recv__entry__t_1a9d3f736ae7b72164fb42fc3b90b5cd93" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool can_recv_entry_t::circular</definition>
+        <argsstring></argsstring>
+        <name>circular</name>
+        <qualifiedname>can_recv_entry_t::circular</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN_Common.h" line="49" column="8" bodyfile="bsp/Inc/CAN_Common.h" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcan__recv__entry__t_1a9f0b29f498add824b7003053b990434f" prot="public" static="no" mutable="no">
+        <type>StaticQueue_t</type>
+        <definition>StaticQueue_t can_recv_entry_t::buffer</definition>
+        <argsstring></argsstring>
+        <name>buffer</name>
+        <qualifiedname>can_recv_entry_t::buffer</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN_Common.h" line="50" column="17" bodyfile="bsp/Inc/CAN_Common.h" bodystart="50" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="bsp/Inc/CAN_Common.h" line="44" column="1" bodyfile="bsp/Inc/CAN_Common.h" bodystart="44" bodyend="51"/>
+    <listofallmembers>
+      <member refid="structcan__recv__entry__t_1a9f0b29f498add824b7003053b990434f" prot="public" virt="non-virtual"><scope>can_recv_entry_t</scope><name>buffer</name></member>
+      <member refid="structcan__recv__entry__t_1a9d3f736ae7b72164fb42fc3b90b5cd93" prot="public" virt="non-virtual"><scope>can_recv_entry_t</scope><name>circular</name></member>
+      <member refid="structcan__recv__entry__t_1a1bd75304b96766f671258cdda2fca553" prot="public" virt="non-virtual"><scope>can_recv_entry_t</scope><name>id</name></member>
+      <member refid="structcan__recv__entry__t_1a59542b5ee5fef8962155ceaae21f9e61" prot="public" virt="non-virtual"><scope>can_recv_entry_t</scope><name>queue</name></member>
+      <member refid="structcan__recv__entry__t_1a2ad7f3cfe4fd1aa272c5cb71aa84f623" prot="public" virt="non-virtual"><scope>can_recv_entry_t</scope><name>size</name></member>
+      <member refid="structcan__recv__entry__t_1a3ef21cb2a3f13496499cb27d4954d918" prot="public" virt="non-virtual"><scope>can_recv_entry_t</scope><name>storage</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
