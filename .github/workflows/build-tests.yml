@@ -3,8 +3,8 @@ name: Build Tests
 on:
   push:
     paths-ignore:
-      - "docs/**"
-      - "dbc/**"
+      - "*.md"
+      - "*.dbc"
 
 jobs:
   build:
