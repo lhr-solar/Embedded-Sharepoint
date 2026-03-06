@@ -9,6 +9,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
 
       - name: Cache Nix
         uses: actions/cache@v3
@@ -24,10 +26,19 @@ jobs:
 
       - name: Clean & Build tests
         run: |
-          nix develop --accept-flake-config --command bash -c "
-            if git diff --no-commit-id --name-only -r HEAD~ | grep -vE '^(docs/|dbc/)'; then
-                cd test
-                make clean
-                python3 makeAllTests.py
-            fi
-          "
+          echo "Checking for code changes..."
+          # Use the full push diff before entering nix develop
+          echo "${{ github.event.before }}"
+          echo "${{ github.sha }}"
+          CHANGES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -vE "^(docs/|dbc/)")
+          if [ -n "$CHANGES" ]; then
+              echo "Code changes detected:"
+              echo "$CHANGES"
+              nix develop --accept-flake-config --command bash -c '
+                  cd test
+                  make clean
+                  python3 makeAllTests.py
+              '
+          else
+              echo "No code changes"
+          fi
