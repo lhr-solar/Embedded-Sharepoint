@@ -192,8 +192,8 @@ static rx_payload_t usart3_rx_buffer;
 #endif
 
 //LPUART1 handle
-static UART_HandleTypeDef husart1_ = {.Instance = LPUART1};
-UART_HandleTypeDef* husart1 = &husart1_;
+static UART_HandleTypeDef hulpuart1_ = {.Instance = LPUART1};
+UART_HandleTypeDef* hlpuart1 = &hulpuart1_;
 
 // LPUART1 TX queue
 static QueueHandle_t lpuart1_tx_queue = NULL;
@@ -1033,7 +1033,6 @@ void USART3_IRQHandler(void) {
 
 #ifdef LPUART1
 void LPUART1_IRQHandler(void) {
-    HAL_UART_IRQHandler(hlpuart1);
     HAL_UART_IRQHandler(hlpuart1);
 }
 #endif /* LPUART1 */
