@@ -2,6 +2,9 @@ name: Build Tests
 
 on:
   push:
+    paths-ignore:
+      - "docs/**"
+      - "dbc/**"
 
 jobs:
   build:
@@ -26,23 +29,8 @@ jobs:
 
       - name: Clean & Build tests
         run: |
-          echo "Checking for code changes..."
-          # Use the full push diff before entering nix develop
-          # fallback: if HEAD~1 doesn't exist (first commit), diff all files
-          if git rev-parse HEAD~1 >/dev/null 2>&1; then
-              CHANGES=$(git diff --name-only HEAD~1 HEAD | grep -vE "^(docs/|dbc/)")
-          else
-              CHANGES=$(git ls-files | grep -vE "^(docs/|dbc/)")
-          fi
-
-          if [ -n "$CHANGES" ]; then
-              echo "Code changes detected:"
-              echo "$CHANGES"
-              nix develop --accept-flake-config --command bash -c '
-                  cd test
-                  make clean
-                  python3 makeAllTests.py
-              '
-          else
-              echo "No code changes"
-          fi
+          nix develop --accept-flake-config --command bash -c '
+              cd test
+              make clean
+              python3 makeAllTests.py
+          '
