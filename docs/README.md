@@ -24,6 +24,22 @@ For all PROJECT_TARGET options, see the [STM32_Ports](./STM32_Ports.md) page.
 
 To add your own tests, add a c file ending in _test to the ```tests/tests/``` folder
 
+### Running all tests
+We have a python script that runs in our CI. Usage is as follows:
+```
+usage: makeAllTests.py [-v] [-t TESTS [TESTS ...]] [-p PORTS [PORTS ...]] [-h]
+
+Compile all tests for all STM ports
+
+options:
+  -v, --verbose         Enable verbose output (show commands as they're run)
+  -t, --tests TESTS [TESTS ...]
+                        Pass specific test(s)
+  -p, --ports PORTS [PORTS ...]
+                        Pass specific port(s)
+  -h, --help            Show this help message and exit
+```
+
 ### Flashing code
 Once your code is compiled, use the makefile in the `test/` directory to flash your built code to the microcontroller. If you are running WSL there are some extra steps to connect the STM32 to your computer, which can be found [here](./FlashAndTheBug.md).
 
