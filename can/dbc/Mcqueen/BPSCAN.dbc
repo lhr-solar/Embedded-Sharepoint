@@ -34,7 +34,7 @@ NS_ :
 BS_:
 
 BU_: Amperes VoltTemp_7 VoltTemp_6 VoltTemp_5 VoltTemp_4 VoltTemp_3 VoltTemp_2 VoltTemp_1 VoltTemp_0 BPS_Leader
-VAL_TABLE_ BPS_Fault_Type 16 "Discharging Overcurrent" 15 "Charging Overcurrent" 14 "Estop 3" 13 "Estop 2" 12 "Estop 1" 11 "Array Pchg Contactor Sense" 10 "Array Contactor Sense" 9 "HV- Contactor Sense" 8 "HV+ Contactor Sense" 7 "Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "No Fault" ;
+VAL_TABLE_ BPS_Fault_Type 16 "Discharging Overcurrent" 15 "Charging Overcurrent" 14 "Estop 3" 13 "Estop 2" 12 "Estop 1" 11 "Array Pchg Contactor Sense" 10 "Array Contactor Sense" 9 "HV Minus Contactor Sense" 8 "HV Plus Contactor Sense" 7 "Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "No Fault" ;
 
 
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
@@ -128,9 +128,8 @@ BO_ 1 BPS_Status: 7 BPS_Leader
 
 
 CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
-CM_ SG_ 3221225472 BPS_VoltTemp_ID "BPS VoltTemp ID";
+CM_ SG_ 3221225472 BPS_VoltTemp_ID "BPS VoltTemp IDBPS VoltTemp ID";
 CM_ SG_ 3221225472 BPS_Tap_ID "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
-CM_ SG_ 3221225472 BPS_VoltTemp_ID "BPS VoltTemp ID";
 CM_ SG_ 9 BPS_Temperature_Tap_Fault "VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)";
 CM_ SG_ 9 BPS_VoltTemp_BQ_Fault "VoltTemp BQ Fault State (0 no fault, 1 fault)";
 CM_ SG_ 9 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
