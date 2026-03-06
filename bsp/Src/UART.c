@@ -1035,4 +1035,6 @@ void USART3_IRQHandler(void) {
 void LPUART1_IRQHandler(void) {
     HAL_UART_IRQHandler(hlpuart1);
 }
+
+
 #endif /* LPUART1 */
