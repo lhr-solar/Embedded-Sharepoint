@@ -231,7 +231,7 @@ static void task(void *pvParameters) {
             Error_Handler();
         }
 
-        // if(can_fd_recv(hfdcan1, test_id, &fdcan1_rx_header, fdcan1_rx_data, portMAX_DELAY) != CAN_RECV){
+        // if(can_fd_recv(hfdcan1, test_id, &fdcan1_rx_header, fdcan1_rx_data, portMAX_DELAY) != CAN_OK){
         //     Error_Handler();
         // }
 
@@ -249,7 +249,7 @@ static void task(void *pvParameters) {
             Error_Handler();
         }
 
-        // if(can_fd_recv(hfdcan2, test_id, &fdcan2_rx_header, fdcan2_rx_data, portMAX_DELAY) != CAN_RECV){
+        // if(can_fd_recv(hfdcan2, test_id, &fdcan2_rx_header, fdcan2_rx_data, portMAX_DELAY) != CAN_OK){
         //     Error_Handler();
         // }
 
@@ -265,7 +265,7 @@ static void task(void *pvParameters) {
             Error_Handler();
         }
 
-        // if(can_fd_recv(hfdcan3, test_id, &fdcan3_rx_header, fdcan3_rx_data, portMAX_DELAY) != CAN_RECV){
+        // if(can_fd_recv(hfdcan3, test_id, &fdcan3_rx_header, fdcan3_rx_data, portMAX_DELAY) != CAN_OK){
         //     Error_Handler();
         // }
 

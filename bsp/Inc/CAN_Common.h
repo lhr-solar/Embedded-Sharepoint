@@ -32,7 +32,7 @@ typedef struct {
 
 typedef struct {
     // If we're using FDCAN (stm32g4xx), use FDCAN_RxHeaderTypeDef
-#ifdef stm32g4xx
+#if defined(STM32G4xx)
     FDCAN_RxHeaderTypeDef header;
 #else
     CAN_RxHeaderTypeDef header;
