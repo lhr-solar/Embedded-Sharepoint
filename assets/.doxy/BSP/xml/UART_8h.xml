@@ -91,7 +91,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bsp/Inc/UART.h" line="88" column="15" declfile="bsp/Inc/UART.h" declline="88" declcolumn="15"/>
+        <location file="bsp/Inc/UART.h" line="92" column="15" declfile="bsp/Inc/UART.h" declline="92" declcolumn="15"/>
       </memberdef>
       <memberdef kind="function" id="UART_8h_1a3e4de921d10fbf0a69f2e9466530e732" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref></type>
@@ -121,7 +121,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bsp/Inc/UART.h" line="96" column="15" declfile="bsp/Inc/UART.h" declline="96" declcolumn="15"/>
+        <location file="bsp/Inc/UART.h" line="100" column="15" declfile="bsp/Inc/UART.h" declline="100" declcolumn="15"/>
       </memberdef>
       <memberdef kind="function" id="UART_8h_1a71553a13e21823d5ca910beb2abacb32" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref></type>
@@ -187,7 +187,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bsp/Inc/UART.h" line="107" column="15" declfile="bsp/Inc/UART.h" declline="107" declcolumn="15"/>
+        <location file="bsp/Inc/UART.h" line="111" column="15" declfile="bsp/Inc/UART.h" declline="111" declcolumn="15"/>
       </memberdef>
       <memberdef kind="function" id="UART_8h_1aa8ffbc96e17f61846c7b405b69488f18" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref></type>
@@ -253,7 +253,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bsp/Inc/UART.h" line="118" column="15" declfile="bsp/Inc/UART.h" declline="118" declcolumn="15"/>
+        <location file="bsp/Inc/UART.h" line="122" column="15" declfile="bsp/Inc/UART.h" declline="122" declcolumn="15"/>
       </memberdef>
     </sectiondef>
     <briefdescription>
@@ -334,15 +334,19 @@
 <codeline lineno="79"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>UART_HandleTypeDef*<sp/>husart3;</highlight></codeline>
 <codeline lineno="80"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>USART3<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="81"><highlight class="normal"></highlight></codeline>
-<codeline lineno="88" refid="UART_8h_1a1847d0a7e7670fccc3a7ffac3ba1e016" refkind="member"><highlight class="normal"><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref><sp/><ref refid="UART_8h_1a1847d0a7e7670fccc3a7ffac3ba1e016" kindref="member">uart_init</ref>(UART_HandleTypeDef*<sp/>handle);</highlight></codeline>
-<codeline lineno="89"><highlight class="normal"></highlight></codeline>
-<codeline lineno="96" refid="UART_8h_1a3e4de921d10fbf0a69f2e9466530e732" refkind="member"><highlight class="normal"><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref><sp/><ref refid="UART_8h_1a3e4de921d10fbf0a69f2e9466530e732" kindref="member">uart_deinit</ref>(UART_HandleTypeDef*<sp/>handle);</highlight></codeline>
-<codeline lineno="97"><highlight class="normal"></highlight></codeline>
-<codeline lineno="107" refid="UART_8h_1a71553a13e21823d5ca910beb2abacb32" refkind="member"><highlight class="normal"><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref><sp/><ref refid="UART_8h_1a71553a13e21823d5ca910beb2abacb32" kindref="member">uart_send</ref>(UART_HandleTypeDef*<sp/>handle,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint8_t*<sp/>data,<sp/>uint8_t<sp/>length,<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
-<codeline lineno="108"><highlight class="normal"></highlight></codeline>
-<codeline lineno="118" refid="UART_8h_1aa8ffbc96e17f61846c7b405b69488f18" refkind="member"><highlight class="normal"><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref><sp/><ref refid="UART_8h_1aa8ffbc96e17f61846c7b405b69488f18" kindref="member">uart_recv</ref>(UART_HandleTypeDef*<sp/>handle,<sp/>uint8_t*<sp/>data,<sp/>uint8_t<sp/>length,<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
-<codeline lineno="119"><highlight class="normal"></highlight></codeline>
-<codeline lineno="120"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>UART_H_<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
+<codeline lineno="82"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>LPUART1</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="83"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>UART_HandleTypeDef*<sp/>hlpuart1;</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>LPUART1<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="85"><highlight class="normal"></highlight></codeline>
+<codeline lineno="92" refid="UART_8h_1a1847d0a7e7670fccc3a7ffac3ba1e016" refkind="member"><highlight class="normal"><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref><sp/><ref refid="UART_8h_1a1847d0a7e7670fccc3a7ffac3ba1e016" kindref="member">uart_init</ref>(UART_HandleTypeDef*<sp/>handle);</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"></highlight></codeline>
+<codeline lineno="100" refid="UART_8h_1a3e4de921d10fbf0a69f2e9466530e732" refkind="member"><highlight class="normal"><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref><sp/><ref refid="UART_8h_1a3e4de921d10fbf0a69f2e9466530e732" kindref="member">uart_deinit</ref>(UART_HandleTypeDef*<sp/>handle);</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"></highlight></codeline>
+<codeline lineno="111" refid="UART_8h_1a71553a13e21823d5ca910beb2abacb32" refkind="member"><highlight class="normal"><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref><sp/><ref refid="UART_8h_1a71553a13e21823d5ca910beb2abacb32" kindref="member">uart_send</ref>(UART_HandleTypeDef*<sp/>handle,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint8_t*<sp/>data,<sp/>uint8_t<sp/>length,<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"></highlight></codeline>
+<codeline lineno="122" refid="UART_8h_1aa8ffbc96e17f61846c7b405b69488f18" refkind="member"><highlight class="normal"><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref><sp/><ref refid="UART_8h_1aa8ffbc96e17f61846c7b405b69488f18" kindref="member">uart_recv</ref>(UART_HandleTypeDef*<sp/>handle,<sp/>uint8_t*<sp/>data,<sp/>uint8_t<sp/>length,<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
+<codeline lineno="123"><highlight class="normal"></highlight></codeline>
+<codeline lineno="124"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>UART_H_<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
     </programlisting>
     <location file="bsp/Inc/UART.h"/>
   </compounddef>

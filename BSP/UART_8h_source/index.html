@@ -1087,6 +1087,10 @@ extern UART_HandleTypeDef* husart2;
 extern UART_HandleTypeDef* husart3;
 #endif /* USART3 */
 
+#ifdef LPUART1
+extern UART_HandleTypeDef* hlpuart1;
+#endif /* LPUART1 */
+
 uart_status_t uart_init(UART_HandleTypeDef* handle);
 
 uart_status_t uart_deinit(UART_HandleTypeDef* handle);
