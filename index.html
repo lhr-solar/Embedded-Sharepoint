@@ -331,6 +331,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#compiling-all-tests-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compiling all tests (CI)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#flashing-code" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1236,6 +1247,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#compiling-all-tests-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compiling all tests (CI)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#flashing-code" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1318,6 +1340,21 @@ make TEST=blinky PROJECT_TARGET=stm32g473xx
 </code></pre>
 <p>For all PROJECT_TARGET options, see the <a href="STM32_Ports/">STM32_Ports</a> page. </p>
 <p>To add your own tests, add a c file ending in _test to the <code>tests/tests/</code> folder</p>
+<h3 id="compiling-all-tests-ci">Compiling all tests (CI)</h3>
+<p>We have a python script to compile all existing tests for all existing ports that runs in our CI. Usage is as follows:</p>
+<pre><code>usage: makeAllTests.py [-v] [-t TESTS [TESTS ...]] [-p PORTS [PORTS ...]] [-h]
+
+Compile all tests for all STM ports
+
+options:
+  -v, --verbose         Enable verbose output (show commands as they're run)
+  -t, --tests TESTS [TESTS ...]
+                        Pass specific test(s)
+  -p, --ports PORTS [PORTS ...]
+                        Pass specific port(s)
+  -h, --help            Show this help message and exit
+</code></pre>
+<p>Default behavior is to compile all tests for all ports.</p>
 <h3 id="flashing-code">Flashing code</h3>
 <p>Once your code is compiled, use the makefile in the <code>test/</code> directory to flash your built code to the microcontroller. If you are running WSL there are some extra steps to connect the STM32 to your computer, which can be found <a href="FlashAndTheBug/">here</a>.</p>
 <p>Run the following command to flash:</p>
