@@ -189,13 +189,13 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
                       TickType_t delay_ticks);
 
 /**
- * @brief Weakly defined hook function called in TX complete callback.
+ * @brief Weakly defined hook function called after message is added to TX mailbox from send queue.
  * Default implementation does nothing.
  */
-void can_tx_callback_hook(CAN_HandleTypeDef* hcan, can_tx_payload_t payload);
+void can_tx_callback_hook(CAN_HandleTypeDef* hcan, const can_tx_payload_t* payload);
 
 /**
- * @brief Weakly defined hook function called in RX callback.
+ * @brief Weakly defined hook function called in RX callback after receiving a message from RX FIFO.
  * Default implementation does nothing.
  */
-void can_rx_callback_hook(CAN_HandleTypeDef* hcan, can_rx_payload_t payload);
+void can_rx_callback_hook(CAN_HandleTypeDef* hcan, const can_rx_payload_t* payload);
