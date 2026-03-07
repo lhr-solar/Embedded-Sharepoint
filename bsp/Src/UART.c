@@ -180,6 +180,36 @@ static rx_payload_t usart3_rx_buffer;
 
 #endif /* USART3 */
 
+
+#ifdef LPUART1
+#ifndef LPUART1_TX_QUEUE_SIZE
+#define LPUART1_TX_QUEUE_SIZE (20)
+#endif  /* LPUART1 */
+
+#ifndef LPUART1_RX_QUEUE_SIZE
+#define LPUART1_RX_QUEUE_SIZE (20)
+#endif /* LPUART1_RX_QUEUE_SIZE */
+
+// LPUART1 handle
+static UART_HandleTypeDef hlpuart1_ = {.Instance = LPUART1};
+UART_HandleTypeDef* hlpuart1 = &hlpuart1_;
+
+// TX queue
+static QueueHandle_t lpuart1_tx_queue = NULL;
+static StaticQueue_t lpuart1_tx_queue_buffer;
+static uint8_t lpuart1_tx_queue_storage[LPUART1_TX_QUEUE_SIZE * sizeof(tx_payload_t)];
+
+// RX queue
+static QueueHandle_t lpuart1_rx_queue = NULL;
+static StaticQueue_t lpuart1_rx_queue_buffer;
+static uint8_t lpuart1_rx_queue_storage[LPUART1_RX_QUEUE_SIZE * sizeof(rx_payload_t)];
+
+// LPUART1 RX buffer
+// An intermediate buffer of DATA_SIZE bytes to store received data before it is copied to the queue
+static rx_payload_t lpuart1_rx_buffer;
+
+#endif
+
 static bool is_uart_initialized(UART_HandleTypeDef* handle) {
     // Check if the UART is in a valid state
     // HAL_UART_STATE_RESET indicates the UART is not initialized
@@ -283,7 +313,26 @@ __weak void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
         init.Alternate = GPIO_AF7_USART3;
         HAL_GPIO_Init(GPIOC, &init);
     }
-    #endif /* USART3 */    
+    #endif /* USART3 */ 
+    
+    #ifdef LPUART1
+    if(huart->Instance == LPUART1) {
+
+        __HAL_RCC_GPIOA_CLK_ENABLE();
+
+        /* PA2 -> LPUART1_TX
+        PA3 -> LPUART1_RX */
+        init.Pin = GPIO_PIN_2 | GPIO_PIN_3;
+        init.Mode = GPIO_MODE_AF_PP;
+        init.Pull = GPIO_NOPULL;
+        init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+        init.Alternate = GPIO_AF8_LPUART1;
+
+        HAL_GPIO_Init(GPIOA, &init);
+    }
+    #endif
+
+    
 }
 
 void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
@@ -323,6 +372,14 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
         uart_IRQ = USART3_IRQn;
     }
     #endif /* USART3 */
+
+    #ifdef LPUART1
+    if (huart->Instance == LPUART1) {
+        __HAL_RCC_LPUART1_CLK_ENABLE();
+        uart_IRQ = LPUART1_IRQn;
+    }
+    #endif /* LPUART1 */
+
 
     // configure GPIO pins for UART
     HAL_UART_MspGPIOInit(huart); 
@@ -391,6 +448,15 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart) {
         HAL_NVIC_DisableIRQ(USART3_IRQn);        //disable interrupts
     }
     #endif /* USART3 */
+
+    #ifdef LPUART1
+    if (huart->Instance == LPUART1) {
+
+        __HAL_RCC_LPUART1_CLK_DISABLE();
+        HAL_NVIC_DisableIRQ(LPUART1_IRQn);      //disable interrupts
+
+    }
+    #endif
 
     HAL_UART_MspGPIODeInit(huart);
 }
@@ -498,11 +564,44 @@ uart_status_t uart_init(UART_HandleTypeDef* handle) {
     }
     #endif /* USART3 */
 
+
+    #ifdef LPUART1
+    if(handle->Instance == LPUART1) {
+
+        lpuart1_tx_queue = xQueueCreateStatic(
+            LPUART1_TX_QUEUE_SIZE,
+            sizeof(tx_payload_t),
+            lpuart1_tx_queue_storage,
+            &lpuart1_tx_queue_buffer);
+
+        lpuart1_rx_queue = xQueueCreateStatic(
+            LPUART1_RX_QUEUE_SIZE,
+            sizeof(rx_payload_t),
+            lpuart1_rx_queue_storage,
+            &lpuart1_rx_queue_buffer);
+
+        rx_buffer = lpuart1_rx_buffer.data;
+    }
+    #endif /* LPUART1 */
+
+    uint8_t is_valid_uart_instance = 0;
+
+    #ifdef LPUART1
+    if(IS_LPUART_INSTANCE(handle->Instance)){
+        is_valid_uart_instance = 1;
+    }
+    #endif /* LPUART1 */
+    if(IS_UART_INSTANCE(handle->Instance) || IS_USART_INSTANCE(handle->Instance)){
+        is_valid_uart_instance = 1;
+    }
+
+    if(!is_valid_uart_instance){
+        return UART_ERR;
+    }
+
     // init HAL
-    if (HAL_UART_Init(handle) != HAL_OK ||
-	!IS_UART_INSTANCE(handle->Instance) ||
-	!IS_USART_INSTANCE(handle->Instance)){
-	return UART_ERR;
+    if(HAL_UART_Init(handle) != HAL_OK){
+        return UART_ERR;
     }
 
     // Start reception
@@ -564,6 +663,13 @@ uart_status_t uart_deinit(UART_HandleTypeDef* handle) {
     }
     #endif /* USART3 */
 
+    #ifdef LPUART1
+    if (handle->Instance == LPUART1) {
+        lpuart1_tx_queue = NULL;
+        lpuart1_rx_queue = NULL;
+    }
+    #endif /* LPUART1 */
+
     return UART_OK;
 }
 
@@ -599,6 +705,10 @@ static uint8_t usart2_tx_buffer[USART2_TX_QUEUE_SIZE]; // make buffer size same 
 // static buffer for USART3 TX
 static uint8_t usart3_tx_buffer[USART3_TX_QUEUE_SIZE]; // make buffer size same as queue size 
 #endif /* USART3 */
+
+#ifdef LPUART1
+static uint8_t lpuart1_tx_buffer[LPUART1_TX_QUEUE_SIZE];
+#endif /* LPUART1 */
 
 uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t length, TickType_t delay_ticks) {
     if (length == 0 || !is_uart_initialized(handle)) { // check if UART is initialized and data length is not 0
@@ -642,6 +752,13 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
         tx_queue = &usart3_tx_queue;
     }
     #endif /* USART3 */
+
+    #ifdef LPUART1
+    if(handle->Instance == LPUART1) {
+        tx_buffer = lpuart1_tx_buffer;
+        tx_queue = &lpuart1_tx_queue;
+    }
+    #endif /* LPUART1 */
   
 
     uart_status_t status = UART_SENT;
@@ -730,6 +847,12 @@ uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t lengt
     }
     #endif /* USART3 */
 
+    #ifdef LPUART1
+    if(handle->Instance == LPUART1) {
+        rx_queue = lpuart1_rx_queue;
+    }
+    #endif /* LPUART1 */
+
     uart_status_t status = UART_RECV;
     rx_payload_t receivedPayload;
     uint8_t bytes_received = 0;
@@ -792,6 +915,12 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
         tx_queue = &usart3_tx_queue;
     }
     #endif /* USART3 */
+
+    #ifdef LPUART1
+    if(huart->Instance == LPUART1) {
+        tx_queue = &lpuart1_tx_queue;
+    }
+    #endif /* LPUART1 */
 
     // Pull as many bytes as we can fit in the buffer
     tx_payload_t payload;
@@ -860,6 +989,13 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     }
     #endif /* USART3 */
 
+    #ifdef LPUART1
+    if(huart->Instance == LPUART1) {
+        rx_queue = &lpuart1_rx_queue;
+        rx_buffer = lpuart1_rx_buffer.data;
+    }
+    #endif /* LPUART1 */
+
     rx_payload_t receivedData;
     for (int i = 0; i < DATA_SIZE; i++) {
         receivedData.data[i] = rx_buffer[i]; //uartN_rx_buffer.data
@@ -905,3 +1041,9 @@ void USART3_IRQHandler(void) {
     HAL_UART_IRQHandler(husart3);
 }
 #endif /* USART3 */
+
+#ifdef LPUART1
+void LPUART1_IRQHandler(void) {
+    HAL_UART_IRQHandler(hlpuart1);
+}
+#endif /* LPUART1 */

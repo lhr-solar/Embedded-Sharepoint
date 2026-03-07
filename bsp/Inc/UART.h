@@ -79,6 +79,10 @@ extern UART_HandleTypeDef* husart2;
 extern UART_HandleTypeDef* husart3;
 #endif /* USART3 */
 
+#ifdef LPUART1
+extern UART_HandleTypeDef* hlpuart1;
+#endif /* LPUART1 */
+
 /**
  * @brief Initializes the specified UART peripheral.
  * 
