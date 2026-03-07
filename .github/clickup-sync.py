@@ -246,7 +246,9 @@ def check_unblock(issue_num):
 # MAIN EVENT HANDLER
 # ============================================================================
 def main():
-    event = json.loads(sys.argv[1])
+    with open(sys.argv[1]) as f:
+        event = json.load(f)
+
     action = event.get("action")
     
     print(f"Event: {EVENT_NAME}.{action}")
