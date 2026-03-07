@@ -280,6 +280,11 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
   return CAN_OK;
 }
 
+__weak void can_tx_callback_hook(CAN_HandleTypeDef* hcan, can_tx_payload_t payload) {
+  UNUSED(hcan);
+  UNUSED(payload);
+}
+
 static void transmit(CAN_HandleTypeDef* handle) {
   can_tx_payload_t payload = {0};
   BaseType_t higherPriorityTaskWoken = pdFALSE;
@@ -321,6 +326,8 @@ static void transmit(CAN_HandleTypeDef* handle) {
       // Handle transmission error (optional: log or retry mechanism)
       // treated as lost packet for now
     }
+    // Optional callback for user to implement                    
+    can_tx_callback_hook(handle, payload);
   }
 
   portYIELD_FROM_ISR(higherPriorityTaskWoken);
@@ -338,6 +345,11 @@ void HAL_CAN_TxMailbox2CompleteCallback(CAN_HandleTypeDef* hcan) {
   transmit(hcan);
 }
 
+__weak void can_rx_callback_hook(CAN_HandleTypeDef* hcan, can_rx_payload_t payload) {
+  UNUSED(hcan);
+  UNUSED(payload);
+}
+
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
   can_rx_payload_t payload = {0};
   BaseType_t higherPriorityTaskWoken = pdFALSE;
@@ -345,6 +357,10 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
   // recieve messages from queue till empty and put into recieve queues
   while (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &payload.header,
                               payload.data) == HAL_OK) {
+
+    // Optional callback for user to implement                    
+    can_rx_callback_hook(hcan, payload);
+
     // CAN1
     if (hcan->Instance == CAN1) {
       for (int i = 0; i < can1_recv_entry_count; i++) {
