@@ -114,8 +114,7 @@ int main(void)
     SystemClock_Config();
     LED_Init();
     User_Hardware_Init(); // Sets up SPI, Clocks, and NVIC Priority 10
-    
-    
+
     /* Link SD Handle */
     sd.hspi = &hspi_user;
     sd.cs_port = USER_CS_PORT; 
@@ -124,8 +123,9 @@ int main(void)
     // Initialize Queues and Mutexes
     if (USER_SD_Card_Init(&sd) != SD_OK) {
         while(1) { 
-            HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET); 
-            HAL_Delay(50); }
+            HAL_GPIO_TogglePin(LED_PORT, LED_PIN); 
+            HAL_Delay(50); 
+        }
     }
 
     // Create Tasks
@@ -139,26 +139,26 @@ int main(void)
 }
 
 void Task1_Entry(void *params) {
-    char *msg = "mcu37Task 1: Async\r\n";
+    char *msg = "lsom37Task 1: Async\r\n";
     vTaskDelay(pdMS_TO_TICKS(2000)); 
 
     for(;;) {
-        //HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET); 
+        HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET); 
         
-        USER_SD_Card_Write_Async(&sd, "MCULSOMLOG137.TXT", msg, pdMS_TO_TICKS(10));
+        USER_SD_Card_Write_Async(&sd, "LOG1.TXT", msg, pdMS_TO_TICKS(10));
 
-        //HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_RESET);
 
         vTaskDelay(pdMS_TO_TICKS(200));
     }
 }
 
 void Task2_Entry(void *params) {
-    char *msg = "mcu37Task 2: Async\r\n";
+    char *msg = "lsom37Task 2: Async\r\n";
     vTaskDelay(pdMS_TO_TICKS(2500)); 
 
     for(;;) {
-        USER_SD_Card_Write_Async(&sd, "MCULOG137.TXT", msg, pdMS_TO_TICKS(10));
+        USER_SD_Card_Write_Async(&sd, "LOG1.TXT", msg, pdMS_TO_TICKS(10));
         vTaskDelay(pdMS_TO_TICKS(250));
     }
 }
@@ -174,9 +174,6 @@ void Task3_Entry(void *params) {
 // GPIO for LED init
 void LED_Init(void) {
     __HAL_RCC_GPIOA_CLK_ENABLE();
-    __HAL_RCC_GPIOB_CLK_ENABLE();
-    __HAL_RCC_GPIOC_CLK_ENABLE();
-
     GPIO_InitTypeDef GPIO_InitStruct = {0};
     GPIO_InitStruct.Pin = LED_PIN;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -191,7 +188,7 @@ void SystemClock_Config(void)
     RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
 /* CONFIGURATION FOR L4 / G4 CHIPS             */
-    #if defined(STM32L4xx)
+#if defined(STM32L4xx)
 
     if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK) {
         while(1); // Error Handler
@@ -207,6 +204,7 @@ void SystemClock_Config(void)
     
     // L4 uses DIV7
     RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV7; 
+    
     RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
     RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
 
@@ -313,55 +311,35 @@ void User_Hardware_Init(void) {
         __HAL_RCC_SPI1_CLK_ENABLE();
     #endif
 
-
-    
     /* Configure GPIO (SCK, MISO, MOSI, CS) */
     GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-
-    // GPIO_InitStruct.Pin = USER_SCK_PIN | USER_MISO_PIN | USER_MOSI_PIN;
-    // GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    // GPIO_InitStruct.Pull = GPIO_PULLUP; 
-    // GPIO_InitStruct.Alternate = USER_MISO_AF; //CHANGE MACRO
-    // GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    // HAL_GPIO_Init(USER_MISO_PORT, &GPIO_InitStruct);
-        /* 2. Configure GPIO (SCK, MISO, MOSI) */
-
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;  //g4: GPIO_SPEED_FREQ_LOW
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 
-    // SCK
     GPIO_InitStruct.Pin = USER_SCK_PIN;
     GPIO_InitStruct.Alternate = USER_SCK_AF; 
     HAL_GPIO_Init(USER_SCK_PORT, &GPIO_InitStruct);
 
-    // MISO
     GPIO_InitStruct.Pin = USER_MISO_PIN;
     GPIO_InitStruct.Alternate = USER_MISO_AF;
     HAL_GPIO_Init(USER_MISO_PORT, &GPIO_InitStruct);
 
-    // MOSI
     GPIO_InitStruct.Pin = USER_MOSI_PIN;
     GPIO_InitStruct.Alternate = USER_MOSI_AF;
     HAL_GPIO_Init(USER_MOSI_PORT, &GPIO_InitStruct);
 
-
     HAL_GPIO_WritePin(USER_CS_PORT, USER_CS_PIN, GPIO_PIN_SET); 
     GPIO_InitStruct.Pin = USER_CS_PIN;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-    #if defined(STM32L4xx)
-        GPIO_InitStruct.Alternate = 0;
-    #endif
+    GPIO_InitStruct.Alternate = 0;
     HAL_GPIO_Init(USER_CS_PORT, &GPIO_InitStruct);
 
     /* Configure SPI Peripheral */
-
-    hspi_user.Instance = USER_SPI_INSTANCE; //
+    hspi_user.Instance = USER_SPI_INSTANCE;
     hspi_user.Init.Mode = SPI_MODE_MASTER;
     hspi_user.Init.Direction = SPI_DIRECTION_2LINES;
-    hspi_user.Init.DataSize = SPI_DATASIZE_8BIT; //g4 spi1: 4bit
+    hspi_user.Init.DataSize = SPI_DATASIZE_8BIT;
     hspi_user.Init.CLKPolarity = SPI_POLARITY_LOW;
     hspi_user.Init.CLKPhase = SPI_PHASE_1EDGE;
     hspi_user.Init.NSS = SPI_NSS_SOFT;
@@ -371,12 +349,10 @@ void User_Hardware_Init(void) {
     #else 
         hspi_user.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256; 
     #endif
-
+    
     hspi_user.Init.FirstBit = SPI_FIRSTBIT_MSB;
     hspi_user.Init.TIMode = SPI_TIMODE_DISABLE;
     hspi_user.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-
-
     
     #if defined(STM32L4xx)
        hspi_user.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
@@ -395,11 +371,10 @@ void User_Hardware_Init(void) {
         HAL_NVIC_SetPriority(SPI2_IRQn, 10, 0);
         HAL_NVIC_EnableIRQ(SPI2_IRQn);
     #elif defined(STM32G473xx) || defined(STM32G4xx)
-        HAL_NVIC_SetPriority(SPI1_IRQn, configMAX_SYSCALL_INTERRUPT_PRIORITY, 0);
+        HAL_NVIC_SetPriority(SPI1_IRQn, 10, 0);
         HAL_NVIC_EnableIRQ(SPI1_IRQn);
     #else
         HAL_NVIC_SetPriority(SPI1_IRQn, 10, 0);
         HAL_NVIC_EnableIRQ(SPI1_IRQn);
     #endif
 }
-
