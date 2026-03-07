@@ -88,7 +88,7 @@ export PROJECT_TARGET
 export PROJECT_C_SOURCES
 export PROJECT_C_INCLUDES
 export PROJECT_BUILD_DIR
-
+#export PROJECT_MACROS
 
 #-------------------------------
 # Clang
