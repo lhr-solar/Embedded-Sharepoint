@@ -204,7 +204,7 @@ static void task(void *pvParameters) {
     tx_header.TxEventFifoControl = FDCAN_STORE_TX_EVENTS;
     tx_header.MessageMarker = 0;
 
-    // send x1234 to 0x11
+    // send x1234 to 0x321
     uint8_t tx_data[8] = {0};
     tx_data[0] = 0x12;
     tx_data[1] = 0x34;
@@ -215,14 +215,14 @@ static void task(void *pvParameters) {
     tx_data[6] = 0xDE;
     tx_data[7] = 0xFF;
 
-    // FDCAN_RxHeaderTypeDef fdcan1_rx_header = {0};
-    // uint8_t fdcan1_rx_data[8] = {0};
+    FDCAN_RxHeaderTypeDef fdcan1_rx_header = {0};
+    uint8_t fdcan1_rx_data[8] = {0};
 
-    // FDCAN_RxHeaderTypeDef fdcan2_rx_header = {0};
-    // uint8_t fdcan2_rx_data[8] = {0};
+    FDCAN_RxHeaderTypeDef fdcan2_rx_header = {0};
+    uint8_t fdcan2_rx_data[8] = {0};
 
-    // FDCAN_RxHeaderTypeDef fdcan3_rx_header = {0};
-    // uint8_t fdcan3_rx_data[8] = {0};
+    FDCAN_RxHeaderTypeDef fdcan3_rx_header = {0};
+    uint8_t fdcan3_rx_data[8] = {0};
 
     while(1){
 
@@ -231,15 +231,16 @@ static void task(void *pvParameters) {
             Error_Handler();
         }
 
-        // if(can_fd_recv(hfdcan1, test_id, &fdcan1_rx_header, fdcan1_rx_data, portMAX_DELAY) != CAN_OK){
-        //     Error_Handler();
-        // }
+        // note that for can_fd_recv to work, the ID used must be added the can1_recv_entires.h file
+        if(can_fd_recv(hfdcan1, test_id, &fdcan1_rx_header, fdcan1_rx_data, portMAX_DELAY) != CAN_OK){
+            Error_Handler();
+        }
 
-        // for(uint8_t i = 0; i < 8; i++){
-        //     if(fdcan1_rx_data[i] != tx_data[i]){
-        //         Error_Handler();
-        //     }
-        // }
+        for(uint8_t i = 0; i < 8; i++){
+            if(fdcan1_rx_data[i] != tx_data[i]){
+                Error_Handler();
+            }
+        }
 
         
 #endif
@@ -249,15 +250,16 @@ static void task(void *pvParameters) {
             Error_Handler();
         }
 
-        // if(can_fd_recv(hfdcan2, test_id, &fdcan2_rx_header, fdcan2_rx_data, portMAX_DELAY) != CAN_OK){
-        //     Error_Handler();
-        // }
+        // note that for can_fd_recv to work, the ID used must be added the can2_recv_entires.h file
+        if(can_fd_recv(hfdcan2, test_id, &fdcan2_rx_header, fdcan2_rx_data, portMAX_DELAY) != CAN_OK){
+            Error_Handler();
+        }
 
-        // for(uint8_t i = 0; i < 8; i++){
-        //     if(fdcan2_rx_data[i] != tx_data[i]){
-        //         Error_Handler();
-        //     }
-        // }
+        for(uint8_t i = 0; i < 8; i++){
+            if(fdcan2_rx_data[i] != tx_data[i]){
+                Error_Handler();
+            }
+        }
 #endif
 
 #ifdef FDCAN3
@@ -265,15 +267,16 @@ static void task(void *pvParameters) {
             Error_Handler();
         }
 
-        // if(can_fd_recv(hfdcan3, test_id, &fdcan3_rx_header, fdcan3_rx_data, portMAX_DELAY) != CAN_OK){
-        //     Error_Handler();
-        // }
+        // note that for can_fd_recv to work, the ID used must be added the can3_recv_entires.h file
+        if(can_fd_recv(hfdcan3, test_id, &fdcan3_rx_header, fdcan3_rx_data, portMAX_DELAY) != CAN_OK){
+            Error_Handler();
+        }
 
-        // for(uint8_t i = 0; i < 8; i++){
-        //     if(fdcan3_rx_data[i] != tx_data[i]){
-        //         Error_Handler();
-        //     }
-        // }
+        for(uint8_t i = 0; i < 8; i++){
+            if(fdcan3_rx_data[i] != tx_data[i]){
+                Error_Handler();
+            }
+        }
 
 #endif
         
@@ -317,6 +320,9 @@ int main(void) {
     hfdcan1->Instance = FDCAN1;
     hfdcan1->Init.ClockDivider = FDCAN_CLOCK_DIV1;
     hfdcan1->Init.FrameFormat = FDCAN_FRAME_CLASSIC;
+
+    // internal loopback shorts the CAN RX and TX internally.
+    // In production, this should be set to FDCAN_MODE_NORMAL
     hfdcan1->Init.Mode = FDCAN_MODE_INTERNAL_LOOPBACK;
     hfdcan1->Init.AutoRetransmission = DISABLE;
     hfdcan1->Init.TransmitPause = DISABLE;
@@ -340,6 +346,8 @@ int main(void) {
     sFilterConfig.FilterIndex = 0;
     sFilterConfig.FilterType = FDCAN_FILTER_MASK;
     sFilterConfig.FilterConfig = FDCAN_FILTER_TO_RXFIFO0; // directs frames to FIFO0
+
+    // this accepts all CAN IDs
     sFilterConfig.FilterID1 = 0x000;
     sFilterConfig.FilterID2 = 0x000;
     
@@ -357,6 +365,9 @@ int main(void) {
     hfdcan2->Instance = FDCAN2; 
     hfdcan2->Init.ClockDivider = FDCAN_CLOCK_DIV1;
     hfdcan2->Init.FrameFormat = FDCAN_FRAME_CLASSIC;
+
+    // internal loopback shorts the CAN RX and TX internally.
+    // In production, this should be set to FDCAN_MODE_NORMAL
     hfdcan2->Init.Mode = FDCAN_MODE_EXTERNAL_LOOPBACK;
     hfdcan2->Init.AutoRetransmission = DISABLE;
     hfdcan2->Init.TransmitPause = DISABLE;
@@ -379,6 +390,8 @@ int main(void) {
     sFilterConfig2.FilterIndex = 0;
     sFilterConfig2.FilterType = FDCAN_FILTER_MASK;
     sFilterConfig2.FilterConfig = FDCAN_FILTER_TO_RXFIFO0; // directs frames to FIFO0
+
+    // this accepts all CAN IDs
     sFilterConfig2.FilterID1 = 0x000;
     sFilterConfig2.FilterID2 = 0x000;
 
@@ -419,6 +432,8 @@ int main(void) {
     sFilterConfig3.FilterIndex = 0;
     sFilterConfig3.FilterType = FDCAN_FILTER_MASK;
     sFilterConfig3.FilterConfig = FDCAN_FILTER_TO_RXFIFO0; // directs frames to FIFO0
+
+    // this accepts all CAN IDs
     sFilterConfig3.FilterID1 = 0x000;
     sFilterConfig3.FilterID2 = 0x000;
 
