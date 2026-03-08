@@ -21,7 +21,7 @@
 #define SD_DEFAULT_TIMEOUT_MS       1000   // Default time to wait for card operations
 #define SD_SMALL_TRANSFER_THRESHOLD 16 // Threshold for stack-allocated dummy buffers
 #define SD_R1_POLL_RETRIES          8   // Number of bytes to poll for an R1 response
-#define SD_BUSY_WAIT_RETRIES        500
+#define SD_BUSY_WAIT_RETRIES        500 // loop time
 
 #define SD_CMD_PACKET_SIZE  6    // Standard SD SPI command packet size (1 index + 4 arg + 1 CRC)
 #define SD_CMD_INDEX_MASK   0x3F // Mask to ensure command index is 6 bits
