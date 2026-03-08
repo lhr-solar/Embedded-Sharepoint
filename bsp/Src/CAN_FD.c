@@ -141,6 +141,16 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
         return CAN_ERR;
     }
 
+    // create CAN payload so we can forward it
+    can_tx_payload_t payload = {0};
+    payload.header = *header;
+    for (int i = 0; i < header->DataLength; i++) {
+        payload.data[i] = data[i];
+    }
+
+    // optional callback the user can implement (by default does nothing)
+    can_fd_tx_callback_hook(handle, &payload);
+
     // disable interrupts while we check the status of the can mailboxes, so other interrupts don't change it
     portENTER_CRITICAL();
     // Check if there is a free can mailbox to send a message
@@ -162,12 +172,6 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
     else{
         // enable interrupts
         portEXIT_CRITICAL();
-
-        can_tx_payload_t payload = {0};
-        payload.header = *header;
-        for (int i = 0; i < header->DataLength; i++) {
-            payload.data[i] = data[i];
-        }
         
 #ifdef FDCAN1
         if (handle->Instance == FDCAN1) {
@@ -190,7 +194,6 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
             }
         }
 #endif /* FDCAN3 */
-
     }
     return CAN_OK;
 }
@@ -331,7 +334,7 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 #endif /* FDCAN2 */
 
 #ifdef FDCAN3
-            if (hfdcan->Instance == FDCAN3) {
+            else if (hfdcan->Instance == FDCAN3) {
             for (int i = 0; i < can3_recv_entry_count; i++) {
                 if (can3_recv_entries[i].id == payload.header.Identifier) {
                     if (can3_recv_entries[i].circular){
@@ -356,11 +359,11 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
     
 }
 
-__weak void can_fd_tx_complete_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t BufferIndexes)
+__weak void can_fd_tx_callback_hook(FDCAN_HandleTypeDef* hfdcan, const can_tx_payload_t* payload)
 {
     /* Prevent unused argument(s) compilation warning */
     UNUSED(hfdcan);
-    UNUSED(BufferIndexes);
+    UNUSED(payload);
 }
 
 void HAL_FDCAN_TxBufferCompleteCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t BufferIndexes)
@@ -400,9 +403,6 @@ void HAL_FDCAN_TxBufferCompleteCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t Bu
         }
     }
 #endif
-
-    // optional callback the user can implement (by default does nothing)
-    can_fd_tx_complete_hook(hfdcan, BufferIndexes);
 
     portYIELD_FROM_ISR(higherPriorityTaskWoken);
 
