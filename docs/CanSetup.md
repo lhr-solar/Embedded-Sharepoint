@@ -82,7 +82,7 @@ CAN_RECV_ENTRY([ID], [number of entires in the queue], [if the queue is circular
 
 ```
 
-The queue is `circular` if when the queue is full, one of the pieces of data is overriden for the new piece of data.
+The queue is `circular` if when the queue is full, one of the pieces of data is overridden for the new piece of data.
 
 ```c
 // this makes a non-circular fifo of size 5 for the CAN ID 0x001.
