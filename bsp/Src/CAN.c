@@ -237,6 +237,14 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
       return CAN_ERR;
     }
 
+    // Optional callback for user to implement     
+    can_tx_payload_t payload = {0};
+    payload.header = *header;
+    for (int i = 0; i < header->DLC; i++) {
+      payload.data[i] = data[i];
+    }
+    can_tx_callback_hook(handle, &payload);
+
     // enable interrupts
     portEXIT_CRITICAL();
   }
@@ -275,6 +283,9 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
       }
     }
     #endif /* CAN3 */
+
+    // Optional callback for user to implement                    
+    can_tx_callback_hook(handle, &payload);
   }
 
   return CAN_OK;
@@ -326,8 +337,6 @@ static void transmit(CAN_HandleTypeDef* handle) {
       // Handle transmission error (optional: log or retry mechanism)
       // treated as lost packet for now
     }
-    // Optional callback for user to implement                    
-    can_tx_callback_hook(handle, &payload);
   }
 
   portYIELD_FROM_ISR(higherPriorityTaskWoken);
