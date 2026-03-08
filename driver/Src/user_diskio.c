@@ -38,8 +38,7 @@ Diskio_drvTypeDef  USER_Driver =
   */
 DSTATUS USER_initialize (BYTE pdrv)
 {
-    // FIX: Added pdMS_TO_TICKS(1000) timeout parameter
-    if(SD_Init(&sd, pdMS_TO_TICKS(1000)) != SD_OK) {
+    if(SD_Init(&sd, pdMS_TO_TICKS(SD_TIMEOUT_MS)) != SD_OK) {
         Stat = STA_NOINIT; 
         return Stat;
     }
@@ -63,8 +62,7 @@ DRESULT USER_read (BYTE pdrv, BYTE *buff, DWORD sector, UINT count)
 {
     // Loop through however many sectors FatFs asks for
     for (UINT i = 0; i < count; i++) {
-        // FIX: Added pdMS_TO_TICKS(1000) timeout parameter
-        if (SD_ReadSingleBlock(&sd, sector + i, buff, pdMS_TO_TICKS(1000)) != SD_OK) {
+        if (SD_ReadSingleBlock(&sd, sector + i, buff, pdMS_TO_TICKS(SD_TIMEOUT_MS)) != SD_OK) {
             return RES_ERROR;
         }
         buff += SD_BLOCK_SIZE; // Advance the buffer by 512 bytes
@@ -79,8 +77,7 @@ DRESULT USER_read (BYTE pdrv, BYTE *buff, DWORD sector, UINT count)
 DRESULT USER_write (BYTE pdrv, const BYTE *buff, DWORD sector, UINT count)
 {
     for (UINT i = 0; i < count; i++) {
-        // FIX: Added pdMS_TO_TICKS(1000) timeout parameter
-        if (SD_WriteSingleBlock(&sd, sector + i, buff, pdMS_TO_TICKS(1000)) != SD_OK) {
+        if (SD_WriteSingleBlock(&sd, sector + i, buff, pdMS_TO_TICKS(SD_TIMEOUT_MS)) != SD_OK) {
             return RES_ERROR;
         }
         buff += SD_BLOCK_SIZE; // Advance the buffer by 512 bytes
@@ -102,7 +99,7 @@ DRESULT USER_ioctl (BYTE pdrv, BYTE cmd, void *buff)
             return RES_OK; 
             
         case GET_SECTOR_COUNT:
-            *(DWORD*)buff = 1024 * 1024 * 2; // Dummy size
+            *(DWORD*)buff = SD_DEFAULT_SECTOR_COUNT; // Dummy size
             return RES_OK;
 
         case GET_BLOCK_SIZE:

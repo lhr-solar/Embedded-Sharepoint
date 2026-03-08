@@ -4,39 +4,56 @@
 #include <string.h>
 
 static sd_handle_t *g_sd_handle = NULL;
+static const uint8_t g_large_dummy_buffer[SD_BLOCK_SIZE] = { [0 ... SD_BLOCK_SIZE-1] = SD_DUMMY_BYTE }; // dummy buffer array used to generate SPI clock cycles during large reads
+//memory allocation for worker task
+StaticTask_t xWorkerBuffer;
+StackType_t xWorkerStack[2048]; 
 
-/* RTOS INTERRUPT*/ 
-//starts an interrupt-driven SPI transfer
-//puts the task to sleep until the hardware finishes
-//1.takes a byte from the tx memory spot
-//2.pushes it out the MOSI wire, and simultaneously pulls a byte from the MISO wire to park it in the rx memory spot
-//3.then pauses the task until the hardware says the "swap" is finished.
+/**
+ * @brief starts an interrupt-driven SPI transfer and blocks the calling task until complete.
+ * 1.takes a byte from the tx memory spot
+ * 2.pushes it out the MOSI wire, and simultaneously pulls a byte from the MISO wire to park it in the rx memory spot
+ * 3.then pauses the task until the hardware says the "swap" is finished.
+ * @param sd      Pointer to the SD handle structure.
+ * @param tx      Pointer to the transmit buffer (NULL for receive-only).
+ * @param rx      Pointer to the receive buffer (NULL for transmit-only).
+ * @param len     Number of bytes to transfer.
+ * @param timeout Maximum ticks to wait for the transfer to complete.
+ * @return sd_status_t SD_OK on success, SD_TIMEOUT or SD_ERR_SPI on failure.
+ */
 static sd_status_t SD_SPI_TransferWait_IT(sd_handle_t *sd, uint8_t *tx, uint8_t *rx, uint16_t len, TickType_t timeout) {
     if (len == 0) {
         return SD_OK;
     }
 
-    //clears old signal before starting
-    xSemaphoreTake(sd->spi_comp_sem, 0);
+    //only wait if the SPI is actually busy.
+    //otherwise, clears old signal before starting
+    if (HAL_SPI_GetState(sd->hspi) != HAL_SPI_STATE_READY) {
+        xSemaphoreTake(sd->spi_comp_sem, timeout); 
+    } else {
+        xSemaphoreTake(sd->spi_comp_sem, 0); 
+    }
+    // xSemaphoreTake(sd->spi_comp_sem, 0);
     g_sd_handle = sd;
     HAL_StatusTypeDef res;
     
     //recieve data only
     //sends dummy byte to provide clock cycle
     if (tx == NULL) {
-        if (len <= 16) {
-            uint8_t dummy[16];
+        if (len <= SD_SMALL_TRANSFER_THRESHOLD) {
+            uint8_t dummy[SD_SMALL_TRANSFER_THRESHOLD];
             memset(dummy, SD_DUMMY_BYTE, len); //SD Card requires 0xFF on MOSI WHILE Reading
             res = HAL_SPI_TransmitReceive_IT(sd->hspi, dummy, rx, len);
         } 
         else {
             //if read is too large
-            uint8_t dummy = SD_DUMMY_BYTE;
-            for(int i=0; i<len; i++) {
-                if (HAL_SPI_TransmitReceive(sd->hspi, &dummy, &rx[i], 1, timeout) != HAL_OK) 
-                    return SD_ERR_SPI;
-            }
-            return SD_OK; 
+            // uint8_t dummy = SD_DUMMY_BYTE;
+            // for(int i=0; i<len; i++) {
+            //     if (HAL_SPI_TransmitReceive(sd->hspi, &dummy, &rx[i], 1, timeout) != HAL_OK) 
+            //         return SD_ERR_SPI;
+            // }
+            // return SD_OK; 
+            res = HAL_SPI_TransmitReceive_IT(sd->hspi, (uint8_t*)g_large_dummy_buffer, rx, len);
         }
     } 
     //transmit only
@@ -62,30 +79,16 @@ static sd_status_t SD_SPI_TransferWait_IT(sd_handle_t *sd, uint8_t *tx, uint8_t 
     return SD_OK;
 }
 
-// recieve and transmit
-// called by hardware when last byte moved
-void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi) {
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    if (g_sd_handle != NULL && g_sd_handle->hspi == hspi){  
-        //signal wake up      
-        xSemaphoreGiveFromISR(g_sd_handle->spi_comp_sem, &xHigherPriorityTaskWoken);
+void sdcard_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi, BaseType_t* xHigherPriorityTaskWoken){
+    if (g_sd_handle != NULL && g_sd_handle->hspi == hspi){        
+        xSemaphoreGiveFromISR(g_sd_handle->spi_comp_sem, xHigherPriorityTaskWoken);
     }
-    //switch for higher priority
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
-//recieve only
-void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi) { 
-    HAL_SPI_TxRxCpltCallback(hspi); 
-}
-
-//transmit only
-void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi) { 
-    HAL_SPI_TxRxCpltCallback(hspi); 
-}
-
-/* LOW LEVEL HELPERS */
-//SD Card only listens when set low (reset)
+/**
+ * @brief Asserts the Chip Select (CS) line (Logic Low).
+ * @param sd Pointer to the SD handle.
+ */
 void SD_Select(sd_handle_t *sd) { 
     if (sd == NULL) {
         return;
@@ -93,6 +96,10 @@ void SD_Select(sd_handle_t *sd) {
     HAL_GPIO_WritePin(sd->cs_port, sd->cs_pin, GPIO_PIN_RESET); 
 }
 
+/**
+ * @brief De-asserts the Chip Select (CS) line (Logic High).
+ * @param sd Pointer to the SD handle.
+ */
 void SD_Deselect(sd_handle_t *sd) { 
     if (sd == NULL) {
         return;
@@ -100,15 +107,30 @@ void SD_Deselect(sd_handle_t *sd) {
     HAL_GPIO_WritePin(sd->cs_port, sd->cs_pin, GPIO_PIN_SET); 
 }
 
-//sends 80+ clock cycles to power up 
+/**
+ * @brief Sends at least 74 clock cycles with CS high to enter SPI mode.
+ * @param sd Pointer to the SD handle.
+ * @param timeout Max wait time for the SPI transfer.
+ */
 static void SD_SendDummyClocks(sd_handle_t *sd, TickType_t timeout) {
+    if (sd == NULL){
+        return;
+    }
+
     SD_Deselect(sd);
     uint8_t tx[SD_DUMMY_CLOCKS_COUNT];
     memset(tx, SD_DUMMY_BYTE, SD_DUMMY_CLOCKS_COUNT);
     SD_SPI_TransferWait_IT(sd, tx, NULL, SD_DUMMY_CLOCKS_COUNT, timeout);
 }
 
-//mcu sends 0xFF on MOSI to keep the clock ticking while it records the incoming data on MISO
+/**
+ * @brief Reads a specific number of raw bytes from the SPI bus.
+ * @param sd Pointer to the SD handle.
+ * @param buff Destination buffer for the read data.
+ * @param len Number of bytes to read.
+ * @param timeout Max wait time.
+ * @return sd_status_t SD_OK or SD_ERROR.
+ */
 static sd_status_t SD_ReadBytes(sd_handle_t *sd, uint8_t *buff, size_t len, TickType_t timeout) {
     if (buff == NULL || len == 0) {
         return SD_ERROR;
@@ -116,14 +138,18 @@ static sd_status_t SD_ReadBytes(sd_handle_t *sd, uint8_t *buff, size_t len, Tick
     return SD_SPI_TransferWait_IT(sd, NULL, buff, len, timeout);
 }
 
-//read the SD card's response 
-//poll bus until card stop sending dummy 
+/**
+ * @brief Polls the SPI bus for the R1 response byte from the SD card until card stop sending dummy byte.
+ * @param sd Pointer to the SD handle.
+ * @param timeout Max wait time.
+ * @return uint8_t The R1 response byte, or 0xFF if a timeout occurred.
+ */
 static uint8_t SD_ReadR1(sd_handle_t *sd, TickType_t timeout) {
     uint8_t r1;
     uint8_t tx = SD_DUMMY_BYTE;
-    for(int i=0; i<8; i++) { 
+    for(int i=0; i<SD_R1_POLL_RETRIES; i++) { 
         if (SD_SPI_TransferWait_IT(sd, &tx, &r1, 1, timeout) != SD_OK) {
-            return 0xFF;
+            return SD_R1_ERROR_CODE; // no response from bus
         }
         if ((r1 & SD_R1_IDLE_MASK) == 0) {
             return r1; 
@@ -132,25 +158,38 @@ static uint8_t SD_ReadR1(sd_handle_t *sd, TickType_t timeout) {
     return SD_DUMMY_BYTE; 
 }
 
-//check if SD Card is done
-//if card sends 0xFF: not busy
-//if card sends anything but 0xFF: still busy
+/**
+ * @brief Polls the SD card until it releases the MISO line (Logic High).
+ * * During write operations, the SD card holds MISO low while the internal flash controller is busy.
+ * * if card sends 0xFF: not busy
+ * * if card sends anything but 0xFF: still busy
+ * @param sd Pointer to the SD handle.
+ * @param timeout Max wait time.
+ * @return sd_status_t SD_OK if card becomes ready, SD_TIMEOUT otherwise.
+ */
 static sd_status_t SD_WaitNotBusy(sd_handle_t *sd, TickType_t timeout) {
     uint8_t busy;
-    for(int i=0; i<500; i++) {
+    for(int i=0; i<SD_BUSY_WAIT_RETRIES; i++) {
         if(SD_ReadBytes(sd, &busy, 1, timeout) != SD_OK) {
             return SD_ERR_READ;
         }
         if(busy == SD_DUMMY_BYTE) {
             return SD_OK; 
         }
+        //yields the CPU to other FreeRTOS tasks while the SD card's physical flash memory is busy with internal write 
         vTaskDelay(pdMS_TO_TICKS(1)); 
     }
     return SD_TIMEOUT;
 }
 
-//when reading a file, the card sends a token before the actual data
-//waits until the token is seen
+/**
+ * @brief Waits for a specific Data Token to be sent by the card.
+ * @param sd Pointer to the SD handle.
+ * @param token The specific byte value to wait for.
+ * @param timeout Max wait time.
+ * @return sd_status_t SD_OK if token found, SD_TIMEOUT or SD_ERROR otherwise.
+ */
+
 static sd_status_t SD_WaitDataToken(sd_handle_t *sd, uint8_t token, TickType_t timeout) { 
     uint8_t fb;
     uint8_t tx = SD_DUMMY_BYTE;  
@@ -168,15 +207,22 @@ static sd_status_t SD_WaitDataToken(sd_handle_t *sd, uint8_t token, TickType_t t
     return SD_TIMEOUT;
 }
 
-//wraps a command(tells card which internal program to run), its arguments(subject of action), and a CRC(prove command isnt garbled by noise) check into a 6-byte packet and sends it
-//It then immediately listens for the card's "Roger that" (R1) response.
+/**
+ * @brief Formats and sends a standard 6-byte SPI command to the SD card.
+ * @param sd Pointer to the SD handle.
+ * @param cmd Command index (0-63).
+ * @param arg 32-bit command argument.
+ * @param crc 7-bit CRC + 1-bit end bit.
+ * @param timeout Max wait time.
+ * @return uint8_t The R1 response from the card.
+ */
 static uint8_t SD_SendCommand(sd_handle_t *sd, uint8_t cmd, uint32_t arg, uint8_t crc, TickType_t timeout) {
-    uint8_t packet[6];
-    packet[0] = SD_CMD_BASE | (cmd & 0x3F);
-    packet[1] = (arg >> 24) & 0xFF;
-    packet[2] = (arg >> 16) & 0xFF;
-    packet[3] = (arg >> 8) & 0xFF;
-    packet[4] = arg & 0xFF;
+    uint8_t packet[SD_CMD_PACKET_SIZE];
+    packet[0] = SD_CMD_BASE | (cmd & SD_CMD_INDEX_MASK);
+    packet[1] = (arg >> SD_BYTE_SHIFT_24) & SD_BYTE_MASK;
+    packet[2] = (arg >> SD_BYTE_SHIFT_16) & SD_BYTE_MASK;
+    packet[3] = (arg >> SD_BYTE_SHIFT_8)  & SD_BYTE_MASK;
+    packet[4] = arg & SD_BYTE_MASK;
     packet[5] = crc;
 
     SD_Select(sd);
@@ -186,12 +232,22 @@ static uint8_t SD_SendCommand(sd_handle_t *sd, uint8_t cmd, uint32_t arg, uint8_
             return SD_DUMMY_BYTE; //send dummy to provide clocks so card can send back response
         }
     }
-    SD_SPI_TransferWait_IT(sd, packet, NULL, 6, timeout);
+    SD_SPI_TransferWait_IT(sd, packet, NULL, SD_CMD_PACKET_SIZE, timeout);
     return SD_ReadR1(sd, timeout);
+
 }
 
 
 sd_status_t SD_Init(sd_handle_t *sd, TickType_t timeout) {
+
+    if (sd == NULL) {
+        return SD_ERROR;
+    }
+
+    //check if mutex is given
+    if (xSemaphoreTake(sd->mutex, portMAX_DELAY) != pdTRUE){
+        return SD_ERR_LOCK_TIMEOUT;
+    }
     uint8_t res;
     uint8_t resp[4];
 
@@ -263,6 +319,8 @@ sd_status_t SD_Init(sd_handle_t *sd, TickType_t timeout) {
         return SD_ERROR;
     }
     
+    //release mutex for other tasks
+    xSemaphoreGive(sd->mutex);
     return SD_OK;
 }
 
@@ -351,6 +409,17 @@ sd_status_t USER_SD_Card_Init(sd_handle_t *sd) {
         return SD_ERR_MUTEX;
     }
     
+    // create tasks
+    sd->worker_task_handle = xTaskCreateStatic(
+        USER_SD_Card_Worker_Task, // The function to run
+        "SD_Worker",              // Name for debugging
+        2048,                     // Stack size
+        (void*)sd,                // Pass the handle as the parameter
+        tskIDLE_PRIORITY + 3,     // Priority
+        xWorkerStack,             // The stack buffer
+        &xWorkerBuffer            // The task buffer
+    );
+
     MX_FATFS_Init();
     return SD_OK;
 }
@@ -397,7 +466,7 @@ void USER_SD_Card_Worker_Task(void *params) {
 
     f_mount(&fs, "", 1); 
 
-    for(;;) {
+    while (1) {
         //waits for task to be placed on queue
         if (xQueueReceive(sd->job_queue, &job, portMAX_DELAY) == pdTRUE) {
             if (job.type == SD_JOB_WRITE_ASYNC) {

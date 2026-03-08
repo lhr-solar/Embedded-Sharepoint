@@ -20,9 +20,6 @@ StackType_t xTask2Stack[1024];
 StaticTask_t xTask3Buffer;
 StackType_t xTask3Stack[512]; 
 
-StaticTask_t xWorkerBuffer;
-StackType_t xWorkerStack[2048]; // Worker needs large stack for FatFs
-
 /* pin def*/
 #if defined(STM32L476xx)
     #define USER_SPI_INSTANCE  SPI2
@@ -129,7 +126,6 @@ int main(void)
     }
 
     // Create Tasks
-    xTaskCreateStatic(USER_SD_Card_Worker_Task, "SD_Worker", 2048, &sd, tskIDLE_PRIORITY + 3, xWorkerStack, &xWorkerBuffer);
     xTaskCreateStatic(Task1_Entry, "WriteTask1", 1024, NULL, tskIDLE_PRIORITY + 1, xTask1Stack, &xTask1Buffer);
     xTaskCreateStatic(Task2_Entry, "WriteTask2", 1024, NULL, tskIDLE_PRIORITY + 1, xTask2Stack, &xTask2Buffer);
     xTaskCreateStatic(Task3_Entry, "HighFreq", 512, NULL, tskIDLE_PRIORITY + 2, xTask3Stack, &xTask3Buffer);
@@ -169,6 +165,24 @@ void Task3_Entry(void *params) {
         HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
         vTaskDelay(pdMS_TO_TICKS(10));
     }
+}
+
+// recieve and transmit
+void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi){
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+    sdcard_SPI_TxRxCpltCallback(hspi, &xHigherPriorityTaskWoken);
+    
+    // Context switch if a higher priority task was woken up
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+}
+
+void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi) { 
+    HAL_SPI_TxRxCpltCallback(hspi); 
+}
+
+void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi) { 
+    HAL_SPI_TxRxCpltCallback(hspi); 
 }
 
 // GPIO for LED init
