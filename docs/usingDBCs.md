@@ -1,4 +1,4 @@
-# Integrating CAN mesage into your code
+# Integrating CAN message into your code
 
 ## Generating CAN message headers
 
