@@ -2,7 +2,9 @@ name: Build Tests
 
 on:
   push:
-  pull_request:
+    paths-ignore:
+      - "*.md"
+      - "*.dbc"
 
 jobs:
   build:
@@ -15,18 +17,18 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            /nix/store
             ~/.cache/nix
           key: nix-${{ runner.os }}-${{ hashFiles('flake.lock') }}
           restore-keys: |
             nix-${{ runner.os }}-
 
-      - name: Install Nix
-        run: |
-          sudo ./nix_install.sh
+      - name: Install Nix Action
+        uses: cachix/install-nix-action@v31
 
       - name: Clean & Build tests
         run: |
-          nix develop --accept-flake-config --command bash -c "
-            cd test && make clean && python3 makeAllTests.py
-          "
+          nix develop --accept-flake-config --command bash -c '
+              cd test
+              make clean
+              python3 makeAllTests.py
+          '

@@ -12,15 +12,35 @@ Follow the installation instructions for your specific platform, found [here](./
 The Makefile in the top level directory compiles all needed files for the STM32, it is not meant to be called directly, instead you must call it from a different Makefile
 
 ### Running tests
-In the test/ directory there is a Makefile meant for just running test files. Every test file should end with `_test`  To run a test do:
+In the test/ directory there is a Makefile meant for just running test files. Every test file should end with `_test.c`  To run a test do:
 ``` sh
 make TEST=[name of test file without _test_ and the .c extension] PROJECT_TARGET=[name of the STM32 you want to compile for]
 
 # For example:
-make TEST=blinky PROJECT_TARGET=stm32f413rht
-# This compiles the blinky_test.c test for the STM32F413RHT
+make TEST=blinky PROJECT_TARGET=stm32g473xx
+# This compiles the blinky_test.c test for the STM32G473
 ```
-For all PROJECT_TARGET options, see the [STM32_Ports](./STM32_Ports.md) page
+For all PROJECT_TARGET options, see the [STM32_Ports](./STM32_Ports.md) page. 
+
+To add your own tests, add a c file ending in _test to the ```tests/tests/``` folder
+
+### Compiling all tests (CI)
+We have a python script to compile all existing tests for all existing ports that runs in our CI. Usage is as follows:
+```
+usage: makeAllTests.py [-v] [-t TESTS [TESTS ...]] [-p PORTS [PORTS ...]] [-h]
+
+Compile all tests for all STM ports
+
+options:
+  -v, --verbose         Enable verbose output (show commands as they're run)
+  -t, --tests TESTS [TESTS ...]
+                        Pass specific test(s)
+  -p, --ports PORTS [PORTS ...]
+                        Pass specific port(s)
+  -h, --help            Show this help message and exit
+```
+
+Default behavior is to compile all tests for all ports.
 
 ### Flashing code
 Once your code is compiled, use the makefile in the `test/` directory to flash your built code to the microcontroller. If you are running WSL there are some extra steps to connect the STM32 to your computer, which can be found [here](./FlashAndTheBug.md).

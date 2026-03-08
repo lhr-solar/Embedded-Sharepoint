@@ -1,0 +1,33 @@
+name: Test MacOS compilation
+
+on:
+  push:
+    paths-ignore:
+      - "*.md"
+      - "*.dbc"
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Cache Nix
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/nix
+          key: nix-${{ runner.os }}-${{ hashFiles('flake.lock') }}
+          restore-keys: |
+            nix-${{ runner.os }}-
+
+      - name: Install Nix Action
+        uses: cachix/install-nix-action@v31
+
+      - name: Build a test on Mac
+        run: |
+          . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+          nix develop --accept-flake-config --command bash -c "
+            cd test && make TEST=blinky
+          "

@@ -21,6 +21,14 @@ NC=\033[0m # No Color
 TEST ?= main
 
 # ❗ CHANGE THIS ❗
+# Define any project specific C macros here.
+# Leave empty if not needed.
+# Example: PROJECT_MACROS = MODE=1 DEBUG=1
+####
+#PROJECT_MACROS =
+####
+
+# ❗ CHANGE THIS ❗
 # If it's an LSOM then do - stm32g473xx
 # If it's a PSOM then do - stm32l431cbt
 # Else pick whatever STM32 p/n it is (all options are in docs/STM32_Ports.md)
@@ -88,7 +96,7 @@ export PROJECT_TARGET
 export PROJECT_C_SOURCES
 export PROJECT_C_INCLUDES
 export PROJECT_BUILD_DIR
-
+export PROJECT_MACROS
 
 #-------------------------------
 # Clang

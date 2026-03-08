@@ -28,6 +28,8 @@ def parse_args():
     )
     parser.add_argument("-v", "--verbose", action="store_true",
                         help="Enable verbose output (show commands as they're run)")
+    parser.add_argument("-t","--tests", nargs='+', type=str, help="Pass specific test(s)", default=None)
+    parser.add_argument("-p","--ports", nargs='+', type=str, help="Pass specific port(s)", default=None)
     parser.add_argument("-h", "--help", action="help",
                         help="Show this help message and exit")
     return parser.parse_args()
@@ -111,8 +113,11 @@ def main():
     if args.verbose:
         make_flags = ["-B"]
 
-    ports = find_ports(script_dir / "../stm")
-    tests = find_tests(script_dir / "tests")
+    found_ports = find_ports(script_dir / "../stm")
+    found_tests = find_tests(script_dir / "tests")
+
+    ports = list(set(found_ports) & set(args.ports if args.ports is not None else found_ports))
+    tests = list(set(found_tests) & set(args.tests if args.tests is not None else found_tests))
 
     info("Compiling all tests for the following ports:")
     for p in ports:
