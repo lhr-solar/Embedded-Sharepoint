@@ -97,7 +97,7 @@ See the ``test/Inc`` folder for an example can recieve entries header. You MUST 
 ### 3. CAN Filter
 CAN filters determine which CAN frames the hardware accepts. Frames that do not pass the filter are discarded by the peripheral before they reach the software driver.
 
-See the following [tutorial](https://controllerstech.com/fdcan-normal-mode-stm32/#fdcan-filter-configuration) on how to configure FDCAN filters.
+For FDCAN, see the following [tutorial](https://controllerstech.com/fdcan-normal-mode-stm32/#fdcan-filter-configuration) on how to configure FDCAN filters.
 
 For bxCAN, see the "Configuring CAN Filters in STM32" section in this [tutorial](https://controllerstech.com/can-protocol-in-stm32/).
 
