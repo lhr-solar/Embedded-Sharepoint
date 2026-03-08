@@ -122,3 +122,66 @@ can_status_t can_fd_start(FDCAN_HandleTypeDef* handle);
 
 Make sure the filter config and handle are both configured before calling the init function.
 See the `can_fd` test in the `test/tests/` folder. The tests are both configured for `INTERNAL_LOOPBACK` mode which connects TX and RX each other. You should set it to `NORMAL` during production code.
+
+## Sending CAN messages
+Please read the following sections on DBC files and how to use them before moving on.
+
+* CAN Messages
+    * [Editing DBC Files](dbcEditor.md)
+    * [Generating DBC Headers](usingDBCs.md)
+
+Both the bxCAN and CAN_FD have the same arguments to send CAN data (differences are only in name).
+
+The ```FDCAN_TxHeaderTypeDef``` and ```CAN_TxHeaderTypeDef``` defined in the STM32 HAL, are different mostly in name, and they contain important information like length of the CAN message, CAN ID, and other paramters. See the relevant test files on examples on what to set those parameters as.
+
+```c
+can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* header, uint8_t data[], TickType_t delay_ticks)
+```
+```c
+
+can_status_t can_send(CAN_HandleTypeDef* handle, const CAN_TxHeaderTypeDef* header, const uint8_t data[], TickType_t delay_ticks)
+```
+
+
+## Recieving CAN messages
+Please read the following sections on DBC files and how to use them before moving on.
+
+* CAN Messages
+    * [Editing DBC Files](dbcEditor.md)
+    * [Generating DBC Headers](usingDBCs.md)
+
+
+Both the bxCAN and CAN_FD have the same arguments to recieve CAN data (differences are only in name).
+
+In order to recieve CAN messages, you must have that ID in the ``can[X]_recv_entries.h` header file. The CAN ID must also be accepted by the CAN hardware filter, or the CAN recieve interrupt won't trigger. 
+
+```c
+can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint16_t id, FDCAN_RxHeaderTypeDef* header, uint8_t data[], TickType_t delay_ticks)
+```
+
+```c
+can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id, CAN_RxHeaderTypeDef* header, uint8_t data[], TickType_t delay_ticks)
+```
+
+## CAN hooks
+Two hook functions are provided to the user for when a CAN message is sent and when a CAN message is recieved. These hooks are useful for debugging and mirroring CAN messages over USB. By default, they are defined as `weak` in the driver file, which allows the user to redeclare it in their code, and have their implementation get called.
+
+### Transmit Hook
+The CAN transmit hook is not called from an interrupt, so you do not need to use the ISR-safe FreeRTOS functions, but blocking prevents other CAN messages from being sent, and using global variables in the hook may cause race conditions. 
+
+### Recieve Hook
+The CAN recieve hook is called in the context of the can recieve interrupt, so special care must be taken to not block and only use ISR-safe FreeRTOS functions like ```xQueueSendFromISR```.
+#### FDCAN RX Hook
+```c
+void can_fd_rx_callback_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs, can_rx_payload_t recv_payload )
+```
+#### bxCAN RX Hook
+```c
+void can_fd_rx_callback_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs, can_rx_payload_t recv_payload )
+```
+
+### Usage example:
+* [Mirroring CAN RX data over USB](https://github.com/lhr-solar/PS-VehicleControlUnit/blob/main/Firmware/Tasks/Src/MotorTelemetryTask.c)
+
+
+## Codebases that use CAN
