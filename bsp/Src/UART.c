@@ -4,8 +4,8 @@
 // Define the size of the data to be transmitted
 // Currently not used, as we send uint8_t directly
 // may need to be configured for support for packets less more than 8 bits
-#ifndef DATA_SIZE
-#define DATA_SIZE (1) // fallback to 1 byte
+#ifndef UART_DATA_SIZE
+#define UART_DATA_SIZE (1) // fallback to 1 byte
 #endif
 
 // Define the preemption priority for the interrupt
@@ -14,11 +14,11 @@
 #endif
 
 typedef struct {
-    uint8_t data[DATA_SIZE]; // data to be transmitted, 1 byte
+    uint8_t data[UART_DATA_SIZE]; // data to be transmitted, 1 byte
 } tx_payload_t;
 
 typedef struct {
-    uint8_t data[DATA_SIZE]; // data received, 1 byte
+    uint8_t data[UART_DATA_SIZE]; // data received, 1 byte
 } rx_payload_t;
 
 #ifdef UART4
@@ -48,7 +48,7 @@ static StaticQueue_t uart4_rx_queue_buffer;
 static uint8_t uart4_rx_queue_storage[UART4_RX_QUEUE_SIZE * sizeof(rx_payload_t)];  // Will be allocated based on queue_size in uart_init
 
 // UART4 RX buffer
-// An intermediate buffer of DATA_SIZE bytes to store received data before it is copied to the queue
+// An intermediate buffer of UART_DATA_SIZE bytes to store received data before it is copied to the queue
 static rx_payload_t uart4_rx_buffer;
 
 #endif /* UART4 */
@@ -79,7 +79,7 @@ static StaticQueue_t uart5_rx_queue_buffer;
 static uint8_t uart5_rx_queue_storage[UART5_RX_QUEUE_SIZE * sizeof(rx_payload_t)];  // Will be allocated based on queue_size
 
 // UART5 RX buffer
-// An intermediate buffer of DATA_SIZE bytes to store received data before it is copied to the queue
+// An intermediate buffer of UART_DATA_SIZE bytes to store received data before it is copied to the queue
 static rx_payload_t uart5_rx_buffer;
 
 #endif /* UART5 */
@@ -111,7 +111,7 @@ static StaticQueue_t usart1_rx_queue_buffer;
 static uint8_t usart1_rx_queue_storage[USART1_RX_QUEUE_SIZE * sizeof(rx_payload_t)];  // Will be allocated based on queue_size in uart_init
 
 // USART1 RX buffer
-// An intermediate buffer of DATA_SIZE bytes to store received data before it is copied to the queue
+// An intermediate buffer of UART_DATA_SIZE bytes to store received data before it is copied to the queue
 static rx_payload_t usart1_rx_buffer;
 
 #endif /* USART1 */
@@ -143,7 +143,7 @@ static StaticQueue_t usart2_rx_queue_buffer;
 static uint8_t usart2_rx_queue_storage[USART2_RX_QUEUE_SIZE * sizeof(rx_payload_t)];  // Will be allocated based on queue_size in uart_init
 
 // USART2 RX buffer
-// An intermediate buffer of DATA_SIZE bytes to store received data before it is copied to the queue
+// An intermediate buffer of UART_DATA_SIZE bytes to store received data before it is copied to the queue
 static rx_payload_t usart2_rx_buffer;
 
 #endif /* USART2 */
@@ -175,7 +175,7 @@ static StaticQueue_t usart3_rx_queue_buffer;
 static uint8_t usart3_rx_queue_storage[USART3_RX_QUEUE_SIZE * sizeof(rx_payload_t)];  // Will be allocated based on queue_size in uart_init
 
 // USART3 RX buffer
-// An intermediate buffer of DATA_SIZE bytes to store received data before it is copied to the queue
+// An intermediate buffer of UART_DATA_SIZE bytes to store received data before it is copied to the queue
 static rx_payload_t usart3_rx_buffer;
 
 #endif /* USART3 */
@@ -205,7 +205,7 @@ static StaticQueue_t lpuart1_rx_queue_buffer;
 static uint8_t lpuart1_rx_queue_storage[LPUART1_RX_QUEUE_SIZE * sizeof(rx_payload_t)];
 
 // LPUART1 RX buffer
-// An intermediate buffer of DATA_SIZE bytes to store received data before it is copied to the queue
+// An intermediate buffer of UART_DATA_SIZE bytes to store received data before it is copied to the queue
 static rx_payload_t lpuart1_rx_buffer;
 
 #endif
@@ -605,7 +605,7 @@ uart_status_t uart_init(UART_HandleTypeDef* handle) {
     }
 
     // Start reception
-    if (HAL_UART_Receive_IT(handle, rx_buffer, DATA_SIZE) != HAL_OK) {
+    if (HAL_UART_Receive_IT(handle, rx_buffer, UART_DATA_SIZE) != HAL_OK) {
         return UART_ERR;
     }
 
@@ -777,20 +777,20 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
     }
     portEXIT_CRITICAL();
 
-    // Send data in chunks based on DATA_SIZE
-    for (uint8_t i = 0; i < length; i+=DATA_SIZE) {
+    // Send data in chunks based on UART_DATA_SIZE
+    for (uint8_t i = 0; i < length; i+=UART_DATA_SIZE) {
 	tx_payload_t payload;
 
-	// Ensure we only copy DATA_SIZE bytes at a time
-	uint8_t chunk_size = (length - i < DATA_SIZE) ? (length - i) : DATA_SIZE;
+	// Ensure we only copy UART_DATA_SIZE bytes at a time
+	uint8_t chunk_size = (length - i < UART_DATA_SIZE) ? (length - i) : UART_DATA_SIZE;
 	// EX: i=4, length=6, DataSize=4, then chunk_size = 2, instead of usual 4 since we've reached end of length
 
 	// Copy the appropriate number of bytes to the payload data
-	 memcpy(payload.data, &data[i], chunk_size); // Usually chunk_size = DATA_SIZE until end of data length
+	 memcpy(payload.data, &data[i], chunk_size); // Usually chunk_size = UART_DATA_SIZE until end of data length
 
-	 // If data size is smaller than DATA_SIZE, fill the rest of the payload
-	 if (chunk_size < DATA_SIZE) {
-	     memset(&payload.data[chunk_size], 0, DATA_SIZE - chunk_size); // Fill the rest with 0 (or other padding if needed)
+	 // If data size is smaller than UART_DATA_SIZE, fill the rest of the payload
+	 if (chunk_size < UART_DATA_SIZE) {
+	     memset(&payload.data[chunk_size], 0, UART_DATA_SIZE - chunk_size); // Fill the rest with 0 (or other padding if needed)
 	 }
 
 	// Enqueue the payload to be transmitted
@@ -863,8 +863,8 @@ uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t lengt
             return UART_EMPTY;  // Queue empty, no more data to receive
         }
 
-        // Calculate how many bytes to copy from the payload based on DATA_SIZE
-        uint8_t copy_length = (length - bytes_received) >= DATA_SIZE ? DATA_SIZE : (length - bytes_received);
+        // Calculate how many bytes to copy from the payload based on UART_DATA_SIZE
+        uint8_t copy_length = (length - bytes_received) >= UART_DATA_SIZE ? UART_DATA_SIZE : (length - bytes_received);
 
         // Copy the data from the payload to the user's data buffer
         for (uint8_t i = 0; i < copy_length; i++) {
@@ -924,10 +924,10 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 
     // Pull as many bytes as we can fit in the buffer
     tx_payload_t payload;
-    while(count + DATA_SIZE <= sizeof(tx_buffer) && xQueueReceiveFromISR(*tx_queue, &payload, &higherPriorityTaskWoken) == pdTRUE) {
+    while(count + UART_DATA_SIZE <= sizeof(tx_buffer) && xQueueReceiveFromISR(*tx_queue, &payload, &higherPriorityTaskWoken) == pdTRUE) {
         // Safely copy the data from the payload into the tx_buffer
-    	memcpy(&tx_buffer[count], payload.data, DATA_SIZE);
-        count += DATA_SIZE;
+    	memcpy(&tx_buffer[count], payload.data, UART_DATA_SIZE);
+        count += UART_DATA_SIZE;
     }
 
     if(tx_queue == NULL) {
@@ -997,7 +997,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     #endif /* LPUART1 */
 
     rx_payload_t receivedData;
-    for (int i = 0; i < DATA_SIZE; i++) {
+    for (int i = 0; i < UART_DATA_SIZE; i++) {
         receivedData.data[i] = rx_buffer[i]; //uartN_rx_buffer.data
 	rx_buffer[i] = 0x00; // clear rx buffer element
     }
@@ -1007,7 +1007,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     xQueueSendFromISR(*rx_queue, &receivedData, &higherPriorityTaskWoken); // Send data from &receivedData(pRxBuffPtr) to rx_queue
 
     // Trigger the next interrupt
-    HAL_UART_Receive_IT(huart, rx_buffer, DATA_SIZE);// pRxBufferPtr is a pointer to the buffer that will store the received data
+    HAL_UART_Receive_IT(huart, rx_buffer, UART_DATA_SIZE);// pRxBufferPtr is a pointer to the buffer that will store the received data
 
     portYIELD_FROM_ISR(higherPriorityTaskWoken);
 }
