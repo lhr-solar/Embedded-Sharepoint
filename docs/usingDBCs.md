@@ -2,7 +2,7 @@
 
 ## Generating CAN message headers
 
-We have a python script located in the `can/` folder called `generate_can_headers.py`. This script takes a DBC file, and turns it into a set of macros, structs, and enums.
+There is a python script located in the `can/` folder called `generate_can_headers.py`. This script takes a DBC file, and turns it into a set of macros, structs, and enums.
 
 Usage guide:
 ```sh

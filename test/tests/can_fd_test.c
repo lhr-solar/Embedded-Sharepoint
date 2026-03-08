@@ -285,7 +285,7 @@ static void task(void *pvParameters) {
     }
 }
 
-void can_fd_tx_complete_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t BufferIndexes){
+void can_fd_tx_callback_hook(FDCAN_HandleTypeDef* hfdcan, const can_tx_payload_t* payload){
     HAL_GPIO_TogglePin(CAN_TX_PROFILE_PORT, CAN_TX_PROFILE_PIN);
 }
 

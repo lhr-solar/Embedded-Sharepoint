@@ -168,6 +168,14 @@ Two hook functions are provided to the user for when a CAN message is sent and w
 
 ### Transmit Hook
 The CAN transmit hook is not called from an interrupt, so you do not need to use the ISR-safe FreeRTOS functions, but blocking prevents other CAN messages from being sent, and using global variables in the hook may cause race conditions. 
+#### FDCAN TX Hook
+```c
+can_fd_tx_callback_hook(FDCAN_HandleTypeDef* hfdcan, const can_tx_payload_t* payload)
+```
+#### bxCAN TX Hook
+```c
+void can_tx_callback_hook(CAN_HandleTypeDef* hcan, const can_tx_payload_t* payload);
+```
 
 ### Recieve Hook
 The CAN recieve hook is called in the context of the can recieve interrupt, so special care must be taken to not block and only use ISR-safe FreeRTOS functions like ```xQueueSendFromISR```.
@@ -185,3 +193,5 @@ void can_fd_rx_callback_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs, c
 
 
 ## Codebases that use CAN
+* [VCU](https://github.com/lhr-solar/PS-VehicleControlUnit/blob/main/Firmware/Drivers/Src/CANbus.c)
+* [Amperes](https://github.com/lhr-solar/PS-Amperes/blob/main/Firmware/Drivers/Src/AmperesCAN.c)
