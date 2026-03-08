@@ -47,7 +47,7 @@ typedef enum {
 } vcu_status_vcu_fault_e;
 ```
 
-The generated header file includes macros for every CAN ID, this is useful for storing CAN data in a more readable format than an array of bytes.
+The generated header file includes structs for every CAN message, this is useful for storing CAN data in a more readable format than an array of bytes.
 ```c
 /* ================= Message Structs ================= */
 
