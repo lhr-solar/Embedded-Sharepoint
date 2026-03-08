@@ -24,7 +24,7 @@
 * **can\_fd\_rx\_callback\_hook** ([**CAN\_FD.h**](CAN__FD_8h.md))
 * **can\_fd\_send** ([**CAN\_FD.h**](CAN__FD_8h.md))
 * **can\_fd\_start** ([**CAN\_FD.h**](CAN__FD_8h.md))
-* **can\_fd\_tx\_complete\_hook** ([**CAN\_FD.h**](CAN__FD_8h.md))
+* **can\_fd\_tx\_callback\_hook** ([**CAN\_FD.h**](CAN__FD_8h.md))
 
 
 ## u

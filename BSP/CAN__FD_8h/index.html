@@ -480,6 +480,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../usingDBCs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generating DBC Headers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -597,7 +625,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../canSetup.md" class="md-nav__link">
+      <a href="../../CanSetup/" class="md-nav__link">
         
   
   
@@ -741,88 +769,6 @@
       
   
   
-  
-  
-    
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
-        
-          
-          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Documentation
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_9">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Documentation
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../CanSetup/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    CanSetup
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -836,10 +782,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" checked>
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
             
   
   
@@ -857,8 +803,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_9">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1108,10 +1054,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#function-can_fd_tx_complete_hook" class="md-nav__link">
+  <a href="#function-can_fd_tx_callback_hook" class="md-nav__link">
     <span class="md-ellipsis">
       
-        function can_fd_tx_complete_hook
+        function can_fd_tx_callback_hook
       
     </span>
   </a>
@@ -1283,10 +1229,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#function-can_fd_tx_complete_hook" class="md-nav__link">
+  <a href="#function-can_fd_tx_callback_hook" class="md-nav__link">
     <span class="md-ellipsis">
       
-        function can_fd_tx_complete_hook
+        function can_fd_tx_callback_hook
       
     </span>
   </a>
@@ -1358,7 +1304,7 @@
 </tr>
 <tr>
 <td style="text-align: right;">void</td>
-<td style="text-align: left;"><a href="#function-can_fd_tx_complete_hook"><strong>can_fd_tx_complete_hook</strong></a> (FDCAN_HandleTypeDef * hfdcan, uint32_t BufferIndexes) <br></td>
+<td style="text-align: left;"><a href="#function-can_fd_tx_callback_hook"><strong>can_fd_tx_callback_hook</strong></a> (FDCAN_HandleTypeDef * hfdcan, const <a href="../structcan__tx__payload__t/"><strong>can_tx_payload_t</strong></a> * payload) <br></td>
 </tr>
 </tbody>
 </table>
@@ -1463,10 +1409,10 @@
 <p>can_status_t Returns CAN_OK on success, CAN_ERR on failure. </p>
 <hr>
 
-<h3 id="function-can_fd_tx_complete_hook">function can_fd_tx_complete_hook</h3>
-<pre><code class="language-C++">void can_fd_tx_complete_hook (
+<h3 id="function-can_fd_tx_callback_hook">function can_fd_tx_callback_hook</h3>
+<pre><code class="language-C++">void can_fd_tx_callback_hook (
     FDCAN_HandleTypeDef * hfdcan,
-    uint32_t BufferIndexes
+    const can_tx_payload_t * payload
 ) 
 </code></pre>
 <hr>

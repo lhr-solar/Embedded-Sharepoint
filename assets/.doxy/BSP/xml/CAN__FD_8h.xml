@@ -283,18 +283,18 @@
         </inbodydescription>
         <location file="bsp/Inc/CAN_FD.h" line="94" column="14" declfile="bsp/Inc/CAN_FD.h" declline="94" declcolumn="14"/>
       </memberdef>
-      <memberdef kind="function" id="CAN__FD_8h_1a5daea55096e97b48e604ef624239869f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="CAN__FD_8h_1ad150cda00c529bf5f256d6c49525c199" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
-        <definition>void can_fd_tx_complete_hook</definition>
-        <argsstring>(FDCAN_HandleTypeDef *hfdcan, uint32_t BufferIndexes)</argsstring>
-        <name>can_fd_tx_complete_hook</name>
+        <definition>void can_fd_tx_callback_hook</definition>
+        <argsstring>(FDCAN_HandleTypeDef *hfdcan, const can_tx_payload_t *payload)</argsstring>
+        <name>can_fd_tx_callback_hook</name>
         <param>
           <type>FDCAN_HandleTypeDef *</type>
           <declname>hfdcan</declname>
         </param>
         <param>
-          <type>uint32_t</type>
-          <declname>BufferIndexes</declname>
+          <type>const <ref refid="structcan__tx__payload__t" kindref="compound">can_tx_payload_t</ref> *</type>
+          <declname>payload</declname>
         </param>
         <briefdescription>
         </briefdescription>
@@ -371,7 +371,7 @@
 <codeline lineno="94" refid="CAN__FD_8h_1aa94c621f0ba1d7136bfdf61a83a2c4e2" refkind="member"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN__FD_8h_1aa94c621f0ba1d7136bfdf61a83a2c4e2" kindref="member">can_fd_recv</ref>(FDCAN_HandleTypeDef*<sp/>handle,<sp/>uint16_t<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>FDCAN_RxHeaderTypeDef*<sp/>header,<sp/>uint8_t<sp/>data[],<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
 <codeline lineno="95"><highlight class="normal"></highlight></codeline>
 <codeline lineno="96"><highlight class="normal"></highlight></codeline>
-<codeline lineno="97" refid="CAN__FD_8h_1a5daea55096e97b48e604ef624239869f" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="CAN__FD_8h_1a5daea55096e97b48e604ef624239869f" kindref="member">can_fd_tx_complete_hook</ref>(FDCAN_HandleTypeDef<sp/>*hfdcan,<sp/>uint32_t<sp/>BufferIndexes);</highlight></codeline>
+<codeline lineno="97" refid="CAN__FD_8h_1ad150cda00c529bf5f256d6c49525c199" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="CAN__FD_8h_1ad150cda00c529bf5f256d6c49525c199" kindref="member">can_fd_tx_callback_hook</ref>(FDCAN_HandleTypeDef*<sp/>hfdcan,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="structcan__tx__payload__t" kindref="compound">can_tx_payload_t</ref>*<sp/>payload);</highlight></codeline>
 <codeline lineno="98"><highlight class="normal"></highlight></codeline>
 <codeline lineno="99" refid="CAN__FD_8h_1af052a1ab45f4b3f7698a6081cbec3181" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="CAN__FD_8h_1af052a1ab45f4b3f7698a6081cbec3181" kindref="member">can_fd_rx_callback_hook</ref>(FDCAN_HandleTypeDef<sp/>*hfdcan,<sp/>uint32_t<sp/>RxFifo0ITs,<sp/><ref refid="structcan__rx__payload__t" kindref="compound">can_rx_payload_t</ref><sp/>recv_payload);</highlight></codeline>
     </programlisting>

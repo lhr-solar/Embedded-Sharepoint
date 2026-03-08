@@ -60,7 +60,7 @@
 |  void | [**can\_fd\_rx\_callback\_hook**](#function-can_fd_rx_callback_hook) (FDCAN\_HandleTypeDef \* hfdcan, uint32\_t RxFifo0ITs, [**can\_rx\_payload\_t**](structcan__rx__payload__t.md) recv\_payload) <br> |
 |  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_fd\_send**](#function-can_fd_send) (FDCAN\_HandleTypeDef \* handle, FDCAN\_TxHeaderTypeDef \* header, uint8\_t data, TickType\_t delay\_ticks) <br>_Sends a FDCAN message._  |
 |  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_fd\_start**](#function-can_fd_start) (FDCAN\_HandleTypeDef \* handle) <br>_Starts the FDCAN peripheral._  |
-|  void | [**can\_fd\_tx\_complete\_hook**](#function-can_fd_tx_complete_hook) (FDCAN\_HandleTypeDef \* hfdcan, uint32\_t BufferIndexes) <br> |
+|  void | [**can\_fd\_tx\_callback\_hook**](#function-can_fd_tx_callback_hook) (FDCAN\_HandleTypeDef \* hfdcan, const [**can\_tx\_payload\_t**](structcan__tx__payload__t.md) \* payload) <br> |
 
 
 
@@ -312,12 +312,12 @@ can\_status\_t Returns CAN\_OK on success, CAN\_ERR on failure.
 
 
 
-### function can\_fd\_tx\_complete\_hook 
+### function can\_fd\_tx\_callback\_hook 
 
 ```C++
-void can_fd_tx_complete_hook (
+void can_fd_tx_callback_hook (
     FDCAN_HandleTypeDef * hfdcan,
-    uint32_t BufferIndexes
+    const can_tx_payload_t * payload
 ) 
 ```
 

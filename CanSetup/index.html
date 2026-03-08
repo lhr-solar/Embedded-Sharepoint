@@ -13,10 +13,10 @@
       
       
       
-        <link rel="prev" href="../Drivers/printf_8h/">
+        <link rel="prev" href="../WS2812B/">
       
       
-        <link rel="next" href="../BSP/ADC_8h/">
+        <link rel="next" href="../Drivers/EMC2305_8h/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>CanSetup - Embedded Sharepoint Documentation</title>
+        <title>CAN Usage Guide - Embedded Sharepoint Documentation</title>
       
     
     
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              CanSetup
+              CAN Usage Guide
             
           </span>
         </div>
@@ -480,6 +480,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usingDBCs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generating DBC Headers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -491,18 +519,20 @@
       
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
         
           
           <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
@@ -523,7 +553,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             
@@ -594,10 +624,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../canSetup.md" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CAN Usage Guide
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -613,6 +670,310 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#about-can" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        About CAN
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="About CAN">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#can-fd-vs-bxcan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CAN FD vs bxCAN
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuring-can-in-cubemx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuring CAN in CubeMX
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuring CAN in CubeMX">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#system-clock-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        System Clock Config
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#baud-rate-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Baud rate configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuring-the-can-driver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuring the CAN driver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuring the CAN driver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-can-msp-init" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. CAN MSP Init
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. CAN MSP Init">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#priority-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Priority Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-can-recieve-entries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. CAN Recieve Entries
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-can-filter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. CAN Filter
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-can-init" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. CAN Init
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sending-can-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sending CAN messages
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recieving-can-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recieving CAN messages
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#can-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CAN hooks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CAN hooks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#transmit-hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Transmit Hook
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Transmit Hook">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fdcan-tx-hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FDCAN TX Hook
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bxcan-tx-hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        bxCAN TX Hook
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recieve-hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recieve Hook
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Recieve Hook">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fdcan-rx-hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FDCAN RX Hook
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bxcan-rx-hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        bxCAN RX Hook
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage example:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#codebases-that-use-can" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Codebases that use CAN
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -741,321 +1102,6 @@
       
   
   
-    
-  
-  
-  
-    
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Documentation
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_9">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Documentation
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    CanSetup
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    CanSetup
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#about-can" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        About CAN
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="About CAN">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#can-fd-vs-bxcan" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        CAN FD vs bxCAN
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#can-driver-structure" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        CAN Driver Structure
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="CAN Driver Structure">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#bxcan-driver" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        bxCAN Driver
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#can-fd-driver" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        CAN FD Driver
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configuring-can-in-cubemx" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configuring CAN in CubeMX
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Configuring CAN in CubeMX">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#baud-rate-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Baud rate configuration
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configuring-the-can-driver" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configuring the CAN driver
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Configuring the CAN driver">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-can-msp-init" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. CAN MSP Init
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="1. CAN MSP Init">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#priority-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Priority Configuration
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-system-clock-config" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. System Clock Config
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-can-recieve-entries" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. CAN Recieve Entries
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#4-can-filter" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. CAN Filter
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#6-can-init" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        6. CAN Init
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
   
   
     
@@ -1067,10 +1113,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
             
   
   
@@ -1088,8 +1134,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1301,45 +1347,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#can-driver-structure" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        CAN Driver Structure
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="CAN Driver Structure">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#bxcan-driver" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        bxCAN Driver
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#can-fd-driver" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        CAN FD Driver
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#configuring-can-in-cubemx" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1350,6 +1357,17 @@
   
     <nav class="md-nav" aria-label="Configuring CAN in CubeMX">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#system-clock-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        System Clock Config
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#baud-rate-configuration" class="md-nav__link">
@@ -1408,10 +1426,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-system-clock-config" class="md-nav__link">
+  <a href="#2-can-recieve-entries" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. System Clock Config
+        2. CAN Recieve Entries
       
     </span>
   </a>
@@ -1419,10 +1437,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-can-recieve-entries" class="md-nav__link">
+  <a href="#3-can-filter" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. CAN Recieve Entries
+        3. CAN Filter
       
     </span>
   </a>
@@ -1430,21 +1448,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-can-filter" class="md-nav__link">
+  <a href="#4-can-init" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. CAN Filter
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#6-can-init" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        6. CAN Init
+        4. CAN Init
       
     </span>
   </a>
@@ -1453,6 +1460,145 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sending-can-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sending CAN messages
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recieving-can-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recieving CAN messages
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#can-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CAN hooks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CAN hooks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#transmit-hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Transmit Hook
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Transmit Hook">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fdcan-tx-hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FDCAN TX Hook
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bxcan-tx-hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        bxCAN TX Hook
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recieve-hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recieve Hook
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Recieve Hook">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fdcan-rx-hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FDCAN RX Hook
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bxcan-rx-hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        bxCAN RX Hook
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage example:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#codebases-that-use-can" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Codebases that use CAN
+      
+    </span>
+  </a>
   
 </li>
       
@@ -1477,17 +1623,15 @@
 <h2 id="about-can">About CAN</h2>
 <h3 id="can-fd-vs-bxcan">CAN FD vs bxCAN</h3>
 <p>There are two types of CAN, regular bxCAN and CAN FD. CAN FD is a variant of CAN that we can clock at a much higher frequency compared to bxCAN. The G4 series of STM32 only supports CAN FD and the F4 and L4 series only supports regular bxCAN. In order to maintain cross compatibility between all of our microcontrollers, we're mainly clocking our CAN at 250kbps. CAN FD can be configured to baud rates of 8 Mbps, while regular bxCAN can be configured up to 1 Mbps.</p>
-<h2 id="can-driver-structure">CAN Driver Structure</h2>
-<p>Functionality wise, the code for CAN FD and bxCAN are very similar, so we can have a function </p>
-<h3 id="bxcan-driver">bxCAN Driver</h3>
-<h3 id="can-fd-driver">CAN FD Driver</h3>
 <h2 id="configuring-can-in-cubemx">Configuring CAN in CubeMX</h2>
 <p>Please read the <a href="../CubeMX/">CubeMX Overview</a> page first to understand how CubeMX works</p>
+<h3 id="system-clock-config">System Clock Config</h3>
+<p>In CubeMX, go to the <code>Clock Configuration</code> tab and make sure that the SYSCLK is 80 MHz. The SYSCLK represents the system clock of the microcontroller, and most math around how timers and baud rates are configured is based on the system clock.
+<img alt="System Clock Configuration" src="../assets/cubemx_clock_configuration.png" />. </p>
+<p>Instructions on how to do that can be found <a href="../CubeMX/">here</a> in section 3.3.</p>
 <h3 id="baud-rate-configuration">Baud rate configuration</h3>
 <p>For two devices to communicate on the same CAN bus, the baud rates of those CAN devices have to be the same. </p>
 <p>We normally configure baud rate for 250kbps, but that may change depending on the specific bus, along with COTS devices (e.g. Elcon charger, steering angle sensor). For the 2026 LHRs vehicle, baud rates are defined in the <a href="https://utexas.sharepoint.com/:x:/r/sites/ENGR-LonghornRacing/_layouts/15/Doc.aspx?sourcedoc=%7BD8E24070-8FDC-4831-B8E9-E2DAC530E2E1%7D&amp;file=2026%20Wire%20Harness%20Design.xlsx&amp;action=default&amp;mobileredirect=true">Wire Harness Design</a> sheet.</p>
-<p>In CubeMX, go to the <code>Clock Configuration</code> tab and make sure that the SYSCLK is 80 MHz. The SYSCLK represents the system clock of the microcontroller, and most math around how timers and baud rates are configured is based on the system clock.
-<img alt="System Clock Configuration" src="../assets/cubemx_clock_configuration.png" /></p>
 <p>Configure the CAN_TX and CAN_RX pins in <code>Pinout &amp; Configuration</code></p>
 <p>Once you've configured the pins go to <code>Connectivity</code>, and press the FDCAN or CAN peripheral.</p>
 <ul>
@@ -1529,32 +1673,94 @@ So I normally suggest using these values for 250kbps:</p>
     HAL_NVIC_EnableIRQ(FDCAN1_IT1_IRQn);
 </code></pre>
 <p>Do the same for all the CAN peripherals for every call to <code>HAL_NVIC_EnableIRQ</code>.</p>
-<h3 id="2-system-clock-config">2. System Clock Config</h3>
-<p>Configure the system clock to <em>80mhz</em>, instructions on how to do that can be found <a href="../CubeMX/">here</a> in section 3.3.</p>
-<h3 id="3-can-recieve-entries">3. CAN Recieve Entries</h3>
+<h3 id="2-can-recieve-entries">2. CAN Recieve Entries</h3>
 <p>In order to recieve CAN messages, you must declare the a <code>can[x]_recv_entries.h</code> header file.</p>
 <p>The syntax is </p>
 <pre><code class="language-c">CAN_RECV_ENTRY([ID], [number of entires in the queue], [if the queue is circular or not])
 
 </code></pre>
-<pre><code class="language-c">// this makes a fifo of size 5 for the CAN ID 0x001.
+<p>The queue is <code>circular</code> if when the queue is full, one of the pieces of data is overridden for the new piece of data.</p>
+<pre><code class="language-c">// this makes a non-circular fifo of size 5 for the CAN ID 0x001.
 CAN_RECV_ENTRY(0x001, 5, false)
 </code></pre>
 <p>The file name must be <code>canX_recv_entries.h</code> where the <code>X</code> corresponds to the can peripheral. </p>
 <p>See the <code>test/Inc</code> folder for an example can recieve entries header. You MUST delcare a can recieve header for every CAN peripheral.</p>
-<h3 id="4-can-filter">4. CAN Filter</h3>
+<h3 id="3-can-filter">3. CAN Filter</h3>
 <p>CAN filters determine which CAN frames the hardware accepts. Frames that do not pass the filter are discarded by the peripheral before they reach the software driver.</p>
-<p>See the following <a href="https://controllerstech.com/fdcan-normal-mode-stm32/#fdcan-filter-configuration">tutorial</a> on how to configure FDCAN filters.</p>
+<p>For FDCAN, see the following <a href="https://controllerstech.com/fdcan-normal-mode-stm32/#fdcan-filter-configuration">tutorial</a> on how to configure FDCAN filters.</p>
 <p>For bxCAN, see the "Configuring CAN Filters in STM32" section in this <a href="https://controllerstech.com/can-protocol-in-stm32/">tutorial</a>.</p>
-<h3 id="6-can-init">6. CAN Init</h3>
+<h3 id="4-can-init">4. CAN Init</h3>
 <p>For bxCAN, call:</p>
 <pre><code class="language-c">can_status_t can_init(CAN_HandleTypeDef* handle, CAN_FilterTypeDef* filter) 
+</code></pre>
+<pre><code class="language-c">can_status_t can_start(CAN_HandleTypeDef* handle);
 </code></pre>
 <p>For FDCAN, call:</p>
 <pre><code class="language-c">can_status_t can_fd_init(FDCAN_HandleTypeDef* handle, FDCAN_FilterTypeDef* filter)
 </code></pre>
+<p>and </p>
+<pre><code class="language-c">can_status_t can_fd_start(FDCAN_HandleTypeDef* handle);
+</code></pre>
 <p>Make sure the filter config and handle are both configured before calling the init function.
 See the <code>can_fd</code> test in the <code>test/tests/</code> folder. The tests are both configured for <code>INTERNAL_LOOPBACK</code> mode which connects TX and RX each other. You should set it to <code>NORMAL</code> during production code.</p>
+<h2 id="sending-can-messages">Sending CAN messages</h2>
+<p>Please read the following sections on DBC files and how to use them before moving on.</p>
+<ul>
+<li>CAN Messages<ul>
+<li><a href="../dbcEditor/">Editing DBC Files</a></li>
+<li><a href="../usingDBCs/">Generating DBC Headers</a></li>
+</ul>
+</li>
+</ul>
+<p>Both the bxCAN and CAN_FD have the same arguments to send CAN data (differences are only in name).</p>
+<p>The <code>FDCAN_TxHeaderTypeDef</code> and <code>CAN_TxHeaderTypeDef</code> defined in the STM32 HAL, are different mostly in name, and they contain important information like length of the CAN message, CAN ID, and other paramters. See the relevant test files on examples on what to set those parameters as.</p>
+<pre><code class="language-c">can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* header, uint8_t data[], TickType_t delay_ticks)
+</code></pre>
+<pre><code class="language-c">
+can_status_t can_send(CAN_HandleTypeDef* handle, const CAN_TxHeaderTypeDef* header, const uint8_t data[], TickType_t delay_ticks)
+</code></pre>
+<h2 id="recieving-can-messages">Recieving CAN messages</h2>
+<p>Please read the following sections on DBC files and how to use them before moving on.</p>
+<ul>
+<li>CAN Messages<ul>
+<li><a href="../dbcEditor/">Editing DBC Files</a></li>
+<li><a href="../usingDBCs/">Generating DBC Headers</a></li>
+</ul>
+</li>
+</ul>
+<p>Both the bxCAN and CAN_FD have the same arguments to recieve CAN data (differences are only in name).</p>
+<p>In order to recieve CAN messages, you must have that ID in the <code>`can[X]_recv_entries.h</code> header file. The CAN ID must also be accepted by the CAN hardware filter, or the CAN recieve interrupt won't trigger. </p>
+<pre><code class="language-c">can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint16_t id, FDCAN_RxHeaderTypeDef* header, uint8_t data[], TickType_t delay_ticks)
+</code></pre>
+<pre><code class="language-c">can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id, CAN_RxHeaderTypeDef* header, uint8_t data[], TickType_t delay_ticks)
+</code></pre>
+<h2 id="can-hooks">CAN hooks</h2>
+<p>Two hook functions are provided to the user for when a CAN message is sent and when a CAN message is recieved. These hooks are useful for debugging and mirroring CAN messages over USB. By default, they are defined as <code>weak</code> in the driver file, which allows the user to redeclare it in their code, and have their implementation get called.</p>
+<h3 id="transmit-hook">Transmit Hook</h3>
+<p>The CAN transmit hook is not called from an interrupt, so you do not need to use the ISR-safe FreeRTOS functions, but blocking prevents other CAN messages from being sent, and using global variables in the hook may cause race conditions. </p>
+<h4 id="fdcan-tx-hook">FDCAN TX Hook</h4>
+<pre><code class="language-c">can_fd_tx_callback_hook(FDCAN_HandleTypeDef* hfdcan, const can_tx_payload_t* payload)
+</code></pre>
+<h4 id="bxcan-tx-hook">bxCAN TX Hook</h4>
+<pre><code class="language-c">void can_tx_callback_hook(CAN_HandleTypeDef* hcan, const can_tx_payload_t* payload);
+</code></pre>
+<h3 id="recieve-hook">Recieve Hook</h3>
+<p>The CAN recieve hook is called in the context of the can recieve interrupt, so special care must be taken to not block and only use ISR-safe FreeRTOS functions like <code>xQueueSendFromISR</code>.</p>
+<h4 id="fdcan-rx-hook">FDCAN RX Hook</h4>
+<pre><code class="language-c">void can_fd_rx_callback_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs, can_rx_payload_t recv_payload )
+</code></pre>
+<h4 id="bxcan-rx-hook">bxCAN RX Hook</h4>
+<pre><code class="language-c">void can_rx_callback_hook(CAN_HandleTypeDef *hcan, uint32_t RxFifo0ITs, can_rx_payload_t recv_payload )
+</code></pre>
+<h3 id="usage-example">Usage example:</h3>
+<ul>
+<li><a href="https://github.com/lhr-solar/PS-VehicleControlUnit/blob/main/Firmware/Tasks/Src/MotorTelemetryTask.c">Mirroring CAN RX data over USB</a></li>
+</ul>
+<h2 id="codebases-that-use-can">Codebases that use CAN</h2>
+<ul>
+<li><a href="https://github.com/lhr-solar/PS-VehicleControlUnit/blob/main/Firmware/Drivers/Src/CANbus.c">VCU</a></li>
+<li><a href="https://github.com/lhr-solar/PS-Amperes/blob/main/Firmware/Drivers/Src/AmperesCAN.c">Amperes</a></li>
+</ul>
 
 
 

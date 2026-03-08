@@ -13,24 +13,28 @@
       
       
       
+        <link rel="prev" href="../DBC/">
+      
+      
+        <link rel="next" href="../EMC2305/">
       
       
         
       
       
-      <link rel="icon" href="../../LHRs.ico">
+      <link rel="icon" href="../LHRs.ico">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
     
     
       
-        <title>Namespace Member Enums - Embedded Sharepoint Documentation</title>
+        <title>Generating DBC Headers - Embedded Sharepoint Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -49,7 +53,7 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#namespace-member-enums" class="md-skip">
+        <a href="#integrating-can-message-into-your-code" class="md-skip">
           Skip to content
         </a>
       
@@ -90,7 +94,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Embedded Sharepoint Documentation" class="md-header__button md-logo" aria-label="Embedded Sharepoint Documentation" data-md-component="logo">
+    <a href=".." title="Embedded Sharepoint Documentation" class="md-header__button md-logo" aria-label="Embedded Sharepoint Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -110,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Namespace Member Enums
+              Generating DBC Headers
             
           </span>
         </div>
@@ -200,7 +204,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Embedded Sharepoint Documentation" class="md-nav__button md-logo" aria-label="Embedded Sharepoint Documentation" data-md-component="logo">
+    <a href=".." title="Embedded Sharepoint Documentation" class="md-nav__button md-logo" aria-label="Embedded Sharepoint Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -218,7 +222,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -245,7 +249,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../Installation/" class="md-nav__link">
+      <a href="../Installation/" class="md-nav__link">
         
   
   
@@ -272,7 +276,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../FlashAndTheBug/" class="md-nav__link">
+      <a href="../FlashAndTheBug/" class="md-nav__link">
         
   
   
@@ -299,7 +303,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../SharepointSubmodule/" class="md-nav__link">
+      <a href="../SharepointSubmodule/" class="md-nav__link">
         
   
   
@@ -326,7 +330,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../CubeMX/" class="md-nav__link">
+      <a href="../CubeMX/" class="md-nav__link">
         
   
   
@@ -353,7 +357,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../STM32_Ports/" class="md-nav__link">
+      <a href="../STM32_Ports/" class="md-nav__link">
         
   
   
@@ -377,18 +381,20 @@
       
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
         
           
           <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
@@ -409,7 +415,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             
@@ -427,7 +433,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../dbcEditor/" class="md-nav__link">
+      <a href="../dbcEditor/" class="md-nav__link">
         
   
   
@@ -455,7 +461,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../DBC/" class="md-nav__link">
+      <a href="../DBC/" class="md-nav__link">
         
   
   
@@ -480,10 +486,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../usingDBCs/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generating DBC Headers
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -499,6 +532,59 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#generating-can-message-headers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generating CAN message headers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whats-included-in-the-header" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What's included in the header
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#writting-packing-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Writting packing functions
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -565,7 +651,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../EMC2305/" class="md-nav__link">
+      <a href="../EMC2305/" class="md-nav__link">
         
   
   
@@ -593,7 +679,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../WS2812B/" class="md-nav__link">
+      <a href="../WS2812B/" class="md-nav__link">
         
   
   
@@ -621,7 +707,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../CanSetup/" class="md-nav__link">
+      <a href="../CanSetup/" class="md-nav__link">
         
   
   
@@ -649,7 +735,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../EMC2305_8h/" class="md-nav__link">
+      <a href="../Drivers/EMC2305_8h/" class="md-nav__link">
         
   
   
@@ -677,7 +763,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../SevenSegment_8h/" class="md-nav__link">
+      <a href="../Drivers/SevenSegment_8h/" class="md-nav__link">
         
   
   
@@ -705,7 +791,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../WS2812B_8h/" class="md-nav__link">
+      <a href="../Drivers/WS2812B_8h/" class="md-nav__link">
         
   
   
@@ -733,7 +819,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../printf_8h/" class="md-nav__link">
+      <a href="../Drivers/printf_8h/" class="md-nav__link">
         
   
   
@@ -815,7 +901,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../BSP/ADC_8h/" class="md-nav__link">
+      <a href="../BSP/ADC_8h/" class="md-nav__link">
         
   
   
@@ -843,7 +929,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../BSP/CAN_8h/" class="md-nav__link">
+      <a href="../BSP/CAN_8h/" class="md-nav__link">
         
   
   
@@ -871,7 +957,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../BSP/CAN__Common_8h/" class="md-nav__link">
+      <a href="../BSP/CAN__Common_8h/" class="md-nav__link">
         
   
   
@@ -899,7 +985,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../BSP/CAN__FD_8h/" class="md-nav__link">
+      <a href="../BSP/CAN__FD_8h/" class="md-nav__link">
         
   
   
@@ -927,7 +1013,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../BSP/UART_8h/" class="md-nav__link">
+      <a href="../BSP/UART_8h/" class="md-nav__link">
         
   
   
@@ -975,6 +1061,47 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#generating-can-message-headers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generating CAN message headers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whats-included-in-the-header" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What's included in the header
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#writting-packing-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Writting packing functions
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -990,8 +1117,67 @@
 
 
 
-<h1 id="namespace-member-enums">Namespace Member Enums</h1>
-<p>Nothing related to <strong>Namespace Member Enums</strong> found.</p>
+<h1 id="integrating-can-message-into-your-code">Integrating CAN message into your code</h1>
+<h2 id="generating-can-message-headers">Generating CAN message headers</h2>
+<p>There is a python script located in the <code>can/</code> folder called <code>generate_can_headers.py</code>. This script takes a DBC file, and turns it into a set of macros, structs, and enums.</p>
+<p>Usage guide:</p>
+<pre><code class="language-sh">python [path to python script]/generate_can_headers.py [path to dbc file]
+</code></pre>
+<p>Usage example (called from the root directory of Embedded-Sharepoint):</p>
+<pre><code class="language-sh">python can/generate_can_headers.py can/dbc/Mcqueen/CarCAN.dbc
+</code></pre>
+<h2 id="whats-included-in-the-header">What's included in the header</h2>
+<p>The generated header file includes macros for every CAN_ID</p>
+<pre><code class="language-c">/* ================= CAN ID Macros ================= */
+
+#define CAN_ID_VCU_STATUS 0x10
+#define CAN_ID_CONTROLS_STATUS 0x15
+</code></pre>
+<p>The generated header file includes macros for every CAN message size. This is a useful field to use when creating CAN transmit or CAN recieve header files. </p>
+<pre><code class="language-c">/* ================= CAN Length Macros ================= */
+
+#define CAN_DLC_VCU_STATUS 3
+#define CAN_DLC_CONTROLS_STATUS 4
+</code></pre>
+<p>The generated header file includes enums for every CAN value tables, this is useful for encoding and decoding CAN messages without using magic numbers. </p>
+<pre><code class="language-c">/* ================= Value Table Enums ================= */
+
+typedef enum {
+    VCU_STATUS_VCU_FAULT_MOTOR_HV_UNDERVOLTAGE = 6,
+    VCU_STATUS_VCU_FAULT_MOTOR_HV_OVERVOLTAGE = 5,
+    VCU_STATUS_VCU_FAULT_MOTOR_CONTROLLER_FAULT = 4,
+    VCU_STATUS_VCU_FAULT_MOTOR_PRECHARGE_TIMEOUT = 3,
+    VCU_STATUS_VCU_FAULT_MOTOR_PCHG_CONTACTOR_SENSE = 2,
+    VCU_STATUS_VCU_FAULT_MOTOR_CONTACTOR_SENSE = 1,
+    VCU_STATUS_VCU_FAULT_NO_FAULT = 0,
+} vcu_status_vcu_fault_e;
+</code></pre>
+<p>The generated header file includes structs for every CAN message, this is useful for storing CAN data in a more readable format than an array of bytes.</p>
+<pre><code class="language-c">/* ================= Message Structs ================= */
+
+typedef struct {
+    uint8_t VCU_Fault;
+    uint8_t Motor_Contactor_State;
+    uint8_t Motor_Precharge_Contactor_State;
+    uint8_t Motor_Ready_To_Drive;
+    uint8_t VCU_Driver_Input_OK;
+    uint8_t VCU_Pedals_OK;
+    uint8_t VCU_Regen_OK;
+    uint8_t VCU_Regen_Active;
+    uint8_t VCU_FSM_State;
+} vcu_status_t;
+</code></pre>
+<h2 id="writting-packing-functions">Writting packing functions</h2>
+<p>To maintain more modular code, it's good practice to write a function to "pack" a can message struct into an array of bytes. For example, </p>
+<pre><code class="language-c">
+// encodes a drive command struct into an array of bytes for can_send
+static void packDriveCommand(mc_drivecommand_t motorDriveCommand, uint8_t tx_data[8]){
+    memcpy(&amp;tx_data[4], &amp;(motorDriveCommand.MC_MotorCurrentSetpoint), sizeof(float));
+    memcpy(&amp;tx_data[0], &amp;(motorDriveCommand.MC_MotorVelocitySetpoint), sizeof(float));
+}
+</code></pre>
+<p>Data from the <code>motorDriveCommand</code> can message struct is packed into the <code>tx_data</code> array of bytes to send over CAN. </p>
+<p>This reverse can also be done on a recieved can message to "unpack" an array of bytes into a can message struct.</p>
 
 
 
@@ -1041,10 +1227,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>

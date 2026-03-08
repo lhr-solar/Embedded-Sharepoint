@@ -51,7 +51,7 @@
     <member refid="CAN__FD_8h_1aba1a4136e01207ba7cccb5d2e0994276" kind="function"><name>can_fd_start</name></member>
     <member refid="CAN__FD_8h_1a97b6f4d9057d197886b2af512cbbccc4" kind="function"><name>can_fd_send</name></member>
     <member refid="CAN__FD_8h_1aa94c621f0ba1d7136bfdf61a83a2c4e2" kind="function"><name>can_fd_recv</name></member>
-    <member refid="CAN__FD_8h_1a5daea55096e97b48e604ef624239869f" kind="function"><name>can_fd_tx_complete_hook</name></member>
+    <member refid="CAN__FD_8h_1ad150cda00c529bf5f256d6c49525c199" kind="function"><name>can_fd_tx_callback_hook</name></member>
     <member refid="CAN__FD_8h_1af052a1ab45f4b3f7698a6081cbec3181" kind="function"><name>can_fd_rx_callback_hook</name></member>
   </compound>
   <compound refid="UART_8h" kind="file"><name>UART.h</name>
