@@ -5,23 +5,22 @@
 ### CAN FD vs bxCAN
 There are two types of CAN, regular bxCAN and CAN FD. CAN FD is a variant of CAN that we can clock at a much higher frequency compared to bxCAN. The G4 series of STM32 only supports CAN FD and the F4 and L4 series only supports regular bxCAN. In order to maintain cross compatibility between all of our microcontrollers, we're mainly clocking our CAN at 250kbps. CAN FD can be configured to baud rates of 8 Mbps, while regular bxCAN can be configured up to 1 Mbps.
 
-## CAN Driver Structure
-Functionality wise, the code for CAN FD and bxCAN are very similar, so we can have a function 
-
-### bxCAN Driver
-
-### CAN FD Driver
 
 ## Configuring CAN in CubeMX
 Please read the [CubeMX Overview](./CubeMX.md) page first to understand how CubeMX works
+
+### System Clock Config
+
+In CubeMX, go to the ```Clock Configuration``` tab and make sure that the SYSCLK is 80 MHz. The SYSCLK represents the system clock of the microcontroller, and most math around how timers and baud rates are configured is based on the system clock.
+![System Clock Configuration](assets/cubemx_clock_configuration.png). 
+
+Instructions on how to do that can be found [here](./CubeMX.md) in section 3.3.
 
 ### Baud rate configuration
 For two devices to communicate on the same CAN bus, the baud rates of those CAN devices have to be the same. 
 
 We normally configure baud rate for 250kbps, but that may change depending on the specific bus, along with COTS devices (e.g. Elcon charger, steering angle sensor). For the 2026 LHRs vehicle, baud rates are defined in the [Wire Harness Design](https://utexas.sharepoint.com/:x:/r/sites/ENGR-LonghornRacing/_layouts/15/Doc.aspx?sourcedoc=%7BD8E24070-8FDC-4831-B8E9-E2DAC530E2E1%7D&file=2026%20Wire%20Harness%20Design.xlsx&action=default&mobileredirect=true) sheet.
 
-In CubeMX, go to the ```Clock Configuration``` tab and make sure that the SYSCLK is 80 MHz. The SYSCLK represents the system clock of the microcontroller, and most math around how timers and baud rates are configured is based on the system clock.
-![System Clock Configuration](assets/cubemx_clock_configuration.png)
 
 Configure the CAN_TX and CAN_RX pins in ```Pinout & Configuration```
 
@@ -74,11 +73,7 @@ Look at the call to the NVIC Set Priority function
 ```
 Do the same for all the CAN peripherals for every call to ```HAL_NVIC_EnableIRQ```.
 
-### 2. System Clock Config
-
-Configure the system clock to *80mhz*, instructions on how to do that can be found [here](./CubeMX.md) in section 3.3.
-
-### 3. CAN Recieve Entries
+### 2. CAN Recieve Entries
 In order to recieve CAN messages, you must declare the a `can[x]_recv_entries.h` header file.
 
 The syntax is 
@@ -87,8 +82,10 @@ CAN_RECV_ENTRY([ID], [number of entires in the queue], [if the queue is circular
 
 ```
 
+The queue is `circular` if when the queue is full, one of the pieces of data is overriden for the new piece of data.
+
 ```c
-// this makes a fifo of size 5 for the CAN ID 0x001.
+// this makes a non-circular fifo of size 5 for the CAN ID 0x001.
 CAN_RECV_ENTRY(0x001, 5, false)
 ```
 
@@ -97,7 +94,7 @@ The file name must be `canX_recv_entries.h` where the `X` corresponds to the can
 See the ``test/Inc`` folder for an example can recieve entries header. You MUST delcare a can recieve header for every CAN peripheral.
 
 
-### 4. CAN Filter
+### 3. CAN Filter
 CAN filters determine which CAN frames the hardware accepts. Frames that do not pass the filter are discarded by the peripheral before they reach the software driver.
 
 See the following [tutorial](https://controllerstech.com/fdcan-normal-mode-stm32/#fdcan-filter-configuration) on how to configure FDCAN filters.
@@ -105,15 +102,22 @@ See the following [tutorial](https://controllerstech.com/fdcan-normal-mode-stm32
 For bxCAN, see the "Configuring CAN Filters in STM32" section in this [tutorial](https://controllerstech.com/can-protocol-in-stm32/).
 
 
-### 6. CAN Init
+### 4. CAN Init
 For bxCAN, call:
 ```c
 can_status_t can_init(CAN_HandleTypeDef* handle, CAN_FilterTypeDef* filter) 
+```
+```c
+can_status_t can_start(CAN_HandleTypeDef* handle);
 ```
 
 For FDCAN, call:
 ```c
 can_status_t can_fd_init(FDCAN_HandleTypeDef* handle, FDCAN_FilterTypeDef* filter)
+``` 
+and 
+```c
+can_status_t can_fd_start(FDCAN_HandleTypeDef* handle);
 ```
 
 Make sure the filter config and handle are both configured before calling the init function.

@@ -368,7 +368,7 @@ int main(void) {
 
     // internal loopback shorts the CAN RX and TX internally.
     // In production, this should be set to FDCAN_MODE_NORMAL
-    hfdcan2->Init.Mode = FDCAN_MODE_EXTERNAL_LOOPBACK;
+    hfdcan2->Init.Mode = FDCAN_MODE_INTERNAL_LOOPBACK;
     hfdcan2->Init.AutoRetransmission = DISABLE;
     hfdcan2->Init.TransmitPause = DISABLE;
     hfdcan2->Init.ProtocolException = DISABLE;
@@ -410,6 +410,9 @@ int main(void) {
     hfdcan3->Instance = FDCAN3;
     hfdcan3->Init.ClockDivider = FDCAN_CLOCK_DIV1;
     hfdcan3->Init.FrameFormat = FDCAN_FRAME_CLASSIC;
+
+    // internal loopback shorts the CAN RX and TX internally.
+    // In production, this should be set to FDCAN_MODE_NORMAL
     hfdcan3->Init.Mode = FDCAN_MODE_INTERNAL_LOOPBACK;
     hfdcan3->Init.AutoRetransmission = DISABLE;
     hfdcan3->Init.TransmitPause = DISABLE;
