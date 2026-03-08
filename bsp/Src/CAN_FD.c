@@ -334,7 +334,7 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 #endif /* FDCAN2 */
 
 #ifdef FDCAN3
-            if (hfdcan->Instance == FDCAN3) {
+            else if (hfdcan->Instance == FDCAN3) {
             for (int i = 0; i < can3_recv_entry_count; i++) {
                 if (can3_recv_entries[i].id == payload.header.Identifier) {
                     if (can3_recv_entries[i].circular){
