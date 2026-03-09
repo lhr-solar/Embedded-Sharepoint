@@ -23,7 +23,7 @@
     
     
       
-        <title>Class Members - Embedded Sharepoint Documentation</title>
+        <title>File slcanFormat.h - Embedded Sharepoint Documentation</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#class-members" class="md-skip">
+        <a href="#file-slcanformath" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Class Members
+              File slcanFormat.h
             
           </span>
         </div>
@@ -649,7 +649,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../Drivers/EMC2305_8h/" class="md-nav__link">
+      <a href="../EMC2305_8h/" class="md-nav__link">
         
   
   
@@ -677,7 +677,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../Drivers/SevenSegment_8h/" class="md-nav__link">
+      <a href="../SevenSegment_8h/" class="md-nav__link">
         
   
   
@@ -705,7 +705,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../Drivers/WS2812B_8h/" class="md-nav__link">
+      <a href="../WS2812B_8h/" class="md-nav__link">
         
   
   
@@ -733,7 +733,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../Drivers/printf_8h/" class="md-nav__link">
+      <a href="../printf_8h/" class="md-nav__link">
         
   
   
@@ -761,7 +761,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../Drivers/slcanFormat_8h/" class="md-nav__link">
+      <a href="../slcanFormat_8h/" class="md-nav__link">
         
   
   
@@ -1018,8 +1018,28 @@
 
 
 
-<h1 id="class-members">Class Members</h1>
-<p>Nothing related to <strong>Class Members</strong> found.</p>
+<h1 id="file-slcanformath">File slcanFormat.h</h1>
+<p><a href="../files/"><strong>File List</strong></a> <strong>&gt;</strong> <a href="../dir_1284b95147afa48b330f502c8bbc0529/"><strong>driver</strong></a> <strong>&gt;</strong> <a href="../dir_63ffe06a04b97e03324a2ad2f10a5002/"><strong>Inc</strong></a> <strong>&gt;</strong> <a href="../slcanFormat_8h/"><strong>slcanFormat.h</strong></a></p>
+<p><a href="../slcanFormat_8h/">Go to the documentation of this file</a></p>
+<pre><code class="language-C++">#pragma once
+
+#include &lt;stdint.h&gt;
+#include &lt;stddef.h&gt;
+
+/*
+ * Convert CAN frame to SLCAN string.
+ *
+ * id        : 11-bit CAN ID
+ * data      : pointer to payload
+ * dlc       : payload length (0-8)
+ * out       : output buffer
+ * out_size  : size of output buffer
+ *
+ * returns number of bytes written, or -1 on error
+ */
+
+int can_to_slcan(uint16_t id, const uint8_t *data, uint8_t dlc, char *out, uint8_t out_size);
+</code></pre>
 
 
 

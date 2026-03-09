@@ -10,4 +10,5 @@ Here is a list of all files with brief descriptions:
         * **file** [**SevenSegment.h**](SevenSegment_8h.md)     
         * **file** [**WS2812B.h**](WS2812B_8h.md)     
         * **file** [**printf.h**](printf_8h.md)     
+        * **file** [**slcanFormat.h**](slcanFormat_8h.md)     
 

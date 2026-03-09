@@ -222,6 +222,9 @@
     <member refid="SevenSegment_8h_1a1497aea251cd88d378328ee89dcc7c2d" kind="function"><name>displayTwoNum_SevenSegment</name></member>
     <member refid="SevenSegment_8h_1a99e5fe70283d86880aa585ed48ac42f1" kind="function"><name>off_SevenSegment</name></member>
   </compound>
+  <compound refid="slcanFormat_8h" kind="file"><name>slcanFormat.h</name>
+    <member refid="slcanFormat_8h_1a57a79e3b7bffcf46590eeaba11e86c77" kind="function"><name>can_to_slcan</name></member>
+  </compound>
   <compound refid="WS2812B_8h" kind="file"><name>WS2812B.h</name>
     <member refid="WS2812B_8h_1a8e3ced84ab9f695dfa4f844a67b89fd8" kind="define"><name>MAX_RGB_VAL</name></member>
     <member refid="WS2812B_8h_1aae645e9c4c5bb70925c21fe9c4d3ed80" kind="define"><name>NUMBER_PWM_DATA_ELEMENTS</name></member>

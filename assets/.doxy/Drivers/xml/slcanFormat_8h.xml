@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="slcanFormat_8h" kind="file" language="C++">
+    <compoundname>slcanFormat.h</compoundname>
+    <includes local="no">stdint.h</includes>
+    <includes local="no">stddef.h</includes>
+    <incdepgraph>
+      <node id="1">
+        <label>driver/Inc/slcanFormat.h</label>
+        <link refid="slcanFormat_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>stddef.h</label>
+      </node>
+      <node id="2">
+        <label>stdint.h</label>
+      </node>
+    </incdepgraph>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="slcanFormat_8h_1a57a79e3b7bffcf46590eeaba11e86c77" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int can_to_slcan</definition>
+        <argsstring>(uint16_t id, const uint8_t *data, uint8_t dlc, char *out, uint8_t out_size)</argsstring>
+        <name>can_to_slcan</name>
+        <param>
+          <type>uint16_t</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>const uint8_t *</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>uint8_t</type>
+          <declname>dlc</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>out</declname>
+        </param>
+        <param>
+          <type>uint8_t</type>
+          <declname>out_size</declname>
+        </param>
+        <briefdescription>
+<para>Convert CAN frame to SLCAN string. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Activates the FDCAN peripheral so it can transmit and receive messages.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>11-bit CAN ID </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>data</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to payload </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>dlc</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>payload length (0-8) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>out</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>output buffer </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>out_size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>size of output buffer</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>int Returns number of bytes written, or -1 on error </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/slcanFormat.h" line="32" column="5" declfile="driver/Inc/slcanFormat.h" declline="32" declcolumn="5"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdint.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stddef.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*<sp/>Convert<sp/>CAN<sp/>frame<sp/>to<sp/>SLCAN<sp/>string.</highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*<sp/>id<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>:<sp/>11-bit<sp/>CAN<sp/>ID</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*<sp/>data<sp/><sp/><sp/><sp/><sp/><sp/>:<sp/>pointer<sp/>to<sp/>payload</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/>*<sp/>dlc<sp/><sp/><sp/><sp/><sp/><sp/><sp/>:<sp/>payload<sp/>length<sp/>(0-8)</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/>*<sp/>out<sp/><sp/><sp/><sp/><sp/><sp/><sp/>:<sp/>output<sp/>buffer</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/>*<sp/>out_size<sp/><sp/>:<sp/>size<sp/>of<sp/>output<sp/>buffer</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/>*<sp/>returns<sp/>number<sp/>of<sp/>bytes<sp/>written,<sp/>or<sp/>-1<sp/>on<sp/>error</highlight></codeline>
+<codeline lineno="16"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight></codeline>
+<codeline lineno="32" refid="slcanFormat_8h_1a57a79e3b7bffcf46590eeaba11e86c77" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="slcanFormat_8h_1a57a79e3b7bffcf46590eeaba11e86c77" kindref="member">can_to_slcan</ref>(uint16_t<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint8_t<sp/>*data,<sp/>uint8_t<sp/>dlc,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*out,<sp/>uint8_t<sp/>out_size);</highlight></codeline>
+    </programlisting>
+    <location file="driver/Inc/slcanFormat.h"/>
+  </compounddef>
+</doxygen>
