@@ -21,12 +21,6 @@ configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY is the maximum FreeRTOS priority fo
 #define CAN_RX_PROFILE_PORT GPIOB
 #define CAN_RX_PROFILE_PIN GPIO_PIN_4
 
-// This enables the can_fd_rx_callback_hook function to be called when data is recieved
-#define FDCAN1_RECV_HOOK_EN
-#define FDCAN2_RECV_HOOK_EN
-#define FDCAN3_RECV_HOOK_EN
-
-
 void can_profile_pins_init(){
     GPIO_InitTypeDef tx_pin_config = {
         .Mode = GPIO_MODE_OUTPUT_PP,
