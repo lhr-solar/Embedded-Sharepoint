@@ -147,7 +147,7 @@ standard names. */
 // Necessary for event groups to work
 #define INCLUDE_xTimerPendFunctionCall 1
 
-// Adds reentrancy structures to each thread for stlib functions
+// Adds reentrancy structures to each thread for stdlib functions
 #define configUSE_NEWLIB_REENTRANT 1
 
 #endif /* FREERTOS_CONFIG_H */
