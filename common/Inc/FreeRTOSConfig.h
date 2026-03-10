@@ -141,9 +141,13 @@ standard names. */
 
 /* Section where parameter definitions can be added (for instance, to override default ones in FreeRTOS.h) */\
 
+// Enable queue sets
 #define configUSE_QUEUE_SETS 1
 
 // Necessary for event groups to work
 #define INCLUDE_xTimerPendFunctionCall 1
+
+// Adds reentrancy structures to each thread for stlib functions
+#define configUSE_NEWLIB_REENTRANT 1
 
 #endif /* FREERTOS_CONFIG_H */
