@@ -1,8 +1,16 @@
 #include "stm32xx_hal.h"
+#include "UART.h"
+#include "printf.h"
 #include "CAN_FD.h"
 
-StaticTask_t task_buffer;
-StackType_t task_stack[512];
+StaticTask_t task_1_buffer;
+StackType_t task_1_stack[512];
+
+StaticTask_t task_2_buffer;
+StackType_t task_2_stack[512];
+
+StaticTask_t rx_task_buffer;
+StackType_t rx_task_stack[512];
 
 #define TEST_QUEUE_SET_ID_COUNT 2
 
@@ -15,11 +23,11 @@ static const uint32_t test_can_ids[TEST_QUEUE_SET_ID_COUNT] =
 #define QUEUESET_NUM_ELEMENTS 30
 
 static StaticQueue_t test_queue_set_buffer;
-static uint8_t test_queue_set[
+static uint8_t test_queue_set_storage[
     QUEUESET_NUM_ELEMENTS * sizeof(QueueSetMemberHandle_t)
 ];
 
-static QueueSetHandle_t test_queue_set;
+static QueueSetHandle_t canQueueSet;
 
 /*
 configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY is the maximum FreeRTOS priority for an interrupt 
@@ -35,6 +43,7 @@ configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY is the maximum FreeRTOS priority fo
 void Heartbeat_Init();
 void G474_SystemClockConfig();
 void G473_SystemClockConfig(void);
+void test_printf_init();
 
 void Error_Handler(){
     while(1){
@@ -49,29 +58,42 @@ void Success_Handler(){
 
 static void rx_task(void *pvParameters) {
 
-    test_queue_set = xQueueCreateSetStatic(
+    canQueueSet = xQueueCreateSetStatic(
     QUEUESET_NUM_ELEMENTS,
     test_queue_set_storage,
     &test_queue_set_buffer);
 
-    can_id_set_t canQueueSet = {
+    can_id_set_t canQueueSetStruct = {
         .ids = test_can_ids,
         .id_count = TEST_QUEUE_SET_ID_COUNT,
-        .queueSet = test_queue_set
+        .queueSet = canQueueSet
     };
-    can_status_t setInitStatus = can_fd_register_id_set(hfdcan1, canQueueSet);
+    
+    can_status_t setInitStatus = can_fd_register_id_set(hfdcan1, &canQueueSetStruct);
 
     if(setInitStatus != CAN_OK){
         Error_Handler();
     }
 
+    uint16_t id = 0;
+
+    FDCAN_RxHeaderTypeDef fdcan1_rx_header = {0};
+    uint8_t fdcan1_rx_data[8] = {0};
+
     while(1){
 
+      can_fd_recv_set(hfdcan1, &canQueueSetStruct, &id, portMAX_DELAY);
+
+      can_fd_recv(hfdcan1, id, &fdcan1_rx_header, fdcan1_rx_data, portMAX_DELAY);
+
+      printf("Recieved Can message from id: %d\n\r", id);
+
+      HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
     }
 }
 
 
-static void task(void *pvParameters) {
+static void task_1(void *pvParameters) {
 
     int test_id = 0x321;
     FDCAN_TxHeaderTypeDef tx_header = {0};   
@@ -104,8 +126,44 @@ static void task(void *pvParameters) {
         } 
 #endif
         
-        HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
         vTaskDelay(pdMS_TO_TICKS(500));
+    }
+}
+
+static void task_2(void *pvParameters) {
+
+    int test_id = 0x001;
+    FDCAN_TxHeaderTypeDef tx_header = {0};   
+    tx_header.Identifier = test_id;
+    tx_header.IdType = FDCAN_STANDARD_ID;
+    tx_header.TxFrameType = FDCAN_DATA_FRAME;
+    tx_header.DataLength = FDCAN_DLC_BYTES_8;
+    tx_header.ErrorStateIndicator = FDCAN_ESI_ACTIVE;
+    tx_header.BitRateSwitch = FDCAN_BRS_OFF;
+    tx_header.FDFormat = FDCAN_CLASSIC_CAN;
+    tx_header.TxEventFifoControl = FDCAN_STORE_TX_EVENTS;
+    tx_header.MessageMarker = 0;
+
+    // send x1234 to 0x321
+    uint8_t tx_data[8] = {0};
+    tx_data[7] = 0x12;
+    tx_data[6] = 0x34;
+    tx_data[5] = 0x56;
+    tx_data[4] = 0x78;
+    tx_data[3] = 0x9A;
+    tx_data[2] = 0xBC;
+    tx_data[1] = 0xDE;
+    tx_data[0] = 0xFF;
+
+    while(1){
+
+#ifdef FDCAN1
+        if (can_fd_send(hfdcan1, &tx_header, tx_data, portMAX_DELAY) == CAN_ERR){
+            Error_Handler();
+        } 
+#endif
+        
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
 
@@ -130,6 +188,7 @@ int main(void) {
 
 
     Heartbeat_Init(); // enable LED for LED_PORT
+    test_printf_init();
 
 #ifdef FDCAN1
     hfdcan1->Instance = FDCAN1;
@@ -177,14 +236,31 @@ int main(void) {
 
     // you can only send CAN messages within a FreeRTOS task
     xTaskCreateStatic(
-                task,
-                "task",
+                task_1,
+                "Transmit task 1",
                 512,
                 NULL,
                 tskIDLE_PRIORITY + 2,
-                task_stack,
-                &task_buffer);
+                task_1_stack,
+                &task_1_buffer);
+    
+    xTaskCreateStatic(
+                task_2,
+                "Transmit task 2",
+                512,
+                NULL,
+                tskIDLE_PRIORITY + 2,
+                task_2_stack,
+                &task_2_buffer);
 
+      xTaskCreateStatic(
+                rx_task,
+                "rx task",
+                512,
+                NULL,
+                tskIDLE_PRIORITY + 2,
+                rx_task_stack,
+                &rx_task_buffer);
     
     vTaskStartScheduler();
     while(1){
@@ -408,6 +484,41 @@ void Heartbeat_Init() {
     
     HAL_GPIO_Init(LED_PORT, &led_config);
 }
+
+void test_printf_init(){
+
+#ifdef USART3
+    husart3->Init.BaudRate = 115200;
+    husart3->Init.WordLength = UART_WORDLENGTH_8B;
+    husart3->Init.StopBits = UART_STOPBITS_1;
+    husart3->Init.Parity = UART_PARITY_NONE;
+    husart3->Init.Mode = UART_MODE_TX_RX;
+    husart3->Init.HwFlowCtl = UART_HWCONTROL_NONE;
+    husart3->Init.OverSampling = UART_OVERSAMPLING_16;
+
+    printf_init(husart3);
+#endif /*USART3*/
+
+}
+
+#ifdef USART3
+void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
+    GPIO_InitTypeDef init = {0};
+    __HAL_RCC_GPIOC_CLK_ENABLE();
+    /**USART3 GPIO Configuration
+    PC10     ------> USART3_TX
+    PC11     ------> USART3_RX
+    */
+    init.Pin = GPIO_PIN_10|GPIO_PIN_11;
+    init.Mode = GPIO_MODE_AF_PP;
+    init.Pull = GPIO_NOPULL;
+    init.Speed = GPIO_SPEED_FREQ_LOW;
+    init.Alternate = GPIO_AF7_USART3;
+    HAL_GPIO_Init(GPIOC, &init);
+
+}
+
+#endif
 
 
 void G474_SystemClockConfig(){
