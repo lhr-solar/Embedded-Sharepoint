@@ -108,14 +108,14 @@ can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint16_t id, FDCAN_RxHeade
 can_status_t can_fd_register_id_set(FDCAN_HandleTypeDef* handle, can_id_set_t* set);
 
 /**
- * @brief Adds a set of IDs to a user-defined queue set
- *
+ * @brief Blocks on a queue set until a message is available on one of the member queues.
  *
  * @param handle       Pointer to the FDCAN handle structure.
- * @param set          Pointer to an already allocated can_id_set_t struct
+ * @param set          Pointer to an already allocated and registered can_id_set_t struct.
+ * @param id           Pointer to a variable to store the CAN ID of the ready queue.
+ * @param delay_ticks  Maximum delay to wait if no message is available (FreeRTOS ticks).
  *
- * @return can_status_t Returns CAN_OK if all IDs were added correctly,
- *                      CAN_ERR on failure.
+ * @return can_status_t Returns CAN_OK if an ID was retrieved, CAN_EMPTY on timeout, or CAN_ERR on failure.
  */
 can_status_t can_fd_recv_set(FDCAN_HandleTypeDef* handle, can_id_set_t* set, uint16_t *id, TickType_t delay_ticks);
 
