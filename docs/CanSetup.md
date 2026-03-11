@@ -189,7 +189,7 @@ can_status_t can_fd_register_id_set(FDCAN_HandleTypeDef* handle, can_id_set_t* s
 ```
 
 ### Recieve CAN data from the Queue Set
-Once the queue set has registered IDs, pass in the can handle, the list of IDs, a pointer to the ID, and the blocking time. If the function returns sucesfully, there is a CAN ID that has a new message, and that is passed by reference through the id variable.
+Once the queue set has registered IDs, pass in the can handle, the list of IDs, a pointer to the ID, and the blocking time. If the function returns successfully, there is a CAN ID that has a new message, and that is passed by reference through the id variable.
 #### bxCAN
 ```c
 can_status_t can_recv_set(CAN_HandleTypeDef* handle, can_id_set_t* set, uint16_t *id, TickType_t delay_ticks)
