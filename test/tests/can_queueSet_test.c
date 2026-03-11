@@ -92,7 +92,6 @@ static void rx_task(void *pvParameters) {
       {
           if(can_recv(hcan1, id, &fdcan1_rx_header, can1_rx_data, 0) == CAN_OK){
             HAL_GPIO_TogglePin(HEARTBEAT_LED_PORT, HEARTBEAT_LED_PIN);
-            printf("balls\n\r");
           }
 
         //   printf("Recieved new id: %d\n\r", id);

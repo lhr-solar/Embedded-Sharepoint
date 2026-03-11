@@ -458,7 +458,7 @@ can_status_t can_register_id_set(CAN_HandleTypeDef* handle, can_id_set_t* set){
         // it MUST be an ID declared in the can_recv_entires header file
         for(uint32_t j = 0; j < entry_count; j++)
         {
-            if(entries[j].id == set->ids[i])
+            if(set != NULL && entries[j].id == set->ids[i])
             {
                 if(xQueueAddToSet(entries[j].queue, set->queueSet) != pdPASS){
                     return CAN_ERR;
@@ -487,6 +487,9 @@ can_status_t can_recv_set(CAN_HandleTypeDef* handle, can_id_set_t* set, uint16_t
     return CAN_ERR;
   }
   if(id == NULL){
+    return CAN_ERR;
+  }
+  if(set->queueSet == NULL){
     return CAN_ERR;
   }
 
