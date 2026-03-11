@@ -163,6 +163,56 @@ can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint16_t id, FDCAN_RxHeade
 can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id, CAN_RxHeaderTypeDef* header, uint8_t data[], TickType_t delay_ticks)
 ```
 
+## Blocking on multiple CAN messages
+If you want a thread to block on multiple CAN messages, and wake up the thread if any of those CAN messages are sent, you can use a [FreeRTOS queue set](https://freertos.org/Documentation/02-Kernel/02-Kernel-features/10-Blocking-on-multiple-RTOS-objects). Both the bxCAN and FDCAN have built in support to pass a list of IDs + preallocated queue set.
+
+### Creating the Queue Set
+```c
+typedef struct
+{
+    const uint32_t *ids; // list of IDs in the queue set
+    uint32_t id_count; // number of IDs in the queue set
+    QueueSetHandle_t queueSet; // the queue set
+} can_id_set_t;
+```
+This `can_id_set_t` struct contains all necessary metadata to block on mutliple CAN IDs. This struct will be created by the user, and must be statically allocated. It's best practice to make the max size of the queueSet, the summation of all the max lengths of the queues in the thread.
+
+### Register the Queue Set
+Once the queue set is created, pass in the set to the CAN driver to add the CAN driver's internal per-ID queue to the queue set. 
+#### bxCAN
+```c
+can_status_t can_register_id_set(CAN_HandleTypeDef* handle, can_id_set_t* set)
+```
+#### FDCAN
+```c
+can_status_t can_fd_register_id_set(FDCAN_HandleTypeDef* handle, can_id_set_t* set)
+```
+
+### Recieve CAN data from the Queue Set
+Once the queue set has registered IDs, pass in the can handle, the list of IDs, a pointer to the ID, and the blocking time. If the function returns sucesfully, there is a CAN ID that has a new message, and that is passed by reference through the id variable.
+#### bxCAN
+```c
+can_status_t can_recv_set(CAN_HandleTypeDef* handle, can_id_set_t* set, uint16_t *id, TickType_t delay_ticks)
+```
+#### FDCAN
+```c
+can_status_t can_fd_recv_set(FDCAN_HandleTypeDef* handle, can_id_set_t* set, uint16_t *id, TickType_t delay_ticks)
+```
+Usage example:
+```c
+    if (can_fd_recv_set(hfdcan1, &canQueueSetStruct, &id, portMAX_DELAY) == CAN_OK)
+    {
+        can_fd_recv(hfdcan1, id, &fdcan1_rx_header, fdcan1_rx_data, 0);
+        
+        printf("Recieved Can message from id: %d\n\r", id);
+
+        HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
+    }
+```
+#### Tests that use queue sets
+* [bxCAN](https://github.com/lhr-solar/Embedded-Sharepoint/blob/main/test/tests/can_queueSet_test.c)
+* [FDCAN](https://github.com/lhr-solar/Embedded-Sharepoint/blob/main/test/tests/can_fd_queueSet_test.c)
+
 ## CAN hooks
 Two hook functions are provided to the user for when a CAN message is sent and when a CAN message is recieved. These hooks are useful for debugging and mirroring CAN messages over USB. By default, they are defined as `weak` in the driver file, which allows the user to redeclare it in their code, and have their implementation get called.
 
