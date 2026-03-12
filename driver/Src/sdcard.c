@@ -415,7 +415,7 @@ sd_status_t USER_SD_Card_Init(sd_handle_t *sd) {
         "SD_Worker",              // Name for debugging
         2048,                     // Stack size
         (void*)sd,                // Pass the handle as the parameter
-        tskIDLE_PRIORITY + 3,     // Priority
+        priority,                 // Priority
         xWorkerStack,             // The stack buffer
         &xWorkerBuffer            // The task buffer
     );
@@ -446,10 +446,13 @@ sd_status_t USER_SD_Card_Write_Async(sd_handle_t *sd, const char *filename, cons
     strncpy(job.data, data, SD_DATA_BUFFER_LEN);
     job.data[SD_DATA_BUFFER_LEN-1] = '\0'; 
 
-    //place in queue
+    //circular logic: if queue full, remove oldest entry
     if (xQueueSend(sd->job_queue, &job, delay_ticks) != pdTRUE) {
-        return SD_ERR_QUEUE_FULL;
-    }
+        sd_job_t dummy;
+        // remove the oldest entry
+        xQueueReceive(sd->job_queue, &dummy, 0); 
+        // tryy one more time to insert the new data
+        xQueueSend(sd->job_queue, &job, 0);    }
     return SD_OK;
 }
 

@@ -63,7 +63,7 @@ StackType_t xTask3Stack[512];
     #define LED_PIN            GPIO_PIN_3
 
 #else
-    #define USER_SPI_INSTANCE      SPI2
+    #define USER_SPI_INSTANCE      SPI1
     #define USER_CS_PORT           GPIOB
     #define USER_CS_PIN            GPIO_PIN_9
 
