@@ -447,12 +447,7 @@ sd_status_t USER_SD_Card_Write_Async(sd_handle_t *sd, const char *filename, cons
     job.data[SD_DATA_BUFFER_LEN-1] = '\0'; 
 
     //circular logic: if queue full, remove oldest entry
-    if (xQueueSend(sd->job_queue, &job, delay_ticks) != pdTRUE) {
-        sd_job_t dummy;
-        // remove the oldest entry
-        xQueueReceive(sd->job_queue, &dummy, 0); 
-        // tryy one more time to insert the new data
-        xQueueSend(sd->job_queue, &job, 0);    }
+    xQueueSendCircularBuffer(sd->job_queue, &job, delay_ticks, sizeof(sd_job_t));  
     return SD_OK;
 }
 

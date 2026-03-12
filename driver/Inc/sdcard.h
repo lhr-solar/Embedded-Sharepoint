@@ -8,6 +8,7 @@
 #include "FreeRTOS.h"
 #include "semphr.h"
 #include "queue.h"
+#include "queue_ex.h"
 
 /* --- SD Card Command Definitions --- */
 #define SD_CMD_BASE       0x40  // All SPI commands start with 01 followed by 6-bit index
