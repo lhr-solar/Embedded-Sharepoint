@@ -397,7 +397,7 @@ sd_status_t SD_WriteSingleBlock(sd_handle_t *sd, uint32_t blockNum, const uint8_
 }
 
 /* USER FUNCTIONS */
-sd_status_t USER_SD_Card_Init(sd_handle_t *sd) {
+sd_status_t USER_SD_Card_Init(sd_handle_t *sd, UBaseType_t priority) {
     //creates mutex (ensure only one task at a time)
     sd->mutex = xSemaphoreCreateMutexStatic(&sd->mutexBuffer);
     //creates semaphore (tells when SPI hardware has finished moving data)

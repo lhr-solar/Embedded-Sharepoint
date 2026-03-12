@@ -56,17 +56,17 @@
  * @brief Custom error status enum
  */
 typedef enum {
-    SD_OK = 0, // Operation successful
-    SD_ERROR = -1, // General failure
-    SD_TIMEOUT = -2, // Operation timed out
-    SD_ERR_SPI = -3, // SPI hardware error
-    SD_ERR_INIT_CARD = -4, // Initialization sequence failed
-    SD_ERR_VOLTAGE = -5, // Incompatible card voltage
-    SD_ERR_READ = -6, // Block read failure
-    SD_ERR_WRITE = -7, // Block write failure
-    SD_ERR_MUTEX = -8, // Failed to acquire hardware lock
-    SD_ERR_QUEUE_FULL = -9, // Async job queue is full
-    SD_ERR_LOCK_TIMEOUT = -10 // Mutex lock timed out
+    SD_OK = 0x00, // Operation successful
+    SD_ERROR = 0x01, // General failure
+    SD_TIMEOUT = 0x02, // Operation timed out
+    SD_ERR_SPI = 0x03, // SPI hardware error
+    SD_ERR_INIT_CARD = 0x04, // Initialization sequence failed
+    SD_ERR_VOLTAGE = 0x05, // Incompatible card voltage
+    SD_ERR_READ = 0x06, // Block read failure
+    SD_ERR_WRITE = 0x07, // Block write failure
+    SD_ERR_MUTEX = 0x08, // Failed to acquire hardware lock
+    SD_ERR_QUEUE_FULL = 0x09, // Async job queue is full
+    SD_ERR_LOCK_TIMEOUT = 0x0A // Mutex lock timed out
 } sd_status_t;
 
 /**
@@ -147,9 +147,10 @@ sd_status_t SD_WriteSingleBlock(sd_handle_t *sd, uint32_t blockNum, const uint8_
 /**
  * @brief Initializes RTOS resources and FatFs structures for the SD driver.
  * @param sd Pointer to the SD handle.
+ * @param priority User choice of priority level
  * @return Returns SD_OK on success.
  */
-sd_status_t USER_SD_Card_Init(sd_handle_t *sd);
+sd_status_t USER_SD_Card_Init(sd_handle_t *sd, UBaseType_t priority);
 
 /**
  * @brief Non-blocking write that sends a request to the background worker.
