@@ -13,6 +13,7 @@
   #define HEARTBEAT_LED_PIN   GPIO_PIN_5
 #endif
 
+
 // USART pins for PSOM
 #define USART_PORT GPIOA
 #define USART_TX_PIN GPIO_PIN_9
