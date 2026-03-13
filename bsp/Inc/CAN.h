@@ -190,7 +190,7 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
 
 /**
  * @brief Weakly defined hook function.
- *        Called inside CAN send after adding a message to the queue or mailbox.
+ *        Called inside CAN send before adding a message to the queue or mailbox.
  *        Implementation must be short and non-blocking!
  */
 void can_tx_callback_hook(CAN_HandleTypeDef* hcan, const can_tx_payload_t* payload);

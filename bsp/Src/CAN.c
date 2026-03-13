@@ -222,17 +222,20 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
                       const CAN_TxHeaderTypeDef* header, const uint8_t data[],
                       TickType_t delay_ticks) {
 
-  // disable interrupts (do not want race conditions)
-  // on shared resource (mailbox) between threads and
-  // interrupt routines (TxComplete))
-  portENTER_CRITICAL();
-
   // Define payload
   can_tx_payload_t payload = {0};
     payload.header = *header;
     for (int i = 0; i < header->DLC; i++) {
       payload.data[i] = data[i];
   }
+
+  // Optional callback for user to implement     
+  can_tx_callback_hook(handle, &payload);
+
+  // disable interrupts (do not want race conditions)
+  // on shared resource (mailbox) between threads and
+  // interrupt routines (TxComplete))
+  portENTER_CRITICAL();
 
   // if transmit is inactive, put payload into mailbox
   if (HAL_CAN_GetTxMailboxesFreeLevel(handle) >= 1) {
@@ -277,9 +280,6 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
     }
     #endif /* CAN3 */
   }
-
-  // Optional callback for user to implement     
-  can_tx_callback_hook(handle, &payload);
 
   return CAN_OK;
 }
