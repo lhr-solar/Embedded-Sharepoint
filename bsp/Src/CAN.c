@@ -237,6 +237,9 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
       return CAN_ERR;
     }
 
+    // enable interrupts
+    portEXIT_CRITICAL();
+
     // Optional callback for user to implement     
     can_tx_payload_t payload = {0};
     payload.header = *header;
@@ -244,9 +247,6 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
       payload.data[i] = data[i];
     }
     can_tx_callback_hook(handle, &payload);
-
-    // enable interrupts
-    portEXIT_CRITICAL();
   }
   // otherwise, put into send queue
   else {

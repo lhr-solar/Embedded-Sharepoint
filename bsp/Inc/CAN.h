@@ -190,14 +190,14 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
 
 /**
  * @brief Weakly defined hook function.
- *        Called inside CAN send.
- *        Default implementation does nothing.
+ *        Called inside CAN send after adding a message to the queue or mailbox.
+ *        Implementation must be short and non-blocking!
  */
 void can_tx_callback_hook(CAN_HandleTypeDef* hcan, const can_tx_payload_t* payload);
 
 /**
  * @brief Weakly defined hook function.
- *        Called in RX callback after receiving a message from RX FIFO.
- *        Default implementation does nothing.
+ *        Called in RX callback (ISR context) after receiving a message from RX FIFO.
+ *        Implementation must be short and non-blocking!
  */
 void can_rx_callback_hook(CAN_HandleTypeDef* hcan, const can_rx_payload_t* payload);
