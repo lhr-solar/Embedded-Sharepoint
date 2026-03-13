@@ -227,6 +227,13 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
   // interrupt routines (TxComplete))
   portENTER_CRITICAL();
 
+  // Define payload
+  can_tx_payload_t payload = {0};
+    payload.header = *header;
+    for (int i = 0; i < header->DLC; i++) {
+      payload.data[i] = data[i];
+  }
+
   // if transmit is inactive, put payload into mailbox
   if (HAL_CAN_GetTxMailboxesFreeLevel(handle) >= 1) {
     uint32_t mailbox;
@@ -239,25 +246,11 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
 
     // enable interrupts
     portEXIT_CRITICAL();
-
-    // Optional callback for user to implement     
-    can_tx_payload_t payload = {0};
-    payload.header = *header;
-    for (int i = 0; i < header->DLC; i++) {
-      payload.data[i] = data[i];
-    }
-    can_tx_callback_hook(handle, &payload);
   }
   // otherwise, put into send queue
   else {
     // enable interrupts
     portEXIT_CRITICAL();
-    
-    can_tx_payload_t payload = {0};
-    payload.header = *header;
-    for (int i = 0; i < header->DLC; i++) {
-      payload.data[i] = data[i];
-    }
 
     // CAN1
     if (handle->Instance == CAN1) {
@@ -283,10 +276,10 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
       }
     }
     #endif /* CAN3 */
-
-    // Optional callback for user to implement                    
-    can_tx_callback_hook(handle, &payload);
   }
+
+  // Optional callback for user to implement     
+  can_tx_callback_hook(handle, &payload);
 
   return CAN_OK;
 }
