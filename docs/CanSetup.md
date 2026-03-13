@@ -175,7 +175,7 @@ typedef struct
     QueueSetHandle_t queueSet; // the queue set
 } can_id_set_t;
 ```
-This `can_id_set_t` struct contains all necessary metadata to block on mutliple CAN IDs. This struct will be created by the user, and must be statically allocated. It's best practice to make the max size of the queueSet, the summation of all the max lengths of the queues in the thread.
+This `can_id_set_t` struct contains all necessary metadata to block on mutliple CAN IDs. This struct will be created by the user, and must be statically allocated. It's best practice to make the max size of the queueSet, the summation of all the max lengths of the queues in the set.
 
 ### Register the Queue Set
 Once the queue set is created, pass in the set to the CAN driver to add the CAN driver's internal per-ID queue to the queue set. 

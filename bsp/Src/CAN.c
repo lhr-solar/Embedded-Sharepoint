@@ -222,6 +222,16 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
                       const CAN_TxHeaderTypeDef* header, const uint8_t data[],
                       TickType_t delay_ticks) {
 
+  // Define payload
+  can_tx_payload_t payload = {0};
+    payload.header = *header;
+    for (int i = 0; i < header->DLC; i++) {
+      payload.data[i] = data[i];
+  }
+
+  // Optional callback for user to implement     
+  can_tx_callback_hook(handle, &payload);
+
   // disable interrupts (do not want race conditions)
   // on shared resource (mailbox) between threads and
   // interrupt routines (TxComplete))
@@ -244,12 +254,6 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
   else {
     // enable interrupts
     portEXIT_CRITICAL();
-    
-    can_tx_payload_t payload = {0};
-    payload.header = *header;
-    for (int i = 0; i < header->DLC; i++) {
-      payload.data[i] = data[i];
-    }
 
     // CAN1
     if (handle->Instance == CAN1) {
@@ -278,6 +282,11 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
   }
 
   return CAN_OK;
+}
+
+__weak void can_tx_callback_hook(CAN_HandleTypeDef* hcan, const can_tx_payload_t* payload) {
+  UNUSED(hcan);
+  UNUSED(payload);
 }
 
 static void transmit(CAN_HandleTypeDef* handle) {
@@ -338,6 +347,11 @@ void HAL_CAN_TxMailbox2CompleteCallback(CAN_HandleTypeDef* hcan) {
   transmit(hcan);
 }
 
+__weak void can_rx_callback_hook(CAN_HandleTypeDef* hcan, const can_rx_payload_t* payload) {
+  UNUSED(hcan);
+  UNUSED(payload);
+}
+
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
   can_rx_payload_t payload = {0};
   BaseType_t higherPriorityTaskWoken = pdFALSE;
@@ -345,6 +359,10 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
   // recieve messages from queue till empty and put into recieve queues
   while (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &payload.header,
                               payload.data) == HAL_OK) {
+
+    // Optional callback for user to implement                    
+    can_rx_callback_hook(hcan, &payload);
+
     // CAN1
     if (hcan->Instance == CAN1) {
       for (int i = 0; i < can1_recv_entry_count; i++) {
