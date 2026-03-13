@@ -85,40 +85,43 @@ BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
  SG_ BPS_Temperature_Tap_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Temperature_Tap_RawV : 0|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 0|16@1- (0.01,0) [-327.68|327.67] "C" Vector__XXX
+
+BO_ 16 BPS_Temperature_Arr_0: 8 Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 8|16@1- (0.01,0) [-327.68|327.67] "C" Vector__XXX
+ SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 9 BPS_Voltage_Arr_7: 4 Vector__XXX
- SG_ BPS_VoltTemp_BQ_Fault : 24|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_VoltTemp_BQ_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 8 BPS_Voltage_Arr_6: 4 Vector__XXX
- SG_ BPS_VoltTemp_BQ_Fault : 24|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_VoltTemp_BQ_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 7 BPS_Voltage_Arr_5: 4 Vector__XXX
- SG_ BPS_VoltTemp_BQ_Fault : 24|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_VoltTemp_BQ_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 6 BPS_Voltage_Arr_4: 4 Vector__XXX
- SG_ BPS_VoltTemp_BQ_Fault : 24|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_VoltTemp_BQ_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 5 BPS_Voltage_Arr_3: 4 Vector__XXX
- SG_ BPS_VoltTemp_BQ_Fault : 24|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_VoltTemp_BQ_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 4 BPS_Voltage_Arr_2: 4 Vector__XXX
- SG_ BPS_VoltTemp_BQ_Fault : 24|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_VoltTemp_BQ_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 3 BPS_Voltage_Arr_1: 4 Vector__XXX
- SG_ BPS_VoltTemp_BQ_Fault : 24|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_VoltTemp_BQ_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
@@ -127,7 +130,7 @@ BO_ 32 BPS_Precharge_Voltages: 6 BPS_Leader
  SG_ Precharge_Array_Voltage : 24|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
 
 BO_ 2 BPS_Voltage_Arr_0: 4 VoltTemp_0
- SG_ BPS_VoltTemp_BQ_Fault : 24|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_VoltTemp_BQ_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
@@ -195,7 +198,8 @@ CM_ SG_ 3221225472 BPS_Voltage_Tap_Data "Voltage tap measurement for the specifi
 CM_ SG_ 3221225472 BPS_Tap_idx "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
 CM_ SG_ 3221225472 BPS_Temperature_Tap_Fault "VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)";
 CM_ SG_ 3221225472 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 3221225472 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
+CM_ SG_ 16 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
+CM_ SG_ 16 BPS_Tap_idx "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
 CM_ SG_ 9 BPS_VoltTemp_BQ_Fault "VoltTemp BQ Fault State (0 no fault, 1 fault)";
 CM_ SG_ 9 BPS_Voltage_Tap_Data "Voltage tap measurement for the specified VoltTemp and Tap ID";
 CM_ SG_ 9 BPS_Tap_idx "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
@@ -252,6 +256,7 @@ BA_DEF_DEF_  "VFrameFormat" "J1939PG";
 BA_DEF_DEF_  "MultiplexExtEnabled" "No";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
+BA_ "VFrameFormat" BO_ 16 0;
 BA_ "VFrameFormat" BO_ 9 0;
 BA_ "VFrameFormat" BO_ 8 0;
 BA_ "VFrameFormat" BO_ 7 0;
