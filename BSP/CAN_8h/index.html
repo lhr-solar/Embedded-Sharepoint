@@ -1004,6 +1004,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#function-can_rx_callback_hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function can_rx_callback_hook
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#function-can_send" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1030,6 +1041,17 @@
     <span class="md-ellipsis">
       
         function can_stop
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-can_tx_callback_hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function can_tx_callback_hook
       
     </span>
   </a>
@@ -1235,6 +1257,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#function-can_rx_callback_hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function can_rx_callback_hook
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#function-can_send" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1261,6 +1294,17 @@
     <span class="md-ellipsis">
       
         function can_stop
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-can_tx_callback_hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function can_tx_callback_hook
       
     </span>
   </a>
@@ -1319,6 +1363,10 @@
 <td style="text-align: left;"><a href="#function-can_recv"><strong>can_recv</strong></a> (CAN_HandleTypeDef * handle, uint16_t id, CAN_RxHeaderTypeDef * header, uint8_t data, TickType_t delay_ticks) <br><em>Receives a CAN message.</em></td>
 </tr>
 <tr>
+<td style="text-align: right;">void</td>
+<td style="text-align: left;"><a href="#function-can_rx_callback_hook"><strong>can_rx_callback_hook</strong></a> (CAN_HandleTypeDef * hcan, const <a href="../structcan__rx__payload__t/"><strong>can_rx_payload_t</strong></a> * payload) <br><em>Weakly defined hook function. Called in RX callback (ISR context) after receiving a message from RX FIFO. Implementation must be short and non-blocking!</em></td>
+</tr>
+<tr>
 <td style="text-align: right;"><a href="../CAN__Common_8h/#enum-can_status_t"><strong>can_status_t</strong></a></td>
 <td style="text-align: left;"><a href="#function-can_send"><strong>can_send</strong></a> (CAN_HandleTypeDef * handle, const CAN_TxHeaderTypeDef * header, const uint8_t data, TickType_t delay_ticks) <br><em>Sends a CAN message.</em></td>
 </tr>
@@ -1329,6 +1377,10 @@
 <tr>
 <td style="text-align: right;"><a href="../CAN__Common_8h/#enum-can_status_t"><strong>can_status_t</strong></a></td>
 <td style="text-align: left;"><a href="#function-can_stop"><strong>can_stop</strong></a> (CAN_HandleTypeDef * handle) <br><em>Stops the CAN peripheral.</em></td>
+</tr>
+<tr>
+<td style="text-align: right;">void</td>
+<td style="text-align: left;"><a href="#function-can_tx_callback_hook"><strong>can_tx_callback_hook</strong></a> (CAN_HandleTypeDef * hcan, const <a href="../structcan__tx__payload__t/"><strong>can_tx_payload_t</strong></a> * payload) <br><em>Weakly defined hook function. Called inside CAN send before adding a message to the queue or mailbox. Implementation must be short and non-blocking!</em></td>
 </tr>
 </tbody>
 </table>
@@ -1413,6 +1465,15 @@
 <p>can_status_t Returns CAN_RECV if a message was received, CAN_EMPTY if the queue was empty, CAN_ERR on failure or invalid ID. </p>
 <hr>
 
+<h3 id="function-can_rx_callback_hook">function can_rx_callback_hook</h3>
+<p><em>Weakly defined hook function. Called in RX callback (ISR context) after receiving a message from RX FIFO. Implementation must be short and non-blocking!</em> </p>
+<pre><code class="language-C++">void can_rx_callback_hook (
+    CAN_HandleTypeDef * hcan,
+    const can_rx_payload_t * payload
+) 
+</code></pre>
+<hr>
+
 <h3 id="function-can_send">function can_send</h3>
 <p><em>Sends a CAN message.</em> </p>
 <pre><code class="language-C++">can_status_t can_send (
@@ -1462,6 +1523,15 @@
 </ul>
 <p><strong>Returns:</strong></p>
 <p>can_status_t Returns CAN_OK on success, CAN_ERR on failure. </p>
+<hr>
+
+<h3 id="function-can_tx_callback_hook">function can_tx_callback_hook</h3>
+<p><em>Weakly defined hook function. Called inside CAN send before adding a message to the queue or mailbox. Implementation must be short and non-blocking!</em> </p>
+<pre><code class="language-C++">void can_tx_callback_hook (
+    CAN_HandleTypeDef * hcan,
+    const can_tx_payload_t * payload
+) 
+</code></pre>
 <hr>
 
 <hr />

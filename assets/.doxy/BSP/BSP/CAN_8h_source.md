@@ -83,6 +83,10 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
 can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
                       CAN_RxHeaderTypeDef* header, uint8_t data[],
                       TickType_t delay_ticks);
+
+void can_tx_callback_hook(CAN_HandleTypeDef* hcan, const can_tx_payload_t* payload);
+
+void can_rx_callback_hook(CAN_HandleTypeDef* hcan, const can_rx_payload_t* payload);
 ```
 
 

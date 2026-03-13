@@ -56,9 +56,11 @@ _CAN peripheral driver for LHRS embedded systems._ [More...](#detailed-descripti
 |  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_deinit**](#function-can_deinit) (CAN\_HandleTypeDef \* handle) <br>_Deinitializes the bxCAN peripheral._  |
 |  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_init**](#function-can_init) (CAN\_HandleTypeDef \* handle, CAN\_FilterTypeDef \* filter) <br>_Initializes the bxCAN peripheral._  |
 |  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_recv**](#function-can_recv) (CAN\_HandleTypeDef \* handle, uint16\_t id, CAN\_RxHeaderTypeDef \* header, uint8\_t data, TickType\_t delay\_ticks) <br>_Receives a CAN message._  |
+|  void | [**can\_rx\_callback\_hook**](#function-can_rx_callback_hook) (CAN\_HandleTypeDef \* hcan, const [**can\_rx\_payload\_t**](structcan__rx__payload__t.md) \* payload) <br>_Weakly defined hook function. Called in RX callback (ISR context) after receiving a message from RX FIFO. Implementation must be short and non-blocking!_  |
 |  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_send**](#function-can_send) (CAN\_HandleTypeDef \* handle, const CAN\_TxHeaderTypeDef \* header, const uint8\_t data, TickType\_t delay\_ticks) <br>_Sends a CAN message._  |
 |  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_start**](#function-can_start) (CAN\_HandleTypeDef \* handle) <br>_Starts the CAN peripheral._  |
 |  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_stop**](#function-can_stop) (CAN\_HandleTypeDef \* handle) <br>_Stops the CAN peripheral._  |
+|  void | [**can\_tx\_callback\_hook**](#function-can_tx_callback_hook) (CAN\_HandleTypeDef \* hcan, const [**can\_tx\_payload\_t**](structcan__tx__payload__t.md) \* payload) <br>_Weakly defined hook function. Called inside CAN send before adding a message to the queue or mailbox. Implementation must be short and non-blocking!_  |
 
 
 
@@ -258,6 +260,23 @@ can\_status\_t Returns CAN\_RECV if a message was received, CAN\_EMPTY if the qu
 
 
 
+### function can\_rx\_callback\_hook 
+
+_Weakly defined hook function. Called in RX callback (ISR context) after receiving a message from RX FIFO. Implementation must be short and non-blocking!_ 
+```C++
+void can_rx_callback_hook (
+    CAN_HandleTypeDef * hcan,
+    const can_rx_payload_t * payload
+) 
+```
+
+
+
+
+<hr>
+
+
+
 ### function can\_send 
 
 _Sends a CAN message._ 
@@ -370,6 +389,23 @@ can\_status\_t Returns CAN\_OK on success, CAN\_ERR on failure.
 
 
         
+
+<hr>
+
+
+
+### function can\_tx\_callback\_hook 
+
+_Weakly defined hook function. Called inside CAN send before adding a message to the queue or mailbox. Implementation must be short and non-blocking!_ 
+```C++
+void can_tx_callback_hook (
+    CAN_HandleTypeDef * hcan,
+    const can_tx_payload_t * payload
+) 
+```
+
+
+
 
 <hr>
 
