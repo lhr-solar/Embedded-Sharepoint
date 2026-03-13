@@ -84,85 +84,85 @@ BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ BPS_Voltage_Tap_Data : 0|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
-BO_ 23 BPS_Temperature_Arr_7: 6 Vector__XXX
+BO_ 23 BPS_Temperature_Arr_7: 6 VoltTemp_7
  SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
-BO_ 22 BPS_Temperature_Arr_6: 6 Vector__XXX
+BO_ 22 BPS_Temperature_Arr_6: 6 VoltTemp_6
  SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
-BO_ 21 BPS_Temperature_Arr_5: 6 Vector__XXX
+BO_ 21 BPS_Temperature_Arr_5: 6 VoltTemp_5
  SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
-BO_ 20 BPS_Temperature_Arr_4: 6 Vector__XXX
+BO_ 20 BPS_Temperature_Arr_4: 6 VoltTemp_4
  SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
-BO_ 19 BPS_Temperature_Arr_3: 6 Vector__XXX
+BO_ 19 BPS_Temperature_Arr_3: 6 VoltTemp_3
  SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
-BO_ 18 BPS_Temperature_Arr_2: 6 Vector__XXX
+BO_ 18 BPS_Temperature_Arr_2: 6 VoltTemp_2
  SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
-BO_ 17 BPS_Temperature_Arr_1: 6 Vector__XXX
+BO_ 17 BPS_Temperature_Arr_1: 6 VoltTemp_1
  SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
-BO_ 16 BPS_Temperature_Arr_0: 6 Vector__XXX
+BO_ 16 BPS_Temperature_Arr_0: 6 VoltTemp_0
  SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
-BO_ 9 BPS_Voltage_Arr_7: 4 Vector__XXX
+BO_ 9 BPS_Voltage_Arr_7: 4 VoltTemp_7
  SG_ BPS_VoltTemp_BQ_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
-BO_ 8 BPS_Voltage_Arr_6: 4 Vector__XXX
+BO_ 8 BPS_Voltage_Arr_6: 4 VoltTemp_6
  SG_ BPS_VoltTemp_BQ_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
-BO_ 7 BPS_Voltage_Arr_5: 4 Vector__XXX
+BO_ 7 BPS_Voltage_Arr_5: 4 VoltTemp_5
  SG_ BPS_VoltTemp_BQ_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
-BO_ 6 BPS_Voltage_Arr_4: 4 Vector__XXX
+BO_ 6 BPS_Voltage_Arr_4: 4 VoltTemp_4
  SG_ BPS_VoltTemp_BQ_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
-BO_ 5 BPS_Voltage_Arr_3: 4 Vector__XXX
+BO_ 5 BPS_Voltage_Arr_3: 4 VoltTemp_3
  SG_ BPS_VoltTemp_BQ_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
-BO_ 4 BPS_Voltage_Arr_2: 4 Vector__XXX
+BO_ 4 BPS_Voltage_Arr_2: 4 VoltTemp_2
  SG_ BPS_VoltTemp_BQ_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
-BO_ 3 BPS_Voltage_Arr_1: 4 Vector__XXX
+BO_ 3 BPS_Voltage_Arr_1: 4 VoltTemp_1
  SG_ BPS_VoltTemp_BQ_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
