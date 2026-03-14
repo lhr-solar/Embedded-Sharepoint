@@ -152,7 +152,7 @@ CPU = -mcpu=cortex-m4
 FPU = -mfpu=fpv4-sp-d16
 
 # float-abi
-FLOAT-ABI = -mfloat-abi=hard -lc -lrdimon -u _printf_float
+FLOAT-ABI = -mfloat-abi=hard
 
 # mcu
 MCU = $(CPU) -mthumb $(FPU) $(FLOAT-ABI)
@@ -206,9 +206,9 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 LDSCRIPT = stm/$(SERIES_GENERIC)/$(SERIES_LINE)/$(SERIES_LINE_CAP)$(EXTRA_CAP)x_FLASH.ld
 
 # libraries
-LIBS = -lc -lm -lnosys 
+LIBS = 
 LIBDIR = 
-LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
+LDFLAGS = $(MCU) -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections -nostdlib -nodefaultlibs
 
 # default action: build all
 all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
