@@ -465,6 +465,13 @@
 <codeline lineno="196" refid="CAN_8h_1ae43c7c6d848e0265b283dc398bf82e05" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="CAN_8h_1ae43c7c6d848e0265b283dc398bf82e05" kindref="member">can_tx_callback_hook</ref>(CAN_HandleTypeDef*<sp/>hcan,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="structcan__tx__payload__t" kindref="compound">can_tx_payload_t</ref>*<sp/>payload);</highlight></codeline>
 <codeline lineno="197"><highlight class="normal"></highlight></codeline>
 <codeline lineno="203" refid="CAN_8h_1a31a2c4cb756ad40945af9f760fe382e9" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="CAN_8h_1a31a2c4cb756ad40945af9f760fe382e9" kindref="member">can_rx_callback_hook</ref>(CAN_HandleTypeDef*<sp/>hcan,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="structcan__rx__payload__t" kindref="compound">can_rx_payload_t</ref>*<sp/>payload);</highlight></codeline>
+<codeline lineno="204"><highlight class="normal"></highlight></codeline>
+<codeline lineno="205"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>(<sp/>configUSE_QUEUE_SETS<sp/>==<sp/>1<sp/>)</highlight></codeline>
+<codeline lineno="216"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/>can_register_id_set(CAN_HandleTypeDef*<sp/>handle,<sp/>can_id_set_t*<sp/>set);</highlight></codeline>
+<codeline lineno="217"><highlight class="normal"></highlight></codeline>
+<codeline lineno="228"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/>can_recv_set(CAN_HandleTypeDef*<sp/>handle,<sp/>can_id_set_t*<sp/>set,<sp/>uint16_t<sp/>*</highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
+<codeline lineno="229"><highlight class="normal"></highlight></codeline>
+<codeline lineno="230"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>(<sp/>configUSE_QUEUE_SETS<sp/>==<sp/>1<sp/>)<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
     </programlisting>
     <location file="bsp/Inc/CAN.h"/>
   </compounddef>

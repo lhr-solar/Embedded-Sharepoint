@@ -87,6 +87,13 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
 void can_tx_callback_hook(CAN_HandleTypeDef* hcan, const can_tx_payload_t* payload);
 
 void can_rx_callback_hook(CAN_HandleTypeDef* hcan, const can_rx_payload_t* payload);
+
+#if ( configUSE_QUEUE_SETS == 1 )
+can_status_t can_register_id_set(CAN_HandleTypeDef* handle, can_id_set_t* set);
+
+can_status_t can_recv_set(CAN_HandleTypeDef* handle, can_id_set_t* set, uint16_t *id, TickType_t delay_ticks);
+
+#endif /* ( configUSE_QUEUE_SETS == 1 ) */
 ```
 
 

@@ -16,7 +16,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bsp/Inc/CAN_Common.h" line="28" column="25" bodyfile="bsp/Inc/CAN_Common.h" bodystart="28" bodyend="-1"/>
+        <location file="bsp/Inc/CAN_Common.h" line="39" column="25" bodyfile="bsp/Inc/CAN_Common.h" bodystart="39" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structcan__tx__payload__t_1a991bd3335de020b3076112b7f2445234" prot="public" static="no" mutable="no">
         <type>uint8_t</type>
@@ -30,14 +30,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bsp/Inc/CAN_Common.h" line="30" column="13" bodyfile="bsp/Inc/CAN_Common.h" bodystart="30" bodyend="-1"/>
+        <location file="bsp/Inc/CAN_Common.h" line="41" column="13" bodyfile="bsp/Inc/CAN_Common.h" bodystart="41" bodyend="-1"/>
       </memberdef>
     </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="bsp/Inc/CAN_Common.h" line="23" column="1" bodyfile="bsp/Inc/CAN_Common.h" bodystart="23" bodyend="31"/>
+    <location file="bsp/Inc/CAN_Common.h" line="34" column="1" bodyfile="bsp/Inc/CAN_Common.h" bodystart="34" bodyend="42"/>
     <listofallmembers>
       <member refid="structcan__tx__payload__t_1a991bd3335de020b3076112b7f2445234" prot="public" virt="non-virtual"><scope>can_tx_payload_t</scope><name>data</name></member>
       <member refid="structcan__tx__payload__t_1a2173cb846b9aa7a3ebfaa64fa851bf2d" prot="public" virt="non-virtual"><scope>can_tx_payload_t</scope><name>header</name></member>

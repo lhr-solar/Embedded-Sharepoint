@@ -29,6 +29,17 @@ typedef enum {
     CAN_EMPTY, // recieved nothing with no errors
 } can_status_t;
 
+
+#if ( configUSE_QUEUE_SETS == 1 )
+// set to block on multiple IDs
+typedef struct
+{
+    const uint32_t *ids;
+    uint32_t id_count;
+    QueueSetHandle_t queueSet;
+} can_id_set_t;
+#endif /* ( configUSE_QUEUE_SETS == 1 ) */
+
 // entries in queues
 typedef struct {
     // If we're using FDCAN (stm32g4xx), use FDCAN_TxHeaderTypeDef
