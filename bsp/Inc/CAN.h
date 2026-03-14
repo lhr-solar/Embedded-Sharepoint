@@ -201,3 +201,30 @@ void can_tx_callback_hook(CAN_HandleTypeDef* hcan, const can_tx_payload_t* paylo
  *        Implementation must be short and non-blocking!
  */
 void can_rx_callback_hook(CAN_HandleTypeDef* hcan, const can_rx_payload_t* payload);
+
+#if ( configUSE_QUEUE_SETS == 1 )
+/**
+ * @brief Adds a set of IDs to a user-defined queue set
+ *
+ *
+ * @param handle       Pointer to the CAN handle structure.
+ * @param set          Pointer to an already allocated can_id_set_t struct
+ *
+ * @return can_status_t Returns CAN_OK if all IDs were added correctly,
+ *                      CAN_ERR on failure.
+ */
+can_status_t can_register_id_set(CAN_HandleTypeDef* handle, can_id_set_t* set);
+
+/**
+ * @brief Blocks on a queue set until a message is available on one of the member queues.
+ *
+ * @param handle       Pointer to the CAN handle structure.
+ * @param set          Pointer to an already allocated and registered can_id_set_t struct.
+ * @param id           Pointer to a variable to store the CAN ID of the ready queue.
+ * @param delay_ticks  Maximum delay to wait if no message is available (FreeRTOS ticks).
+ *
+ * @return can_status_t Returns CAN_OK if an ID was retrieved, CAN_EMPTY on timeout, or CAN_ERR on failure.
+ */
+can_status_t can_recv_set(CAN_HandleTypeDef* handle, can_id_set_t* set, uint16_t *id, TickType_t delay_ticks);
+
+#endif /* ( configUSE_QUEUE_SETS == 1 ) */

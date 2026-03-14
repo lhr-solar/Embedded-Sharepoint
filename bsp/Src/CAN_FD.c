@@ -262,6 +262,137 @@ can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint16_t id, FDCAN_RxHeade
     }
 }
 
+#if ( configUSE_QUEUE_SETS == 1 )
+can_status_t can_fd_register_id_set(FDCAN_HandleTypeDef* handle, can_id_set_t* set){
+
+    if(handle == NULL){
+        return CAN_ERR;
+    }
+    if(set == NULL){
+        return CAN_ERR;
+    }
+
+    can_recv_entry_t* entries = NULL;
+    uint32_t entry_count = 0;
+    
+    if(0){
+
+    }
+#ifdef FDCAN1
+    else if(handle->Instance == FDCAN1){
+        entries = can1_recv_entries;
+        entry_count = can1_recv_entry_count;
+    }
+#endif /* FDCAN1 */
+
+#ifdef FDCAN2
+    else if(handle->Instance == FDCAN2){
+        entries = can2_recv_entries;
+        entry_count = can2_recv_entry_count;
+    }
+#endif /* FDCAN2 */
+
+#ifdef FDCAN3
+    else if(handle->Instance == FDCAN3){
+        entries = can3_recv_entries;
+        entry_count = can3_recv_entry_count;
+    }
+#endif /* FDCAN3 */
+
+    if(entries == NULL){
+        return CAN_ERR;
+    }
+
+    // go through all IDs in the given ID array
+    for(uint32_t i = 0; i < set->id_count; i++)
+    {
+        bool found = false;
+        // iterate through the list of internal entries to ensure the ID is registered with the driver
+        // it MUST be an ID declared in the can_recv_entires header file
+        for(uint32_t j = 0; j < entry_count; j++)
+        {
+            if(entries[j].id == set->ids[i])
+            {
+                if(xQueueAddToSet(entries[j].queue, set->queueSet) != pdPASS){
+                    return CAN_ERR;
+                }
+
+                found = true;
+                break;
+            }
+        }
+
+        if(!found){
+            return CAN_ERR;
+        }
+    }
+
+    return CAN_OK;
+}
+
+can_status_t can_fd_recv_set(FDCAN_HandleTypeDef* handle, can_id_set_t* set, uint16_t *id, TickType_t delay_ticks){
+    if(handle == NULL){
+        return CAN_ERR;
+    }
+    if(set == NULL){
+        return CAN_ERR;
+    }
+    if(set->queueSet == NULL){
+        return CAN_ERR;
+    }
+    if(id == NULL){
+        return CAN_ERR;
+    }
+    QueueSetMemberHandle_t ready_can_queue = xQueueSelectFromSet(set->queueSet, delay_ticks);
+    if(ready_can_queue == NULL){
+        return CAN_ERR;
+    }
+    can_recv_entry_t* entries = NULL;
+    uint32_t entry_count = 0;
+
+    // placeholder if statement so we can do do an else-if chain 
+    if(0){
+
+    }
+    #ifdef FDCAN1
+        else if(handle->Instance == FDCAN1){
+            entries = can1_recv_entries;
+            entry_count = can1_recv_entry_count;
+        }
+    #endif /* FDCAN1 */
+
+    #ifdef FDCAN2
+        else if(handle->Instance == FDCAN2){
+            entries = can2_recv_entries;
+            entry_count = can2_recv_entry_count;
+        }
+    #endif /* FDCAN2 */
+
+    #ifdef FDCAN3
+        else if(handle->Instance == FDCAN3){
+            entries = can3_recv_entries;
+            entry_count = can3_recv_entry_count;
+        }
+    #endif /* FDCAN3 */
+
+    if(entries == NULL){
+        return CAN_ERR;
+    }
+
+    // iterate through all of the can recieve entries for that FDCAN
+    for(uint32_t i = 0; i < entry_count; i++){
+        // find the 
+        if(entries[i].queue == ready_can_queue){
+            *id = entries[i].id;
+            return CAN_OK;
+        }
+    }
+    
+    
+    return CAN_ERR;
+}
+#endif /* ( configUSE_QUEUE_SETS == 1 ) */
+
 __weak void can_fd_rx_callback_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs, can_rx_payload_t recv_payload )
 {
     /* Prevent unused argument(s) compilation warning */
