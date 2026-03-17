@@ -28,6 +28,17 @@
 * **led\_t** ([**SevenSegment.h**](SevenSegment_8h.md))
 
 
+## s
+
+* **sd\_job\_type\_t** ([**sdcard.h**](sdcard_8h.md))
+* **sd\_status\_t** ([**sdcard.h**](sdcard_8h.md))
+
+
+## u
+
+* **USER\_Driver** ([**user\_diskio.h**](user__diskio_8h.md))
+
+
 ## w
 
 * **ws2812b\_status\_t** ([**WS2812B.h**](WS2812B_8h.md))

@@ -17,6 +17,12 @@
 * [**led\_pins**](structled__pins.md)
 
 
+## s
+
+* [**sd\_handle\_t**](structsd__handle__t.md)
+* [**sd\_job\_t**](structsd__job__t.md)
+
+
 ## w
 
 * [**ws2812b\_color\_t**](structws2812b__color__t.md)

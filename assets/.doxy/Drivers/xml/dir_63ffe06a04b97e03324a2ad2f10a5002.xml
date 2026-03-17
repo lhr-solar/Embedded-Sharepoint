@@ -4,8 +4,10 @@
     <compoundname>driver/Inc</compoundname>
     <innerfile refid="EMC2305_8h">EMC2305.h</innerfile>
     <innerfile refid="printf_8h">printf.h</innerfile>
+    <innerfile refid="sdcard_8h">sdcard.h</innerfile>
     <innerfile refid="SevenSegment_8h">SevenSegment.h</innerfile>
     <innerfile refid="slcanFormat_8h">slcanFormat.h</innerfile>
+    <innerfile refid="user__diskio_8h">user_diskio.h</innerfile>
     <innerfile refid="WS2812B_8h">WS2812B.h</innerfile>
     <briefdescription>
     </briefdescription>

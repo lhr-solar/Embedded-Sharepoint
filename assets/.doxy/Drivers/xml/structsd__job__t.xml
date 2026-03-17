@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structsd__job__t" kind="struct" language="C++" prot="public">
+    <compoundname>sd_job_t</compoundname>
+    <includes refid="sdcard_8h" local="no">sdcard.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structsd__job__t_1a323c15bbd6a10e882ad7dfeda0b76af8" prot="public" static="no" mutable="no">
+        <type><ref refid="sdcard_8h_1ab4f2a7346248b2b3bc8efb26da32689e" kindref="member">sd_job_type_t</ref></type>
+        <definition>sd_job_type_t sd_job_t::type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <qualifiedname>sd_job_t::type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="86" column="19" bodyfile="driver/Inc/sdcard.h" bodystart="86" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsd__job__t_1ac0e2d4c5f07791196d67f21d0adbea63" prot="public" static="no" mutable="no">
+        <type>char</type>
+        <definition>char sd_job_t::filename[SD_MAX_FILENAME_LEN]</definition>
+        <argsstring>[SD_MAX_FILENAME_LEN]</argsstring>
+        <name>filename</name>
+        <qualifiedname>sd_job_t::filename</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="87" column="10" bodyfile="driver/Inc/sdcard.h" bodystart="87" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsd__job__t_1a7d57034d6a8a69bd01102ff3a571fc5a" prot="public" static="no" mutable="no">
+        <type>char</type>
+        <definition>char sd_job_t::data[SD_DATA_BUFFER_LEN]</definition>
+        <argsstring>[SD_DATA_BUFFER_LEN]</argsstring>
+        <name>data</name>
+        <qualifiedname>sd_job_t::data</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="88" column="10" bodyfile="driver/Inc/sdcard.h" bodystart="88" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsd__job__t_1aeb1bdad4d230e46dd4803edb233cef9d" prot="public" static="no" mutable="no">
+        <type>uint16_t</type>
+        <definition>uint16_t sd_job_t::len</definition>
+        <argsstring></argsstring>
+        <name>len</name>
+        <qualifiedname>sd_job_t::len</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="89" column="14" bodyfile="driver/Inc/sdcard.h" bodystart="89" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Job structure passed through the RTOS Queue. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="driver/Inc/sdcard.h" line="85" column="1" bodyfile="driver/Inc/sdcard.h" bodystart="85" bodyend="90"/>
+    <listofallmembers>
+      <member refid="structsd__job__t_1a7d57034d6a8a69bd01102ff3a571fc5a" prot="public" virt="non-virtual"><scope>sd_job_t</scope><name>data</name></member>
+      <member refid="structsd__job__t_1ac0e2d4c5f07791196d67f21d0adbea63" prot="public" virt="non-virtual"><scope>sd_job_t</scope><name>filename</name></member>
+      <member refid="structsd__job__t_1aeb1bdad4d230e46dd4803edb233cef9d" prot="public" virt="non-virtual"><scope>sd_job_t</scope><name>len</name></member>
+      <member refid="structsd__job__t_1a323c15bbd6a10e882ad7dfeda0b76af8" prot="public" virt="non-virtual"><scope>sd_job_t</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

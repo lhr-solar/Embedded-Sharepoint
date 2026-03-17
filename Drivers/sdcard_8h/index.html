@@ -1,0 +1,2964 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Software library shared among LHRS embedded systems">
+      
+      
+        <meta name="author" content="LHR - Solar">
+      
+      
+      
+        <link rel="prev" href="../printf_8h/">
+      
+      
+        <link rel="next" href="../slcanFormat_8h/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../LHRs.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+    
+    
+      
+        <title>sdcard - Embedded Sharepoint Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#file-sdcardh" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Embedded Sharepoint Documentation" class="md-header__button md-logo" aria-label="Embedded Sharepoint Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Embedded Sharepoint Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              sdcard
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Embedded Sharepoint Documentation" class="md-nav__button md-logo" aria-label="Embedded Sharepoint Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Embedded Sharepoint Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    README
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../FlashAndTheBug/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flashing and Debugging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SharepointSubmodule/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Adding Embedded Sharepoint
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CubeMX/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CubeMX
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../STM32_Ports/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    STM32 Ports
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CAN Messages
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CAN Messages
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dbcEditor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Editing DBC Files
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DBC/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Signals & Messages
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../usingDBCs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generating DBC Headers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Drivers Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Drivers Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../EMC2305/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EMC2305 Usage Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../WS2812B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WS2812B Usage Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../canSetup.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CAN Usage Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sdcard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SDCARD Usage Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../EMC2305_8h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EMC2305
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SevenSegment_8h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SevenSegment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../WS2812B_8h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WS2812B
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../printf_8h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    printf
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sdcard
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sdcard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Classes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#public-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public Types
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#public-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public Functions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#macros" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Macros
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#public-types-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public Types Documentation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Public Types Documentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#enum-sd_job_type_t" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enum sd_job_type_t
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enum-sd_status_t" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enum sd_status_t
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#public-functions-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public Functions Documentation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Public Functions Documentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#function-sd_init" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function SD_Init
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-sd_readsingleblock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function SD_ReadSingleBlock
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-sd_writesingleblock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function SD_WriteSingleBlock
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-user_sd_card_init" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function USER_SD_Card_Init
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-user_sd_card_worker_task" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function USER_SD_Card_Worker_Task
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-user_sd_card_write_async" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function USER_SD_Card_Write_Async
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-sdcard_spi_txrxcpltcallback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function sdcard_SPI_TxRxCpltCallback
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#macro-definition-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Macro Definition Documentation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Macro Definition Documentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#define-data_token_cmd18" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define DATA_TOKEN_CMD18
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-data_token_cmd25" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define DATA_TOKEN_CMD25
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_acmd41" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_ACMD41
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_block_size" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_BLOCK_SIZE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_busy_wait_retries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_BUSY_WAIT_RETRIES
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_byte_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_BYTE_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_byte_shift_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_BYTE_SHIFT_16
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_byte_shift_24" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_BYTE_SHIFT_24
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_byte_shift_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_BYTE_SHIFT_8
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_cmd0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_CMD0
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_cmd12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_CMD12
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_cmd17" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_CMD17
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_cmd18" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_CMD18
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_cmd24" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_CMD24
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_cmd25" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_CMD25
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_cmd55" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_CMD55
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_cmd58" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_CMD58
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_cmd8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_CMD8
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_cmd_base" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_CMD_BASE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_cmd_index_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_CMD_INDEX_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_cmd_packet_size" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_CMD_PACKET_SIZE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_data_buffer_len" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_DATA_BUFFER_LEN
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_default_sector_count" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_DEFAULT_SECTOR_COUNT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_default_timeout_ms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_DEFAULT_TIMEOUT_MS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_dummy_byte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_DUMMY_BYTE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_dummy_clocks_count" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_DUMMY_CLOCKS_COUNT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_max_filename_len" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_MAX_FILENAME_LEN
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_queue_length" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_QUEUE_LENGTH
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_r1_error_code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_R1_ERROR_CODE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_r1_idle_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_R1_IDLE_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_r1_poll_retries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_R1_POLL_RETRIES
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_small_transfer_threshold" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_SMALL_TRANSFER_THRESHOLD
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_timeout_ms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_TIMEOUT_MS
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../slcanFormat_8h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    slcanFormat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user__diskio_8h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    user__diskio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CanSetup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CanSetup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    BSP Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    BSP Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../BSP/ADC_8h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../BSP/CAN_8h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CAN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../BSP/CAN__Common_8h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CAN__Common
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../BSP/CAN__FD_8h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CAN__FD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../BSP/UART_8h/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UART
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Classes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#public-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public Types
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#public-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public Functions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#macros" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Macros
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#public-types-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public Types Documentation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Public Types Documentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#enum-sd_job_type_t" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enum sd_job_type_t
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enum-sd_status_t" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enum sd_status_t
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#public-functions-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public Functions Documentation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Public Functions Documentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#function-sd_init" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function SD_Init
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-sd_readsingleblock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function SD_ReadSingleBlock
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-sd_writesingleblock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function SD_WriteSingleBlock
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-user_sd_card_init" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function USER_SD_Card_Init
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-user_sd_card_worker_task" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function USER_SD_Card_Worker_Task
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-user_sd_card_write_async" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function USER_SD_Card_Write_Async
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-sdcard_spi_txrxcpltcallback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function sdcard_SPI_TxRxCpltCallback
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#macro-definition-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Macro Definition Documentation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Macro Definition Documentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#define-data_token_cmd18" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define DATA_TOKEN_CMD18
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-data_token_cmd25" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define DATA_TOKEN_CMD25
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_acmd41" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_ACMD41
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_block_size" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_BLOCK_SIZE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_busy_wait_retries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_BUSY_WAIT_RETRIES
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_byte_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_BYTE_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_byte_shift_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_BYTE_SHIFT_16
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_byte_shift_24" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_BYTE_SHIFT_24
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_byte_shift_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_BYTE_SHIFT_8
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_cmd0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_CMD0
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_cmd12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_CMD12
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_cmd17" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_CMD17
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_cmd18" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_CMD18
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_cmd24" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_CMD24
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_cmd25" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_CMD25
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_cmd55" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_CMD55
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_cmd58" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_CMD58
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_cmd8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_CMD8
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_cmd_base" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_CMD_BASE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_cmd_index_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_CMD_INDEX_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_cmd_packet_size" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_CMD_PACKET_SIZE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_data_buffer_len" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_DATA_BUFFER_LEN
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_default_sector_count" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_DEFAULT_SECTOR_COUNT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_default_timeout_ms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_DEFAULT_TIMEOUT_MS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_dummy_byte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_DUMMY_BYTE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_dummy_clocks_count" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_DUMMY_CLOCKS_COUNT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_max_filename_len" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_MAX_FILENAME_LEN
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_queue_length" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_QUEUE_LENGTH
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_r1_error_code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_R1_ERROR_CODE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_r1_idle_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_R1_IDLE_MASK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_r1_poll_retries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_R1_POLL_RETRIES
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_small_transfer_threshold" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_SMALL_TRANSFER_THRESHOLD
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-sd_timeout_ms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define SD_TIMEOUT_MS
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="file-sdcardh">File sdcard.h</h1>
+<p><a href="../files/"><strong>FileList</strong></a> <strong>&gt;</strong> <a href="../dir_1284b95147afa48b330f502c8bbc0529/"><strong>driver</strong></a> <strong>&gt;</strong> <a href="../dir_63ffe06a04b97e03324a2ad2f10a5002/"><strong>Inc</strong></a> <strong>&gt;</strong> <a href="./"><strong>sdcard.h</strong></a></p>
+<p><a href="../sdcard_8h_source/">Go to the source code of this file</a></p>
+<ul>
+<li><code>#include "stm32xx_hal.h"</code></li>
+<li><code>#include &lt;stdint.h&gt;</code></li>
+<li><code>#include &lt;stddef.h&gt;</code></li>
+<li><code>#include "FreeRTOS.h"</code></li>
+<li><code>#include "semphr.h"</code></li>
+<li><code>#include "queue.h"</code></li>
+<li><code>#include "queue_ex.h"</code></li>
+</ul>
+<h2 id="classes">Classes</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Type</th>
+<th style="text-align: left;">Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">struct</td>
+<td style="text-align: left;"><a href="../structsd__handle__t/"><strong>sd_handle_t</strong></a> <br><em>Main Handle Structure for SD Card.</em></td>
+</tr>
+<tr>
+<td style="text-align: right;">struct</td>
+<td style="text-align: left;"><a href="../structsd__job__t/"><strong>sd_job_t</strong></a> <br><em>Job structure passed through the RTOS Queue.</em></td>
+</tr>
+</tbody>
+</table>
+<h2 id="public-types">Public Types</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Type</th>
+<th style="text-align: left;">Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">enum</td>
+<td style="text-align: left;"><a href="#enum-sd_job_type_t"><strong>sd_job_type_t</strong></a>  <br><em>Enum for Worker Task Job Types.</em></td>
+</tr>
+<tr>
+<td style="text-align: right;">enum</td>
+<td style="text-align: left;"><a href="#enum-sd_status_t"><strong>sd_status_t</strong></a>  <br><em>Custom error status enum.</em></td>
+</tr>
+</tbody>
+</table>
+<h2 id="public-functions">Public Functions</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Type</th>
+<th style="text-align: left;">Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;"><a href="./#enum-sd_status_t"><strong>sd_status_t</strong></a></td>
+<td style="text-align: left;"><a href="#function-sd_init"><strong>SD_Init</strong></a> (<a href="../structsd__handle__t/"><strong>sd_handle_t</strong></a> * sd, TickType_t timeout) <br><em>Low-level SD initialization to ready the card for SPI communication.</em></td>
+</tr>
+<tr>
+<td style="text-align: right;"><a href="./#enum-sd_status_t"><strong>sd_status_t</strong></a></td>
+<td style="text-align: left;"><a href="#function-sd_readsingleblock"><strong>SD_ReadSingleBlock</strong></a> (<a href="../structsd__handle__t/"><strong>sd_handle_t</strong></a> * sd, uint32_t blockNum, uint8_t * buffer, TickType_t timeout) <br><em>Reads a single 512-byte block from the SD card.</em></td>
+</tr>
+<tr>
+<td style="text-align: right;"><a href="./#enum-sd_status_t"><strong>sd_status_t</strong></a></td>
+<td style="text-align: left;"><a href="#function-sd_writesingleblock"><strong>SD_WriteSingleBlock</strong></a> (<a href="../structsd__handle__t/"><strong>sd_handle_t</strong></a> * sd, uint32_t blockNum, const uint8_t * buffer, TickType_t timeout) <br><em>Writes a single 512-byte block to the SD card.</em></td>
+</tr>
+<tr>
+<td style="text-align: right;"><a href="./#enum-sd_status_t"><strong>sd_status_t</strong></a></td>
+<td style="text-align: left;"><a href="#function-user_sd_card_init"><strong>USER_SD_Card_Init</strong></a> (<a href="../structsd__handle__t/"><strong>sd_handle_t</strong></a> * sd, UBaseType_t priority) <br><em>Initializes RTOS resources and FatFs structures for the SD driver.</em></td>
+</tr>
+<tr>
+<td style="text-align: right;">void</td>
+<td style="text-align: left;"><a href="#function-user_sd_card_worker_task"><strong>USER_SD_Card_Worker_Task</strong></a> (void * params) <br><em>RTOS task that processes file system jobs from the queue.</em></td>
+</tr>
+<tr>
+<td style="text-align: right;"><a href="./#enum-sd_status_t"><strong>sd_status_t</strong></a></td>
+<td style="text-align: left;"><a href="#function-user_sd_card_write_async"><strong>USER_SD_Card_Write_Async</strong></a> (<a href="../structsd__handle__t/"><strong>sd_handle_t</strong></a> * sd, const char * filename, const char * data, TickType_t delay_ticks) <br><em>Non-blocking write that sends a request to the background worker.</em></td>
+</tr>
+<tr>
+<td style="text-align: right;">void</td>
+<td style="text-align: left;"><a href="#function-sdcard_spi_txrxcpltcallback"><strong>sdcard_SPI_TxRxCpltCallback</strong></a> (SPI_HandleTypeDef * hspi, BaseType_t * xHigherPriorityTaskWoken) <br><em>Driver-specific callback triggered by the SPI ISR.</em></td>
+</tr>
+</tbody>
+</table>
+<h2 id="macros">Macros</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Type</th>
+<th style="text-align: left;">Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-data_token_cmd18"><strong>DATA_TOKEN_CMD18</strong></a>  <code>0xFE</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-data_token_cmd25"><strong>DATA_TOKEN_CMD25</strong></a>  <code>0xFC</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_acmd41"><strong>SD_ACMD41</strong></a>  <code>41</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_block_size"><strong>SD_BLOCK_SIZE</strong></a>  <code>512</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_busy_wait_retries"><strong>SD_BUSY_WAIT_RETRIES</strong></a>  <code>500</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_byte_mask"><strong>SD_BYTE_MASK</strong></a>  <code>0xFF</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_byte_shift_16"><strong>SD_BYTE_SHIFT_16</strong></a>  <code>16</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_byte_shift_24"><strong>SD_BYTE_SHIFT_24</strong></a>  <code>24</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_byte_shift_8"><strong>SD_BYTE_SHIFT_8</strong></a>  <code>8</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_cmd0"><strong>SD_CMD0</strong></a>  <code>0</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_cmd12"><strong>SD_CMD12</strong></a>  <code>12</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_cmd17"><strong>SD_CMD17</strong></a>  <code>17</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_cmd18"><strong>SD_CMD18</strong></a>  <code>18</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_cmd24"><strong>SD_CMD24</strong></a>  <code>24</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_cmd25"><strong>SD_CMD25</strong></a>  <code>25</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_cmd55"><strong>SD_CMD55</strong></a>  <code>55</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_cmd58"><strong>SD_CMD58</strong></a>  <code>58</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_cmd8"><strong>SD_CMD8</strong></a>  <code>8</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_cmd_base"><strong>SD_CMD_BASE</strong></a>  <code>0x40</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_cmd_index_mask"><strong>SD_CMD_INDEX_MASK</strong></a>  <code>0x3F</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_cmd_packet_size"><strong>SD_CMD_PACKET_SIZE</strong></a>  <code>6</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_data_buffer_len"><strong>SD_DATA_BUFFER_LEN</strong></a>  <code>64</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_default_sector_count"><strong>SD_DEFAULT_SECTOR_COUNT</strong></a>  <code>3934208</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_default_timeout_ms"><strong>SD_DEFAULT_TIMEOUT_MS</strong></a>  <code>1000</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_dummy_byte"><strong>SD_DUMMY_BYTE</strong></a>  <code>0xFF</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_dummy_clocks_count"><strong>SD_DUMMY_CLOCKS_COUNT</strong></a>  <code>10</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_max_filename_len"><strong>SD_MAX_FILENAME_LEN</strong></a>  <code>13</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_queue_length"><strong>SD_QUEUE_LENGTH</strong></a>  <code>5</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_r1_error_code"><strong>SD_R1_ERROR_CODE</strong></a>  <code>0xFF</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_r1_idle_mask"><strong>SD_R1_IDLE_MASK</strong></a>  <code>0x80</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_r1_poll_retries"><strong>SD_R1_POLL_RETRIES</strong></a>  <code>8</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_small_transfer_threshold"><strong>SD_SMALL_TRANSFER_THRESHOLD</strong></a>  <code>16</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-sd_timeout_ms"><strong>SD_TIMEOUT_MS</strong></a>  <code>1000</code><br></td>
+</tr>
+</tbody>
+</table>
+<h2 id="public-types-documentation">Public Types Documentation</h2>
+<h3 id="enum-sd_job_type_t">enum sd_job_type_t</h3>
+<p><em>Enum for Worker Task Job Types.</em> </p>
+<pre><code class="language-C++">enum sd_job_type_t {
+    SD_JOB_MOUNT,
+    SD_JOB_WRITE_ASYNC,
+    SD_JOB_FORMAT
+};
+</code></pre>
+<hr>
+
+<h3 id="enum-sd_status_t">enum sd_status_t</h3>
+<p><em>Custom error status enum.</em> </p>
+<pre><code class="language-C++">enum sd_status_t {
+    SD_OK = 0x00,
+    SD_ERROR = 0x01,
+    SD_TIMEOUT = 0x02,
+    SD_ERR_SPI = 0x03,
+    SD_ERR_INIT_CARD = 0x04,
+    SD_ERR_VOLTAGE = 0x05,
+    SD_ERR_READ = 0x06,
+    SD_ERR_WRITE = 0x07,
+    SD_ERR_MUTEX = 0x08,
+    SD_ERR_QUEUE_FULL = 0x09,
+    SD_ERR_LOCK_TIMEOUT = 0x0A
+};
+</code></pre>
+<hr>
+<h2 id="public-functions-documentation">Public Functions Documentation</h2>
+<h3 id="function-sd_init">function SD_Init</h3>
+<p><em>Low-level SD initialization to ready the card for SPI communication.</em> </p>
+<pre><code class="language-C++">sd_status_t SD_Init (
+    sd_handle_t * sd,
+    TickType_t timeout
+) 
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>sd</code> Pointer to the SD handle. </li>
+<li><code>timeout</code> Max time to wait for initialization. </li>
+</ul>
+<p><strong>Returns:</strong></p>
+<p>Returns SD_OK on success. </p>
+<hr>
+
+<h3 id="function-sd_readsingleblock">function SD_ReadSingleBlock</h3>
+<p><em>Reads a single 512-byte block from the SD card.</em> </p>
+<pre><code class="language-C++">sd_status_t SD_ReadSingleBlock (
+    sd_handle_t * sd,
+    uint32_t blockNum,
+    uint8_t * buffer,
+    TickType_t timeout
+) 
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>sd</code> Pointer to the SD handle. </li>
+<li><code>blockNum</code> Sector address to read. </li>
+<li><code>buffer</code> Pointer to the 512-byte data buffer. </li>
+<li><code>timeout</code> Max time to wait for the block. </li>
+</ul>
+<p><strong>Returns:</strong></p>
+<p>Returns SD_OK on success. </p>
+<hr>
+
+<h3 id="function-sd_writesingleblock">function SD_WriteSingleBlock</h3>
+<p><em>Writes a single 512-byte block to the SD card.</em> </p>
+<pre><code class="language-C++">sd_status_t SD_WriteSingleBlock (
+    sd_handle_t * sd,
+    uint32_t blockNum,
+    const uint8_t * buffer,
+    TickType_t timeout
+) 
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>sd</code> Pointer to the SD handle. </li>
+<li><code>blockNum</code> Sector address to write. </li>
+<li><code>buffer</code> Pointer to the 512-byte data buffer. </li>
+<li><code>timeout</code> Max time to wait for the write to finish. </li>
+</ul>
+<p><strong>Returns:</strong></p>
+<p>Returns SD_OK on success. </p>
+<hr>
+
+<h3 id="function-user_sd_card_init">function USER_SD_Card_Init</h3>
+<p><em>Initializes RTOS resources and FatFs structures for the SD driver.</em> </p>
+<pre><code class="language-C++">sd_status_t USER_SD_Card_Init (
+    sd_handle_t * sd,
+    UBaseType_t priority
+) 
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>sd</code> Pointer to the SD handle. </li>
+<li><code>priority</code> User choice of priority level </li>
+</ul>
+<p><strong>Returns:</strong></p>
+<p>Returns SD_OK on success. </p>
+<hr>
+
+<h3 id="function-user_sd_card_worker_task">function USER_SD_Card_Worker_Task</h3>
+<p><em>RTOS task that processes file system jobs from the queue.</em> </p>
+<pre><code class="language-C++">void USER_SD_Card_Worker_Task (
+    void * params
+) 
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>params</code> Pointer to the <a href="../structsd__handle__t/"><strong>sd_handle_t</strong></a> structure. </li>
+</ul>
+<hr>
+
+<h3 id="function-user_sd_card_write_async">function USER_SD_Card_Write_Async</h3>
+<p><em>Non-blocking write that sends a request to the background worker.</em> </p>
+<pre><code class="language-C++">sd_status_t USER_SD_Card_Write_Async (
+    sd_handle_t * sd,
+    const char * filename,
+    const char * data,
+    TickType_t delay_ticks
+) 
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>sd</code> Pointer to the SD handle. </li>
+<li><code>filename</code> Name of the file to write to. </li>
+<li><code>data</code> String data to append. </li>
+<li><code>delay_ticks</code> Time to wait for queue space if full. </li>
+</ul>
+<p><strong>Returns:</strong></p>
+<p>Returns SD_OK if the job was queued. </p>
+<hr>
+
+<h3 id="function-sdcard_spi_txrxcpltcallback">function sdcard_SPI_TxRxCpltCallback</h3>
+<p><em>Driver-specific callback triggered by the SPI ISR.</em> </p>
+<pre><code class="language-C++">void sdcard_SPI_TxRxCpltCallback (
+    SPI_HandleTypeDef * hspi,
+    BaseType_t * xHigherPriorityTaskWoken
+) 
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>hspi</code> Pointer to the HAL SPI handle that triggered the interrupt. </li>
+<li><code>xHigherPriorityTaskWoken</code> Pointer to a flag indicating if a context switch is required. </li>
+</ul>
+<hr>
+<h2 id="macro-definition-documentation">Macro Definition Documentation</h2>
+<h3 id="define-data_token_cmd18">define DATA_TOKEN_CMD18</h3>
+<pre><code class="language-C++">#define DATA_TOKEN_CMD18 `0xFE`
+</code></pre>
+<hr>
+
+<h3 id="define-data_token_cmd25">define DATA_TOKEN_CMD25</h3>
+<pre><code class="language-C++">#define DATA_TOKEN_CMD25 `0xFC`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_acmd41">define SD_ACMD41</h3>
+<pre><code class="language-C++">#define SD_ACMD41 `41`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_block_size">define SD_BLOCK_SIZE</h3>
+<pre><code class="language-C++">#define SD_BLOCK_SIZE `512`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_busy_wait_retries">define SD_BUSY_WAIT_RETRIES</h3>
+<pre><code class="language-C++">#define SD_BUSY_WAIT_RETRIES `500`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_byte_mask">define SD_BYTE_MASK</h3>
+<pre><code class="language-C++">#define SD_BYTE_MASK `0xFF`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_byte_shift_16">define SD_BYTE_SHIFT_16</h3>
+<pre><code class="language-C++">#define SD_BYTE_SHIFT_16 `16`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_byte_shift_24">define SD_BYTE_SHIFT_24</h3>
+<pre><code class="language-C++">#define SD_BYTE_SHIFT_24 `24`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_byte_shift_8">define SD_BYTE_SHIFT_8</h3>
+<pre><code class="language-C++">#define SD_BYTE_SHIFT_8 `8`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_cmd0">define SD_CMD0</h3>
+<pre><code class="language-C++">#define SD_CMD0 `0`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_cmd12">define SD_CMD12</h3>
+<pre><code class="language-C++">#define SD_CMD12 `12`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_cmd17">define SD_CMD17</h3>
+<pre><code class="language-C++">#define SD_CMD17 `17`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_cmd18">define SD_CMD18</h3>
+<pre><code class="language-C++">#define SD_CMD18 `18`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_cmd24">define SD_CMD24</h3>
+<pre><code class="language-C++">#define SD_CMD24 `24`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_cmd25">define SD_CMD25</h3>
+<pre><code class="language-C++">#define SD_CMD25 `25`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_cmd55">define SD_CMD55</h3>
+<pre><code class="language-C++">#define SD_CMD55 `55`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_cmd58">define SD_CMD58</h3>
+<pre><code class="language-C++">#define SD_CMD58 `58`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_cmd8">define SD_CMD8</h3>
+<pre><code class="language-C++">#define SD_CMD8 `8`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_cmd_base">define SD_CMD_BASE</h3>
+<pre><code class="language-C++">#define SD_CMD_BASE `0x40`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_cmd_index_mask">define SD_CMD_INDEX_MASK</h3>
+<pre><code class="language-C++">#define SD_CMD_INDEX_MASK `0x3F`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_cmd_packet_size">define SD_CMD_PACKET_SIZE</h3>
+<pre><code class="language-C++">#define SD_CMD_PACKET_SIZE `6`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_data_buffer_len">define SD_DATA_BUFFER_LEN</h3>
+<pre><code class="language-C++">#define SD_DATA_BUFFER_LEN `64`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_default_sector_count">define SD_DEFAULT_SECTOR_COUNT</h3>
+<pre><code class="language-C++">#define SD_DEFAULT_SECTOR_COUNT `3934208`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_default_timeout_ms">define SD_DEFAULT_TIMEOUT_MS</h3>
+<pre><code class="language-C++">#define SD_DEFAULT_TIMEOUT_MS `1000`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_dummy_byte">define SD_DUMMY_BYTE</h3>
+<pre><code class="language-C++">#define SD_DUMMY_BYTE `0xFF`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_dummy_clocks_count">define SD_DUMMY_CLOCKS_COUNT</h3>
+<pre><code class="language-C++">#define SD_DUMMY_CLOCKS_COUNT `10`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_max_filename_len">define SD_MAX_FILENAME_LEN</h3>
+<pre><code class="language-C++">#define SD_MAX_FILENAME_LEN `13`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_queue_length">define SD_QUEUE_LENGTH</h3>
+<pre><code class="language-C++">#define SD_QUEUE_LENGTH `5`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_r1_error_code">define SD_R1_ERROR_CODE</h3>
+<pre><code class="language-C++">#define SD_R1_ERROR_CODE `0xFF`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_r1_idle_mask">define SD_R1_IDLE_MASK</h3>
+<pre><code class="language-C++">#define SD_R1_IDLE_MASK `0x80`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_r1_poll_retries">define SD_R1_POLL_RETRIES</h3>
+<pre><code class="language-C++">#define SD_R1_POLL_RETRIES `8`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_small_transfer_threshold">define SD_SMALL_TRANSFER_THRESHOLD</h3>
+<pre><code class="language-C++">#define SD_SMALL_TRANSFER_THRESHOLD `16`
+</code></pre>
+<hr>
+
+<h3 id="define-sd_timeout_ms">define SD_TIMEOUT_MS</h3>
+<pre><code class="language-C++">#define SD_TIMEOUT_MS `1000`
+</code></pre>
+<hr>
+
+<hr />
+<p>The documentation for this class was generated from the following file <code>driver/Inc/sdcard.h</code></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

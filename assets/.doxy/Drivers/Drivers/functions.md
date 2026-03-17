@@ -49,6 +49,17 @@
 
 * **SevenSegment\_Init** ([**SevenSegment.h**](SevenSegment_8h.md))
 * **scanf** ([**printf.h**](printf_8h.md))
+* **SD\_Init** ([**sdcard.h**](sdcard_8h.md))
+* **SD\_ReadSingleBlock** ([**sdcard.h**](sdcard_8h.md))
+* **SD\_WriteSingleBlock** ([**sdcard.h**](sdcard_8h.md))
+* **sdcard\_SPI\_TxRxCpltCallback** ([**sdcard.h**](sdcard_8h.md))
+
+
+## u
+
+* **USER\_SD\_Card\_Init** ([**sdcard.h**](sdcard_8h.md))
+* **USER\_SD\_Card\_Worker\_Task** ([**sdcard.h**](sdcard_8h.md))
+* **USER\_SD\_Card\_Write\_Async** ([**sdcard.h**](sdcard_8h.md))
 
 
 ## w

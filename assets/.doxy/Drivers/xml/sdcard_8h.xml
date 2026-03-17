@@ -1,0 +1,1028 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="sdcard_8h" kind="file" language="C++">
+    <compoundname>sdcard.h</compoundname>
+    <includes local="yes">stm32xx_hal.h</includes>
+    <includes local="no">stdint.h</includes>
+    <includes local="no">stddef.h</includes>
+    <includes local="yes">FreeRTOS.h</includes>
+    <includes local="yes">semphr.h</includes>
+    <includes local="yes">queue.h</includes>
+    <includes local="yes">queue_ex.h</includes>
+    <incdepgraph>
+      <node id="1">
+        <label>driver/Inc/sdcard.h</label>
+        <link refid="sdcard_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>FreeRTOS.h</label>
+      </node>
+      <node id="7">
+        <label>queue.h</label>
+      </node>
+      <node id="8">
+        <label>queue_ex.h</label>
+      </node>
+      <node id="6">
+        <label>semphr.h</label>
+      </node>
+      <node id="4">
+        <label>stddef.h</label>
+      </node>
+      <node id="3">
+        <label>stdint.h</label>
+      </node>
+      <node id="2">
+        <label>stm32xx_hal.h</label>
+      </node>
+    </incdepgraph>
+    <innerclass refid="structsd__job__t" prot="public">sd_job_t</innerclass>
+    <innerclass refid="structsd__handle__t" prot="public">sd_handle_t</innerclass>
+    <sectiondef kind="define">
+      <memberdef kind="define" id="sdcard_8h_1a23704af642d8d305e0931c51fc71ebde" prot="public" static="no">
+        <name>SD_CMD_BASE</name>
+        <initializer>0x40</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="14" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="14" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1a5aa29f1b0d6b2419a521d84c74a75041" prot="public" static="no">
+        <name>DATA_TOKEN_CMD18</name>
+        <initializer>0xFE</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="15" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="15" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1ac900429988e9ee46038970a103f854c3" prot="public" static="no">
+        <name>DATA_TOKEN_CMD25</name>
+        <initializer>0xFC</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="16" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="16" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1a799a94721d29661d31a1b2a3c5bd0f40" prot="public" static="no">
+        <name>SD_DUMMY_BYTE</name>
+        <initializer>0xFF</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="17" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="17" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1a451aeffb68f3ecfb82eae03c88e9e48c" prot="public" static="no">
+        <name>SD_BLOCK_SIZE</name>
+        <initializer>512</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="18" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1a585c385eebee28858201a291e013139a" prot="public" static="no">
+        <name>SD_R1_IDLE_MASK</name>
+        <initializer>0x80</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="20" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1a4050b1bf0f341220d7513144d091d9c3" prot="public" static="no">
+        <name>SD_DUMMY_CLOCKS_COUNT</name>
+        <initializer>10</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="21" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1ad8e39b6cfc8e1c2f3dec135ea63260a5" prot="public" static="no">
+        <name>SD_DEFAULT_TIMEOUT_MS</name>
+        <initializer>1000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="22" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="22" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1acc7f30d8fc0de420598e6d9d5de67495" prot="public" static="no">
+        <name>SD_SMALL_TRANSFER_THRESHOLD</name>
+        <initializer>16</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="23" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1a0ee64f32c1d8ee3b010c00f2040de91d" prot="public" static="no">
+        <name>SD_R1_POLL_RETRIES</name>
+        <initializer>8</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="24" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1a06c390d102aaa179b94a0e223d3cb077" prot="public" static="no">
+        <name>SD_BUSY_WAIT_RETRIES</name>
+        <initializer>500</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="25" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="25" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1abaf28d7dee1639a3d151c1fb604c3aff" prot="public" static="no">
+        <name>SD_CMD_PACKET_SIZE</name>
+        <initializer>6</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="27" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1ac0cc81bb7ef5c71ecf9ae6192a0d1f56" prot="public" static="no">
+        <name>SD_CMD_INDEX_MASK</name>
+        <initializer>0x3F</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="28" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="28" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1a6b5304e0b06edfae1237a2e2126a8106" prot="public" static="no">
+        <name>SD_BYTE_SHIFT_24</name>
+        <initializer>24</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="29" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="29" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1a8cb7ef48956633d31025c80b8b043ad8" prot="public" static="no">
+        <name>SD_BYTE_SHIFT_16</name>
+        <initializer>16</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="30" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1afbb90f29983126d84df9c71e5ade4543" prot="public" static="no">
+        <name>SD_BYTE_SHIFT_8</name>
+        <initializer>8</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="31" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1a0969a7841ee1f25e265189fe6971fa10" prot="public" static="no">
+        <name>SD_BYTE_MASK</name>
+        <initializer>0xFF</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="32" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1a37afeaa18a3c585146217c604569600b" prot="public" static="no">
+        <name>SD_R1_ERROR_CODE</name>
+        <initializer>0xFF</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="34" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1ae242785828835e85ba4b3fcc9169ade4" prot="public" static="no">
+        <name>SD_TIMEOUT_MS</name>
+        <initializer>1000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="36" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1a71c1ad4960bb4f3ed5971292c11ed41a" prot="public" static="no">
+        <name>SD_DEFAULT_SECTOR_COUNT</name>
+        <initializer>3934208</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="38" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1a799ac815e74797ee73ba3e57996dc237" prot="public" static="no">
+        <name>SD_CMD0</name>
+        <initializer>0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="40" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1a43d18e10a9e461ee16164a7e315df427" prot="public" static="no">
+        <name>SD_CMD8</name>
+        <initializer>8</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="41" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1ab17811836c2f07844555046f4862ae4f" prot="public" static="no">
+        <name>SD_CMD12</name>
+        <initializer>12</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="42" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1a4eaa96b90749c8f2a52ef628f1c0a4d0" prot="public" static="no">
+        <name>SD_CMD17</name>
+        <initializer>17</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="43" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1a3bc8fa39e1a4b3802b246e75cf02e846" prot="public" static="no">
+        <name>SD_CMD18</name>
+        <initializer>18</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="44" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1a24d75e8872bb85b5fe9f01da83f14986" prot="public" static="no">
+        <name>SD_CMD24</name>
+        <initializer>24</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="45" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1a794d1878c7c1e599175c3f74c917c72d" prot="public" static="no">
+        <name>SD_CMD25</name>
+        <initializer>25</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="46" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1a3fee118235a954c05b2bf1dec1a2a8af" prot="public" static="no">
+        <name>SD_ACMD41</name>
+        <initializer>41</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="47" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1a3125237e89611b38b6eda63e41d61414" prot="public" static="no">
+        <name>SD_CMD55</name>
+        <initializer>55</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="48" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1a3d20d900a6e6e9c6961d0ef019896f77" prot="public" static="no">
+        <name>SD_CMD58</name>
+        <initializer>58</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="49" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1aff60823f64f0a92e2aeb9e2c0068c1db" prot="public" static="no">
+        <name>SD_MAX_FILENAME_LEN</name>
+        <initializer>13</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="52" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1af8f0e47348b94c0b53b22fd05b147ec6" prot="public" static="no">
+        <name>SD_DATA_BUFFER_LEN</name>
+        <initializer>64</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="53" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="sdcard_8h_1ade9f467eed0029931eeb73b24671cf62" prot="public" static="no">
+        <name>SD_QUEUE_LENGTH</name>
+        <initializer>5</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="54" column="9" bodyfile="driver/Inc/sdcard.h" bodystart="54" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="enum">
+      <memberdef kind="enum" id="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46" prot="public" static="no" strong="no">
+        <type></type>
+        <name>sd_status_t</name>
+        <enumvalue id="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46ae7d9e30a15fd1bc4b2cd8f10208e76a6" prot="public">
+          <name>SD_OK</name>
+          <initializer>= 0x00</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46a0002d0c8feceb0fb4cd7d9fc96066c3d" prot="public">
+          <name>SD_ERROR</name>
+          <initializer>= 0x01</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46ac61e6e57433363b6e79c4c5f265657cd" prot="public">
+          <name>SD_TIMEOUT</name>
+          <initializer>= 0x02</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46a99f2442da3ed70542a1d36d424c5475f" prot="public">
+          <name>SD_ERR_SPI</name>
+          <initializer>= 0x03</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46ac095bd6e80fce50da7e4211d75054729" prot="public">
+          <name>SD_ERR_INIT_CARD</name>
+          <initializer>= 0x04</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46a61d9e358314d498179ee6cddee676057" prot="public">
+          <name>SD_ERR_VOLTAGE</name>
+          <initializer>= 0x05</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46af138f7366ff20bda9cc2f46e89bdb4bc" prot="public">
+          <name>SD_ERR_READ</name>
+          <initializer>= 0x06</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46a066fa77db8a2ef11426ce03d4822c690" prot="public">
+          <name>SD_ERR_WRITE</name>
+          <initializer>= 0x07</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46af1261f86acbb25f4289f2afdf8bb9d83" prot="public">
+          <name>SD_ERR_MUTEX</name>
+          <initializer>= 0x08</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46ad2380094c82f897938f71f2404970833" prot="public">
+          <name>SD_ERR_QUEUE_FULL</name>
+          <initializer>= 0x09</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46a3acdde2526fc1c64203eadee96b05cf3" prot="public">
+          <name>SD_ERR_LOCK_TIMEOUT</name>
+          <initializer>= 0x0A</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Custom error status enum. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="59" column="1" bodyfile="driver/Inc/sdcard.h" bodystart="59" bodyend="71"/>
+      </memberdef>
+      <memberdef kind="enum" id="sdcard_8h_1ab4f2a7346248b2b3bc8efb26da32689e" prot="public" static="no" strong="no">
+        <type></type>
+        <name>sd_job_type_t</name>
+        <enumvalue id="sdcard_8h_1ab4f2a7346248b2b3bc8efb26da32689eab86232692647a87e9e94a78b2a173d62" prot="public">
+          <name>SD_JOB_MOUNT</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="sdcard_8h_1ab4f2a7346248b2b3bc8efb26da32689ea605e97fe2c9d539cff727ebe0bb8236b" prot="public">
+          <name>SD_JOB_WRITE_ASYNC</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="sdcard_8h_1ab4f2a7346248b2b3bc8efb26da32689ea2db56ea5a898e05fe98a53bc6541c711" prot="public">
+          <name>SD_JOB_FORMAT</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Enum for Worker Task Job Types. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="76" column="1" bodyfile="driver/Inc/sdcard.h" bodystart="76" bodyend="80"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="sdcard_8h_1ad608a444f585e8dbcc35fa0841b1c430" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void sdcard_SPI_TxRxCpltCallback</definition>
+        <argsstring>(SPI_HandleTypeDef *hspi, BaseType_t *xHigherPriorityTaskWoken)</argsstring>
+        <name>sdcard_SPI_TxRxCpltCallback</name>
+        <param>
+          <type>SPI_HandleTypeDef *</type>
+          <declname>hspi</declname>
+        </param>
+        <param>
+          <type>BaseType_t *</type>
+          <declname>xHigherPriorityTaskWoken</declname>
+        </param>
+        <briefdescription>
+<para>Driver-specific callback triggered by the SPI ISR. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>hspi</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the HAL SPI handle that triggered the interrupt. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>xHigherPriorityTaskWoken</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to a flag indicating if a context switch is required. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="118" column="6" declfile="driver/Inc/sdcard.h" declline="118" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="sdcard_8h_1a30c10f525056532523fe985ca872b13b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46" kindref="member">sd_status_t</ref></type>
+        <definition>sd_status_t SD_Init</definition>
+        <argsstring>(sd_handle_t *sd, TickType_t timeout)</argsstring>
+        <name>SD_Init</name>
+        <param>
+          <type><ref refid="structsd__handle__t" kindref="compound">sd_handle_t</ref> *</type>
+          <declname>sd</declname>
+        </param>
+        <param>
+          <type>TickType_t</type>
+          <declname>timeout</declname>
+        </param>
+        <briefdescription>
+<para>Low-level SD initialization to ready the card for SPI communication. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>sd</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the SD handle. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>timeout</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Max time to wait for initialization. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns SD_OK on success. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="126" column="13" declfile="driver/Inc/sdcard.h" declline="126" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="sdcard_8h_1aab46a7862d57107c36b94c9b84211d40" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46" kindref="member">sd_status_t</ref></type>
+        <definition>sd_status_t SD_ReadSingleBlock</definition>
+        <argsstring>(sd_handle_t *sd, uint32_t blockNum, uint8_t *buffer, TickType_t timeout)</argsstring>
+        <name>SD_ReadSingleBlock</name>
+        <param>
+          <type><ref refid="structsd__handle__t" kindref="compound">sd_handle_t</ref> *</type>
+          <declname>sd</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>blockNum</declname>
+        </param>
+        <param>
+          <type>uint8_t *</type>
+          <declname>buffer</declname>
+        </param>
+        <param>
+          <type>TickType_t</type>
+          <declname>timeout</declname>
+        </param>
+        <briefdescription>
+<para>Reads a single 512-byte block from the SD card. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>sd</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the SD handle. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>blockNum</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Sector address to read. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>buffer</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the 512-byte data buffer. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>timeout</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Max time to wait for the block. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns SD_OK on success. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="136" column="13" declfile="driver/Inc/sdcard.h" declline="136" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="sdcard_8h_1a0a1908cea6e268a8a698f85de8adc439" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46" kindref="member">sd_status_t</ref></type>
+        <definition>sd_status_t SD_WriteSingleBlock</definition>
+        <argsstring>(sd_handle_t *sd, uint32_t blockNum, const uint8_t *buffer, TickType_t timeout)</argsstring>
+        <name>SD_WriteSingleBlock</name>
+        <param>
+          <type><ref refid="structsd__handle__t" kindref="compound">sd_handle_t</ref> *</type>
+          <declname>sd</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>blockNum</declname>
+        </param>
+        <param>
+          <type>const uint8_t *</type>
+          <declname>buffer</declname>
+        </param>
+        <param>
+          <type>TickType_t</type>
+          <declname>timeout</declname>
+        </param>
+        <briefdescription>
+<para>Writes a single 512-byte block to the SD card. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>sd</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the SD handle. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>blockNum</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Sector address to write. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>buffer</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the 512-byte data buffer. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>timeout</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Max time to wait for the write to finish. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns SD_OK on success. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="146" column="13" declfile="driver/Inc/sdcard.h" declline="146" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="sdcard_8h_1a5902cf5fef120fd1e73309e5e33eed27" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46" kindref="member">sd_status_t</ref></type>
+        <definition>sd_status_t USER_SD_Card_Init</definition>
+        <argsstring>(sd_handle_t *sd, UBaseType_t priority)</argsstring>
+        <name>USER_SD_Card_Init</name>
+        <param>
+          <type><ref refid="structsd__handle__t" kindref="compound">sd_handle_t</ref> *</type>
+          <declname>sd</declname>
+        </param>
+        <param>
+          <type>UBaseType_t</type>
+          <declname>priority</declname>
+        </param>
+        <briefdescription>
+<para>Initializes RTOS resources and FatFs structures for the SD driver. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>sd</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the SD handle. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>priority</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>User choice of priority level </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns SD_OK on success. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="154" column="13" declfile="driver/Inc/sdcard.h" declline="154" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="sdcard_8h_1ae1715c551c9d9a09e6cc88edd38923b6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46" kindref="member">sd_status_t</ref></type>
+        <definition>sd_status_t USER_SD_Card_Write_Async</definition>
+        <argsstring>(sd_handle_t *sd, const char *filename, const char *data, TickType_t delay_ticks)</argsstring>
+        <name>USER_SD_Card_Write_Async</name>
+        <param>
+          <type><ref refid="structsd__handle__t" kindref="compound">sd_handle_t</ref> *</type>
+          <declname>sd</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>filename</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>TickType_t</type>
+          <declname>delay_ticks</declname>
+        </param>
+        <briefdescription>
+<para>Non-blocking write that sends a request to the background worker. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>sd</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the SD handle. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>filename</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name of the file to write to. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>data</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>String data to append. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>delay_ticks</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Time to wait for queue space if full. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Returns SD_OK if the job was queued. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="164" column="13" declfile="driver/Inc/sdcard.h" declline="164" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="sdcard_8h_1a3d641d5f47fb00c429b88bfb8655f08b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void USER_SD_Card_Worker_Task</definition>
+        <argsstring>(void *params)</argsstring>
+        <name>USER_SD_Card_Worker_Task</name>
+        <param>
+          <type>void *</type>
+          <declname>params</declname>
+        </param>
+        <briefdescription>
+<para>RTOS task that processes file system jobs from the queue. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>params</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the <ref refid="structsd__handle__t" kindref="compound">sd_handle_t</ref> structure. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="170" column="6" declfile="driver/Inc/sdcard.h" declline="170" declcolumn="6"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;stm32xx_hal.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdint.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stddef.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Thread<sp/>Safe<sp/>RTOS<sp/>includes</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;FreeRTOS.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;semphr.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;queue.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;queue_ex.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>---<sp/>SD<sp/>Card<sp/>Command<sp/>Definitions<sp/>---<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14" refid="sdcard_8h_1a23704af642d8d305e0931c51fc71ebde" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_CMD_BASE<sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x40<sp/><sp/></highlight><highlight class="comment">//<sp/>All<sp/>SPI<sp/>commands<sp/>start<sp/>with<sp/>01<sp/>followed<sp/>by<sp/>6-bit<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15" refid="sdcard_8h_1a5aa29f1b0d6b2419a521d84c74a75041" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>DATA_TOKEN_CMD18<sp/><sp/>0xFE<sp/><sp/></highlight><highlight class="comment">//<sp/>Standard<sp/>Start<sp/>Block<sp/>token<sp/>for<sp/>single/multiple<sp/>block<sp/>reads</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16" refid="sdcard_8h_1ac900429988e9ee46038970a103f854c3" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>DATA_TOKEN_CMD25<sp/><sp/>0xFC<sp/><sp/></highlight><highlight class="comment">//<sp/>Start<sp/>Block<sp/>token<sp/>for<sp/>multiple<sp/>block<sp/>writes</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17" refid="sdcard_8h_1a799a94721d29661d31a1b2a3c5bd0f40" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_DUMMY_BYTE<sp/><sp/><sp/><sp/><sp/>0xFF<sp/><sp/></highlight><highlight class="comment">//<sp/>Byte<sp/>sent<sp/>to<sp/>provide<sp/>clock<sp/>cycles<sp/>while<sp/>waiting<sp/>for<sp/>card<sp/>output</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18" refid="sdcard_8h_1a451aeffb68f3ecfb82eae03c88e9e48c" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_BLOCK_SIZE<sp/><sp/><sp/><sp/><sp/>512<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Standard<sp/>SD<sp/>card<sp/>sector<sp/>size<sp/>in<sp/>bytes</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight></codeline>
+<codeline lineno="20" refid="sdcard_8h_1a585c385eebee28858201a291e013139a" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_R1_IDLE_MASK<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x80<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Mask<sp/>to<sp/>check<sp/>if<sp/>the<sp/>MSB<sp/>of<sp/>R1<sp/>response<sp/>is<sp/>0</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21" refid="sdcard_8h_1a4050b1bf0f341220d7513144d091d9c3" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_DUMMY_CLOCKS_COUNT<sp/><sp/><sp/><sp/><sp/><sp/><sp/>10<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Minimum<sp/>dummy<sp/>bytes<sp/>(80<sp/>clocks)<sp/>for<sp/>power-up<sp/>sequence</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22" refid="sdcard_8h_1ad8e39b6cfc8e1c2f3dec135ea63260a5" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_DEFAULT_TIMEOUT_MS<sp/><sp/><sp/><sp/><sp/><sp/><sp/>1000<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Default<sp/>time<sp/>to<sp/>wait<sp/>for<sp/>card<sp/>operations</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23" refid="sdcard_8h_1acc7f30d8fc0de420598e6d9d5de67495" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_SMALL_TRANSFER_THRESHOLD<sp/>16<sp/></highlight><highlight class="comment">//<sp/>Threshold<sp/>for<sp/>stack-allocated<sp/>dummy<sp/>buffers</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24" refid="sdcard_8h_1a0ee64f32c1d8ee3b010c00f2040de91d" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_R1_POLL_RETRIES<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>8<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Number<sp/>of<sp/>bytes<sp/>to<sp/>poll<sp/>for<sp/>an<sp/>R1<sp/>response</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25" refid="sdcard_8h_1a06c390d102aaa179b94a0e223d3cb077" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_BUSY_WAIT_RETRIES<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>500<sp/></highlight><highlight class="comment">//<sp/>loop<sp/>time</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight></codeline>
+<codeline lineno="27" refid="sdcard_8h_1abaf28d7dee1639a3d151c1fb604c3aff" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_CMD_PACKET_SIZE<sp/><sp/>6<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Standard<sp/>SD<sp/>SPI<sp/>command<sp/>packet<sp/>size<sp/>(1<sp/>index<sp/>+<sp/>4<sp/>arg<sp/>+<sp/>1<sp/>CRC)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28" refid="sdcard_8h_1ac0cc81bb7ef5c71ecf9ae6192a0d1f56" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_CMD_INDEX_MASK<sp/><sp/><sp/>0x3F<sp/></highlight><highlight class="comment">//<sp/>Mask<sp/>to<sp/>ensure<sp/>command<sp/>index<sp/>is<sp/>6<sp/>bits</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29" refid="sdcard_8h_1a6b5304e0b06edfae1237a2e2126a8106" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_BYTE_SHIFT_24<sp/><sp/><sp/><sp/>24</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30" refid="sdcard_8h_1a8cb7ef48956633d31025c80b8b043ad8" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_BYTE_SHIFT_16<sp/><sp/><sp/><sp/>16</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31" refid="sdcard_8h_1afbb90f29983126d84df9c71e5ade4543" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_BYTE_SHIFT_8<sp/><sp/><sp/><sp/><sp/>8</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32" refid="sdcard_8h_1a0969a7841ee1f25e265189fe6971fa10" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_BYTE_MASK<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0xFF</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight></codeline>
+<codeline lineno="34" refid="sdcard_8h_1a37afeaa18a3c585146217c604569600b" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_R1_ERROR_CODE<sp/><sp/><sp/><sp/>0xFF<sp/><sp/></highlight><highlight class="comment">//<sp/>Card<sp/>failed<sp/>to<sp/>respond<sp/>with<sp/>a<sp/>valid<sp/>R1<sp/>byte</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="36" refid="sdcard_8h_1ae242785828835e85ba4b3fcc9169ade4" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_TIMEOUT_MS<sp/><sp/><sp/><sp/>1000<sp/></highlight><highlight class="comment">//timeout<sp/>for<sp/>standard<sp/>SD<sp/>card<sp/>operations<sp/>(1<sp/>second)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight></codeline>
+<codeline lineno="38" refid="sdcard_8h_1a71c1ad4960bb4f3ed5971292c11ed41a" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_DEFAULT_SECTOR_COUNT<sp/><sp/>3934208<sp/></highlight><highlight class="comment">//<sp/>Default<sp/>for<sp/>2GB<sp/>Card</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight></codeline>
+<codeline lineno="40" refid="sdcard_8h_1a799ac815e74797ee73ba3e57996dc237" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_CMD0<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>GO_IDLE_STATE</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41" refid="sdcard_8h_1a43d18e10a9e461ee16164a7e315df427" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_CMD8<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>8<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>SEND_IF_COND</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42" refid="sdcard_8h_1ab17811836c2f07844555046f4862ae4f" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_CMD12<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>12<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>STOP_TRANSMISSION</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43" refid="sdcard_8h_1a4eaa96b90749c8f2a52ef628f1c0a4d0" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_CMD17<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>17<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>READ_SINGLE_BLOCK</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44" refid="sdcard_8h_1a3bc8fa39e1a4b3802b246e75cf02e846" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_CMD18<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>18<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>READ_MULTIPLE_BLOCK</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="45" refid="sdcard_8h_1a24d75e8872bb85b5fe9f01da83f14986" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_CMD24<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>24<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>WRITE_BLOCK</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="46" refid="sdcard_8h_1a794d1878c7c1e599175c3f74c917c72d" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_CMD25<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>25<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>WRITE_MULTIPLE_BLOCK</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="47" refid="sdcard_8h_1a3fee118235a954c05b2bf1dec1a2a8af" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_ACMD41<sp/><sp/><sp/><sp/><sp/><sp/><sp/>41<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>SD_SEND_OP_COND</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="48" refid="sdcard_8h_1a3125237e89611b38b6eda63e41d61414" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_CMD55<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>55<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>APP_CMD</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="49" refid="sdcard_8h_1a3d20d900a6e6e9c6961d0ef019896f77" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_CMD58<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>58<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>READ_OCR</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>Configuration<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="52" refid="sdcard_8h_1aff60823f64f0a92e2aeb9e2c0068c1db" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_MAX_FILENAME_LEN<sp/>13<sp/></highlight><highlight class="comment">//<sp/>Max<sp/>length<sp/>for<sp/>FatFs<sp/>8.3<sp/>filenames</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="53" refid="sdcard_8h_1af8f0e47348b94c0b53b22fd05b147ec6" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_DATA_BUFFER_LEN<sp/><sp/>64<sp/></highlight><highlight class="comment">//<sp/>Max<sp/>string<sp/>size<sp/>for<sp/>asynchronous<sp/>logging</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="54" refid="sdcard_8h_1ade9f467eed0029931eeb73b24671cf62" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SD_QUEUE_LENGTH<sp/><sp/><sp/><sp/><sp/>5<sp/><sp/></highlight><highlight class="comment">//<sp/>Number<sp/>of<sp/>jobs<sp/>the<sp/>worker<sp/>task<sp/>can<sp/>hold</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"></highlight></codeline>
+<codeline lineno="59" refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="60" refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46ae7d9e30a15fd1bc4b2cd8f10208e76a6" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46ae7d9e30a15fd1bc4b2cd8f10208e76a6" kindref="member">SD_OK</ref><sp/>=<sp/>0x00,<sp/></highlight><highlight class="comment">//<sp/>Operation<sp/>successful</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="61" refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46a0002d0c8feceb0fb4cd7d9fc96066c3d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46a0002d0c8feceb0fb4cd7d9fc96066c3d" kindref="member">SD_ERROR</ref><sp/>=<sp/>0x01,<sp/></highlight><highlight class="comment">//<sp/>General<sp/>failure</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="62" refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46ac61e6e57433363b6e79c4c5f265657cd" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46ac61e6e57433363b6e79c4c5f265657cd" kindref="member">SD_TIMEOUT</ref><sp/>=<sp/>0x02,<sp/></highlight><highlight class="comment">//<sp/>Operation<sp/>timed<sp/>out</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="63" refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46a99f2442da3ed70542a1d36d424c5475f" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46a99f2442da3ed70542a1d36d424c5475f" kindref="member">SD_ERR_SPI</ref><sp/>=<sp/>0x03,<sp/></highlight><highlight class="comment">//<sp/>SPI<sp/>hardware<sp/>error</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="64" refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46ac095bd6e80fce50da7e4211d75054729" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46ac095bd6e80fce50da7e4211d75054729" kindref="member">SD_ERR_INIT_CARD</ref><sp/>=<sp/>0x04,<sp/></highlight><highlight class="comment">//<sp/>Initialization<sp/>sequence<sp/>failed</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="65" refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46a61d9e358314d498179ee6cddee676057" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46a61d9e358314d498179ee6cddee676057" kindref="member">SD_ERR_VOLTAGE</ref><sp/>=<sp/>0x05,<sp/></highlight><highlight class="comment">//<sp/>Incompatible<sp/>card<sp/>voltage</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="66" refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46af138f7366ff20bda9cc2f46e89bdb4bc" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46af138f7366ff20bda9cc2f46e89bdb4bc" kindref="member">SD_ERR_READ</ref><sp/>=<sp/>0x06,<sp/></highlight><highlight class="comment">//<sp/>Block<sp/>read<sp/>failure</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="67" refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46a066fa77db8a2ef11426ce03d4822c690" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46a066fa77db8a2ef11426ce03d4822c690" kindref="member">SD_ERR_WRITE</ref><sp/>=<sp/>0x07,<sp/></highlight><highlight class="comment">//<sp/>Block<sp/>write<sp/>failure</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="68" refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46af1261f86acbb25f4289f2afdf8bb9d83" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46af1261f86acbb25f4289f2afdf8bb9d83" kindref="member">SD_ERR_MUTEX</ref><sp/>=<sp/>0x08,<sp/></highlight><highlight class="comment">//<sp/>Failed<sp/>to<sp/>acquire<sp/>hardware<sp/>lock</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="69" refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46ad2380094c82f897938f71f2404970833" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46ad2380094c82f897938f71f2404970833" kindref="member">SD_ERR_QUEUE_FULL</ref><sp/>=<sp/>0x09,<sp/></highlight><highlight class="comment">//<sp/>Async<sp/>job<sp/>queue<sp/>is<sp/>full</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46a3acdde2526fc1c64203eadee96b05cf3" kindref="member">SD_ERR_LOCK_TIMEOUT</ref><sp/>=<sp/>0x0A<sp/></highlight><highlight class="comment">//<sp/>Mutex<sp/>lock<sp/>timed<sp/>out</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="71" refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46a3acdde2526fc1c64203eadee96b05cf3" refkind="member"><highlight class="normal">}<sp/><ref refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46" kindref="member">sd_status_t</ref>;</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight></codeline>
+<codeline lineno="76" refid="sdcard_8h_1ab4f2a7346248b2b3bc8efb26da32689e" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="77" refid="sdcard_8h_1ab4f2a7346248b2b3bc8efb26da32689eab86232692647a87e9e94a78b2a173d62" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="sdcard_8h_1ab4f2a7346248b2b3bc8efb26da32689eab86232692647a87e9e94a78b2a173d62" kindref="member">SD_JOB_MOUNT</ref>,<sp/></highlight><highlight class="comment">//<sp/>Mount<sp/>the<sp/>file<sp/>system</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="78" refid="sdcard_8h_1ab4f2a7346248b2b3bc8efb26da32689ea605e97fe2c9d539cff727ebe0bb8236b" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="sdcard_8h_1ab4f2a7346248b2b3bc8efb26da32689ea605e97fe2c9d539cff727ebe0bb8236b" kindref="member">SD_JOB_WRITE_ASYNC</ref>,<sp/></highlight><highlight class="comment">//<sp/>Write<sp/>text<sp/>data<sp/>to<sp/>a<sp/>file</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="sdcard_8h_1ab4f2a7346248b2b3bc8efb26da32689ea2db56ea5a898e05fe98a53bc6541c711" kindref="member">SD_JOB_FORMAT</ref><sp/></highlight><highlight class="comment">//<sp/>Format<sp/>the<sp/>SD<sp/>card</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="80" refid="sdcard_8h_1ab4f2a7346248b2b3bc8efb26da32689ea2db56ea5a898e05fe98a53bc6541c711" refkind="member"><highlight class="normal">}<sp/><ref refid="sdcard_8h_1ab4f2a7346248b2b3bc8efb26da32689e" kindref="member">sd_job_type_t</ref>;</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"></highlight></codeline>
+<codeline lineno="85" refid="structsd__job__t" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="86" refid="structsd__job__t_1a323c15bbd6a10e882ad7dfeda0b76af8" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="sdcard_8h_1ab4f2a7346248b2b3bc8efb26da32689e" kindref="member">sd_job_type_t</ref><sp/><ref refid="structsd__job__t_1a323c15bbd6a10e882ad7dfeda0b76af8" kindref="member">type</ref>;<sp/></highlight><highlight class="comment">//<sp/>The<sp/>type<sp/>of<sp/>job<sp/>to<sp/>execute</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="87" refid="structsd__job__t_1ac0e2d4c5f07791196d67f21d0adbea63" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>filename[<ref refid="sdcard_8h_1aff60823f64f0a92e2aeb9e2c0068c1db" kindref="member">SD_MAX_FILENAME_LEN</ref>];<sp/></highlight><highlight class="comment">//<sp/>Target<sp/>filename</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="88" refid="structsd__job__t_1a7d57034d6a8a69bd01102ff3a571fc5a" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>data[<ref refid="sdcard_8h_1af8f0e47348b94c0b53b22fd05b147ec6" kindref="member">SD_DATA_BUFFER_LEN</ref>];<sp/></highlight><highlight class="comment">//<sp/>Data<sp/>to<sp/>be<sp/>written</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="89" refid="structsd__job__t_1aeb1bdad4d230e46dd4803edb233cef9d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>uint16_t<sp/><ref refid="structsd__job__t_1aeb1bdad4d230e46dd4803edb233cef9d" kindref="member">len</ref>;<sp/></highlight><highlight class="comment">//<sp/>Length<sp/>of<sp/>the<sp/>data<sp/>string</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="90"><highlight class="normal">}<sp/><ref refid="structsd__job__t" kindref="compound">sd_job_t</ref>;</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"></highlight></codeline>
+<codeline lineno="95" refid="structsd__handle__t" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="96" refid="structsd__handle__t_1a7599f54a2ffdafbe7c666da056597cd7" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>SPI_HandleTypeDef<sp/>*<ref refid="structsd__handle__t_1a7599f54a2ffdafbe7c666da056597cd7" kindref="member">hspi</ref>;<sp/></highlight><highlight class="comment">//<sp/>SPI<sp/>peripheral<sp/>handle</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="97" refid="structsd__handle__t_1a89f8aaa4ef2df5f8b08ea0c180933c29" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>GPIO_TypeDef<sp/>*<ref refid="structsd__handle__t_1a89f8aaa4ef2df5f8b08ea0c180933c29" kindref="member">cs_port</ref>;<sp/></highlight><highlight class="comment">//<sp/>GPIO<sp/>port<sp/>for<sp/>Chip<sp/>Select</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="98" refid="structsd__handle__t_1abf954646d5acb1f75ff050b193bdb176" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>uint16_t<sp/><ref refid="structsd__handle__t_1abf954646d5acb1f75ff050b193bdb176" kindref="member">cs_pin</ref>;<sp/></highlight><highlight class="comment">//<sp/>GPIO<sp/>pin<sp/>for<sp/>Chip<sp/>Select</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="99"><highlight class="normal"></highlight></codeline>
+<codeline lineno="100" refid="structsd__handle__t_1a4b6af74396b2fad336d1f4f31399260c" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>SemaphoreHandle_t<sp/><ref refid="structsd__handle__t_1a4b6af74396b2fad336d1f4f31399260c" kindref="member">mutex</ref>;<sp/></highlight><highlight class="comment">//<sp/>Mutex<sp/>to<sp/>prevent<sp/>simultaneous<sp/>SPI<sp/>access</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="101" refid="structsd__handle__t_1a2c4d31c83fba4b01f2a25e292450eeb2" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>StaticSemaphore_t<sp/><ref refid="structsd__handle__t_1a2c4d31c83fba4b01f2a25e292450eeb2" kindref="member">mutexBuffer</ref>;<sp/></highlight><highlight class="comment">//<sp/>Static<sp/>buffer<sp/>for<sp/>mutex<sp/>allocation</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="102"><highlight class="normal"></highlight></codeline>
+<codeline lineno="103" refid="structsd__handle__t_1a68da335cb3960357a2541aea16a8d144" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>SemaphoreHandle_t<sp/><ref refid="structsd__handle__t_1a68da335cb3960357a2541aea16a8d144" kindref="member">spi_comp_sem</ref>;<sp/></highlight><highlight class="comment">//<sp/>Semaphore<sp/>to<sp/>signal<sp/>SPI<sp/>DMA/IT<sp/>completion</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="104" refid="structsd__handle__t_1a38c9c490356ce7a7f74ce0add9295437" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>StaticSemaphore_t<sp/><ref refid="structsd__handle__t_1a38c9c490356ce7a7f74ce0add9295437" kindref="member">spi_comp_buffer</ref>;<sp/></highlight><highlight class="comment">//<sp/>Static<sp/>buffer<sp/>for<sp/>completion<sp/>semaphore</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="105"><highlight class="normal"></highlight></codeline>
+<codeline lineno="106" refid="structsd__handle__t_1aaa3a8a44d507472babd43e9f712c0f09" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>QueueHandle_t<sp/><ref refid="structsd__handle__t_1aaa3a8a44d507472babd43e9f712c0f09" kindref="member">job_queue</ref>;<sp/></highlight><highlight class="comment">//<sp/>Inbox<sp/>for<sp/>the<sp/>background<sp/>worker</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="107" refid="structsd__handle__t_1a8949955c552c74778c8e11e32e1d40e7" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>StaticQueue_t<sp/><ref refid="structsd__handle__t_1a8949955c552c74778c8e11e32e1d40e7" kindref="member">queue_buffer</ref>;<sp/></highlight><highlight class="comment">//<sp/>Static<sp/>buffer<sp/>for<sp/>the<sp/>job<sp/>queue</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="108" refid="structsd__handle__t_1a9d08b52bf204f7975af404ade6093a38" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>uint8_t<sp/>queue_storage[<ref refid="sdcard_8h_1ade9f467eed0029931eeb73b24671cf62" kindref="member">SD_QUEUE_LENGTH</ref><sp/>*<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(<ref refid="structsd__job__t" kindref="compound">sd_job_t</ref>)];<sp/></highlight><highlight class="comment">//<sp/>Queue<sp/>memory</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="109"><highlight class="normal"></highlight></codeline>
+<codeline lineno="110" refid="structsd__handle__t_1a765beae758112c294370d3448c297ba4" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>TaskHandle_t<sp/><ref refid="structsd__handle__t_1a765beae758112c294370d3448c297ba4" kindref="member">worker_task_handle</ref>;<sp/></highlight><highlight class="comment">//<sp/>tracks<sp/>worker<sp/>task</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="111"><highlight class="normal">}<sp/><ref refid="structsd__handle__t" kindref="compound">sd_handle_t</ref>;</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"></highlight></codeline>
+<codeline lineno="118" refid="sdcard_8h_1ad608a444f585e8dbcc35fa0841b1c430" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="sdcard_8h_1ad608a444f585e8dbcc35fa0841b1c430" kindref="member">sdcard_SPI_TxRxCpltCallback</ref>(SPI_HandleTypeDef<sp/>*hspi,<sp/>BaseType_t*<sp/>xHigherPriorityTaskWoken);</highlight></codeline>
+<codeline lineno="119"><highlight class="normal"></highlight></codeline>
+<codeline lineno="126" refid="sdcard_8h_1a30c10f525056532523fe985ca872b13b" refkind="member"><highlight class="normal"><ref refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46" kindref="member">sd_status_t</ref><sp/><ref refid="sdcard_8h_1a30c10f525056532523fe985ca872b13b" kindref="member">SD_Init</ref>(<ref refid="structsd__handle__t" kindref="compound">sd_handle_t</ref><sp/>*sd,<sp/>TickType_t<sp/>timeout);</highlight></codeline>
+<codeline lineno="127"><highlight class="normal"></highlight></codeline>
+<codeline lineno="136" refid="sdcard_8h_1aab46a7862d57107c36b94c9b84211d40" refkind="member"><highlight class="normal"><ref refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46" kindref="member">sd_status_t</ref><sp/><ref refid="sdcard_8h_1aab46a7862d57107c36b94c9b84211d40" kindref="member">SD_ReadSingleBlock</ref>(<ref refid="structsd__handle__t" kindref="compound">sd_handle_t</ref><sp/>*sd,<sp/>uint32_t<sp/>blockNum,<sp/>uint8_t<sp/>*buffer,<sp/>TickType_t<sp/>timeout);</highlight></codeline>
+<codeline lineno="137"><highlight class="normal"></highlight></codeline>
+<codeline lineno="146" refid="sdcard_8h_1a0a1908cea6e268a8a698f85de8adc439" refkind="member"><highlight class="normal"><ref refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46" kindref="member">sd_status_t</ref><sp/><ref refid="sdcard_8h_1a0a1908cea6e268a8a698f85de8adc439" kindref="member">SD_WriteSingleBlock</ref>(<ref refid="structsd__handle__t" kindref="compound">sd_handle_t</ref><sp/>*sd,<sp/>uint32_t<sp/>blockNum,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint8_t<sp/>*buffer,<sp/>TickType_t<sp/>timeout);</highlight></codeline>
+<codeline lineno="147"><highlight class="normal"></highlight></codeline>
+<codeline lineno="154" refid="sdcard_8h_1a5902cf5fef120fd1e73309e5e33eed27" refkind="member"><highlight class="normal"><ref refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46" kindref="member">sd_status_t</ref><sp/><ref refid="sdcard_8h_1a5902cf5fef120fd1e73309e5e33eed27" kindref="member">USER_SD_Card_Init</ref>(<ref refid="structsd__handle__t" kindref="compound">sd_handle_t</ref><sp/>*sd,<sp/>UBaseType_t<sp/>priority);</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"></highlight></codeline>
+<codeline lineno="164" refid="sdcard_8h_1ae1715c551c9d9a09e6cc88edd38923b6" refkind="member"><highlight class="normal"><ref refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46" kindref="member">sd_status_t</ref><sp/><ref refid="sdcard_8h_1ae1715c551c9d9a09e6cc88edd38923b6" kindref="member">USER_SD_Card_Write_Async</ref>(<ref refid="structsd__handle__t" kindref="compound">sd_handle_t</ref><sp/>*sd,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*filename,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*data,<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
+<codeline lineno="165"><highlight class="normal"></highlight></codeline>
+<codeline lineno="170" refid="sdcard_8h_1a3d641d5f47fb00c429b88bfb8655f08b" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="sdcard_8h_1a3d641d5f47fb00c429b88bfb8655f08b" kindref="member">USER_SD_Card_Worker_Task</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*params);</highlight></codeline>
+    </programlisting>
+    <location file="driver/Inc/sdcard.h"/>
+  </compounddef>
+</doxygen>

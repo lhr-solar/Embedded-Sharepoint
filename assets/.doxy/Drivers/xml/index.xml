@@ -42,6 +42,25 @@
     <member refid="structled__pins_1a5c0d02187b359c85da456fc78e1e5895" kind="variable"><name>Pin</name></member>
     <member refid="structled__pins_1a9c16d693f4d4e212bb2ad76b922a1b16" kind="variable"><name>Port</name></member>
   </compound>
+  <compound refid="structsd__handle__t" kind="struct"><name>sd_handle_t</name>
+    <member refid="structsd__handle__t_1a7599f54a2ffdafbe7c666da056597cd7" kind="variable"><name>hspi</name></member>
+    <member refid="structsd__handle__t_1a89f8aaa4ef2df5f8b08ea0c180933c29" kind="variable"><name>cs_port</name></member>
+    <member refid="structsd__handle__t_1abf954646d5acb1f75ff050b193bdb176" kind="variable"><name>cs_pin</name></member>
+    <member refid="structsd__handle__t_1a4b6af74396b2fad336d1f4f31399260c" kind="variable"><name>mutex</name></member>
+    <member refid="structsd__handle__t_1a2c4d31c83fba4b01f2a25e292450eeb2" kind="variable"><name>mutexBuffer</name></member>
+    <member refid="structsd__handle__t_1a68da335cb3960357a2541aea16a8d144" kind="variable"><name>spi_comp_sem</name></member>
+    <member refid="structsd__handle__t_1a38c9c490356ce7a7f74ce0add9295437" kind="variable"><name>spi_comp_buffer</name></member>
+    <member refid="structsd__handle__t_1aaa3a8a44d507472babd43e9f712c0f09" kind="variable"><name>job_queue</name></member>
+    <member refid="structsd__handle__t_1a8949955c552c74778c8e11e32e1d40e7" kind="variable"><name>queue_buffer</name></member>
+    <member refid="structsd__handle__t_1a9d08b52bf204f7975af404ade6093a38" kind="variable"><name>queue_storage</name></member>
+    <member refid="structsd__handle__t_1a765beae758112c294370d3448c297ba4" kind="variable"><name>worker_task_handle</name></member>
+  </compound>
+  <compound refid="structsd__job__t" kind="struct"><name>sd_job_t</name>
+    <member refid="structsd__job__t_1a323c15bbd6a10e882ad7dfeda0b76af8" kind="variable"><name>type</name></member>
+    <member refid="structsd__job__t_1ac0e2d4c5f07791196d67f21d0adbea63" kind="variable"><name>filename</name></member>
+    <member refid="structsd__job__t_1a7d57034d6a8a69bd01102ff3a571fc5a" kind="variable"><name>data</name></member>
+    <member refid="structsd__job__t_1aeb1bdad4d230e46dd4803edb233cef9d" kind="variable"><name>len</name></member>
+  </compound>
   <compound refid="structws2812b__color__t" kind="struct"><name>ws2812b_color_t</name>
     <member refid="structws2812b__color__t_1a22588dfc8253b4059847ec1e2415fca8" kind="variable"><name>red</name></member>
     <member refid="structws2812b__color__t_1a199543be7c71f170d4695a721ff5f231" kind="variable"><name>green</name></member>
@@ -207,6 +226,64 @@
     <member refid="printf_8h_1a5c48433db9c04031772d5b36e6c4411d" kind="function"><name>scanf</name></member>
     <member refid="printf_8h_1a553be9d5cfd229f0ce30075aee33ea28" kind="function"><name>printf_init</name></member>
   </compound>
+  <compound refid="sdcard_8h" kind="file"><name>sdcard.h</name>
+    <member refid="sdcard_8h_1a23704af642d8d305e0931c51fc71ebde" kind="define"><name>SD_CMD_BASE</name></member>
+    <member refid="sdcard_8h_1a5aa29f1b0d6b2419a521d84c74a75041" kind="define"><name>DATA_TOKEN_CMD18</name></member>
+    <member refid="sdcard_8h_1ac900429988e9ee46038970a103f854c3" kind="define"><name>DATA_TOKEN_CMD25</name></member>
+    <member refid="sdcard_8h_1a799a94721d29661d31a1b2a3c5bd0f40" kind="define"><name>SD_DUMMY_BYTE</name></member>
+    <member refid="sdcard_8h_1a451aeffb68f3ecfb82eae03c88e9e48c" kind="define"><name>SD_BLOCK_SIZE</name></member>
+    <member refid="sdcard_8h_1a585c385eebee28858201a291e013139a" kind="define"><name>SD_R1_IDLE_MASK</name></member>
+    <member refid="sdcard_8h_1a4050b1bf0f341220d7513144d091d9c3" kind="define"><name>SD_DUMMY_CLOCKS_COUNT</name></member>
+    <member refid="sdcard_8h_1ad8e39b6cfc8e1c2f3dec135ea63260a5" kind="define"><name>SD_DEFAULT_TIMEOUT_MS</name></member>
+    <member refid="sdcard_8h_1acc7f30d8fc0de420598e6d9d5de67495" kind="define"><name>SD_SMALL_TRANSFER_THRESHOLD</name></member>
+    <member refid="sdcard_8h_1a0ee64f32c1d8ee3b010c00f2040de91d" kind="define"><name>SD_R1_POLL_RETRIES</name></member>
+    <member refid="sdcard_8h_1a06c390d102aaa179b94a0e223d3cb077" kind="define"><name>SD_BUSY_WAIT_RETRIES</name></member>
+    <member refid="sdcard_8h_1abaf28d7dee1639a3d151c1fb604c3aff" kind="define"><name>SD_CMD_PACKET_SIZE</name></member>
+    <member refid="sdcard_8h_1ac0cc81bb7ef5c71ecf9ae6192a0d1f56" kind="define"><name>SD_CMD_INDEX_MASK</name></member>
+    <member refid="sdcard_8h_1a6b5304e0b06edfae1237a2e2126a8106" kind="define"><name>SD_BYTE_SHIFT_24</name></member>
+    <member refid="sdcard_8h_1a8cb7ef48956633d31025c80b8b043ad8" kind="define"><name>SD_BYTE_SHIFT_16</name></member>
+    <member refid="sdcard_8h_1afbb90f29983126d84df9c71e5ade4543" kind="define"><name>SD_BYTE_SHIFT_8</name></member>
+    <member refid="sdcard_8h_1a0969a7841ee1f25e265189fe6971fa10" kind="define"><name>SD_BYTE_MASK</name></member>
+    <member refid="sdcard_8h_1a37afeaa18a3c585146217c604569600b" kind="define"><name>SD_R1_ERROR_CODE</name></member>
+    <member refid="sdcard_8h_1ae242785828835e85ba4b3fcc9169ade4" kind="define"><name>SD_TIMEOUT_MS</name></member>
+    <member refid="sdcard_8h_1a71c1ad4960bb4f3ed5971292c11ed41a" kind="define"><name>SD_DEFAULT_SECTOR_COUNT</name></member>
+    <member refid="sdcard_8h_1a799ac815e74797ee73ba3e57996dc237" kind="define"><name>SD_CMD0</name></member>
+    <member refid="sdcard_8h_1a43d18e10a9e461ee16164a7e315df427" kind="define"><name>SD_CMD8</name></member>
+    <member refid="sdcard_8h_1ab17811836c2f07844555046f4862ae4f" kind="define"><name>SD_CMD12</name></member>
+    <member refid="sdcard_8h_1a4eaa96b90749c8f2a52ef628f1c0a4d0" kind="define"><name>SD_CMD17</name></member>
+    <member refid="sdcard_8h_1a3bc8fa39e1a4b3802b246e75cf02e846" kind="define"><name>SD_CMD18</name></member>
+    <member refid="sdcard_8h_1a24d75e8872bb85b5fe9f01da83f14986" kind="define"><name>SD_CMD24</name></member>
+    <member refid="sdcard_8h_1a794d1878c7c1e599175c3f74c917c72d" kind="define"><name>SD_CMD25</name></member>
+    <member refid="sdcard_8h_1a3fee118235a954c05b2bf1dec1a2a8af" kind="define"><name>SD_ACMD41</name></member>
+    <member refid="sdcard_8h_1a3125237e89611b38b6eda63e41d61414" kind="define"><name>SD_CMD55</name></member>
+    <member refid="sdcard_8h_1a3d20d900a6e6e9c6961d0ef019896f77" kind="define"><name>SD_CMD58</name></member>
+    <member refid="sdcard_8h_1aff60823f64f0a92e2aeb9e2c0068c1db" kind="define"><name>SD_MAX_FILENAME_LEN</name></member>
+    <member refid="sdcard_8h_1af8f0e47348b94c0b53b22fd05b147ec6" kind="define"><name>SD_DATA_BUFFER_LEN</name></member>
+    <member refid="sdcard_8h_1ade9f467eed0029931eeb73b24671cf62" kind="define"><name>SD_QUEUE_LENGTH</name></member>
+    <member refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46" kind="enum"><name>sd_status_t</name></member>
+    <member refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46ae7d9e30a15fd1bc4b2cd8f10208e76a6" kind="enumvalue"><name>SD_OK</name></member>
+    <member refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46a0002d0c8feceb0fb4cd7d9fc96066c3d" kind="enumvalue"><name>SD_ERROR</name></member>
+    <member refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46ac61e6e57433363b6e79c4c5f265657cd" kind="enumvalue"><name>SD_TIMEOUT</name></member>
+    <member refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46a99f2442da3ed70542a1d36d424c5475f" kind="enumvalue"><name>SD_ERR_SPI</name></member>
+    <member refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46ac095bd6e80fce50da7e4211d75054729" kind="enumvalue"><name>SD_ERR_INIT_CARD</name></member>
+    <member refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46a61d9e358314d498179ee6cddee676057" kind="enumvalue"><name>SD_ERR_VOLTAGE</name></member>
+    <member refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46af138f7366ff20bda9cc2f46e89bdb4bc" kind="enumvalue"><name>SD_ERR_READ</name></member>
+    <member refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46a066fa77db8a2ef11426ce03d4822c690" kind="enumvalue"><name>SD_ERR_WRITE</name></member>
+    <member refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46af1261f86acbb25f4289f2afdf8bb9d83" kind="enumvalue"><name>SD_ERR_MUTEX</name></member>
+    <member refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46ad2380094c82f897938f71f2404970833" kind="enumvalue"><name>SD_ERR_QUEUE_FULL</name></member>
+    <member refid="sdcard_8h_1afb1ee1bac46a27cc42d84195dd1b0e46a3acdde2526fc1c64203eadee96b05cf3" kind="enumvalue"><name>SD_ERR_LOCK_TIMEOUT</name></member>
+    <member refid="sdcard_8h_1ab4f2a7346248b2b3bc8efb26da32689e" kind="enum"><name>sd_job_type_t</name></member>
+    <member refid="sdcard_8h_1ab4f2a7346248b2b3bc8efb26da32689eab86232692647a87e9e94a78b2a173d62" kind="enumvalue"><name>SD_JOB_MOUNT</name></member>
+    <member refid="sdcard_8h_1ab4f2a7346248b2b3bc8efb26da32689ea605e97fe2c9d539cff727ebe0bb8236b" kind="enumvalue"><name>SD_JOB_WRITE_ASYNC</name></member>
+    <member refid="sdcard_8h_1ab4f2a7346248b2b3bc8efb26da32689ea2db56ea5a898e05fe98a53bc6541c711" kind="enumvalue"><name>SD_JOB_FORMAT</name></member>
+    <member refid="sdcard_8h_1ad608a444f585e8dbcc35fa0841b1c430" kind="function"><name>sdcard_SPI_TxRxCpltCallback</name></member>
+    <member refid="sdcard_8h_1a30c10f525056532523fe985ca872b13b" kind="function"><name>SD_Init</name></member>
+    <member refid="sdcard_8h_1aab46a7862d57107c36b94c9b84211d40" kind="function"><name>SD_ReadSingleBlock</name></member>
+    <member refid="sdcard_8h_1a0a1908cea6e268a8a698f85de8adc439" kind="function"><name>SD_WriteSingleBlock</name></member>
+    <member refid="sdcard_8h_1a5902cf5fef120fd1e73309e5e33eed27" kind="function"><name>USER_SD_Card_Init</name></member>
+    <member refid="sdcard_8h_1ae1715c551c9d9a09e6cc88edd38923b6" kind="function"><name>USER_SD_Card_Write_Async</name></member>
+    <member refid="sdcard_8h_1a3d641d5f47fb00c429b88bfb8655f08b" kind="function"><name>USER_SD_Card_Worker_Task</name></member>
+  </compound>
   <compound refid="SevenSegment_8h" kind="file"><name>SevenSegment.h</name>
     <member refid="SevenSegment_8h_1a28fe36c5363479783340e0f921aa4116" kind="define"><name>NUMBER_SEVEN_SEGMENTS</name></member>
     <member refid="SevenSegment_8h_1a02177381c49128b4f2223b3d302c9b94" kind="define"><name>NUMBER_SEGMENTS</name></member>
@@ -224,6 +301,9 @@
   </compound>
   <compound refid="slcanFormat_8h" kind="file"><name>slcanFormat.h</name>
     <member refid="slcanFormat_8h_1a57a79e3b7bffcf46590eeaba11e86c77" kind="function"><name>can_to_slcan</name></member>
+  </compound>
+  <compound refid="user__diskio_8h" kind="file"><name>user_diskio.h</name>
+    <member refid="user__diskio_8h_1a07c50f7d5577591438e4585f13994d49" kind="variable"><name>USER_Driver</name></member>
   </compound>
   <compound refid="WS2812B_8h" kind="file"><name>WS2812B.h</name>
     <member refid="WS2812B_8h_1a8e3ced84ab9f695dfa4f844a67b89fd8" kind="define"><name>MAX_RGB_VAL</name></member>

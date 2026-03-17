@@ -11,6 +11,8 @@ This inheritance list is sorted roughly, but not completely, alphabetically:
 * **struct** [**EMC2305\_HandleTypeDef**](structEMC2305__HandleTypeDef.md) 
 * **struct** [**EMC2305\_I2C\_Message**](structEMC2305__I2C__Message.md) 
 * **struct** [**led\_pins**](structled__pins.md) 
+* **struct** [**sd\_handle\_t**](structsd__handle__t.md) _Main Handle Structure for SD Card._ 
+* **struct** [**sd\_job\_t**](structsd__job__t.md) _Job structure passed through the RTOS Queue._ 
 * **struct** [**ws2812b\_color\_t**](structws2812b__color__t.md) 
 * **struct** [**ws2812b\_handle\_t**](structws2812b__handle__t.md) 
 

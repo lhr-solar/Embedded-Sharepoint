@@ -1,0 +1,182 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structsd__handle__t" kind="struct" language="C++" prot="public">
+    <compoundname>sd_handle_t</compoundname>
+    <includes refid="sdcard_8h" local="no">sdcard.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structsd__handle__t_1a7599f54a2ffdafbe7c666da056597cd7" prot="public" static="no" mutable="no">
+        <type>SPI_HandleTypeDef *</type>
+        <definition>SPI_HandleTypeDef* sd_handle_t::hspi</definition>
+        <argsstring></argsstring>
+        <name>hspi</name>
+        <qualifiedname>sd_handle_t::hspi</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="96" column="23" bodyfile="driver/Inc/sdcard.h" bodystart="96" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsd__handle__t_1a89f8aaa4ef2df5f8b08ea0c180933c29" prot="public" static="no" mutable="no">
+        <type>GPIO_TypeDef *</type>
+        <definition>GPIO_TypeDef* sd_handle_t::cs_port</definition>
+        <argsstring></argsstring>
+        <name>cs_port</name>
+        <qualifiedname>sd_handle_t::cs_port</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="97" column="18" bodyfile="driver/Inc/sdcard.h" bodystart="97" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsd__handle__t_1abf954646d5acb1f75ff050b193bdb176" prot="public" static="no" mutable="no">
+        <type>uint16_t</type>
+        <definition>uint16_t sd_handle_t::cs_pin</definition>
+        <argsstring></argsstring>
+        <name>cs_pin</name>
+        <qualifiedname>sd_handle_t::cs_pin</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="98" column="14" bodyfile="driver/Inc/sdcard.h" bodystart="98" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsd__handle__t_1a4b6af74396b2fad336d1f4f31399260c" prot="public" static="no" mutable="no">
+        <type>SemaphoreHandle_t</type>
+        <definition>SemaphoreHandle_t sd_handle_t::mutex</definition>
+        <argsstring></argsstring>
+        <name>mutex</name>
+        <qualifiedname>sd_handle_t::mutex</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="100" column="23" bodyfile="driver/Inc/sdcard.h" bodystart="100" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsd__handle__t_1a2c4d31c83fba4b01f2a25e292450eeb2" prot="public" static="no" mutable="no">
+        <type>StaticSemaphore_t</type>
+        <definition>StaticSemaphore_t sd_handle_t::mutexBuffer</definition>
+        <argsstring></argsstring>
+        <name>mutexBuffer</name>
+        <qualifiedname>sd_handle_t::mutexBuffer</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="101" column="23" bodyfile="driver/Inc/sdcard.h" bodystart="101" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsd__handle__t_1a68da335cb3960357a2541aea16a8d144" prot="public" static="no" mutable="no">
+        <type>SemaphoreHandle_t</type>
+        <definition>SemaphoreHandle_t sd_handle_t::spi_comp_sem</definition>
+        <argsstring></argsstring>
+        <name>spi_comp_sem</name>
+        <qualifiedname>sd_handle_t::spi_comp_sem</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="103" column="23" bodyfile="driver/Inc/sdcard.h" bodystart="103" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsd__handle__t_1a38c9c490356ce7a7f74ce0add9295437" prot="public" static="no" mutable="no">
+        <type>StaticSemaphore_t</type>
+        <definition>StaticSemaphore_t sd_handle_t::spi_comp_buffer</definition>
+        <argsstring></argsstring>
+        <name>spi_comp_buffer</name>
+        <qualifiedname>sd_handle_t::spi_comp_buffer</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="104" column="23" bodyfile="driver/Inc/sdcard.h" bodystart="104" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsd__handle__t_1aaa3a8a44d507472babd43e9f712c0f09" prot="public" static="no" mutable="no">
+        <type>QueueHandle_t</type>
+        <definition>QueueHandle_t sd_handle_t::job_queue</definition>
+        <argsstring></argsstring>
+        <name>job_queue</name>
+        <qualifiedname>sd_handle_t::job_queue</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="106" column="19" bodyfile="driver/Inc/sdcard.h" bodystart="106" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsd__handle__t_1a8949955c552c74778c8e11e32e1d40e7" prot="public" static="no" mutable="no">
+        <type>StaticQueue_t</type>
+        <definition>StaticQueue_t sd_handle_t::queue_buffer</definition>
+        <argsstring></argsstring>
+        <name>queue_buffer</name>
+        <qualifiedname>sd_handle_t::queue_buffer</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="107" column="19" bodyfile="driver/Inc/sdcard.h" bodystart="107" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsd__handle__t_1a9d08b52bf204f7975af404ade6093a38" prot="public" static="no" mutable="no">
+        <type>uint8_t</type>
+        <definition>uint8_t sd_handle_t::queue_storage[SD_QUEUE_LENGTH *sizeof(sd_job_t)]</definition>
+        <argsstring>[SD_QUEUE_LENGTH *sizeof(sd_job_t)]</argsstring>
+        <name>queue_storage</name>
+        <qualifiedname>sd_handle_t::queue_storage</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="108" column="13" bodyfile="driver/Inc/sdcard.h" bodystart="108" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsd__handle__t_1a765beae758112c294370d3448c297ba4" prot="public" static="no" mutable="no">
+        <type>TaskHandle_t</type>
+        <definition>TaskHandle_t sd_handle_t::worker_task_handle</definition>
+        <argsstring></argsstring>
+        <name>worker_task_handle</name>
+        <qualifiedname>sd_handle_t::worker_task_handle</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/sdcard.h" line="110" column="18" bodyfile="driver/Inc/sdcard.h" bodystart="110" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Main Handle Structure for SD Card. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="driver/Inc/sdcard.h" line="95" column="1" bodyfile="driver/Inc/sdcard.h" bodystart="95" bodyend="111"/>
+    <listofallmembers>
+      <member refid="structsd__handle__t_1abf954646d5acb1f75ff050b193bdb176" prot="public" virt="non-virtual"><scope>sd_handle_t</scope><name>cs_pin</name></member>
+      <member refid="structsd__handle__t_1a89f8aaa4ef2df5f8b08ea0c180933c29" prot="public" virt="non-virtual"><scope>sd_handle_t</scope><name>cs_port</name></member>
+      <member refid="structsd__handle__t_1a7599f54a2ffdafbe7c666da056597cd7" prot="public" virt="non-virtual"><scope>sd_handle_t</scope><name>hspi</name></member>
+      <member refid="structsd__handle__t_1aaa3a8a44d507472babd43e9f712c0f09" prot="public" virt="non-virtual"><scope>sd_handle_t</scope><name>job_queue</name></member>
+      <member refid="structsd__handle__t_1a4b6af74396b2fad336d1f4f31399260c" prot="public" virt="non-virtual"><scope>sd_handle_t</scope><name>mutex</name></member>
+      <member refid="structsd__handle__t_1a2c4d31c83fba4b01f2a25e292450eeb2" prot="public" virt="non-virtual"><scope>sd_handle_t</scope><name>mutexBuffer</name></member>
+      <member refid="structsd__handle__t_1a8949955c552c74778c8e11e32e1d40e7" prot="public" virt="non-virtual"><scope>sd_handle_t</scope><name>queue_buffer</name></member>
+      <member refid="structsd__handle__t_1a9d08b52bf204f7975af404ade6093a38" prot="public" virt="non-virtual"><scope>sd_handle_t</scope><name>queue_storage</name></member>
+      <member refid="structsd__handle__t_1a38c9c490356ce7a7f74ce0add9295437" prot="public" virt="non-virtual"><scope>sd_handle_t</scope><name>spi_comp_buffer</name></member>
+      <member refid="structsd__handle__t_1a68da335cb3960357a2541aea16a8d144" prot="public" virt="non-virtual"><scope>sd_handle_t</scope><name>spi_comp_sem</name></member>
+      <member refid="structsd__handle__t_1a765beae758112c294370d3448c297ba4" prot="public" virt="non-virtual"><scope>sd_handle_t</scope><name>worker_task_handle</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
