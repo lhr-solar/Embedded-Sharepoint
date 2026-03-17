@@ -102,9 +102,18 @@ void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi) {
 
 ## Required Hardware Setup
 
-### CubeMX Hardware Setup Reminder
+### CubeMX Configuration
+To ensure reliable SD card operation on the **LSOM**, configure the **STM32CubeMX Clock Configuration** as shown below:
 
-To ensure reliable SD card operation on the LSOM, configure the STM32CubeMX Clock Configuration to use the HSE (External Crystal) as the PLL source and set the HCLK to 80 MHz. This high-speed clock prevents the timing out and performance issues common when running at the default 16 MHz HSI frequency. 
+* **PLL Source:** Set to **HSE (External Crystal)**.
+* **HCLK Frequency:** Set to **80 MHz**.
+
+![CubeMX Clock Configuration](assets/clockConfigExample.png)
+
+### SPI Peripheral Settings
+Configure your SPI instance (e.g., SPI1) to match these settings for the SD card interface:
+
+![CubeMX SPI Parameter Settings](assets/SPIConfigExample.png)
 
 ### MCU Requirements
 
