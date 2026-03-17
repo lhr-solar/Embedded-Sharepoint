@@ -81,17 +81,24 @@ def generate_header(dbc_path: Path, output_file: Path | None):
         output_file = dbc_path.with_name(f"{dbc_path.stem}_can_msgs.h")
 
     can_id_macros = []
+    can_len_macros = []
     enums = []
     structs = []
 
-    # 🔹 Sort messages by numeric CAN ID
+    # Sort messages by numeric CAN ID
     sorted_messages = sorted(db.messages, key=lambda m: m.frame_id)
 
     for message in sorted_messages:
         msg_macro_name = sanitize_name(message.name.upper())
 
+        # CAN ID macro
         can_id_macros.append(
             f"#define CAN_ID_{msg_macro_name} 0x{message.frame_id:X}"
+        )
+
+        # CAN length macro
+        can_len_macros.append(
+            f"#define CAN_DLC_{msg_macro_name} {message.length}"
         )
 
         for signal in message.signals:
@@ -106,6 +113,10 @@ def generate_header(dbc_path: Path, output_file: Path | None):
 
         f.write("/* ================= CAN ID Macros ================= */\n\n")
         for macro in can_id_macros:
+            f.write(macro + "\n")
+
+        f.write("\n/* ================= CAN Length Macros ================= */\n\n")
+        for macro in can_len_macros:
             f.write(macro + "\n")
 
         f.write("\n\n")

@@ -11,21 +11,46 @@
 #include "stm32xx_hal.h"
 #include "CAN.h"
 
+#if defined(STM32L431xx)
+  // PeripheralSOM
+  #define HEARTBEAT_LED_PORT  GPIOB
+  #define HEARTBEAT_LED_PIN   GPIO_PIN_11
+#else
+  // Most Nucleos
+  #define HEARTBEAT_LED_PORT  GPIOA
+  #define HEARTBEAT_LED_PIN   GPIO_PIN_5
+#endif
+
 StaticTask_t task_buffer;
 StackType_t task_stack[configMINIMAL_STACK_SIZE];
+
+// Initialize clock for heartbeat LED port
+void Heartbeat_Clock_Init() {
+    switch ((uint32_t)HEARTBEAT_LED_PORT) {
+        case (uint32_t)GPIOA:
+            __HAL_RCC_GPIOA_CLK_ENABLE();
+            break;
+        case (uint32_t)GPIOB:
+            __HAL_RCC_GPIOB_CLK_ENABLE();
+            break;
+        case (uint32_t)GPIOC:
+            __HAL_RCC_GPIOC_CLK_ENABLE();
+            break;
+    }
+}
 
 static void success_handler(void) {
   GPIO_InitTypeDef led_init = {
     .Mode = GPIO_MODE_OUTPUT_PP,
     .Pull = GPIO_NOPULL,
-    .Pin = GPIO_PIN_5
+    .Pin = HEARTBEAT_LED_PIN
   };
   
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  HAL_GPIO_Init(GPIOA, &led_init);
+  Heartbeat_Clock_Init();
+  HAL_GPIO_Init(HEARTBEAT_LED_PORT, &led_init);
 
   while(1){
-    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+    HAL_GPIO_TogglePin(HEARTBEAT_LED_PORT, HEARTBEAT_LED_PIN);
     HAL_Delay(500);
   }
 }
