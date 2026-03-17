@@ -7,6 +7,7 @@
 * CAN Messages
     * [Editing DBC Files](dbcEditor.md)
     * [Signals & Messages](DBC.md)
+    * [Generating DBC Headers](usingDBCs.md)
 * Drivers Documentation
     * [EMC2305 Usage Guide](EMC2305.md)
     * [WS2812B Usage Guide](WS2812B.md)

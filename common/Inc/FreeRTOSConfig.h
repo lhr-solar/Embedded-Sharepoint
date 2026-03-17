@@ -55,6 +55,7 @@
 #define configSUPPORT_DYNAMIC_ALLOCATION         0
 #define configUSE_IDLE_HOOK                      1
 #define configUSE_TICK_HOOK                      0
+#define configUSE_TICKLESS_IDLE                  1
 #define configCPU_CLOCK_HZ                       ( SystemCoreClock )
 #define configTICK_RATE_HZ                       ((TickType_t)1000)
 #define configMAX_PRIORITIES                     ( 7 )
@@ -140,9 +141,13 @@ standard names. */
 
 /* Section where parameter definitions can be added (for instance, to override default ones in FreeRTOS.h) */\
 
+// Enable queue sets
 #define configUSE_QUEUE_SETS 1
 
 // Necessary for event groups to work
 #define INCLUDE_xTimerPendFunctionCall 1
+
+// Adds reentrancy structures to each thread for stdlib functions
+#define configUSE_NEWLIB_REENTRANT 1
 
 #endif /* FREERTOS_CONFIG_H */

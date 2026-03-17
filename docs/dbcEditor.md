@@ -21,7 +21,6 @@ From the DBC editor you can open and edit any dbc file, all of which are stored 
 Ensure that your CAN message type is set to standard, and the length of the message (DLC) is not above 8 bytes.
 
 Make sure all your signals have factor and unit set properly.
-
 ## Suggestions for structuring CAN messages
 When structuring CAN messages, consider which other devices on the CAN bus are using that message. 
 
