@@ -198,7 +198,7 @@ If the card is removed, the `SD_Worker` task will attempt to re-initialize every
 
 ### Interrupt Priorities
 
-The SPI IRQ priority must be numerically **greater than 5** (e.g., 10) to be compatible with FreeRTOS API calls from the ISR.
+The SPI IRQ priority must be numerically greater than configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY (defined in FreeRTOSConfig.h) to be compatible with FreeRTOS API calls from the ISR.
 
 ### Stack Usage
 
