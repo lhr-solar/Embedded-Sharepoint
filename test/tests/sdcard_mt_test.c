@@ -118,6 +118,7 @@ int main(void)
     sd.cs_pin  = USER_CS_PIN;
     
     // Initialize Queues and Mutexes
+    // Spawns worker task
     if (USER_SD_Card_Init(&sd, tskIDLE_PRIORITY + 3) != SD_OK) {
         while(1) { 
             HAL_GPIO_TogglePin(LED_PORT, LED_PIN); 
