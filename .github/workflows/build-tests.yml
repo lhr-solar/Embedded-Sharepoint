@@ -3,8 +3,9 @@ name: Build Tests
 on:
   push:
     paths-ignore:
-      - "*.md"
-      - "*.dbc"
+      - "**/*.md"
+      - "**/*.dbc"
+      - "**/*.py"
 
 jobs:
   build:

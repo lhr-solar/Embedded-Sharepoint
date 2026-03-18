@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Leader System-On-Module (LSOM) used on several critical boards on the car features a **SPI-based SD card reader** connected to the STM32 microcontroller. This driver provides a **thread-safe, robust interface** to interact with this hardware using **interrupt-driven SPI** and **FreeRTOS** synchronization primitives. By integrating with **FatFs**, the driver enables full file system capabilities via a background worker task, ensuring high-latency file I/O does not impede time-critical application logic.
+. This driver provides a **thread-safe, robust interface** to interact with an SD Card using **interrupt-driven SPI** and **FreeRTOS** synchronization primitives. By integrating with **FatFs**, the driver enables full file system capabilities via a background worker task, ensuring that user threads are not blocked by sd card writes and reads.
 
 ---
 
@@ -163,14 +163,9 @@ USER_SD_Card_Init(&sd_lsom, tskIDLE_PRIORITY + 3);
 
 ## Operating Modes
 
-### Thread-Safe Synchronous IO
+Note that the **MAXIMUM** file name length is **13** characters.
 
-Used for direct block access. These functions acquire the mutex, perform the SPI transfer, and release the lock.
-
-* **Read Block:** `SD_ReadSingleBlock(&sd_lsom, blockNum, buffer, timeout);`
-* **Write Block:** `SD_WriteSingleBlock(&sd_lsom, blockNum, buffer, timeout);`
-
-### Asynchronous Logging (Recommended)
+### Asynchronous Logging
 
 Prevents file I/O from blocking high-priority control loops.
 
@@ -191,6 +186,10 @@ Prevents file I/O from blocking high-priority control loops.
 ---
 
 ## Common Pitfalls
+
+### File Name Too Long
+
+As per, FatFs 8.3, the max file name is 13 characters. When passing in fileNames into `USER_SD_Card_Write_Async`, they must be shorter than 13 characters.
 
 ### SD Card Removal
 
