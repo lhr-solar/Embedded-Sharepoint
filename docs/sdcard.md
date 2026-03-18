@@ -2,7 +2,7 @@
 
 ## Overview
 
-. This driver provides a **thread-safe, robust interface** to interact with an SD Card using **interrupt-driven SPI** and **FreeRTOS** synchronization primitives. By integrating with **FatFs**, the driver enables full file system capabilities via a background worker task, ensuring that user threads are not blocked by sd card writes and reads.
+This driver provides a **thread-safe, robust interface** to interact with an SD Card using **interrupt-driven SPI** and **FreeRTOS** synchronization primitives. By integrating with **FatFs**, the driver enables full file system capabilities via a background worker task, ensuring that user threads are not blocked by sd card writes and reads.
 
 ---
 
