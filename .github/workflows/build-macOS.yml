@@ -1,10 +1,13 @@
 name: Test MacOS compilation
 
 on:
+  pull_request:
   push:
     paths-ignore:
-      - "*.md"
-      - "*.dbc"
+      - "**/*.md"
+      - "**/*.dbc"
+      - "**/*.py"
+
 
 jobs:
   build:
