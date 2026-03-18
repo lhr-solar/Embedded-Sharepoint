@@ -838,21 +838,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#thread-safe-synchronous-io" class="md-nav__link">
+  <a href="#asynchronous-logging" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Thread-Safe Synchronous IO
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#asynchronous-logging-recommended" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Asynchronous Logging (Recommended)
+        Asynchronous Logging
       
     </span>
   </a>
@@ -886,6 +875,17 @@
   
     <nav class="md-nav" aria-label="Common Pitfalls">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#file-name-too-long" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Name Too Long
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#sd-card-removal" class="md-nav__link">
@@ -1563,21 +1563,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#thread-safe-synchronous-io" class="md-nav__link">
+  <a href="#asynchronous-logging" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Thread-Safe Synchronous IO
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#asynchronous-logging-recommended" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Asynchronous Logging (Recommended)
+        Asynchronous Logging
       
     </span>
   </a>
@@ -1611,6 +1600,17 @@
   
     <nav class="md-nav" aria-label="Common Pitfalls">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#file-name-too-long" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Name Too Long
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#sd-card-removal" class="md-nav__link">
@@ -1669,7 +1669,7 @@
 
 <h1 id="sd-card-driver-documentation">SD Card Driver Documentation</h1>
 <h2 id="overview">Overview</h2>
-<p>The Leader System-On-Module (LSOM) used on several critical boards on the car features a <strong>SPI-based SD card reader</strong> connected to the STM32 microcontroller. This driver provides a <strong>thread-safe, robust interface</strong> to interact with this hardware using <strong>interrupt-driven SPI</strong> and <strong>FreeRTOS</strong> synchronization primitives. By integrating with <strong>FatFs</strong>, the driver enables full file system capabilities via a background worker task, ensuring high-latency file I/O does not impede time-critical application logic.</p>
+<p>This driver provides a <strong>thread-safe, robust interface</strong> to interact with an SD Card using <strong>interrupt-driven SPI</strong> and <strong>FreeRTOS</strong> synchronization primitives. By integrating with <strong>FatFs</strong>, the driver enables full file system capabilities via a background worker task, ensuring that user threads are not blocked by sd card writes and reads.</p>
 <hr />
 <h2 id="minimal-working-example">Minimal Working Example</h2>
 <blockquote>
@@ -1808,13 +1808,8 @@ void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi) { HAL_SPI_TxRxCpltCallback(
 </ul>
 <hr />
 <h2 id="operating-modes">Operating Modes</h2>
-<h3 id="thread-safe-synchronous-io">Thread-Safe Synchronous IO</h3>
-<p>Used for direct block access. These functions acquire the mutex, perform the SPI transfer, and release the lock.</p>
-<ul>
-<li><strong>Read Block:</strong> <code>SD_ReadSingleBlock(&amp;sd_lsom, blockNum, buffer, timeout);</code></li>
-<li><strong>Write Block:</strong> <code>SD_WriteSingleBlock(&amp;sd_lsom, blockNum, buffer, timeout);</code></li>
-</ul>
-<h3 id="asynchronous-logging-recommended">Asynchronous Logging (Recommended)</h3>
+<p>Note that the <strong>MAXIMUM</strong> file name length is <strong>13</strong> characters.</p>
+<h3 id="asynchronous-logging">Asynchronous Logging</h3>
 <p>Prevents file I/O from blocking high-priority control loops.</p>
 <ul>
 <li><strong>Function:</strong> <code>USER_SD_Card_Write_Async(&amp;sd_lsom, "DATA.TXT", "Example", delay);</code></li>
@@ -1850,6 +1845,8 @@ void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi) { HAL_SPI_TxRxCpltCallback(
 </table>
 <hr />
 <h2 id="common-pitfalls">Common Pitfalls</h2>
+<h3 id="file-name-too-long">File Name Too Long</h3>
+<p>As per, FatFs 8.3, the max file name is 13 characters. When passing in fileNames into <code>USER_SD_Card_Write_Async</code>, they must be shorter than 13 characters.</p>
 <h3 id="sd-card-removal">SD Card Removal</h3>
 <p>If the card is removed, the <code>SD_Worker</code> task will attempt to re-initialize every 500ms. Telemetry tasks will not block; they will drop the oldest data once the job queue is saturated.</p>
 <h3 id="interrupt-priorities">Interrupt Priorities</h3>
