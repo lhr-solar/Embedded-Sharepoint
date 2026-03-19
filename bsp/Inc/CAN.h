@@ -184,6 +184,6 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
  *                      CAN_EMPTY if the queue was empty,
  *                      CAN_ERR on failure or invalid ID.
  */
-can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
+can_status_t can_recv(CAN_HandleTypeDef* handle, uint32_t id,
                       CAN_RxHeaderTypeDef* header, uint8_t data[],
                       TickType_t delay_ticks);

@@ -157,7 +157,7 @@ can_status_t can_stop(CAN_HandleTypeDef* handle) {
   return CAN_OK;
 }
 
-can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id,
+can_status_t can_recv(CAN_HandleTypeDef* handle, uint32_t id,
                       CAN_RxHeaderTypeDef* header, uint8_t data[],
                       TickType_t delay_ticks) {
   // recieve from queue matching id
