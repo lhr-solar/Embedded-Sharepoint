@@ -330,7 +330,7 @@ can_status_t can_fd_register_id_set(FDCAN_HandleTypeDef* handle, can_id_set_t* s
     return CAN_OK;
 }
 
-can_status_t can_fd_recv_set(FDCAN_HandleTypeDef* handle, can_id_set_t* set, uint16_t *id, TickType_t delay_ticks){
+can_status_t can_fd_recv_set(FDCAN_HandleTypeDef* handle, can_id_set_t* set, uint32_t *id, TickType_t delay_ticks){
     if(handle == NULL){
         return CAN_ERR;
     }

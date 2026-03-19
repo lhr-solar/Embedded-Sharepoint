@@ -225,6 +225,6 @@ can_status_t can_register_id_set(CAN_HandleTypeDef* handle, can_id_set_t* set);
  *
  * @return can_status_t Returns CAN_OK if an ID was retrieved, CAN_EMPTY on timeout, or CAN_ERR on failure.
  */
-can_status_t can_recv_set(CAN_HandleTypeDef* handle, can_id_set_t* set, uint16_t *id, TickType_t delay_ticks);
+can_status_t can_recv_set(CAN_HandleTypeDef* handle, can_id_set_t* set, uint32_t *id, TickType_t delay_ticks);
 
 #endif /* ( configUSE_QUEUE_SETS == 1 ) */

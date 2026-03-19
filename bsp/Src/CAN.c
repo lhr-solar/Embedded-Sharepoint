@@ -496,7 +496,7 @@ can_status_t can_register_id_set(CAN_HandleTypeDef* handle, can_id_set_t* set){
 
 }
 
-can_status_t can_recv_set(CAN_HandleTypeDef* handle, can_id_set_t* set, uint16_t *id, TickType_t delay_ticks){
+can_status_t can_recv_set(CAN_HandleTypeDef* handle, can_id_set_t* set, uint32_t *id, TickType_t delay_ticks){
 
   if(handle == NULL){
     return CAN_ERR;
