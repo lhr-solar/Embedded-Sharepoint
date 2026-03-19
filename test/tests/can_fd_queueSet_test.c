@@ -86,7 +86,7 @@ static void rx_task(void *pvParameters) {
       {
           can_fd_recv(hfdcan1, id, &fdcan1_rx_header, fdcan1_rx_data, 0);
           
-          printf("Recieved Can message from id: %d\n\r", id);
+          printf("Recieved Can message from id: %lu\n\r", id);
 
           HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
       }
