@@ -1,4 +1,0 @@
-- ~make uart_send call in write syscall instead of io_getchar~
-- ~nano_printf~
-- UART driver circular buffer option, increase default UART size
-- mutex to ensure ordering UART

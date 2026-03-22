@@ -11,14 +11,18 @@
 #define UART_RX_DATA_SIZE (1)
 #endif
 
+#ifndef UART_SINGLE_TX_SIZE
+#define UART_SINGLE_TX_SIZE (64)
+#endif
+
 // Define the preemption priority for the interrupt
 #ifndef UART_NVIC_PREEMPT_PRIO
 #define UART_NVIC_PREEMPT_PRIO (5)
 #endif
 
-typedef struct {
-    uint8_t len;
+typedef struct __attribute((packed)) {
     uint8_t data[UART_TX_DATA_SIZE]; // data to be transmitted
+    uint8_t len;
 } UART_tx_payload_t;
 
 typedef struct {
@@ -33,17 +37,15 @@ typedef struct {
     QueueHandle_t tx_queue; // queue handle
     StaticQueue_t tx_queue_buffer; // static queue info (required for initialization)
     uint8_t *tx_queue_storage; // storage for tx queue
-    uint8_t *tx_dir_buffer; // buffer in case we can directly transmit
+    uint8_t *tx_dir_buffer; // buffer for in-progress direct transmission
     SemaphoreHandle_t tx_mutex; // used to ensure ordering in case of multiple users of same TX queue
     StaticSemaphore_t tx_mutex_buffer; // static mutex info (required for initialization)
 
-    uint16_t rx_queue_size;
-    QueueHandle_t rx_queue;
-    StaticQueue_t rx_queue_buffer;
-    uint8_t *rx_queue_storage;
-
-    // An intermediate buffer of UART_TX_DATA_SIZE bytes to store received data before it is copied to the queue
-    UART_rx_payload_t rx_buffer; 
+    uint16_t rx_queue_size; // number of UART_rx_payload_t in rx_queue
+    QueueHandle_t rx_queue; // queue handle
+    StaticQueue_t rx_queue_buffer; // static queue info (required for initialization)
+    uint8_t *rx_queue_storage; // storage for rx queue
+    UART_rx_payload_t rx_buffer; // intermediate buffer of UART_RX_DATA_SIZE bytes to store received data before it is copied to the queue
 } UART_periph_t;
 
 #ifdef UART4
@@ -59,7 +61,7 @@ typedef struct {
 
 // UART4 peripheral
 static uint8_t uart4_tx_queue_storage[UART4_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
-static uint8_t uart4_tx_dir_buffer[UART4_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
+static uint8_t uart4_tx_dir_buffer[UART_SINGLE_TX_SIZE];
 static uint8_t uart4_rx_queue_storage[UART4_RX_QUEUE_SIZE * sizeof(UART_rx_payload_t)];
 static UART_periph_t uart4 = {
     .huart = {
@@ -90,7 +92,7 @@ static UART_periph_t uart4 = {
 
 // UART5 peripheral
 static uint8_t uart5_tx_queue_storage[UART5_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
-static uint8_t uart5_tx_dir_buffer[UART5_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
+static uint8_t uart5_tx_dir_buffer[UART_SINGLE_TX_SIZE];
 static uint8_t uart5_rx_queue_storage[UART5_RX_QUEUE_SIZE * sizeof(UART_rx_payload_t)];
 static UART_periph_t uart5 = {
     .huart = {
@@ -121,7 +123,7 @@ static UART_periph_t uart5 = {
 
 // USART1 peripheral
 static uint8_t usart1_tx_queue_storage[USART1_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
-static uint8_t usart1_tx_dir_buffer[USART1_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
+static uint8_t usart1_tx_dir_buffer[UART_SINGLE_TX_SIZE];
 static uint8_t usart1_rx_queue_storage[USART1_RX_QUEUE_SIZE * sizeof(UART_rx_payload_t)];
 static UART_periph_t usart1 = {
     .huart = {
@@ -152,7 +154,7 @@ static UART_periph_t usart1 = {
 
 // USART2 peripheral
 static uint8_t usart2_tx_queue_storage[USART2_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
-static uint8_t usart2_tx_dir_buffer[USART2_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
+static uint8_t usart2_tx_dir_buffer[UART_SINGLE_TX_SIZE];
 static uint8_t usart2_rx_queue_storage[USART2_RX_QUEUE_SIZE * sizeof(UART_rx_payload_t)];
 static UART_periph_t usart2 = {
     .huart = {
@@ -183,7 +185,7 @@ static UART_periph_t usart2 = {
 
 // USART3 peripheral
 static uint8_t usart3_tx_queue_storage[USART3_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
-static uint8_t usart3_tx_dir_buffer[USART3_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
+static uint8_t usart3_tx_dir_buffer[UART_SINGLE_TX_SIZE];
 static uint8_t usart3_rx_queue_storage[USART3_RX_QUEUE_SIZE * sizeof(UART_rx_payload_t)];
 static UART_periph_t usart3 = {
     .huart = {
@@ -204,15 +206,15 @@ static UART_periph_t usart3 = {
 #ifdef LPUART1
 #ifndef LPUART1_TX_QUEUE_SIZE
 #define LPUART1_TX_QUEUE_SIZE (20)
-#endif  /* LPUART1_TX_QUEUE_SIZE */
+#endif  
 
 #ifndef LPUART1_RX_QUEUE_SIZE
 #define LPUART1_RX_QUEUE_SIZE (20)
-#endif /* LPUART1_RX_QUEUE_SIZE */
+#endif 
 
 // LPUART1 peripheral
 static uint8_t lpuart1_tx_queue_storage[LPUART1_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
-static uint8_t lpuart1_tx_dir_buffer[LPUART1_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
+static uint8_t lpuart1_tx_dir_buffer[UART_SINGLE_TX_SIZE];
 static uint8_t lpuart1_rx_queue_storage[LPUART1_RX_QUEUE_SIZE * sizeof(UART_rx_payload_t)];
 static UART_periph_t lpuart1 = {
     .huart = {
@@ -221,6 +223,7 @@ static UART_periph_t lpuart1 = {
     .tx_queue_size = LPUART1_TX_QUEUE_SIZE,
     .tx_queue = NULL,
     .tx_queue_storage = lpuart1_tx_queue_storage,
+    .tx_dir_buffer = lpuart1_tx_dir_buffer,
 
     .rx_queue_size = LPUART1_RX_QUEUE_SIZE,
     .rx_queue = NULL,
@@ -453,7 +456,6 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
     }
     #endif /* LPUART1 */
 
-
     // configure GPIO pins for UART
     HAL_UART_MspGPIOInit(huart); 
 
@@ -636,13 +638,13 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
 	payload.len = (length - i < UART_TX_DATA_SIZE) ? (length - i) : UART_TX_DATA_SIZE;
 	// EX: i=4, length=6, DataSize=4, then chunk_size = 2, instead of usual 4 since we've reached end of length
 
-	// Copy the appropriate number of bytes to the payload data
-	 memcpy(payload.data, &data[i], payload.len); // Usually chunk_size = UART_TX_DATA_SIZE until end of data length
+        // Copy the appropriate number of bytes to the payload data
+	memcpy(payload.data, &data[i], payload.len); // Usually chunk_size = UART_TX_DATA_SIZE until end of data length
 
-	 // If data size is smaller than UART_TX_DATA_SIZE, fill the rest of the payload
-	 if (payload.len < UART_TX_DATA_SIZE) {
-	     memset(&payload.data[payload.len], 0, UART_TX_DATA_SIZE - payload.len); // Fill the rest with 0 (or other padding if needed)
-	 }
+        // If data size is smaller than UART_TX_DATA_SIZE, fill the rest of the payload
+        if (payload.len < UART_TX_DATA_SIZE) {
+            memset(&payload.data[payload.len], 0, UART_TX_DATA_SIZE - payload.len); // Fill the rest with 0 (or other padding if needed)
+        }
 
 	// Enqueue the payload to be transmitted
 	if (xQueueSend(uart_periph->tx_queue, &payload, delay_ticks) != pdTRUE) {
@@ -696,15 +698,10 @@ uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t lengt
     return status;
 }
 
-#ifndef UART_TX_INTERRUPT_GRAN_BYTES
-#define UART_TX_INTERRUPT_GRAN_BYTES (8) // granularity for intermediate TX buffer; this should be close to the number of available spots in the hw mailboxes
-#endif /* UART_TX_INTERRUPT_GRAN_BYTES */
-
 // Transmit Callback occurs after a transmission if complete (depending on how huart is configure)
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
     BaseType_t higherPriorityTaskWoken = pdFALSE;
-    static uint8_t tx_buffer[UART_TX_INTERRUPT_GRAN_BYTES];  // Buffer for collecting bytes to send
-    uint8_t count = 0;
+    uint16_t count = 0;
 
     UART_periph_t *uart_periph = get_valid_uart_periph(huart);
     if(uart_periph == NULL) return;
@@ -712,19 +709,19 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
     // Pull as many bytes as we can fit in the buffer
     UART_tx_payload_t payload;
     while(xQueuePeekFromISR(uart_periph->tx_queue, &payload) == pdTRUE) { // there's still something in queue?
-        if(count + payload.len > UART_TX_INTERRUPT_GRAN_BYTES) break;
+        if(count + payload.len > sizeof(uart_periph->tx_dir_buffer)) break;
         else {
             xQueueReceiveFromISR(uart_periph->tx_queue, &payload, &higherPriorityTaskWoken); // pop from queue
         }
 
         // Safely copy the data from the payload into the tx_buffer
-    	memcpy(&tx_buffer[count], payload.data, payload.len);
+    	memcpy(&uart_periph->tx_dir_buffer[count], payload.data, payload.len);
         count += payload.len;
     }
 
     // If we got any bytes, transmit them
     if(count > 0) {
-        HAL_UART_Transmit_IT(huart, tx_buffer, count);
+        HAL_UART_Transmit_IT(huart, uart_periph->tx_dir_buffer, count);
     }
 
     // Yield to a higher priority task if needed
