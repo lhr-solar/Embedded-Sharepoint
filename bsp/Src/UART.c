@@ -1,5 +1,6 @@
 #include "UART.h"
 #include <string.h>
+#include <stdint.h>
 
 // Define the size of the data to be transmitted
 // may need to be configured for support for packets less more than 8 bits
@@ -76,6 +77,7 @@ static UART_periph_t uart4 = {
     .rx_queue = NULL,
     .rx_queue_storage = uart4_rx_queue_storage
 };
+UART_HandleTypeDef *huart4 = &uart4.huart;
 
 #endif /* UART4 */
 
@@ -107,6 +109,7 @@ static UART_periph_t uart5 = {
     .rx_queue = NULL,
     .rx_queue_storage = uart5_rx_queue_storage
 };
+UART_HandleTypeDef *huart5 = &uart5.huart;
 
 #endif /* UART5 */
 
@@ -138,6 +141,7 @@ static UART_periph_t usart1 = {
     .rx_queue = NULL,
     .rx_queue_storage = usart1_rx_queue_storage
 };
+UART_HandleTypeDef *husart1 = &usart1.huart;
 
 #endif /* USART1 */
 
@@ -169,6 +173,7 @@ static UART_periph_t usart2 = {
     .rx_queue = NULL,
     .rx_queue_storage = usart2_rx_queue_storage
 };
+UART_HandleTypeDef *husart2 = &usart2.huart;
 
 #endif /* USART2 */
 
@@ -200,6 +205,7 @@ static UART_periph_t usart3 = {
     .rx_queue = NULL,
     .rx_queue_storage = usart3_rx_queue_storage
 };
+UART_HandleTypeDef *husart3 = &usart3.huart;
 
 #endif /* USART3 */
 
@@ -229,6 +235,7 @@ static UART_periph_t lpuart1 = {
     .rx_queue = NULL,
     .rx_queue_storage = lpuart1_rx_queue_storage
 };
+UART_HandleTypeDef *hlpuart1 = &lpuart1.huart;
 
 #endif /* LPUART1 */
 
