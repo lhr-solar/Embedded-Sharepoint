@@ -129,7 +129,7 @@ void RxTask(void *argument)
   while(1) {
     uart_status_t status = uart_recv(huart, rxBuffer, TEST_PATTERN_SIZE, 0);
     
-    if(status == UART_RECV) {
+    if(status == UART_OK) {
       rxCount++;
       
       // Check pattern match
@@ -139,7 +139,7 @@ void RxTask(void *argument)
       }
       
       // Immediate retry to test queue emptying
-      while(uart_recv(huart, rxBuffer, TEST_PATTERN_SIZE, 0) == UART_RECV) {
+      while(uart_recv(huart, rxBuffer, TEST_PATTERN_SIZE, 0) == UART_OK) {
         rxCount++;
       }
     }

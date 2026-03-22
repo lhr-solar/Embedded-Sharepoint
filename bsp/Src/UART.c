@@ -2,10 +2,13 @@
 #include <string.h>
 
 // Define the size of the data to be transmitted
-// Currently not used, as we send uint8_t directly
 // may need to be configured for support for packets less more than 8 bits
-#ifndef UART_DATA_SIZE
-#define UART_DATA_SIZE (256) // fallback to 1 byte
+#ifndef UART_TX_DATA_SIZE
+#define UART_TX_DATA_SIZE (32)
+#endif
+
+#ifndef UART_RX_DATA_SIZE
+#define UART_RX_DATA_SIZE (1)
 #endif
 
 // Define the preemption priority for the interrupt
@@ -14,12 +17,34 @@
 #endif
 
 typedef struct {
-    uint8_t data[UART_DATA_SIZE]; // data to be transmitted, 1 byte
-} tx_payload_t;
+    uint8_t len;
+    uint8_t data[UART_TX_DATA_SIZE]; // data to be transmitted
+} UART_tx_payload_t;
 
 typedef struct {
-    uint8_t data[UART_DATA_SIZE]; // data received, 1 byte
-} rx_payload_t;
+    uint8_t data[UART_RX_DATA_SIZE]; // data received
+} UART_rx_payload_t;
+
+// UART metadata
+typedef struct {
+    UART_HandleTypeDef huart;
+
+    uint16_t tx_queue_size; // number of UART_tx_payload_t in tx_queue
+    QueueHandle_t tx_queue; // queue handle
+    StaticQueue_t tx_queue_buffer; // static queue info (required for initialization)
+    uint8_t *tx_queue_storage; // storage for tx queue
+    uint8_t *tx_dir_buffer; // buffer in case we can directly transmit
+    SemaphoreHandle_t tx_mutex; // used to ensure ordering in case of multiple users of same TX queue
+    StaticSemaphore_t tx_mutex_buffer; // static mutex info (required for initialization)
+
+    uint16_t rx_queue_size;
+    QueueHandle_t rx_queue;
+    StaticQueue_t rx_queue_buffer;
+    uint8_t *rx_queue_storage;
+
+    // An intermediate buffer of UART_TX_DATA_SIZE bytes to store received data before it is copied to the queue
+    UART_rx_payload_t rx_buffer; 
+} UART_periph_t;
 
 #ifdef UART4
 // fallback UART4 TX queue size
@@ -32,24 +57,23 @@ typedef struct {
 #define UART4_RX_QUEUE_SIZE (10)
 #endif
 
-//UART4 handle
-static UART_HandleTypeDef huart4_ = {.Instance = UART4};
-UART_HandleTypeDef* huart4 = &huart4_;
+// UART4 peripheral
+static uint8_t uart4_tx_queue_storage[UART4_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
+static uint8_t uart4_tx_dir_buffer[UART4_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
+static uint8_t uart4_rx_queue_storage[UART4_RX_QUEUE_SIZE * sizeof(UART_rx_payload_t)];
+static UART_periph_t uart4 = {
+    .huart = {
+        .Instance = UART4
+    },
+    .tx_queue_size = UART4_TX_QUEUE_SIZE,
+    .tx_queue = NULL,
+    .tx_queue_storage = uart4_tx_queue_storage,
+    .tx_dir_buffer = uart4_tx_dir_buffer,
 
-// UART4 TX queue
-static QueueHandle_t uart4_tx_queue = NULL;
-static StaticQueue_t uart4_tx_queue_buffer;
-static uint8_t uart4_tx_queue_storage[UART4_TX_QUEUE_SIZE * sizeof(tx_payload_t)]; 
-
-
-// UART4 RX queue
-static QueueHandle_t uart4_rx_queue = NULL;
-static StaticQueue_t uart4_rx_queue_buffer;
-static uint8_t uart4_rx_queue_storage[UART4_RX_QUEUE_SIZE * sizeof(rx_payload_t)];  // Will be allocated based on queue_size in uart_init
-
-// UART4 RX buffer
-// An intermediate buffer of UART_DATA_SIZE bytes to store received data before it is copied to the queue
-static rx_payload_t uart4_rx_buffer;
+    .rx_queue_size = UART4_RX_QUEUE_SIZE,
+    .rx_queue = NULL,
+    .rx_queue_storage = uart4_rx_queue_storage
+};
 
 #endif /* UART4 */
 
@@ -64,23 +88,23 @@ static rx_payload_t uart4_rx_buffer;
 #define UART5_RX_QUEUE_SIZE (10)
 #endif
 
-// UART5 handle
-static UART_HandleTypeDef huart5_ = {.Instance = UART5};
-UART_HandleTypeDef* huart5 = &huart5_;
+// UART5 peripheral
+static uint8_t uart5_tx_queue_storage[UART5_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
+static uint8_t uart5_tx_dir_buffer[UART5_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
+static uint8_t uart5_rx_queue_storage[UART5_RX_QUEUE_SIZE * sizeof(UART_rx_payload_t)];
+static UART_periph_t uart5 = {
+    .huart = {
+        .Instance = UART5
+    },
+    .tx_queue_size = UART5_TX_QUEUE_SIZE,
+    .tx_queue = NULL,
+    .tx_queue_storage = uart5_tx_queue_storage,
+    .tx_dir_buffer = uart5_tx_dir_buffer,
 
-// UART5 TX queue
-static QueueHandle_t uart5_tx_queue = NULL;
-static StaticQueue_t uart5_tx_queue_buffer;
-static uint8_t uart5_tx_queue_storage[UART5_TX_QUEUE_SIZE * sizeof(tx_payload_t)];
-
-// UART5 RX queue
-static QueueHandle_t uart5_rx_queue = NULL;
-static StaticQueue_t uart5_rx_queue_buffer;
-static uint8_t uart5_rx_queue_storage[UART5_RX_QUEUE_SIZE * sizeof(rx_payload_t)];  // Will be allocated based on queue_size
-
-// UART5 RX buffer
-// An intermediate buffer of UART_DATA_SIZE bytes to store received data before it is copied to the queue
-static rx_payload_t uart5_rx_buffer;
+    .rx_queue_size = UART5_RX_QUEUE_SIZE,
+    .rx_queue = NULL,
+    .rx_queue_storage = uart5_rx_queue_storage
+};
 
 #endif /* UART5 */
 
@@ -95,24 +119,23 @@ static rx_payload_t uart5_rx_buffer;
 #define USART1_RX_QUEUE_SIZE (10)
 #endif
 
-//USART1 handle
-static UART_HandleTypeDef husart1_ = {.Instance = USART1};
-UART_HandleTypeDef* husart1 = &husart1_;
+// USART1 peripheral
+static uint8_t usart1_tx_queue_storage[USART1_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
+static uint8_t usart1_tx_dir_buffer[USART1_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
+static uint8_t usart1_rx_queue_storage[USART1_RX_QUEUE_SIZE * sizeof(UART_rx_payload_t)];
+static UART_periph_t usart1 = {
+    .huart = {
+        .Instance = USART1
+    },
+    .tx_queue_size = USART1_TX_QUEUE_SIZE,
+    .tx_queue = NULL,
+    .tx_queue_storage = usart1_tx_queue_storage,
+    .tx_dir_buffer = usart1_tx_dir_buffer,
 
-// USART1 TX queue
-static QueueHandle_t usart1_tx_queue = NULL;
-static StaticQueue_t usart1_tx_queue_buffer;
-static uint8_t usart1_tx_queue_storage[USART1_TX_QUEUE_SIZE * sizeof(tx_payload_t)]; 
-
-
-// USART1 RX queue
-static QueueHandle_t usart1_rx_queue = NULL;
-static StaticQueue_t usart1_rx_queue_buffer;
-static uint8_t usart1_rx_queue_storage[USART1_RX_QUEUE_SIZE * sizeof(rx_payload_t)];  // Will be allocated based on queue_size in uart_init
-
-// USART1 RX buffer
-// An intermediate buffer of UART_DATA_SIZE bytes to store received data before it is copied to the queue
-static rx_payload_t usart1_rx_buffer;
+    .rx_queue_size = USART1_RX_QUEUE_SIZE,
+    .rx_queue = NULL,
+    .rx_queue_storage = usart1_rx_queue_storage
+};
 
 #endif /* USART1 */
 
@@ -127,24 +150,23 @@ static rx_payload_t usart1_rx_buffer;
 #define USART2_RX_QUEUE_SIZE (10)
 #endif
 
-//USART2 handle
-static UART_HandleTypeDef husart2_ = {.Instance = USART2};
-UART_HandleTypeDef* husart2 = &husart2_;
+// USART2 peripheral
+static uint8_t usart2_tx_queue_storage[USART2_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
+static uint8_t usart2_tx_dir_buffer[USART2_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
+static uint8_t usart2_rx_queue_storage[USART2_RX_QUEUE_SIZE * sizeof(UART_rx_payload_t)];
+static UART_periph_t usart2 = {
+    .huart = {
+        .Instance = USART2
+    },
+    .tx_queue_size = USART2_TX_QUEUE_SIZE,
+    .tx_queue = NULL,
+    .tx_queue_storage = usart2_tx_queue_storage,
+    .tx_dir_buffer = usart2_tx_dir_buffer,
 
-// USART2 TX queue
-static QueueHandle_t usart2_tx_queue = NULL;
-static StaticQueue_t usart2_tx_queue_buffer;
-static uint8_t usart2_tx_queue_storage[USART2_TX_QUEUE_SIZE * sizeof(tx_payload_t)]; 
-
-
-// USART2 RX queue
-static QueueHandle_t usart2_rx_queue = NULL;
-static StaticQueue_t usart2_rx_queue_buffer;
-static uint8_t usart2_rx_queue_storage[USART2_RX_QUEUE_SIZE * sizeof(rx_payload_t)];  // Will be allocated based on queue_size in uart_init
-
-// USART2 RX buffer
-// An intermediate buffer of UART_DATA_SIZE bytes to store received data before it is copied to the queue
-static rx_payload_t usart2_rx_buffer;
+    .rx_queue_size = USART2_RX_QUEUE_SIZE,
+    .rx_queue = NULL,
+    .rx_queue_storage = usart2_rx_queue_storage
+};
 
 #endif /* USART2 */
 
@@ -159,61 +181,114 @@ static rx_payload_t usart2_rx_buffer;
 #define USART3_RX_QUEUE_SIZE (10)
 #endif
 
-//USART3 handle
-static UART_HandleTypeDef husart3_ = {.Instance = USART3};
-UART_HandleTypeDef* husart3 = &husart3_;
+// USART3 peripheral
+static uint8_t usart3_tx_queue_storage[USART3_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
+static uint8_t usart3_tx_dir_buffer[USART3_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
+static uint8_t usart3_rx_queue_storage[USART3_RX_QUEUE_SIZE * sizeof(UART_rx_payload_t)];
+static UART_periph_t usart3 = {
+    .huart = {
+        .Instance = USART3
+    },
+    .tx_queue_size = USART3_TX_QUEUE_SIZE,
+    .tx_queue = NULL,
+    .tx_queue_storage = usart3_tx_queue_storage,
+    .tx_dir_buffer = usart3_tx_dir_buffer,
 
-// USART3 TX queue
-static QueueHandle_t usart3_tx_queue = NULL;
-static StaticQueue_t usart3_tx_queue_buffer;
-static uint8_t usart3_tx_queue_storage[USART3_TX_QUEUE_SIZE * sizeof(tx_payload_t)]; 
-
-
-// USART3 RX queue
-static QueueHandle_t usart3_rx_queue = NULL;
-static StaticQueue_t usart3_rx_queue_buffer;
-static uint8_t usart3_rx_queue_storage[USART3_RX_QUEUE_SIZE * sizeof(rx_payload_t)];  // Will be allocated based on queue_size in uart_init
-
-// USART3 RX buffer
-// An intermediate buffer of UART_DATA_SIZE bytes to store received data before it is copied to the queue
-static rx_payload_t usart3_rx_buffer;
+    .rx_queue_size = USART3_RX_QUEUE_SIZE,
+    .rx_queue = NULL,
+    .rx_queue_storage = usart3_rx_queue_storage
+};
 
 #endif /* USART3 */
-
 
 #ifdef LPUART1
 #ifndef LPUART1_TX_QUEUE_SIZE
 #define LPUART1_TX_QUEUE_SIZE (20)
-#endif  /* LPUART1 */
+#endif  /* LPUART1_TX_QUEUE_SIZE */
 
 #ifndef LPUART1_RX_QUEUE_SIZE
 #define LPUART1_RX_QUEUE_SIZE (20)
 #endif /* LPUART1_RX_QUEUE_SIZE */
 
-// LPUART1 handle
-static UART_HandleTypeDef hlpuart1_ = {.Instance = LPUART1};
-UART_HandleTypeDef* hlpuart1 = &hlpuart1_;
+// LPUART1 peripheral
+static uint8_t lpuart1_tx_queue_storage[LPUART1_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
+static uint8_t lpuart1_tx_dir_buffer[LPUART1_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
+static uint8_t lpuart1_rx_queue_storage[LPUART1_RX_QUEUE_SIZE * sizeof(UART_rx_payload_t)];
+static UART_periph_t lpuart1 = {
+    .huart = {
+        .Instance = LPUART1
+    },
+    .tx_queue_size = LPUART1_TX_QUEUE_SIZE,
+    .tx_queue = NULL,
+    .tx_queue_storage = lpuart1_tx_queue_storage,
 
-// TX queue
-static QueueHandle_t lpuart1_tx_queue = NULL;
-static StaticQueue_t lpuart1_tx_queue_buffer;
-static uint8_t lpuart1_tx_queue_storage[LPUART1_TX_QUEUE_SIZE * sizeof(tx_payload_t)];
+    .rx_queue_size = LPUART1_RX_QUEUE_SIZE,
+    .rx_queue = NULL,
+    .rx_queue_storage = lpuart1_rx_queue_storage
+};
 
-// RX queue
-static QueueHandle_t lpuart1_rx_queue = NULL;
-static StaticQueue_t lpuart1_rx_queue_buffer;
-static uint8_t lpuart1_rx_queue_storage[LPUART1_RX_QUEUE_SIZE * sizeof(rx_payload_t)];
-
-// LPUART1 RX buffer
-// An intermediate buffer of UART_DATA_SIZE bytes to store received data before it is copied to the queue
-static rx_payload_t lpuart1_rx_buffer;
-
-#endif
+#endif /* LPUART1 */
 
 static bool is_uart_initialized(UART_HandleTypeDef* handle) {
     // Check if the UART is in a valid state
     // HAL_UART_STATE_RESET indicates the UART is not initialized
     return (handle->gState != HAL_UART_STATE_RESET);
+}
+
+static UART_periph_t *get_valid_uart_periph(UART_HandleTypeDef *handle){
+    UART_periph_t *uart_periph = NULL;
+    bool is_valid_uart_instance = false;
+
+    #ifdef LPUART1
+    if(IS_LPUART_INSTANCE(handle->Instance)){
+        is_valid_uart_instance = true;
+    }
+    #endif /* LPUART1 */
+    if(IS_UART_INSTANCE(handle->Instance) || IS_USART_INSTANCE(handle->Instance)){
+        is_valid_uart_instance = true;
+    }
+
+    if(!is_valid_uart_instance){
+        return NULL;
+    }
+
+    #ifdef UART4
+    if (handle->Instance == UART4) {
+        uart_periph = &uart4;
+    }
+    #endif /* UART4 */
+
+    #ifdef UART5
+    if(handle->Instance == UART5) {
+        uart_periph = &uart5;
+    }
+    #endif /* UART5 */
+    
+    #ifdef USART1
+    if(handle->Instance == USART1) {
+        uart_periph = &usart1;
+    }
+    #endif /* USART1 */
+
+    #ifdef USART2
+    if(handle->Instance == USART2) {
+        uart_periph = &usart2;
+    }
+    #endif /* USART2 */
+
+    #ifdef USART3
+    if(handle->Instance == USART3) {
+        uart_periph = &usart3;
+    }
+    #endif /* USART3 */
+
+    #ifdef LPUART1
+    if(handle->Instance == LPUART1) {
+        uart_periph = &lpuart1;
+    }
+    #endif /* LPUART1 */
+
+    return uart_periph;
 }
 
 // Redefine me!
@@ -331,8 +406,6 @@ __weak void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
         HAL_GPIO_Init(GPIOA, &init);
     }
     #endif
-
-    
 }
 
 void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
@@ -461,143 +534,30 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart) {
     HAL_UART_MspGPIODeInit(huart);
 }
 
+
 /**
  * @brief Initializes the UART peripheral
  * @param handle pointer to the UART handle
  * @return uart_status_t
  */
 uart_status_t uart_init(UART_HandleTypeDef* handle) {
-    uint8_t *rx_buffer = NULL;
+    UART_periph_t *uart_periph = get_valid_uart_periph(handle);
+    if(uart_periph == NULL) return UART_ERR; 
 
-    #ifdef UART4
-    if (handle->Instance == UART4) {
-        // Create TX queue
-        uart4_tx_queue = xQueueCreateStatic(UART4_TX_QUEUE_SIZE, 
-                                            sizeof(tx_payload_t), 
-                                            uart4_tx_queue_storage, 
-                                            &uart4_tx_queue_buffer);
-        
-        
-        // Create RX queue
-        uart4_rx_queue = xQueueCreateStatic(UART4_RX_QUEUE_SIZE,
-                                            sizeof(rx_payload_t),
-                                            uart4_rx_queue_storage,
-                                            &uart4_rx_queue_buffer);
-
-        rx_buffer = uart4_rx_buffer.data;
-    }
-    #endif /* UART4 */
-
-    #ifdef UART5
-    if(handle->Instance == UART5) {
-
-        // Allocate static storage for TX queue
-        uart5_tx_queue = xQueueCreateStatic(UART5_TX_QUEUE_SIZE, 
-                                          sizeof(tx_payload_t), 
-                                          uart5_tx_queue_storage, 
-                                          &uart5_tx_queue_buffer);
-
-        // Create RX queue
-        uart5_rx_queue = xQueueCreateStatic(UART5_RX_QUEUE_SIZE,
-                                          sizeof(rx_payload_t),
-                                          uart5_rx_queue_storage,
-                                          &uart5_rx_queue_buffer);
-
-        rx_buffer = uart5_rx_buffer.data;
-    }
-    #endif /* UART5 */
+    // Create TX queue
+    uart_periph->tx_queue = xQueueCreateStatic(uart_periph->tx_queue_size, 
+                                        sizeof(UART_tx_payload_t), 
+                                        uart_periph->tx_queue_storage, 
+                                        &uart_periph->tx_queue_buffer);
     
-    #ifdef USART1
-    if(handle->Instance == USART1) {
+    
+    // Create RX queue
+    uart_periph->rx_queue = xQueueCreateStatic(uart_periph->rx_queue_size,
+                                        sizeof(UART_rx_payload_t),
+                                        uart_periph->rx_queue_storage,
+                                        &uart_periph->rx_queue_buffer);
 
-        // Allocate static storage for TX queue
-        usart1_tx_queue = xQueueCreateStatic(USART1_TX_QUEUE_SIZE, 
-                                          sizeof(tx_payload_t), 
-                                          usart1_tx_queue_storage, 
-                                          &usart1_tx_queue_buffer);
-
-        // Create RX queue
-        usart1_rx_queue = xQueueCreateStatic(USART1_RX_QUEUE_SIZE,
-                                          sizeof(rx_payload_t),
-                                          usart1_rx_queue_storage,
-                                          &usart1_rx_queue_buffer);
-
-        rx_buffer = usart1_rx_buffer.data;
-    }
-    #endif /* USART1 */
-
-    #ifdef USART2
-    if(handle->Instance == USART2) {
-
-        // Allocate static storage for TX queue
-        usart2_tx_queue = xQueueCreateStatic(USART2_TX_QUEUE_SIZE, 
-                                          sizeof(tx_payload_t), 
-                                          usart2_tx_queue_storage, 
-                                          &usart2_tx_queue_buffer);
-
-        // Create RX queue
-        usart2_rx_queue = xQueueCreateStatic(USART2_RX_QUEUE_SIZE,
-                                          sizeof(rx_payload_t),
-                                          usart2_rx_queue_storage,
-                                          &usart2_rx_queue_buffer);
-
-        rx_buffer = usart2_rx_buffer.data;
-    }
-    #endif /* USART2 */
-
-    #ifdef USART3
-    if(handle->Instance == USART3) {
-
-        // Allocate static storage for TX queue
-        usart3_tx_queue = xQueueCreateStatic(USART3_TX_QUEUE_SIZE, 
-                                          sizeof(tx_payload_t), 
-                                          usart3_tx_queue_storage, 
-                                          &usart3_tx_queue_buffer);
-
-        // Create RX queue
-        usart3_rx_queue = xQueueCreateStatic(USART3_RX_QUEUE_SIZE,
-                                          sizeof(rx_payload_t),
-                                          usart3_rx_queue_storage,
-                                          &usart3_rx_queue_buffer);
-
-        rx_buffer = usart3_rx_buffer.data;
-    }
-    #endif /* USART3 */
-
-
-    #ifdef LPUART1
-    if(handle->Instance == LPUART1) {
-
-        lpuart1_tx_queue = xQueueCreateStatic(
-            LPUART1_TX_QUEUE_SIZE,
-            sizeof(tx_payload_t),
-            lpuart1_tx_queue_storage,
-            &lpuart1_tx_queue_buffer);
-
-        lpuart1_rx_queue = xQueueCreateStatic(
-            LPUART1_RX_QUEUE_SIZE,
-            sizeof(rx_payload_t),
-            lpuart1_rx_queue_storage,
-            &lpuart1_rx_queue_buffer);
-
-        rx_buffer = lpuart1_rx_buffer.data;
-    }
-    #endif /* LPUART1 */
-
-    uint8_t is_valid_uart_instance = 0;
-
-    #ifdef LPUART1
-    if(IS_LPUART_INSTANCE(handle->Instance)){
-        is_valid_uart_instance = 1;
-    }
-    #endif /* LPUART1 */
-    if(IS_UART_INSTANCE(handle->Instance) || IS_USART_INSTANCE(handle->Instance)){
-        is_valid_uart_instance = 1;
-    }
-
-    if(!is_valid_uart_instance){
-        return UART_ERR;
-    }
+    uart_periph->tx_mutex = xSemaphoreCreateMutexStatic(&uart_periph->tx_mutex_buffer);
 
     // init HAL
     if(HAL_UART_Init(handle) != HAL_OK){
@@ -605,13 +565,12 @@ uart_status_t uart_init(UART_HandleTypeDef* handle) {
     }
 
     // Start reception
-    if (HAL_UART_Receive_IT(handle, rx_buffer, UART_DATA_SIZE) != HAL_OK) {
+    if (HAL_UART_Receive_IT(handle, uart_periph->rx_buffer.data, UART_RX_DATA_SIZE) != HAL_OK) {
         return UART_ERR;
     }
 
     return UART_OK;
 }
-
 
 /**
  * @brief Deinitializes the UART peripheral
@@ -619,6 +578,9 @@ uart_status_t uart_init(UART_HandleTypeDef* handle) {
  * @return uart_status_t
  */
 uart_status_t uart_deinit(UART_HandleTypeDef* handle) {
+    UART_periph_t *uart_periph = get_valid_uart_periph(handle);
+    if(uart_periph == NULL) return UART_ERR;
+
     // Stop any ongoing transfers first
     HAL_UART_Abort(handle);
 
@@ -628,51 +590,11 @@ uart_status_t uart_deinit(UART_HandleTypeDef* handle) {
     }
 
     // Deinitialize Handler
-    #ifdef UART4
-    if (handle->Instance == UART4) {
-	uart4_tx_queue = NULL;
-	uart4_rx_queue = NULL;
-    }
-    #endif /* UART4 */
-    
-    #ifdef UART5
-    if (handle->Instance == UART5) {
-	uart5_tx_queue = NULL;
-	uart5_rx_queue = NULL;
-    }
-    #endif /* UART5 */
-    
-    #ifdef USART1
-    if (handle->Instance == USART1) {
-	usart1_tx_queue = NULL;
-	usart1_rx_queue = NULL;
-    }
-    #endif /* USART1 */
-
-    #ifdef USART2
-    if (handle->Instance == USART2) {
-	usart2_tx_queue = NULL;
-	usart2_rx_queue = NULL;
-    }
-    #endif /* USART2 */
-
-    #ifdef USART3
-    if (handle->Instance == USART3) {
-	usart3_tx_queue = NULL;
-	usart3_rx_queue = NULL;
-    }
-    #endif /* USART3 */
-
-    #ifdef LPUART1
-    if (handle->Instance == LPUART1) {
-        lpuart1_tx_queue = NULL;
-        lpuart1_rx_queue = NULL;
-    }
-    #endif /* LPUART1 */
+    uart_periph->tx_queue = NULL;
+    uart_periph->rx_queue = NULL;
 
     return UART_OK;
 }
-
 
 /**
  * @brief Transmits data over UART. If transmission is in progress, data will be queued in internal TX queue. 
@@ -681,95 +603,23 @@ uart_status_t uart_deinit(UART_HandleTypeDef* handle) {
  * @param delay_ticks number of ticks to wait for data to be transmitted
  * @return uart_status_t
  */
-#ifdef UART4
-// static buffer for UART4 TX
-static uint8_t uart4_tx_buffer[UART4_TX_QUEUE_SIZE];
-#endif /* UART4 */
-
-#ifdef UART5
-// static buffer for UART5 TX
-static uint8_t uart5_tx_buffer[UART5_TX_QUEUE_SIZE]; // make buffer size same as queue size 
-#endif /* UART5 */
-
-#ifdef USART1
-// static buffer for USART1 TX
-static uint8_t usart1_tx_buffer[USART1_TX_QUEUE_SIZE];
-#endif /* USART1 */
-
-#ifdef USART2
-// static buffer for USART2 TX
-static uint8_t usart2_tx_buffer[USART2_TX_QUEUE_SIZE]; // make buffer size same as queue size 
-#endif /* USART2 */
-
-#ifdef USART3
-// static buffer for USART3 TX
-static uint8_t usart3_tx_buffer[USART3_TX_QUEUE_SIZE]; // make buffer size same as queue size 
-#endif /* USART3 */
-
-#ifdef LPUART1
-static uint8_t lpuart1_tx_buffer[LPUART1_TX_QUEUE_SIZE];
-#endif /* LPUART1 */
-
 uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t length, TickType_t delay_ticks) {
     if (length == 0 || !is_uart_initialized(handle)) { // check if UART is initialized and data length is not 0
         return UART_ERR;
     }
 
-    QueueHandle_t* tx_queue = NULL;
-    uint8_t* tx_buffer = NULL;
+    UART_periph_t *uart_periph = get_valid_uart_periph(handle);
+    if(uart_periph == NULL) return UART_ERR;
 
-    #ifdef UART4
-    if(handle->Instance == UART4) {
-        tx_buffer = uart4_tx_buffer; // for direct transmission
-        tx_queue = &uart4_tx_queue;  // for queuing
-    }
-    #endif /* UART4*/
-
-    #ifdef UART5
-    if(handle->Instance == UART5) {
-        tx_buffer = uart5_tx_buffer;
-        tx_queue = &uart5_tx_queue;
-    }
-    #endif /* UART5 */
-
-    #ifdef USART1
-    if(handle->Instance == USART1) {
-        tx_buffer = usart1_tx_buffer; // for direct transmission
-        tx_queue = &usart1_tx_queue;  // for queuing
-    }
-    #endif /* USART1*/
-
-    #ifdef USART2
-    if(handle->Instance == USART2) {
-        tx_buffer = usart2_tx_buffer;
-        tx_queue = &usart2_tx_queue;
-    }
-    #endif /* USART2 */
-
-    #ifdef USART3
-    if(handle->Instance == USART3) {
-        tx_buffer = usart3_tx_buffer;
-        tx_queue = &usart3_tx_queue;
-    }
-    #endif /* USART3 */
-
-    #ifdef LPUART1
-    if(handle->Instance == LPUART1) {
-        tx_buffer = lpuart1_tx_buffer;
-        tx_queue = &lpuart1_tx_queue;
-    }
-    #endif /* LPUART1 */
-  
-
-    uart_status_t status = UART_SENT;
+    uart_status_t status = UART_OK;
 
     // Try direct transmission if possible
     portENTER_CRITICAL();
     if ((HAL_UART_GetState(handle) & HAL_UART_STATE_BUSY_TX) != HAL_UART_STATE_BUSY_TX &&
-        tx_queue != NULL && uxQueueMessagesWaiting (*tx_queue) == 0 ) { // check if UART is ready and queue is empty
+        uxQueueMessagesWaiting (uart_periph->tx_queue) == 0 ) { // check if UART is ready and queue is empty
         // Copy data to static buffer
-        memcpy(tx_buffer, data, length);
-        if (HAL_UART_Transmit_IT(handle, tx_buffer, length) != HAL_OK) {
+        memcpy(uart_periph->tx_dir_buffer, data, length);
+        if (HAL_UART_Transmit_IT(handle, uart_periph->tx_dir_buffer, length) != HAL_OK) {
             status = UART_ERR;
         }
         portEXIT_CRITICAL();
@@ -777,27 +627,29 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
     }
     portEXIT_CRITICAL();
 
-    // Send data in chunks based on UART_DATA_SIZE
-    for (uint8_t i = 0; i < length; i+=UART_DATA_SIZE) {
-	tx_payload_t payload;
+    // Send data in chunks based on UART_TX_DATA_SIZE
+    if(xSemaphoreTake(uart_periph->tx_mutex, delay_ticks) != pdTRUE) return UART_ERR; // if we timeout, err out
+    for (uint8_t i = 0; i < length; i+=UART_TX_DATA_SIZE) {
+	UART_tx_payload_t payload;
 
-	// Ensure we only copy UART_DATA_SIZE bytes at a time
-	uint8_t chunk_size = (length - i < UART_DATA_SIZE) ? (length - i) : UART_DATA_SIZE;
+	// Ensure we only copy UART_TX_DATA_SIZE bytes at a time
+	payload.len = (length - i < UART_TX_DATA_SIZE) ? (length - i) : UART_TX_DATA_SIZE;
 	// EX: i=4, length=6, DataSize=4, then chunk_size = 2, instead of usual 4 since we've reached end of length
 
 	// Copy the appropriate number of bytes to the payload data
-	 memcpy(payload.data, &data[i], chunk_size); // Usually chunk_size = UART_DATA_SIZE until end of data length
+	 memcpy(payload.data, &data[i], payload.len); // Usually chunk_size = UART_TX_DATA_SIZE until end of data length
 
-	 // If data size is smaller than UART_DATA_SIZE, fill the rest of the payload
-	 if (chunk_size < UART_DATA_SIZE) {
-	     memset(&payload.data[chunk_size], 0, UART_DATA_SIZE - chunk_size); // Fill the rest with 0 (or other padding if needed)
+	 // If data size is smaller than UART_TX_DATA_SIZE, fill the rest of the payload
+	 if (payload.len < UART_TX_DATA_SIZE) {
+	     memset(&payload.data[payload.len], 0, UART_TX_DATA_SIZE - payload.len); // Fill the rest with 0 (or other padding if needed)
 	 }
 
 	// Enqueue the payload to be transmitted
-	if (xQueueSend(*tx_queue, &payload, delay_ticks) != pdTRUE) {
+	if (xQueueSend(uart_periph->tx_queue, &payload, delay_ticks) != pdTRUE) {
 	    return UART_ERR;
 	} //delay_ticks: 0 = no wait, portMAX_DELAY = wait until space is available
     }
+    xSemaphoreGive(uart_periph->tx_mutex);
 
 exit:
     return status;
@@ -816,55 +668,21 @@ uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t lengt
         return UART_ERR;
     }
 
-    QueueHandle_t rx_queue = NULL;
-    #ifdef UART4
-    if(handle->Instance == UART4) {
-        rx_queue = uart4_rx_queue;
-    }
-    #endif /* UART4 */
+    UART_periph_t *uart_periph = get_valid_uart_periph(handle);
+    if(uart_periph == NULL) return UART_ERR;
 
-    #ifdef UART5
-    if(handle->Instance == UART5) {
-        rx_queue = uart5_rx_queue;
-    }
-    #endif /* UART5 */
-
-    #ifdef USART1
-    if(handle->Instance == USART1) {
-        rx_queue = usart1_rx_queue;
-    }
-    #endif /* USART1 */
-
-    #ifdef USART2
-    if(handle->Instance == USART2) {
-        rx_queue = usart2_rx_queue;
-    }
-    #endif /* USART2 */
-
-    #ifdef USART3
-    if(handle->Instance == USART3) {
-        rx_queue = usart3_rx_queue;
-    }
-    #endif /* USART3 */
-
-    #ifdef LPUART1
-    if(handle->Instance == LPUART1) {
-        rx_queue = lpuart1_rx_queue;
-    }
-    #endif /* LPUART1 */
-
-    uart_status_t status = UART_RECV;
-    rx_payload_t receivedPayload;
+    uart_status_t status = UART_OK;
+    UART_rx_payload_t receivedPayload;
     uint8_t bytes_received = 0;
 
     // Receive all requested bytes
     while (bytes_received < length) {
-        if (xQueueReceive(rx_queue, &receivedPayload, delay_ticks) == errQUEUE_EMPTY) {
+        if (xQueueReceive(uart_periph->rx_queue, &receivedPayload, delay_ticks) == errQUEUE_EMPTY) {
             return UART_EMPTY;  // Queue empty, no more data to receive
         }
 
-        // Calculate how many bytes to copy from the payload based on UART_DATA_SIZE
-        uint8_t copy_length = (length - bytes_received) >= UART_DATA_SIZE ? UART_DATA_SIZE : (length - bytes_received);
+        // Calculate how many bytes to copy from the payload based on UART_RX_DATA_SIZE
+        uint8_t copy_length = (length - bytes_received) >= UART_RX_DATA_SIZE ? UART_RX_DATA_SIZE : (length - bytes_received);
 
         // Copy the data from the payload to the user's data buffer
         for (uint8_t i = 0; i < copy_length; i++) {
@@ -878,71 +696,35 @@ uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t lengt
     return status;
 }
 
+#ifndef UART_TX_INTERRUPT_GRAN_BYTES
+#define UART_TX_INTERRUPT_GRAN_BYTES (8) // granularity for intermediate TX buffer; this should be close to the number of available spots in the hw mailboxes
+#endif /* UART_TX_INTERRUPT_GRAN_BYTES */
+
 // Transmit Callback occurs after a transmission if complete (depending on how huart is configure)
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
     BaseType_t higherPriorityTaskWoken = pdFALSE;
-    uint8_t tx_buffer[32];  // Buffer for collecting bytes to send
+    static uint8_t tx_buffer[UART_TX_INTERRUPT_GRAN_BYTES];  // Buffer for collecting bytes to send
     uint8_t count = 0;
 
-    QueueHandle_t *tx_queue = NULL;
-
-    #ifdef UART4
-    if(huart->Instance == UART4) {
-        tx_queue = &uart4_tx_queue;
-    }
-    #endif /* UART4 */
-
-    #ifdef UART5
-    if(huart->Instance == UART5) {
-        tx_queue = &uart5_tx_queue;
-    }
-    #endif /* UART5 */
-
-    #ifdef USART1
-    if(huart->Instance == USART1) {
-        tx_queue = &usart1_tx_queue;
-    }
-    #endif /* USART1 */
-
-    #ifdef USART2
-    if(huart->Instance == USART2) {
-        tx_queue = &usart2_tx_queue;
-    }
-    #endif /* USART2 */
-
-    #ifdef USART3
-    if(huart->Instance == USART3) {
-        tx_queue = &usart3_tx_queue;
-    }
-    #endif /* USART3 */
-
-    #ifdef LPUART1
-    if(huart->Instance == LPUART1) {
-        tx_queue = &lpuart1_tx_queue;
-    }
-    #endif /* LPUART1 */
+    UART_periph_t *uart_periph = get_valid_uart_periph(huart);
+    if(uart_periph == NULL) return;
 
     // Pull as many bytes as we can fit in the buffer
-    tx_payload_t payload;
-    while(count + UART_DATA_SIZE <= sizeof(tx_buffer) && xQueueReceiveFromISR(*tx_queue, &payload, &higherPriorityTaskWoken) == pdTRUE) {
+    UART_tx_payload_t payload;
+    while(xQueuePeekFromISR(uart_periph->tx_queue, &payload) == pdTRUE) { // there's still something in queue?
+        if(count + payload.len > UART_TX_INTERRUPT_GRAN_BYTES) break;
+        else {
+            xQueueReceiveFromISR(uart_periph->tx_queue, &payload, &higherPriorityTaskWoken); // pop from queue
+        }
+
         // Safely copy the data from the payload into the tx_buffer
-    	memcpy(&tx_buffer[count], payload.data, UART_DATA_SIZE);
-        count += UART_DATA_SIZE;
+    	memcpy(&tx_buffer[count], payload.data, payload.len);
+        count += payload.len;
     }
 
-    if(tx_queue == NULL) {
-        return; // No valid uart tx queue found
-    }
-
-    // Get as many bytes as we can from queue (up to buffer size)
-    while(count < sizeof(tx_buffer) && 
-        xQueueReceiveFromISR(*tx_queue, &tx_buffer[count], &higherPriorityTaskWoken) == pdTRUE) {
-        count++;
-    }
-
-    // 	If we got any bytes, transmit them
+    // If we got any bytes, transmit them
     if(count > 0) {
-      HAL_UART_Transmit_IT(huart, tx_buffer, count);
+        HAL_UART_Transmit_IT(huart, tx_buffer, count);
     }
 
     // Yield to a higher priority task if needed
@@ -951,99 +733,57 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 
 // Receive Callback occurs after a receive is complete
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-    QueueHandle_t *rx_queue = NULL;
-    uint8_t *rx_buffer = NULL;
-    
-    #ifdef UART4
-    if(huart->Instance == UART4) {
-        rx_queue = &uart4_rx_queue;
-        rx_buffer = uart4_rx_buffer.data;
-    }
-    #endif /* UART4 */
+    UART_periph_t *uart_periph = get_valid_uart_periph(huart);
+    if(uart_periph == NULL) return;
 
-    #ifdef UART5
-    if(huart->Instance == UART5) {
-        rx_queue = &uart5_rx_queue;
-        rx_buffer = uart5_rx_buffer.data;
-    }
-    #endif /* UART5 */
-
-    #ifdef USART1
-    if(huart->Instance == USART1) {
-        rx_queue = &usart1_rx_queue;
-        rx_buffer = usart1_rx_buffer.data;
-    }
-    #endif /* USART1 */
-
-    #ifdef USART2
-    if(huart->Instance == USART2) {
-        rx_queue = &usart2_rx_queue;
-        rx_buffer = usart2_rx_buffer.data;
-    }
-    #endif /* USART2 */
-
-    #ifdef USART3
-    if(huart->Instance == USART3) {
-        rx_queue = &usart3_rx_queue;
-        rx_buffer = usart3_rx_buffer.data;
-    }
-    #endif /* USART3 */
-
-    #ifdef LPUART1
-    if(huart->Instance == LPUART1) {
-        rx_queue = &lpuart1_rx_queue;
-        rx_buffer = lpuart1_rx_buffer.data;
-    }
-    #endif /* LPUART1 */
-
-    rx_payload_t receivedData;
-    for (int i = 0; i < UART_DATA_SIZE; i++) {
-        receivedData.data[i] = rx_buffer[i]; //uartN_rx_buffer.data
-	rx_buffer[i] = 0x00; // clear rx buffer element
+    UART_rx_payload_t receivedData;
+    for (int i = 0; i < UART_RX_DATA_SIZE; i++) {
+        receivedData.data[i] = uart_periph->rx_buffer.data[i];
+	uart_periph->rx_buffer.data[i] = 0x00; // clear rx buffer element
     }
 
     BaseType_t higherPriorityTaskWoken = pdFALSE;
 
-    xQueueSendFromISR(*rx_queue, &receivedData, &higherPriorityTaskWoken); // Send data from &receivedData(pRxBuffPtr) to rx_queue
+    xQueueSendFromISR(uart_periph->rx_queue, &receivedData, &higherPriorityTaskWoken); // Send data from &receivedData(pRxBuffPtr) to rx_queue
 
     // Trigger the next interrupt
-    HAL_UART_Receive_IT(huart, rx_buffer, UART_DATA_SIZE);// pRxBufferPtr is a pointer to the buffer that will store the received data
+    HAL_UART_Receive_IT(huart, uart_periph->rx_buffer.data, UART_RX_DATA_SIZE);// pRxBufferPtr is a pointer to the buffer that will store the received data
 
     portYIELD_FROM_ISR(higherPriorityTaskWoken);
 }
 
 #ifdef UART4
 void UART4_IRQHandler(void) {
-    HAL_UART_IRQHandler(huart4);
+    HAL_UART_IRQHandler(&uart4.huart);
 }
 #endif /* UART4 */
 
 #ifdef UART5
 void UART5_IRQHandler(void) {
-    HAL_UART_IRQHandler(huart5);
+    HAL_UART_IRQHandler(&uart5.huart);
 }
 #endif /* UART5 */
 
 #ifdef USART1
 void USART1_IRQHandler(void) {
-    HAL_UART_IRQHandler(husart1);
+    HAL_UART_IRQHandler(&usart1.huart);
 }
 #endif /* USART1 */
 
 #ifdef USART2
 void USART2_IRQHandler(void) {
-    HAL_UART_IRQHandler(husart2);
+    HAL_UART_IRQHandler(&usart2.huart);
 }
 #endif /* USART2 */
 
 #ifdef USART3
 void USART3_IRQHandler(void) {
-    HAL_UART_IRQHandler(husart3);
+    HAL_UART_IRQHandler(&usart3.huart);
 }
 #endif /* USART3 */
 
 #ifdef LPUART1
 void LPUART1_IRQHandler(void) {
-    HAL_UART_IRQHandler(hlpuart1);
+    HAL_UART_IRQHandler(&lpuart1.huart);
 }
 #endif /* LPUART1 */
