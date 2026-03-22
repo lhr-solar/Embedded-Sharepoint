@@ -198,6 +198,54 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
     return CAN_OK;
 }
 
+can_status_t can_fd_send_isr(FDCAN_HandleTypeDef* handle,
+                            FDCAN_TxHeaderTypeDef* header,
+                            uint8_t data[],
+                            BaseType_t *higherPriorityTaskWoken) {
+    if (handle == NULL || header == NULL || data == NULL) {
+        return CAN_ERR;
+    }
+
+    can_tx_payload_t payload = {0};
+    payload.header = *header;
+
+    for (uint32_t i = 0; i < header->DataLength; i++) {
+        payload.data[i] = data[i];
+    }
+
+    // optional hook
+    can_fd_tx_callback_hook(handle, &payload);
+
+#ifdef FDCAN1
+    if (handle->Instance == FDCAN1) {
+        if (xQueueSendFromISR(fdcan1_send_queue, &payload,
+                              higherPriorityTaskWoken) != pdTRUE) {
+            return CAN_ERR;
+        }
+    }
+#endif
+
+#ifdef FDCAN2
+    if (handle->Instance == FDCAN2) {
+        if (xQueueSendFromISR(fdcan2_send_queue, &payload,
+                              higherPriorityTaskWoken) != pdTRUE) {
+            return CAN_ERR;
+        }
+    }
+#endif
+
+#ifdef FDCAN3
+    if (handle->Instance == FDCAN3) {
+        if (xQueueSendFromISR(fdcan3_send_queue, &payload,
+                              higherPriorityTaskWoken) != pdTRUE) {
+            return CAN_ERR;
+        }
+    }
+#endif
+
+    return CAN_OK;
+}
+
 can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint16_t id, FDCAN_RxHeaderTypeDef* header, uint8_t data[], TickType_t delay_ticks){
     can_rx_payload_t payload = {0};
     bool valid_id = false;
@@ -260,6 +308,69 @@ can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint16_t id, FDCAN_RxHeade
     } else {
         return CAN_ERR;
     }
+}
+
+can_status_t can_fd_recv_isr(FDCAN_HandleTypeDef* handle,
+                            uint16_t id,
+                            FDCAN_RxHeaderTypeDef* header,
+                            uint8_t data[],
+                            BaseType_t *higherPriorityTaskWoken) {
+    if (handle == NULL || header == NULL || data == NULL) {
+        return CAN_ERR;
+    }
+
+    can_rx_payload_t payload = {0};
+    can_recv_entry_t* entries = NULL;
+    uint32_t entry_count = 0;
+
+    if (0) {
+
+    }
+#ifdef FDCAN1
+    else if (handle->Instance == FDCAN1) {
+        entries = can1_recv_entries;
+        entry_count = can1_recv_entry_count;
+    }
+#endif
+
+#ifdef FDCAN2
+    else if (handle->Instance == FDCAN2) {
+        entries = can2_recv_entries;
+        entry_count = can2_recv_entry_count;
+    }
+#endif
+
+#ifdef FDCAN3
+    else if (handle->Instance == FDCAN3) {
+        entries = can3_recv_entries;
+        entry_count = can3_recv_entry_count;
+    }
+#endif
+
+    if (entries == NULL) {
+        return CAN_ERR;
+    }
+
+    for (uint32_t i = 0; i < entry_count; i++) {
+        if (entries[i].id == id) {
+
+            if (xQueueReceiveFromISR(entries[i].queue,
+                                     &payload,
+                                     higherPriorityTaskWoken) != pdTRUE) {
+                return CAN_EMPTY;
+            }
+
+            *header = payload.header;
+
+            for (int j = 0; j < header->DataLength; j++) {
+                data[j] = payload.data[j];
+            }
+
+            return CAN_OK;
+        }
+    }
+
+    return CAN_ERR;
 }
 
 #if ( configUSE_QUEUE_SETS == 1 )
