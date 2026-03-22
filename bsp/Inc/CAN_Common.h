@@ -93,9 +93,9 @@ static const uint32_t can1_recv_entry_count =
 
 #else /* can1_recv_entries.h */
 // create can1 recv queue array
-static can_recv_entry_t can1_recv_entries[] = {};
+__attribute__((unused)) static can_recv_entry_t can1_recv_entries[] = {};
 // calculate amount of can1 recv entries
-static const uint32_t can1_recv_entry_count = 0;
+__attribute__((unused)) static const uint32_t can1_recv_entry_count = 0;
 #endif /* can1_recv_entries.h */
 #endif /* FDCAN1 || CAN1 */
 
@@ -130,9 +130,9 @@ static const uint32_t can2_recv_entry_count =
 
 #else /* can2_recv_entries.h */
 // create can2 recv queue array
-static can_recv_entry_t can2_recv_entries[] = {};
+__attribute__((unused)) static can_recv_entry_t can2_recv_entries[] = {};
 // calculate amount of can2 recv entries
-static const uint32_t can2_recv_entry_count = 0;
+__attribute__((unused)) static const uint32_t can2_recv_entry_count = 0;
 #endif /* can2_recv_entries.h */
 #endif /* FDCAN2 || CAN2 */
 
@@ -168,8 +168,8 @@ static const uint32_t can3_recv_entry_count =
 
 #else /* can3_recv_entries.h */
 // create can3 recv queue array
-static can_recv_entry_t can3_recv_entries[] = {};
+__attribute__((unused)) static can_recv_entry_t can3_recv_entries[] = {};
 // calculate amount of can3 recv entries
-static const uint32_t can3_recv_entry_count = 0;
+__attribute__((unused)) static const uint32_t can3_recv_entry_count = 0;
 #endif /* can3_recv_entries.h */
 #endif /* FDCAN3 || CAN3 */
