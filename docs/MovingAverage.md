@@ -13,9 +13,6 @@ To maintain O(1) time complexity, the implementation tracks a running sum. When 
 ## Macro Name Generation
 The `DEFINE_MOVING_AVG` macro uses C preprocessor token pasting (the ## operator) to dynamically create unique struct names and function identifiers. This allows you to define multiple independent filters (e.g., one for Voltage, one for Current) without naming collisions.
 
-### Generation Format
-When you call the macro as `DEFINE_MOVING_AVG(NAME, TYPE, SUM_TYPE)`, the preprocessor maps your NAME argument to the following identifiers:
-
 ### Internal Logic
 The header uses the ## operator to concatenate the user-provided name with specific suffixes. For example, the update function is defined internally as:
 ```c
