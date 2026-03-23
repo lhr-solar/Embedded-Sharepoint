@@ -154,7 +154,6 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id, CAN_RxHeaderTypeDe
     }
     // recieve from queue matching id
     can_rx_payload_t payload = {0};
-    bool valid_id = false;
 
     can_recv_entry_t* can_recv_entries = NULL;
     uint32_t can_recv_entry_count = 0;
@@ -360,39 +359,41 @@ __weak void can_tx_callback_hook(CAN_HandleTypeDef* hcan, const can_tx_payload_t
 }
 
 static void transmit(CAN_HandleTypeDef* handle) {
-    can_tx_payload_t payload = {0};
     BaseType_t higherPriorityTaskWoken = pdFALSE;
+    QueueHandle_t send_queue = NULL;
 
-    // receive data from send queue
-    bool success = false;
-    // CAN1
-    if (handle->Instance == CAN1) {
-        if (xQueueReceiveFromISR(can1_send_queue, &payload, &higherPriorityTaskWoken) == pdTRUE) {
-            success = true;
-        }
+    if (0) {
     }
+#ifdef CAN1
+    else if (handle->Instance == CAN1) {
+        send_queue = can1_send_queue;
+    }
+#endif /* CAN1 */
 #ifdef CAN2
     else if (handle->Instance == CAN2) {
-        if (xQueueReceiveFromISR(can2_send_queue, &payload, &higherPriorityTaskWoken) == pdTRUE) {
-            success = true;
-        }
+        send_queue = can2_send_queue;
     }
 #endif /* CAN2 */
 #ifdef CAN3
     else if (handle->Instance == CAN3) {
-        if (xQueueReceiveFromISR(can3_send_queue, &payload, &higherPriorityTaskWoken) == pdTRUE) {
-            success = true;
-        }
+        send_queue = can3_send_queue;
     }
 #endif /* CAN3 */
 
-    // add payload to mailbox
-    if (success) {
-        uint32_t mailbox;
-        if (HAL_CAN_AddTxMessage(handle, &payload.header, payload.data, &mailbox) != HAL_OK) {
-            // Handle transmission error (optional: log or retry mechanism)
-            // treated as lost packet for now
-        }
+    if (send_queue == NULL) {
+        return;
+    }
+
+    can_tx_payload_t payload = {0};
+    // max of 3 mailboxes but adding a max iter to be safe
+    uint8_t max_iter = 3;
+    while (max_iter-- > 0 && HAL_CAN_GetTxMailboxesFreeLevel(handle) > 0 &&
+           xQueueReceiveFromISR(send_queue, &payload, &higherPriorityTaskWoken) == pdTRUE) {
+      uint32_t mailbox;
+      if (HAL_CAN_AddTxMessage(handle, &payload.header, payload.data,
+                               &mailbox) != HAL_OK) {
+        // treated as lost packet (or can handle the error here)
+      }
     }
 
     portYIELD_FROM_ISR(higherPriorityTaskWoken);
