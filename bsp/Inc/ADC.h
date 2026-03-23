@@ -39,7 +39,6 @@
 #define _ADC_H
 
 #include "stm32xx_hal.h"
-
 #include "FreeRTOS.h"
 #include "queue.h"
 #include "semphr.h"
@@ -53,7 +52,6 @@ typedef enum {
     ADC_INTERRUPT_TIMEOUT,
     ADC_INTERRUPT_ERROR,
     ADC_QUEUE_FULL,
-
 } adc_status_t;
 
 #ifdef ADC1
@@ -83,7 +81,7 @@ extern ADC_HandleTypeDef* hadc5;
  *
  * @return adc_status_t  Returns ADC_OK on success or an appropriate error code.
  */
-adc_status_t adc_init(ADC_InitTypeDef *init, ADC_HandleTypeDef* hadc);
+adc_status_t adc_init(ADC_InitTypeDef* init, ADC_HandleTypeDef* hadc);
 
 /**
  * @brief Reads a value from the specified ADC channel.
@@ -100,7 +98,7 @@ adc_status_t adc_init(ADC_InitTypeDef *init, ADC_HandleTypeDef* hadc);
  *
  * @return adc_status_t  Returns ADC_OK on success or an appropriate error code.
  */
-adc_status_t adc_read(ADC_HandleTypeDef *h, ADC_ChannelConfTypeDef* sConfig, QueueHandle_t q);
+adc_status_t adc_read(ADC_HandleTypeDef* h, ADC_ChannelConfTypeDef* sConfig, QueueHandle_t q);
 
 /**
  * @brief Deinitializes the ADC peripheral.
@@ -112,6 +110,6 @@ adc_status_t adc_read(ADC_HandleTypeDef *h, ADC_ChannelConfTypeDef* sConfig, Que
  *
  * @return adc_status_t  Returns ADC_OK on success or an appropriate error code.
  */
-adc_status_t adc_deinit(ADC_HandleTypeDef *h);
+adc_status_t adc_deinit(ADC_HandleTypeDef* h);
 
 #endif
