@@ -55,6 +55,7 @@ void test_s32() {
 
 void TxTask(void *argument){
 
+#ifdef USART3
     husart3->Init.BaudRate = 115200;
     husart3->Init.WordLength = UART_WORDLENGTH_8B;
     husart3->Init.StopBits = UART_STOPBITS_1;
@@ -64,6 +65,7 @@ void TxTask(void *argument){
     husart3->Init.OverSampling = UART_OVERSAMPLING_16;
 
     printf_init(husart3);
+#endif
 
     printf("Running moving average tests...\n\r");
 
