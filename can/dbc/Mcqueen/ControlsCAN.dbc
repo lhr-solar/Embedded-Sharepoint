@@ -1,0 +1,161 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: Lighting_Board6 Lighting_Board5 Lighting_Board4 Lighting_Board3 Lighting_Board2 Lighting_Board1 Lighting_Board0 Controls_Leader
+VAL_TABLE_ Lighting_Board_Faults_Table 7 "Controls Leader Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "None" ;
+
+
+BO_ 1654 Lighting_Board6_Status: 8 Lighting_Board6
+ SG_ LED1_Current : 48|16@1+ (1,0) [0|65535] "mA"  Controls_Leader
+ SG_ LED0_Current : 32|16@1+ (1,0) [0|65535] "mA"  Controls_Leader
+ SG_ Addr_LED_Current : 16|12@1+ (1,0) [0|4095] "mA"  Controls_Leader
+ SG_ Light_Custom2_Active : 15|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Custom1_Active : 14|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Custom0_Active : 13|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Brakelight_Active : 12|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_BPS_Strobe_Active : 11|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_RTurn_Active : 10|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_LTurn_Active : 9|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Headlight_Active : 8|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Lighting_Board_Faults : 0|8@1+ (1,0) [0|255] ""  Controls_Leader
+
+BO_ 1653 Lighting_Board5_Status: 8 Lighting_Board5
+ SG_ LED1_Current : 48|16@1+ (1,0) [0|65535] "mA"  Controls_Leader
+ SG_ LED0_Current : 32|16@1+ (1,0) [0|65535] "mA"  Controls_Leader
+ SG_ Addr_LED_Current : 16|12@1+ (1,0) [0|4095] "mA"  Controls_Leader
+ SG_ Light_Custom2_Active : 15|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Custom1_Active : 14|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Custom0_Active : 13|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Brakelight_Active : 12|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_BPS_Strobe_Active : 11|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_RTurn_Active : 10|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_LTurn_Active : 9|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Headlight_Active : 8|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Lighting_Board_Faults : 0|8@1+ (1,0) [0|255] ""  Controls_Leader
+
+BO_ 1652 Lighting_Board4_Status: 8 Lighting_Board4
+ SG_ LED1_Current : 48|16@1+ (1,0) [0|65535] "mA"  Controls_Leader
+ SG_ LED0_Current : 32|16@1+ (1,0) [0|65535] "mA"  Controls_Leader
+ SG_ Addr_LED_Current : 16|12@1+ (1,0) [0|4095] "mA"  Controls_Leader
+ SG_ Light_Custom2_Active : 15|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Custom1_Active : 14|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Custom0_Active : 13|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Brakelight_Active : 12|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_BPS_Strobe_Active : 11|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_RTurn_Active : 10|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_LTurn_Active : 9|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Headlight_Active : 8|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Lighting_Board_Faults : 0|8@1+ (1,0) [0|255] ""  Controls_Leader
+
+BO_ 1651 Lighting_Board3_Status: 8 Lighting_Board3
+ SG_ LED1_Current : 48|16@1+ (1,0) [0|65535] "mA"  Controls_Leader
+ SG_ LED0_Current : 32|16@1+ (1,0) [0|65535] "mA"  Controls_Leader
+ SG_ Addr_LED_Current : 16|12@1+ (1,0) [0|4095] "mA"  Controls_Leader
+ SG_ Light_Custom2_Active : 15|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Custom1_Active : 14|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Custom0_Active : 13|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Brakelight_Active : 12|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_BPS_Strobe_Active : 11|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_RTurn_Active : 10|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_LTurn_Active : 9|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Headlight_Active : 8|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Lighting_Board_Faults : 0|8@1+ (1,0) [0|255] ""  Controls_Leader
+
+BO_ 1650 Lighting_Board2_Status: 8 Lighting_Board2
+ SG_ LED1_Current : 48|16@1+ (1,0) [0|65535] "mA"  Controls_Leader
+ SG_ LED0_Current : 32|16@1+ (1,0) [0|65535] "mA"  Controls_Leader
+ SG_ Addr_LED_Current : 16|12@1+ (1,0) [0|4095] "mA"  Controls_Leader
+ SG_ Light_Custom2_Active : 15|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Custom1_Active : 14|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Custom0_Active : 13|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Brakelight_Active : 12|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_BPS_Strobe_Active : 11|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_RTurn_Active : 10|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_LTurn_Active : 9|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Headlight_Active : 8|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Lighting_Board_Faults : 0|8@1+ (1,0) [0|255] ""  Controls_Leader
+
+BO_ 1649 Lighting_Board1_Status: 8 Lighting_Board1
+ SG_ LED1_Current : 48|16@1+ (1,0) [0|65535] "mA"  Controls_Leader
+ SG_ LED0_Current : 32|16@1+ (1,0) [0|65535] "mA"  Controls_Leader
+ SG_ Addr_LED_Current : 16|12@1+ (1,0) [0|4095] "mA"  Controls_Leader
+ SG_ Light_Custom2_Active : 15|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Custom1_Active : 14|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Custom0_Active : 13|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Brakelight_Active : 12|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_BPS_Strobe_Active : 11|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_RTurn_Active : 10|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_LTurn_Active : 9|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Headlight_Active : 8|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Lighting_Board_Faults : 0|8@1+ (1,0) [0|255] ""  Controls_Leader
+
+BO_ 1648 Lighting_Board0_Status: 8 Lighting_Board0
+ SG_ LED1_Current : 48|16@1+ (1,0) [0|65535] "mA"  Controls_Leader
+ SG_ LED0_Current : 32|16@1+ (1,0) [0|65535] "mA"  Controls_Leader
+ SG_ Addr_LED_Current : 16|12@1+ (1,0) [0|4095] "mA"  Controls_Leader
+ SG_ Light_Custom2_Active : 15|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Custom1_Active : 14|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Custom0_Active : 13|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Brakelight_Active : 12|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_BPS_Strobe_Active : 11|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_RTurn_Active : 10|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_LTurn_Active : 9|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Light_Headlight_Active : 8|1@1+ (1,0) [0|1] ""  Controls_Leader
+ SG_ Lighting_Board_Faults : 0|8@1+ (1,0) [0|255] ""  Controls_Leader
+
+BO_ 1632 Lighting_Command: 1 Controls_Leader
+ SG_ Custom_Mode1_On : 7|1@1+ (1,0) [0|1] ""  Lighting_Board6,Lighting_Board5,Lighting_Board4,Lighting_Board3,Lighting_Board2,Lighting_Board1,Lighting_Board0
+ SG_ Custom_Mode0_On : 6|1@1+ (1,0) [0|1] ""  Lighting_Board6,Lighting_Board5,Lighting_Board4,Lighting_Board3,Lighting_Board2,Lighting_Board1,Lighting_Board0
+ SG_ Brakelights_On : 4|1@1+ (1,0) [0|1] ""  Lighting_Board6,Lighting_Board5,Lighting_Board4,Lighting_Board3,Lighting_Board2,Lighting_Board1,Lighting_Board0
+ SG_ BPS_Strobe_On : 5|1@1+ (1,0) [0|1] ""  Lighting_Board6,Lighting_Board5,Lighting_Board4,Lighting_Board3,Lighting_Board2,Lighting_Board1,Lighting_Board0
+ SG_ Blinker_Sync : 3|1@1+ (1,0) [0|1] ""  Lighting_Board6,Lighting_Board5,Lighting_Board4,Lighting_Board3,Lighting_Board2,Lighting_Board1,Lighting_Board0
+ SG_ Right_Indicator_On : 2|1@1+ (1,0) [0|1] ""  Lighting_Board6,Lighting_Board5,Lighting_Board4,Lighting_Board3,Lighting_Board2,Lighting_Board1,Lighting_Board0
+ SG_ Left_Indicator_On : 1|1@1+ (1,0) [0|1] ""  Lighting_Board6,Lighting_Board5,Lighting_Board4,Lighting_Board3,Lighting_Board2,Lighting_Board1,Lighting_Board0
+ SG_ Headlights_On : 0|1@1+ (1,0) [0|1] ""  Lighting_Board6,Lighting_Board5,Lighting_Board4,Lighting_Board3,Lighting_Board2,Lighting_Board1,Lighting_Board0
+
+
+
+BA_DEF_  "MultiplexExtEnabled" ENUM  "No","Yes";
+BA_DEF_  "BusType" STRING ;
+BA_DEF_DEF_  "MultiplexExtEnabled" "No";
+BA_DEF_DEF_  "BusType" "CAN";
+VAL_ 1654 Lighting_Board_Faults 7 "Controls Leader Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "None" ;
+VAL_ 1653 Lighting_Board_Faults 7 "Controls Leader Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "None" ;
+VAL_ 1652 Lighting_Board_Faults 7 "Controls Leader Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "None" ;
+VAL_ 1651 Lighting_Board_Faults 7 "Controls Leader Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "None" ;
+VAL_ 1650 Lighting_Board_Faults 7 "Controls Leader Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "None" ;
+VAL_ 1649 Lighting_Board_Faults 7 "Controls Leader Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "None" ;
+VAL_ 1648 Lighting_Board_Faults 7 "Controls Leader Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "None" ;
+

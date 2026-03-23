@@ -34,6 +34,7 @@ NS_ :
 BS_:
 
 BU_: PDU BPS Pump Telemetry Controls Pi_Display MPPT_C VCU Pedals MPPT_B MPPT_A LV_Carrier
+VAL_TABLE_ Controls_Faults 3 "Drive inputs invalid " 2 "BPS watchdog" 1 "Steering angle sensor watchdog" 0 "No fault" ;
 VAL_TABLE_ LWS_CCW_Type 5 "Resets calibration status" 3 "Sets the signal LWS_Angle to 0°" ;
 VAL_TABLE_ VCU_Fault_Type 6 "Motor HV Undervoltage" 5 "Motor HV Overvoltage" 4 "Motor Controller Fault" 3 "Motor Precharge Timeout" 2 "Motor Pchg Contactor Sense" 1 "Motor Contactor Sense" 0 "No Fault" ;
 VAL_TABLE_ BPS_Fault_Type 16 "Discharging Overcurrent" 15 "Charging Overcurrent" 14 "Estop 3" 13 "Estop 2" 12 "Estop 1" 11 "Array Pchg Contactor Sense" 10 "Array Contactor Sense" 9 "HV- Contactor Sense" 8 "HV+ Contactor Sense" 7 "Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "No Fault" ;
@@ -64,104 +65,6 @@ BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ BPS_Charge_OK : 0|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Fault : 0|8@1+ (1,0) [0|0] "" Vector__XXX
 
-BO_ 1654 Lighting_Board6_Status: 8 Controls
- SG_ Active_Light_Custom3 : 15|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Custom2 : 14|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Custom1 : 13|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ LED2_Current : 48|12@1+ (1,0) [0|4000] "mA" Vector__XXX
- SG_ LED1_Current : 32|12@1+ (1,0) [0|4000] "mA" Vector__XXX
- SG_ Addr_LED_Current : 16|12@1+ (1,0) [0|4000] "mA" Vector__XXX
- SG_ Active_Light_Strobe : 12|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_LTurn : 11|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_RTurn : 10|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Brake : 9|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Headlights : 8|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Lights_Faults : 0|8@1+ (1,0) [0|255] "" Vector__XXX
-
-BO_ 1653 Lighting_Board5_Status: 8 Controls
- SG_ Active_Light_Custom3 : 15|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Custom2 : 14|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Custom1 : 13|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ LED2_Current : 48|12@1+ (1,0) [0|4000] "mA" Vector__XXX
- SG_ LED1_Current : 32|12@1+ (1,0) [0|4000] "mA" Vector__XXX
- SG_ Addr_LED_Current : 16|12@1+ (1,0) [0|4000] "mA" Vector__XXX
- SG_ Active_Light_Strobe : 12|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_LTurn : 11|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_RTurn : 10|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Brake : 9|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Headlights : 8|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Lights_Faults : 0|8@1+ (1,0) [0|255] "" Vector__XXX
-
-BO_ 1652 Lighting_Board4_Status: 8 Controls
- SG_ Active_Light_Custom3 : 15|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Custom2 : 14|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Custom1 : 13|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ LED2_Current : 48|12@1+ (1,0) [0|4000] "mA" Vector__XXX
- SG_ LED1_Current : 32|12@1+ (1,0) [0|4000] "mA" Vector__XXX
- SG_ Addr_LED_Current : 16|12@1+ (1,0) [0|4000] "mA" Vector__XXX
- SG_ Active_Light_Strobe : 12|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_LTurn : 11|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_RTurn : 10|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Brake : 9|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Headlights : 8|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Lights_Faults : 0|8@1+ (1,0) [0|255] "" Vector__XXX
-
-BO_ 1651 Lighting_Board3_Status: 8 Controls
- SG_ Active_Light_Custom3 : 15|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Custom2 : 14|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Custom1 : 13|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ LED2_Current : 48|12@1+ (1,0) [0|4000] "mA" Vector__XXX
- SG_ LED1_Current : 32|12@1+ (1,0) [0|4000] "mA" Vector__XXX
- SG_ Addr_LED_Current : 16|12@1+ (1,0) [0|4000] "mA" Vector__XXX
- SG_ Active_Light_Strobe : 12|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_LTurn : 11|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_RTurn : 10|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Brake : 9|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Headlights : 8|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Lights_Faults : 0|8@1+ (1,0) [0|255] "" Vector__XXX
-
-BO_ 1650 Lighting_Board2_Status: 8 Controls
- SG_ Active_Light_Custom3 : 15|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Custom2 : 14|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Custom1 : 13|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ LED2_Current : 48|12@1+ (1,0) [0|4000] "mA" Vector__XXX
- SG_ LED1_Current : 32|12@1+ (1,0) [0|4000] "mA" Vector__XXX
- SG_ Addr_LED_Current : 16|12@1+ (1,0) [0|4000] "mA" Vector__XXX
- SG_ Active_Light_Strobe : 12|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_LTurn : 11|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_RTurn : 10|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Brake : 9|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Headlights : 8|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Lights_Faults : 0|8@1+ (1,0) [0|255] "" Vector__XXX
-
-BO_ 1649 Lighting_Board1_Status: 8 Controls
- SG_ Active_Light_Custom3 : 15|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Custom2 : 14|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Custom1 : 13|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ LED2_Current : 48|12@1+ (1,0) [0|4000] "mA" Vector__XXX
- SG_ LED1_Current : 32|12@1+ (1,0) [0|4000] "mA" Vector__XXX
- SG_ Addr_LED_Current : 16|12@1+ (1,0) [0|4000] "mA" Vector__XXX
- SG_ Active_Light_Strobe : 12|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_LTurn : 11|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_RTurn : 10|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Brake : 9|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Headlights : 8|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Lights_Faults : 0|8@1+ (1,0) [0|255] "" Vector__XXX
-
-BO_ 1648 Lighting_Board0_Status: 8 Controls
- SG_ Active_Light_Custom3 : 15|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Custom2 : 14|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Custom1 : 13|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ LED2_Current : 48|12@1+ (1,0) [0|4000] "mA" Vector__XXX
- SG_ LED1_Current : 32|12@1+ (1,0) [0|4000] "mA" Vector__XXX
- SG_ Addr_LED_Current : 16|12@1+ (1,0) [0|4000] "mA" Vector__XXX
- SG_ Active_Light_Strobe : 12|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_LTurn : 11|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_RTurn : 10|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Brake : 9|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Active_Light_Headlights : 8|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Lights_Faults : 0|8@1+ (1,0) [0|255] "" Vector__XXX
-
 BO_ 25 Controls_Status: 4 Controls
  SG_ Controls_Lighting_Fault : 16|16@1+ (1,0) [0|0] "" Vector__XXX
  SG_ Controls_Leader_Fault : 0|8@1+ (1,0) [0|0] "" Vector__XXX
@@ -180,7 +83,9 @@ BO_ 33 VCU_Precharge_Voltages: 6 VCU
  SG_ Precharge_Motor_Voltage : 24|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
  SG_ Precharge_Battery_Voltage : 0|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
 
-BO_ 24 VCU_Status: 3 VCU
+BO_ 24 VCU_Status: 6 VCU
+ SG_ VCU_FSM_Inputs : 32|16@1+ (1,0) [0|1023] "" Vector__XXX
+ SG_ VCU_Steering_Angle_OK : 15|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ VCU_Regen_Active : 14|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ VCU_Regen_OK : 13|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ VCU_Pedals_OK : 12|1@1+ (1,0) [0|0] "" Vector__XXX
@@ -487,66 +392,60 @@ BA_DEF_DEF_  "VFrameFormat" "J1939PG";
 BA_DEF_DEF_  "MultiplexExtEnabled" "No";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
-BA_ "VFrameFormat" BO_ 1654 0;
-BA_ "VFrameFormat" BO_ 1653 0;
-BA_ "VFrameFormat" BO_ 1652 0;
-BA_ "VFrameFormat" BO_ 1651 0;
-BA_ "VFrameFormat" BO_ 1650 0;
-BA_ "VFrameFormat" BO_ 1649 0;
-BA_ "VFrameFormat" BO_ 1648 0;
 BA_ "VFrameFormat" BO_ 25 0;
 BA_ "VFrameFormat" BO_ 1984 0;
 BA_ "VFrameFormat" BO_ 688 0;
 BA_ "VFrameFormat" BO_ 33 0;
 BA_ "VFrameFormat" BO_ 24 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1872 1000;
 BA_ "VFrameFormat" BO_ 1872 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 545 1000;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1872 1000;
 BA_ "VFrameFormat" BO_ 545 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 553 -1;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 545 1000;
 BA_ "VFrameFormat" BO_ 553 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 544 500;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 553 -1;
 BA_ "VFrameFormat" BO_ 544 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 544 500;
 BA_ "VFrameFormat" BO_ 850 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1282 100;
 BA_ "VFrameFormat" BO_ 1282 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1281 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1282 100;
 BA_ "VFrameFormat" BO_ 1281 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1280 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1281 100;
 BA_ "VFrameFormat" BO_ 1280 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1280 100;
 BA_ "VFrameFormat" BO_ 849 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 848 100;
 BA_ "VFrameFormat" BO_ 848 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 96 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 848 100;
 BA_ "VFrameFormat" BO_ 96 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1792 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 96 100;
 BA_ "VFrameFormat" BO_ 1792 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1616 1000;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1792 100;
 BA_ "VFrameFormat" BO_ 1616 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 81 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1616 1000;
 BA_ "VFrameFormat" BO_ 81 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 80 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 81 100;
 BA_ "VFrameFormat" BO_ 80 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 529 1000;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 80 100;
 BA_ "VFrameFormat" BO_ 529 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 528 500;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 529 1000;
 BA_ "VFrameFormat" BO_ 528 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 537 -1;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 528 500;
 BA_ "VFrameFormat" BO_ 537 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 513 1000;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 537 -1;
 BA_ "VFrameFormat" BO_ 513 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 512 500;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 513 1000;
 BA_ "VFrameFormat" BO_ 512 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 521 -1;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 512 500;
 BA_ "VFrameFormat" BO_ 521 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1536 250;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 521 -1;
 BA_ "VFrameFormat" BO_ 1536 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 768 250;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1536 250;
 BA_ "VFrameFormat" BO_ 768 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 769 250;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 768 250;
 BA_ "VFrameFormat" BO_ 769 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 769 250;
 VAL_ 3221225472 HSS_Command_Type 1 "Set Current Limit" 0 "Control Switches" ;
 VAL_ 3221225472 BPS_Fault 16 "Discharging Overcurrent" 15 "Charging Overcurrent" 14 "Estop 3" 13 "Estop 2" 12 "Estop 1" 11 "Array Pchg Contactor Sense" 10 "Array Contactor Sense" 9 "HV- Contactor Sense" 8 "HV+ Contactor Sense" 7 "Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "No Fault" ;
+VAL_ 25 Controls_Leader_Fault 3 "Drive inputs invalid " 2 "BPS watchdog" 1 "Steering angle sensor watchdog" 0 "No fault" ;
 VAL_ 1984 LWS_CCW 5 "Resets calibration status" 3 "Sets the signal LWS_Angle to 0°" ;
 VAL_ 24 VCU_Fault 6 "Motor HV Undervoltage" 5 "Motor HV Overvoltage" 4 "Motor Controller Fault" 3 "Motor Precharge Timeout" 2 "Motor Pchg Contactor Sense" 1 "Motor Contactor Sense" 0 "No Fault" ;
 VAL_ 849 HSS_Control_1 3 "Do nothing. You're stupid" 2 "Turn off" 1 "Turn on" 0 "Do nothing; Keep current state" ;
