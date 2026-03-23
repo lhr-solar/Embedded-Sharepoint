@@ -65,7 +65,7 @@ void TxTask(void *argument){
     husart3->Init.OverSampling = UART_OVERSAMPLING_16;
 
     printf_init(husart3);
-#endif
+#endif /*USART3 */
 
     printf("Running moving average tests...\n\r");
 
@@ -101,6 +101,8 @@ int main() {
 }
 
 void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
+
+#ifdef USART3
     GPIO_InitTypeDef init = {0};
     __HAL_RCC_GPIOC_CLK_ENABLE();
     /**USART3 GPIO Configuration
@@ -113,5 +115,6 @@ void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
     init.Speed = GPIO_SPEED_FREQ_LOW;
     init.Alternate = GPIO_AF7_USART3;
     HAL_GPIO_Init(GPIOC, &init);
+#endif
 
 }
