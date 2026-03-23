@@ -1,5 +1,6 @@
 #include "CAN_Common.h"
 #include "CAN_FD.h"
+#include <string.h>
 
 // Define CAN FD handles
 #ifdef FDCAN1
@@ -140,9 +141,7 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
     // create CAN payload so we can forward it
     can_tx_payload_t payload = {0};
     payload.header = *header;
-    for (uint32_t i = 0; i < header->DataLength; i++) {
-        payload.data[i] = data[i];
-    }
+    memcpy(payload.data, data, header->DataLength);
 
     // optional callback the user can implement (by default does nothing)
     can_fd_tx_callback_hook(handle, &payload);
@@ -203,10 +202,7 @@ can_status_t can_fd_send_isr(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef*
 
     can_tx_payload_t payload = {0};
     payload.header = *header;
-
-    for (uint32_t i = 0; i < header->DataLength; i++) {
-        payload.data[i] = data[i];
-    }
+    memcmp(payload.data, data, header->DataLength);
 
     // optional hook
     can_fd_tx_callback_hook(handle, &payload);
@@ -286,9 +282,7 @@ can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint16_t id, FDCAN_RxHeade
     // decode payload if it is valid and message recieved
     if (valid_id) {
         *header = payload.header;
-        for (uint32_t i = 0; i < header->DataLength; i++) {
-            data[i] = payload.data[i];
-        }
+        memcpy(data, payload.data, header->DataLength);
 
         return CAN_OK;
     } else {
@@ -340,10 +334,7 @@ can_status_t can_fd_recv_isr(FDCAN_HandleTypeDef* handle, uint16_t id,
             }
 
             *header = payload.header;
-
-            for (uint32_t j = 0; j < header->DataLength; j++) {
-                data[j] = payload.data[j];
-            }
+            memcpy(data, payload.data, header->DataLength);
 
             return CAN_OK;
         }

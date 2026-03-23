@@ -50,7 +50,10 @@ static uint8_t can3_send_queue_storage[CAN3_SEND_QUEUE_SIZE * sizeof(can_tx_payl
 #endif /* CAN3 */
 
 can_status_t can_init(CAN_HandleTypeDef* handle, CAN_FilterTypeDef* filter) {
-    if (handle->Instance == CAN1) {
+    if (0) {
+    }
+#ifdef CAN1
+    else if (handle->Instance == CAN1) {
         // init queues
         can1_send_queue = xQueueCreateStatic(CAN1_SEND_QUEUE_SIZE, sizeof(can_tx_payload_t),
                                              can1_send_queue_storage, &can1_send_queue_buffer);
@@ -60,6 +63,7 @@ can_status_t can_init(CAN_HandleTypeDef* handle, CAN_FilterTypeDef* filter) {
                                    can1_recv_entries[i].storage, &can1_recv_entries[i].buffer);
         }
     }
+#endif /* CAN1 */
 #ifdef CAN2
     else if (handle->Instance == CAN2) {
         // init queues
@@ -144,26 +148,32 @@ can_status_t can_stop(CAN_HandleTypeDef* handle) {
 
 can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id, CAN_RxHeaderTypeDef* header,
                       uint8_t data[], TickType_t delay_ticks) {
+    if (handle == NULL || header == NULL || data == NULL) {
+        return CAN_ERR;
+    }
     // recieve from queue matching id
     can_rx_payload_t payload = {0};
     bool valid_id = false;
 
     can_recv_entry_t* can_recv_entries = NULL;
     uint32_t can_recv_entry_count = 0;
+
+    if (0) {
+    }
 #ifdef CAN1
-    if (handle->Instance == CAN1) {
+    else if (handle->Instance == CAN1) {
         can_recv_entry_count = can1_recv_entry_count;
         can_recv_entries = can1_recv_entries;
     }
 #endif
 #ifdef CAN2
-    if (handle->Instance == CAN2) {
+    else if (handle->Instance == CAN2) {
         can_recv_entry_count = can2_recv_entry_count;
         can_recv_entries = can2_recv_entries;
     }
 #endif
 #ifdef CAN3
-    if (handle->Instance == CAN3) {
+    else if (handle->Instance == CAN3) {
         can_recv_entry_count = can3_recv_entry_count;
         can_recv_entries = can3_recv_entries;
     }
@@ -175,45 +185,39 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id, CAN_RxHeaderTypeDe
 
     for (uint32_t i = 0; i < can_recv_entry_count; i++) {
         if (can_recv_entries[i].id == id) {
-            valid_id = true;
-
             // if delay_ticks == portMAX_DELAY thread blocks,
             // other values of delay_ticks are delays
             if (xQueueReceive(can_recv_entries[i].queue, &payload, delay_ticks) == errQUEUE_EMPTY) {
                 return CAN_EMPTY;
             }
 
-            break;
+            // decode payload
+            *header = payload.header;
+            memcpy(data, payload.data, header->DLC);
+            return CAN_OK;
         }
     }
 
-    // decode payload if it is valid and message recieved
-    if (valid_id) {
-        *header = payload.header;
-        for (uint32_t i = 0; i < header->DLC; i++) {
-            data[i] = payload.data[i];
-        }
-        return CAN_OK;
-    }
-
+    // id not found
     return CAN_ERR;
 }
 
 can_status_t can_send(CAN_HandleTypeDef* handle, const CAN_TxHeaderTypeDef* header,
                       const uint8_t data[], TickType_t delay_ticks) {
+    if (handle == NULL || header == NULL || data == NULL) {
+        return CAN_ERR;
+    }
+
     // Define payload
     can_tx_payload_t payload = {0};
     payload.header = *header;
-    for (uint32_t i = 0; i < header->DLC; i++) {
-        payload.data[i] = data[i];
-    }
+    memcpy(payload.data, data, header->DLC);
 
     // Optional callback for user to implement
     can_tx_callback_hook(handle, &payload);
 
-    // disable interrupts (do not want race conditions)
-    // on shared resource (mailbox) between threads and
-    // interrupt routines (TxComplete))
+    // disable interrupts (do not want race conditions) on shared resource 
+    // (mailbox) between threads and interrupt routines (TxComplete))
     portENTER_CRITICAL();
 
     // if transmit is inactive, put payload into mailbox
@@ -258,6 +262,96 @@ can_status_t can_send(CAN_HandleTypeDef* handle, const CAN_TxHeaderTypeDef* head
 
     return CAN_OK;
 }
+
+can_status_t can_send_isr(CAN_HandleTypeDef* handle, const CAN_TxHeaderTypeDef* header,
+                          const uint8_t data[], BaseType_t* higherPriorityTaskWoken) {
+    if (handle == NULL || header == NULL || data == NULL) {
+        return CAN_ERR;
+    }
+
+    can_tx_payload_t payload = {0};
+    payload.header = *header;
+    memcpy(payload.data, data, header->DLC);
+
+    can_tx_callback_hook(handle, &payload);
+
+    if (0) {
+    }
+#ifdef CAN1
+    else if (handle->Instance == CAN1) {
+        if (xQueueSendFromISR(can1_send_queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
+            return CAN_ERR;
+        }
+    }
+#endif /* CAN1 */
+#ifdef CAN2
+    else if (handle->Instance == CAN2) {
+        if (xQueueSendFromISR(can2_send_queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
+            return CAN_ERR;
+        }
+    }
+#endif /* CAN2 */
+#ifdef CAN3
+    else if (handle->Instance == CAN3) {
+        if (xQueueSendFromISR(can3_send_queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
+            return CAN_ERR;
+        }
+    }
+#endif /* CAN3 */
+
+    return CAN_OK;
+}
+
+can_status_t can_recv_isr(CAN_HandleTypeDef* handle, uint16_t id, CAN_RxHeaderTypeDef* header,
+                          uint8_t data[], BaseType_t* higherPriorityTaskWoken) {
+    if (handle == NULL || header == NULL || data == NULL) {
+        return CAN_ERR;
+    }
+
+    can_rx_payload_t payload = {0};
+    can_recv_entry_t* entries = NULL;
+    uint32_t entry_count = 0;
+
+    if (0) {
+    }
+#ifdef CAN1
+    else if (handle->Instance == CAN1) {
+        entries = can1_recv_entries;
+        entry_count = can1_recv_entry_count;
+    }
+#endif /* CAN1 */
+#ifdef CAN2
+    else if (handle->Instance == CAN2) {
+        entries = can2_recv_entries;
+        entry_count = can2_recv_entry_count;
+    }
+#endif /* CAN2 */
+#ifdef CAN3
+    else if (handle->Instance == CAN3) {
+        entries = can3_recv_entries;
+        entry_count = can3_recv_entry_count;
+    }
+#endif /* CAN3 */
+
+    if (entries == NULL) {
+        return CAN_ERR;
+    }
+
+    for (uint32_t i = 0; i < entry_count; i++) {
+        if (entries[i].id == id) {
+            if (xQueueReceiveFromISR(entries[i].queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
+                return CAN_EMPTY;
+            }
+
+            *header = payload.header;
+            memcpy(data, payload.data, header->DLC);
+            return CAN_OK;
+        }
+    }
+
+    return CAN_ERR;
+}
+
 
 __weak void can_tx_callback_hook(CAN_HandleTypeDef* hcan, const can_tx_payload_t* payload) {
     UNUSED(hcan);
@@ -323,8 +417,10 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
         // Optional callback for user to implement
         can_rx_callback_hook(hcan, &payload);
 
-        // CAN1
-        if (hcan->Instance == CAN1) {
+        if (0) {
+        }
+#ifdef CAN1
+        else if (hcan->Instance == CAN1) {
             for (uint32_t i = 0; i < can1_recv_entry_count; i++) {
                 if (can1_recv_entries[i].id == payload.header.StdId) {
                     if (can1_recv_entries[i].circular) {
@@ -339,6 +435,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
                 }
             }
         }
+#endif
 #ifdef CAN2
         else if (hcan->Instance == CAN2) {
             for (uint32_t i = 0; i < can2_recv_entry_count; i++) {
@@ -357,7 +454,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
         }
 #endif /* CAN2 */
 #ifdef CAN3
-        if (hcan->Instance == CAN3) {
+        else if (hcan->Instance == CAN3) {
             for (uint32_t i = 0; i < can3_recv_entry_count; i++) {
                 if (can3_recv_entries[i].id == payload.header.StdId) {
                     if (can3_recv_entries[i].circular) {
@@ -387,20 +484,22 @@ can_status_t can_register_id_set(CAN_HandleTypeDef* handle, can_id_set_t* set) {
     can_recv_entry_t* entries = NULL;
     uint32_t entry_count = 0;
 
+    if (0) {
+    }
 #ifdef CAN1
-    if (handle->Instance == CAN1) {
+    else if (handle->Instance == CAN1) {
         entries = can1_recv_entries;
         entry_count = can1_recv_entry_count;
     }
 #endif /* CAN1 */
 #ifdef CAN2
-    if (handle->Instance == CAN2) {
+    else if (handle->Instance == CAN2) {
         entries = can2_recv_entries;
         entry_count = can2_recv_entry_count;
     }
 #endif /* CAN2 */
 #ifdef CAN3
-    if (handle->Instance == CAN3) {
+    else if (handle->Instance == CAN3) {
         entries = can3_recv_entries;
         entry_count = can3_recv_entry_count;
     }
@@ -416,7 +515,7 @@ can_status_t can_register_id_set(CAN_HandleTypeDef* handle, can_id_set_t* set) {
         // registered with the driver it MUST be an ID declared in the
         // can_recv_entires header file
         for (uint32_t j = 0; j < entry_count; j++) {
-            if (set != NULL && entries[j].id == set->ids[i]) {
+            if (entries[j].id == set->ids[i]) {
                 if (xQueueAddToSet(entries[j].queue, set->queueSet) != pdPASS) {
                     return CAN_ERR;
                 }

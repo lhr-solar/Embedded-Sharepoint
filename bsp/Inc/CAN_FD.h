@@ -75,6 +75,24 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
                          TickType_t delay_ticks);
 
 /**
+ * @brief Sends a FDCAN message (but safe from isr context).
+ *
+ * Adds it to the send queue for later transmission.
+ *
+ * @param handle                    Pointer to the FDCAN handle structure.
+ * @param header                    Pointer to the FDCAN transmit header structure.
+ * @param data                      Array containing the data to send.
+ * @param delay_ticks               Maximum delay to wait if queue is full (FreeRTOS ticks)
+ * @param higherPriorityTaskWoken   Signals if ISR woke higher-priority task
+ *
+ * @return car_status_t Returns CAN_OK if message was successfully sent or queued,
+ *                      CAN_ERR on failure.
+ */
+can_status_t can_fd_recv_isr(FDCAN_HandleTypeDef* handle, uint16_t id,
+                             FDCAN_RxHeaderTypeDef* header, uint8_t data[],
+                             BaseType_t* higherPriorityTaskWoken);
+
+/**
  * @brief Receives a FDCAN message.
  *
  * Reads a message from the receive queue corresponding to the specified ID.
@@ -93,7 +111,20 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
 can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint16_t id, FDCAN_RxHeaderTypeDef* header,
                          uint8_t data[], TickType_t delay_ticks);
 
-                         
+/**
+ * @brief Receives a FDCAN message (but safe from isr context).
+ *
+ * Reads a message from the receive queue corresponding to the specified ID.
+ *
+ * @param handle                    Pointer to the FDCAN handle structure.
+ * @param id                        CAN identifier of the message to receive.
+ * @param header                    Pointer to FDCAN_RxHeaderTypeDef struct to store received header
+ * @param data                      Array to store the received data.
+ * @param higherPriorityTaskWoken   Signals if ISR woke higher-priority task
+ */
+can_status_t can_fd_recv_isr(FDCAN_HandleTypeDef* handle, uint16_t id,
+                             FDCAN_RxHeaderTypeDef* header, uint8_t data[],
+                             BaseType_t* higherPriorityTaskWoken)
 
 #if (configUSE_QUEUE_SETS == 1)
 /**

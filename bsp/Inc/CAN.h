@@ -189,6 +189,55 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id, CAN_RxHeaderTypeDe
                       uint8_t data[], TickType_t delay_ticks);
 
 /**
+ * @brief Sends a CAN message from an ISR context.
+ *
+ * Places a CAN message into the transmit send queue for later transmission
+ * by the TX complete interrupt. Must only be called from an ISR.
+ *
+ * @note Unlike can_send(), this function does not attempt direct mailbox
+ *       insertion. The caller is responsible for calling portYIELD_FROM_ISR()
+ *       with the updated higherPriorityTaskWoken value after this function
+ *       returns.
+ *
+ * @param handle                    Pointer to the CAN handle structure.
+ * @param header                    Pointer to the CAN transmit header structure.
+ * @param data                      Array containing the data to send.
+ * @param higherPriorityTaskWoken   Pointer to a BaseType_t variable that will
+ *                                  be set to pdTRUE if queuing the message
+ *                                  unblocks a higher priority task.
+ *
+ * @return can_status_t Returns CAN_OK if the message was successfully queued,
+ *                      CAN_ERR if the queue is full or a parameter is invalid.
+ */
+can_status_t can_send_isr(CAN_HandleTypeDef* handle, const CAN_TxHeaderTypeDef* header,
+                          const uint8_t data[], BaseType_t* higherPriorityTaskWoken);
+
+/**
+ * @brief Receives a CAN message from an ISR context.
+ *
+ * Reads a message from the receive queue corresponding to the specified ID.
+ * Must only be called from an ISR.
+ *
+ * @note The caller is responsible for calling portYIELD_FROM_ISR() with the
+ *       updated higherPriorityTaskWoken value after this function returns.
+ *
+ * @param handle                    Pointer to the CAN handle structure.
+ * @param id                        CAN identifier of the message to receive.
+ * @param header                    Pointer to a CAN_RxHeaderTypeDef structure
+ *                                  to store the received header.
+ * @param data                      Array to store the received data.
+ * @param higherPriorityTaskWoken   Pointer to a BaseType_t variable that will
+ *                                  be set to pdTRUE if dequeuing the message
+ *                                  unblocks a higher priority task.
+ *
+ * @return can_status_t Returns CAN_OK if a message was received,
+ *                      CAN_EMPTY if the queue was empty,
+ *                      CAN_ERR on failure or invalid ID.
+ */
+can_status_t can_recv_isr(CAN_HandleTypeDef* handle, uint16_t id, CAN_RxHeaderTypeDef* header,
+                          uint8_t data[], BaseType_t* higherPriorityTaskWoken);
+
+/**
  * @brief Weakly defined hook function.
  *        Called inside CAN send before adding a message to the queue or mailbox.
  *        Implementation must be short and non-blocking!
