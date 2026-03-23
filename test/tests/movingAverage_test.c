@@ -19,7 +19,7 @@ void test_u16() {
 
     uint16_t inputs[] = {2, 4, 6, 8, 10, 12};
 
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < sizeof(inputs) / sizeof(inputs[0]); i++) {
         uint16_t avg = MA_u16_update(&ma, inputs[i]);
         printf("input=%u -> avg=%u\n\r", inputs[i], avg);
     }
@@ -33,7 +33,7 @@ void test_u32() {
 
     uint32_t inputs[] = {100, 200, 300, 400, 500, 600};
 
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < sizeof(inputs) / sizeof(inputs[0]); i++) {
         uint32_t avg = MA_u32_update(&ma, inputs[i]);
         printf("input=%lu -> avg=%lu\n\r", inputs[i], avg);
     }
@@ -47,7 +47,7 @@ void test_s32() {
 
     int32_t inputs[] = {-2, -4, 6, 8, 10, -10};
 
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < sizeof(inputs) / sizeof(inputs[0]); i++) {
         int32_t avg = MA_s32_update(&ma, inputs[i]);
         printf("input=%ld -> avg=%ld\n\r", inputs[i], avg);
     }
