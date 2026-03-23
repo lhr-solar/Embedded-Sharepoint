@@ -1,5 +1,6 @@
 #include "CAN.h"
 #include "queue_ex.h"
+#include <string.h>
 
 #ifdef CAN1
 // fallback can1 send queue size

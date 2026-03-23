@@ -163,7 +163,6 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
         portEXIT_CRITICAL();
         return CAN_OK;
     }
-
     // hardware mailbox is full, so must add to the queue
     else {
         // enable interrupts
@@ -202,7 +201,7 @@ can_status_t can_fd_send_isr(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef*
 
     can_tx_payload_t payload = {0};
     payload.header = *header;
-    memcmp(payload.data, data, header->DataLength);
+    memcpy(payload.data, data, header->DataLength);
 
     // optional hook
     can_fd_tx_callback_hook(handle, &payload);
@@ -235,7 +234,6 @@ can_status_t can_fd_send_isr(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef*
 can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint16_t id, FDCAN_RxHeaderTypeDef* header,
                          uint8_t data[], TickType_t delay_ticks) {
     can_rx_payload_t payload = {0};
-    bool valid_id = false;
     can_recv_entry_t* can_recv_entries = NULL;
     uint32_t can_recv_entry_count = 0;
     if (0) {  // placeholder if no FDCAN peripherals are enabled
@@ -266,8 +264,6 @@ can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint16_t id, FDCAN_RxHeade
 
     for (uint32_t i = 0; i < can_recv_entry_count; i++) {
         if (can_recv_entries[i].id == id) {
-            valid_id = true;
-
             // if delay_ticks == portMAX_DELAY thread blocks,
             // other values of delay_ticks are delays
             if (xQueueReceive(can_recv_entries[i].queue, &payload, delay_ticks) ==
@@ -275,19 +271,14 @@ can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint16_t id, FDCAN_RxHeade
                 return CAN_EMPTY;
             }
 
-            break;
+            // decode payload
+            *header = payload.header;
+            memcpy(data, payload.data, header->DataLength);
+            return CAN_OK;
         }
     }
 
-    // decode payload if it is valid and message recieved
-    if (valid_id) {
-        *header = payload.header;
-        memcpy(data, payload.data, header->DataLength);
-
-        return CAN_OK;
-    } else {
-        return CAN_ERR;
-    }
+    return CAN_ERR;
 }
 
 can_status_t can_fd_recv_isr(FDCAN_HandleTypeDef* handle, uint16_t id,
@@ -335,7 +326,6 @@ can_status_t can_fd_recv_isr(FDCAN_HandleTypeDef* handle, uint16_t id,
 
             *header = payload.header;
             memcpy(data, payload.data, header->DataLength);
-
             return CAN_OK;
         }
     }

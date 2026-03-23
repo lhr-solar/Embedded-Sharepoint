@@ -88,9 +88,8 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
  * @return car_status_t Returns CAN_OK if message was successfully sent or queued,
  *                      CAN_ERR on failure.
  */
-can_status_t can_fd_recv_isr(FDCAN_HandleTypeDef* handle, uint16_t id,
-                             FDCAN_RxHeaderTypeDef* header, uint8_t data[],
-                             BaseType_t* higherPriorityTaskWoken);
+can_status_t can_fd_send_isr(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* header, 
+                             uint8_t data[], BaseType_t* higherPriorityTaskWoken);
 
 /**
  * @brief Receives a FDCAN message.
@@ -124,7 +123,7 @@ can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint16_t id, FDCAN_RxHeade
  */
 can_status_t can_fd_recv_isr(FDCAN_HandleTypeDef* handle, uint16_t id,
                              FDCAN_RxHeaderTypeDef* header, uint8_t data[],
-                             BaseType_t* higherPriorityTaskWoken)
+                             BaseType_t* higherPriorityTaskWoken);
 
 #if (configUSE_QUEUE_SETS == 1)
 /**
