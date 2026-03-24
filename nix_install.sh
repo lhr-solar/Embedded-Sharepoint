@@ -120,25 +120,54 @@ if [[ "$OS" == "Linux" ]]; then
 fi
 
 # --- Add shell prompt hook for flakes ---
-BASHRC="$HOME/.bashrc"
-ZSHRC="$HOME/.zshrc"
+USER_SHELL="$(basename "$SHELL")"
 
-FLAKE_PROMPT_SNIPPET='
-# Nix flake prompt
-if [ -n "$IN_NIX_SHELL" ]; then
-  FLAKE_NAME=$(basename "$(git rev-parse --show-toplevel 2>/dev/null || pwd)")
-  export PS1="[\u@\h ❄ $FLAKE_NAME \W]$ "
+NIX_SNIPPET='
+# Nix
+if [ -e "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh" ]; then
+  . "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh"
 fi
+# End Nix
 '
 
-if ! grep -q "Nix flake prompt" "$BASHRC" 2>/dev/null; then
-    echo -e "${YELLOW}Adding nix flake prompt to $BASHRC...${NC}"
-    echo "$FLAKE_PROMPT_SNIPPET" >> "$BASHRC"
-fi
+add_snippet_if_missing() {
+    local file="$1"
+    if [ -f "$file" ]; then
+        if ! grep -q "nix-daemon.sh" "$file" 2>/dev/null; then
+            echo -e "${YELLOW}Adding Nix init to $file...${NC}"
+            echo "$NIX_SNIPPET" >> "$file"
+        else
+            echo -e "${GREEN}Nix already configured in $file.${NC}"
+        fi
+    fi
+}
 
-if [ -f "$ZSHRC" ] && ! grep -q "Nix flake prompt" "$ZSHRC" 2>/dev/null; then
-    echo -e "${YELLOW}Adding nix flake prompt to $ZSHRC...${NC}"
-    echo "$FLAKE_PROMPT_SNIPPET" >> "$ZSHRC"
+echo -e "${GREEN}Configuring shell integration for: $USER_SHELL${NC}"
+
+case "$USER_SHELL" in
+    zsh)
+        add_snippet_if_missing "$HOME/.zshrc"
+        ;;
+    bash)
+        add_snippet_if_missing "$HOME/.bashrc"
+        ;;
+    *)
+        echo -e "${YELLOW}Unknown shell ($USER_SHELL). Falling back to ~/.profile${NC}"
+        add_snippet_if_missing "$HOME/.profile"
+        ;;
+esac
+
+# Optional: also add to ~/.profile for broader compatibility (login shells, SSH, etc.)
+add_snippet_if_missing "$HOME/.profile"
+
+# Reload current shell config
+echo -e "${YELLOW}Reloading shell configuration...${NC}"
+if [[ -n "$ZSH_VERSION" ]]; then
+    source "$HOME/.zshrc"
+elif [[ -n "$BASH_VERSION" ]]; then
+    source "$HOME/.bashrc"
+else
+    source "$HOME/.profile"
 fi
 
 echo -e "${GREEN}✅ Nix installation finished. Restart your shell to see ❄ when inside a flake.${NC}"

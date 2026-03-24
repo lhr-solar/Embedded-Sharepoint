@@ -308,5 +308,5 @@ BA_ "VFrameFormat" BO_ 32 0;
 BA_ "VFrameFormat" BO_ 2 0;
 BA_ "VFrameFormat" BO_ 10 0;
 BA_ "VFrameFormat" BO_ 1 0;
-VAL_ 1 BPS_Fault 16 "Discharging Overcurrent" 15 "Charging Overcurrent" 14 "Estop 3" 13 "Estop 2" 12 "Estop 1" 11 "Array Pchg Contactor Sense" 10 "Array Contactor Sense" 9 "HV- Contactor Sense" 8 "HV+ Contactor Sense" 7 "Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "No Fault" ;
+VAL_ 1 BPS_Fault 16 "Discharging Overcurrent" 15 "Charging Overcurrent" 14 "Estop 3" 13 "Estop 2" 12 "Estop 1" 11 "Array Pchg Contactor Sense" 10 "Array Contactor Sense" 9 "HV Minus Contactor Sense" 8 "HV Plus Contactor Sense" 7 "Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "No Fault" ;
 
