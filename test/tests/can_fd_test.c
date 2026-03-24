@@ -316,6 +316,11 @@ int main(void) {
   hfdcan1->Init.DataTimeSeg1 = 1;
   hfdcan1->Init.DataTimeSeg2 = 1;
   hfdcan1->Init.StdFiltersNbr = 1;
+
+  // ExtFiltersNB bits sets # of ID allowed
+  // 0 = no extended ID allowed (all extended ID rejected)
+  // 1 =  filter enabled to match to ID
+  // each CAN needs its own filter
   hfdcan1->Init.ExtFiltersNbr = 0;
   hfdcan1->Init.TxFifoQueueMode = FDCAN_TX_FIFO_OPERATION;
 
@@ -362,6 +367,11 @@ int main(void) {
   hfdcan2->Init.DataTimeSeg1 = 1;
   hfdcan2->Init.DataTimeSeg2 = 1;
   hfdcan2->Init.StdFiltersNbr = 1;
+
+  // ExtFiltersNB bits sets # of ID allowed
+  // 0 = no extended ID allowed (all extended ID rejected)
+  // 1 =  filter enabled to match to ID
+  // each CAN needs its own filter
   hfdcan2->Init.ExtFiltersNbr = 0;
   hfdcan2->Init.TxFifoQueueMode = FDCAN_TX_FIFO_OPERATION;
 
@@ -409,6 +419,11 @@ int main(void) {
   hfdcan3->Init.DataTimeSeg1 = 1;
   hfdcan3->Init.DataTimeSeg2 = 1;
   hfdcan3->Init.StdFiltersNbr = 1;
+
+  // ExtFiltersNB bits sets # of ID allowed
+  // 0 = no extended ID allowed (all extended ID rejected)
+  // 1 =  filter enabled to match to ID
+  // each CAN needs its own filter
   hfdcan3->Init.ExtFiltersNbr = 0;
   hfdcan3->Init.TxFifoQueueMode = FDCAN_TX_FIFO_OPERATION;
 
