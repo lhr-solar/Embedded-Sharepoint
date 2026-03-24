@@ -168,10 +168,10 @@ void Error_Handler() {
 void Success_Handler() { HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET); }
 
 static void task(void* pvParameters) {
-  int test_id = 0x18FF50E5;
+  int test_id = 0x321;
   FDCAN_TxHeaderTypeDef tx_header = {0};
   tx_header.Identifier = test_id;
-  tx_header.IdType = FDCAN_EXTENDED_ID;
+  tx_header.IdType = FDCAN_STANDARD_ID;
   tx_header.TxFrameType = FDCAN_DATA_FRAME;
   tx_header.DataLength = FDCAN_DLC_BYTES_8;
   tx_header.ErrorStateIndicator = FDCAN_ESI_ACTIVE;
@@ -316,19 +316,10 @@ int main(void) {
   hfdcan1->Init.DataTimeSeg1 = 1;
   hfdcan1->Init.DataTimeSeg2 = 1;
   hfdcan1->Init.StdFiltersNbr = 1;
-  hfdcan1->Init.ExtFiltersNbr = 1;
+  hfdcan1->Init.ExtFiltersNbr = 0;
   hfdcan1->Init.TxFifoQueueMode = FDCAN_TX_FIFO_OPERATION;
 
   // FDCAN1 Filter Config
-
-  FDCAN_FilterTypeDef sExtFilterConfig;
-  sExtFilterConfig.IdType = FDCAN_EXTENDED_ID;
-  sExtFilterConfig.FilterIndex = 0;
-  sExtFilterConfig.FilterType = FDCAN_FILTER_MASK;
-  sExtFilterConfig.FilterConfig = FDCAN_FILTER_TO_RXFIFO0;
-  sExtFilterConfig.FilterID1 = 0x000;
-  sExtFilterConfig.FilterID2 = 0x000;  // accept all extended IDs
-  HAL_FDCAN_ConfigFilter(hfdcan1, &sExtFilterConfig);
 
   FDCAN_FilterTypeDef sFilterConfig;
   sFilterConfig.IdType = FDCAN_STANDARD_ID;
@@ -342,9 +333,6 @@ int main(void) {
   sFilterConfig.FilterID2 = 0x000;
 
   if (can_fd_init(hfdcan1, &sFilterConfig) != CAN_OK) {
-    Error_Handler();
-  }
-  if (HAL_FDCAN_ConfigFilter(hfdcan1, &sExtFilterConfig) != HAL_OK) {
     Error_Handler();
   }
 
@@ -374,20 +362,11 @@ int main(void) {
   hfdcan2->Init.DataTimeSeg1 = 1;
   hfdcan2->Init.DataTimeSeg2 = 1;
   hfdcan2->Init.StdFiltersNbr = 1;
-  hfdcan2->Init.ExtFiltersNbr = 1;
+  hfdcan2->Init.ExtFiltersNbr = 0;
   hfdcan2->Init.TxFifoQueueMode = FDCAN_TX_FIFO_OPERATION;
 
   // FDCAN2 Filter Config
 
-  FDCAN_FilterTypeDef sExtFilterConfig2;
-  sExtFilterConfig2.IdType = FDCAN_EXTENDED_ID;
-  sExtFilterConfig2.FilterIndex = 0;
-  sExtFilterConfig2.FilterType = FDCAN_FILTER_MASK;
-  sExtFilterConfig2.FilterConfig = FDCAN_FILTER_TO_RXFIFO0;
-  sExtFilterConfig2.FilterID1 = 0x000;
-  sExtFilterConfig2.FilterID2 = 0x000;  // accept all extended IDs
-  HAL_FDCAN_ConfigFilter(hfdcan1, &sExtFilterConfig2);
-  
   FDCAN_FilterTypeDef sFilterConfig2;
   sFilterConfig2.IdType = FDCAN_STANDARD_ID;
   sFilterConfig2.FilterIndex = 0;
@@ -400,10 +379,6 @@ int main(void) {
   sFilterConfig2.FilterID2 = 0x000;
 
   if (can_fd_init(hfdcan2, &sFilterConfig2) != CAN_OK) {
-    Error_Handler();
-  }
-
-  if (HAL_FDCAN_ConfigFilter(hfdcan2, &sExtFilterConfig2) != HAL_OK) {
     Error_Handler();
   }
 
@@ -434,19 +409,11 @@ int main(void) {
   hfdcan3->Init.DataTimeSeg1 = 1;
   hfdcan3->Init.DataTimeSeg2 = 1;
   hfdcan3->Init.StdFiltersNbr = 1;
-  hfdcan3->Init.ExtFiltersNbr = 1;
+  hfdcan3->Init.ExtFiltersNbr = 0;
   hfdcan3->Init.TxFifoQueueMode = FDCAN_TX_FIFO_OPERATION;
 
   // FDCAN3 Filter Config
 
-  FDCAN_FilterTypeDef sExtFilterConfig3;
-  sExtFilterConfig3.IdType = FDCAN_EXTENDED_ID;
-  sExtFilterConfig3.FilterIndex = 0;
-  sExtFilterConfig3.FilterType = FDCAN_FILTER_MASK;
-  sExtFilterConfig3.FilterConfig = FDCAN_FILTER_TO_RXFIFO0;
-  sExtFilterConfig3.FilterID1 = 0x000;
-  sExtFilterConfig3.FilterID2 = 0x000;  // accept all extended IDs
-  HAL_FDCAN_ConfigFilter(hfdcan3, &sExtFilterConfig3);
   FDCAN_FilterTypeDef sFilterConfig3;
   sFilterConfig3.IdType = FDCAN_STANDARD_ID;
   sFilterConfig3.FilterIndex = 0;
@@ -459,10 +426,6 @@ int main(void) {
   sFilterConfig3.FilterID2 = 0x000;
 
   if (can_fd_init(hfdcan3, &sFilterConfig3) != CAN_OK) {
-    Error_Handler();
-  }
-
-  if (HAL_FDCAN_ConfigFilter(hfdcan1, &sExtFilterConfig3) != HAL_OK) {
     Error_Handler();
   }
 
