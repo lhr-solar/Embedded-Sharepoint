@@ -1,5 +1,7 @@
 #include "stm32xx_hal.h"
 #include "CAN_FD.h"
+#include "can_msgs.h"
+
 
 StaticTask_t task_buffer;
 StackType_t task_stack[512];
@@ -186,7 +188,7 @@ void Success_Handler(){
 
 static void task(void *pvParameters) {
 
-    int test_id = 0x321;
+    int test_id = BPS_FAULT_ID;
     FDCAN_TxHeaderTypeDef tx_header = {0};   
     tx_header.Identifier = test_id;
     tx_header.IdType = FDCAN_STANDARD_ID;
