@@ -15,7 +15,7 @@ static inline void NAME##_init(NAME *ma) {                  \
     ma->sum = 0;                                            \
     ma->index = 0;                                          \
     ma->count = 0;                                          \
-    for (uint8_t i = 0; i < MOVING_AVERAGE_WINDOW_SIZE; i++) { \
+    for (uint16_t i = 0; i < MOVING_AVERAGE_WINDOW_SIZE; i++) { \
         ma->buffer[i] = 0;                                  \
     }                                                       \
 }                                                           \
