@@ -47,14 +47,16 @@ BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ Precharge_Battery_Voltage : 0|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
  SG_ Precharge_Array_Voltage : 0|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
  SG_ BPS_Temperature_Tap_RawV : 0|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 0|16@1- (0.01,0) [-327.68|327.67] "C" Vector__XXX
  SG_ BPS_VoltTemp_ID : 0|3@1+ (1,0) [0|7] "" Vector__XXX
- SG_ BPS_Tap_ID : 0|5@1+ (1,0) [0|31] "" Vector__XXX
- SG_ BPS_Voltage_Tap_Data : 0|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Tap_ID : 0|5@1+ (1,0) [0|31] "" Vector__XXX
  SG_ BPS_VoltTemp_ID : 0|3@1+ (1,0) [0|7] "" Vector__XXX
  SG_ Main_Battery_Current_RawV : 0|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ Main_Battery_Current : 0|24@1- (0.001,0) [-8388.608|8388.607] "A" Vector__XXX
+
+BO_ 11 BPS_Aggregate_Arr: 7 BPS
+ SG_ BPS_Temperature_Tap_Data : 24|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
+ SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 1 BPS_Status: 7 BPS
  SG_ Main_Battery_Avg_Temperature : 40|16@1- (0.01,0) [-327.68|327.67] "" Vector__XXX
@@ -270,12 +272,12 @@ CM_ SG_ 3221225472 HSS_Command_Type "High Side Switch Command Type:
 CM_ SG_ 3221225472 Precharge_Battery_Voltage "Battery voltage as measured by active precharge circuitry";
 CM_ SG_ 3221225472 Precharge_Array_Voltage "Array voltage as measured by active precharge circuitry";
 CM_ SG_ 3221225472 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 3221225472 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
 CM_ SG_ 3221225472 BPS_VoltTemp_ID "BPS VoltTemp IDBPS VoltTemp ID";
 CM_ SG_ 3221225472 BPS_Tap_ID "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
-CM_ SG_ 3221225472 BPS_Voltage_Tap_Data "Voltage tap measurement for the specified VoltTemp and Tap ID";
 CM_ SG_ 3221225472 Main_Battery_Current_RawV "Main battery current raw voltage as measured by the BPS";
 CM_ SG_ 3221225472 Main_Battery_Current "Main battery current as measured by the BPS";
+CM_ SG_ 11 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
+CM_ SG_ 11 BPS_Voltage_Tap_Data "Voltage tap measurement for the specified VoltTemp and Tap ID";
 CM_ SG_ 1 Main_Battery_Avg_Temperature "Average pack temperature as determined by the BPS";
 CM_ SG_ 1 Main_Battery_Voltage "Total battery pack voltage as determined by the BPS";
 CM_ SG_ 1 BPS_Regen_OK "BPS has determined regenerative braking is OK (0 not ok, 1 ok)";
@@ -394,6 +396,7 @@ BA_DEF_DEF_  "VFrameFormat" "J1939PG";
 BA_DEF_DEF_  "MultiplexExtEnabled" "No";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
+BA_ "VFrameFormat" BO_ 11 0;
 BA_ "VFrameFormat" BO_ 1 0;
 BA_ "VFrameFormat" BO_ 25 0;
 BA_ "VFrameFormat" BO_ 1984 0;
