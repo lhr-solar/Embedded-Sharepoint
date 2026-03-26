@@ -103,7 +103,7 @@ can_recv_entry_t can3_recv_entries[] = {
 #undef CAN_RECV_ENTRY
 
 // calculate amount of can3 recv entries
-    const uint32_t can3_recv_entry_count =
+const uint32_t can3_recv_entry_count =
     sizeof(can3_recv_entries) / sizeof(can3_recv_entries[0]);
 
 #else /* can3_recv_entries.h */
