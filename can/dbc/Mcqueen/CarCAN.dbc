@@ -55,14 +55,16 @@ BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ BPS_VoltTemp_ID : 0|3@1+ (1,0) [0|7] "" Vector__XXX
  SG_ Main_Battery_Current_RawV : 0|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ Main_Battery_Current : 0|24@1- (0.001,0) [-8388.608|8388.607] "A" Vector__XXX
- SG_ Array_Precharge_Contactor_State : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Array_Contactor_State : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ HV_Plus_Contactor_State : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ HV_Minus_Contactor_State : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Main_Battery_Avg_Temperature : 0|16@1- (0.01,0) [-327.68|327.67] "" Vector__XXX
- SG_ Main_Battery_Voltage : 0|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
- SG_ BPS_Regen_OK : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Charge_OK : 0|1@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1 BPS_Status: 7 BPS
+ SG_ Main_Battery_Avg_Temperature : 40|16@1- (0.01,0) [-327.68|327.67] "" Vector__XXX
+ SG_ Main_Battery_Voltage : 16|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
+ SG_ BPS_Regen_OK : 9|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_Charge_OK : 8|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ HV_Plus_Contactor_State : 10|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ HV_Minus_Contactor_State : 11|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Array_Contactor_State : 12|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Array_Precharge_Contactor_State : 13|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Fault : 0|8@1+ (1,0) [0|0] "" Vector__XXX
 
 BO_ 25 Controls_Status: 4 Controls
@@ -274,15 +276,15 @@ CM_ SG_ 3221225472 BPS_Tap_ID "BPS Voltage/Temperature Tap ID (4 taps per VoltTe
 CM_ SG_ 3221225472 BPS_Voltage_Tap_Data "Voltage tap measurement for the specified VoltTemp and Tap ID";
 CM_ SG_ 3221225472 Main_Battery_Current_RawV "Main battery current raw voltage as measured by the BPS";
 CM_ SG_ 3221225472 Main_Battery_Current "Main battery current as measured by the BPS";
-CM_ SG_ 3221225472 Array_Precharge_Contactor_State "Array Precharge Contactor State (0 open, 1 closed)";
-CM_ SG_ 3221225472 Array_Contactor_State "Array Main Contactor State (0 open, 1 closed)";
-CM_ SG_ 3221225472 HV_Plus_Contactor_State "HV+ Contactor State (0 open, 1 closed)";
-CM_ SG_ 3221225472 HV_Minus_Contactor_State "HV- Contactor State (0 open, 1 closed)";
-CM_ SG_ 3221225472 Main_Battery_Avg_Temperature "Average pack temperature as determined by the BPS";
-CM_ SG_ 3221225472 Main_Battery_Voltage "Total battery pack voltage as determined by the BPS";
-CM_ SG_ 3221225472 BPS_Regen_OK "BPS has determined regenerative braking is OK (0 not ok, 1 ok)";
-CM_ SG_ 3221225472 BPS_Charge_OK "BPS has determined charging the pack is OK (0 not ok, 1 ok)";
-CM_ SG_ 3221225472 BPS_Fault "BPS Fault State (0 for all clear; see value table for specific faults)";
+CM_ SG_ 1 Main_Battery_Avg_Temperature "Average pack temperature as determined by the BPS";
+CM_ SG_ 1 Main_Battery_Voltage "Total battery pack voltage as determined by the BPS";
+CM_ SG_ 1 BPS_Regen_OK "BPS has determined regenerative braking is OK (0 not ok, 1 ok)";
+CM_ SG_ 1 BPS_Charge_OK "BPS has determined charging the pack is OK (0 not ok, 1 ok)";
+CM_ SG_ 1 HV_Plus_Contactor_State "HV+ Contactor State (0 open, 1 closed)";
+CM_ SG_ 1 HV_Minus_Contactor_State "HV- Contactor State (0 open, 1 closed)";
+CM_ SG_ 1 Array_Contactor_State "Array Main Contactor State (0 open, 1 closed)";
+CM_ SG_ 1 Array_Precharge_Contactor_State "Array Precharge Contactor State (0 open, 1 closed)";
+CM_ SG_ 1 BPS_Fault "BPS Fault State (0 for all clear; see value table for specific faults)";
 CM_ SG_ 1984 LWS_CCW "Steering wheel sensor command code word (see value table)";
 CM_ SG_ 688 LWS_TRIM "Steering wheel sensor trim status (0 sensor not trimmed, 1 sensor trimmed)";
 CM_ SG_ 688 LWS_CAL "Steering wheel sensor calibration status (0 sensor calibrated, 1 sensor not calibrated)";
@@ -392,6 +394,7 @@ BA_DEF_DEF_  "VFrameFormat" "J1939PG";
 BA_DEF_DEF_  "MultiplexExtEnabled" "No";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
+BA_ "VFrameFormat" BO_ 1 0;
 BA_ "VFrameFormat" BO_ 25 0;
 BA_ "VFrameFormat" BO_ 1984 0;
 BA_ "VFrameFormat" BO_ 688 0;
@@ -444,6 +447,7 @@ BA_ "VFrameFormat" BO_ 768 0;
 BA_ "_Cdb_Sc_CTm_Normal" BO_ 769 250;
 BA_ "VFrameFormat" BO_ 769 0;
 VAL_ 3221225472 HSS_Command_Type 1 "Set Current Limit" 0 "Control Switches" ;
+VAL_ 1 BPS_Fault 16 "Discharging Overcurrent" 15 "Charging Overcurrent" 14 "Estop 3" 13 "Estop 2" 12 "Estop 1" 11 "Array Pchg Contactor Sense" 10 "Array Contactor Sense" 9 "HV Minus Contactor Sense" 8 "HV Plus Contactor Sense" 7 "Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "No Fault" ;
 VAL_ 25 Controls_Leader_Fault 3 "Drive inputs invalid " 2 "BPS watchdog" 1 "Steering angle sensor watchdog" 0 "No fault" ;
 VAL_ 1984 LWS_CCW 5 "Resets calibration status" 3 "Sets the signal LWS_Angle to 0°" ;
 VAL_ 24 VCU_Fault 6 "Motor HV Undervoltage" 5 "Motor HV Overvoltage" 4 "Motor Controller Fault" 3 "Motor Precharge Timeout" 2 "Motor Pchg Contactor Sense" 1 "Motor Contactor Sense" 0 "No Fault" ;
