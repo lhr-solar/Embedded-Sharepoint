@@ -9,6 +9,7 @@ Here is a list of all files with brief descriptions:
         * **file** [**EMC2305.h**](EMC2305_8h.md)     
         * **file** [**SevenSegment.h**](SevenSegment_8h.md)     
         * **file** [**WS2812B.h**](WS2812B_8h.md)     
+        * **file** [**movingAverage.h**](movingAverage_8h.md)     
         * **file** [**printf.h**](printf_8h.md)     
         * **file** [**sdcard.h**](sdcard_8h.md)     
         * **file** [**slcanFormat.h**](slcanFormat_8h.md)     

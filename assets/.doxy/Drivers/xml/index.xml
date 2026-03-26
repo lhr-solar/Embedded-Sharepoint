@@ -221,6 +221,9 @@
     <member refid="EMC2305_8h_1afe697fcfa394d807f42656ee34977709" kind="function"><name>EMC2305_I2C_MasterTxCpltCallback</name></member>
     <member refid="EMC2305_8h_1ab5cf002d49d089f6775dd082f607959c" kind="function"><name>EMC2305_I2C_MasterRxCpltCallback</name></member>
   </compound>
+  <compound refid="movingAverage_8h" kind="file"><name>movingAverage.h</name>
+    <member refid="movingAverage_8h_1a3059a26116e3bf996866e956ffbc5ca4" kind="define"><name>DEFINE_MOVING_AVG</name></member>
+  </compound>
   <compound refid="printf_8h" kind="file"><name>printf.h</name>
     <member refid="printf_8h_1a98631211a4a8aee62f572375d5b637be" kind="function"><name>printf</name></member>
     <member refid="printf_8h_1a5c48433db9c04031772d5b36e6c4411d" kind="function"><name>scanf</name></member>

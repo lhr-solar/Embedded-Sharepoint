@@ -5,6 +5,7 @@
 
 ## d
 
+* **DEFINE\_MOVING\_AVG** ([**movingAverage.h**](movingAverage_8h.md))
 * **DATA\_TOKEN\_CMD18** ([**sdcard.h**](sdcard_8h.md))
 * **DATA\_TOKEN\_CMD25** ([**sdcard.h**](sdcard_8h.md))
 
