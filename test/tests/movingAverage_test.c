@@ -7,9 +7,9 @@
 StaticTask_t txTaskBuffer;
 StackType_t txTaskStack[configMINIMAL_STACK_SIZE];
 
-DEFINE_MOVING_AVG(MA_u16, uint16_t, uint32_t)
-DEFINE_MOVING_AVG(MA_u32, uint32_t, uint64_t)
-DEFINE_MOVING_AVG(MA_s32, int32_t,  int64_t)
+DEFINE_MOVING_AVG(MA_u16, uint16_t, uint32_t, 10)
+DEFINE_MOVING_AVG(MA_u32, uint32_t, uint64_t, 10)
+DEFINE_MOVING_AVG(MA_s32, int32_t,  int64_t, 10)
 
 void test_u16() {
     printf("\n--- uint16_t test ---\n\r");
