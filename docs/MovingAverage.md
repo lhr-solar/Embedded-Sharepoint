@@ -3,10 +3,8 @@
 ## Overview
 This header-only library provides a macro-based generator for static moving average filters.
 
-By using macros to define the filter structure and functions, the code achieves zero-overhead polymorphism and allows the compiler to inline the logic directly into your control loops.
-
 ## Filter Theory
-The filter maintains a circular buffer of the last $N$ samples (where `N` is defined by `MOVING_AVERAGE_WINDOW_SIZE`).
+The filter maintains a circular buffer of the last N samples (where `N` is defined by `MOVING_AVERAGE_WINDOW_SIZE`).
 
 To maintain O(1) time complexity, the implementation tracks a running sum. When a new sample arrives, the oldest sample is subtracted from the sum, the new one is added, and the average is returned.
 
@@ -19,7 +17,7 @@ The header uses the ## operator to concatenate the user-provided name with speci
 static inline TYPE NAME##_update(NAME *ma, TYPE sample) { ... }
 ```
 
-When the compiler processes DEFINE_MOVING_AVG(CellVoltage, uint16_t, uint32_t), it generates a unique function signature:
+When the compiler processes DEFINE_MOVING_AVG(CellVoltage, uint16_t, uint32_t, 20), it generates a unique function signature:
 ```c
 static inline uint16_t CellVoltage_update(CellVoltage *ma, uint16_t sample)
 ```
@@ -40,12 +38,13 @@ When you call the macro as `DEFINE_MOVING_AVG(NAME, TYPE, SUM_TYPE)`, the prepro
 Use the `DEFINE_MOVING_AVG` macro to generate a custom struct and its associated functions.
 ```c
 // DEFINE_MOVING_AVG(NAME, TYPE, SUM_TYPE)
-DEFINE_MOVING_AVG(VoltageFilter, uint16_t, uint32_t);
+DEFINE_MOVING_AVG(VoltageFilter, uint16_t, uint32_t, 20);
 ```
 
 * NAME: The prefix for the generated struct and functions.
 * TYPE: The data type of the input samples (e.g., int16_t).
 * SUM_TYPE: A larger type used for the internal accumulator to prevent overflow. For uint16_t samples and a window of 8, a uint32_t is recommended.
+* MOVING_AVERAGE_WINDOW_SIZE: The size of that moving average window
 
 ### 2. Initialization
 Initialize the filter state (clears the buffer and resets the sum) before use.
