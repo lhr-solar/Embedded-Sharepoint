@@ -1256,7 +1256,7 @@ typedef struct {
 #if __has_include(&quot;can1_recv_entries.h&quot;)
 // create can1 recv queue storage
 #define CAN_RECV_ENTRY(ID_, SIZE_, CIRCULAR_) \
-  static uint8_t can1_recv_queue_storage_##ID_[SIZE_ * sizeof(can_rx_payload_t)];
+  __attribute__((unused)) static uint8_t can1_recv_queue_storage_##ID_[SIZE_ * sizeof(can_rx_payload_t)];
 
 #include &quot;can1_recv_entries.h&quot;
 
@@ -1271,13 +1271,13 @@ typedef struct {
    .circular = (CIRCULAR_), \
    .buffer = 0},
 
-static can_recv_entry_t can1_recv_entries[] = {
+__attribute__((unused)) static can_recv_entry_t can1_recv_entries[] = {
 #include &quot;can1_recv_entries.h&quot;
 };
 #undef CAN_RECV_ENTRY
 
 // calculate amount of can1 recv entries
-static const uint32_t can1_recv_entry_count =
+__attribute__((unused)) static const uint32_t can1_recv_entry_count =
     sizeof(can1_recv_entries) / sizeof(can1_recv_entries[0]);
 
 #else /* can1_recv_entries.h */
@@ -1293,7 +1293,7 @@ __attribute__((unused)) static const uint32_t can1_recv_entry_count = 0;
 #if __has_include(&quot;can2_recv_entries.h&quot;)
 // create can2 recv queue storage
 #define CAN_RECV_ENTRY(ID_, SIZE_, CIRCULAR_) \
-  static uint8_t can2_recv_queue_storage_##ID_[SIZE_ * sizeof(can_rx_payload_t)];
+  __attribute__((unused)) static uint8_t can2_recv_queue_storage_##ID_[SIZE_ * sizeof(can_rx_payload_t)];
 
 #include &quot;can2_recv_entries.h&quot;
 
@@ -1308,13 +1308,13 @@ __attribute__((unused)) static const uint32_t can1_recv_entry_count = 0;
    .circular = (CIRCULAR_), \
    .buffer = 0},
 
-static can_recv_entry_t can2_recv_entries[] = {
+__attribute__((unused)) static can_recv_entry_t can2_recv_entries[] = {
 #include &quot;can2_recv_entries.h&quot;
 };
 #undef CAN_RECV_ENTRY
 
 // calculate amount of can2 recv entries
-static const uint32_t can2_recv_entry_count =
+__attribute__((unused)) static const uint32_t can2_recv_entry_count =
     sizeof(can2_recv_entries) / sizeof(can2_recv_entries[0]);
 
 #else /* can2_recv_entries.h */
@@ -1331,7 +1331,7 @@ __attribute__((unused)) static const uint32_t can2_recv_entry_count = 0;
 #if __has_include(&quot;can3_recv_entries.h&quot;)
 // create recv queue storage
 #define CAN_RECV_ENTRY(ID_, SIZE_, CIRCULAR_) \
-  static uint8_t recv_queue_storage_##ID_[SIZE_ * sizeof(can_rx_payload_t)];
+  __attribute__((unused)) static uint8_t recv_queue_storage_##ID_[SIZE_ * sizeof(can_rx_payload_t)];
 
 #include &quot;can3_recv_entries.h&quot;
 
@@ -1346,13 +1346,13 @@ __attribute__((unused)) static const uint32_t can2_recv_entry_count = 0;
    .circular = (CIRCULAR_), \
    .buffer = 0},
 
-static can_recv_entry_t can3_recv_entries[] = {
+__attribute__((unused)) static can_recv_entry_t can3_recv_entries[] = {
 #include &quot;can3_recv_entries.h&quot;
 };
 #undef CAN_RECV_ENTRY
 
 // calculate amount of can3 recv entries
-static const uint32_t can3_recv_entry_count =
+__attribute__((unused)) static const uint32_t can3_recv_entry_count =
     sizeof(can3_recv_entries) / sizeof(can3_recv_entries[0]);
 
 #else /* can3_recv_entries.h */

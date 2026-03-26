@@ -158,7 +158,7 @@
 <codeline lineno="67"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>__has_include(&quot;can1_recv_entries.h&quot;)</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="68"><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>can1<sp/>recv<sp/>queue<sp/>storage</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="69"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CAN_RECV_ENTRY(ID_,<sp/>SIZE_,<sp/>CIRCULAR_)<sp/>\</highlight></codeline>
-<codeline lineno="70"><highlight class="preprocessor"><sp/><sp/>static<sp/>uint8_t<sp/>can1_recv_queue_storage_##ID_[SIZE_<sp/>*<sp/>sizeof(can_rx_payload_t)];</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="70"><highlight class="preprocessor"><sp/><sp/>__attribute__((unused))<sp/>static<sp/>uint8_t<sp/>can1_recv_queue_storage_##ID_[SIZE_<sp/>*<sp/>sizeof(can_rx_payload_t)];</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="71"><highlight class="normal"></highlight></codeline>
 <codeline lineno="72"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;can1_recv_entries.h&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="73"><highlight class="normal"></highlight></codeline>
@@ -173,13 +173,13 @@
 <codeline lineno="82"><highlight class="preprocessor"><sp/><sp/><sp/>.circular<sp/>=<sp/>(CIRCULAR_),<sp/>\</highlight></codeline>
 <codeline lineno="83"><highlight class="preprocessor"><sp/><sp/><sp/>.buffer<sp/>=<sp/>{{0}}},</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="84"><highlight class="normal"></highlight></codeline>
-<codeline lineno="85"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="structcan__recv__entry__t" kindref="compound">can_recv_entry_t</ref><sp/>can1_recv_entries[]<sp/>=<sp/>{</highlight></codeline>
+<codeline lineno="85"><highlight class="normal">__attribute__((unused))<sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="structcan__recv__entry__t" kindref="compound">can_recv_entry_t</ref><sp/>can1_recv_entries[]<sp/>=<sp/>{</highlight></codeline>
 <codeline lineno="86"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;can1_recv_entries.h&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="87"><highlight class="normal">};</highlight></codeline>
 <codeline lineno="88"><highlight class="normal"></highlight><highlight class="preprocessor">#undef<sp/>CAN_RECV_ENTRY</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="89"><highlight class="normal"></highlight></codeline>
 <codeline lineno="90"><highlight class="normal"></highlight><highlight class="comment">//<sp/>calculate<sp/>amount<sp/>of<sp/>can1<sp/>recv<sp/>entries</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="91"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint32_t<sp/>can1_recv_entry_count<sp/>=</highlight></codeline>
+<codeline lineno="91"><highlight class="normal">__attribute__((unused))<sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint32_t<sp/>can1_recv_entry_count<sp/>=</highlight></codeline>
 <codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(can1_recv_entries)<sp/>/<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(can1_recv_entries[0]);</highlight></codeline>
 <codeline lineno="93"><highlight class="normal"></highlight></codeline>
 <codeline lineno="94"><highlight class="normal"></highlight><highlight class="preprocessor">#else<sp/></highlight><highlight class="comment">/*<sp/>can1_recv_entries.h<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
@@ -195,7 +195,7 @@
 <codeline lineno="104"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>__has_include(&quot;can2_recv_entries.h&quot;)</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="105"><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>can2<sp/>recv<sp/>queue<sp/>storage</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="106"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CAN_RECV_ENTRY(ID_,<sp/>SIZE_,<sp/>CIRCULAR_)<sp/>\</highlight></codeline>
-<codeline lineno="107"><highlight class="preprocessor"><sp/><sp/>static<sp/>uint8_t<sp/>can2_recv_queue_storage_##ID_[SIZE_<sp/>*<sp/>sizeof(can_rx_payload_t)];</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="107"><highlight class="preprocessor"><sp/><sp/>__attribute__((unused))<sp/>static<sp/>uint8_t<sp/>can2_recv_queue_storage_##ID_[SIZE_<sp/>*<sp/>sizeof(can_rx_payload_t)];</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="108"><highlight class="normal"></highlight></codeline>
 <codeline lineno="109"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;can2_recv_entries.h&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="110"><highlight class="normal"></highlight></codeline>
@@ -210,13 +210,13 @@
 <codeline lineno="119"><highlight class="preprocessor"><sp/><sp/><sp/>.circular<sp/>=<sp/>(CIRCULAR_),<sp/>\</highlight></codeline>
 <codeline lineno="120"><highlight class="preprocessor"><sp/><sp/><sp/>.buffer<sp/>=<sp/>{{0}}},</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="121"><highlight class="normal"></highlight></codeline>
-<codeline lineno="122"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="structcan__recv__entry__t" kindref="compound">can_recv_entry_t</ref><sp/>can2_recv_entries[]<sp/>=<sp/>{</highlight></codeline>
+<codeline lineno="122"><highlight class="normal">__attribute__((unused))<sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="structcan__recv__entry__t" kindref="compound">can_recv_entry_t</ref><sp/>can2_recv_entries[]<sp/>=<sp/>{</highlight></codeline>
 <codeline lineno="123"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;can2_recv_entries.h&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="124"><highlight class="normal">};</highlight></codeline>
 <codeline lineno="125"><highlight class="normal"></highlight><highlight class="preprocessor">#undef<sp/>CAN_RECV_ENTRY</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="126"><highlight class="normal"></highlight></codeline>
 <codeline lineno="127"><highlight class="normal"></highlight><highlight class="comment">//<sp/>calculate<sp/>amount<sp/>of<sp/>can2<sp/>recv<sp/>entries</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="128"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint32_t<sp/>can2_recv_entry_count<sp/>=</highlight></codeline>
+<codeline lineno="128"><highlight class="normal">__attribute__((unused))<sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint32_t<sp/>can2_recv_entry_count<sp/>=</highlight></codeline>
 <codeline lineno="129"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(can2_recv_entries)<sp/>/<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(can2_recv_entries[0]);</highlight></codeline>
 <codeline lineno="130"><highlight class="normal"></highlight></codeline>
 <codeline lineno="131"><highlight class="normal"></highlight><highlight class="preprocessor">#else<sp/></highlight><highlight class="comment">/*<sp/>can2_recv_entries.h<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
@@ -233,7 +233,7 @@
 <codeline lineno="142"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>__has_include(&quot;can3_recv_entries.h&quot;)</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="143"><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>recv<sp/>queue<sp/>storage</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="144"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CAN_RECV_ENTRY(ID_,<sp/>SIZE_,<sp/>CIRCULAR_)<sp/>\</highlight></codeline>
-<codeline lineno="145"><highlight class="preprocessor"><sp/><sp/>static<sp/>uint8_t<sp/>recv_queue_storage_##ID_[SIZE_<sp/>*<sp/>sizeof(can_rx_payload_t)];</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="145"><highlight class="preprocessor"><sp/><sp/>__attribute__((unused))<sp/>static<sp/>uint8_t<sp/>recv_queue_storage_##ID_[SIZE_<sp/>*<sp/>sizeof(can_rx_payload_t)];</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="146"><highlight class="normal"></highlight></codeline>
 <codeline lineno="147"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;can3_recv_entries.h&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="148"><highlight class="normal"></highlight></codeline>
@@ -248,13 +248,13 @@
 <codeline lineno="157"><highlight class="preprocessor"><sp/><sp/><sp/>.circular<sp/>=<sp/>(CIRCULAR_),<sp/>\</highlight></codeline>
 <codeline lineno="158"><highlight class="preprocessor"><sp/><sp/><sp/>.buffer<sp/>=<sp/>{{0}}},</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="159"><highlight class="normal"></highlight></codeline>
-<codeline lineno="160"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="structcan__recv__entry__t" kindref="compound">can_recv_entry_t</ref><sp/>can3_recv_entries[]<sp/>=<sp/>{</highlight></codeline>
+<codeline lineno="160"><highlight class="normal">__attribute__((unused))<sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="structcan__recv__entry__t" kindref="compound">can_recv_entry_t</ref><sp/>can3_recv_entries[]<sp/>=<sp/>{</highlight></codeline>
 <codeline lineno="161"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;can3_recv_entries.h&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="162"><highlight class="normal">};</highlight></codeline>
 <codeline lineno="163"><highlight class="normal"></highlight><highlight class="preprocessor">#undef<sp/>CAN_RECV_ENTRY</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="164"><highlight class="normal"></highlight></codeline>
 <codeline lineno="165"><highlight class="normal"></highlight><highlight class="comment">//<sp/>calculate<sp/>amount<sp/>of<sp/>can3<sp/>recv<sp/>entries</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="166"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint32_t<sp/>can3_recv_entry_count<sp/>=</highlight></codeline>
+<codeline lineno="166"><highlight class="normal">__attribute__((unused))<sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint32_t<sp/>can3_recv_entry_count<sp/>=</highlight></codeline>
 <codeline lineno="167"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(can3_recv_entries)<sp/>/<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(can3_recv_entries[0]);</highlight></codeline>
 <codeline lineno="168"><highlight class="normal"></highlight></codeline>
 <codeline lineno="169"><highlight class="normal"></highlight><highlight class="preprocessor">#else<sp/></highlight><highlight class="comment">/*<sp/>can3_recv_entries.h<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
