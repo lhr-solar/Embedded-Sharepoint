@@ -13,3 +13,4 @@
     * [WS2812B Usage Guide](WS2812B.md)
     * [CAN Usage Guide](canSetup.md)
     * [SDCARD Usage Guide](sdcard.md)
+    * [Moving Average Usage Guide](MovingAverage.md)

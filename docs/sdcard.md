@@ -205,3 +205,5 @@ The `SD_Worker` task is allocated **2048 words**. Large local buffers in file op
 
 ---
 
+## Examples of projects that use this SD Card Driver
+* [PS-VehicleControlUnit](https://github.com/lhr-solar/PS-VehicleControlUnit/blob/main/Firmware/Drivers/Src/User_SDCard.c)
