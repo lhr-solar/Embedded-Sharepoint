@@ -1,4 +1,6 @@
 #include "CAN_FD.h"
+#include "can_msgs.h"
+
 
 #include "stm32xx_hal.h"
 
@@ -167,18 +169,20 @@ void Error_Handler() {
 
 void Success_Handler() { HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET); }
 
-static void task(void* pvParameters) {
-  int test_id = 0x321;
-  FDCAN_TxHeaderTypeDef tx_header = {0};
-  tx_header.Identifier = test_id;
-  tx_header.IdType = FDCAN_STANDARD_ID;
-  tx_header.TxFrameType = FDCAN_DATA_FRAME;
-  tx_header.DataLength = FDCAN_DLC_BYTES_8;
-  tx_header.ErrorStateIndicator = FDCAN_ESI_ACTIVE;
-  tx_header.BitRateSwitch = FDCAN_BRS_OFF;
-  tx_header.FDFormat = FDCAN_CLASSIC_CAN;
-  tx_header.TxEventFifoControl = FDCAN_STORE_TX_EVENTS;
-  tx_header.MessageMarker = 0;
+
+static void task(void *pvParameters) {
+
+    int test_id = 0x321;
+    FDCAN_TxHeaderTypeDef tx_header = {0};   
+    tx_header.Identifier = test_id;
+    tx_header.IdType = FDCAN_STANDARD_ID;
+    tx_header.TxFrameType = FDCAN_DATA_FRAME;
+    tx_header.DataLength = FDCAN_DLC_BYTES_8;
+    tx_header.ErrorStateIndicator = FDCAN_ESI_ACTIVE;
+    tx_header.BitRateSwitch = FDCAN_BRS_OFF;
+    tx_header.FDFormat = FDCAN_CLASSIC_CAN;
+    tx_header.TxEventFifoControl = FDCAN_STORE_TX_EVENTS;
+    tx_header.MessageMarker = 0;
 
   // send x1234 to 0x321
   uint8_t tx_data[8] = {0};

@@ -11,5 +11,6 @@
 * Drivers Documentation
     * [EMC2305 Usage Guide](EMC2305.md)
     * [WS2812B Usage Guide](WS2812B.md)
-    * [CAN Usage Guide](canSetup.md)
+    * [CAN Usage Guide](CanSetup.md)
     * [SDCARD Usage Guide](sdcard.md)
+    * [Moving Average Usage Guide](MovingAverage.md)
