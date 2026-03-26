@@ -22,7 +22,7 @@ When the compiler processes DEFINE_MOVING_AVG(CellVoltage, uint16_t, uint32_t, 2
 static inline uint16_t CellVoltage_update(CellVoltage *ma, uint16_t sample)
 ```
 ### Generation Format
-When you call the macro as `DEFINE_MOVING_AVG(NAME, TYPE, SUM_TYPE)`, the preprocessor maps your NAME argument to the following identifiers:
+When you call the macro as `DEFINE_MOVING_AVG(NAME, TYPE, SUM_TYPE, MOVING_AVERAGE_WINDOW_SIZE)`, the preprocessor maps your NAME argument to the following identifiers:
 
 | Generated Component | Format | Example (if NAME is Battery) |
 | -------- | -------- | -------- |
