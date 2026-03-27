@@ -4,9 +4,9 @@
     <compoundname>can_recv_entry_t</compoundname>
     <includes refid="CAN__Common_8h" local="no">CAN_Common.h</includes>
     <sectiondef kind="public-attrib">
-      <memberdef kind="variable" id="structcan__recv__entry__t_1a1bd75304b96766f671258cdda2fca553" prot="public" static="no" mutable="no">
-        <type>uint16_t</type>
-        <definition>uint16_t can_recv_entry_t::id</definition>
+      <memberdef kind="variable" id="structcan__recv__entry__t_1ad96d12109df040b9d8a51c18253b233f" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t can_recv_entry_t::id</definition>
         <argsstring></argsstring>
         <name>id</name>
         <qualifiedname>can_recv_entry_t::id</qualifiedname>
@@ -97,7 +97,7 @@
     <listofallmembers>
       <member refid="structcan__recv__entry__t_1a9f0b29f498add824b7003053b990434f" prot="public" virt="non-virtual"><scope>can_recv_entry_t</scope><name>buffer</name></member>
       <member refid="structcan__recv__entry__t_1a9d3f736ae7b72164fb42fc3b90b5cd93" prot="public" virt="non-virtual"><scope>can_recv_entry_t</scope><name>circular</name></member>
-      <member refid="structcan__recv__entry__t_1a1bd75304b96766f671258cdda2fca553" prot="public" virt="non-virtual"><scope>can_recv_entry_t</scope><name>id</name></member>
+      <member refid="structcan__recv__entry__t_1ad96d12109df040b9d8a51c18253b233f" prot="public" virt="non-virtual"><scope>can_recv_entry_t</scope><name>id</name></member>
       <member refid="structcan__recv__entry__t_1a59542b5ee5fef8962155ceaae21f9e61" prot="public" virt="non-virtual"><scope>can_recv_entry_t</scope><name>queue</name></member>
       <member refid="structcan__recv__entry__t_1a2ad7f3cfe4fd1aa272c5cb71aa84f623" prot="public" virt="non-virtual"><scope>can_recv_entry_t</scope><name>size</name></member>
       <member refid="structcan__recv__entry__t_1a3ef21cb2a3f13496499cb27d4954d918" prot="public" virt="non-virtual"><scope>can_recv_entry_t</scope><name>storage</name></member>

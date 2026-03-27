@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.9.8" xml:lang="en-US">
   <compound refid="structcan__recv__entry__t" kind="struct"><name>can_recv_entry_t</name>
-    <member refid="structcan__recv__entry__t_1a1bd75304b96766f671258cdda2fca553" kind="variable"><name>id</name></member>
+    <member refid="structcan__recv__entry__t_1ad96d12109df040b9d8a51c18253b233f" kind="variable"><name>id</name></member>
     <member refid="structcan__recv__entry__t_1a2ad7f3cfe4fd1aa272c5cb71aa84f623" kind="variable"><name>size</name></member>
     <member refid="structcan__recv__entry__t_1a59542b5ee5fef8962155ceaae21f9e61" kind="variable"><name>queue</name></member>
     <member refid="structcan__recv__entry__t_1a3ef21cb2a3f13496499cb27d4954d918" kind="variable"><name>storage</name></member>
@@ -36,7 +36,7 @@
     <member refid="CAN_8h_1a95783594f75e8feb9203af4ec4e28aed" kind="function"><name>can_start</name></member>
     <member refid="CAN_8h_1adee9ce61f8d5f4b4cdfc97c8d7b0dafc" kind="function"><name>can_stop</name></member>
     <member refid="CAN_8h_1a5308363109455439841baf22512c415f" kind="function"><name>can_send</name></member>
-    <member refid="CAN_8h_1a9891bb23cf1be1a31110671519764f74" kind="function"><name>can_recv</name></member>
+    <member refid="CAN_8h_1a41b5ad5336692907d27aac626a2bc204" kind="function"><name>can_recv</name></member>
     <member refid="CAN_8h_1ae43c7c6d848e0265b283dc398bf82e05" kind="function"><name>can_tx_callback_hook</name></member>
     <member refid="CAN_8h_1a31a2c4cb756ad40945af9f760fe382e9" kind="function"><name>can_rx_callback_hook</name></member>
   </compound>
@@ -52,7 +52,7 @@
     <member refid="CAN__FD_8h_1a3c9b9d35e473506c11ebabd44210bcc3" kind="function"><name>can_fd_deinit</name></member>
     <member refid="CAN__FD_8h_1aba1a4136e01207ba7cccb5d2e0994276" kind="function"><name>can_fd_start</name></member>
     <member refid="CAN__FD_8h_1a97b6f4d9057d197886b2af512cbbccc4" kind="function"><name>can_fd_send</name></member>
-    <member refid="CAN__FD_8h_1aa94c621f0ba1d7136bfdf61a83a2c4e2" kind="function"><name>can_fd_recv</name></member>
+    <member refid="CAN__FD_8h_1a5c6036eb5103092e8c3c4f1c0b3066fb" kind="function"><name>can_fd_recv</name></member>
     <member refid="CAN__FD_8h_1ad150cda00c529bf5f256d6c49525c199" kind="function"><name>can_fd_tx_callback_hook</name></member>
     <member refid="CAN__FD_8h_1af052a1ab45f4b3f7698a6081cbec3181" kind="function"><name>can_fd_rx_callback_hook</name></member>
   </compound>

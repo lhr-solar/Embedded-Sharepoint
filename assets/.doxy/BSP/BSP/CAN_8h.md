@@ -55,7 +55,7 @@ _CAN peripheral driver for LHRS embedded systems._ [More...](#detailed-descripti
 | ---: | :--- |
 |  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_deinit**](#function-can_deinit) (CAN\_HandleTypeDef \* handle) <br>_Deinitializes the bxCAN peripheral._  |
 |  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_init**](#function-can_init) (CAN\_HandleTypeDef \* handle, CAN\_FilterTypeDef \* filter) <br>_Initializes the bxCAN peripheral._  |
-|  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_recv**](#function-can_recv) (CAN\_HandleTypeDef \* handle, uint16\_t id, CAN\_RxHeaderTypeDef \* header, uint8\_t data, TickType\_t delay\_ticks) <br>_Receives a CAN message._  |
+|  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_recv**](#function-can_recv) (CAN\_HandleTypeDef \* handle, uint32\_t id, CAN\_RxHeaderTypeDef \* header, uint8\_t data, TickType\_t delay\_ticks) <br>_Receives a CAN message._  |
 |  void | [**can\_rx\_callback\_hook**](#function-can_rx_callback_hook) (CAN\_HandleTypeDef \* hcan, const [**can\_rx\_payload\_t**](structcan__rx__payload__t.md) \* payload) <br>_Weakly defined hook function. Called in RX callback (ISR context) after receiving a message from RX FIFO. Implementation must be short and non-blocking!_  |
 |  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_send**](#function-can_send) (CAN\_HandleTypeDef \* handle, const CAN\_TxHeaderTypeDef \* header, const uint8\_t data, TickType\_t delay\_ticks) <br>_Sends a CAN message._  |
 |  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_start**](#function-can_start) (CAN\_HandleTypeDef \* handle) <br>_Starts the CAN peripheral._  |
@@ -221,7 +221,7 @@ _Receives a CAN message._
 ```C++
 can_status_t can_recv (
     CAN_HandleTypeDef * handle,
-    uint16_t id,
+    uint32_t id,
     CAN_RxHeaderTypeDef * header,
     uint8_t data,
     TickType_t delay_ticks

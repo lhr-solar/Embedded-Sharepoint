@@ -38,7 +38,7 @@
 | ---: | :--- |
 |  StaticQueue\_t | [**buffer**](#variable-buffer)  <br> |
 |  bool | [**circular**](#variable-circular)  <br> |
-|  uint16\_t | [**id**](#variable-id)  <br> |
+|  uint32\_t | [**id**](#variable-id)  <br> |
 |  QueueHandle\_t | [**queue**](#variable-queue)  <br> |
 |  uint16\_t | [**size**](#variable-size)  <br> |
 |  uint8\_t \* | [**storage**](#variable-storage)  <br> |
@@ -120,7 +120,7 @@ bool can_recv_entry_t::circular;
 ### variable id 
 
 ```C++
-uint16_t can_recv_entry_t::id;
+uint32_t can_recv_entry_t::id;
 ```
 
 

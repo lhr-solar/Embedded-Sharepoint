@@ -203,17 +203,17 @@
         </inbodydescription>
         <location file="bsp/Inc/CAN_FD.h" line="76" column="14" declfile="bsp/Inc/CAN_FD.h" declline="76" declcolumn="14"/>
       </memberdef>
-      <memberdef kind="function" id="CAN__FD_8h_1aa94c621f0ba1d7136bfdf61a83a2c4e2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="CAN__FD_8h_1a5c6036eb5103092e8c3c4f1c0b3066fb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref></type>
         <definition>can_status_t can_fd_recv</definition>
-        <argsstring>(FDCAN_HandleTypeDef *handle, uint16_t id, FDCAN_RxHeaderTypeDef *header, uint8_t data[], TickType_t delay_ticks)</argsstring>
+        <argsstring>(FDCAN_HandleTypeDef *handle, uint32_t id, FDCAN_RxHeaderTypeDef *header, uint8_t data[], TickType_t delay_ticks)</argsstring>
         <name>can_fd_recv</name>
         <param>
           <type>FDCAN_HandleTypeDef *</type>
           <declname>handle</declname>
         </param>
         <param>
-          <type>uint16_t</type>
+          <type>uint32_t</type>
           <declname>id</declname>
         </param>
         <param>
@@ -368,13 +368,13 @@
 <codeline lineno="61"><highlight class="normal"></highlight></codeline>
 <codeline lineno="76" refid="CAN__FD_8h_1a97b6f4d9057d197886b2af512cbbccc4" refkind="member"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN__FD_8h_1a97b6f4d9057d197886b2af512cbbccc4" kindref="member">can_fd_send</ref>(FDCAN_HandleTypeDef*<sp/>handle,<sp/>FDCAN_TxHeaderTypeDef*<sp/>header,<sp/>uint8_t<sp/>data[],<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
 <codeline lineno="77"><highlight class="normal"></highlight></codeline>
-<codeline lineno="94" refid="CAN__FD_8h_1aa94c621f0ba1d7136bfdf61a83a2c4e2" refkind="member"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN__FD_8h_1aa94c621f0ba1d7136bfdf61a83a2c4e2" kindref="member">can_fd_recv</ref>(FDCAN_HandleTypeDef*<sp/>handle,<sp/>uint16_t<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>FDCAN_RxHeaderTypeDef*<sp/>header,<sp/>uint8_t<sp/>data[],<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
+<codeline lineno="94" refid="CAN__FD_8h_1a5c6036eb5103092e8c3c4f1c0b3066fb" refkind="member"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN__FD_8h_1a5c6036eb5103092e8c3c4f1c0b3066fb" kindref="member">can_fd_recv</ref>(FDCAN_HandleTypeDef*<sp/>handle,<sp/>uint32_t<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>FDCAN_RxHeaderTypeDef*<sp/>header,<sp/>uint8_t<sp/>data[],<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
 <codeline lineno="95"><highlight class="normal"></highlight></codeline>
 <codeline lineno="96"><highlight class="normal"></highlight></codeline>
 <codeline lineno="97"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>(<sp/>configUSE_QUEUE_SETS<sp/>==<sp/>1<sp/>)</highlight></codeline>
 <codeline lineno="108"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/>can_fd_register_id_set(FDCAN_HandleTypeDef*<sp/>handle,<sp/>can_id_set_t*<sp/>set);</highlight></codeline>
 <codeline lineno="109"><highlight class="normal"></highlight></codeline>
-<codeline lineno="120"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/>can_fd_recv_set(FDCAN_HandleTypeDef*<sp/>handle,<sp/>can_id_set_t*<sp/>set,<sp/>uint16_t<sp/>*</highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/>can_fd_recv_set(FDCAN_HandleTypeDef*<sp/>handle,<sp/>can_id_set_t*<sp/>set,<sp/>uint32_t<sp/>*</highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
 <codeline lineno="121"><highlight class="normal"></highlight></codeline>
 <codeline lineno="122"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>(<sp/>configUSE_QUEUE_SETS<sp/>==<sp/>1<sp/>)<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="123"><highlight class="normal"></highlight></codeline>

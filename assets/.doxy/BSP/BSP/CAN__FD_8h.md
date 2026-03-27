@@ -56,7 +56,7 @@
 | ---: | :--- |
 |  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_fd\_deinit**](#function-can_fd_deinit) (FDCAN\_HandleTypeDef \* handle) <br>_Deinitializes the FDCAN peripheral._  |
 |  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_fd\_init**](#function-can_fd_init) (FDCAN\_HandleTypeDef \* handle, FDCAN\_FilterTypeDef \* filter) <br>_Initializes the FDCAN peripheral._  |
-|  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_fd\_recv**](#function-can_fd_recv) (FDCAN\_HandleTypeDef \* handle, uint16\_t id, FDCAN\_RxHeaderTypeDef \* header, uint8\_t data, TickType\_t delay\_ticks) <br>_Receives a FDCAN message._  |
+|  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_fd\_recv**](#function-can_fd_recv) (FDCAN\_HandleTypeDef \* handle, uint32\_t id, FDCAN\_RxHeaderTypeDef \* header, uint8\_t data, TickType\_t delay\_ticks) <br>_Receives a FDCAN message._  |
 |  void | [**can\_fd\_rx\_callback\_hook**](#function-can_fd_rx_callback_hook) (FDCAN\_HandleTypeDef \* hfdcan, uint32\_t RxFifo0ITs, [**can\_rx\_payload\_t**](structcan__rx__payload__t.md) recv\_payload) <br> |
 |  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_fd\_send**](#function-can_fd_send) (FDCAN\_HandleTypeDef \* handle, FDCAN\_TxHeaderTypeDef \* header, uint8\_t data, TickType\_t delay\_ticks) <br>_Sends a FDCAN message._  |
 |  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_fd\_start**](#function-can_fd_start) (FDCAN\_HandleTypeDef \* handle) <br>_Starts the FDCAN peripheral._  |
@@ -176,7 +176,7 @@ _Receives a FDCAN message._
 ```C++
 can_status_t can_fd_recv (
     FDCAN_HandleTypeDef * handle,
-    uint16_t id,
+    uint32_t id,
     FDCAN_RxHeaderTypeDef * header,
     uint8_t data,
     TickType_t delay_ticks

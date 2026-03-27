@@ -1456,7 +1456,7 @@
 </tr>
 <tr>
 <td style="text-align: right;"><a href="../CAN__Common_8h/#enum-can_status_t"><strong>can_status_t</strong></a></td>
-<td style="text-align: left;"><a href="#function-can_fd_recv"><strong>can_fd_recv</strong></a> (FDCAN_HandleTypeDef * handle, uint16_t id, FDCAN_RxHeaderTypeDef * header, uint8_t data, TickType_t delay_ticks) <br><em>Receives a FDCAN message.</em></td>
+<td style="text-align: left;"><a href="#function-can_fd_recv"><strong>can_fd_recv</strong></a> (FDCAN_HandleTypeDef * handle, uint32_t id, FDCAN_RxHeaderTypeDef * header, uint8_t data, TickType_t delay_ticks) <br><em>Receives a FDCAN message.</em></td>
 </tr>
 <tr>
 <td style="text-align: right;">void</td>
@@ -1513,7 +1513,7 @@
 <p><em>Receives a FDCAN message.</em> </p>
 <pre><code class="language-C++">can_status_t can_fd_recv (
     FDCAN_HandleTypeDef * handle,
-    uint16_t id,
+    uint32_t id,
     FDCAN_RxHeaderTypeDef * header,
     uint8_t data,
     TickType_t delay_ticks

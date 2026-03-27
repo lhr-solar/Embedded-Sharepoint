@@ -63,7 +63,7 @@ typedef struct {
 
 // metadata for recieve queues
 typedef struct {
-  uint16_t id;
+  uint32_t id;
   uint16_t size;
   QueueHandle_t queue;
   uint8_t* storage;
