@@ -1,5 +1,6 @@
 // A simple echo application to test input and output over serial
 #include <string.h>
+#include <math.h>
 #include "stm32xx_hal.h"
 #include "printf.h"
 
@@ -68,7 +69,7 @@ void HardFault_Handler(){
 }
 #pragma GCC diagnostic pop
 
-#define THREAD_MULTIPLIER 5
+#define THREAD_MULTIPLIER 3
 #define DUMP_SIZE 100
 
 static char *messages[] = {
@@ -82,28 +83,34 @@ static char *messages[] = {
 StaticTask_t txTaskBuffer[sizeof(messages)/sizeof(char*) * THREAD_MULTIPLIER];
 StackType_t txTaskStack[sizeof(messages)/sizeof(char*) * THREAD_MULTIPLIER][configMINIMAL_STACK_SIZE];
 
-static uint64_t time_dump[sizeof(messages)/sizeof(char*) * THREAD_MULTIPLIER][DUMP_SIZE] = {0};
-static volatile uint64_t time_max = 0;
+static uint32_t time_dump[sizeof(messages)/sizeof(char*) * THREAD_MULTIPLIER][DUMP_SIZE] = {0};
 static bool tx_done[sizeof(messages)/sizeof(char*) * THREAD_MULTIPLIER] = {};
 
 void TxTask(void *argument){
     uint8_t time_ind = 0;
 
-    for(int i=0; i<100; i++){
-        volatile int time_before = DWT->CYCCNT;
-        //printf(messages[((int)argument % (sizeof(messages)/sizeof(char*)))]);
-        uart_send(husart2, (const uint8_t *)messages[((int)argument % (sizeof(messages)/sizeof(char*)))], strlen(messages[((int)argument % (sizeof(messages)/sizeof(char*)))]), portMAX_DELAY);
-        time_dump[(int)argument][time_ind++] = (time_before - DWT->CYCCNT);
-
-        if(time_max < time_dump[(int)argument][time_ind-1]) time_max = time_dump[(int)argument][time_ind-1];
+    for(int i=0; i<DUMP_SIZE; i++){
+        volatile uint32_t time_before = DWT->CYCCNT;
+        printf(messages[((int)argument % (sizeof(messages)/sizeof(char*)))]);
+        //uart_send(husart2, (const uint8_t *)messages[((int)argument % (sizeof(messages)/sizeof(char*)))], strlen(messages[((int)argument % (sizeof(messages)/sizeof(char*)))]), portMAX_DELAY);
+        volatile uint32_t time_after = DWT->CYCCNT;
+        uint32_t time_elapsed = (time_after - time_before);
+        time_dump[(int)argument][time_ind++] = time_elapsed;
 
         time_ind = time_ind % DUMP_SIZE;
 
-        vTaskDelay(pdMS_TO_TICKS(0));
+        portYIELD();
     }
 
     tx_done[(int)argument] = true;
     while(1){vTaskDelay(1000);}
+}
+
+void DWT_Init(void)
+{
+    CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+    DWT->CYCCNT = 0UL;
+    DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
 }
 
 void InitTask(void *argument){
@@ -129,12 +136,7 @@ void InitTask(void *argument){
     printf_init(husart3);
 #endif
 
-    if (!(CoreDebug->DEMCR & CoreDebug_DEMCR_TRCENA_Msk)) {
-        CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk; // Enable trace
-    }
-
-    DWT->CYCCNT = 0;                // Reset counter
-    DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk; // Enable cycle counter
+    DWT_Init();
     
     for(int i=0; i<sizeof(messages)/sizeof(char*) * THREAD_MULTIPLIER; i++){
         tx_done[i] = false;
@@ -155,16 +157,41 @@ void InitTask(void *argument){
         }
 
         if(all_done){
-            for(int i=0; i<sizeof(messages)/sizeof(char*) * THREAD_MULTIPLIER; i++){
-                printf("Times for TID %d: ", i);
+            float global_max = 0.0f;
+            int num_messages = sizeof(messages)/sizeof(char*);
+
+            for(int i=0; i<num_messages * THREAD_MULTIPLIER; i++){
+                const char *msg     = messages[i % num_messages];
+                int         msg_len = strlen(msg);
+
+                float t_min    = 1e30f, t_max = 0.0f;
+                float t_sum    = 0.0f,  t_sum_sq = 0.0f;
+
+                printf("Times for TID %d (msg idx %d, len %d):\n\r", i, i % num_messages, msg_len);
                 for(int j=0; j<DUMP_SIZE; j++){
-                    printf("%d ", time_dump[i][j]);
+                    float t = time_dump[i][j] / (SystemCoreClock / 1000.0f);
+                    // printf("\t%f ms\n\r", t);
+
+                    if(t < t_min) t_min = t;
+                    if(t > t_max) t_max = t;
+                    t_sum    += t;
+                    t_sum_sq += t * t;
+
+                    if(t > global_max) global_max = t;
                 }
-                printf("\n\r");
+
+                float mean   = t_sum / DUMP_SIZE;
+                float stddev = sqrtf((t_sum_sq / DUMP_SIZE) - (mean * mean));
+
+                printf("  Msg:    \"%s\"\n\r", msg);
+                printf("  Min:    %f ms\n\r", t_min);
+                printf("  Max:    %f ms\n\r", t_max);
+                printf("  Mean:   %f ms\n\r", mean);
+                printf("  Jitter: %f ms  (peak-to-peak)\n\r", t_max - t_min);
+                printf("  Stddev: %f ms\n\r", stddev);
             }
 
-            printf("Max time: %d\n\r", time_max);
-
+            printf("Global max: %f ms\n\r", global_max);
             break;
         }
     }

@@ -44,7 +44,7 @@ typedef struct {
     StaticSemaphore_t tx_mutex_buffer; // static mutex info (required for initialization)
     SemaphoreHandle_t tx_kick_mutex; // used to ensure that only one task tries to kickstart TX
     StaticSemaphore_t tx_kick_mutex_buffer; // static mutex info (required for initialization)
-    bool tx_active; 
+    volatile bool tx_active; 
 
     uint16_t rx_queue_size; // number of UART_rx_payload_t in rx_queue
     QueueHandle_t rx_queue; // queue handle
@@ -682,10 +682,10 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint16_
     // If the background interrupts are not active we need to kickstart them
     if(xSemaphoreTake(uart_periph->tx_kick_mutex, delay_ticks) != pdTRUE) return UART_ERR;
     portENTER_CRITICAL();
-    if (!uart_periph->tx_active){
+    if(!uart_periph->tx_active) {
+        portEXIT_CRITICAL();
         uart_transmit(handle, false, delay_ticks);
-    }
-    portEXIT_CRITICAL();
+    } else portEXIT_CRITICAL();
     xSemaphoreGive(uart_periph->tx_kick_mutex);
 
 exit:
