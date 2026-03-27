@@ -1,6 +1,7 @@
 #include "UART.h"
 #include <string.h>
 #include <stdint.h>
+#include "stm32xx_hal.h"
 
 // Define the size of the data to be transmitted
 // may need to be configured for support for packets less more than 8 bits
@@ -9,7 +10,7 @@
 #endif
 
 #ifndef UART_RX_DATA_SIZE
-#define UART_RX_DATA_SIZE (1)
+#define UART_RX_DATA_SIZE (32)
 #endif
 
 #ifndef UART_SINGLE_TX_SIZE
@@ -21,7 +22,7 @@
 #define UART_NVIC_PREEMPT_PRIO (5)
 #endif
 
-typedef struct __attribute((packed)) {
+typedef struct {
     uint8_t data[UART_TX_DATA_SIZE]; // data to be transmitted
     uint8_t len;
 } UART_tx_payload_t;
@@ -41,6 +42,9 @@ typedef struct {
     uint8_t *tx_dir_buffer; // buffer for in-progress direct transmission
     SemaphoreHandle_t tx_mutex; // used to ensure ordering in case of multiple users of same TX queue
     StaticSemaphore_t tx_mutex_buffer; // static mutex info (required for initialization)
+    SemaphoreHandle_t tx_kick_mutex; // used to ensure that only one task tries to kickstart TX
+    StaticSemaphore_t tx_kick_mutex_buffer; // static mutex info (required for initialization)
+    bool tx_active; 
 
     uint16_t rx_queue_size; // number of UART_rx_payload_t in rx_queue
     QueueHandle_t rx_queue; // queue handle
@@ -48,6 +52,9 @@ typedef struct {
     uint8_t *rx_queue_storage; // storage for rx queue
     UART_rx_payload_t rx_buffer; // intermediate buffer of UART_RX_DATA_SIZE bytes to store received data before it is copied to the queue
 } UART_periph_t;
+
+// helper to trigger background interrupts
+static void uart_transmit(UART_HandleTypeDef *huart, bool from_isr, TickType_t delay_ticks);
 
 #ifdef UART4
 // fallback UART4 TX queue size
@@ -72,6 +79,7 @@ static UART_periph_t uart4 = {
     .tx_queue = NULL,
     .tx_queue_storage = uart4_tx_queue_storage,
     .tx_dir_buffer = uart4_tx_dir_buffer,
+    .tx_active = false,
 
     .rx_queue_size = UART4_RX_QUEUE_SIZE,
     .rx_queue = NULL,
@@ -104,6 +112,7 @@ static UART_periph_t uart5 = {
     .tx_queue = NULL,
     .tx_queue_storage = uart5_tx_queue_storage,
     .tx_dir_buffer = uart5_tx_dir_buffer,
+    .tx_active = false,
 
     .rx_queue_size = UART5_RX_QUEUE_SIZE,
     .rx_queue = NULL,
@@ -136,6 +145,7 @@ static UART_periph_t usart1 = {
     .tx_queue = NULL,
     .tx_queue_storage = usart1_tx_queue_storage,
     .tx_dir_buffer = usart1_tx_dir_buffer,
+    .tx_active = false,
 
     .rx_queue_size = USART1_RX_QUEUE_SIZE,
     .rx_queue = NULL,
@@ -168,6 +178,7 @@ static UART_periph_t usart2 = {
     .tx_queue = NULL,
     .tx_queue_storage = usart2_tx_queue_storage,
     .tx_dir_buffer = usart2_tx_dir_buffer,
+    .tx_active = false,
 
     .rx_queue_size = USART2_RX_QUEUE_SIZE,
     .rx_queue = NULL,
@@ -200,6 +211,7 @@ static UART_periph_t usart3 = {
     .tx_queue = NULL,
     .tx_queue_storage = usart3_tx_queue_storage,
     .tx_dir_buffer = usart3_tx_dir_buffer,
+    .tx_active = false,
 
     .rx_queue_size = USART3_RX_QUEUE_SIZE,
     .rx_queue = NULL,
@@ -230,6 +242,7 @@ static UART_periph_t lpuart1 = {
     .tx_queue = NULL,
     .tx_queue_storage = lpuart1_tx_queue_storage,
     .tx_dir_buffer = lpuart1_tx_dir_buffer,
+    .tx_active = false,
 
     .rx_queue_size = LPUART1_RX_QUEUE_SIZE,
     .rx_queue = NULL,
@@ -242,7 +255,7 @@ UART_HandleTypeDef *hlpuart1 = &lpuart1.huart;
 static bool is_uart_initialized(UART_HandleTypeDef* handle) {
     // Check if the UART is in a valid state
     // HAL_UART_STATE_RESET indicates the UART is not initialized
-    return (handle->gState != HAL_UART_STATE_RESET);
+    return (HAL_UART_GetState(handle) != HAL_UART_STATE_RESET);
 }
 
 static UART_periph_t *get_valid_uart_periph(UART_HandleTypeDef *handle){
@@ -567,6 +580,7 @@ uart_status_t uart_init(UART_HandleTypeDef* handle) {
                                         &uart_periph->rx_queue_buffer);
 
     uart_periph->tx_mutex = xSemaphoreCreateMutexStatic(&uart_periph->tx_mutex_buffer);
+    uart_periph->tx_kick_mutex = xSemaphoreCreateMutexStatic(&uart_periph->tx_kick_mutex_buffer);
 
     // init HAL
     if(HAL_UART_Init(handle) != HAL_OK){
@@ -612,7 +626,7 @@ uart_status_t uart_deinit(UART_HandleTypeDef* handle) {
  * @param delay_ticks number of ticks to wait for data to be transmitted
  * @return uart_status_t
  */
-uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t length, TickType_t delay_ticks) {
+uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint16_t length, TickType_t delay_ticks) {
     if (length == 0 || !is_uart_initialized(handle)) { // check if UART is initialized and data length is not 0
         return UART_ERR;
     }
@@ -624,13 +638,17 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
 
     // Try direct transmission if possible
     portENTER_CRITICAL();
-    if ((HAL_UART_GetState(handle) & HAL_UART_STATE_BUSY_TX) != HAL_UART_STATE_BUSY_TX &&
-        uxQueueMessagesWaiting (uart_periph->tx_queue) == 0 ) { // check if UART is ready and queue is empty
-        // Copy data to static buffer
+    if (!uart_periph->tx_active &&
+        uxQueueMessagesWaiting (uart_periph->tx_queue) == 0 &&
+        length <= UART_SINGLE_TX_SIZE) { // check if UART is ready and queue is empty and length is enough to fit in single tx buffer
+
+        // Copy all input data to static buffer
         memcpy(uart_periph->tx_dir_buffer, data, length);
+        uart_periph->tx_active = true;
         if (HAL_UART_Transmit_IT(handle, uart_periph->tx_dir_buffer, length) != HAL_OK) {
             status = UART_ERR;
         }
+
         portEXIT_CRITICAL();
         goto exit;
     }
@@ -638,7 +656,7 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
 
     // Send data in chunks based on UART_TX_DATA_SIZE
     if(xSemaphoreTake(uart_periph->tx_mutex, delay_ticks) != pdTRUE) return UART_ERR; // if we timeout, err out
-    for (uint8_t i = 0; i < length; i+=UART_TX_DATA_SIZE) {
+    for (uint16_t i = 0; i < length; i+=UART_TX_DATA_SIZE) {
 	UART_tx_payload_t payload;
 
 	// Ensure we only copy UART_TX_DATA_SIZE bytes at a time
@@ -655,10 +673,20 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
 
 	// Enqueue the payload to be transmitted
 	if (xQueueSend(uart_periph->tx_queue, &payload, delay_ticks) != pdTRUE) {
+            xSemaphoreGive(uart_periph->tx_mutex);
 	    return UART_ERR;
-	} //delay_ticks: 0 = no wait, portMAX_DELAY = wait until space is available
+	} // delay_ticks: 0 = no wait, portMAX_DELAY = wait until space is available
     }
     xSemaphoreGive(uart_periph->tx_mutex);
+
+    // If the background interrupts are not active we need to kickstart them
+    if(xSemaphoreTake(uart_periph->tx_kick_mutex, delay_ticks) != pdTRUE) return UART_ERR;
+    portENTER_CRITICAL();
+    if (!uart_periph->tx_active){
+        uart_transmit(handle, false, delay_ticks);
+    }
+    portEXIT_CRITICAL();
+    xSemaphoreGive(uart_periph->tx_kick_mutex);
 
 exit:
     return status;
@@ -672,7 +700,7 @@ exit:
  * @param delay_ticks number of ticks to wait for data to be received
  * @return uart_status_t
  */
-uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t length, TickType_t delay_ticks) {
+uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint16_t length, TickType_t delay_ticks) {
     if (!data || length == 0 || !is_uart_initialized(handle)) { // check if data is not null, length is not 0 and UART is initialized
         return UART_ERR;
     }
@@ -705,8 +733,7 @@ uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t lengt
     return status;
 }
 
-// Transmit Callback occurs after a transmission if complete (depending on how huart is configure)
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
+static void uart_transmit(UART_HandleTypeDef *huart, bool from_isr, TickType_t delay_ticks){
     BaseType_t higherPriorityTaskWoken = pdFALSE;
     uint16_t count = 0;
 
@@ -715,24 +742,43 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 
     // Pull as many bytes as we can fit in the buffer
     UART_tx_payload_t payload;
-    while(xQueuePeekFromISR(uart_periph->tx_queue, &payload) == pdTRUE) { // there's still something in queue?
-        if(count + payload.len > sizeof(uart_periph->tx_dir_buffer)) break;
-        else {
-            xQueueReceiveFromISR(uart_periph->tx_queue, &payload, &higherPriorityTaskWoken); // pop from queue
-        }
+    if(from_isr){
+        while(xQueuePeekFromISR(uart_periph->tx_queue, &payload) == pdTRUE) { // there's still something in queue?
+            if(count + payload.len > UART_SINGLE_TX_SIZE) break;
+            else {
+                xQueueReceiveFromISR(uart_periph->tx_queue, &payload, &higherPriorityTaskWoken); // pop from queue
+            }
 
-        // Safely copy the data from the payload into the tx_buffer
-    	memcpy(&uart_periph->tx_dir_buffer[count], payload.data, payload.len);
-        count += payload.len;
+            // Safely copy the data from the payload into the tx_buffer
+            memcpy(&(uart_periph->tx_dir_buffer[count]), payload.data, payload.len);
+            count += payload.len;
+        }
+    } else {
+        while(xQueuePeek(uart_periph->tx_queue, &payload, 0) == pdTRUE) { // there's still something in queue?
+            if(count + payload.len > UART_SINGLE_TX_SIZE) break;
+            else {
+                xQueueReceive(uart_periph->tx_queue, &payload, 0); // pop from queue
+            }
+
+            memcpy(&(uart_periph->tx_dir_buffer[count]), payload.data, payload.len);
+            count += payload.len;
+        }
     }
 
     // If we got any bytes, transmit them
     if(count > 0) {
+        uart_periph->tx_active = true;
         HAL_UART_Transmit_IT(huart, uart_periph->tx_dir_buffer, count);
+    } else {
+        uart_periph->tx_active = false;
     }
 
-    // Yield to a higher priority task if needed
-    portYIELD_FROM_ISR(higherPriorityTaskWoken);
+    if(from_isr) portYIELD_FROM_ISR(higherPriorityTaskWoken);
+}
+
+// Transmit Callback occurs after a transmission if complete (depending on how huart is configure)
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
+    uart_transmit(huart, true, 0);
 }
 
 // Receive Callback occurs after a receive is complete
@@ -743,7 +789,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     UART_rx_payload_t receivedData;
     for (int i = 0; i < UART_RX_DATA_SIZE; i++) {
         receivedData.data[i] = uart_periph->rx_buffer.data[i];
-	uart_periph->rx_buffer.data[i] = 0x00; // clear rx buffer element
     }
 
     BaseType_t higherPriorityTaskWoken = pdFALSE;

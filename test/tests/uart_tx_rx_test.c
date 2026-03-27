@@ -1,4 +1,4 @@
-/* UART multithreaded queue test
+/* UART TX/RX queue test
 * Tests:
 * - TX queue functionality under high load
 * - RX queue functionality when UART is busy
@@ -10,15 +10,19 @@
 #include <string.h>
 
 /* Private defines */
-#define LD2_Pin GPIO_PIN_5
-#define LD2_GPIO_Port GPIOA
-#define TEST_PATTERN_SIZE 32  // Larger pattern to ensure queue gets filled, pattern size represents a message
+#define TEST_PATTERN_SIZE 64  // Larger pattern to ensure queue gets filled, pattern size represents a message
 #define TX_BURST_SIZE 100     // Number of messages to send in a burst
 
-#ifdef UART4
-#define huart huart4
-#else
-#define huart husart1
+#ifdef STM32F4xx
+#define huart husart2
+#define LD2_Pin GPIO_PIN_5
+#define LD2_GPIO_Port GPIOA
+#endif
+
+#ifdef STM32G4xx
+#define huart husart3
+#define LD2_Pin GPIO_PIN_5
+#define LD2_GPIO_Port GPIOA
 #endif
 
 // Test data
@@ -38,22 +42,65 @@ StackType_t rxTaskStack[configMINIMAL_STACK_SIZE];
 // Test data
 static uint8_t testPattern[TEST_PATTERN_SIZE];
 
+void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
+    GPIO_InitTypeDef init = {0};
+    UNUSED(init);
+
+#ifdef STM32F4xx
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+
+    /* enable port A USART2 gpio
+    PA2 -> USART2_TX
+    PA3 -> USART2_RX
+    */
+    init.Pin = GPIO_PIN_2|GPIO_PIN_3;
+    init.Mode = GPIO_MODE_AF_PP;
+    init.Pull = GPIO_NOPULL;
+    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    init.Alternate = GPIO_AF7_USART2;
+    HAL_GPIO_Init(GPIOA, &init);
+#endif
+
+#ifdef STM32G4xx
+    __HAL_RCC_GPIOC_CLK_ENABLE();
+
+    /* enable port C USART3 gpio
+    PC10 -> USART3_TX
+    PC11 -> USART3_RX
+    */
+    init.Pin = GPIO_PIN_10|GPIO_PIN_11;
+    init.Mode = GPIO_MODE_AF_PP;
+    init.Pull = GPIO_NOPULL;
+    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    init.Alternate = GPIO_AF7_USART2;
+    HAL_GPIO_Init(GPIOC, &init);
+#endif
+}
+
 int main(void) {
     HAL_Init();
     SystemClock_Config();
     MX_GPIO_Init();
     
-    huart->Init.BaudRate = 115200;
-    huart->Init.WordLength = UART_WORDLENGTH_8B;
-    huart->Init.StopBits = UART_STOPBITS_1;
-    huart->Init.Parity = UART_PARITY_NONE;
-    huart->Init.Mode = UART_MODE_TX_RX;
-    huart->Init.HwFlowCtl = UART_HWCONTROL_NONE;
-    huart->Init.OverSampling = UART_OVERSAMPLING_16;
-    #ifdef STM32L4xx
-    huart->Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-    huart->AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-    #endif /* STM32L4xx */
+#ifdef STM32F4xx
+    husart2->Init.BaudRate = 115200;
+    husart2->Init.WordLength = UART_WORDLENGTH_8B;
+    husart2->Init.StopBits = UART_STOPBITS_1;
+    husart2->Init.Parity = UART_PARITY_NONE;
+    husart2->Init.Mode = UART_MODE_TX_RX;
+    husart2->Init.HwFlowCtl = UART_HWCONTROL_NONE;
+    husart2->Init.OverSampling = UART_OVERSAMPLING_16;
+#endif
+
+#ifdef STM32G4xx
+    husart3->Init.BaudRate = 115200;
+    husart3->Init.WordLength = UART_WORDLENGTH_8B;
+    husart3->Init.StopBits = UART_STOPBITS_1;
+    husart3->Init.Parity = UART_PARITY_NONE;
+    husart3->Init.Mode = UART_MODE_TX_RX;
+    husart3->Init.HwFlowCtl = UART_HWCONTROL_NONE;
+    husart3->Init.OverSampling = UART_OVERSAMPLING_16;
+#endif
     
     if (HAL_UART_Init(huart) != HAL_OK) {
       Error_Handler();
@@ -61,7 +108,7 @@ int main(void) {
 
     // Initialize test pattern
     for(int i = 0; i < TEST_PATTERN_SIZE; i++) {
-        testPattern[i] = (uint8_t)(i & 0xFF);
+        testPattern[i] = ((char)(i & 0xFF)) + 'A';
     }
     
     // Initialize UART BSP
@@ -92,10 +139,12 @@ int main(void) {
 
 void TxTask(void *argument)
 {
-  const TickType_t fastDelay = pdMS_TO_TICKS(1);    // 1ms between transmissions, could be 0 for maximum stress
-  const TickType_t burstDelay = pdMS_TO_TICKS(500); // 500ms between bursts, good for now
-  uint32_t txCount = 0;
-  uint32_t queueFullCount = 0;
+  const TickType_t fastDelay = pdMS_TO_TICKS(5);    // 1ms between transmissions, could be 0 for maximum stress
+  const TickType_t burstDelay = pdMS_TO_TICKS(500); // 250ms between bursts, good for now
+  
+  volatile uint32_t txCount = 0;
+  volatile uint32_t queueFullCount = 0;
+  UNUSED(txCount); UNUSED(queueFullCount);
   
   while(1) {
     // Rapid burst transmission to test queue
@@ -169,84 +218,96 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
 }
 
-
 void Error_Handler(void)
 {
     __disable_irq();
     while (1) {}
 }
 
-void Clock_Config(void)
+#ifdef STM32L4xx
+void SystemClock_Config(void) {
+    RCC_OscInitTypeDef RCC_OscInitStruct = { 0 };
+    RCC_ClkInitTypeDef RCC_ClkInitStruct = { 0 };
+
+    /** Configure the main internal regulator output voltage
+    */
+    if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK)
+    {
+        Error_Handler();
+    }
+
+    /** Initializes the RCC Oscillators according to the specified parameters
+    * in the RCC_OscInitTypeDef structure.
+    */
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+    RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+    RCC_OscInitStruct.PLL.PLLM = 1;
+    RCC_OscInitStruct.PLL.PLLN = 20;
+    RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV7;
+    RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
+    RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
+    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+    {
+        Error_Handler();
+    }
+
+    /** Initializes the CPU, AHB and APB buses clocks
+    */
+    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
+        | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+    RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+
+    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
+    {
+        Error_Handler();
+    }
+}
+#endif
+#ifdef STM32G4xx
+void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-  
-  #ifdef STM32L4xx
-  // L4 series configuration
-  if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  
+
+  /** Configure the main internal regulator output voltage
+  */
+  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
+
+  /** Initializes the RCC Oscillators according to the specified parameters
+  * in the RCC_OscInitTypeDef structure.
+  */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = 1;
-  RCC_OscInitStruct.PLL.PLLN = 10;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV7;
+  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV2;
+  RCC_OscInitStruct.PLL.PLLN = 20;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
   RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
-  
-  #else
-  // F4 series configuration
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = 16;
-  RCC_OscInitStruct.PLL.PLLN = 336;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
-  RCC_OscInitStruct.PLL.PLLQ = 2;
-  
-  // Field is only defined on this subset of processors
-  #if defined(STM32F410Tx) || defined(STM32F410Cx) || defined(STM32F410Rx) || defined(STM32F446xx) || defined(STM32F469xx) ||\
-  defined(STM32F479xx) || defined(STM32F412Zx) || defined(STM32F412Vx) || defined(STM32F412Rx) || defined(STM32F412Cx) ||\
-  defined(STM32F413xx) || defined(STM32F423xx)
-  RCC_OscInitStruct.PLL.PLLR = 2;
-  #endif
-  #endif
-  
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
   }
-  
-  #ifdef STM32L4xx
-  // L4 series specific clock configuration
+
+  /** Initializes the CPU, AHB and APB buses clocks
+  */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-  |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
-  
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
-  #else
-  // F4 series specific clock configuration
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-  |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
-  
+
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
-  #endif
   {
     Error_Handler();
   }
 }
-
+#endif
