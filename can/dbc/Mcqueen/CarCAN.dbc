@@ -53,6 +53,12 @@ BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ Main_Battery_Current_RawV : 0|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ Main_Battery_Current : 0|24@1- (0.001,0) [-8388.608|8388.607] "A" Vector__XXX
 
+BO_ 515 MPPT_A_SetOutputVoltageLimit: 2 Vector__XXX
+ SG_ MPPT_OuputVoltageLimit : 7|16@0- (0.01,0) [-327.68|327.67] "" Vector__XXX
+
+BO_ 514 MPPT_A_SetOutputCurrentLimit: 2 Vector__XXX
+ SG_ MPPT_OutputCurrentLimit : 7|16@0- (0.0005,0) [-16.384|16.3835] "" Vector__XXX
+
 BO_ 11 BPS_Aggregate_Arr: 7 BPS
  SG_ BPS_Temperature_Tap_Data : 24|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
@@ -110,7 +116,7 @@ BO_ 545 MPPT_C_Status: 5 MPPT_C
  SG_ MPPT_Mode : 0|8@1+ (1,0) [0|0] "" Vector__XXX
 
 BO_ 553 MPPT_C_SetMode: 1 MPPT_C
- SG_ Boost_Enable : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Boost_Enable : 0|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 544 MPPT_C_Power: 8 MPPT_C
  SG_ MPPT_Iout : 55|16@0- (0.0005,0) [0|0] "A" Vector__XXX
@@ -224,7 +230,7 @@ BO_ 528 MPPT_B_Power: 8 MPPT_B
  SG_ MPPT_Vin : 7|16@0- (0.01,0) [-327.68|327.67] "V" Vector__XXX
 
 BO_ 537 MPPT_B_SetMode: 1 MPPT_B
- SG_ Boost_Enable : 0|1@1+ (1,0) [0|1] ""  MPPT_B
+ SG_ Boost_Enable : 0|8@1+ (1,0) [0|255] ""  MPPT_B
 
 BO_ 513 MPPT_A_Status: 5 MPPT_A
  SG_ MPPT_Enabled : 16|8@1- (1,0) [0|0] "" Vector__XXX
@@ -240,7 +246,7 @@ BO_ 512 MPPT_A_Power: 8 MPPT_A
  SG_ MPPT_Vin : 7|16@0- (0.01,0) [-327.68|327.67] "V" Vector__XXX
 
 BO_ 521 MPPT_A_SetMode: 1 MPPT_A
- SG_ Boost_Enable : 0|1@1+ (1,0) [0|1] ""  MPPT_A
+ SG_ Boost_Enable : 0|8@1+ (1,0) [0|255] ""  MPPT_A
 
 BO_ 1536 LV_Carrier_Status: 2 LV_Carrier
  SG_ LTC4421_HVDCDC_Selected : 0|1@1+ (1,0) [0|1] "" Vector__XXX
@@ -396,6 +402,8 @@ BA_DEF_DEF_  "VFrameFormat" "J1939PG";
 BA_DEF_DEF_  "MultiplexExtEnabled" "No";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
+BA_ "VFrameFormat" BO_ 515 0;
+BA_ "VFrameFormat" BO_ 514 0;
 BA_ "VFrameFormat" BO_ 11 0;
 BA_ "VFrameFormat" BO_ 1 0;
 BA_ "VFrameFormat" BO_ 25 0;
@@ -403,52 +411,52 @@ BA_ "VFrameFormat" BO_ 1984 0;
 BA_ "VFrameFormat" BO_ 688 0;
 BA_ "VFrameFormat" BO_ 33 0;
 BA_ "VFrameFormat" BO_ 24 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1872 1000;
 BA_ "VFrameFormat" BO_ 1872 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 545 1000;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1872 1000;
 BA_ "VFrameFormat" BO_ 545 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 553 -1;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 545 1000;
 BA_ "VFrameFormat" BO_ 553 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 544 500;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 553 -1;
 BA_ "VFrameFormat" BO_ 544 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 544 500;
 BA_ "VFrameFormat" BO_ 850 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1282 100;
 BA_ "VFrameFormat" BO_ 1282 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1281 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1282 100;
 BA_ "VFrameFormat" BO_ 1281 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1280 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1281 100;
 BA_ "VFrameFormat" BO_ 1280 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1280 100;
 BA_ "VFrameFormat" BO_ 849 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 848 100;
 BA_ "VFrameFormat" BO_ 848 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 96 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 848 100;
 BA_ "VFrameFormat" BO_ 96 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1792 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 96 100;
 BA_ "VFrameFormat" BO_ 1792 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1616 1000;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1792 100;
 BA_ "VFrameFormat" BO_ 1616 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 81 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1616 1000;
 BA_ "VFrameFormat" BO_ 81 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 80 100;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 81 100;
 BA_ "VFrameFormat" BO_ 80 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 529 1000;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 80 100;
 BA_ "VFrameFormat" BO_ 529 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 528 500;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 529 1000;
 BA_ "VFrameFormat" BO_ 528 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 537 -1;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 528 500;
 BA_ "VFrameFormat" BO_ 537 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 513 1000;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 537 -1;
 BA_ "VFrameFormat" BO_ 513 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 512 500;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 513 1000;
 BA_ "VFrameFormat" BO_ 512 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 521 -1;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 512 500;
 BA_ "VFrameFormat" BO_ 521 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 1536 250;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 521 -1;
 BA_ "VFrameFormat" BO_ 1536 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 768 250;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 1536 250;
 BA_ "VFrameFormat" BO_ 768 0;
-BA_ "_Cdb_Sc_CTm_Normal" BO_ 769 250;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 768 250;
 BA_ "VFrameFormat" BO_ 769 0;
+BA_ "_Cdb_Sc_CTm_Normal" BO_ 769 250;
 VAL_ 3221225472 HSS_Command_Type 1 "Set Current Limit" 0 "Control Switches" ;
 VAL_ 1 BPS_Fault 16 "Discharging Overcurrent" 15 "Charging Overcurrent" 14 "Estop 3" 13 "Estop 2" 12 "Estop 1" 11 "Array Pchg Contactor Sense" 10 "Array Contactor Sense" 9 "HV Minus Contactor Sense" 8 "HV Plus Contactor Sense" 7 "Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "No Fault" ;
 VAL_ 25 Controls_Leader_Fault 3 "Drive inputs invalid " 2 "BPS watchdog" 1 "Steering angle sensor watchdog" 0 "No fault" ;
