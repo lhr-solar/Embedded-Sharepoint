@@ -34,7 +34,7 @@ extern FDCAN_HandleTypeDef* hfdcan3;
  (len) == 6  ? FDCAN_DLC_BYTES_6  : \
  (len) == 7  ? FDCAN_DLC_BYTES_7  : \
  (len) == 8  ? FDCAN_DLC_BYTES_8  : \
- (len) == 12 ? FDCAN_DLC_B  YTES_12 : \
+ (len) == 12 ? FDCAN_DLC_BYTES_12 : \
  (len) == 16 ? FDCAN_DLC_BYTES_16 : \
  (len) == 20 ? FDCAN_DLC_BYTES_20 : \
  (len) == 24 ? FDCAN_DLC_BYTES_24 : \
