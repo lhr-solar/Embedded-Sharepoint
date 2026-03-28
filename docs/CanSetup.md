@@ -247,3 +247,4 @@ void can_rx_callback_hook(CAN_HandleTypeDef *hcan, uint32_t RxFifo0ITs, can_rx_p
 ## Codebases that use CAN
 * [VCU](https://github.com/lhr-solar/PS-VehicleControlUnit/blob/main/Firmware/Drivers/Src/CANbus.c)
 * [Amperes](https://github.com/lhr-solar/PS-Amperes/blob/main/Firmware/Drivers/Src/AmperesCAN.c)
+* [Elcon Charger](https://github.com/lhr-solar/PS-ChargerInterfacePCB/tree/main/Firmware/Drivers/Src/ElconCAN.c) — example that uses extended IDs (29-bit)

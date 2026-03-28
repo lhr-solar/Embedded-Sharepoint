@@ -185,7 +185,7 @@ can_status_t can_send(CAN_HandleTypeDef* handle, const CAN_TxHeaderTypeDef* head
  *                      CAN_EMPTY if the queue was empty,
  *                      CAN_ERR on failure or invalid ID.
  */
-can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id, CAN_RxHeaderTypeDef* header,
+can_status_t can_recv(CAN_HandleTypeDef* handle, uint32_t id, CAN_RxHeaderTypeDef* header,
                       uint8_t data[], TickType_t delay_ticks);
 
 /**
@@ -234,7 +234,7 @@ can_status_t can_send_isr(CAN_HandleTypeDef* handle, const CAN_TxHeaderTypeDef* 
  *                      CAN_EMPTY if the queue was empty,
  *                      CAN_ERR on failure or invalid ID.
  */
-can_status_t can_recv_isr(CAN_HandleTypeDef* handle, uint16_t id, CAN_RxHeaderTypeDef* header,
+can_status_t can_recv_isr(CAN_HandleTypeDef* handle, uint32_t id, CAN_RxHeaderTypeDef* header,
                           uint8_t data[], BaseType_t* higherPriorityTaskWoken);
 
 /**
@@ -275,7 +275,7 @@ can_status_t can_register_id_set(CAN_HandleTypeDef* handle, can_id_set_t* set);
  * @return can_status_t Returns CAN_OK if an ID was retrieved, CAN_EMPTY on timeout, or CAN_ERR on
  * failure.
  */
-can_status_t can_recv_set(CAN_HandleTypeDef* handle, can_id_set_t* set, uint16_t* id,
+can_status_t can_recv_set(CAN_HandleTypeDef* handle, can_id_set_t* set, uint32_t* id,
                           TickType_t delay_ticks);
 
 #endif /* ( configUSE_QUEUE_SETS == 1 ) */

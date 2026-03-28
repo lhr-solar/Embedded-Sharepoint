@@ -147,7 +147,7 @@ can_status_t can_stop(CAN_HandleTypeDef* handle) {
     return CAN_OK;
 }
 
-can_status_t can_recv(CAN_HandleTypeDef* handle, uint16_t id, CAN_RxHeaderTypeDef* header,
+can_status_t can_recv(CAN_HandleTypeDef* handle, uint32_t id, CAN_RxHeaderTypeDef* header,
                       uint8_t data[], TickType_t delay_ticks) {
     if (handle == NULL || header == NULL || data == NULL) {
         return CAN_ERR;
@@ -302,7 +302,7 @@ can_status_t can_send_isr(CAN_HandleTypeDef* handle, const CAN_TxHeaderTypeDef* 
     return CAN_OK;
 }
 
-can_status_t can_recv_isr(CAN_HandleTypeDef* handle, uint16_t id, CAN_RxHeaderTypeDef* header,
+can_status_t can_recv_isr(CAN_HandleTypeDef* handle, uint32_t id, CAN_RxHeaderTypeDef* header,
                           uint8_t data[], BaseType_t* higherPriorityTaskWoken) {
     if (handle == NULL || header == NULL || data == NULL) {
         return CAN_ERR;
@@ -535,7 +535,7 @@ can_status_t can_register_id_set(CAN_HandleTypeDef* handle, can_id_set_t* set) {
     return CAN_OK;
 }
 
-can_status_t can_recv_set(CAN_HandleTypeDef* handle, can_id_set_t* set, uint16_t* id,
+can_status_t can_recv_set(CAN_HandleTypeDef* handle, can_id_set_t* set, uint32_t* id,
                           TickType_t delay_ticks) {
     if (handle == NULL || set == NULL || id == NULL || set->queueSet == NULL) {
         return CAN_ERR;

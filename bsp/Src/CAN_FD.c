@@ -193,6 +193,7 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
     return CAN_OK;
 }
 
+
 can_status_t can_fd_send_isr(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* header,
                              uint8_t data[], BaseType_t* higherPriorityTaskWoken) {
     if (handle == NULL || header == NULL || data == NULL) {
@@ -230,7 +231,7 @@ can_status_t can_fd_send_isr(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef*
     return CAN_OK;
 }
 
-can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint16_t id, FDCAN_RxHeaderTypeDef* header,
+can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint32_t id, FDCAN_RxHeaderTypeDef* header,
                          uint8_t data[], TickType_t delay_ticks) {
     can_rx_payload_t payload = {0};
     can_recv_entry_t* can_recv_entries = NULL;
@@ -280,7 +281,7 @@ can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint16_t id, FDCAN_RxHeade
     return CAN_ERR;
 }
 
-can_status_t can_fd_recv_isr(FDCAN_HandleTypeDef* handle, uint16_t id,
+can_status_t can_fd_recv_isr(FDCAN_HandleTypeDef* handle, uint32_t id,
                              FDCAN_RxHeaderTypeDef* header, uint8_t data[],
                              BaseType_t* higherPriorityTaskWoken) {
     if (handle == NULL || header == NULL || data == NULL) {
@@ -390,7 +391,7 @@ can_status_t can_fd_register_id_set(FDCAN_HandleTypeDef* handle, can_id_set_t* s
     return CAN_OK;
 }
 
-can_status_t can_fd_recv_set(FDCAN_HandleTypeDef* handle, can_id_set_t* set, uint16_t* id,
+can_status_t can_fd_recv_set(FDCAN_HandleTypeDef* handle, can_id_set_t* set, uint32_t* id,
                              TickType_t delay_ticks) {
     if (handle == NULL || set == NULL || id == NULL || set->queueSet == NULL) {
         return CAN_ERR;
