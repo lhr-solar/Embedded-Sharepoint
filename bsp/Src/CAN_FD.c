@@ -141,7 +141,7 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
     // create CAN payload so we can forward it
     can_tx_payload_t payload = {0};
     payload.header = *header;
-    memcpy(payload.data, data, header->DataLength);
+    memcpy(payload.data, data, FDCAN_BYTES_FROM_DLC(header->DataLength));
 
     // optional callback the user can implement (by default does nothing)
     can_fd_tx_callback_hook(handle, &payload);
@@ -201,27 +201,26 @@ can_status_t can_fd_send_isr(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef*
 
     can_tx_payload_t payload = {0};
     payload.header = *header;
-    memcpy(payload.data, data, header->DataLength);
+    memcpy(payload.data, data, FDCAN_BYTES_FROM_DLC(header->DataLength));
 
-    // optional hook
-    can_fd_tx_callback_hook(handle, &payload);
-
+    if (0) {
+    }
 #ifdef FDCAN1
-    if (handle->Instance == FDCAN1) {
+    else if (handle->Instance == FDCAN1) {
         if (xQueueSendFromISR(fdcan1_send_queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
             return CAN_ERR;
         }
     }
 #endif
 #ifdef FDCAN2
-    if (handle->Instance == FDCAN2) {
+    else if (handle->Instance == FDCAN2) {
         if (xQueueSendFromISR(fdcan2_send_queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
             return CAN_ERR;
         }
     }
 #endif
 #ifdef FDCAN3
-    if (handle->Instance == FDCAN3) {
+    else if (handle->Instance == FDCAN3) {
         if (xQueueSendFromISR(fdcan3_send_queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
             return CAN_ERR;
         }
@@ -273,7 +272,7 @@ can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint16_t id, FDCAN_RxHeade
 
             // decode payload
             *header = payload.header;
-            memcpy(data, payload.data, header->DataLength);
+            memcpy(data, payload.data, FDCAN_BYTES_FROM_DLC(header->DataLength));
             return CAN_OK;
         }
     }
@@ -325,7 +324,7 @@ can_status_t can_fd_recv_isr(FDCAN_HandleTypeDef* handle, uint16_t id,
             }
 
             *header = payload.header;
-            memcpy(data, payload.data, header->DataLength);
+            memcpy(data, payload.data, FDCAN_BYTES_FROM_DLC(header->DataLength));
             return CAN_OK;
         }
     }
