@@ -35,7 +35,7 @@ void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
     init.Mode = GPIO_MODE_AF_PP;
     init.Pull = GPIO_NOPULL;
     init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    init.Alternate = GPIO_AF7_USART2;
+    init.Alternate = GPIO_AF7_USART3;
     HAL_GPIO_Init(GPIOC, &init);
 #endif
 }

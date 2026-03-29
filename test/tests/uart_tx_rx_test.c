@@ -15,14 +15,14 @@
 
 #ifdef STM32F4xx
 #define huart husart2
-#define LD2_Pin GPIO_PIN_5
-#define LD2_GPIO_Port GPIOA
+#define HEARTBEAT_PIN GPIO_PIN_5
+#define HEARTBEAT_GPIO_PORT GPIOA
 #endif
 
 #ifdef STM32G4xx
 #define huart husart3
-#define LD2_Pin GPIO_PIN_5
-#define LD2_GPIO_Port GPIOA
+#define HEARTBEAT_PIN GPIO_PIN_11
+#define HEARTBEAT_GPIO_PORT GPIOC
 #endif
 
 // Test data
@@ -72,7 +72,7 @@ void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
     init.Mode = GPIO_MODE_AF_PP;
     init.Pull = GPIO_NOPULL;
     init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    init.Alternate = GPIO_AF7_USART2;
+    init.Alternate = GPIO_AF7_USART3;
     HAL_GPIO_Init(GPIOC, &init);
 #endif
 }
@@ -154,9 +154,9 @@ void TxTask(void *argument)
       
       if(status == UART_ERR) {
         queueFullCount++;  // Track when queue gets full
-        HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+        HAL_GPIO_WritePin(HEARTBEAT_GPIO_PORT, HEARTBEAT_PIN, GPIO_PIN_SET);
       } else {
-        HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(HEARTBEAT_GPIO_PORT, HEARTBEAT_PIN, GPIO_PIN_RESET);
       }
       
       vTaskDelay(fastDelay);
@@ -184,7 +184,7 @@ void RxTask(void *argument)
       // Check pattern match
       if(memcmp(rxBuffer, testPattern, TEST_PATTERN_SIZE) == 0) {
         patternMatchCount++;
-        HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+        HAL_GPIO_TogglePin(HEARTBEAT_GPIO_PORT, HEARTBEAT_PIN);
       }
       
       // Immediate retry to test queue emptying
@@ -204,18 +204,20 @@ static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   
-  /* GPIO Ports Clock Enable */
+  /* GPIO Ports Clocks Enable */
   __HAL_RCC_GPIOA_CLK_ENABLE();
-  
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+
   /* Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(HEARTBEAT_GPIO_PORT, HEARTBEAT_PIN, GPIO_PIN_RESET);
   
   /* Configure LED pin */
-  GPIO_InitStruct.Pin = LD2_Pin;
+  GPIO_InitStruct.Pin = HEARTBEAT_PIN;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(HEARTBEAT_GPIO_PORT, &GPIO_InitStruct);
 }
 
 void Error_Handler(void)
