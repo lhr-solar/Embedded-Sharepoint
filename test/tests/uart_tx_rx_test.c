@@ -25,6 +25,12 @@
 #define HEARTBEAT_GPIO_PORT GPIOC
 #endif
 
+#ifdef STM32L4xx
+#define huart husart1
+#define HEARTBEAT_PIN GPIO_PIN_11
+#define HEARTBEAT_GPIO_PORT GPIOB
+#endif
+
 // Test data
 static uint8_t testPattern[TEST_PATTERN_SIZE];
 
@@ -75,6 +81,23 @@ void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
     init.Alternate = GPIO_AF7_USART3;
     HAL_GPIO_Init(GPIOC, &init);
 #endif
+
+#ifdef STM32L4xx
+ /* Peripheral clock enable */
+    __HAL_RCC_USART1_CLK_ENABLE();
+
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    /**USART1 GPIO Configuration
+    PA9     ------> USART1_TX
+    PA10     ------> USART1_RX
+    */
+    init.Pin = GPIO_PIN_9 | GPIO_PIN_10;
+    init.Mode = GPIO_MODE_AF_PP;
+    init.Pull = GPIO_NOPULL;
+    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    init.Alternate = GPIO_AF7_USART1;
+    HAL_GPIO_Init(GPIOA, &init);
+#endif
 }
 
 int main(void) {
@@ -100,6 +123,17 @@ int main(void) {
     husart3->Init.Mode = UART_MODE_TX_RX;
     husart3->Init.HwFlowCtl = UART_HWCONTROL_NONE;
     husart3->Init.OverSampling = UART_OVERSAMPLING_16;
+#endif
+
+#ifdef STM32L4xx
+    husart1->Init.BaudRate = 115200;
+    husart1->Init.WordLength = UART_WORDLENGTH_8B;
+    husart1->Init.StopBits = UART_STOPBITS_1;
+    husart1->Init.Parity = UART_PARITY_NONE;
+    husart1->Init.Mode = UART_MODE_TX_RX;
+    husart1->Init.HwFlowCtl = UART_HWCONTROL_NONE;
+    husart1->Init.OverSampling = UART_OVERSAMPLING_16;
+
 #endif
     
     if (HAL_UART_Init(huart) != HAL_OK) {
