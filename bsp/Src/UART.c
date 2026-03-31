@@ -6,7 +6,7 @@
 // Define the size of the data to be transmitted
 // may need to be configured for support for packets less more than 8 bits
 #ifndef UART_TX_DATA_SIZE
-#define UART_TX_DATA_SIZE (32)
+#define UART_TX_DATA_SIZE (4)
 #endif
 
 #ifndef UART_RX_DATA_SIZE
@@ -14,7 +14,7 @@
 #endif
 
 #ifndef UART_SINGLE_TX_SIZE
-#define UART_SINGLE_TX_SIZE (64)
+#define UART_SINGLE_TX_SIZE (4)
 #endif
 
 // Define the preemption priority for the interrupt
@@ -42,8 +42,6 @@ typedef struct {
     uint8_t *tx_dir_buffer; // buffer for in-progress direct transmission
     SemaphoreHandle_t tx_mutex; // used to ensure ordering in case of multiple users of same TX queue
     StaticSemaphore_t tx_mutex_buffer; // static mutex info (required for initialization)
-    SemaphoreHandle_t tx_kick_mutex; // used to ensure that only one task tries to kickstart TX
-    StaticSemaphore_t tx_kick_mutex_buffer; // static mutex info (required for initialization)
     volatile bool tx_active; 
 
     uint16_t rx_queue_size; // number of UART_rx_payload_t in rx_queue
@@ -78,12 +76,12 @@ UART_HandleTypeDef *h##uart_name = &uart_name.huart;
 #ifdef UART4
 // fallback UART4 TX queue size
 #ifndef UART4_TX_QUEUE_SIZE
-#define UART4_TX_QUEUE_SIZE (10)
+#define UART4_TX_QUEUE_SIZE (20)
 #endif
 
 // fallback UART4 RX queue size
 #ifndef UART4_RX_QUEUE_SIZE
-#define UART4_RX_QUEUE_SIZE (10)
+#define UART4_RX_QUEUE_SIZE (20)
 #endif
 
 // UART4 peripheral
@@ -94,12 +92,12 @@ UART_STRUCTURE(uart4, UART4, UART4_TX_QUEUE_SIZE, UART4_RX_QUEUE_SIZE)
 #ifdef UART5
 // fallback UART5 TX queue size
 #ifndef UART5_TX_QUEUE_SIZE
-#define UART5_TX_QUEUE_SIZE (10)
+#define UART5_TX_QUEUE_SIZE (20)
 #endif
 
 // fallback UART5 RX queue size
 #ifndef UART5_RX_QUEUE_SIZE
-#define UART5_RX_QUEUE_SIZE (10)
+#define UART5_RX_QUEUE_SIZE (20)
 #endif
 
 // UART5 peripheral
@@ -110,12 +108,12 @@ UART_STRUCTURE(uart5, UART5, UART5_TX_QUEUE_SIZE, UART5_RX_QUEUE_SIZE)
 #ifdef USART1
 // fallback USART1 TX queue size
 #ifndef USART1_TX_QUEUE_SIZE
-#define USART1_TX_QUEUE_SIZE (10)
+#define USART1_TX_QUEUE_SIZE (20)
 #endif
 
 // fallback USART1 RX queue size
 #ifndef USART1_RX_QUEUE_SIZE
-#define USART1_RX_QUEUE_SIZE (10)
+#define USART1_RX_QUEUE_SIZE (20)
 #endif
 
 // USART1 peripheral
@@ -126,12 +124,12 @@ UART_STRUCTURE(usart1, USART1, USART1_TX_QUEUE_SIZE, USART1_RX_QUEUE_SIZE)
 #ifdef USART2
 // fallback USART2 TX queue size
 #ifndef USART2_TX_QUEUE_SIZE
-#define USART2_TX_QUEUE_SIZE (10)
+#define USART2_TX_QUEUE_SIZE (20)
 #endif
 
 // fallback USART2 RX queue size
 #ifndef USART2_RX_QUEUE_SIZE
-#define USART2_RX_QUEUE_SIZE (10)
+#define USART2_RX_QUEUE_SIZE (20)
 #endif
 
 // USART2 peripheral
@@ -142,12 +140,12 @@ UART_STRUCTURE(usart2, USART2, USART2_TX_QUEUE_SIZE, USART2_RX_QUEUE_SIZE)
 #ifdef USART3
 // fallback USART3 TX queue size
 #ifndef USART3_TX_QUEUE_SIZE
-#define USART3_TX_QUEUE_SIZE (10)
+#define USART3_TX_QUEUE_SIZE (20)
 #endif
 
 // fallback USART3 RX queue size
 #ifndef USART3_RX_QUEUE_SIZE
-#define USART3_RX_QUEUE_SIZE (10)
+#define USART3_RX_QUEUE_SIZE (20)
 #endif
 
 // USART3 peripheral
@@ -497,7 +495,6 @@ uart_status_t uart_init(UART_HandleTypeDef* handle) {
                                         &uart_periph->rx_queue_buffer);
 
     uart_periph->tx_mutex = xSemaphoreCreateMutexStatic(&uart_periph->tx_mutex_buffer);
-    uart_periph->tx_kick_mutex = xSemaphoreCreateMutexStatic(&uart_periph->tx_kick_mutex_buffer);
 
     // init HAL
     if(HAL_UART_Init(handle) != HAL_OK){
@@ -558,6 +555,7 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint16_
     if (!uart_periph->tx_active &&
         uxQueueMessagesWaiting (uart_periph->tx_queue) == 0 &&
         length <= UART_SINGLE_TX_SIZE) { // check if UART is ready and queue is empty and length is enough to fit in single tx buffer
+        portEXIT_CRITICAL();
 
         // Copy all input data to static buffer
         memcpy(uart_periph->tx_dir_buffer, data, length);
@@ -566,7 +564,6 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint16_
             status = UART_ERR;
         }
 
-        portEXIT_CRITICAL();
         goto exit;
     }
     portEXIT_CRITICAL();
@@ -583,11 +580,6 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint16_
         // Copy the appropriate number of bytes to the payload data
 	memcpy(payload.data, &data[i], payload.len); // Usually chunk_size = UART_TX_DATA_SIZE until end of data length
 
-        // If data size is smaller than UART_TX_DATA_SIZE, fill the rest of the payload
-        if (payload.len < UART_TX_DATA_SIZE) {
-            memset(&payload.data[payload.len], 0, UART_TX_DATA_SIZE - payload.len); // Fill the rest with 0 (or other padding if needed)
-        }
-
 	// Enqueue the payload to be transmitted
 	if (xQueueSend(uart_periph->tx_queue, &payload, delay_ticks) != pdTRUE) {
             xSemaphoreGive(uart_periph->tx_mutex);
@@ -597,13 +589,11 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint16_
     xSemaphoreGive(uart_periph->tx_mutex);
 
     // If the background interrupts are not active we need to kickstart them
-    if(xSemaphoreTake(uart_periph->tx_kick_mutex, delay_ticks) != pdTRUE) return UART_ERR;
     portENTER_CRITICAL();
     if(!uart_periph->tx_active) {
         portEXIT_CRITICAL();
         uart_transmit(handle, false, delay_ticks);
     } else portEXIT_CRITICAL();
-    xSemaphoreGive(uart_periph->tx_kick_mutex);
 
 exit:
     return status;

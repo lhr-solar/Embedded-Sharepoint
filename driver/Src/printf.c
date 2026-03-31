@@ -7,7 +7,7 @@
 #include "nanoprintf.h"
 
 #ifndef MAX_PRINTF_SIZE
-#define MAX_PRINTF_SIZE 512
+#define MAX_PRINTF_SIZE 256
 #endif
 
 typedef struct {
@@ -18,7 +18,7 @@ typedef struct {
 } printf_buffer_t;
 
 #ifndef NUM_PRINTF_BUFFERS
-#define NUM_PRINTF_BUFFERS 4
+#define NUM_PRINTF_BUFFERS 5
 #endif
 
 printf_buffer_t printf_pool[NUM_PRINTF_BUFFERS];
