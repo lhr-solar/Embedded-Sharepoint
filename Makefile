@@ -183,7 +183,8 @@ $(FREERTOS_PATH)/include \
 $(FREERTOS_PATH)/portable/GCC/ARM_CM4F \
 common/Inc \
 driver/Inc \
-bsp/Inc
+bsp/Inc \
+middleware
 
 C_INCLUDES := $(addprefix -I,$(C_INCLUDES))
 

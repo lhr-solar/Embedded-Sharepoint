@@ -12,6 +12,7 @@
 
 typedef struct {
     char buffer[MAX_PRINTF_SIZE];
+    uint8_t num_assigned;
     SemaphoreHandle_t mtx;
     StaticSemaphore_t mtx_buffer;
 } printf_buffer_t;
@@ -40,6 +41,7 @@ bool printf_init(UART_HandleTypeDef *huart) {
 
     for(int i=0; i<NUM_PRINTF_BUFFERS; i++){
         printf_pool[i].mtx = xSemaphoreCreateMutexStatic(&printf_pool[i].mtx_buffer);
+        printf_pool[i].num_assigned = 0;
     }
     return uart_init(huart) == UART_OK;
 }
@@ -66,14 +68,17 @@ int printf(const char *fmt, ...) {
 
         pbuf = &printf_pool[printf_pool_next];
         printf_pool_next = (printf_pool_next + 1) % NUM_PRINTF_BUFFERS;
+        pbuf->num_assigned++;
         xSemaphoreGive(printf_pool_mtx);
     }
 
     va_list val;
     va_start(val, fmt);
 
+    bool more_than_one_thread = pbuf->num_assigned > 1;
+
     // Lock on the specific buffer's mutex (if it's shared between threads)
-    if(xSemaphoreTake(pbuf->mtx, portMAX_DELAY) != pdTRUE){
+    if(more_than_one_thread && xSemaphoreTake(pbuf->mtx, portMAX_DELAY) != pdTRUE){
         va_end(val);
         return -1;
     }
@@ -82,12 +87,11 @@ int printf(const char *fmt, ...) {
     va_end(val);
     
     if(rv <= 0){
-        xSemaphoreGive(pbuf->mtx);
+        if(more_than_one_thread) xSemaphoreGive(pbuf->mtx);
         return rv;
     }
 
     uart_status_t status = uart_send(printf_huart, (const uint8_t *)pbuf->buffer, (rv > MAX_PRINTF_SIZE)?MAX_PRINTF_SIZE:rv, portMAX_DELAY);
-    xSemaphoreGive(pbuf->mtx);
-
+    if(more_than_one_thread) xSemaphoreGive(pbuf->mtx);
     return (status == UART_OK)?rv:-1;
 }
