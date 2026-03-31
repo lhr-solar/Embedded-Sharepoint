@@ -56,6 +56,25 @@ typedef struct {
 // helper to trigger background interrupts
 static void uart_transmit(UART_HandleTypeDef *huart, bool from_isr, TickType_t delay_ticks);
 
+#define UART_STRUCTURE(uart_name, UART_INSTANCE, TX_Q_SIZE, RX_Q_SIZE) \
+static uint8_t uart_name##_tx_queue_storage[(TX_Q_SIZE) * sizeof(UART_tx_payload_t)]; \
+static uint8_t uart_name##_tx_dir_buffer[UART_SINGLE_TX_SIZE]; \
+static uint8_t uart_name##_rx_queue_storage[(RX_Q_SIZE) * sizeof(UART_rx_payload_t)]; \
+static UART_periph_t uart_name = { \
+    .huart = { \
+        .Instance = (UART_INSTANCE) \
+    }, \
+    .tx_queue_size = (TX_Q_SIZE), \
+    .tx_queue = NULL, \
+    .tx_queue_storage = uart_name##_tx_queue_storage, \
+    .tx_dir_buffer = uart_name##_tx_dir_buffer, \
+    .tx_active = false, \
+    .rx_queue_size = (RX_Q_SIZE), \
+    .rx_queue = NULL, \
+    .rx_queue_storage = uart_name##_rx_queue_storage \
+}; \
+UART_HandleTypeDef *h##uart_name = &uart_name.huart;
+
 #ifdef UART4
 // fallback UART4 TX queue size
 #ifndef UART4_TX_QUEUE_SIZE
@@ -68,24 +87,7 @@ static void uart_transmit(UART_HandleTypeDef *huart, bool from_isr, TickType_t d
 #endif
 
 // UART4 peripheral
-static uint8_t uart4_tx_queue_storage[UART4_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
-static uint8_t uart4_tx_dir_buffer[UART_SINGLE_TX_SIZE];
-static uint8_t uart4_rx_queue_storage[UART4_RX_QUEUE_SIZE * sizeof(UART_rx_payload_t)];
-static UART_periph_t uart4 = {
-    .huart = {
-        .Instance = UART4
-    },
-    .tx_queue_size = UART4_TX_QUEUE_SIZE,
-    .tx_queue = NULL,
-    .tx_queue_storage = uart4_tx_queue_storage,
-    .tx_dir_buffer = uart4_tx_dir_buffer,
-    .tx_active = false,
-
-    .rx_queue_size = UART4_RX_QUEUE_SIZE,
-    .rx_queue = NULL,
-    .rx_queue_storage = uart4_rx_queue_storage
-};
-UART_HandleTypeDef *huart4 = &uart4.huart;
+UART_STRUCTURE(uart4, UART4, UART4_TX_QUEUE_SIZE, UART4_RX_QUEUE_SIZE)
 
 #endif /* UART4 */
 
@@ -101,24 +103,7 @@ UART_HandleTypeDef *huart4 = &uart4.huart;
 #endif
 
 // UART5 peripheral
-static uint8_t uart5_tx_queue_storage[UART5_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
-static uint8_t uart5_tx_dir_buffer[UART_SINGLE_TX_SIZE];
-static uint8_t uart5_rx_queue_storage[UART5_RX_QUEUE_SIZE * sizeof(UART_rx_payload_t)];
-static UART_periph_t uart5 = {
-    .huart = {
-        .Instance = UART5
-    },
-    .tx_queue_size = UART5_TX_QUEUE_SIZE,
-    .tx_queue = NULL,
-    .tx_queue_storage = uart5_tx_queue_storage,
-    .tx_dir_buffer = uart5_tx_dir_buffer,
-    .tx_active = false,
-
-    .rx_queue_size = UART5_RX_QUEUE_SIZE,
-    .rx_queue = NULL,
-    .rx_queue_storage = uart5_rx_queue_storage
-};
-UART_HandleTypeDef *huart5 = &uart5.huart;
+UART_STRUCTURE(uart5, UART5, UART5_TX_QUEUE_SIZE, UART5_RX_QUEUE_SIZE)
 
 #endif /* UART5 */
 
@@ -134,24 +119,7 @@ UART_HandleTypeDef *huart5 = &uart5.huart;
 #endif
 
 // USART1 peripheral
-static uint8_t usart1_tx_queue_storage[USART1_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
-static uint8_t usart1_tx_dir_buffer[UART_SINGLE_TX_SIZE];
-static uint8_t usart1_rx_queue_storage[USART1_RX_QUEUE_SIZE * sizeof(UART_rx_payload_t)];
-static UART_periph_t usart1 = {
-    .huart = {
-        .Instance = USART1
-    },
-    .tx_queue_size = USART1_TX_QUEUE_SIZE,
-    .tx_queue = NULL,
-    .tx_queue_storage = usart1_tx_queue_storage,
-    .tx_dir_buffer = usart1_tx_dir_buffer,
-    .tx_active = false,
-
-    .rx_queue_size = USART1_RX_QUEUE_SIZE,
-    .rx_queue = NULL,
-    .rx_queue_storage = usart1_rx_queue_storage
-};
-UART_HandleTypeDef *husart1 = &usart1.huart;
+UART_STRUCTURE(usart1, USART1, USART1_TX_QUEUE_SIZE, USART1_RX_QUEUE_SIZE)
 
 #endif /* USART1 */
 
@@ -167,24 +135,7 @@ UART_HandleTypeDef *husart1 = &usart1.huart;
 #endif
 
 // USART2 peripheral
-static uint8_t usart2_tx_queue_storage[USART2_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
-static uint8_t usart2_tx_dir_buffer[UART_SINGLE_TX_SIZE];
-static uint8_t usart2_rx_queue_storage[USART2_RX_QUEUE_SIZE * sizeof(UART_rx_payload_t)];
-static UART_periph_t usart2 = {
-    .huart = {
-        .Instance = USART2
-    },
-    .tx_queue_size = USART2_TX_QUEUE_SIZE,
-    .tx_queue = NULL,
-    .tx_queue_storage = usart2_tx_queue_storage,
-    .tx_dir_buffer = usart2_tx_dir_buffer,
-    .tx_active = false,
-
-    .rx_queue_size = USART2_RX_QUEUE_SIZE,
-    .rx_queue = NULL,
-    .rx_queue_storage = usart2_rx_queue_storage
-};
-UART_HandleTypeDef *husart2 = &usart2.huart;
+UART_STRUCTURE(usart2, USART2, USART2_TX_QUEUE_SIZE, USART2_RX_QUEUE_SIZE)
 
 #endif /* USART2 */
 
@@ -200,24 +151,7 @@ UART_HandleTypeDef *husart2 = &usart2.huart;
 #endif
 
 // USART3 peripheral
-static uint8_t usart3_tx_queue_storage[USART3_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
-static uint8_t usart3_tx_dir_buffer[UART_SINGLE_TX_SIZE];
-static uint8_t usart3_rx_queue_storage[USART3_RX_QUEUE_SIZE * sizeof(UART_rx_payload_t)];
-static UART_periph_t usart3 = {
-    .huart = {
-        .Instance = USART3
-    },
-    .tx_queue_size = USART3_TX_QUEUE_SIZE,
-    .tx_queue = NULL,
-    .tx_queue_storage = usart3_tx_queue_storage,
-    .tx_dir_buffer = usart3_tx_dir_buffer,
-    .tx_active = false,
-
-    .rx_queue_size = USART3_RX_QUEUE_SIZE,
-    .rx_queue = NULL,
-    .rx_queue_storage = usart3_rx_queue_storage
-};
-UART_HandleTypeDef *husart3 = &usart3.huart;
+UART_STRUCTURE(usart3, USART3, USART3_TX_QUEUE_SIZE, USART3_RX_QUEUE_SIZE)
 
 #endif /* USART3 */
 
@@ -231,24 +165,7 @@ UART_HandleTypeDef *husart3 = &usart3.huart;
 #endif 
 
 // LPUART1 peripheral
-static uint8_t lpuart1_tx_queue_storage[LPUART1_TX_QUEUE_SIZE * sizeof(UART_tx_payload_t)];
-static uint8_t lpuart1_tx_dir_buffer[UART_SINGLE_TX_SIZE];
-static uint8_t lpuart1_rx_queue_storage[LPUART1_RX_QUEUE_SIZE * sizeof(UART_rx_payload_t)];
-static UART_periph_t lpuart1 = {
-    .huart = {
-        .Instance = LPUART1
-    },
-    .tx_queue_size = LPUART1_TX_QUEUE_SIZE,
-    .tx_queue = NULL,
-    .tx_queue_storage = lpuart1_tx_queue_storage,
-    .tx_dir_buffer = lpuart1_tx_dir_buffer,
-    .tx_active = false,
-
-    .rx_queue_size = LPUART1_RX_QUEUE_SIZE,
-    .rx_queue = NULL,
-    .rx_queue_storage = lpuart1_rx_queue_storage
-};
-UART_HandleTypeDef *hlpuart1 = &lpuart1.huart;
+UART_STRUCTURE(lpuart1, LPUART1, LPUART1_TX_QUEUE_SIZE, LPUART1_RX_QUEUE_SIZE)
 
 #endif /* LPUART1 */
 
