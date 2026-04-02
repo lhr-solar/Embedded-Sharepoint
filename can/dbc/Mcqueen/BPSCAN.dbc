@@ -33,155 +33,100 @@ NS_ :
 
 BS_:
 
-BU_: Amperes VoltTemp_7 VoltTemp_6 VoltTemp_5 VoltTemp_4 VoltTemp_3 VoltTemp_2 VoltTemp_1 VoltTemp_0 BPS_Leader
-VAL_TABLE_ BPS_Fault_Type 16 "Discharging Overcurrent" 15 "Charging Overcurrent" 14 "Estop 3" 13 "Estop 2" 12 "Estop 1" 11 "Array Pchg Contactor Sense" 10 "Array Contactor Sense" 9 "HV Minus Contactor Sense" 8 "HV Plus Contactor Sense" 7 "Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "No Fault" ;
+BU_: VoltTemp_7 VoltTemp_6 VoltTemp_5 VoltTemp_4 VoltTemp_3 VoltTemp_2 VoltTemp_1 VoltTemp_0 Amperes
+VAL_TABLE_ BPS_Volt_Tap_Fault 2 "Description for the value '0x2'" 1 "BQ I2C Read Error" 0 "OK" ;
+VAL_TABLE_ BPS_Temp_Tap_Fault 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Short to VCC" 1 "Short to GND" 0 "OK" ;
+VAL_TABLE_ Generic_OK 1 "OK" 0 "NOT OK" ;
 
 
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
- SG_ BPS_VoltTemp_ID : 0|3@1+ (1,0) [0|7] "" Vector__XXX
- SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
- SG_ BPS_VoltTemp_ID : 0|3@1+ (1,0) [0|7] "" Vector__XXX
- SG_ BPS_Temperature_Tap_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_VoltTemp_BQ_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Temperature_Tap_RawV : 0|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 0|16@1- (0.01,0) [-327.68|327.67] "C" Vector__XXX
- SG_ BPS_Voltage_Tap_Data : 0|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
- SG_ BPS_Temperature_Tap_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_VoltTemp_BQ_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Temperature_Tap_RawV : 0|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 0|16@1- (0.01,0) [-327.68|327.67] "C" Vector__XXX
- SG_ BPS_Voltage_Tap_Data : 0|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
- SG_ BPS_Temperature_Tap_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_VoltTemp_BQ_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Temperature_Tap_RawV : 0|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 0|16@1- (0.01,0) [-327.68|327.67] "C" Vector__XXX
- SG_ BPS_Voltage_Tap_Data : 0|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
- SG_ BPS_Temperature_Tap_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_VoltTemp_BQ_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Temperature_Tap_RawV : 0|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 0|16@1- (0.01,0) [-327.68|327.67] "C" Vector__XXX
- SG_ BPS_Voltage_Tap_Data : 0|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
- SG_ BPS_Temperature_Tap_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_VoltTemp_BQ_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Temperature_Tap_RawV : 0|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 0|16@1- (0.01,0) [-327.68|327.67] "C" Vector__XXX
- SG_ BPS_Voltage_Tap_Data : 0|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
- SG_ BPS_Temperature_Tap_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_VoltTemp_BQ_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Temperature_Tap_RawV : 0|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 0|16@1- (0.01,0) [-327.68|327.67] "C" Vector__XXX
- SG_ BPS_Voltage_Tap_Data : 0|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
- SG_ BPS_Temperature_Tap_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_VoltTemp_BQ_Fault : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Temperature_Tap_RawV : 0|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 0|16@1- (0.01,0) [-327.68|327.67] "C" Vector__XXX
- SG_ BPS_Voltage_Tap_Data : 0|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
- SG_ Array_Precharge_Contactor_State : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Array_Contactor_State : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ HV_Plus_Contactor_State : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ HV_Minus_Contactor_State : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Main_Battery_Avg_Temperature : 0|16@1- (0.01,0) [-327.68|327.67] "" Vector__XXX
- SG_ Main_Battery_Voltage : 0|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
- SG_ BPS_Regen_OK : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Charge_OK : 0|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Fault : 0|8@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_Tap_Msg_WDog : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 
-BO_ 23 BPS_Temperature_Arr_7: 7 VoltTemp_7
- SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
- SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
-
-BO_ 22 BPS_Temperature_Arr_6: 7 VoltTemp_6
- SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
- SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
-
-BO_ 21 BPS_Temperature_Arr_5: 7 VoltTemp_5
- SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
- SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
-
-BO_ 20 BPS_Temperature_Arr_4: 7 VoltTemp_4
- SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
- SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
-
-BO_ 19 BPS_Temperature_Arr_3: 7 VoltTemp_3
- SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
- SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
-
-BO_ 18 BPS_Temperature_Arr_2: 7 VoltTemp_2
- SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
- SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
-
-BO_ 17 BPS_Temperature_Arr_1: 7 VoltTemp_1
- SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
- SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
-
-BO_ 16 BPS_Temperature_Arr_0: 7 VoltTemp_0
- SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
- SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
-
-BO_ 9 BPS_Voltage_Arr_7: 4 VoltTemp_7
- SG_ BPS_VoltTemp_BQ_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
+BO_ 9 BPS_VT7_Voltage_Arr: 4 VoltTemp_7
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
+ SG_ BPS_Voltage_Tap_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
 
-BO_ 8 BPS_Voltage_Arr_6: 4 VoltTemp_6
- SG_ BPS_VoltTemp_BQ_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+BO_ 23 BPS_VT7_Temperature_Arr: 7 VoltTemp_7
+ SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
-BO_ 7 BPS_Voltage_Arr_5: 4 VoltTemp_5
- SG_ BPS_VoltTemp_BQ_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
+BO_ 8 BPS_VT6_Voltage_Arr: 4 VoltTemp_6
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
+ SG_ BPS_Voltage_Tap_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
 
-BO_ 6 BPS_Voltage_Arr_4: 4 VoltTemp_4
- SG_ BPS_VoltTemp_BQ_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+BO_ 22 BPS_VT6_Temperature_Arr: 7 VoltTemp_6
+ SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
-BO_ 5 BPS_Voltage_Arr_3: 4 VoltTemp_3
- SG_ BPS_VoltTemp_BQ_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
+BO_ 7 BPS_VT5_Voltage_Arr: 4 VoltTemp_5
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
+ SG_ BPS_Voltage_Tap_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
 
-BO_ 4 BPS_Voltage_Arr_2: 4 VoltTemp_2
- SG_ BPS_VoltTemp_BQ_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+BO_ 21 BPS_VT5_Temperature_Arr: 7 VoltTemp_5
+ SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
-BO_ 3 BPS_Voltage_Arr_1: 4 VoltTemp_1
- SG_ BPS_VoltTemp_BQ_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
+BO_ 6 BPS_VT4_Voltage_Arr: 4 VoltTemp_4
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
+ SG_ BPS_Voltage_Tap_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
 
-BO_ 32 BPS_Precharge_Voltages: 6 BPS_Leader
- SG_ Precharge_Battery_Voltage : 0|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
- SG_ Precharge_Array_Voltage : 24|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
+BO_ 16 BPS_VT0_Temperature_Arr: 7 VoltTemp_0
+ SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
+ SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
-BO_ 2 BPS_Voltage_Arr_0: 4 VoltTemp_0
- SG_ BPS_VoltTemp_BQ_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
+BO_ 20 BPS_VT4_Temperature_Arr: 7 VoltTemp_4
+ SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
+ SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
+
+BO_ 5 BPS_VT3_Voltage_Arr: 4 VoltTemp_3
+ SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
+ SG_ BPS_Voltage_Tap_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 19 BPS_VT3_Temperature_Arr: 7 VoltTemp_3
+ SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
+ SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
+
+BO_ 4 BPS_VT2_Voltage_Arr: 4 VoltTemp_2
+ SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
+ SG_ BPS_Voltage_Tap_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 18 BPS_VT2_Temperature_Arr: 7 VoltTemp_2
+ SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
+ SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
+
+BO_ 3 BPS_VT1_Voltage_Arr: 4 VoltTemp_1
+ SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
+ SG_ BPS_Voltage_Tap_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 17 BPS_VT1_Temperature_Arr: 7 VoltTemp_1
+ SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
+ SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
+
+BO_ 2 BPS_VT0_Voltage_Arr: 4 VoltTemp_0
+ SG_ BPS_Voltage_Tap_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
@@ -192,118 +137,93 @@ BO_ 10 BPS_Pack_Current: 5 Amperes
 
 
 CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
-CM_ SG_ 3221225472 BPS_VoltTemp_ID "BPS VoltTemp IDBPS VoltTemp ID";
-CM_ SG_ 3221225472 BPS_Tap_idx "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
-CM_ SG_ 3221225472 BPS_Temperature_Tap_Fault "VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)";
-CM_ SG_ 3221225472 BPS_VoltTemp_BQ_Fault "VoltTemp BQ Fault State (0 no fault, 1 fault)VoltTemp BQ Fault State (0 no fault, 1 fault)VoltTemp BQ Fault State (0 no fault, 1 fault)VoltTemp BQ Fault State (0 no fault, 1 fault)VoltTemp BQ Fault State (0 no fault, 1 fault)VoltTemp BQ Fault State (0 no fault, 1 fault)VoltTemp BQ Fault State (0 no fault, 1 fault)";
-CM_ SG_ 3221225472 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap IDRaw thermistor voltage measurement for the specified VoltTemp and Tap IDRaw thermistor voltage measurement for the specified VoltTemp and Tap IDRaw thermistor voltage measurement for the specified VoltTemp and Tap IDRaw thermistor voltage measurement for the specified VoltTemp and Tap IDRaw thermistor voltage measurement for the specified VoltTemp and Tap IDRaw thermistor voltage measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 3221225472 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap IDTemperature tap measurement for the specified VoltTemp and Tap IDTemperature tap measurement for the specified VoltTemp and Tap IDTemperature tap measurement for the specified VoltTemp and Tap IDTemperature tap measurement for the specified VoltTemp and Tap IDTemperature tap measurement for the specified VoltTemp and Tap IDTemperature tap measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 3221225472 BPS_Voltage_Tap_Data "Voltage tap measurement for the specified VoltTemp and Tap IDVoltage tap measurement for the specified VoltTemp and Tap IDVoltage tap measurement for the specified VoltTemp and Tap IDVoltage tap measurement for the specified VoltTemp and Tap IDVoltage tap measurement for the specified VoltTemp and Tap IDVoltage tap measurement for the specified VoltTemp and Tap IDVoltage tap measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 3221225472 Array_Precharge_Contactor_State "Array Precharge Contactor State (0 open, 1 closed)";
-CM_ SG_ 3221225472 Array_Contactor_State "Array Main Contactor State (0 open, 1 closed)";
-CM_ SG_ 3221225472 HV_Plus_Contactor_State "HV+ Contactor State (0 open, 1 closed)";
-CM_ SG_ 3221225472 HV_Minus_Contactor_State "HV- Contactor State (0 open, 1 closed)";
-CM_ SG_ 3221225472 Main_Battery_Avg_Temperature "Average pack temperature as determined by the BPS";
-CM_ SG_ 3221225472 Main_Battery_Voltage "Total battery pack voltage as determined by the BPS";
-CM_ SG_ 3221225472 BPS_Regen_OK "BPS has determined regenerative braking is OK (0 not ok, 1 ok)";
-CM_ SG_ 3221225472 BPS_Charge_OK "BPS has determined charging the pack is OK (0 not ok, 1 ok)";
-CM_ SG_ 3221225472 BPS_Fault "BPS Fault State (0 for all clear; see value table for specific faults)";
-CM_ SG_ 23 BPS_Temperature_Tap_Fault "VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)";
-CM_ SG_ 23 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 23 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 23 BPS_Tap_idx "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
-CM_ SG_ 22 BPS_Temperature_Tap_Fault "VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)";
-CM_ SG_ 22 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 22 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 22 BPS_Tap_idx "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
-CM_ SG_ 21 BPS_Temperature_Tap_Fault "VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)";
-CM_ SG_ 21 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 21 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 21 BPS_Tap_idx "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
-CM_ SG_ 20 BPS_Temperature_Tap_Fault "VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)";
-CM_ SG_ 20 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 20 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 20 BPS_Tap_idx "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
-CM_ SG_ 19 BPS_Temperature_Tap_Fault "VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)";
-CM_ SG_ 19 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 19 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 19 BPS_Tap_idx "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
-CM_ SG_ 18 BPS_Temperature_Tap_Fault "VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)";
-CM_ SG_ 18 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 18 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 18 BPS_Tap_idx "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
-CM_ SG_ 17 BPS_Temperature_Tap_Fault "VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)";
-CM_ SG_ 17 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 17 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 17 BPS_Tap_idx "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
-CM_ SG_ 16 BPS_Temperature_Tap_Fault "VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)";
-CM_ SG_ 16 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 16 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 16 BPS_Tap_idx "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
-CM_ SG_ 9 BPS_VoltTemp_BQ_Fault "VoltTemp BQ Fault State (0 no fault, 1 fault)";
 CM_ SG_ 9 BPS_Voltage_Tap_Data "Voltage tap measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 9 BPS_Tap_idx "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
-CM_ SG_ 8 BPS_VoltTemp_BQ_Fault "VoltTemp BQ Fault State (0 no fault, 1 fault)";
+CM_ SG_ 9 BPS_Voltage_Tap_Fault "VoltTemp BQ Fault State (0 no fault, 1 fault)";
+CM_ SG_ 23 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
+CM_ SG_ 23 BPS_Temperature_Tap_Fault "VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)";
+CM_ SG_ 23 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
 CM_ SG_ 8 BPS_Voltage_Tap_Data "Voltage tap measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 8 BPS_Tap_idx "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
-CM_ SG_ 7 BPS_VoltTemp_BQ_Fault "VoltTemp BQ Fault State (0 no fault, 1 fault)";
+CM_ SG_ 8 BPS_Voltage_Tap_Fault "VoltTemp BQ Fault State (0 no fault, 1 fault)";
+CM_ SG_ 22 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
+CM_ SG_ 22 BPS_Temperature_Tap_Fault "VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)";
+CM_ SG_ 22 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
 CM_ SG_ 7 BPS_Voltage_Tap_Data "Voltage tap measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 7 BPS_Tap_idx "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
-CM_ SG_ 6 BPS_VoltTemp_BQ_Fault "VoltTemp BQ Fault State (0 no fault, 1 fault)";
+CM_ SG_ 7 BPS_Voltage_Tap_Fault "VoltTemp BQ Fault State (0 no fault, 1 fault)";
+CM_ SG_ 21 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
+CM_ SG_ 21 BPS_Temperature_Tap_Fault "VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)";
+CM_ SG_ 21 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
 CM_ SG_ 6 BPS_Voltage_Tap_Data "Voltage tap measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 6 BPS_Tap_idx "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
-CM_ SG_ 5 BPS_VoltTemp_BQ_Fault "VoltTemp BQ Fault State (0 no fault, 1 fault)";
+CM_ SG_ 6 BPS_Voltage_Tap_Fault "VoltTemp BQ Fault State (0 no fault, 1 fault)";
+CM_ SG_ 16 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
+CM_ SG_ 16 BPS_Temperature_Tap_Fault "VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)";
+CM_ SG_ 16 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
+CM_ SG_ 20 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
+CM_ SG_ 20 BPS_Temperature_Tap_Fault "VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)";
+CM_ SG_ 20 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
 CM_ SG_ 5 BPS_Voltage_Tap_Data "Voltage tap measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 5 BPS_Tap_idx "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
-CM_ SG_ 4 BPS_VoltTemp_BQ_Fault "VoltTemp BQ Fault State (0 no fault, 1 fault)";
+CM_ SG_ 5 BPS_Voltage_Tap_Fault "VoltTemp BQ Fault State (0 no fault, 1 fault)";
+CM_ SG_ 19 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
+CM_ SG_ 19 BPS_Temperature_Tap_Fault "VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)";
+CM_ SG_ 19 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
 CM_ SG_ 4 BPS_Voltage_Tap_Data "Voltage tap measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 4 BPS_Tap_idx "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
-CM_ SG_ 3 BPS_VoltTemp_BQ_Fault "VoltTemp BQ Fault State (0 no fault, 1 fault)";
+CM_ SG_ 4 BPS_Voltage_Tap_Fault "VoltTemp BQ Fault State (0 no fault, 1 fault)";
+CM_ SG_ 18 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
+CM_ SG_ 18 BPS_Temperature_Tap_Fault "VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)";
+CM_ SG_ 18 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
 CM_ SG_ 3 BPS_Voltage_Tap_Data "Voltage tap measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 3 BPS_Tap_idx "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
-CM_ SG_ 32 Precharge_Battery_Voltage "Battery voltage as measured by active precharge circuitry";
-CM_ SG_ 32 Precharge_Array_Voltage "Array voltage as measured by active precharge circuitry";
-CM_ SG_ 2 BPS_VoltTemp_BQ_Fault "VoltTemp BQ Fault State (0 no fault, 1 fault)";
+CM_ SG_ 3 BPS_Voltage_Tap_Fault "VoltTemp BQ Fault State (0 no fault, 1 fault)";
+CM_ SG_ 17 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
+CM_ SG_ 17 BPS_Temperature_Tap_Fault "VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)";
+CM_ SG_ 17 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
+CM_ SG_ 2 BPS_Voltage_Tap_Fault "VoltTemp BQ Fault State (0 no fault, 1 fault)";
 CM_ SG_ 2 BPS_Voltage_Tap_Data "Voltage tap measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 2 BPS_Tap_idx "BPS Voltage/Temperature Tap ID (4 taps per VoltTemp)";
 CM_ SG_ 10 Main_Battery_Current_RawV "Main battery current raw voltage as measured by the BPS";
 CM_ SG_ 10 Main_Battery_Current "Main battery current as measured by the BPS";
-BA_DEF_ BO_  "_Cdb_Sc_CTm_Test" INT 0 0;
-BA_DEF_ BO_  "_Cdb_Sc_CTm_Normal" INT 0 0;
-BA_DEF_  "DatabaseVersion" STRING ;
-BA_DEF_  "ProtocolType" STRING ;
-BA_DEF_  "DatabaseCompiler" STRING ;
+BA_DEF_  "DBName" STRING ;
 BA_DEF_ SG_  "SPN" INT 0 524287;
-BA_DEF_ BO_  "VFrameFormat" ENUM  "StandardCAN","ExtendedCAN","reserved","J1939PG";
-BA_DEF_  "MultiplexExtEnabled" ENUM  "No","Yes";
+BA_DEF_ BO_  "GenMsgCycleTime" INT 0 100000;
+BA_DEF_ BO_  "GenMsgSendType" ENUM  "Cyclic","Event","CyclicAndEvent","CyclicAndEventNoRepetition","None","Spontaneous";
+BA_DEF_ BO_  "VFrameFormat" ENUM  "StandardCAN","ExtendedCAN","reserved","J1939PG","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","StandardCAN_FD","ExtendedCAN_FD";
 BA_DEF_  "BusType" STRING ;
-BA_DEF_DEF_  "_Cdb_Sc_CTm_Test" 0;
-BA_DEF_DEF_  "_Cdb_Sc_CTm_Normal" 0;
-BA_DEF_DEF_  "DatabaseVersion" "DEMO PLUS";
-BA_DEF_DEF_  "ProtocolType" "";
-BA_DEF_DEF_  "DatabaseCompiler" "";
+BA_DEF_DEF_  "DBName" "";
 BA_DEF_DEF_  "SPN" 0;
-BA_DEF_DEF_  "VFrameFormat" "J1939PG";
-BA_DEF_DEF_  "MultiplexExtEnabled" "No";
+BA_DEF_DEF_  "GenMsgCycleTime" 0;
+BA_DEF_DEF_  "GenMsgSendType" "Cyclic";
+BA_DEF_DEF_  "VFrameFormat" "ExtendedCAN_FD";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
-BA_ "VFrameFormat" BO_ 23 0;
-BA_ "VFrameFormat" BO_ 22 0;
-BA_ "VFrameFormat" BO_ 21 0;
-BA_ "VFrameFormat" BO_ 20 0;
-BA_ "VFrameFormat" BO_ 19 0;
-BA_ "VFrameFormat" BO_ 18 0;
-BA_ "VFrameFormat" BO_ 17 0;
-BA_ "VFrameFormat" BO_ 16 0;
+BA_ "DBName" "BPSCAN";
 BA_ "VFrameFormat" BO_ 9 0;
+BA_ "VFrameFormat" BO_ 23 0;
 BA_ "VFrameFormat" BO_ 8 0;
+BA_ "VFrameFormat" BO_ 22 0;
 BA_ "VFrameFormat" BO_ 7 0;
+BA_ "VFrameFormat" BO_ 21 0;
 BA_ "VFrameFormat" BO_ 6 0;
+BA_ "VFrameFormat" BO_ 16 0;
+BA_ "VFrameFormat" BO_ 20 0;
 BA_ "VFrameFormat" BO_ 5 0;
+BA_ "VFrameFormat" BO_ 19 0;
 BA_ "VFrameFormat" BO_ 4 0;
+BA_ "VFrameFormat" BO_ 18 0;
 BA_ "VFrameFormat" BO_ 3 0;
-BA_ "VFrameFormat" BO_ 32 0;
+BA_ "VFrameFormat" BO_ 17 0;
 BA_ "VFrameFormat" BO_ 2 0;
 BA_ "VFrameFormat" BO_ 10 0;
-VAL_ 3221225472 BPS_Fault 16 "Discharging Overcurrent" 15 "Charging Overcurrent" 14 "Estop 3" 13 "Estop 2" 12 "Estop 1" 11 "Array Pchg Contactor Sense" 10 "Array Contactor Sense" 9 "HV Minus Contactor Sense" 8 "HV Plus Contactor Sense" 7 "Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "No Fault" ;
-
+VAL_ 3221225472 BPS_Tap_Msg_WDog 1 "OK" 0 "NOT OK" ;
+VAL_ 9 BPS_Voltage_Tap_Fault 2 "Description for the value '0x2'" 1 "BQ I2C Read Error" 0 "OK" ;
+VAL_ 23 BPS_Temperature_Tap_Fault 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Short to VCC" 1 "Short to GND" 0 "OK" ;
+VAL_ 8 BPS_Voltage_Tap_Fault 2 "Description for the value '0x2'" 1 "BQ I2C Read Error" 0 "OK" ;
+VAL_ 22 BPS_Temperature_Tap_Fault 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Short to VCC" 1 "Short to GND" 0 "OK" ;
+VAL_ 7 BPS_Voltage_Tap_Fault 2 "Description for the value '0x2'" 1 "BQ I2C Read Error" 0 "OK" ;
+VAL_ 21 BPS_Temperature_Tap_Fault 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Short to VCC" 1 "Short to GND" 0 "OK" ;
+VAL_ 6 BPS_Voltage_Tap_Fault 2 "Description for the value '0x2'" 1 "BQ I2C Read Error" 0 "OK" ;
+VAL_ 16 BPS_Temperature_Tap_Fault 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Short to VCC" 1 "Short to GND" 0 "OK" ;
+VAL_ 20 BPS_Temperature_Tap_Fault 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Short to VCC" 1 "Short to GND" 0 "OK" ;
+VAL_ 5 BPS_Voltage_Tap_Fault 2 "Description for the value '0x2'" 1 "BQ I2C Read Error" 0 "OK" ;
+VAL_ 19 BPS_Temperature_Tap_Fault 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Short to VCC" 1 "Short to GND" 0 "OK" ;
+VAL_ 4 BPS_Voltage_Tap_Fault 2 "Description for the value '0x2'" 1 "BQ I2C Read Error" 0 "OK" ;
+VAL_ 18 BPS_Temperature_Tap_Fault 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Short to VCC" 1 "Short to GND" 0 "OK" ;
+VAL_ 3 BPS_Voltage_Tap_Fault 2 "Description for the value '0x2'" 1 "BQ I2C Read Error" 0 "OK" ;
+VAL_ 17 BPS_Temperature_Tap_Fault 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Short to VCC" 1 "Short to GND" 0 "OK" ;
+VAL_ 2 BPS_Voltage_Tap_Fault 2 "Description for the value '0x2'" 1 "BQ I2C Read Error" 0 "OK" ;
