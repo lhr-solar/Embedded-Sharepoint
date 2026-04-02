@@ -35,9 +35,9 @@ BS_:
 
 BU_: TPEE_MPPT_C TPEE_MPPT_B TPEE_MPPT_A Telemetry Pump Pedals PDU LV_Carrier External Dashboard_Display BPS ChargerInterface Controls VCU
 VAL_TABLE_ VCU_FSM_State 7 "VEHICLE_NOT_READY" 6 "DISABLED" 5 "CRUISE_CONTROL" 4 "REGEN" 3 "REVERSE_DRIVE" 2 "NEUTRAL_DRIVE" 1 "FORWARD_DRIVE" 0 "INIT" ;
-VAL_TABLE_ BPS_Volt_Tap_Fault 1 "BQ I2C Read Error" 0 "OK" ;
-VAL_TABLE_ BPS_Temp_Tap_Fault 3 "Disconnected" 2 "Short to VCC" 1 "Short to GND" 0 "OK" ;
-VAL_TABLE_ Generic_TrueFalse 1 "True" 0 "False" ;
+VAL_TABLE_ BPS_Volt_Tap_Fault 2 "Description for the value '0x2'" 1 "BQ I2C Read Error" 0 "OK" ;
+VAL_TABLE_ BPS_Temp_Tap_Fault 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Short to VCC" 1 "Short to GND" 0 "OK" ;
+VAL_TABLE_ Generic_TrueFalse 0 "False" 1 "True" ;
 VAL_TABLE_ Generic_Active 1 "Active" 0 "Inactive" ;
 VAL_TABLE_ SuppCharger_Status 3 "FAULT" 2 "Charging..." 1 "Charge Complete" 0 "Charge Disabled" ;
 VAL_TABLE_ Fusebox_Assignments 15 "PDE Fans" 14 "Unassigned" 13 "Unassigned" 12 "Pump" 11 "Telemetry + Data Acq" 10 "Motor Controller" 9 "MPPTs" 8 "Battery" 7 "Unassigned" 6 "Cameras" 5 "Pedals" 4 "Pi + Display" 3 "Lights" 2 "Horn" 1 "Dashboard" 0 "VCU" ;
@@ -51,7 +51,7 @@ VAL_TABLE_ Generic_Enable 1 "Enabled" 0 "Disabled" ;
 VAL_TABLE_ MPPT_ControlMode 2 "Enabled - Constant Voltage" 1 "Enabled" 0 "Disabled" ;
 VAL_TABLE_ MPPT_Fault 8 "Unknown Fault" 7 "Phase Over Current" 6 "Input Under Current" 5 "Input Over Current" 4 "Output Over Current" 3 "Output Over Voltage" 2 "Input Over Voltage" 1 "Configuration Error" 0 "OK" ;
 VAL_TABLE_ MPPT_Mode 6 "FAULT" 5 "Temperature De-Rating" 4 "Constant Output Current" 3 "Constant Output Voltage" 2 "Minimum Input Current" 1 "Constant Input Current" 0 "Constant Input Voltage" ;
-VAL_TABLE_ BPS_Fault 17 "Discharging Overcurrent" 16 "Charging Overcurrent" 15 "Estop 3" 14 "Estop 2" 13 "Estop 1" 12 "Array Pchg Contactor Sense" 11 "Array Contactor Sense" 10 "HV Minus Contactor Sense" 9 "HV Plus Contactor Sense" 8 "Segment Watchdog" 7 "Internal Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "OK" ;
+VAL_TABLE_ BPS_Fault 18 "Amperes Watchdog" 17 "Discharging Overcurrent" 16 "Charging Overcurrent" 15 "Estop 3" 14 "Estop 2" 13 "Estop 1" 12 "Array Pchg Contactor Sense" 11 "Array Contactor Sense" 10 "HV Minus Contactor Sense" 9 "HV Plus Contactor Sense" 8 "Segment Watchdog" 7 "Internal Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "OK" ;
 VAL_TABLE_ Controls_Leader_Fault 4 "Lighting Fault" 3 "Invalid Driver Inputs" 2 "BPS Watchdog" 1 "Bosch LWS Watchdog" 0 "OK" ;
 VAL_TABLE_ VCU_Fault 6 "Motor HV Undervoltage" 5 "Motor HV Overvoltage" 4 "Motor Controller Fault" 3 "Motor Precharge Timeout" 2 "Motor Pchg Contactor Sense" 1 "Motor Contactor Sense" 0 "No Fault" ;
 VAL_TABLE_ HSS_SetState 2 "Toggle Off" 1 "Toggle On" 0 "Do Nothing" ;
@@ -144,6 +144,7 @@ BO_ 514 MPPT_A_SweepMeasurements: 6 TPEE_MPPT_A
  SG_ MPPT_Sweep_Data_cnt : 7|8@0+ (1,0) [0|127] "" Vector__XXX
 
 BO_ 13 BPS_Temp_RawV_Aggregate_Arr: 4 BPS
+ SG_ BPS_Tap_Msg_WDog : 5|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ BPS_Temperature_Tap_RawV : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ BPS_Temperature_FrameID : 24|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
@@ -165,6 +166,7 @@ BO_ 32 BPS_Precharge_Voltages: 6 BPS
  SG_ BPS_Precharge_Array_Voltage : 24|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
 
 BO_ 11 BPS_Voltage_Aggregate_Arr: 6 BPS
+ SG_ BPS_Tap_Msg_WDog : 5|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ BPS_Voltage_Tap_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Voltage_Tap_Age : 32|16@1+ (1,0) [0|65535] "ms" Vector__XXX
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
@@ -487,15 +489,17 @@ VAL_ 545 MPPT_Enabled 2 "Enabled - Constant Voltage" 1 "Enabled" 0 "Disabled" ;
 VAL_ 545 MPPT_Fault 8 "Unknown Fault" 7 "Phase Over Current" 6 "Input Under Current" 5 "Input Over Current" 4 "Output Over Current" 3 "Output Over Voltage" 2 "Input Over Voltage" 1 "Configuration Error" 0 "OK" ;
 VAL_ 545 MPPT_Mode 6 "FAULT" 5 "Temperature De-Rating" 4 "Constant Output Current" 3 "Constant Output Voltage" 2 "Minimum Input Current" 1 "Constant Input Current" 0 "Constant Input Voltage" ;
 VAL_ 553 MPPT_Set_Enable 2 "Enabled - Constant Voltage" 1 "Enabled" 0 "Disabled" ;
-VAL_ 12 BPS_Temperature_Tap_Fault 3 "Disconnected" 2 "Short to VCC" 1 "Short to GND" 0 "OK" ;
-VAL_ 11 BPS_Voltage_Tap_Fault 1 "BQ I2C Read Error" 0 "OK" ;
+VAL_ 13 BPS_Tap_Msg_WDog 1 "OK" 0 "NOT OK" ;
+VAL_ 12 BPS_Temperature_Tap_Fault 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Short to VCC" 1 "Short to GND" 0 "OK" ;
+VAL_ 11 BPS_Tap_Msg_WDog 1 "OK" 0 "NOT OK" ;
+VAL_ 11 BPS_Voltage_Tap_Fault 2 "Description for the value '0x2'" 1 "BQ I2C Read Error" 0 "OK" ;
 VAL_ 1 BPS_Regen_OK 1 "OK" 0 "NOT OK" ;
 VAL_ 1 BPS_Charge_OK 1 "OK" 0 "NOT OK" ;
 VAL_ 1 HV_Plus_Contactor_State 1 "Closed" 0 "Open" ;
 VAL_ 1 HV_Minus_Contactor_State 1 "Closed" 0 "Open" ;
 VAL_ 1 Array_Contactor_State 1 "Closed" 0 "Open" ;
 VAL_ 1 Array_Precharge_Contactor_State 1 "Closed" 0 "Open" ;
-VAL_ 1 BPS_Fault 17 "Discharging Overcurrent" 16 "Charging Overcurrent" 15 "Estop 3" 14 "Estop 2" 13 "Estop 1" 12 "Array Pchg Contactor Sense" 11 "Array Contactor Sense" 10 "HV Minus Contactor Sense" 9 "HV Plus Contactor Sense" 8 "Segment Watchdog" 7 "Internal Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "OK" ;
+VAL_ 1 BPS_Fault 18 "Amperes Watchdog" 17 "Discharging Overcurrent" 16 "Charging Overcurrent" 15 "Estop 3" 14 "Estop 2" 13 "Estop 1" 12 "Array Pchg Contactor Sense" 11 "Array Contactor Sense" 10 "HV Minus Contactor Sense" 9 "HV Plus Contactor Sense" 8 "Segment Watchdog" 7 "Internal Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "OK" ;
 VAL_ 1 BPS_Segment7_Status 1 "FAULT" 0 "OK" ;
 VAL_ 1 BPS_Segment6_Status 1 "FAULT" 0 "OK" ;
 VAL_ 1 BPS_Segment5_Status 1 "FAULT" 0 "OK" ;
@@ -505,15 +509,15 @@ VAL_ 1 BPS_Segment2_Status 1 "FAULT" 0 "OK" ;
 VAL_ 1 BPS_Segment1_Status 1 "FAULT" 0 "OK" ;
 VAL_ 1 BPS_Segment0_Status 1 "FAULT" 0 "OK" ;
 VAL_ 25 Controls_Leader_Fault 4 "Lighting Fault" 3 "Invalid Driver Inputs" 2 "BPS Watchdog" 1 "Bosch LWS Watchdog" 0 "OK" ;
-VAL_ 24 VCU_FSM_IN_REVERSE 1 "True" 0 "False" ;
-VAL_ 24 VCU_FSM_IN_REGEN_REQ 1 "True" 0 "False" ;
-VAL_ 24 VCU_FSM_IN_REGEN_RDY 1 "True" 0 "False" ;
-VAL_ 24 VCU_FSM_IN_REGEN_ENABLE 1 "True" 0 "False" ;
-VAL_ 24 VCU_FSM_IN_PCHG_OK 1 "True" 0 "False" ;
-VAL_ 24 VCU_FSM_IN_FORWARD 1 "True" 0 "False" ;
-VAL_ 24 VCU_FSM_IN_CRUISE_REQ 1 "True" 0 "False" ;
-VAL_ 24 VCU_FSM_IN_BRAKE 1 "True" 0 "False" ;
-VAL_ 24 VCU_FSM_IN_NEUTRAL 1 "True" 0 "False" ;
+VAL_ 24 VCU_FSM_IN_REVERSE 0 "False" 1 "True" ;
+VAL_ 24 VCU_FSM_IN_REGEN_REQ 0 "False" 1 "True" ;
+VAL_ 24 VCU_FSM_IN_REGEN_RDY 0 "False" 1 "True" ;
+VAL_ 24 VCU_FSM_IN_REGEN_ENABLE 0 "False" 1 "True" ;
+VAL_ 24 VCU_FSM_IN_PCHG_OK 0 "False" 1 "True" ;
+VAL_ 24 VCU_FSM_IN_FORWARD 0 "False" 1 "True" ;
+VAL_ 24 VCU_FSM_IN_CRUISE_REQ 0 "False" 1 "True" ;
+VAL_ 24 VCU_FSM_IN_BRAKE 0 "False" 1 "True" ;
+VAL_ 24 VCU_FSM_IN_NEUTRAL 0 "False" 1 "True" ;
 VAL_ 24 VCU_Steering_Angle_OK 1 "OK" 0 "NOT OK" ;
 VAL_ 24 VCU_Regen_Active 1 "Active" 0 "Inactive" ;
 VAL_ 24 VCU_Regen_OK 1 "OK" 0 "NOT OK" ;
