@@ -12,7 +12,7 @@ def test_compilation(header_path: Path):
     test_c_file = header_path.with_suffix(".test_compile.c")
     
     # Create a dummy C file that includes the generated header
-    with open(test_c_file, "w") as f:
+    with open(test_c_file, "w", encoding="utf-8") as f:
         f.write(f'#include "{header_path.name}"\n\n')
         f.write("int main(void) { return 0; }\n")
 
