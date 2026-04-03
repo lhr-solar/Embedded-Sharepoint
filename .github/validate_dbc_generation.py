@@ -48,7 +48,7 @@ def run_generator_and_test(generator_script, dbc_file):
     try:
         # Run the Generator
         result = subprocess.run(
-            ["python3", str(generator_script), str(dbc_file)],
+            [sys.executable, str(generator_script), str(dbc_file)],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True
