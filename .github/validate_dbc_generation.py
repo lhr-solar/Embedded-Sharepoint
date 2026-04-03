@@ -20,7 +20,7 @@ def test_compilation(header_path: Path):
         # -fsyntax-only checks for errors without needing to link or output a binary
         # -I. ensures the compiler looks in the current directory for the header
         result = subprocess.run(
-            ["gcc", "-fsyntax-only", "-I", str(header_path.parent), str(test_c_file)],
+            ["gcc", "-fsyntax-only", "-std=c11", "-Wall", "-Werror", "-I", str(header_path.parent), str(test_c_file)],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True
