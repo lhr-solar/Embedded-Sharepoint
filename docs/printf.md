@@ -39,11 +39,11 @@ __HAL_RCC_GPIOC_CLK_ENABLE();
 
 `printf` is a library function provided by newlib, but we've replaced it with [`nanoprintf`](https://github.com/charlesnicholson/nanoprintf), a more lightweight implementation that uses less stack space and probably runs faster. `nanoprintf` handles all the format specifier replacement and puts our final string into a buffer of `MAX_PRINTF_SIZE`, which can be redefined if need be in the Makefile (default value is 256 bytes).
 
-To use our `printf` implementation, *please include "printf.h" rather than <stdio.h>*.
+To use our `printf` implementation, **please include "printf.h" rather than <stdio.h>**.
 
 We also have some extra memory management on top of the `nanoprintf` implementation that keeps our memory usage lower. Upon calling `printf`, if your thread does not have a buffer assigned to it, a Task Local Variable will be stored with a pointer to your thread's designated `printf` buffer. This is where your thread will do any necessary `printf` processing and spit out the final strings it needs to `uart_send`. 
 
-The number of these buffers that exist is defined by `NUM_PRINTF_BUFFERS`. If `NUM_PRINTF_BUFFERS` < number of threads using `printf`, threads will start reusing buffers (i.e. two threads can be assigned to one buffer). This is why each buffer has a mutex to prevent two threads from modifying each other's printf data; the downside of this is increased latency as each `printf` call must wait for a previous `printf` call to finish processing. So, if the number of active threads is known, and _if you have enough memory_, it's best to set `NUM_PRINTF_BUFFERS` = `NUM_ACTIVE_THREADS`. However, if low on memory, you can reduce this at the cost of blocking `printf` on other `printf` calls a little more (this balloons as number of threads increases).
+The number of these buffers that exist is defined by `NUM_PRINTF_BUFFERS`. If `NUM_PRINTF_BUFFERS` < number of threads using `printf`, threads will start reusing buffers (i.e. two threads can be assigned to one buffer). This is why each buffer has a mutex to prevent two threads from modifying each other's printf data; the downside of this is increased latency as each `printf` call must wait for a previous `printf` call to finish processing. So, if the number of active threads is known, and **if you have enough memory**, it's best to set `NUM_PRINTF_BUFFERS` = `NUM_ACTIVE_THREADS`. However, if low on memory, you can reduce this at the cost of blocking `printf` on other `printf` calls a little more (this balloons as number of threads increases).
 
 You can also change the `MAX_PRINTF_SIZE` if you feel like you need a little more space.
 
