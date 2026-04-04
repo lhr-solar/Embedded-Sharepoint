@@ -99,6 +99,13 @@
 * **NUMBER\_SEGMENTS** ([**SevenSegment.h**](SevenSegment_8h.md))
 * **NUMBER\_SEVEN\_SEGMENTS** ([**SevenSegment.h**](SevenSegment_8h.md))
 * **NUMBER\_PWM\_DATA\_ELEMENTS** ([**WS2812B.h**](WS2812B_8h.md))
+* **NANOPRINTF\_USE\_BINARY\_FORMAT\_SPECIFIERS** ([**printf.h**](printf_8h.md))
+* **NANOPRINTF\_USE\_FIELD\_WIDTH\_FORMAT\_SPECIFIERS** ([**printf.h**](printf_8h.md))
+* **NANOPRINTF\_USE\_FLOAT\_FORMAT\_SPECIFIERS** ([**printf.h**](printf_8h.md))
+* **NANOPRINTF\_USE\_LARGE\_FORMAT\_SPECIFIERS** ([**printf.h**](printf_8h.md))
+* **NANOPRINTF\_USE\_PRECISION\_FORMAT\_SPECIFIERS** ([**printf.h**](printf_8h.md))
+* **NANOPRINTF\_USE\_SMALL\_FORMAT\_SPECIFIERS** ([**printf.h**](printf_8h.md))
+* **NANOPRINTF\_USE\_WRITEBACK\_FORMAT\_SPECIFIERS** ([**printf.h**](printf_8h.md))
 
 
 ## s

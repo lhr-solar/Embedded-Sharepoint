@@ -60,13 +60,11 @@
     <member refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kind="enum"><name>uart_status_t</name></member>
     <member refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35a6a641fc3fa375d4bf149fb18fc290b55" kind="enumvalue"><name>UART_ERR</name></member>
     <member refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35a525187963c0aaa465f2a35b30b894d07" kind="enumvalue"><name>UART_OK</name></member>
-    <member refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35a9928134997b763cbf346c8f3e14d9128" kind="enumvalue"><name>UART_SENT</name></member>
-    <member refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35acfb8d3a96884efae4bd347830bd8a4c4" kind="enumvalue"><name>UART_RECV</name></member>
     <member refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35ac2ecba679f3dca11555b66d448198d0c" kind="enumvalue"><name>UART_EMPTY</name></member>
     <member refid="UART_8h_1a1847d0a7e7670fccc3a7ffac3ba1e016" kind="function"><name>uart_init</name></member>
     <member refid="UART_8h_1a3e4de921d10fbf0a69f2e9466530e732" kind="function"><name>uart_deinit</name></member>
-    <member refid="UART_8h_1a71553a13e21823d5ca910beb2abacb32" kind="function"><name>uart_send</name></member>
-    <member refid="UART_8h_1aa8ffbc96e17f61846c7b405b69488f18" kind="function"><name>uart_recv</name></member>
+    <member refid="UART_8h_1a3b013c9a7a26a463352564c3148f6a34" kind="function"><name>uart_send</name></member>
+    <member refid="UART_8h_1aadc671fb204494f58eec13b6d6f2f6bf" kind="function"><name>uart_recv</name></member>
   </compound>
   <compound refid="dir_3c5459f7c179b79c90e2565474bb2856" kind="dir"><name>bsp</name>
   </compound>

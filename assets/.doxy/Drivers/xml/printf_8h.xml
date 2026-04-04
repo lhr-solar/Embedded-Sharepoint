@@ -20,15 +20,94 @@
         <label>stdbool.h</label>
       </node>
     </incdepgraph>
+    <sectiondef kind="define">
+      <memberdef kind="define" id="printf_8h_1a606023defdf585828cb57c3a195a85a7" prot="public" static="no">
+        <name>NANOPRINTF_USE_FIELD_WIDTH_FORMAT_SPECIFIERS</name>
+        <initializer>1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/printf.h" line="3" column="9" bodyfile="driver/Inc/printf.h" bodystart="3" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="printf_8h_1a7897fd9a2694d1027549ae262622a03c" prot="public" static="no">
+        <name>NANOPRINTF_USE_PRECISION_FORMAT_SPECIFIERS</name>
+        <initializer>1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/printf.h" line="4" column="9" bodyfile="driver/Inc/printf.h" bodystart="4" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="printf_8h_1a95375b83a3d869e0bd83e885550bdbce" prot="public" static="no">
+        <name>NANOPRINTF_USE_LARGE_FORMAT_SPECIFIERS</name>
+        <initializer>1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/printf.h" line="5" column="9" bodyfile="driver/Inc/printf.h" bodystart="5" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="printf_8h_1a1d24535675f33605b1d913e4e1341f6c" prot="public" static="no">
+        <name>NANOPRINTF_USE_SMALL_FORMAT_SPECIFIERS</name>
+        <initializer>1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/printf.h" line="6" column="9" bodyfile="driver/Inc/printf.h" bodystart="6" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="printf_8h_1a97499adab432bcfe238734f97ce6f9e5" prot="public" static="no">
+        <name>NANOPRINTF_USE_FLOAT_FORMAT_SPECIFIERS</name>
+        <initializer>1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/printf.h" line="7" column="9" bodyfile="driver/Inc/printf.h" bodystart="7" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="printf_8h_1a4d0bd308c880fe7b1a9a3a7349031c6d" prot="public" static="no">
+        <name>NANOPRINTF_USE_BINARY_FORMAT_SPECIFIERS</name>
+        <initializer>1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/printf.h" line="8" column="9" bodyfile="driver/Inc/printf.h" bodystart="8" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="printf_8h_1a5c54aafcec32891c82590bf7448c4594" prot="public" static="no">
+        <name>NANOPRINTF_USE_WRITEBACK_FORMAT_SPECIFIERS</name>
+        <initializer>0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="driver/Inc/printf.h" line="9" column="9" bodyfile="driver/Inc/printf.h" bodystart="9" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
     <sectiondef kind="func">
-      <memberdef kind="function" id="printf_8h_1a98631211a4a8aee62f572375d5b637be" prot="public" static="no" extern="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="printf_8h_1a55f3d956bb2ba20b5059e9e25484a47f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
         <definition>int printf</definition>
-        <argsstring>(const char *format,...)</argsstring>
+        <argsstring>(const char *fmt,...)</argsstring>
         <name>printf</name>
         <param>
           <type>const char *</type>
-          <declname>format</declname>
+          <declname>fmt</declname>
         </param>
         <param>
           <type>...</type>
@@ -39,16 +118,24 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="driver/Inc/printf.h" line="6" column="12" declfile="driver/Inc/printf.h" declline="6" declcolumn="12"/>
+        <location file="driver/Inc/printf.h" line="14" column="5" declfile="driver/Inc/printf.h" declline="14" declcolumn="5"/>
       </memberdef>
-      <memberdef kind="function" id="printf_8h_1a5c48433db9c04031772d5b36e6c4411d" prot="public" static="no" extern="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="printf_8h_1a72c2943bdd02b80ed36ec32142d01c7b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
-        <definition>int scanf</definition>
-        <argsstring>(const char *format,...)</argsstring>
-        <name>scanf</name>
+        <definition>int snprintf</definition>
+        <argsstring>(char *buffer, size_t bufsz, char const *fmt,...)</argsstring>
+        <name>snprintf</name>
         <param>
-          <type>const char *</type>
-          <declname>format</declname>
+          <type>char *</type>
+          <declname>buffer</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>bufsz</declname>
+        </param>
+        <param>
+          <type>char const *</type>
+          <declname>fmt</declname>
         </param>
         <param>
           <type>...</type>
@@ -59,7 +146,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="driver/Inc/printf.h" line="7" column="12" declfile="driver/Inc/printf.h" declline="7" declcolumn="12"/>
+        <location file="driver/Inc/printf.h" line="15" column="5" declfile="driver/Inc/printf.h" declline="15" declcolumn="5"/>
       </memberdef>
       <memberdef kind="function" id="printf_8h_1a553be9d5cfd229f0ce30075aee33ea28" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>bool</type>
@@ -76,7 +163,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="driver/Inc/printf.h" line="9" column="6" declfile="driver/Inc/printf.h" declline="9" declcolumn="6"/>
+        <location file="driver/Inc/printf.h" line="17" column="6" declfile="driver/Inc/printf.h" declline="17" declcolumn="6"/>
       </memberdef>
     </sectiondef>
     <briefdescription>
@@ -86,13 +173,21 @@
     <programlisting>
 <codeline lineno="1"><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="2"><highlight class="normal"></highlight></codeline>
-<codeline lineno="3"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdbool.h&gt;</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;UART.h&quot;</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="5"><highlight class="normal"></highlight></codeline>
-<codeline lineno="6" refid="printf_8h_1a98631211a4a8aee62f572375d5b637be" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="printf_8h_1a98631211a4a8aee62f572375d5b637be" kindref="member">printf</ref><sp/>(<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*<sp/>format,<sp/>...<sp/>);</highlight></codeline>
-<codeline lineno="7" refid="printf_8h_1a5c48433db9c04031772d5b36e6c4411d" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="printf_8h_1a5c48433db9c04031772d5b36e6c4411d" kindref="member">scanf</ref><sp/><sp/>(<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*<sp/>format,<sp/>...<sp/>);</highlight></codeline>
-<codeline lineno="8"><highlight class="normal"></highlight></codeline>
-<codeline lineno="9" refid="printf_8h_1a553be9d5cfd229f0ce30075aee33ea28" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="printf_8h_1a553be9d5cfd229f0ce30075aee33ea28" kindref="member">printf_init</ref>(UART_HandleTypeDef<sp/>*huart);</highlight></codeline>
+<codeline lineno="3" refid="printf_8h_1a606023defdf585828cb57c3a195a85a7" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>NANOPRINTF_USE_FIELD_WIDTH_FORMAT_SPECIFIERS<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4" refid="printf_8h_1a7897fd9a2694d1027549ae262622a03c" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>NANOPRINTF_USE_PRECISION_FORMAT_SPECIFIERS<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5" refid="printf_8h_1a95375b83a3d869e0bd83e885550bdbce" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>NANOPRINTF_USE_LARGE_FORMAT_SPECIFIERS<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6" refid="printf_8h_1a1d24535675f33605b1d913e4e1341f6c" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>NANOPRINTF_USE_SMALL_FORMAT_SPECIFIERS<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7" refid="printf_8h_1a97499adab432bcfe238734f97ce6f9e5" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>NANOPRINTF_USE_FLOAT_FORMAT_SPECIFIERS<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8" refid="printf_8h_1a4d0bd308c880fe7b1a9a3a7349031c6d" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>NANOPRINTF_USE_BINARY_FORMAT_SPECIFIERS<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9" refid="printf_8h_1a5c54aafcec32891c82590bf7448c4594" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>NANOPRINTF_USE_WRITEBACK_FORMAT_SPECIFIERS<sp/>0</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdbool.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;UART.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight></codeline>
+<codeline lineno="14" refid="printf_8h_1a55f3d956bb2ba20b5059e9e25484a47f" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="printf_8h_1a55f3d956bb2ba20b5059e9e25484a47f" kindref="member">printf</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*fmt,<sp/>...);</highlight></codeline>
+<codeline lineno="15" refid="printf_8h_1a72c2943bdd02b80ed36ec32142d01c7b" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="printf_8h_1a72c2943bdd02b80ed36ec32142d01c7b" kindref="member">snprintf</ref>(</highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*buffer,<sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>bufsz,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>*fmt,<sp/>...);</highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight></codeline>
+<codeline lineno="17" refid="printf_8h_1a553be9d5cfd229f0ce30075aee33ea28" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="printf_8h_1a553be9d5cfd229f0ce30075aee33ea28" kindref="member">printf_init</ref>(UART_HandleTypeDef<sp/>*huart);</highlight></codeline>
     </programlisting>
     <location file="driver/Inc/printf.h"/>
   </compounddef>

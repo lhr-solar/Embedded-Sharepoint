@@ -48,7 +48,7 @@
 ## s
 
 * **SevenSegment\_Init** ([**SevenSegment.h**](SevenSegment_8h.md))
-* **scanf** ([**printf.h**](printf_8h.md))
+* **snprintf** ([**printf.h**](printf_8h.md))
 * **SD\_Init** ([**sdcard.h**](sdcard_8h.md))
 * **SD\_ReadSingleBlock** ([**sdcard.h**](sdcard_8h.md))
 * **SD\_WriteSingleBlock** ([**sdcard.h**](sdcard_8h.md))

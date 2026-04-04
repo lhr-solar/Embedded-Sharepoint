@@ -59,8 +59,8 @@ _Provides functions for initializing, sending, receiving, and managing UART peri
 | ---: | :--- |
 |  [**uart\_status\_t**](UART_8h.md#enum-uart_status_t) | [**uart\_deinit**](#function-uart_deinit) (UART\_HandleTypeDef \* handle) <br>_Deinitializes the specified UART peripheral._  |
 |  [**uart\_status\_t**](UART_8h.md#enum-uart_status_t) | [**uart\_init**](#function-uart_init) (UART\_HandleTypeDef \* handle) <br>_Initializes the specified UART peripheral._  |
-|  [**uart\_status\_t**](UART_8h.md#enum-uart_status_t) | [**uart\_recv**](#function-uart_recv) (UART\_HandleTypeDef \* handle, uint8\_t \* data, uint8\_t length, TickType\_t delay\_ticks) <br>_Receives data from UART RX queue._  |
-|  [**uart\_status\_t**](UART_8h.md#enum-uart_status_t) | [**uart\_send**](#function-uart_send) (UART\_HandleTypeDef \* handle, const uint8\_t \* data, uint8\_t length, TickType\_t delay\_ticks) <br>_Transmits data over UART. If a transmission is in progress, data will be queued._  |
+|  [**uart\_status\_t**](UART_8h.md#enum-uart_status_t) | [**uart\_recv**](#function-uart_recv) (UART\_HandleTypeDef \* handle, uint8\_t \* data, uint16\_t length, TickType\_t delay\_ticks) <br>_Receives data from UART RX queue._  |
+|  [**uart\_status\_t**](UART_8h.md#enum-uart_status_t) | [**uart\_send**](#function-uart_send) (UART\_HandleTypeDef \* handle, const uint8\_t \* data, uint16\_t length, TickType\_t delay\_ticks) <br>_Transmits data over UART. If a transmission is in progress, data will be queued._  |
 
 
 
@@ -161,8 +161,6 @@ This file contains the API for working with UART (Universal Asynchronous Receive
 enum uart_status_t {
     UART_ERR,
     UART_OK,
-    UART_SENT,
-    UART_RECV,
     UART_EMPTY
 };
 ```
@@ -251,7 +249,7 @@ _Receives data from UART RX queue._
 uart_status_t uart_recv (
     UART_HandleTypeDef * handle,
     uint8_t * data,
-    uint8_t length,
+    uint16_t length,
     TickType_t delay_ticks
 ) 
 ```
@@ -291,7 +289,7 @@ _Transmits data over UART. If a transmission is in progress, data will be queued
 uart_status_t uart_send (
     UART_HandleTypeDef * handle,
     const uint8_t * data,
-    uint8_t length,
+    uint16_t length,
     TickType_t delay_ticks
 ) 
 ```
