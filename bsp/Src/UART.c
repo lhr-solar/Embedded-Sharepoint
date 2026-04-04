@@ -18,8 +18,9 @@
 #endif
 
 // Define the preemption priority for the interrupt
+// Must be at least above configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY (defined in FreeRTOSConfig.h) for fromISR functions to work
 #ifndef UART_NVIC_PREEMPT_PRIO
-#define UART_NVIC_PREEMPT_PRIO (5)
+#define UART_NVIC_PREEMPT_PRIO (configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1)
 #endif
 
 typedef struct {

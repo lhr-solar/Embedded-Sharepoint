@@ -1,10 +1,13 @@
-# printf
+# Printf Documentation
 
 So, you wanna know how to use printf huh? Well you've come to the right place. 
 
+## Printf Initialization
+
+### UART Handle Initiailization
 First, make sure to initialize your desired UART handle. Then, call `printf_init` with the UART handle. An example is shown below for a STM32G473xx:
 
-```
+```c
     husart3->Init.BaudRate = 115200;
     husart3->Init.WordLength = UART_WORDLENGTH_8B;
     husart3->Init.StopBits = UART_STOPBITS_1;
@@ -14,6 +17,25 @@ First, make sure to initialize your desired UART handle. Then, call `printf_init
     husart3->Init.OverSampling = UART_OVERSAMPLING_16;
     printf_init(husart3);
 ```
+
+### UART Pin Initiailization
+You must initialize the pins used for your UART peripheral. An example below is showed for the LSOM's USB-UART pins
+```c
+__HAL_RCC_GPIOC_CLK_ENABLE();
+
+    /* enable port C USART3 gpio
+    PC10 -> USART3_TX
+    PC11 -> USART3_RX
+    */
+    init.Pin = GPIO_PIN_10|GPIO_PIN_11;
+    init.Mode = GPIO_MODE_AF_PP;
+    init.Pull = GPIO_NOPULL;
+    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    init.Alternate = GPIO_AF7_USART3;
+    HAL_GPIO_Init(GPIOC, &init);
+```
+
+## About Printf
 
 `printf` is a library function provided by newlib, but we've replaced it with [`nanoprintf`](https://github.com/charlesnicholson/nanoprintf), a more lightweight implementation that uses less stack space and probably runs faster. `nanoprintf` handles all the format specifier replacement and puts our final string into a buffer of `MAX_PRINTF_SIZE`, which can be redefined if need be in the Makefile (default value is 256 bytes).
 
@@ -27,4 +49,11 @@ You can also change the `MAX_PRINTF_SIZE` if you feel like you need a little mor
 
 `printf` latency is pretty horrendous the more threads you have. Most of the time using a logic analyzer and a pin toggle will be better for debug, especially if you have access to the base board. A logging thread is another option; having one low-prio thread do all your printfs at some low frequency and just sending stuff there is a good way to reduce contention. For reference, the lowest worst-case latency I got with 15 threads was 118ms.
 
-Finally, never `printf` from an interrupt. Please defer `printf` to a thread; the UART driver is not designed to be called from an interrupt (also it will explode interrupt latency).
+
+Finally, **never** `printf` from an interrupt. Please defer `printf` to a thread; the UART driver is not designed to be called from an interrupt (also it will explode interrupt latency).
+
+
+## Examples of projects that use this printf driver
+* [PS-LVCarrier](https://github.com/lhr-solar/PS-LVCarrierPCB/blob/main/Firmware/drivers/Src/commandLine.c)
+* [PS-VehicleControlUnit](https://github.com/lhr-solar/PS-VehicleControlUnit/blob/Precharge/Firmware/Drivers/Src/UART_Init.c)
+* [PS-VoltTemp](https://github.com/lhr-solar/PS-VoltTemp/blob/main/firmware/driver/Src/inits.c)
