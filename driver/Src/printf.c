@@ -7,19 +7,23 @@
 #include "nanoprintf.h"
 
 #ifndef MAX_PRINTF_SIZE
-#define MAX_PRINTF_SIZE 256
+#define MAX_PRINTF_SIZE (256)
+#endif
+
+#ifndef NUM_PRINTF_BUFFERS
+#define NUM_PRINTF_BUFFERS (5)
+#endif
+
+// How long to wait for a printf buffer to open up
+#ifndef PRINTF_MTX_DELAY
+#define PRINTF_MTX_DELAY (pdMS_TO_TICKS(100))
 #endif
 
 typedef struct {
     char buffer[MAX_PRINTF_SIZE];
-    uint8_t num_assigned;
-    SemaphoreHandle_t mtx;
-    StaticSemaphore_t mtx_buffer;
+    SemaphoreHandle_t buffer_mtx;
+    StaticSemaphore_t buffer_mtx_buffer;
 } printf_buffer_t;
-
-#ifndef NUM_PRINTF_BUFFERS
-#define NUM_PRINTF_BUFFERS 5
-#endif
 
 printf_buffer_t printf_pool[NUM_PRINTF_BUFFERS];
 uint8_t printf_pool_next = 0;
@@ -40,8 +44,7 @@ bool printf_init(UART_HandleTypeDef *huart) {
     printf_pool_mtx = xSemaphoreCreateMutexStatic(&printf_pool_mtx_buf);
 
     for(int i=0; i<NUM_PRINTF_BUFFERS; i++){
-        printf_pool[i].mtx = xSemaphoreCreateMutexStatic(&printf_pool[i].mtx_buffer);
-        printf_pool[i].num_assigned = 0;
+        printf_pool[i].buffer_mtx = xSemaphoreCreateMutexStatic(&printf_pool[i].buffer_mtx_buffer);
     }
     return uart_init(huart) == UART_OK;
 }
@@ -68,17 +71,14 @@ int printf(const char *fmt, ...) {
 
         pbuf = &printf_pool[printf_pool_next];
         printf_pool_next = (printf_pool_next + 1) % NUM_PRINTF_BUFFERS;
-        pbuf->num_assigned++;
         xSemaphoreGive(printf_pool_mtx);
     }
 
     va_list val;
     va_start(val, fmt);
 
-    bool more_than_one_thread = pbuf->num_assigned > 1;
-
     // Lock on the specific buffer's mutex (if it's shared between threads)
-    if(more_than_one_thread && xSemaphoreTake(pbuf->mtx, portMAX_DELAY) != pdTRUE){
+    if(xSemaphoreTake(pbuf->buffer_mtx, PRINTF_MTX_DELAY) != pdTRUE){
         va_end(val);
         return -1;
     }
@@ -87,11 +87,11 @@ int printf(const char *fmt, ...) {
     va_end(val);
     
     if(rv <= 0){
-        if(more_than_one_thread) xSemaphoreGive(pbuf->mtx);
+        xSemaphoreGive(pbuf->buffer_mtx);
         return rv;
     }
 
     uart_status_t status = uart_send(printf_huart, (const uint8_t *)pbuf->buffer, (rv > MAX_PRINTF_SIZE)?MAX_PRINTF_SIZE:rv, portMAX_DELAY);
-    if(more_than_one_thread) xSemaphoreGive(pbuf->mtx);
+    xSemaphoreGive(pbuf->buffer_mtx);
     return (status == UART_OK)?rv:-1;
 }

@@ -28,7 +28,7 @@ echo "🖥  OS detected: $OS"
 
 case "$OS" in
     Linux*)
-        STM32PROG="$HOME/stm32cubeprog/bin/STM32_Programmer_CLI"
+        STM32PROG="$HOME/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin/STM32_Programmer_CLI"
         ;;
     Darwin*)
         STM32PROG="/Applications/STMicroelectronics/STM32Cube/STM32CubeProgrammer/STM32CubeProgrammer.app/Contents/Resources/bin/STM32_Programmer_CLI"

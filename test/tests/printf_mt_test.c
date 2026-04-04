@@ -60,22 +60,31 @@ void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
 
 }
 
-#define THREAD_MULTIPLIER 3
+#define THREAD_COUNT 4
 #define DUMP_SIZE 100
 
+// static char *messages[] = {
+//     "This is a message I expect to never interleave!\n\r",
+//     "The quick brown fox jumped over the lazy dog!\n\r",
+//     "5.5\n\r",
+//     "3.777\n\r",
+//     "I'm going to write a really long message to test long transmission lengths to confirm that interleaving is not a problem with these sorts of messages.\n\r"
+// };
+
+// If you wanna test with messages that all take the same base amount of time
 static char *messages[] = {
     "This is a message I expect to never interleave!\n\r",
-    "The quick brown fox jumped over the lazy dog!\n\r",
-    "5.5\n\r",
-    "3.777\n\r",
-    "I'm going to write a really long message to test long transmission lengths to confirm that interleaving is not a problem with these sorts of messages.\n\r"
+    "This is a message I expect to never interleave!\n\r",
+    "This is a message I expect to never interleave!\n\r",
+    "This is a message I expect to never interleave!\n\r",
+    "This is a message I expect to never interleave!\n\r",
 };
 
-StaticTask_t txTaskBuffer[sizeof(messages)/sizeof(char*) * THREAD_MULTIPLIER];
-StackType_t txTaskStack[sizeof(messages)/sizeof(char*) * THREAD_MULTIPLIER][configMINIMAL_STACK_SIZE];
+StaticTask_t txTaskBuffer[THREAD_COUNT];
+StackType_t txTaskStack[THREAD_COUNT][configMINIMAL_STACK_SIZE];
 
-static uint32_t time_dump[sizeof(messages)/sizeof(char*) * THREAD_MULTIPLIER][DUMP_SIZE] = {0};
-static bool tx_done[sizeof(messages)/sizeof(char*) * THREAD_MULTIPLIER] = {};
+static uint32_t time_dump[THREAD_COUNT][DUMP_SIZE] = {0};
+static bool tx_done[THREAD_COUNT] = {};
 
 void TxTask(void *argument){
     uint8_t time_ind = 0;
@@ -141,7 +150,7 @@ void InitTask(void *argument){
 
     DWT_Init();
     
-    for(int i=0; i<sizeof(messages)/sizeof(char*) * THREAD_MULTIPLIER; i++){
+    for(int i=0; i<THREAD_COUNT; i++){
         tx_done[i] = false;
         for(int j=0; j<DUMP_SIZE; j++) time_dump[i][j] = 0;
         xTaskCreateStatic(TxTask, 
@@ -155,7 +164,7 @@ void InitTask(void *argument){
 
     while(1){
         bool all_done = true;
-        for(int i=0; i<sizeof(messages)/sizeof(char*) * THREAD_MULTIPLIER; i++){
+        for(int i=0; i<THREAD_COUNT; i++){
             all_done &= tx_done[i];
         }
 
@@ -163,7 +172,7 @@ void InitTask(void *argument){
             float global_max = 0.0f;
             int num_messages = sizeof(messages)/sizeof(char*);
 
-            for(int i=0; i<num_messages * THREAD_MULTIPLIER; i++){
+            for(int i=0; i<THREAD_COUNT; i++){
                 const char *msg     = messages[i % num_messages];
                 int         msg_len = strlen(msg);
 
