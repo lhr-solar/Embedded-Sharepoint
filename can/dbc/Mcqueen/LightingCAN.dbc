@@ -36,7 +36,7 @@ BS_:
 BU_: Lighting_Rear Lighting_Right Lighting_Left Lighting_Front Lighting_Canopy Controls
 VAL_TABLE_ Lighting_CustomModes 3 "Mode 3 Active" 2 "Mode 2 Active" 1 "Mode 1 Active" 0 "Off" ;
 VAL_TABLE_ Generic_OnOff 1 "On" 0 "Off" ;
-VAL_TABLE_ Lighting_Board_Fault 7 "Light Command Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "OK" 8 "Watchdog" ;
+VAL_TABLE_ Lighting_Board_Fault 8 "Watchdog" 7 "Light Command Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "OK" ;
 
 
 BO_ 1652 Lighting_Canopy_Status: 8 Lighting_Canopy
@@ -136,29 +136,29 @@ VAL_ 1652 Light_BPS_Strobe 1 "On" 0 "Off" ;
 VAL_ 1652 Light_Right_Indicator 1 "On" 0 "Off" ;
 VAL_ 1652 Light_Left_Indicator 1 "On" 0 "Off" ;
 VAL_ 1652 Light_Headlight 1 "On" 0 "Off" ;
-VAL_ 1652 Lighting_Board_Fault 7 "Light Command Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "OK" 8 "Watchdog" ;
-VAL_ 1651 Lighting_Board_Fault 7 "Light Command Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "OK" 8 "Watchdog" ;
+VAL_ 1652 Lighting_Board_Fault 8 "Watchdog" 7 "Light Command Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "OK" ;
+VAL_ 1651 Lighting_Board_Fault 8 "Watchdog" 7 "Light Command Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "OK" ;
 VAL_ 1651 Light_CustomMode 1 "On" 0 "Off" ;
 VAL_ 1651 Light_Brakelight 1 "On" 0 "Off" ;
 VAL_ 1651 Light_BPS_Strobe 1 "On" 0 "Off" ;
 VAL_ 1651 Light_Right_Indicator 1 "On" 0 "Off" ;
 VAL_ 1651 Light_Left_Indicator 1 "On" 0 "Off" ;
 VAL_ 1651 Light_Headlight 1 "On" 0 "Off" ;
-VAL_ 1649 Lighting_Board_Fault 7 "Light Command Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "OK" 8 "Watchdog" ;
+VAL_ 1649 Lighting_Board_Fault 8 "Watchdog" 7 "Light Command Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "OK" ;
 VAL_ 1649 Light_CustomMode 1 "On" 0 "Off" ;
 VAL_ 1649 Light_Brakelight 1 "On" 0 "Off" ;
 VAL_ 1649 Light_BPS_Strobe 1 "On" 0 "Off" ;
 VAL_ 1649 Light_Right_Indicator 1 "On" 0 "Off" ;
 VAL_ 1649 Light_Left_Indicator 1 "On" 0 "Off" ;
 VAL_ 1649 Light_Headlight 1 "On" 0 "Off" ;
-VAL_ 1650 Lighting_Board_Fault 7 "Light Command Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "OK" 8 "Watchdog" ;
+VAL_ 1650 Lighting_Board_Fault 8 "Watchdog" 7 "Light Command Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "OK" ;
 VAL_ 1650 Light_CustomMode 1 "On" 0 "Off" ;
 VAL_ 1650 Light_Brakelight 1 "On" 0 "Off" ;
 VAL_ 1650 Light_BPS_Strobe 1 "On" 0 "Off" ;
 VAL_ 1650 Light_Right_Indicator 1 "On" 0 "Off" ;
 VAL_ 1650 Light_Left_Indicator 1 "On" 0 "Off" ;
 VAL_ 1650 Light_Headlight 1 "On" 0 "Off" ;
-VAL_ 1648 Lighting_Board_Fault 7 "Light Command Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "OK" 8 "Watchdog" ;
+VAL_ 1648 Lighting_Board_Fault 8 "Watchdog" 7 "Light Command Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "OK" ;
 VAL_ 1648 Light_CustomMode 1 "On" 0 "Off" ;
 VAL_ 1648 Light_Brakelight 1 "On" 0 "Off" ;
 VAL_ 1648 Light_BPS_Strobe 1 "On" 0 "Off" ;
