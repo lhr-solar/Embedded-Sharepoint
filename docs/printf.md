@@ -39,7 +39,7 @@ __HAL_RCC_GPIOC_CLK_ENABLE();
 
 `printf` is a library function provided by newlib, but we've replaced it with [`nanoprintf`](https://github.com/charlesnicholson/nanoprintf), a more lightweight implementation that uses less stack space and probably runs faster. `nanoprintf` handles all the format specifier replacement and puts our final string into a buffer of `MAX_PRINTF_SIZE`, which can be redefined if need be in the Makefile (default value is 256 bytes).
 
-To use our `printf` implementation, **please include "printf.h" rather than <stdio.h>**.
+To use our `printf` implementation, **please include "printf.h" rather than \<stdio.h\>**.
 
 We also have some extra memory management on top of the `nanoprintf` implementation that keeps our memory usage lower. Upon calling `printf`, if your thread does not have a buffer assigned to it, a Task Local Variable will be stored with a pointer to your thread's designated `printf` buffer. This is where your thread will do any necessary `printf` processing and spit out the final strings it needs to `uart_send`. 
 
