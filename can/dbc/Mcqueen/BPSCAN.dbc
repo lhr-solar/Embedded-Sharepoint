@@ -33,7 +33,7 @@ NS_ :
 
 BS_:
 
-BU_: VoltTemp_7 VoltTemp_6 VoltTemp_5 VoltTemp_4 VoltTemp_3 VoltTemp_2 VoltTemp_1 VoltTemp_0 Amperes
+BU_: VoltTemp_7 VoltTemp_6 VoltTemp_5 VoltTemp_4 VoltTemp_3 VoltTemp_2 VoltTemp_1 VoltTemp_0 BPS Amperes
 VAL_TABLE_ BPS_Volt_Tap_Fault 3 "Under-Voltage" 2 "Over-Voltage" 1 "BQ I2C Read Error" 0 "OK" ;
 VAL_TABLE_ BPS_Temp_Tap_Fault 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Short to VCC" 1 "Short to GND" 0 "OK" ;
 VAL_TABLE_ Generic_OK 1 "OK" 0 "NOT OK" ;
@@ -41,6 +41,10 @@ VAL_TABLE_ Generic_OK 1 "OK" 0 "NOT OK" ;
 
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ BPS_Tap_Msg_WDog : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 1952 BPS_Balance_Discharge: 1 BPS
+ SG_ BPS_Tap_idx : 3|5@1+ (1,0) [0|31] "" Vector__XXX
+ SG_ BPS_Segment_idx : 0|3@1+ (1,0) [0|7] "" Vector__XXX
 
 BO_ 9 BPS_VT7_Voltage_Arr: 4 VoltTemp_7
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
@@ -193,6 +197,7 @@ BA_DEF_DEF_  "VFrameFormat" "ExtendedCAN_FD";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
 BA_ "DBName" "BPSCAN";
+BA_ "VFrameFormat" BO_ 1952 0;
 BA_ "VFrameFormat" BO_ 9 0;
 BA_ "VFrameFormat" BO_ 23 0;
 BA_ "VFrameFormat" BO_ 8 0;
