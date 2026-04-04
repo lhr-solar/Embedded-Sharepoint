@@ -1346,6 +1346,13 @@
 <td>7</td>
 <td>BPS_Tap_idx, BPS_Temperature_Tap_Fault, BPS_Temperature_Tap_Data, BPS_Temperature_Tap_RawV</td>
 </tr>
+<tr>
+<td>0x7A0</td>
+<td>Std</td>
+<td>BPS_Balance_Discharge</td>
+<td>1</td>
+<td>BPS_Segment_idx, BPS_Tap_idx</td>
+</tr>
 </tbody>
 </table>
 <h2 id="signals">Signals</h2>
@@ -2001,6 +2008,28 @@
 <td>0</td>
 <td>65.535</td>
 <td>V</td>
+</tr>
+<tr>
+<td>BPS_Segment_idx</td>
+<td>BPS_Balance_Discharge</td>
+<td>[0:2]</td>
+<td>3</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>7</td>
+<td></td>
+</tr>
+<tr>
+<td>BPS_Tap_idx</td>
+<td>BPS_Balance_Discharge</td>
+<td>[3:7]</td>
+<td>5</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>31</td>
+<td></td>
 </tr>
 </tbody>
 </table>
