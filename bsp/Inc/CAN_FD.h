@@ -152,22 +152,6 @@ can_status_t can_fd_send_isr(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef*
 can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint32_t id, FDCAN_RxHeaderTypeDef* header,
                          uint8_t data[], TickType_t delay_ticks);
 
-/**
- * @brief Receives a FDCAN message (but safe from isr context).
- *
- * Reads a message from the receive queue corresponding to the specified ID.
- *
- * @param handle                    Pointer to the FDCAN handle structure.
- * @param id                        CAN identifier of the message to receive.
- * @param header                    Pointer to FDCAN_RxHeaderTypeDef struct to store received header
- * @param data                      Array to store the received data.
- * @param higherPriorityTaskWoken   Signals if ISR woke higher-priority task
- * @return can_status_t Returns CAN_OK if a message was received, CAN_EMPTY if the queue was empty, 
- *                      or CAN_ERR on failure.
- */
-can_status_t can_fd_recv_isr(FDCAN_HandleTypeDef* handle, uint32_t id,
-                             FDCAN_RxHeaderTypeDef* header, uint8_t data[],
-                             BaseType_t* higherPriorityTaskWoken);
 
 #if (configUSE_QUEUE_SETS == 1)
 /**

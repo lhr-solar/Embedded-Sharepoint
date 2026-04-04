@@ -13,7 +13,7 @@ StackType_t task2_stack[512];
 configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY is the maximum FreeRTOS priority
 for an interrupt
 */
-#define FDCAN_NVIC_PRIO configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 3
+#define FDCAN_NVIC_PRIO (configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 3)
 
 // LSOM has heartbeat pin defined as PC3
 // Most other nucleos have a heartbeat for A5
@@ -177,138 +177,19 @@ static QueueHandle_t mycanfd1_tx_queue;
 static uint8_t mycanfd1_tx_queue_storage[CANFD1_TX_QUEUE_SIZE * sizeof(can_rx_payload_t)];
 
 
-static void reader_task(void* params) { 
-    can_rx_payload_t payload;
-
-    // This is the header for data we're forwarding from motor to carCAN
-    // need to set DataLength and ID
-    FDCAN_TxHeaderTypeDef header = {
-        .IdType = FDCAN_STANDARD_ID,
-        .TxFrameType = FDCAN_DATA_FRAME,
-        .ErrorStateIndicator = FDCAN_ESI_ACTIVE,
-        .BitRateSwitch = FDCAN_BRS_OFF,
-        .FDFormat = FDCAN_CLASSIC_CAN,
-        .TxEventFifoControl = FDCAN_STORE_TX_EVENTS,
-        .MessageMarker = 0,
-    };
-
-    while (true) {
-        if (xQueueReceive(mycanfd1_tx_queue, &payload, portMAX_DELAY) == pdTRUE) {
-            // copy the incoming message's ID and data length
-            header.Identifier = payload.header.Identifier;
-            header.DataLength = payload.header.DataLength;
-
-            can_fd_send(hfdcan1, &header, payload.data, portMAX_DELAY);
-
-            HAL_GPIO_TogglePin(CAN_TX_PROFILE_PORT, CAN_TX_PROFILE_PIN);
-            
-            taskYIELD();
-        }
-    }
-}
-
 static void task(void* pvParameters) {
-    int test_id = 0x321;
-    FDCAN_TxHeaderTypeDef tx_header = {0};
-    tx_header.Identifier = test_id;
-    tx_header.IdType = FDCAN_STANDARD_ID;
-    tx_header.TxFrameType = FDCAN_DATA_FRAME;
-    tx_header.DataLength = FDCAN_DLC_BYTES_8;
-    tx_header.ErrorStateIndicator = FDCAN_ESI_ACTIVE;
-    tx_header.BitRateSwitch = FDCAN_BRS_OFF;
-    tx_header.FDFormat = FDCAN_CLASSIC_CAN;
-    tx_header.TxEventFifoControl = FDCAN_STORE_TX_EVENTS;
-    tx_header.MessageMarker = 0;
-
-    // send x1234 to 0x321
-    uint8_t tx_data[8] = {0};
-    tx_data[0] = 0x12;
-    tx_data[1] = 0x34;
-    tx_data[2] = 0x56;
-    tx_data[3] = 0x78;
-    tx_data[4] = 0x9A;
-    tx_data[5] = 0xBC;
-    tx_data[6] = 0xDE;
-    tx_data[7] = 0xFF;
-
-    FDCAN_RxHeaderTypeDef fdcan1_rx_header = {0};
-    uint8_t fdcan1_rx_data[8] = {0};
-
-    FDCAN_RxHeaderTypeDef fdcan2_rx_header = {0};
-    uint8_t fdcan2_rx_data[8] = {0};
-
-    FDCAN_RxHeaderTypeDef fdcan3_rx_header = {0};
-    uint8_t fdcan3_rx_data[8] = {0};
-
-    while (1) {
-#ifdef FDCAN1
-        if (can_fd_send(hfdcan1, &tx_header, tx_data, portMAX_DELAY) == CAN_ERR) {
-            Error_Handler();
-        }
-
-        // note that for can_fd_recv to work, the ID used must be added the
-        // can1_recv_entires.h file
-        if (can_fd_recv(hfdcan1, test_id, &fdcan1_rx_header, fdcan1_rx_data, portMAX_DELAY) !=
-            CAN_OK) {
-            Error_Handler();
-        }
-
-        for (uint8_t i = 0; i < 8; i++) {
-            if (fdcan1_rx_data[i] != tx_data[i]) {
-                Error_Handler();
-            }
-        }
-
-#endif
-
-#ifdef FDCAN2
-        if (can_fd_send(hfdcan2, &tx_header, tx_data, portMAX_DELAY) == CAN_ERR) {
-            Error_Handler();
-        }
-
-        // note that for can_fd_recv to work, the ID used must be added the
-        // can2_recv_entires.h file
-        if (can_fd_recv(hfdcan2, test_id, &fdcan2_rx_header, fdcan2_rx_data, portMAX_DELAY) !=
-            CAN_OK) {
-            Error_Handler();
-        }
-
-        for (uint8_t i = 0; i < 8; i++) {
-            if (fdcan2_rx_data[i] != tx_data[i]) {
-                Error_Handler();
-            }
-        }
-#endif
-
-#ifdef FDCAN3
-        if (can_fd_send(hfdcan3, &tx_header, tx_data, portMAX_DELAY) == CAN_ERR) {
-            Error_Handler();
-        }
-
-        // note that for can_fd_recv to work, the ID used must be added the
-        // can3_recv_entires.h file
-        if (can_fd_recv(hfdcan3, test_id, &fdcan3_rx_header, fdcan3_rx_data, portMAX_DELAY) !=
-            CAN_OK) {
-            Error_Handler();
-        }
-
-        for (uint8_t i = 0; i < 8; i++) {
-            if (fdcan3_rx_data[i] != tx_data[i]) {
-                Error_Handler();
-            }
-        }
-
-#endif
-
         HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
         // HAL_GPIO_TogglePin(CAN_TX_PROFILE_PORT, CAN_TX_PROFILE_PIN);
         vTaskDelay(pdMS_TO_TICKS(500));
-    }
 }
+
 
 void can_fd_rx_callback_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs,
                              can_rx_payload_t recv_payload) {
     // only forward motorCAN messages to CarCAN
+
+    BaseType_t hpw = pdFALSE; // added this
+
     if (hfdcan1 != NULL && hfdcan->Instance == hfdcan1->Instance) {
         FDCAN_TxHeaderTypeDef tx_header = {
             .Identifier = recv_payload.header.Identifier,
@@ -322,12 +203,12 @@ void can_fd_rx_callback_hook(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs,
             .MessageMarker = 0,
         };
 
-        can_fd_send_isr(hfdcan, &tx_header, recv_payload.data, 0);
-        // xQueueSendFromISR(mycanfd1_tx_queue, &recv_payload, &hpw);
+        can_fd_send_isr(hfdcan1, &tx_header, recv_payload.data, &hpw); //changed this
         HAL_GPIO_TogglePin(CAN_RX_PROFILE_PORT, CAN_RX_PROFILE_PIN);
         // don't yield at the end of this since the rest of the ISR needs to run
     }
 }
+
 
 int main(void) {
     HAL_Init();
@@ -348,6 +229,7 @@ int main(void) {
 #endif
 
     Heartbeat_Init();         // enable LED for LED_PORT
+    // HAL_GPIO_TogglePin(LED_PORT, LED_PIN); 
     can_profile_pins_init();  // enable pins we toggle during interrupts
 
     mycanfd1_tx_queue = xQueueCreateStatic(CANFD1_TX_QUEUE_SIZE, sizeof(can_rx_payload_t),
@@ -365,6 +247,7 @@ int main(void) {
     // internal loopback shorts the CAN RX and TX internally.
     // In production, this should be set to FDCAN_MODE_NORMAL
     hfdcan1->Init.Mode = FDCAN_MODE_NORMAL;
+    // hfdcan1->Init.Mode = FDCAN_MODE_INTERNAL_LOOPBACK;
     hfdcan1->Init.AutoRetransmission = DISABLE;
     hfdcan1->Init.TransmitPause = DISABLE;
     hfdcan1->Init.ProtocolException = DISABLE;
@@ -507,18 +390,12 @@ int main(void) {
     }
 
 #endif
-
-    
-
+    // HAL_GPIO_TogglePin(LED_PORT, LED_PIN); 
     // you can only send CAN messages within a FreeRTOS task
     xTaskCreateStatic(task, "task", 512, NULL, tskIDLE_PRIORITY + 2, task_stack, &task_buffer);
 
-    xTaskCreateStatic(reader_task, "rx task", 512, NULL, tskIDLE_PRIORITY + 1, task2_stack, &task2_buffer);
-
-
     vTaskStartScheduler();
-    while (1) {
-    }
+    while (1) {}
 
     Error_Handler();
     return 0;
