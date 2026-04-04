@@ -1,0 +1,173 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: Lighting_Rear Lighting_Right Lighting_Left Lighting_Front Lighting_Canopy Controls
+VAL_TABLE_ Lighting_CustomModes 3 "Mode 3 Active" 2 "Mode 2 Active" 1 "Mode 1 Active" 0 "Off" ;
+VAL_TABLE_ Generic_OnOff 1 "On" 0 "Off" ;
+VAL_TABLE_ Lighting_Board_Fault 7 "Light Command Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "OK" ;
+
+
+BO_ 1652 Lighting_Canopy_Status: 8 Lighting_Canopy
+ SG_ Lighting_LED1_Current : 48|16@1+ (0.001,0) [0|65.535] "A" Vector__XXX
+ SG_ Lighting_LED0_Current : 32|16@1+ (0.001,0) [0|65.535] "A" Vector__XXX
+ SG_ Lighting_Addr_LED_Current : 16|12@1+ (0.001,0) [0|4.095] "A" Vector__XXX
+ SG_ Light_CustomMode : 13|2@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Light_Brakelight : 12|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Light_BPS_Strobe : 11|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Light_Right_Indicator : 10|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Light_Left_Indicator : 9|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Light_Headlight : 8|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Lighting_Board_Fault : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 1651 Lighting_Right_Status: 8 Lighting_Right
+ SG_ Lighting_LED1_Current : 48|16@1+ (0.001,0) [0|65.535] "A" Vector__XXX
+ SG_ Lighting_Board_Fault : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ Lighting_LED0_Current : 32|16@1+ (0.001,0) [0|65.535] "A" Vector__XXX
+ SG_ Lighting_Addr_LED_Current : 16|12@1+ (0.001,0) [0|4.095] "A" Vector__XXX
+ SG_ Light_CustomMode : 13|2@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Light_Brakelight : 12|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Light_BPS_Strobe : 11|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Light_Right_Indicator : 10|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Light_Left_Indicator : 9|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Light_Headlight : 8|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 1649 Lighting_Left_Status: 8 Lighting_Left
+ SG_ Lighting_Board_Fault : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ Lighting_LED1_Current : 48|16@1+ (0.001,0) [0|65.535] "A" Vector__XXX
+ SG_ Lighting_LED0_Current : 32|16@1+ (0.001,0) [0|65.535] "A" Vector__XXX
+ SG_ Lighting_Addr_LED_Current : 16|12@1+ (0.001,0) [0|4.095] "A" Vector__XXX
+ SG_ Light_CustomMode : 13|2@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Light_Brakelight : 12|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Light_BPS_Strobe : 11|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Light_Right_Indicator : 10|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Light_Left_Indicator : 9|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Light_Headlight : 8|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 1650 Lighting_Rear_Status: 8 Lighting_Rear
+ SG_ Lighting_Board_Fault : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ Lighting_LED1_Current : 48|16@1+ (0.001,0) [0|65.535] "A" Vector__XXX
+ SG_ Lighting_LED0_Current : 32|16@1+ (0.001,0) [0|65.535] "A" Vector__XXX
+ SG_ Lighting_Addr_LED_Current : 16|12@1+ (0.001,0) [0|4.095] "A" Vector__XXX
+ SG_ Light_CustomMode : 13|2@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Light_Brakelight : 12|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Light_BPS_Strobe : 11|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Light_Right_Indicator : 10|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Light_Left_Indicator : 9|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Light_Headlight : 8|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 1648 Lighting_Front_Status: 8 Lighting_Front
+ SG_ Lighting_Board_Fault : 0|8@1+ (1,0) [0|255] ""  Controls
+ SG_ Lighting_LED1_Current : 48|16@1+ (0.001,0) [0|65.535] "A"  Controls
+ SG_ Lighting_LED0_Current : 32|16@1+ (0.001,0) [0|65.535] "A"  Controls
+ SG_ Lighting_Addr_LED_Current : 16|12@1+ (0.001,0) [0|4.095] "A"  Controls
+ SG_ Light_CustomMode : 13|2@1+ (1,0) [0|1] ""  Controls
+ SG_ Light_Brakelight : 12|1@1+ (1,0) [0|1] ""  Controls
+ SG_ Light_BPS_Strobe : 11|1@1+ (1,0) [0|1] ""  Controls
+ SG_ Light_Right_Indicator : 10|1@1+ (1,0) [0|1] ""  Controls
+ SG_ Light_Left_Indicator : 9|1@1+ (1,0) [0|1] ""  Controls
+ SG_ Light_Headlight : 8|1@1+ (1,0) [0|1] ""  Controls
+
+BO_ 1632 Lighting_Command: 1 Controls
+ SG_ Lighting_Set_Custom_Mode : 6|2@1+ (1,0) [0|1] ""  Lighting_Right,Lighting_Left,Lighting_Canopy,Lighting_Rear,Lighting_Front
+ SG_ Lighting_Set_Brake : 4|1@1+ (1,0) [0|1] ""  Lighting_Right,Lighting_Left,Lighting_Canopy,Lighting_Rear,Lighting_Front
+ SG_ Lighting_Set_BPS_Strobe : 5|1@1+ (1,0) [0|1] ""  Lighting_Right,Lighting_Left,Lighting_Canopy,Lighting_Rear,Lighting_Front
+ SG_ Lighting_Blink_Sync : 3|1@1+ (1,0) [0|1] ""  Lighting_Right,Lighting_Left,Lighting_Canopy,Lighting_Rear,Lighting_Front
+ SG_ Lighting_Set_Right_Indicator : 2|1@1+ (1,0) [0|1] ""  Lighting_Right,Lighting_Left,Lighting_Canopy,Lighting_Rear,Lighting_Front
+ SG_ Lighting_Set_Left_Indicator : 1|1@1+ (1,0) [0|1] ""  Lighting_Right,Lighting_Left,Lighting_Canopy,Lighting_Rear,Lighting_Front
+ SG_ Lighting_Set_Headlights : 0|1@1+ (1,0) [0|1] ""  Lighting_Right,Lighting_Left,Lighting_Canopy,Lighting_Rear,Lighting_Front
+
+
+
+BA_DEF_  "DBName" STRING ;
+BA_DEF_ SG_  "SPN" INT 0 524287;
+BA_DEF_ BO_  "GenMsgCycleTime" INT 0 100000;
+BA_DEF_ BO_  "GenMsgSendType" ENUM  "Cyclic","Event","CyclicAndEvent","CyclicAndEventNoRepetition","None","Spontaneous";
+BA_DEF_ BO_  "VFrameFormat" ENUM  "StandardCAN","ExtendedCAN","reserved","J1939PG","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","StandardCAN_FD","ExtendedCAN_FD";
+BA_DEF_  "BusType" STRING ;
+BA_DEF_DEF_  "DBName" "";
+BA_DEF_DEF_  "SPN" 0;
+BA_DEF_DEF_  "GenMsgCycleTime" 0;
+BA_DEF_DEF_  "GenMsgSendType" "Cyclic";
+BA_DEF_DEF_  "VFrameFormat" "ExtendedCAN_FD";
+BA_DEF_DEF_  "BusType" "";
+BA_ "BusType" "CAN";
+BA_ "DBName" "LightingCAN";
+BA_ "VFrameFormat" BO_ 1652 0;
+BA_ "VFrameFormat" BO_ 1651 0;
+BA_ "VFrameFormat" BO_ 1649 0;
+BA_ "VFrameFormat" BO_ 1650 0;
+BA_ "VFrameFormat" BO_ 1648 0;
+BA_ "VFrameFormat" BO_ 1632 0;
+VAL_ 1652 Light_CustomMode 1 "On" 0 "Off" ;
+VAL_ 1652 Light_Brakelight 1 "On" 0 "Off" ;
+VAL_ 1652 Light_BPS_Strobe 1 "On" 0 "Off" ;
+VAL_ 1652 Light_Right_Indicator 1 "On" 0 "Off" ;
+VAL_ 1652 Light_Left_Indicator 1 "On" 0 "Off" ;
+VAL_ 1652 Light_Headlight 1 "On" 0 "Off" ;
+VAL_ 1652 Lighting_Board_Fault 7 "Light Command Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "OK" ;
+VAL_ 1651 Lighting_Board_Fault 7 "Light Command Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "OK" ;
+VAL_ 1651 Light_CustomMode 1 "On" 0 "Off" ;
+VAL_ 1651 Light_Brakelight 1 "On" 0 "Off" ;
+VAL_ 1651 Light_BPS_Strobe 1 "On" 0 "Off" ;
+VAL_ 1651 Light_Right_Indicator 1 "On" 0 "Off" ;
+VAL_ 1651 Light_Left_Indicator 1 "On" 0 "Off" ;
+VAL_ 1651 Light_Headlight 1 "On" 0 "Off" ;
+VAL_ 1649 Lighting_Board_Fault 7 "Light Command Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "OK" ;
+VAL_ 1649 Light_CustomMode 1 "On" 0 "Off" ;
+VAL_ 1649 Light_Brakelight 1 "On" 0 "Off" ;
+VAL_ 1649 Light_BPS_Strobe 1 "On" 0 "Off" ;
+VAL_ 1649 Light_Right_Indicator 1 "On" 0 "Off" ;
+VAL_ 1649 Light_Left_Indicator 1 "On" 0 "Off" ;
+VAL_ 1649 Light_Headlight 1 "On" 0 "Off" ;
+VAL_ 1650 Lighting_Board_Fault 7 "Light Command Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "OK" ;
+VAL_ 1650 Light_CustomMode 1 "On" 0 "Off" ;
+VAL_ 1650 Light_Brakelight 1 "On" 0 "Off" ;
+VAL_ 1650 Light_BPS_Strobe 1 "On" 0 "Off" ;
+VAL_ 1650 Light_Right_Indicator 1 "On" 0 "Off" ;
+VAL_ 1650 Light_Left_Indicator 1 "On" 0 "Off" ;
+VAL_ 1650 Light_Headlight 1 "On" 0 "Off" ;
+VAL_ 1648 Lighting_Board_Fault 7 "Light Command Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "OK" ;
+VAL_ 1648 Light_CustomMode 1 "On" 0 "Off" ;
+VAL_ 1648 Light_Brakelight 1 "On" 0 "Off" ;
+VAL_ 1648 Light_BPS_Strobe 1 "On" 0 "Off" ;
+VAL_ 1648 Light_Right_Indicator 1 "On" 0 "Off" ;
+VAL_ 1648 Light_Left_Indicator 1 "On" 0 "Off" ;
+VAL_ 1648 Light_Headlight 1 "On" 0 "Off" ;
+VAL_ 1632 Lighting_Set_Custom_Mode 3 "Mode 3 Active" 2 "Mode 2 Active" 1 "Mode 1 Active" 0 "Off" ;
+VAL_ 1632 Lighting_Set_Brake 1 "On" 0 "Off" ;
+VAL_ 1632 Lighting_Set_BPS_Strobe 1 "On" 0 "Off" ;
+VAL_ 1632 Lighting_Set_Right_Indicator 1 "On" 0 "Off" ;
+VAL_ 1632 Lighting_Set_Left_Indicator 1 "On" 0 "Off" ;
+VAL_ 1632 Lighting_Set_Headlights 1 "On" 0 "Off" ;

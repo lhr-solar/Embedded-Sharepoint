@@ -82,7 +82,7 @@ static void rx_task(void *pvParameters) {
         Error_Handler();
     }
 
-    uint16_t id = 0;
+    uint32_t id = 0;
 
     CAN_RxHeaderTypeDef fdcan1_rx_header = {0};
     uint8_t can1_rx_data[8] = {0};
