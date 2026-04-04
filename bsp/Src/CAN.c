@@ -289,7 +289,7 @@ __weak void can_tx_callback_hook(CAN_HandleTypeDef* hcan, const can_tx_payload_t
   UNUSED(payload);
 }
 
-static void transmit(CAN_HandleTypeDef* handle) {
+static void can_transmit(CAN_HandleTypeDef* handle) {
   can_tx_payload_t payload = {0};
   BaseType_t higherPriorityTaskWoken = pdFALSE;
 
@@ -336,15 +336,15 @@ static void transmit(CAN_HandleTypeDef* handle) {
 }
 
 void HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef* hcan) {
-  transmit(hcan);
+  can_transmit(hcan);
 }
 
 void HAL_CAN_TxMailbox1CompleteCallback(CAN_HandleTypeDef* hcan) {
-  transmit(hcan);
+  can_transmit(hcan);
 }
 
 void HAL_CAN_TxMailbox2CompleteCallback(CAN_HandleTypeDef* hcan) {
-  transmit(hcan);
+  can_transmit(hcan);
 }
 
 __weak void can_rx_callback_hook(CAN_HandleTypeDef* hcan, const can_rx_payload_t* payload) {

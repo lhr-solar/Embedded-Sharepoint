@@ -6,8 +6,6 @@
 #include "UART.h"
 #include "printf.h"
 
-#include <stdio.h>
-
 // From datasheet
 #define DEFAULT_DEV_ADDR 0x4D
 
