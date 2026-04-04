@@ -548,8 +548,6 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint16_
     UART_periph_t *uart_periph = get_valid_uart_periph(handle);
     if(uart_periph == NULL) return UART_ERR;
 
-    uart_status_t status = UART_OK;
-
     // Try direct transmission if possible
     portENTER_CRITICAL();
     if (!uart_periph->tx_active &&
@@ -561,11 +559,11 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint16_
         portEXIT_CRITICAL();
 
         if (HAL_UART_Transmit_IT(handle, uart_periph->tx_dir_buffer, length) != HAL_OK) {
-            status = UART_ERR;
             uart_periph->tx_active = false;
+            return UART_ERR;
         }
 
-        goto exit;
+        return UART_OK;
     }
     portEXIT_CRITICAL();
 
@@ -606,8 +604,7 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint16_
     }
     portEXIT_CRITICAL();
 
-exit:
-    return status;
+    return UART_OK;
 }
 
 /**
