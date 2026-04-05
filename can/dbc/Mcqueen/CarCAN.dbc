@@ -38,7 +38,7 @@ VAL_TABLE_ Motor_Command_Source 1 "Tritium External" 0 "VCU" ;
 VAL_TABLE_ Supplemental_Battery_Fault 5 "Unknown Fault" 4 "Over-Current (Charge)" 3 "Over-Current (Discharge)" 2 "Over-Voltage" 1 "Under-Voltage" 0 "OK" ;
 VAL_TABLE_ VCU_FSM_State 7 "VEHICLE_NOT_READY" 6 "DISABLED" 5 "CRUISE_CONTROL" 4 "REGEN" 3 "REVERSE_DRIVE" 2 "NEUTRAL_DRIVE" 1 "FORWARD_DRIVE" 0 "INIT" ;
 VAL_TABLE_ BPS_Volt_Tap_Fault 5 "Message Watchdog" 4 "Under-Voltage" 3 "Over-Voltage" 2 "Out-of-Bounds" 1 "BQ I2C Read Error" 0 "OK" ;
-VAL_TABLE_ BPS_Temp_Tap_Fault 8 "Message Watchdog" 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Out-of-Bounds (Short to VCC)" 1 "Out-of_Bounds (Short to GND)" 0 "OK" ;
+VAL_TABLE_ BPS_Temp_Tap_Fault 8 "Message Watchdog" 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Out-of-Bounds (Short to VCC)" 1 "Out-of-Bounds (Short to GND)" 0 "OK" ;
 VAL_TABLE_ Generic_TrueFalse 0 "False" 1 "True" ;
 VAL_TABLE_ Generic_Active 1 "Active" 0 "Inactive" ;
 VAL_TABLE_ SuppCharger_Status 3 "FAULT" 2 "Charging..." 1 "Charge Complete" 0 "Charge Disabled" ;
@@ -233,7 +233,7 @@ BO_ 24 VCU_Status: 4 VCU
  SG_ Motor_Precharge_Contactor_State : 9|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ Motor_Contactor_State : 8|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ Motor_Ready : 10|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ VCU_FSM_State : 19|4@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ VCU_FSM_State : 19|4@1+ (1,0) [0|15] "" Vector__XXX
  SG_ VCU_Fault : 0|8@1+ (1,0) [0|0] "" Vector__XXX
 
 BO_ 1792 Telemetry_Status: 8 Telemetry
@@ -348,13 +348,12 @@ BO_ 768 Supp_Battery_Status: 6 LV_Carrier
 
 BO_ 769 Supp_Charging_Status: 6 LV_Carrier
  SG_ FrameID_Supp_Vicor : 40|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ Supplemental_Charging_Status : 0|8@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Supplemental_Charging_Status : 0|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ Supplemental_Vicor_Voltage : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
  SG_ Supplemental_Vicor_Current : 24|16@1- (0.001,0) [-32.768|32.767] "A" Vector__XXX
 
 
 
-CM_ SG_ 1873 Supp_Battery_Voltage_RawV "Supplemental Battery voltage in V";
 CM_ SG_ 1617 Brake_Pressure_RawV "Brake Pressure Raw Voltage (Sensor 1)";
 CM_ SG_ 1617 Brake_Pressure_Fault "Brake Pressure Sensor 1 Fault (0 normal, 1 fault)";
 CM_ SG_ 1617 Brake_Pressure "Brake Pressure PSI (Sensor 1)";
@@ -512,7 +511,7 @@ VAL_ 545 MPPT_Enabled 2 "Enabled - Constant Voltage" 1 "Enabled" 0 "Disabled" ;
 VAL_ 545 MPPT_Fault 8 "Unknown Fault" 7 "Phase Over Current" 6 "Input Under Current" 5 "Input Over Current" 4 "Output Over Current" 3 "Output Over Voltage" 2 "Input Over Voltage" 1 "Configuration Error" 0 "OK" ;
 VAL_ 545 MPPT_Mode 6 "FAULT" 5 "Temperature De-Rating" 4 "Constant Output Current" 3 "Constant Output Voltage" 2 "Minimum Input Current" 1 "Constant Input Current" 0 "Constant Input Voltage" ;
 VAL_ 553 MPPT_Set_Enable 2 "Enabled - Constant Voltage" 1 "Enabled" 0 "Disabled" ;
-VAL_ 12 BPS_Temperature_Tap_Fault 8 "Message Watchdog" 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Out-of-Bounds (Short to VCC)" 1 "Out-of_Bounds (Short to GND)" 0 "OK" ;
+VAL_ 12 BPS_Temperature_Tap_Fault 8 "Message Watchdog" 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Out-of-Bounds (Short to VCC)" 1 "Out-of-Bounds (Short to GND)" 0 "OK" ;
 VAL_ 11 BPS_Voltage_Tap_Fault 5 "Message Watchdog" 4 "Under-Voltage" 3 "Over-Voltage" 2 "Out-of-Bounds" 1 "BQ I2C Read Error" 0 "OK" ;
 VAL_ 1 BPS_Regen_OK 1 "OK" 0 "NOT OK" ;
 VAL_ 1 BPS_Charge_OK 1 "OK" 0 "NOT OK" ;
