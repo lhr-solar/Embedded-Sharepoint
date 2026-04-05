@@ -33,10 +33,14 @@ NS_ :
 
 BS_:
 
-BU_: Prohelion_WaveSculptor22 VCU
+BU_: Prohelion_WaveSculptor22 External VCU
+VAL_TABLE_ Motor_Command_Source 1 "Tritium External" 0 "VCU" ;
 VAL_TABLE_ Generic_Limit 1 "LIMIT" 0 "OK" ;
 VAL_TABLE_ Generic_Fault 1 "FAULT" 0 "OK" ;
 
+
+BO_ 1953 Set_Motor_Cmd_Src: 1 External
+ SG_ Motor_Command_Source : 0|1@1+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 1026 MC_PowerCommand: 4 VCU
  SG_ MC_MotorPowerSetpoint : 0|32@1- (1,0) [0|1] "%"  Prohelion_WaveSculptor22
@@ -162,6 +166,7 @@ BA_DEF_DEF_  "VFrameFormat" "ExtendedCAN_FD";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
 BA_ "DBName" "MotorCAN";
+BA_ "VFrameFormat" BO_ 1953 0;
 BA_ "VFrameFormat" BO_ 1026 0;
 BA_ "VFrameFormat" BO_ 1056 0;
 BA_ "VFrameFormat" BO_ 1057 0;
@@ -179,6 +184,7 @@ BA_ "VFrameFormat" BO_ 1067 0;
 BA_ "VFrameFormat" BO_ 1068 0;
 BA_ "VFrameFormat" BO_ 1070 0;
 BA_ "VFrameFormat" BO_ 1079 0;
+VAL_ 1953 Motor_Command_Source 1 "Tritium External" 0 "VCU" ;
 VAL_ 1057 MC_LIMIT_Reserved 1 "LIMIT" 0 "OK" ;
 VAL_ 1057 MC_LIMIT_MotorTemp 1 "LIMIT" 0 "OK" ;
 VAL_ 1057 MC_LIMIT_BusVoltageLower 1 "LIMIT" 0 "OK" ;
