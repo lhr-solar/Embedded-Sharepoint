@@ -5,6 +5,7 @@
 * [CubeMX](CubeMX.md)
 * [STM32 Ports](STM32_Ports.md)
 * CAN Messages
+    * [CAN Spec](CAN-Spec/index.md)
     * [Editing DBC Files](dbcEditor.md)
     * [Signals & Messages](DBC.md)
     * [Generating DBC Headers](usingDBCs.md)
