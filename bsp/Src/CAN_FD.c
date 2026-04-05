@@ -207,37 +207,51 @@ can_status_t can_fd_send_isr(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef*
     
     // If the HW FIFO has a free slot, write directly into it and return.
     // This mirrors can_fd_send and prevents the SW queue from never draining.
+    portENTER_CRITICAL();
+    // Check if there is a free can mailbox to send a message
     if (HAL_FDCAN_GetTxFifoFreeLevel(handle) >= 1) {
+        // if the mailbox is free, add the message to the hardware fifo
         if (HAL_FDCAN_AddMessageToTxFifoQ(handle, header, data) != HAL_OK) {
+            // If adding to the can fd mailbox was not succesful
+
+            // enable interrupts
+            portEXIT_CRITICAL();
             return CAN_ERR;
         }
+        // enable interrupts
+        portEXIT_CRITICAL();
         return CAN_OK;
     }
+    // hardware mailbox is full, so must add to the queue
+    else {
+        // enable interrupts
+        portEXIT_CRITICAL();
  
-    // HW FIFO full, fall back to the SW queue
-    if (0) {
-    }
-#ifdef FDCAN1
-    else if (handle->Instance == FDCAN1) {
-        if (xQueueSendFromISR(fdcan1_send_queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
-            return CAN_ERR;
+        // HW FIFO full, fall back to the SW queue
+        if (0) {
         }
-    }
+#ifdef FDCAN1
+        else if (handle->Instance == FDCAN1) {
+            if (xQueueSendFromISR(fdcan1_send_queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
+                return CAN_ERR;
+            }
+        }
 #endif
 #ifdef FDCAN2
-    else if (handle->Instance == FDCAN2) {
-        if (xQueueSendFromISR(fdcan2_send_queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
-            return CAN_ERR;
+        else if (handle->Instance == FDCAN2) {
+            if (xQueueSendFromISR(fdcan2_send_queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
+                return CAN_ERR;
+            }
         }
-    }
 #endif
 #ifdef FDCAN3
-    else if (handle->Instance == FDCAN3) {
-        if (xQueueSendFromISR(fdcan3_send_queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
-            return CAN_ERR;
+        else if (handle->Instance == FDCAN3) {
+            if (xQueueSendFromISR(fdcan3_send_queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
+                return CAN_ERR;
+            }
         }
-    }
 #endif
+    }
  
     return CAN_OK;
 }

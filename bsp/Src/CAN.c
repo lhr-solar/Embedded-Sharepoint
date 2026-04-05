@@ -1,6 +1,7 @@
+#include <string.h>
+
 #include "CAN.h"
 #include "queue_ex.h"
-#include <string.h>
 
 #ifdef CAN1
 // fallback can1 send queue size
@@ -216,7 +217,7 @@ can_status_t can_send(CAN_HandleTypeDef* handle, const CAN_TxHeaderTypeDef* head
     // Optional callback for user to implement
     can_tx_callback_hook(handle, &payload);
 
-    // disable interrupts (do not want race conditions) on shared resource 
+    // disable interrupts (do not want race conditions) on shared resource
     // (mailbox) between threads and interrupt routines (TxComplete))
     portENTER_CRITICAL();
 
@@ -238,12 +239,15 @@ can_status_t can_send(CAN_HandleTypeDef* handle, const CAN_TxHeaderTypeDef* head
         // enable interrupts
         portEXIT_CRITICAL();
 
-        // CAN1
-        if (handle->Instance == CAN1) {
+        if (0) {
+        }
+#ifdef CAN1
+        else if (handle->Instance == CAN1) {
             if (xQueueSend(can1_send_queue, &payload, delay_ticks) != pdTRUE) {
                 return CAN_ERR;
             }
         }
+#endif /* CAN1 */
 #ifdef CAN2
         else if (handle->Instance == CAN2) {
             if (xQueueSend(can2_send_queue, &payload, delay_ticks) != pdTRUE) {
@@ -273,85 +277,52 @@ can_status_t can_send_isr(CAN_HandleTypeDef* handle, const CAN_TxHeaderTypeDef* 
     payload.header = *header;
     memcpy(payload.data, data, header->DLC);
 
-    can_tx_callback_hook(handle, &payload);
+    // need to do same pattern here as can_send
+    UBaseType_t saved = taskENTER_CRITICAL_FROM_ISR();
+    if (HAL_CAN_GetTxMailboxesFreeLevel(handle) >= 1) {
+        uint32_t mailbox;
+        if (HAL_CAN_AddTxMessage(handle, header, data, &mailbox) != HAL_OK) {
+            // enable interrupts
+            taskEXIT_CRITICAL_FROM_ISR(saved);
 
-    if (0) {
-    }
-#ifdef CAN1
-    else if (handle->Instance == CAN1) {
-        if (xQueueSendFromISR(can1_send_queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
             return CAN_ERR;
         }
+
+        // enable interrupts
+        taskEXIT_CRITICAL_FROM_ISR(saved);
     }
+    // otherwise, put into send queue
+    else {
+        // enable interrupts
+        taskEXIT_CRITICAL_FROM_ISR(saved);
+
+        if (0) {
+        }
+#ifdef CAN1
+        else if (handle->Instance == CAN1) {
+            if (xQueueSendFromISR(can1_send_queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
+                return CAN_ERR;
+            }
+        }
 #endif /* CAN1 */
 #ifdef CAN2
-    else if (handle->Instance == CAN2) {
-        if (xQueueSendFromISR(can2_send_queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
-            return CAN_ERR;
+        else if (handle->Instance == CAN2) {
+            if (xQueueSendFromISR(can2_send_queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
+                return CAN_ERR;
+            }
         }
-    }
 #endif /* CAN2 */
 #ifdef CAN3
-    else if (handle->Instance == CAN3) {
-        if (xQueueSendFromISR(can3_send_queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
-            return CAN_ERR;
+        else if (handle->Instance == CAN3) {
+            if (xQueueSendFromISR(can3_send_queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
+                return CAN_ERR;
+            }
         }
-    }
 #endif /* CAN3 */
+    }
 
     return CAN_OK;
 }
-
-can_status_t can_recv_isr(CAN_HandleTypeDef* handle, uint32_t id, CAN_RxHeaderTypeDef* header,
-                          uint8_t data[], BaseType_t* higherPriorityTaskWoken) {
-    if (handle == NULL || header == NULL || data == NULL) {
-        return CAN_ERR;
-    }
-
-    can_rx_payload_t payload = {0};
-    can_recv_entry_t* entries = NULL;
-    uint32_t entry_count = 0;
-
-    if (0) {
-    }
-#ifdef CAN1
-    else if (handle->Instance == CAN1) {
-        entries = can1_recv_entries;
-        entry_count = can1_recv_entry_count;
-    }
-#endif /* CAN1 */
-#ifdef CAN2
-    else if (handle->Instance == CAN2) {
-        entries = can2_recv_entries;
-        entry_count = can2_recv_entry_count;
-    }
-#endif /* CAN2 */
-#ifdef CAN3
-    else if (handle->Instance == CAN3) {
-        entries = can3_recv_entries;
-        entry_count = can3_recv_entry_count;
-    }
-#endif /* CAN3 */
-
-    if (entries == NULL) {
-        return CAN_ERR;
-    }
-
-    for (uint32_t i = 0; i < entry_count; i++) {
-        if (entries[i].id == id) {
-            if (xQueueReceiveFromISR(entries[i].queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
-                return CAN_EMPTY;
-            }
-
-            *header = payload.header;
-            memcpy(data, payload.data, header->DLC);
-            return CAN_OK;
-        }
-    }
-
-    return CAN_ERR;
-}
-
 
 __weak void can_tx_callback_hook(CAN_HandleTypeDef* hcan, const can_tx_payload_t* payload) {
     UNUSED(hcan);
@@ -389,11 +360,10 @@ static void transmit(CAN_HandleTypeDef* handle) {
     uint8_t max_iter = 3;
     while (max_iter-- > 0 && HAL_CAN_GetTxMailboxesFreeLevel(handle) > 0 &&
            xQueueReceiveFromISR(send_queue, &payload, &higherPriorityTaskWoken) == pdTRUE) {
-      uint32_t mailbox;
-      if (HAL_CAN_AddTxMessage(handle, &payload.header, payload.data,
-                               &mailbox) != HAL_OK) {
-        // treated as lost packet (or can handle the error here)
-      }
+        uint32_t mailbox;
+        if (HAL_CAN_AddTxMessage(handle, &payload.header, payload.data, &mailbox) != HAL_OK) {
+            // treated as lost packet (or can handle the error here)
+        }
     }
 
     portYIELD_FROM_ISR(higherPriorityTaskWoken);
