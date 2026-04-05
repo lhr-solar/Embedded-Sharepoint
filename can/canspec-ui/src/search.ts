@@ -56,5 +56,5 @@ export function messageMatchesSearch(
     }
   }
 
-  return hay.join(" ").toLowerCase().includes(needle);
+  return hay.join(" ").includes(needle);
 }
