@@ -34,10 +34,11 @@ NS_ :
 BS_:
 
 BU_: TPEE_MPPT_C TPEE_MPPT_B TPEE_MPPT_A Telemetry Pump Pedals PDU LV_Carrier External Dashboard_Display BPS ChargerInterface Controls VCU
+VAL_TABLE_ Motor_Command_Source 1 "Tritium External" 0 "VCU" ;
 VAL_TABLE_ Supplemental_Battery_Fault 5 "Unknown Fault" 4 "Over-Current (Charge)" 3 "Over-Current (Discharge)" 2 "Over-Voltage" 1 "Under-Voltage" 0 "OK" ;
 VAL_TABLE_ VCU_FSM_State 7 "VEHICLE_NOT_READY" 6 "DISABLED" 5 "CRUISE_CONTROL" 4 "REGEN" 3 "REVERSE_DRIVE" 2 "NEUTRAL_DRIVE" 1 "FORWARD_DRIVE" 0 "INIT" ;
-VAL_TABLE_ BPS_Volt_Tap_Fault 3 "Under-Voltage" 2 "Over-Voltage" 1 "BQ I2C Read Error" 0 "OK" ;
-VAL_TABLE_ BPS_Temp_Tap_Fault 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Short to VCC" 1 "Short to GND" 0 "OK" ;
+VAL_TABLE_ BPS_Volt_Tap_Fault 5 "Message Watchdog" 4 "Under-Voltage" 3 "Over-Voltage" 2 "Out-of-Bounds" 1 "BQ I2C Read Error" 0 "OK" ;
+VAL_TABLE_ BPS_Temp_Tap_Fault 8 "Message Watchdog" 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Out-of-Bounds (Short to VCC)" 1 "Out-of_Bounds (Short to GND)" 0 "OK" ;
 VAL_TABLE_ Generic_TrueFalse 0 "False" 1 "True" ;
 VAL_TABLE_ Generic_Active 1 "Active" 0 "Inactive" ;
 VAL_TABLE_ SuppCharger_Status 3 "FAULT" 2 "Charging..." 1 "Charge Complete" 0 "Charge Disabled" ;
@@ -59,8 +60,18 @@ VAL_TABLE_ VCU_Fault 6 "Motor HV Undervoltage" 5 "Motor HV Overvoltage" 4 "Motor
 VAL_TABLE_ HSS_SetState 2 "Toggle Off" 1 "Toggle On" 0 "Do Nothing" ;
 
 
+BO_ 1874 Supp_Vicor_Measurements_RawV: 5 LV_Carrier
+ SG_ FrameID_Supp_Vicor : 32|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ Supp_Vicor_Voltage_RawV : 0|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+ SG_ Supp_Vicor_Current_RawV : 16|16@1- (1,0) [-32768|32767] "mV" Vector__XXX
+
+BO_ 1873 Supp_Measurements_RawV: 5 LV_Carrier
+ SG_ FrameID_Supp : 32|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ Supp_Battery_Voltage_RawV : 0|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+ SG_ Supp_Battery_Current_RawV : 16|16@1- (1,0) [-8192|8191] "mV" Vector__XXX
+
 BO_ 1617 Brake_Pressure_2: 6 Pedals
- SG_ Pedals_FrameID : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ FrameID_Pedals : 40|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ Brake_Pressure_RawV : 16|16@1+ (0.001,0) [0|3.3] "V" Vector__XXX
  SG_ Brake_Pressure_Fault : 32|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ Brake_Pressure : 0|16@1+ (0.1,0) [0|3000] "PSI" Vector__XXX
@@ -145,22 +156,21 @@ BO_ 514 MPPT_A_SweepMeasurements: 6 TPEE_MPPT_A
  SG_ MPPT_Sweep_Data_Current : 23|16@0- (0.0005,0) [-16.384|16.3835] "A" Vector__XXX
  SG_ MPPT_Sweep_Data_cnt : 7|8@0+ (1,0) [0|127] "" Vector__XXX
 
-BO_ 13 BPS_Temp_RawV_Aggregate_Arr: 4 BPS
- SG_ BPS_Tap_Msg_WDog : 5|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ BPS_Temperature_Tap_RawV : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_FrameID : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+BO_ 1872 BPS_Temp_RawV_Aggregate_Arr: 4 BPS
+ SG_ BPS_Temperature_Tap_RawV : 8|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+ SG_ FrameID_BPS_Temperature : 24|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
-BO_ 82 Pedal_Brake_RawV: 5 Pedals
- SG_ BrakePedal_Main_RawV : 0|16@1+ (0.001,0) [0|3.3] "V" Vector__XXX
- SG_ BrakePedal_Redundant_RawV : 16|16@1+ (0.001,0) [0|3.3] "V" Vector__XXX
- SG_ Pedals_FrameID : 32|8@1+ (1,0) [0|255] "" Vector__XXX
+BO_ 1875 Pedal_Brake_RawV: 5 Pedals
+ SG_ BrakePedal_Main_RawV : 0|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+ SG_ BrakePedal_Redundant_RawV : 16|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+ SG_ FrameID_Pedals : 32|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 12 BPS_Temperature_Aggregate_Arr: 8 BPS
- SG_ BPS_Temperature_FrameID : 56|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ FrameID_BPS_Temperature : 56|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ BPS_Temperature_Tap_Fault : 8|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ BPS_Temperature_Tap_Age : 40|16@1+ (1,0) [0|65535] "ms" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 16|24@1- (0.001,0) [-8388.608|8388.607] "C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 32 BPS_Precharge_Voltages: 6 BPS
@@ -168,7 +178,6 @@ BO_ 32 BPS_Precharge_Voltages: 6 BPS
  SG_ BPS_Precharge_Array_Voltage : 24|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
 
 BO_ 11 BPS_Voltage_Aggregate_Arr: 6 BPS
- SG_ BPS_Tap_Msg_WDog : 5|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ BPS_Voltage_Tap_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Voltage_Tap_Age : 32|16@1+ (1,0) [0|65535] "ms" Vector__XXX
  SG_ BPS_Voltage_Tap_Data : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
@@ -206,6 +215,7 @@ BO_ 33 VCU_Precharge_Voltages: 6 VCU
  SG_ VCU_Precharge_Battery_Voltage : 0|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
 
 BO_ 24 VCU_Status: 4 VCU
+ SG_ VCU_MotorCommandSource : 16|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ VCU_FSM_IN_REVERSE : 27|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ VCU_FSM_IN_REGEN_REQ : 31|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ VCU_FSM_IN_REGEN_RDY : 28|1@1+ (1,0) [0|1] "" Vector__XXX
@@ -223,10 +233,10 @@ BO_ 24 VCU_Status: 4 VCU
  SG_ Motor_Precharge_Contactor_State : 9|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ Motor_Contactor_State : 8|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ Motor_Ready : 10|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ VCU_FSM_State : 16|4@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ VCU_FSM_State : 19|4@1+ (1,0) [0|0] "" Vector__XXX
  SG_ VCU_Fault : 0|8@1+ (1,0) [0|0] "" Vector__XXX
 
-BO_ 1872 Telemetry_Status: 8 Telemetry
+BO_ 1792 Telemetry_Status: 8 Telemetry
 
 BO_ 850 PDU_Set_Current_Limit_Arr: 3 VCU
  SG_ HSS_Channel_idx : 0|4@1+ (1,0) [0|16] "" Vector__XXX
@@ -276,25 +286,25 @@ BO_ 96 Driver_Input_Status: 2 Controls
  SG_ Ignition_Motor : 1|1@1+ (1,0) [0|0] ""  VCU
  SG_ Ignition_Array : 0|1@1+ (1,0) [0|0] ""  VCU
 
-BO_ 1792 Display_Status: 2 Dashboard_Display
+BO_ 1664 Display_Status: 2 Dashboard_Display
  SG_ Camera_Status_Right : 10|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ Camera_Status_Left : 9|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ Camera_Status_Backup : 8|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ Display_FrameRate : 0|8@1+ (1,0) [0|60] "FPS" Vector__XXX
 
 BO_ 1616 Brake_Pressure_1: 6 Pedals
- SG_ Pedals_FrameID : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ FrameID_Pedals : 40|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ Brake_Pressure_Fault : 32|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ Brake_Pressure_RawV : 16|16@1+ (0.001,0) [0|3.3] "V"  VCU
  SG_ Brake_Pressure : 0|16@1+ (0.1,0) [0|3000] "PSI"  VCU
 
-BO_ 81 Pedal_Accel_RawV: 5 Pedals
- SG_ Pedals_FrameID : 32|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ AccelPedal_Redundant_RawV : 16|16@1+ (0.001,0) [0|3.3] "V"  VCU
- SG_ AccelPedal_Main_RawV : 0|16@1+ (0.001,0) [0|3.3] "V"  VCU
+BO_ 1876 Pedal_Accel_RawV: 5 Pedals
+ SG_ FrameID_Pedals : 32|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ AccelPedal_Redundant_RawV : 16|16@1+ (1,0) [0|65535] "mV"  VCU
+ SG_ AccelPedal_Main_RawV : 0|16@1+ (1,0) [0|65535] "mV"  VCU
 
 BO_ 80 Pedal_Status: 6 Pedals
- SG_ Pedals_FrameID : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ FrameID_Pedals : 40|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ BrakePedal_Redundant_Fault : 35|1@1+ (1,0) [0|0] ""  VCU
  SG_ BrakePedal_Main_Fault : 34|1@1+ (1,0) [0|0] ""  VCU
  SG_ AccelPedal_Redundant_Fault : 33|1@1+ (1,0) [0|0] ""  VCU
@@ -330,24 +340,27 @@ BO_ 1536 LV_Carrier_Status: 1 LV_Carrier
  SG_ LV_EN_SupplementalBattery : 6|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ LV_EN_PowerSupply : 7|1@1+ (1,0) [0|1] "" Vector__XXX
 
-BO_ 768 Supp_Battery_Status: 5 LV_Carrier
+BO_ 768 Supp_Battery_Status: 6 LV_Carrier
+ SG_ FrameID_Supp : 40|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ Supplemental_Battery_Fault : 0|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ Supplemental_Battery_Current : 24|16@1- (1,0) [-2300|28700] "mA" Vector__XXX
- SG_ Supplemental_Battery_Voltage : 8|16@1+ (1,0) [0|40] "V" Vector__XXX
+ SG_ Supplemental_Battery_Current : 24|16@1- (0.001,0) [-32.768|32.767] "A" Vector__XXX
+ SG_ Supplemental_Battery_Voltage : 8|16@1+ (0.001,0) [0|30] "V" Vector__XXX
 
-BO_ 769 Supp_Battery_Charger_Status: 5 LV_Carrier
- SG_ SuppCharger_Status : 0|8@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Supplemental_DCDC_Voltage : 8|16@1+ (1,0) [0|26] "V" Vector__XXX
- SG_ Supplemental_DCDC_Current : 24|16@1- (1,0) [-2300|28700] "mA" Vector__XXX
+BO_ 769 Supp_Charging_Status: 6 LV_Carrier
+ SG_ FrameID_Supp_Vicor : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ Supplemental_Charging_Status : 0|8@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Supplemental_Vicor_Voltage : 8|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ Supplemental_Vicor_Current : 24|16@1- (0.001,0) [-32.768|32.767] "A" Vector__XXX
 
 
 
+CM_ SG_ 1873 Supp_Battery_Voltage_RawV "Supplemental Battery voltage in V";
 CM_ SG_ 1617 Brake_Pressure_RawV "Brake Pressure Raw Voltage (Sensor 1)";
 CM_ SG_ 1617 Brake_Pressure_Fault "Brake Pressure Sensor 1 Fault (0 normal, 1 fault)";
 CM_ SG_ 1617 Brake_Pressure "Brake Pressure PSI (Sensor 1)";
-CM_ SG_ 13 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 82 BrakePedal_Main_RawV "Brake Pedal Raw Voltage Measurement (Main Sensor)";
-CM_ SG_ 82 BrakePedal_Redundant_RawV "Brake Pedal Raw Voltage Measurement (Redundant Sensor)";
+CM_ SG_ 1872 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
+CM_ SG_ 1875 BrakePedal_Main_RawV "Brake Pedal Raw Voltage Measurement (Main Sensor)";
+CM_ SG_ 1875 BrakePedal_Redundant_RawV "Brake Pedal Raw Voltage Measurement (Redundant Sensor)";
 CM_ SG_ 12 BPS_Temperature_Tap_Fault "VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)";
 CM_ SG_ 12 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
 CM_ SG_ 32 BPS_Precharge_Battery_Voltage "Battery voltage as measured by active precharge circuitry";
@@ -408,15 +421,15 @@ CM_ SG_ 96 Cruise_Enable "Cruise Enable Button Pressed";
 CM_ SG_ 96 Ignition_Off "Ignition Switch in Off Position";
 CM_ SG_ 96 Ignition_Motor "Ignition Switch in Motor Position";
 CM_ SG_ 96 Ignition_Array "Ignition Switch in Array Position";
-CM_ SG_ 1792 Camera_Status_Right "Right Side View Camera Status (0 disconnected, 1 connected)";
-CM_ SG_ 1792 Camera_Status_Left "Left Side View Camera Status (0 disconnected, 1 connected)";
-CM_ SG_ 1792 Camera_Status_Backup "Backup Camera Status (0 disconnected, 1 connected)";
-CM_ SG_ 1792 Display_FrameRate "Dashboard Display Frame Rate (FPS)";
+CM_ SG_ 1664 Camera_Status_Right "Right Side View Camera Status (0 disconnected, 1 connected)";
+CM_ SG_ 1664 Camera_Status_Left "Left Side View Camera Status (0 disconnected, 1 connected)";
+CM_ SG_ 1664 Camera_Status_Backup "Backup Camera Status (0 disconnected, 1 connected)";
+CM_ SG_ 1664 Display_FrameRate "Dashboard Display Frame Rate (FPS)";
 CM_ SG_ 1616 Brake_Pressure_Fault "Brake Pressure Sensor 1 Fault (0 normal, 1 fault)";
 CM_ SG_ 1616 Brake_Pressure_RawV "Brake Pressure Raw Voltage (Sensor 1)";
 CM_ SG_ 1616 Brake_Pressure "Brake Pressure PSI (Sensor 1)";
-CM_ SG_ 81 AccelPedal_Redundant_RawV "Accelerator Pedal Raw Voltage Measurement (Redundant Sensor)";
-CM_ SG_ 81 AccelPedal_Main_RawV "Accelerator Pedal Raw Voltage Measurement (Main Sensor)";
+CM_ SG_ 1876 AccelPedal_Redundant_RawV "Accelerator Pedal Raw Voltage Measurement (Redundant Sensor)";
+CM_ SG_ 1876 AccelPedal_Main_RawV "Accelerator Pedal Raw Voltage Measurement (Main Sensor)";
 CM_ SG_ 80 BrakePedal_Redundant_Fault "Brake Pedal Redundant Sensor Fault (0 normal, 1 fault)";
 CM_ SG_ 80 BrakePedal_Main_Fault "Brake Pedal Main Sensor Fault (0 normal, 1 fault)";
 CM_ SG_ 80 AccelPedal_Redundant_Fault "Accelerator Pedal Redundant Sensor Fault (0 normal, 1 fault)";
@@ -427,7 +440,7 @@ CM_ SG_ 80 AccelPedal_Redundant_Pos "Accelerator Pedal Position (Redundant Senso
 CM_ SG_ 80 AccelPedal_Main_Pos "Accelerator Pedal Position (Main Sensor)";
 CM_ SG_ 1536 LTC4421_HVDCDC_Selected "The LTC4421's channel selected signal for the HV DCDC";
 CM_ SG_ 768 Supplemental_Battery_Voltage "Supplemental Battery voltage in V";
-CM_ SG_ 769 SuppCharger_Status "00 - Charging disabled, 01 - Charge done, 10 - Charge in progress, 11 - Charge fault detected";
+CM_ SG_ 769 Supplemental_Charging_Status "00 - Charging disabled, 01 - Charge done, 10 - Charge in progress, 11 - Charge fault detected";
 BA_DEF_  "DBName" STRING ;
 BA_DEF_ SG_  "SPN" INT 0 524287;
 BA_DEF_ BO_  "GenMsgCycleTime" INT 0 100000;
@@ -442,6 +455,8 @@ BA_DEF_DEF_  "VFrameFormat" "ExtendedCAN_FD";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN FD";
 BA_ "DBName" "CarCAN";
+BA_ "VFrameFormat" BO_ 1874 0;
+BA_ "VFrameFormat" BO_ 1873 0;
 BA_ "VFrameFormat" BO_ 1617 0;
 BA_ "VFrameFormat" BO_ 578 0;
 BA_ "VFrameFormat" BO_ 577 0;
@@ -461,8 +476,8 @@ BA_ "VFrameFormat" BO_ 530 0;
 BA_ "VFrameFormat" BO_ 529 0;
 BA_ "VFrameFormat" BO_ 528 0;
 BA_ "VFrameFormat" BO_ 514 0;
-BA_ "VFrameFormat" BO_ 13 0;
-BA_ "VFrameFormat" BO_ 82 0;
+BA_ "VFrameFormat" BO_ 1872 0;
+BA_ "VFrameFormat" BO_ 1875 0;
 BA_ "VFrameFormat" BO_ 12 0;
 BA_ "VFrameFormat" BO_ 32 0;
 BA_ "VFrameFormat" BO_ 11 0;
@@ -470,7 +485,7 @@ BA_ "VFrameFormat" BO_ 1 0;
 BA_ "VFrameFormat" BO_ 25 0;
 BA_ "VFrameFormat" BO_ 33 0;
 BA_ "VFrameFormat" BO_ 24 0;
-BA_ "VFrameFormat" BO_ 1872 0;
+BA_ "VFrameFormat" BO_ 1792 0;
 BA_ "VFrameFormat" BO_ 850 0;
 BA_ "VFrameFormat" BO_ 1282 0;
 BA_ "VFrameFormat" BO_ 1281 0;
@@ -478,9 +493,9 @@ BA_ "VFrameFormat" BO_ 1280 0;
 BA_ "VFrameFormat" BO_ 849 0;
 BA_ "VFrameFormat" BO_ 848 0;
 BA_ "VFrameFormat" BO_ 96 0;
-BA_ "VFrameFormat" BO_ 1792 0;
+BA_ "VFrameFormat" BO_ 1664 0;
 BA_ "VFrameFormat" BO_ 1616 0;
-BA_ "VFrameFormat" BO_ 81 0;
+BA_ "VFrameFormat" BO_ 1876 0;
 BA_ "VFrameFormat" BO_ 80 0;
 BA_ "VFrameFormat" BO_ 513 0;
 BA_ "VFrameFormat" BO_ 512 0;
@@ -497,10 +512,8 @@ VAL_ 545 MPPT_Enabled 2 "Enabled - Constant Voltage" 1 "Enabled" 0 "Disabled" ;
 VAL_ 545 MPPT_Fault 8 "Unknown Fault" 7 "Phase Over Current" 6 "Input Under Current" 5 "Input Over Current" 4 "Output Over Current" 3 "Output Over Voltage" 2 "Input Over Voltage" 1 "Configuration Error" 0 "OK" ;
 VAL_ 545 MPPT_Mode 6 "FAULT" 5 "Temperature De-Rating" 4 "Constant Output Current" 3 "Constant Output Voltage" 2 "Minimum Input Current" 1 "Constant Input Current" 0 "Constant Input Voltage" ;
 VAL_ 553 MPPT_Set_Enable 2 "Enabled - Constant Voltage" 1 "Enabled" 0 "Disabled" ;
-VAL_ 13 BPS_Tap_Msg_WDog 1 "OK" 0 "NOT OK" ;
-VAL_ 12 BPS_Temperature_Tap_Fault 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Short to VCC" 1 "Short to GND" 0 "OK" ;
-VAL_ 11 BPS_Tap_Msg_WDog 1 "OK" 0 "NOT OK" ;
-VAL_ 11 BPS_Voltage_Tap_Fault 3 "Under-Voltage" 2 "Over-Voltage" 1 "BQ I2C Read Error" 0 "OK" ;
+VAL_ 12 BPS_Temperature_Tap_Fault 8 "Message Watchdog" 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Out-of-Bounds (Short to VCC)" 1 "Out-of_Bounds (Short to GND)" 0 "OK" ;
+VAL_ 11 BPS_Voltage_Tap_Fault 5 "Message Watchdog" 4 "Under-Voltage" 3 "Over-Voltage" 2 "Out-of-Bounds" 1 "BQ I2C Read Error" 0 "OK" ;
 VAL_ 1 BPS_Regen_OK 1 "OK" 0 "NOT OK" ;
 VAL_ 1 BPS_Charge_OK 1 "OK" 0 "NOT OK" ;
 VAL_ 1 HV_Plus_Contactor_State 1 "Closed" 0 "Open" ;
@@ -522,6 +535,7 @@ VAL_ 25 LightingBoard_Left_Status 7 "Light Command Watchdog" 6 "LED1 Overcurrent
 VAL_ 25 LightingBoard_Front_Status 7 "Light Command Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "OK" 8 "Watchdog" ;
 VAL_ 25 LightingBoard_Canopy_Status 7 "Light Command Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "OK" 8 "Watchdog" ;
 VAL_ 25 Controls_Leader_Fault 4 "Lighting Board Fault" 3 "Invalid Driver Inputs" 2 "BPS Watchdog" 1 "Bosch LWS Watchdog" 0 "OK" 5 "Lighting Board Watchdog" ;
+VAL_ 24 VCU_MotorCommandSource 1 "Tritium External" 0 "VCU" ;
 VAL_ 24 VCU_FSM_IN_REVERSE 0 "False" 1 "True" ;
 VAL_ 24 VCU_FSM_IN_REGEN_REQ 0 "False" 1 "True" ;
 VAL_ 24 VCU_FSM_IN_REGEN_RDY 0 "False" 1 "True" ;
@@ -563,9 +577,9 @@ VAL_ 96 Cruise_Enable 1 "Enabled" 0 "Disabled" ;
 VAL_ 96 Ignition_Off 1 "Selected" 0 "-" ;
 VAL_ 96 Ignition_Motor 1 "Selected" 0 "-" ;
 VAL_ 96 Ignition_Array 1 "Selected" 0 "-" ;
-VAL_ 1792 Camera_Status_Right 1 "OK" 0 "NOT OK" ;
-VAL_ 1792 Camera_Status_Left 1 "OK" 0 "NOT OK" ;
-VAL_ 1792 Camera_Status_Backup 1 "OK" 0 "NOT OK" ;
+VAL_ 1664 Camera_Status_Right 1 "OK" 0 "NOT OK" ;
+VAL_ 1664 Camera_Status_Left 1 "OK" 0 "NOT OK" ;
+VAL_ 1664 Camera_Status_Backup 1 "OK" 0 "NOT OK" ;
 VAL_ 1616 Brake_Pressure_Fault 1 "FAULT" 0 "OK" ;
 VAL_ 80 BrakePedal_Redundant_Fault 1 "FAULT" 0 "OK" ;
 VAL_ 80 BrakePedal_Main_Fault 1 "FAULT" 0 "OK" ;
@@ -584,4 +598,4 @@ VAL_ 1536 LTC4421_SuppBatt_Valid 1 "OK" 0 "NOT OK" ;
 VAL_ 1536 LV_EN_SupplementalBattery 1 "Enabled" 0 "Disabled" ;
 VAL_ 1536 LV_EN_PowerSupply 1 "Enabled" 0 "Disabled" ;
 VAL_ 768 Supplemental_Battery_Fault 5 "Unknown Fault" 4 "Over-Current (Charge)" 3 "Over-Current (Discharge)" 2 "Over-Voltage" 1 "Under-Voltage" 0 "OK" ;
-VAL_ 769 SuppCharger_Status 3 "FAULT" 2 "Charging..." 1 "Charge Complete" 0 "Charge Disabled" ;
+VAL_ 769 Supplemental_Charging_Status 3 "FAULT" 2 "Charging..." 1 "Charge Complete" 0 "Charge Disabled" ;

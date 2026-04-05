@@ -34,13 +34,14 @@ NS_ :
 BS_:
 
 BU_: VoltTemp_7 VoltTemp_6 VoltTemp_5 VoltTemp_4 VoltTemp_3 VoltTemp_2 VoltTemp_1 VoltTemp_0 BPS Amperes
-VAL_TABLE_ BPS_Volt_Tap_Fault 3 "Under-Voltage" 2 "Over-Voltage" 1 "BQ I2C Read Error" 0 "OK" ;
-VAL_TABLE_ BPS_Temp_Tap_Fault 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Short to VCC" 1 "Short to GND" 0 "OK" ;
-VAL_TABLE_ Generic_OK 1 "OK" 0 "NOT OK" ;
+VAL_TABLE_ BPS_Amperes_Fault 4 "Message Watchdog" 3 "Over-Current (Charge)" 2 "Over-Current (Discharge)" 1 "Out-of-Bounds" 0 "OK" ;
+VAL_TABLE_ BPS_Volt_Tap_Fault 5 "Message Watchdog" 4 "Under-Voltage" 3 "Over-Voltage" 2 "Out-of-Bounds" 1 "BQ I2C Read Error" 0 "OK" ;
+VAL_TABLE_ BPS_Temp_Tap_Fault 8 "Message Watchdog" 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Out-of-Bounds (Short to VCC)" 1 "Out-of_Bounds (Short to GND)" 0 "OK" ;
 
 
-BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
- SG_ BPS_Tap_Msg_WDog : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+BO_ 1877 BPS_Pack_Current_RawV: 3 Amperes
+ SG_ FrameID_Amperes : 16|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ Main_Battery_Current_RawV : 0|16@1+ (1,0) [0|65535] "mV" Vector__XXX
 
 BO_ 1952 BPS_Balance_Discharge: 1 BPS
  SG_ BPS_Tap_idx : 3|5@1+ (1,0) [0|31] "" Vector__XXX
@@ -52,9 +53,9 @@ BO_ 9 BPS_VT7_Voltage_Arr: 4 VoltTemp_7
  SG_ BPS_Voltage_Tap_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
 
 BO_ 23 BPS_VT7_Temperature_Arr: 7 VoltTemp_7
- SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
+ SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+ SG_ BPS_Temperature_Tap_Fault : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 16|24@1- (0.001,0) [-8388.608|8388.607] "C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 8 BPS_VT6_Voltage_Arr: 4 VoltTemp_6
@@ -63,9 +64,9 @@ BO_ 8 BPS_VT6_Voltage_Arr: 4 VoltTemp_6
  SG_ BPS_Voltage_Tap_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
 
 BO_ 22 BPS_VT6_Temperature_Arr: 7 VoltTemp_6
- SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
+ SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+ SG_ BPS_Temperature_Tap_Fault : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 16|24@1- (0.001,0) [-8388.608|8388.607] "C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 7 BPS_VT5_Voltage_Arr: 4 VoltTemp_5
@@ -74,9 +75,9 @@ BO_ 7 BPS_VT5_Voltage_Arr: 4 VoltTemp_5
  SG_ BPS_Voltage_Tap_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
 
 BO_ 21 BPS_VT5_Temperature_Arr: 7 VoltTemp_5
- SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
+ SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+ SG_ BPS_Temperature_Tap_Fault : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 16|24@1- (0.001,0) [-8388.608|8388.607] "C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 6 BPS_VT4_Voltage_Arr: 4 VoltTemp_4
@@ -85,15 +86,15 @@ BO_ 6 BPS_VT4_Voltage_Arr: 4 VoltTemp_4
  SG_ BPS_Voltage_Tap_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
 
 BO_ 16 BPS_VT0_Temperature_Arr: 7 VoltTemp_0
- SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
+ SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+ SG_ BPS_Temperature_Tap_Fault : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 16|24@1- (0.001,0) [-8388.608|8388.607] "C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 20 BPS_VT4_Temperature_Arr: 7 VoltTemp_4
- SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
+ SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+ SG_ BPS_Temperature_Tap_Fault : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 16|24@1- (0.001,0) [-8388.608|8388.607] "C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 5 BPS_VT3_Voltage_Arr: 4 VoltTemp_3
@@ -102,9 +103,9 @@ BO_ 5 BPS_VT3_Voltage_Arr: 4 VoltTemp_3
  SG_ BPS_Voltage_Tap_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
 
 BO_ 19 BPS_VT3_Temperature_Arr: 7 VoltTemp_3
- SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
+ SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+ SG_ BPS_Temperature_Tap_Fault : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 16|24@1- (0.001,0) [-8388.608|8388.607] "C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 4 BPS_VT2_Voltage_Arr: 4 VoltTemp_2
@@ -113,9 +114,9 @@ BO_ 4 BPS_VT2_Voltage_Arr: 4 VoltTemp_2
  SG_ BPS_Voltage_Tap_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
 
 BO_ 18 BPS_VT2_Temperature_Arr: 7 VoltTemp_2
- SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
+ SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+ SG_ BPS_Temperature_Tap_Fault : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 16|24@1- (0.001,0) [-8388.608|8388.607] "C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 3 BPS_VT1_Voltage_Arr: 4 VoltTemp_1
@@ -124,9 +125,9 @@ BO_ 3 BPS_VT1_Voltage_Arr: 4 VoltTemp_1
  SG_ BPS_Voltage_Tap_Fault : 24|8@1+ (1,0) [0|0] "" Vector__XXX
 
 BO_ 17 BPS_VT1_Temperature_Arr: 7 VoltTemp_1
- SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ BPS_Temperature_Tap_Fault : 5|3@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 8|32@1- (0.001,0) [-2147483.648|2147483.647] "C" Vector__XXX
+ SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
+ SG_ BPS_Temperature_Tap_Fault : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 16|24@1- (0.001,0) [-8388.608|8388.607] "C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 2 BPS_VT0_Voltage_Arr: 4 VoltTemp_0
@@ -135,12 +136,13 @@ BO_ 2 BPS_VT0_Voltage_Arr: 4 VoltTemp_0
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 10 BPS_Pack_Current: 5 Amperes
- SG_ Main_Battery_Current_RawV : 24|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
- SG_ Main_Battery_Current : 0|24@1- (0.001,0) [-8388.608|8388.607] "A" Vector__XXX
+ SG_ BPS_Amperes_Fault : 0|8@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ FrameID_Amperes : 32|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ Main_Battery_Current : 8|24@1- (0.001,0) [-8388.608|8388.607] "A" Vector__XXX
 
 
 
-CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
+CM_ SG_ 1877 Main_Battery_Current_RawV "Main battery current raw voltage as measured by the BPS";
 CM_ SG_ 9 BPS_Voltage_Tap_Data "Voltage tap measurement for the specified VoltTemp and Tap ID";
 CM_ SG_ 9 BPS_Voltage_Tap_Fault "VoltTemp BQ Fault State (0 no fault, 1 fault)";
 CM_ SG_ 23 BPS_Temperature_Tap_RawV "Raw thermistor voltage measurement for the specified VoltTemp and Tap ID";
@@ -181,7 +183,7 @@ CM_ SG_ 17 BPS_Temperature_Tap_Fault "VoltTemp Temperature Tap Fault State (0 no
 CM_ SG_ 17 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
 CM_ SG_ 2 BPS_Voltage_Tap_Fault "VoltTemp BQ Fault State (0 no fault, 1 fault)";
 CM_ SG_ 2 BPS_Voltage_Tap_Data "Voltage tap measurement for the specified VoltTemp and Tap ID";
-CM_ SG_ 10 Main_Battery_Current_RawV "Main battery current raw voltage as measured by the BPS";
+CM_ SG_ 10 BPS_Amperes_Fault "BPS Fault State (0 for all clear; see value table for specific faults)";
 CM_ SG_ 10 Main_Battery_Current "Main battery current as measured by the BPS";
 BA_DEF_  "DBName" STRING ;
 BA_DEF_ SG_  "SPN" INT 0 524287;
@@ -197,6 +199,7 @@ BA_DEF_DEF_  "VFrameFormat" "ExtendedCAN_FD";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
 BA_ "DBName" "BPSCAN";
+BA_ "VFrameFormat" BO_ 1877 0;
 BA_ "VFrameFormat" BO_ 1952 0;
 BA_ "VFrameFormat" BO_ 9 0;
 BA_ "VFrameFormat" BO_ 23 0;
@@ -215,20 +218,20 @@ BA_ "VFrameFormat" BO_ 3 0;
 BA_ "VFrameFormat" BO_ 17 0;
 BA_ "VFrameFormat" BO_ 2 0;
 BA_ "VFrameFormat" BO_ 10 0;
-VAL_ 3221225472 BPS_Tap_Msg_WDog 1 "OK" 0 "NOT OK" ;
-VAL_ 9 BPS_Voltage_Tap_Fault 3 "Under-Voltage" 2 "Over-Voltage" 1 "BQ I2C Read Error" 0 "OK" ;
-VAL_ 23 BPS_Temperature_Tap_Fault 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Short to VCC" 1 "Short to GND" 0 "OK" ;
-VAL_ 8 BPS_Voltage_Tap_Fault 3 "Under-Voltage" 2 "Over-Voltage" 1 "BQ I2C Read Error" 0 "OK" ;
-VAL_ 22 BPS_Temperature_Tap_Fault 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Short to VCC" 1 "Short to GND" 0 "OK" ;
-VAL_ 7 BPS_Voltage_Tap_Fault 3 "Under-Voltage" 2 "Over-Voltage" 1 "BQ I2C Read Error" 0 "OK" ;
-VAL_ 21 BPS_Temperature_Tap_Fault 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Short to VCC" 1 "Short to GND" 0 "OK" ;
-VAL_ 6 BPS_Voltage_Tap_Fault 3 "Under-Voltage" 2 "Over-Voltage" 1 "BQ I2C Read Error" 0 "OK" ;
-VAL_ 16 BPS_Temperature_Tap_Fault 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Short to VCC" 1 "Short to GND" 0 "OK" ;
-VAL_ 20 BPS_Temperature_Tap_Fault 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Short to VCC" 1 "Short to GND" 0 "OK" ;
-VAL_ 5 BPS_Voltage_Tap_Fault 3 "Under-Voltage" 2 "Over-Voltage" 1 "BQ I2C Read Error" 0 "OK" ;
-VAL_ 19 BPS_Temperature_Tap_Fault 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Short to VCC" 1 "Short to GND" 0 "OK" ;
-VAL_ 4 BPS_Voltage_Tap_Fault 3 "Under-Voltage" 2 "Over-Voltage" 1 "BQ I2C Read Error" 0 "OK" ;
-VAL_ 18 BPS_Temperature_Tap_Fault 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Short to VCC" 1 "Short to GND" 0 "OK" ;
-VAL_ 3 BPS_Voltage_Tap_Fault 3 "Under-Voltage" 2 "Over-Voltage" 1 "BQ I2C Read Error" 0 "OK" ;
-VAL_ 17 BPS_Temperature_Tap_Fault 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Short to VCC" 1 "Short to GND" 0 "OK" ;
-VAL_ 2 BPS_Voltage_Tap_Fault 3 "Under-Voltage" 2 "Over-Voltage" 1 "BQ I2C Read Error" 0 "OK" ;
+VAL_ 9 BPS_Voltage_Tap_Fault 5 "Message Watchdog" 4 "Under-Voltage" 3 "Over-Voltage" 2 "Out-of-Bounds" 1 "BQ I2C Read Error" 0 "OK" ;
+VAL_ 23 BPS_Temperature_Tap_Fault 8 "Message Watchdog" 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Out-of-Bounds (Short to VCC)" 1 "Out-of_Bounds (Short to GND)" 0 "OK" ;
+VAL_ 8 BPS_Voltage_Tap_Fault 5 "Message Watchdog" 4 "Under-Voltage" 3 "Over-Voltage" 2 "Out-of-Bounds" 1 "BQ I2C Read Error" 0 "OK" ;
+VAL_ 22 BPS_Temperature_Tap_Fault 8 "Message Watchdog" 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Out-of-Bounds (Short to VCC)" 1 "Out-of_Bounds (Short to GND)" 0 "OK" ;
+VAL_ 7 BPS_Voltage_Tap_Fault 5 "Message Watchdog" 4 "Under-Voltage" 3 "Over-Voltage" 2 "Out-of-Bounds" 1 "BQ I2C Read Error" 0 "OK" ;
+VAL_ 21 BPS_Temperature_Tap_Fault 8 "Message Watchdog" 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Out-of-Bounds (Short to VCC)" 1 "Out-of_Bounds (Short to GND)" 0 "OK" ;
+VAL_ 6 BPS_Voltage_Tap_Fault 5 "Message Watchdog" 4 "Under-Voltage" 3 "Over-Voltage" 2 "Out-of-Bounds" 1 "BQ I2C Read Error" 0 "OK" ;
+VAL_ 16 BPS_Temperature_Tap_Fault 8 "Message Watchdog" 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Out-of-Bounds (Short to VCC)" 1 "Out-of_Bounds (Short to GND)" 0 "OK" ;
+VAL_ 20 BPS_Temperature_Tap_Fault 8 "Message Watchdog" 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Out-of-Bounds (Short to VCC)" 1 "Out-of_Bounds (Short to GND)" 0 "OK" ;
+VAL_ 5 BPS_Voltage_Tap_Fault 5 "Message Watchdog" 4 "Under-Voltage" 3 "Over-Voltage" 2 "Out-of-Bounds" 1 "BQ I2C Read Error" 0 "OK" ;
+VAL_ 19 BPS_Temperature_Tap_Fault 8 "Message Watchdog" 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Out-of-Bounds (Short to VCC)" 1 "Out-of_Bounds (Short to GND)" 0 "OK" ;
+VAL_ 4 BPS_Voltage_Tap_Fault 5 "Message Watchdog" 4 "Under-Voltage" 3 "Over-Voltage" 2 "Out-of-Bounds" 1 "BQ I2C Read Error" 0 "OK" ;
+VAL_ 18 BPS_Temperature_Tap_Fault 8 "Message Watchdog" 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Out-of-Bounds (Short to VCC)" 1 "Out-of_Bounds (Short to GND)" 0 "OK" ;
+VAL_ 3 BPS_Voltage_Tap_Fault 5 "Message Watchdog" 4 "Under-Voltage" 3 "Over-Voltage" 2 "Out-of-Bounds" 1 "BQ I2C Read Error" 0 "OK" ;
+VAL_ 17 BPS_Temperature_Tap_Fault 8 "Message Watchdog" 7 "Charge Under-Temperature" 6 "Under-Temperature" 5 "Charge Over-Temperature" 4 "Over-Temperature" 3 "Disconnected" 2 "Out-of-Bounds (Short to VCC)" 1 "Out-of_Bounds (Short to GND)" 0 "OK" ;
+VAL_ 2 BPS_Voltage_Tap_Fault 5 "Message Watchdog" 4 "Under-Voltage" 3 "Over-Voltage" 2 "Out-of-Bounds" 1 "BQ I2C Read Error" 0 "OK" ;
+VAL_ 10 BPS_Amperes_Fault 4 "Message Watchdog" 3 "Over-Current (Charge)" 2 "Over-Current (Discharge)" 1 "Out-of-Bounds" 0 "OK" ;
