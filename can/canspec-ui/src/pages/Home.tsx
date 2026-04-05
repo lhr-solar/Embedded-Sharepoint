@@ -42,7 +42,7 @@ export function Home() {
                     <Link
                       key={n.id}
                       className="ecu-chip vehicle-net-chip"
-                      to={`/${v.id}/${n.id}`}
+                      to={`/${encodeURIComponent(v.id)}/${encodeURIComponent(n.id)}`}
                       title={`${n.filename} · ${n.messages.length} message${n.messages.length === 1 ? "" : "s"}`}
                     >
                       {n.id}
