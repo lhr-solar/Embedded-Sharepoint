@@ -26,7 +26,7 @@ export function VehiclePage() {
       <p className="page-sub">CAN networks defined for this vehicle.</p>
       <div className="grid-cards">
         {networks.map((n) => (
-          <Link key={n.id} className="card" to={`/${vehicle.id}/${n.id}`}>
+          <Link key={n.id} className="card" to={`/${encodeURIComponent(vehicle.id)}/${encodeURIComponent(n.id)}`}>
             <div className="card-label">Network</div>
             <div className="card-title">{n.id}</div>
             <div style={{ marginTop: "0.35rem", fontSize: "0.8rem", color: "var(--text-muted)" }}>
