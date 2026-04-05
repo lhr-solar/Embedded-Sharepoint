@@ -139,7 +139,7 @@ export function NetworkExplorer({
               onChange={(e) => {
                 const v = allVehicles.find((x) => x.id === e.target.value);
                 const first = v?.networks[0];
-                if (v && first) navigate(`/${v.id}/${first.id}`);
+                if (v && first) navigate(`/${encodeURIComponent(v.id)}/${encodeURIComponent(first.id)}`);
               }}
             >
               {allVehicles.map((v) => (
