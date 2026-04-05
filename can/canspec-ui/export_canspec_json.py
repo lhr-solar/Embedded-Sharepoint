@@ -173,7 +173,7 @@ def main() -> None:
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     payload = {"vehicles": vehicles}
-    OUT.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    OUT.write_text(json.dumps(payload), encoding="utf-8")
     print(f"Wrote {OUT}")
 
 
