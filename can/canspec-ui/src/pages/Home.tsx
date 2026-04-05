@@ -24,7 +24,7 @@ export function Home() {
             <article key={v.id} className="vehicle-card">
               <Link
                 className="vehicle-card-hit"
-                to={`/${v.id}`}
+                to={`/${encodeURIComponent(v.id)}`}
                 aria-label={`${v.id} — open vehicle page to choose a network`}
               />
               <div className="vehicle-card-head">
