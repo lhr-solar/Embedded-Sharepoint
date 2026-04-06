@@ -38,6 +38,7 @@
             pkgs.parallel
             pkgs.sl
             pkgs.gcc-arm-embedded
+            pkgs.picocom
             python
           ];
 
