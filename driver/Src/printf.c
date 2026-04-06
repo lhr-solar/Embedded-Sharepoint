@@ -98,9 +98,11 @@ int printf(const char *fmt, ...) {
 }
 
 char *fgets(char *buffer, size_t maxsz){
+    if(maxsz == 0 || buffer == NULL) return NULL;
+
     char c;
     size_t i = 0;
-    while(i < maxsz){
+    while(i < maxsz-1){
         uart_status_t status = uart_recv(printf_huart, (uint8_t*)&c, 1, portMAX_DELAY);
         if(status == UART_ERR) return NULL;
 

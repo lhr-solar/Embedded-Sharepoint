@@ -68,7 +68,10 @@ void TermTask(void *argument){
     static char buf[128];
 
     while(1){
-        fgets(buf, 128); // blocks; waiting for either 128 characters or a \n
+        if(fgets(buf, 128) == NULL){ // blocks; waiting for either 128 characters or a \n
+            printf("Error reading from UART!\n\r");
+            continue;
+        }
 
         printf("COMMAND: %s\n\r", buf);
 
