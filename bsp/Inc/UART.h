@@ -53,7 +53,6 @@
 typedef enum {
     UART_ERR,
     UART_OK,
-    UART_EMPTY,
 } uart_status_t;
 
 // uart handlers
