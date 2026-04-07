@@ -7,7 +7,7 @@
 // Define the size of the data to be transmitted
 // may need to be configured for support for packets less more than 8 bits
 #ifndef UART_TX_DATA_SIZE
-#define UART_TX_DATA_SIZE (64)
+#define UART_TX_DATA_SIZE (16)
 #endif
 
 #ifndef UART_RX_DATA_SIZE
@@ -15,7 +15,7 @@
 #endif
 
 #ifndef UART_SINGLE_TX_SIZE
-#define UART_SINGLE_TX_SIZE (64)
+#define UART_SINGLE_TX_SIZE (16)
 #endif
 
 // Define the preemption priority for the interrupt
@@ -732,6 +732,7 @@ static void uart_transmit(UART_HandleTypeDef *huart, BaseType_t *higherPriorityT
             }
 
             break;
+
         case RAW_BYTES:
             while(xQueuePeekFromISR(uart_periph->tx_queue, &payload) == pdTRUE) { // there's still something in queue?
                 if(payload.type != RAW_BYTES) break;
@@ -760,6 +761,7 @@ static void uart_transmit(UART_HandleTypeDef *huart, BaseType_t *higherPriorityT
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
     BaseType_t higherPriorityTaskWoken = pdFALSE;
     UART_periph_t *uart_periph = get_valid_uart_periph(huart);
+    if(uart_periph == NULL) return;
 
     SemaphoreHandle_t sem = uart_periph->buf_mtx;
     uart_periph->buf_mtx = NULL;
