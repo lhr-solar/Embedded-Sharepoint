@@ -1,5 +1,6 @@
 #include "printf.h"
 #include "UART.h"
+#include "stm32f4xx_hal_dma.h"
 #include "stm32xx_hal.h"
 #include <string.h>
 
@@ -11,7 +12,7 @@
 #endif
 
 #ifndef NUM_PRINTF_BUFFERS
-#define NUM_PRINTF_BUFFERS (5)
+#define NUM_PRINTF_BUFFERS (15)
 #endif
 
 // How long to wait for a printf buffer to open up
@@ -38,7 +39,7 @@ UART_HandleTypeDef *printf_huart = NULL;
  * @param huart pointer to the UART handle
  * @return bool true if success
  */
-bool printf_init(UART_HandleTypeDef *huart) { 
+bool printf_init(UART_HandleTypeDef *huart, DMA_HandleTypeDef *hdma_uart_tx) { 
     printf_huart = huart;
 
     printf_pool_mtx = xSemaphoreCreateMutexStatic(&printf_pool_mtx_buf);
@@ -47,6 +48,12 @@ bool printf_init(UART_HandleTypeDef *huart) {
         printf_pool[i].buffer_mtx = xSemaphoreCreateBinaryStatic(&printf_pool[i].buffer_mtx_buffer); // has to be a binary semaphore rather than a mutex, since released by interrupt (not owning thread)
         xSemaphoreGive(printf_pool[i].buffer_mtx); // start at 1
     }
+
+    if(hdma_uart_tx != NULL){
+        if(HAL_DMA_Init(hdma_uart_tx) != HAL_OK) return false;
+        else __HAL_LINKDMA(huart,hdmatx,*hdma_uart_tx);
+    }
+
     return uart_init(huart) == UART_OK;
 }
 
