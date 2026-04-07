@@ -44,7 +44,8 @@ bool printf_init(UART_HandleTypeDef *huart) {
     printf_pool_mtx = xSemaphoreCreateMutexStatic(&printf_pool_mtx_buf);
 
     for(int i=0; i<NUM_PRINTF_BUFFERS; i++){
-        printf_pool[i].buffer_mtx = xSemaphoreCreateMutexStatic(&printf_pool[i].buffer_mtx_buffer);
+        printf_pool[i].buffer_mtx = xSemaphoreCreateBinaryStatic(&printf_pool[i].buffer_mtx_buffer); // has to be a binary semaphore rather than a mutex, since released by interrupt (not owning thread)
+        xSemaphoreGive(printf_pool[i].buffer_mtx); // start at 1
     }
     return uart_init(huart) == UART_OK;
 }
@@ -91,7 +92,7 @@ int printf(const char *fmt, ...) {
         return rv;
     }
 
-    uart_status_t status = uart_send(printf_huart, (const uint8_t *)pbuf->buffer, (rv > MAX_PRINTF_SIZE)?MAX_PRINTF_SIZE:rv, portMAX_DELAY);
-    xSemaphoreGive(pbuf->buffer_mtx);
+    // Should release the buffer mtx once transmission is complete, preventing any changes
+    uart_status_t status = uart_send_buf(printf_huart, (const uint8_t *)pbuf->buffer, (rv > MAX_PRINTF_SIZE)?MAX_PRINTF_SIZE:rv, pbuf->buffer_mtx, portMAX_DELAY);
     return (status == UART_OK)?rv:-1;
 }

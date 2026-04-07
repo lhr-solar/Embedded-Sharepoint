@@ -108,6 +108,8 @@ uart_status_t uart_deinit(UART_HandleTypeDef* handle);
  */
 uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint16_t length, TickType_t delay_ticks);
 
+uart_status_t uart_send_buf(UART_HandleTypeDef* handle, const uint8_t* data, uint16_t length, SemaphoreHandle_t release_sem, TickType_t delay_ticks);
+
 /**
  * @brief Receives data from UART RX queue.
  * 

@@ -60,7 +60,7 @@ void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
 
 }
 
-#define THREAD_COUNT 4
+#define THREAD_COUNT 15
 #define DUMP_SIZE 100
 
 // static char *messages[] = {
