@@ -207,12 +207,24 @@ can_status_t can_fd_send_isr(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef*
     
     // If the HW FIFO has a free slot, write directly into it and return.
     // This mirrors can_fd_send and prevents the SW queue from never draining.
-    if (HAL_FDCAN_GetTxFifoFreeLevel(handle) >= 1) {
-        if (HAL_FDCAN_AddMessageToTxFifoQ(handle, header, data) != HAL_OK) {
-            return CAN_ERR;
-        }
-        return CAN_OK;
+    
+UBaseType_t uxSavedInterruptStatus = taskENTER_CRITICAL_FROM_ISR();
+
+// Check if there is a free can mailbox to send a message
+if (HAL_FDCAN_GetTxFifoFreeLevel(handle) >= 1) {
+    // if the mailbox is free, add the message to the hardware fifo
+    if (HAL_FDCAN_AddMessageToTxFifoQ(handle, header, data) != HAL_OK) {
+        // If adding to the can fd mailbox was not succesful
+        taskEXIT_CRITICAL_FROM_ISR(uxSavedInterruptStatus);
+        return CAN_ERR;
     }
+
+    taskEXIT_CRITICAL_FROM_ISR(uxSavedInterruptStatus);
+    return CAN_OK;
+}
+// hardware mailbox is full, so must add to the queue
+else {
+    taskEXIT_CRITICAL_FROM_ISR(uxSavedInterruptStatus);
  
     // HW FIFO full, fall back to the SW queue
     if (0) {
@@ -238,7 +250,7 @@ can_status_t can_fd_send_isr(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef*
         }
     }
 #endif
- 
+}
     return CAN_OK;
 }
 

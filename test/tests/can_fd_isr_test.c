@@ -178,9 +178,11 @@ static uint8_t mycanfd1_tx_queue_storage[CANFD1_TX_QUEUE_SIZE * sizeof(can_rx_pa
 
 
 static void task(void* pvParameters) {
+    while(1){
         HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
         // HAL_GPIO_TogglePin(CAN_TX_PROFILE_PORT, CAN_TX_PROFILE_PIN);
         vTaskDelay(pdMS_TO_TICKS(500));
+    }
 }
 
 
