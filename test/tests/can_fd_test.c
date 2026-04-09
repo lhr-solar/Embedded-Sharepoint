@@ -265,7 +265,7 @@ static void task(void *pvParameters) {
 #endif
 
     HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
-    vTaskDelay(pdMS_TO_TICKS(500));
+    vTaskDelay(pdMS_TO_TICKS(100));
   }
 }
 
@@ -307,7 +307,7 @@ int main(void) {
 
   // internal loopback shorts the CAN RX and TX internally.
   // In production, this should be set to FDCAN_MODE_NORMAL
-  hfdcan1->Init.Mode = FDCAN_MODE_INTERNAL_LOOPBACK;
+  hfdcan1->Init.Mode = FDCAN_MODE_NORMAL;
   hfdcan1->Init.AutoRetransmission = DISABLE;
   hfdcan1->Init.TransmitPause = DISABLE;
   hfdcan1->Init.ProtocolException = DISABLE;

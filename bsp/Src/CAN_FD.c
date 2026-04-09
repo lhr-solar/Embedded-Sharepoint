@@ -226,29 +226,29 @@ if (HAL_FDCAN_GetTxFifoFreeLevel(handle) >= 1) {
 else {
     taskEXIT_CRITICAL_FROM_ISR(uxSavedInterruptStatus);
  
-    // HW FIFO full, fall back to the SW queue
-    if (0) {
-    }
-#ifdef FDCAN1
-    else if (handle->Instance == FDCAN1) {
-        if (xQueueSendFromISR(fdcan1_send_queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
-            return CAN_ERR;
+        // HW FIFO full, fall back to the SW queue
+        if (0) {
         }
-    }
+#ifdef FDCAN1
+        else if (handle->Instance == FDCAN1) {
+            if (xQueueSendFromISR(fdcan1_send_queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
+                return CAN_ERR;
+            }
+        }
 #endif
 #ifdef FDCAN2
-    else if (handle->Instance == FDCAN2) {
-        if (xQueueSendFromISR(fdcan2_send_queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
-            return CAN_ERR;
+        else if (handle->Instance == FDCAN2) {
+            if (xQueueSendFromISR(fdcan2_send_queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
+                return CAN_ERR;
+            }
         }
-    }
 #endif
 #ifdef FDCAN3
-    else if (handle->Instance == FDCAN3) {
-        if (xQueueSendFromISR(fdcan3_send_queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
-            return CAN_ERR;
+        else if (handle->Instance == FDCAN3) {
+            if (xQueueSendFromISR(fdcan3_send_queue, &payload, higherPriorityTaskWoken) != pdTRUE) {
+                return CAN_ERR;
+            }
         }
-    }
 #endif
 }
     return CAN_OK;
