@@ -98,7 +98,7 @@ can_status_t can_fd_init(FDCAN_HandleTypeDef* handle, FDCAN_FilterTypeDef* filte
     return CAN_OK;
 }
 
-can_status_t can_fd_deinit(FDCAN_HandleTypeDef* handle) { // swapped order
+can_status_t can_fd_deinit(FDCAN_HandleTypeDef* handle) {
     
     // disable interrupts
     if (HAL_FDCAN_DeactivateNotification(
@@ -494,7 +494,7 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs)
     }
  
     // Yield if any queue send unblocked a higher-priority task
-    portYIELD_FROM_ISR(higherPriorityTaskWoken);    // Added this
+    portYIELD_FROM_ISR(higherPriorityTaskWoken);
 }
  
 
