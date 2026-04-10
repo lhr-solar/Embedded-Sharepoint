@@ -149,25 +149,24 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
 
     // disable interrupts while we check the status of the can mailboxes, so other interrupts don't
     // change it
-    portENTER_CRITICAL();
-    // Check if there is a free can mailbox to send a message
-    if (HAL_FDCAN_GetTxFifoFreeLevel(handle) >= 1) {
-        // if the mailbox is free, add the message to the hardware fifo
-        if (HAL_FDCAN_AddMessageToTxFifoQ(handle, header, data) != HAL_OK) {
-            // If adding to the can fd mailbox was not succesful
+    UBaseType_t uxSavedInterruptStatus = taskENTER_CRITICAL_FROM_ISR();
 
-            // enable interrupts
-            portEXIT_CRITICAL();
-            return CAN_ERR;
-        }
-        // enable interrupts
-        portEXIT_CRITICAL();
-        return CAN_OK;
+// Check if there is a free can mailbox to send a message
+if (HAL_FDCAN_GetTxFifoFreeLevel(handle) >= 1) {
+    // if the mailbox is free, add the message to the hardware fifo
+    if (HAL_FDCAN_AddMessageToTxFifoQ(handle, header, data) != HAL_OK) {
+        // If adding to the can fd mailbox was not succesful
+        taskEXIT_CRITICAL_FROM_ISR(uxSavedInterruptStatus);
+        return CAN_ERR;
     }
-    // hardware mailbox is full, so must add to the queue
-    else {
-        // enable interrupts
-        portEXIT_CRITICAL();
+
+    taskEXIT_CRITICAL_FROM_ISR(uxSavedInterruptStatus);
+    return CAN_OK;
+}
+// hardware mailbox is full, so must add to the queue
+else {
+    taskEXIT_CRITICAL_FROM_ISR(uxSavedInterruptStatus);
+
 
 #ifdef FDCAN1
         if (handle->Instance == FDCAN1) {
