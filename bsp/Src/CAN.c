@@ -329,51 +329,59 @@ __weak void can_tx_callback_hook(CAN_HandleTypeDef* hcan, const can_tx_payload_t
     UNUSED(payload);
 }
 
-static void transmit(CAN_HandleTypeDef* handle) {
+static void can_transmit(CAN_HandleTypeDef* handle) {
+    can_tx_payload_t payload = {0};
     BaseType_t higherPriorityTaskWoken = pdFALSE;
-    QueueHandle_t send_queue = NULL;
 
-    if (0) {
+    // receive data from send queue
+    bool success = false;
+    // CAN1
+    if (handle->Instance == CAN1) {
+        if (xQueueReceiveFromISR(can1_send_queue, &payload,
+                &higherPriorityTaskWoken) == pdTRUE) {
+            success = true;
+        }
     }
-#ifdef CAN1
-    else if (handle->Instance == CAN1) {
-        send_queue = can1_send_queue;
-    }
-#endif /* CAN1 */
 #ifdef CAN2
     else if (handle->Instance == CAN2) {
-        send_queue = can2_send_queue;
+        if (xQueueReceiveFromISR(can2_send_queue, &payload,
+                &higherPriorityTaskWoken) == pdTRUE) {
+            success = true;
+        }
     }
 #endif /* CAN2 */
 #ifdef CAN3
     else if (handle->Instance == CAN3) {
-        send_queue = can3_send_queue;
+        if (xQueueReceiveFromISR(can3_send_queue, &payload,
+                &higherPriorityTaskWoken) == pdTRUE) {
+            success = true;
+        }
     }
 #endif /* CAN3 */
-
-    if (send_queue == NULL) {
-        return;
-    }
-
-    can_tx_payload_t payload = {0};
-    // max of 3 mailboxes but adding a max iter to be safe
-    uint8_t max_iter = 3;
-    while (max_iter-- > 0 && HAL_CAN_GetTxMailboxesFreeLevel(handle) > 0 &&
-           xQueueReceiveFromISR(send_queue, &payload, &higherPriorityTaskWoken) == pdTRUE) {
+  
+    // add payload to mailbox
+    if (success) {
         uint32_t mailbox;
         if (HAL_CAN_AddTxMessage(handle, &payload.header, payload.data, &mailbox) != HAL_OK) {
-            // treated as lost packet (or can handle the error here)
+            // Handle transmission error (optional: log or retry mechanism)
+            // treated as lost packet for now
         }
     }
 
-    portYIELD_FROM_ISR(higherPriorityTaskWoken);
+  portYIELD_FROM_ISR(higherPriorityTaskWoken);
 }
 
-void HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef* hcan) { transmit(hcan); }
+void HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef* hcan) {
+  can_transmit(hcan);
+}
 
-void HAL_CAN_TxMailbox1CompleteCallback(CAN_HandleTypeDef* hcan) { transmit(hcan); }
+void HAL_CAN_TxMailbox1CompleteCallback(CAN_HandleTypeDef* hcan) {
+  can_transmit(hcan);
+}
 
-void HAL_CAN_TxMailbox2CompleteCallback(CAN_HandleTypeDef* hcan) { transmit(hcan); }
+void HAL_CAN_TxMailbox2CompleteCallback(CAN_HandleTypeDef* hcan) {
+  can_transmit(hcan);
+}
 
 __weak void can_rx_callback_hook(CAN_HandleTypeDef* hcan, const can_rx_payload_t* payload) {
     UNUSED(hcan);

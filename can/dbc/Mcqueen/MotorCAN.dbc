@@ -33,10 +33,16 @@ NS_ :
 
 BS_:
 
-BU_: BPS_LVBatteryMonitor Controls_MotorCommander Telemetry_Leader TPEE_MPPT_B Prohelion_WaveSculptor22 TPEE_MPPT_A Power_Precharge Controls_DriverUserInterface BPS_Leader
+BU_: Prohelion_WaveSculptor22 External VCU
+VAL_TABLE_ Motor_Command_Source 1 "Tritium External" 0 "VCU" ;
+VAL_TABLE_ Generic_Limit 1 "LIMIT" 0 "OK" ;
+VAL_TABLE_ Generic_Fault 1 "FAULT" 0 "OK" ;
 
 
-BO_ 1026 MC_PowerCommand: 4 Controls_MotorCommander
+BO_ 1953 Set_Motor_Cmd_Src: 1 External
+ SG_ Motor_Command_Source : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 1026 MC_PowerCommand: 4 VCU
  SG_ MC_MotorPowerSetpoint : 0|32@1- (1,0) [0|1] "%"  Prohelion_WaveSculptor22
 
 BO_ 1056 MC_Info: 8 Prohelion_WaveSculptor22
@@ -44,24 +50,24 @@ BO_ 1056 MC_Info: 8 Prohelion_WaveSculptor22
  SG_ MC_SerialNumber : 32|32@1+ (1,0) [0|0] "" Vector__XXX
 
 BO_ 1057 MC_Status: 8 Prohelion_WaveSculptor22
- SG_ MC_LIMIT_Reserved : 7|9@1+ (1,0) [0|511] "On / Off" Vector__XXX
- SG_ MC_LIMIT_MotorTemp : 6|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
- SG_ MC_LIMIT_BusVoltageLower : 5|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
- SG_ MC_LIMIT_BusVoltageUpper : 4|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
- SG_ MC_LIMIT_BusCurrent : 3|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
- SG_ MC_LIMIT_Velocity : 2|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
- SG_ MC_LIMIT_MotorCurrent : 1|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
- SG_ MC_LIMIT_OutputVoltagePWM : 0|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
- SG_ MC_FAULT_Reserved : 25|7@1+ (1,0) [0|0] "On / Off" Vector__XXX
- SG_ MC_FAULT_MotorOverSpeed : 24|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
- SG_ MC_FAULT_DesaturationFault : 23|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
- SG_ MC_FAULT_15vRailUnderVoltage : 22|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
- SG_ MC_FAULT_ConfigRead : 21|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
- SG_ MC_FAULT_WatchdogCausedLastReset : 20|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
- SG_ MC_FAULT_BadMotorPositionHallSeq : 19|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
- SG_ MC_FAULT_DcBusOverVoltage : 18|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
- SG_ MC_FAULT_SoftwareOverCurrent : 17|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
- SG_ MC_FAULT_HardwareOverCurrent : 16|1@1+ (1,0) [0|1] "On / Off" Vector__XXX
+ SG_ MC_LIMIT_Reserved : 7|9@1+ (1,0) [0|511] "" Vector__XXX
+ SG_ MC_LIMIT_MotorTemp : 6|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ MC_LIMIT_BusVoltageLower : 5|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ MC_LIMIT_BusVoltageUpper : 4|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ MC_LIMIT_BusCurrent : 3|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ MC_LIMIT_Velocity : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ MC_LIMIT_MotorCurrent : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ MC_LIMIT_OutputVoltagePWM : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ MC_FAULT_Reserved : 25|7@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ MC_FAULT_MotorOverSpeed : 24|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ MC_FAULT_DesaturationFault : 23|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ MC_FAULT_15vRailUnderVoltage : 22|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ MC_FAULT_ConfigRead : 21|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ MC_FAULT_WatchdogCausedLastReset : 20|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ MC_FAULT_BadMotorPositionHallSeq : 19|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ MC_FAULT_DcBusOverVoltage : 18|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ MC_FAULT_SoftwareOverCurrent : 17|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ MC_FAULT_HardwareOverCurrent : 16|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ MC_ActiveMotor : 32|16@1+ (1,0) [0|0] "" Vector__XXX
  SG_ MC_TxErrorCount : 48|8@1+ (1,0) [0|0] "" Vector__XXX
  SG_ MC_RxErrorCount : 56|8@1+ (1,0) [0|0] "" Vector__XXX
@@ -74,10 +80,10 @@ BO_ 1059 MC_VelocityMeasurement: 8 Prohelion_WaveSculptor22
  SG_ MC_MotorVelocity : 0|32@1- (1,0) [0|0] "rpm" Vector__XXX
  SG_ MC_VehicleVelocity : 32|32@1- (1,0) [0|0] "m/s" Vector__XXX
 
-BO_ 1027 MC_ResetCommand: 1 Controls_MotorCommander
+BO_ 1027 MC_ResetCommand: 1 VCU
  SG_ MC_Reset : 0|8@1+ (1,0) [0|0] "" Vector__XXX
 
-BO_ 1025 MC_DriveCommand: 8 Controls_MotorCommander
+BO_ 1025 MC_DriveCommand: 8 VCU
  SG_ MC_MotorCurrentSetpoint : 32|32@1- (1,0) [0|1] "%"  Prohelion_WaveSculptor22
  SG_ MC_MotorVelocitySetpoint : 0|32@1- (1,0) [0|12000] "rpm"  Prohelion_WaveSculptor22
 
@@ -97,10 +103,10 @@ BO_ 1063 MC_BackEMFMeasurementPrediction: 8 Prohelion_WaveSculptor22
  SG_ MC_BEMFq : 0|32@1- (1,0) [0|0] "V" Vector__XXX
  SG_ MC_BEMFd : 32|32@1- (1,0) [0|0] "V" Vector__XXX
 
-BO_ 1064 MC_15VRailMeasurement: 8 Prohelion_WaveSculptor22
+BO_ 1064 MC_15V_RailMeasurement: 8 Prohelion_WaveSculptor22
  SG_ MC_Supply15V : 32|32@1- (1,0) [0|0] "V" Vector__XXX
 
-BO_ 1065 MC_3V319VRailMeasurement: 8 Prohelion_WaveSculptor22
+BO_ 1065 MC_3V3_19V_RailMeasurement: 8 Prohelion_WaveSculptor22
  SG_ MC_Supply1V9 : 0|32@1- (1,0) [0|0] "V" Vector__XXX
  SG_ MC_Supply3V3 : 32|32@1- (1,0) [0|0] "V" Vector__XXX
 
@@ -147,23 +153,56 @@ CM_ SG_ 1070 MC_TripOdometer "Distance the vehicle has travelled since reset.";
 CM_ SG_ 1070 MC_DCBusAh "Charge flow into the controller DC bus from the time of reset.";
 CM_ SG_ 1079 MC_SlipSpeed "Slip speed when driving an induction motor.";
 BA_DEF_  "DBName" STRING ;
-BA_DEF_ BO_  "GenMsgSendType" ENUM  "Cyclic","Event","CyclicAndEvent","CyclicAndEventNoRepetition","None","Spontaneous";
+BA_DEF_ SG_  "SPN" INT 0 524287;
 BA_DEF_ BO_  "GenMsgCycleTime" INT 0 100000;
-BA_DEF_ BU_  "Timeout" INT 100 100000;
-BA_DEF_  "ProtocolType" ENUM  "ISO 11898-2","J1939";
+BA_DEF_ BO_  "GenMsgSendType" ENUM  "Cyclic","Event","CyclicAndEvent","CyclicAndEventNoRepetition","None","Spontaneous";
+BA_DEF_ BO_  "VFrameFormat" ENUM  "StandardCAN","ExtendedCAN","reserved","J1939PG","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","StandardCAN_FD","ExtendedCAN_FD";
+BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "DBName" "";
-BA_DEF_DEF_  "GenMsgSendType" "Cyclic";
+BA_DEF_DEF_  "SPN" 0;
 BA_DEF_DEF_  "GenMsgCycleTime" 0;
-BA_DEF_DEF_  "Timeout" 1000;
-BA_DEF_DEF_  "ProtocolType" "ISO 11898-2";
-BA_ "DBName" "CarCAN";
-BA_ "Timeout" BU_ Controls_MotorCommander 250;
-BA_ "Timeout" BU_ TPEE_MPPT_B 500;
-BA_ "Timeout" BU_ Prohelion_WaveSculptor22 200;
-BA_ "Timeout" BU_ TPEE_MPPT_A 500;
-BA_ "Timeout" BU_ Power_Precharge 250;
-BA_ "Timeout" BU_ Controls_DriverUserInterface 250;
-BA_ "Timeout" BU_ BPS_Leader 250;
+BA_DEF_DEF_  "GenMsgSendType" "Cyclic";
+BA_DEF_DEF_  "VFrameFormat" "ExtendedCAN_FD";
+BA_DEF_DEF_  "BusType" "";
+BA_ "BusType" "CAN";
+BA_ "DBName" "MotorCAN";
+BA_ "VFrameFormat" BO_ 1953 0;
+BA_ "VFrameFormat" BO_ 1026 0;
+BA_ "VFrameFormat" BO_ 1056 0;
+BA_ "VFrameFormat" BO_ 1057 0;
+BA_ "VFrameFormat" BO_ 1058 0;
+BA_ "VFrameFormat" BO_ 1059 0;
+BA_ "VFrameFormat" BO_ 1027 0;
+BA_ "VFrameFormat" BO_ 1025 0;
+BA_ "VFrameFormat" BO_ 1060 0;
+BA_ "VFrameFormat" BO_ 1061 0;
+BA_ "VFrameFormat" BO_ 1062 0;
+BA_ "VFrameFormat" BO_ 1063 0;
+BA_ "VFrameFormat" BO_ 1064 0;
+BA_ "VFrameFormat" BO_ 1065 0;
+BA_ "VFrameFormat" BO_ 1067 0;
+BA_ "VFrameFormat" BO_ 1068 0;
+BA_ "VFrameFormat" BO_ 1070 0;
+BA_ "VFrameFormat" BO_ 1079 0;
+VAL_ 1953 Motor_Command_Source 1 "Tritium External" 0 "VCU" ;
+VAL_ 1057 MC_LIMIT_Reserved 1 "LIMIT" 0 "OK" ;
+VAL_ 1057 MC_LIMIT_MotorTemp 1 "LIMIT" 0 "OK" ;
+VAL_ 1057 MC_LIMIT_BusVoltageLower 1 "LIMIT" 0 "OK" ;
+VAL_ 1057 MC_LIMIT_BusVoltageUpper 1 "LIMIT" 0 "OK" ;
+VAL_ 1057 MC_LIMIT_BusCurrent 1 "LIMIT" 0 "OK" ;
+VAL_ 1057 MC_LIMIT_Velocity 1 "LIMIT" 0 "OK" ;
+VAL_ 1057 MC_LIMIT_MotorCurrent 1 "LIMIT" 0 "OK" ;
+VAL_ 1057 MC_LIMIT_OutputVoltagePWM 1 "LIMIT" 0 "OK" ;
+VAL_ 1057 MC_FAULT_Reserved 1 "FAULT" 0 "OK" ;
+VAL_ 1057 MC_FAULT_MotorOverSpeed 1 "FAULT" 0 "OK" ;
+VAL_ 1057 MC_FAULT_DesaturationFault 1 "FAULT" 0 "OK" ;
+VAL_ 1057 MC_FAULT_15vRailUnderVoltage 1 "FAULT" 0 "OK" ;
+VAL_ 1057 MC_FAULT_ConfigRead 1 "FAULT" 0 "OK" ;
+VAL_ 1057 MC_FAULT_WatchdogCausedLastReset 1 "FAULT" 0 "OK" ;
+VAL_ 1057 MC_FAULT_BadMotorPositionHallSeq 1 "FAULT" 0 "OK" ;
+VAL_ 1057 MC_FAULT_DcBusOverVoltage 1 "FAULT" 0 "OK" ;
+VAL_ 1057 MC_FAULT_SoftwareOverCurrent 1 "FAULT" 0 "OK" ;
+VAL_ 1057 MC_FAULT_HardwareOverCurrent 1 "FAULT" 0 "OK" ;
 SIG_VALTYPE_ 1026 MC_MotorPowerSetpoint : 1;
 SIG_VALTYPE_ 1058 MC_BusVoltage : 1;
 SIG_VALTYPE_ 1058 MC_BusCurrent : 1;
@@ -188,4 +227,3 @@ SIG_VALTYPE_ 1068 MC_DspBoardTemp : 1;
 SIG_VALTYPE_ 1070 MC_TripOdometer : 1;
 SIG_VALTYPE_ 1070 MC_DCBusAh : 1;
 SIG_VALTYPE_ 1079 MC_SlipSpeed : 1;
-

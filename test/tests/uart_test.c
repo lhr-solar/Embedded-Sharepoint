@@ -130,7 +130,7 @@ void TxTask(void *argument)
         // Send test message
         uart_status_t status = uart_send(huart, testData, msgLen, portMAX_DELAY);
         
-        if (status == UART_SENT) {
+        if (status == UART_OK) {
             txCount++;
             // Toggle LED to indicate successful transmission
             HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
@@ -150,7 +150,7 @@ void RxTask(void *argument)
         // Try to receive data
         uart_status_t status = uart_recv(huart, &rxBuffer, 1, 0);
         
-        if (status == UART_RECV) {
+        if (status == UART_OK) {
             rxCount++;
             // Echo received data back
             uart_send(huart, &rxBuffer, 1, portMAX_DELAY);

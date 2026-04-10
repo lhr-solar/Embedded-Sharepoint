@@ -65,7 +65,7 @@ void TxTask(void *argument){
 #ifdef LPUART1
         status = uart_send(hlpuart1, testData, msgLen, portMAX_DELAY);
 #endif
-        if (status == UART_SENT) {
+        if (status == UART_OK) {
             txCount++;
             // Toggle LED to indicate successful transmission
             HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
@@ -87,7 +87,7 @@ void RxTask(void *argument){
         status = uart_recv(hlpuart1, &rxBuffer, 1, portMAX_DELAY);
 #endif
 
-        if (status == UART_RECV) {
+        if (status == UART_OK) {
             rxCount++;
 
             // Print received character

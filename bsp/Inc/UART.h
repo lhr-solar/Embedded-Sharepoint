@@ -53,8 +53,6 @@
 typedef enum {
     UART_ERR,
     UART_OK,
-    UART_SENT,
-    UART_RECV,
     UART_EMPTY,
 } uart_status_t;
 
@@ -108,7 +106,7 @@ uart_status_t uart_deinit(UART_HandleTypeDef* handle);
  * @param delay_ticks Ticks to wait if TX queue is full (0 = no wait, portMAX_DELAY = wait indefinitely).
  * @return uart_status_t Returns UART_SENT on queued/sent, UART_ERR on failure.
  */
-uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t length, TickType_t delay_ticks);
+uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint16_t length, TickType_t delay_ticks);
 
 /**
  * @brief Receives data from UART RX queue.
@@ -119,6 +117,6 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint8_t
  * @param delay_ticks Ticks to wait for data (0 = non-blocking, portMAX_DELAY = block until available).
  * @return uart_status_t Returns UART_RECV on success, UART_EMPTY if RX queue empty, UART_ERR on failure.
  */
-uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint8_t length, TickType_t delay_ticks);
+uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint16_t length, TickType_t delay_ticks);
 
 #endif /* UART_H_ */

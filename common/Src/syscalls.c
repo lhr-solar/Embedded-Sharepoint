@@ -56,22 +56,18 @@ void _exit(int status) {
 
 __weak int _read(int file, char *ptr, int len) {
   (void)file;
-  int DataIdx;
+  (void)(ptr);
+  (void)(len);
 
-  for (DataIdx = 0; DataIdx < len; DataIdx++) {
-    *ptr++ = __io_getchar();
-  }
 
   return len;
 }
 
 __weak int _write(int file, char *ptr, int len) {
   (void)file;
-  int DataIdx;
+  (void)(ptr);
+  (void)(len);
 
-  for (DataIdx = 0; DataIdx < len; DataIdx++) {
-    __io_putchar(*ptr++);
-  }
   return len;
 }
 
