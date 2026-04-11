@@ -209,7 +209,7 @@ BO_ 1 BPS_Status: 8 BPS
  SG_ BPS_Segment4_Status : 60|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Segment3_Status : 59|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Segment2_Status : 58|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ BPS_Segment1_Status : 57|1@1- (1,0) [0|0] "" Vector__XXX
+ SG_ BPS_Segment1_Status : 57|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Segment0_Status : 56|1@1+ (1,0) [0|0] "" Vector__XXX
 
 BO_ 25 Controls_Status: 6 Controls
