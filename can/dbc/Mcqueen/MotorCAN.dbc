@@ -111,11 +111,11 @@ BO_ 1065 MC_3V3_19V_RailMeasurement: 8 Prohelion_WaveSculptor22
  SG_ MC_Supply3V3 : 32|32@1- (1,0) [0|0] "V" Vector__XXX
 
 BO_ 1067 MC_Motor_TempMeasurement: 8 Prohelion_WaveSculptor22
- SG_ MC_MotorTemp : 0|32@1- (1,0) [0|0] "C" Vector__XXX
- SG_ MC_HeatsinkTemp : 32|32@1- (1,0) [0|0] "C" Vector__XXX
+ SG_ MC_MotorTemp : 0|32@1- (1,0) [0|0] "°C" Vector__XXX
+ SG_ MC_HeatsinkTemp : 32|32@1- (1,0) [0|0] "°C" Vector__XXX
 
 BO_ 1068 MC_DspBoardTempMeasurement: 8 Prohelion_WaveSculptor22
- SG_ MC_DspBoardTemp : 0|32@1- (1,0) [0|0] "C" Vector__XXX
+ SG_ MC_DspBoardTemp : 0|32@1- (1,0) [0|0] "°C" Vector__XXX
 
 BO_ 1070 MC_OdometerBusAhMeasurement: 8 Prohelion_WaveSculptor22
  SG_ MC_TripOdometer : 0|32@1- (1,0) [0|0] "m" Vector__XXX
@@ -157,12 +157,14 @@ BA_DEF_ SG_  "SPN" INT 0 524287;
 BA_DEF_ BO_  "GenMsgCycleTime" INT 0 100000;
 BA_DEF_ BO_  "GenMsgSendType" ENUM  "Cyclic","Event","CyclicAndEvent","CyclicAndEventNoRepetition","None","Spontaneous";
 BA_DEF_ BO_  "VFrameFormat" ENUM  "StandardCAN","ExtendedCAN","reserved","J1939PG","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","StandardCAN_FD","ExtendedCAN_FD";
+BA_DEF_  "MultiplexExtEnabled" ENUM  "No","Yes";
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "DBName" "";
 BA_DEF_DEF_  "SPN" 0;
 BA_DEF_DEF_  "GenMsgCycleTime" 0;
 BA_DEF_DEF_  "GenMsgSendType" "Cyclic";
-BA_DEF_DEF_  "VFrameFormat" "ExtendedCAN_FD";
+BA_DEF_DEF_  "VFrameFormat" "StandardCAN";
+BA_DEF_DEF_  "MultiplexExtEnabled" "No";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
 BA_ "DBName" "MotorCAN";

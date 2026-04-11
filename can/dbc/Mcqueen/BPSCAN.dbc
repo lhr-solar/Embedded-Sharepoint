@@ -55,7 +55,7 @@ BO_ 9 BPS_VT7_Voltage_Arr: 4 VoltTemp_7
 BO_ 23 BPS_VT7_Temperature_Arr: 7 VoltTemp_7
  SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
  SG_ BPS_Temperature_Tap_Fault : 8|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 16|24@1- (0.001,0) [-8388.608|8388.607] "C" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 16|24@1- (0.001,0) [-8388.608|8388.607] "°C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 8 BPS_VT6_Voltage_Arr: 4 VoltTemp_6
@@ -66,7 +66,7 @@ BO_ 8 BPS_VT6_Voltage_Arr: 4 VoltTemp_6
 BO_ 22 BPS_VT6_Temperature_Arr: 7 VoltTemp_6
  SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
  SG_ BPS_Temperature_Tap_Fault : 8|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 16|24@1- (0.001,0) [-8388.608|8388.607] "C" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 16|24@1- (0.001,0) [-8388.608|8388.607] "°C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 7 BPS_VT5_Voltage_Arr: 4 VoltTemp_5
@@ -77,7 +77,7 @@ BO_ 7 BPS_VT5_Voltage_Arr: 4 VoltTemp_5
 BO_ 21 BPS_VT5_Temperature_Arr: 7 VoltTemp_5
  SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
  SG_ BPS_Temperature_Tap_Fault : 8|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 16|24@1- (0.001,0) [-8388.608|8388.607] "C" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 16|24@1- (0.001,0) [-8388.608|8388.607] "°C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 6 BPS_VT4_Voltage_Arr: 4 VoltTemp_4
@@ -88,13 +88,13 @@ BO_ 6 BPS_VT4_Voltage_Arr: 4 VoltTemp_4
 BO_ 16 BPS_VT0_Temperature_Arr: 7 VoltTemp_0
  SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
  SG_ BPS_Temperature_Tap_Fault : 8|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 16|24@1- (0.001,0) [-8388.608|8388.607] "C" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 16|24@1- (0.001,0) [-8388.608|8388.607] "°C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 20 BPS_VT4_Temperature_Arr: 7 VoltTemp_4
  SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
  SG_ BPS_Temperature_Tap_Fault : 8|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 16|24@1- (0.001,0) [-8388.608|8388.607] "C" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 16|24@1- (0.001,0) [-8388.608|8388.607] "°C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 5 BPS_VT3_Voltage_Arr: 4 VoltTemp_3
@@ -105,7 +105,7 @@ BO_ 5 BPS_VT3_Voltage_Arr: 4 VoltTemp_3
 BO_ 19 BPS_VT3_Temperature_Arr: 7 VoltTemp_3
  SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
  SG_ BPS_Temperature_Tap_Fault : 8|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 16|24@1- (0.001,0) [-8388.608|8388.607] "C" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 16|24@1- (0.001,0) [-8388.608|8388.607] "°C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 4 BPS_VT2_Voltage_Arr: 4 VoltTemp_2
@@ -116,7 +116,7 @@ BO_ 4 BPS_VT2_Voltage_Arr: 4 VoltTemp_2
 BO_ 18 BPS_VT2_Temperature_Arr: 7 VoltTemp_2
  SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
  SG_ BPS_Temperature_Tap_Fault : 8|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 16|24@1- (0.001,0) [-8388.608|8388.607] "C" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 16|24@1- (0.001,0) [-8388.608|8388.607] "°C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 3 BPS_VT1_Voltage_Arr: 4 VoltTemp_1
@@ -127,7 +127,7 @@ BO_ 3 BPS_VT1_Voltage_Arr: 4 VoltTemp_1
 BO_ 17 BPS_VT1_Temperature_Arr: 7 VoltTemp_1
  SG_ BPS_Temperature_Tap_RawV : 40|16@1+ (1,0) [0|65535] "mV" Vector__XXX
  SG_ BPS_Temperature_Tap_Fault : 8|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 16|24@1- (0.001,0) [-8388.608|8388.607] "C" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 16|24@1- (0.001,0) [-8388.608|8388.607] "°C" Vector__XXX
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
 
 BO_ 2 BPS_VT0_Voltage_Arr: 4 VoltTemp_0
@@ -190,12 +190,14 @@ BA_DEF_ SG_  "SPN" INT 0 524287;
 BA_DEF_ BO_  "GenMsgCycleTime" INT 0 100000;
 BA_DEF_ BO_  "GenMsgSendType" ENUM  "Cyclic","Event","CyclicAndEvent","CyclicAndEventNoRepetition","None","Spontaneous";
 BA_DEF_ BO_  "VFrameFormat" ENUM  "StandardCAN","ExtendedCAN","reserved","J1939PG","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","StandardCAN_FD","ExtendedCAN_FD";
+BA_DEF_  "MultiplexExtEnabled" ENUM  "No","Yes";
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "DBName" "";
 BA_DEF_DEF_  "SPN" 0;
 BA_DEF_DEF_  "GenMsgCycleTime" 0;
 BA_DEF_DEF_  "GenMsgSendType" "Cyclic";
-BA_DEF_DEF_  "VFrameFormat" "ExtendedCAN_FD";
+BA_DEF_DEF_  "VFrameFormat" "StandardCAN";
+BA_DEF_DEF_  "MultiplexExtEnabled" "No";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
 BA_ "DBName" "BPSCAN";

@@ -34,9 +34,9 @@ NS_ :
 BS_:
 
 BU_: Lighting_Rear Lighting_Right Lighting_Left Lighting_Front Lighting_Canopy Controls
+VAL_TABLE_ Lighting_Board_Fault 7 "Light Command Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "OK" 8 "Watchdog" ;
 VAL_TABLE_ Lighting_CustomModes 3 "Mode 3 Active" 2 "Mode 2 Active" 1 "Mode 1 Active" 0 "Off" ;
 VAL_TABLE_ Generic_OnOff 1 "On" 0 "Off" ;
-VAL_TABLE_ Lighting_Board_Fault 7 "Light Command Watchdog" 6 "LED1 Overcurrent" 5 "LED0 Overcurrent" 4 "Addr LED Overcurrent" 3 "LED1 Undercurrent" 2 "LED0 Undercurrent" 1 "Addr LED Undercurrent" 0 "OK" 8 "Watchdog" ;
 
 
 BO_ 1652 Lighting_Canopy_Status: 8 Lighting_Canopy
@@ -115,12 +115,14 @@ BA_DEF_ SG_  "SPN" INT 0 524287;
 BA_DEF_ BO_  "GenMsgCycleTime" INT 0 100000;
 BA_DEF_ BO_  "GenMsgSendType" ENUM  "Cyclic","Event","CyclicAndEvent","CyclicAndEventNoRepetition","None","Spontaneous";
 BA_DEF_ BO_  "VFrameFormat" ENUM  "StandardCAN","ExtendedCAN","reserved","J1939PG","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","StandardCAN_FD","ExtendedCAN_FD";
+BA_DEF_  "MultiplexExtEnabled" ENUM  "No","Yes";
 BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "DBName" "";
 BA_DEF_DEF_  "SPN" 0;
 BA_DEF_DEF_  "GenMsgCycleTime" 0;
 BA_DEF_DEF_  "GenMsgSendType" "Cyclic";
-BA_DEF_DEF_  "VFrameFormat" "ExtendedCAN_FD";
+BA_DEF_DEF_  "VFrameFormat" "StandardCAN";
+BA_DEF_DEF_  "MultiplexExtEnabled" "No";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
 BA_ "DBName" "LightingCAN";
