@@ -17,6 +17,7 @@
 * **can\_recv** ([**CAN.h**](CAN_8h.md))
 * **can\_rx\_callback\_hook** ([**CAN.h**](CAN_8h.md))
 * **can\_send** ([**CAN.h**](CAN_8h.md))
+* **can\_send\_isr** ([**CAN.h**](CAN_8h.md))
 * **can\_start** ([**CAN.h**](CAN_8h.md))
 * **can\_stop** ([**CAN.h**](CAN_8h.md))
 * **can\_tx\_callback\_hook** ([**CAN.h**](CAN_8h.md))
@@ -25,6 +26,7 @@
 * **can\_fd\_recv** ([**CAN\_FD.h**](CAN__FD_8h.md))
 * **can\_fd\_rx\_callback\_hook** ([**CAN\_FD.h**](CAN__FD_8h.md))
 * **can\_fd\_send** ([**CAN\_FD.h**](CAN__FD_8h.md))
+* **can\_fd\_send\_isr** ([**CAN\_FD.h**](CAN__FD_8h.md))
 * **can\_fd\_start** ([**CAN\_FD.h**](CAN__FD_8h.md))
 * **can\_fd\_tx\_callback\_hook** ([**CAN\_FD.h**](CAN__FD_8h.md))
 

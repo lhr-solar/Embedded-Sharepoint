@@ -10,9 +10,9 @@
 
 
 
-* `#include "stm32xx_hal.h"`
 * `#include "CAN_Common.h"`
 * `#include "queue_ex.h"`
+* `#include "stm32xx_hal.h"`
 
 
 
@@ -59,6 +59,7 @@
 |  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_fd\_recv**](#function-can_fd_recv) (FDCAN\_HandleTypeDef \* handle, uint32\_t id, FDCAN\_RxHeaderTypeDef \* header, uint8\_t data, TickType\_t delay\_ticks) <br>_Receives a FDCAN message._  |
 |  void | [**can\_fd\_rx\_callback\_hook**](#function-can_fd_rx_callback_hook) (FDCAN\_HandleTypeDef \* hfdcan, uint32\_t RxFifo0ITs, [**can\_rx\_payload\_t**](structcan__rx__payload__t.md) recv\_payload) <br> |
 |  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_fd\_send**](#function-can_fd_send) (FDCAN\_HandleTypeDef \* handle, FDCAN\_TxHeaderTypeDef \* header, uint8\_t data, TickType\_t delay\_ticks) <br>_Sends a FDCAN message._  |
+|  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_fd\_send\_isr**](#function-can_fd_send_isr) (FDCAN\_HandleTypeDef \* handle, FDCAN\_TxHeaderTypeDef \* header, uint8\_t data, BaseType\_t \* higherPriorityTaskWoken) <br>_Sends a FDCAN message (but safe from isr context)._  |
 |  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_fd\_start**](#function-can_fd_start) (FDCAN\_HandleTypeDef \* handle) <br>_Starts the FDCAN peripheral._  |
 |  void | [**can\_fd\_tx\_callback\_hook**](#function-can_fd_tx_callback_hook) (FDCAN\_HandleTypeDef \* hfdcan, const [**can\_tx\_payload\_t**](structcan__tx__payload__t.md) \* payload) <br> |
 
@@ -88,6 +89,12 @@
 
 
 
+## Macros
+
+| Type | Name |
+| ---: | :--- |
+| define  | [**FDCAN\_BYTES\_FROM\_DLC**](CAN__FD_8h.md#define-fdcan_bytes_from_dlc) (dlc) `/* multi line expression */`<br> |
+| define  | [**FDCAN\_DLC\_BYTES**](CAN__FD_8h.md#define-fdcan_dlc_bytes) (len) `/* multi line expression */`<br> |
 
 ## Public Functions Documentation
 
@@ -275,6 +282,49 @@ can\_status\_t Returns CAN\_OK if message was successfully sent or queued, CAN\_
 
 
 
+### function can\_fd\_send\_isr 
+
+_Sends a FDCAN message (but safe from isr context)._ 
+```C++
+can_status_t can_fd_send_isr (
+    FDCAN_HandleTypeDef * handle,
+    FDCAN_TxHeaderTypeDef * header,
+    uint8_t data,
+    BaseType_t * higherPriorityTaskWoken
+) 
+```
+
+
+
+Adds it to the send queue for later transmission.
+
+
+
+
+**Parameters:**
+
+
+* `handle` Pointer to the FDCAN handle structure. 
+* `header` Pointer to the FDCAN transmit header structure. 
+* `data` Array containing the data to send. 
+* `higherPriorityTaskWoken` Signals if ISR woke higher-priority task
+
+
+
+**Returns:**
+
+can\_status\_t Returns CAN\_OK if message was successfully sent or queued, CAN\_ERR on failure. 
+
+
+
+
+
+        
+
+<hr>
+
+
+
 ### function can\_fd\_start 
 
 _Starts the FDCAN peripheral._ 
@@ -323,6 +373,47 @@ void can_fd_tx_callback_hook (
 
 
 
+
+<hr>
+## Macro Definition Documentation
+
+
+
+
+
+### define FDCAN\_BYTES\_FROM\_DLC 
+
+```C++
+#define FDCAN_BYTES_FROM_DLC (
+    dlc
+) `/* multi line expression */`
+```
+
+
+
+A macro to convert an fdcan dlc to length 
+
+
+        
+
+<hr>
+
+
+
+### define FDCAN\_DLC\_BYTES 
+
+```C++
+#define FDCAN_DLC_BYTES (
+    len
+) `/* multi line expression */`
+```
+
+
+
+A macro to convert a length into the encoding used by fdcan 
+
+
+        
 
 <hr>
 

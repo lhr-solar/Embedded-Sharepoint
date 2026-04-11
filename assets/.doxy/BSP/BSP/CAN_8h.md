@@ -10,8 +10,8 @@
 
 _CAN peripheral driver for LHRS embedded systems._ [More...](#detailed-description)
 
-* `#include "stm32xx_hal.h"`
 * `#include "CAN_Common.h"`
+* `#include "stm32xx_hal.h"`
 
 
 
@@ -58,6 +58,7 @@ _CAN peripheral driver for LHRS embedded systems._ [More...](#detailed-descripti
 |  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_recv**](#function-can_recv) (CAN\_HandleTypeDef \* handle, uint32\_t id, CAN\_RxHeaderTypeDef \* header, uint8\_t data, TickType\_t delay\_ticks) <br>_Receives a CAN message._  |
 |  void | [**can\_rx\_callback\_hook**](#function-can_rx_callback_hook) (CAN\_HandleTypeDef \* hcan, const [**can\_rx\_payload\_t**](structcan__rx__payload__t.md) \* payload) <br>_Weakly defined hook function. Called in RX callback (ISR context) after receiving a message from RX FIFO. Implementation must be short and non-blocking!_  |
 |  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_send**](#function-can_send) (CAN\_HandleTypeDef \* handle, const CAN\_TxHeaderTypeDef \* header, const uint8\_t data, TickType\_t delay\_ticks) <br>_Sends a CAN message._  |
+|  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_send\_isr**](#function-can_send_isr) (CAN\_HandleTypeDef \* handle, const CAN\_TxHeaderTypeDef \* header, const uint8\_t data, BaseType\_t \* higherPriorityTaskWoken) <br>_Sends a CAN message from an ISR context._  |
 |  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_start**](#function-can_start) (CAN\_HandleTypeDef \* handle) <br>_Starts the CAN peripheral._  |
 |  [**can\_status\_t**](CAN__Common_8h.md#enum-can_status_t) | [**can\_stop**](#function-can_stop) (CAN\_HandleTypeDef \* handle) <br>_Stops the CAN peripheral._  |
 |  void | [**can\_tx\_callback\_hook**](#function-can_tx_callback_hook) (CAN\_HandleTypeDef \* hcan, const [**can\_tx\_payload\_t**](structcan__tx__payload__t.md) \* payload) <br>_Weakly defined hook function. Called inside CAN send before adding a message to the queue or mailbox. Implementation must be short and non-blocking!_  |
@@ -309,6 +310,56 @@ Places a CAN message into the transmit mailbox if available, otherwise queues it
 **Returns:**
 
 can\_status\_t Returns CAN\_OK if message was successfully sent or queued, CAN\_ERR on failure. 
+
+
+
+
+
+        
+
+<hr>
+
+
+
+### function can\_send\_isr 
+
+_Sends a CAN message from an ISR context._ 
+```C++
+can_status_t can_send_isr (
+    CAN_HandleTypeDef * handle,
+    const CAN_TxHeaderTypeDef * header,
+    const uint8_t data,
+    BaseType_t * higherPriorityTaskWoken
+) 
+```
+
+
+
+Places a CAN message into the transmit send queue for later transmission by the TX complete interrupt. Must only be called from an ISR.
+
+
+
+
+**Note:**
+
+Unlike [**can\_send()**](CAN_8h.md#function-can_send), this function does not attempt direct mailbox insertion. The caller is responsible for calling portYIELD\_FROM\_ISR() with the updated higherPriorityTaskWoken value after this function returns.
+
+
+
+
+**Parameters:**
+
+
+* `handle` Pointer to the CAN handle structure. 
+* `header` Pointer to the CAN transmit header structure. 
+* `data` Array containing the data to send. 
+* `higherPriorityTaskWoken` Pointer to a BaseType\_t variable that will be set to pdTRUE if queuing the message unblocks a higher priority task.
+
+
+
+**Returns:**
+
+can\_status\_t Returns CAN\_OK if the message was successfully queued, CAN\_ERR if the queue is full or a parameter is invalid. 
 
 
 

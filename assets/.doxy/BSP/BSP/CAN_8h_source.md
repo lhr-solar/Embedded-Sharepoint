@@ -11,11 +11,11 @@
 
 #pragma once
 
-#include "stm32xx_hal.h"
 #include "CAN_Common.h"
+#include "stm32xx_hal.h"
 
 #if !defined(CAN1)
-  #error "[CONFIG] CAN not enabled on this chip."
+#error "[CONFIG] CAN not enabled on this chip."
 #endif /* CAN1 */
 
 /* Function Descriptions:
@@ -46,14 +46,13 @@
  * CAN2 usually shares the filter banks with CAN1, since it
  is a slave CAN. Thus, consider the filter configs you pass
  to the can_init function, when initializing CAN1 and CAN2.
- * CAN3 is usually a master CAN, meaning you don't have to 
+ * CAN3 is usually a master CAN, meaning you don't have to
  worry about sharing.
  * This driver uses a macro to define which entries a CAN
  interface should receive on. Look at can1_recv_entries.h
  for an example. Make sure these entries line up with the
  filter config.
  */
-
 
 // can handlers
 #ifdef CAN1
@@ -76,22 +75,24 @@ can_status_t can_start(CAN_HandleTypeDef* handle);
 
 can_status_t can_stop(CAN_HandleTypeDef* handle);
 
-can_status_t can_send(CAN_HandleTypeDef* handle,
-                      const CAN_TxHeaderTypeDef* header, const uint8_t data[],
-                      TickType_t delay_ticks);
+can_status_t can_send(CAN_HandleTypeDef* handle, const CAN_TxHeaderTypeDef* header,
+                      const uint8_t data[], TickType_t delay_ticks);
 
-can_status_t can_recv(CAN_HandleTypeDef* handle, uint32_t id,
-                      CAN_RxHeaderTypeDef* header, uint8_t data[],
-                      TickType_t delay_ticks);
+can_status_t can_recv(CAN_HandleTypeDef* handle, uint32_t id, CAN_RxHeaderTypeDef* header,
+                      uint8_t data[], TickType_t delay_ticks);
+
+can_status_t can_send_isr(CAN_HandleTypeDef* handle, const CAN_TxHeaderTypeDef* header,
+                          const uint8_t data[], BaseType_t* higherPriorityTaskWoken);
 
 void can_tx_callback_hook(CAN_HandleTypeDef* hcan, const can_tx_payload_t* payload);
 
 void can_rx_callback_hook(CAN_HandleTypeDef* hcan, const can_rx_payload_t* payload);
 
-#if ( configUSE_QUEUE_SETS == 1 )
+#if (configUSE_QUEUE_SETS == 1)
 can_status_t can_register_id_set(CAN_HandleTypeDef* handle, can_id_set_t* set);
 
-can_status_t can_recv_set(CAN_HandleTypeDef* handle, can_id_set_t* set, uint32_t *id, TickType_t delay_ticks);
+can_status_t can_recv_set(CAN_HandleTypeDef* handle, can_id_set_t* set, uint32_t* id,
+                          TickType_t delay_ticks);
 
 #endif /* ( configUSE_QUEUE_SETS == 1 ) */
 ```

@@ -1200,6 +1200,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#macros" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Macros
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#public-functions-documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1267,6 +1278,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#function-can_fd_send_isr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function can_fd_send_isr
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#function-can_fd_start" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1282,6 +1304,45 @@
     <span class="md-ellipsis">
       
         function can_fd_tx_callback_hook
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#macro-definition-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Macro Definition Documentation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Macro Definition Documentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#define-fdcan_bytes_from_dlc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define FDCAN_BYTES_FROM_DLC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-fdcan_dlc_bytes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define FDCAN_DLC_BYTES
       
     </span>
   </a>
@@ -1375,6 +1436,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#macros" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Macros
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#public-functions-documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1442,6 +1514,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#function-can_fd_send_isr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function can_fd_send_isr
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#function-can_fd_start" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1457,6 +1540,45 @@
     <span class="md-ellipsis">
       
         function can_fd_tx_callback_hook
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#macro-definition-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Macro Definition Documentation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Macro Definition Documentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#define-fdcan_bytes_from_dlc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define FDCAN_BYTES_FROM_DLC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-fdcan_dlc_bytes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        define FDCAN_DLC_BYTES
       
     </span>
   </a>
@@ -1489,9 +1611,9 @@
 <p><a href="../files/"><strong>FileList</strong></a> <strong>&gt;</strong> <a href="../dir_3c5459f7c179b79c90e2565474bb2856/"><strong>bsp</strong></a> <strong>&gt;</strong> <a href="../dir_f9758a777e5683291000913d5e959461/"><strong>Inc</strong></a> <strong>&gt;</strong> <a href="./"><strong>CAN_FD.h</strong></a></p>
 <p><a href="../CAN__FD_8h_source/">Go to the source code of this file</a></p>
 <ul>
-<li><code>#include "stm32xx_hal.h"</code></li>
 <li><code>#include "CAN_Common.h"</code></li>
 <li><code>#include "queue_ex.h"</code></li>
+<li><code>#include "stm32xx_hal.h"</code></li>
 </ul>
 <h2 id="public-functions">Public Functions</h2>
 <table>
@@ -1524,11 +1646,34 @@
 </tr>
 <tr>
 <td style="text-align: right;"><a href="../CAN__Common_8h/#enum-can_status_t"><strong>can_status_t</strong></a></td>
+<td style="text-align: left;"><a href="#function-can_fd_send_isr"><strong>can_fd_send_isr</strong></a> (FDCAN_HandleTypeDef * handle, FDCAN_TxHeaderTypeDef * header, uint8_t data, BaseType_t * higherPriorityTaskWoken) <br><em>Sends a FDCAN message (but safe from isr context).</em></td>
+</tr>
+<tr>
+<td style="text-align: right;"><a href="../CAN__Common_8h/#enum-can_status_t"><strong>can_status_t</strong></a></td>
 <td style="text-align: left;"><a href="#function-can_fd_start"><strong>can_fd_start</strong></a> (FDCAN_HandleTypeDef * handle) <br><em>Starts the FDCAN peripheral.</em></td>
 </tr>
 <tr>
 <td style="text-align: right;">void</td>
 <td style="text-align: left;"><a href="#function-can_fd_tx_callback_hook"><strong>can_fd_tx_callback_hook</strong></a> (FDCAN_HandleTypeDef * hfdcan, const <a href="../structcan__tx__payload__t/"><strong>can_tx_payload_t</strong></a> * payload) <br></td>
+</tr>
+</tbody>
+</table>
+<h2 id="macros">Macros</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Type</th>
+<th style="text-align: left;">Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-fdcan_bytes_from_dlc"><strong>FDCAN_BYTES_FROM_DLC</strong></a> (dlc) <code>/* multi line expression */</code><br></td>
+</tr>
+<tr>
+<td style="text-align: right;">define</td>
+<td style="text-align: left;"><a href="./#define-fdcan_dlc_bytes"><strong>FDCAN_DLC_BYTES</strong></a> (len) <code>/* multi line expression */</code><br></td>
 </tr>
 </tbody>
 </table>
@@ -1618,6 +1763,27 @@
 <p>can_status_t Returns CAN_OK if message was successfully sent or queued, CAN_ERR on failure. </p>
 <hr>
 
+<h3 id="function-can_fd_send_isr">function can_fd_send_isr</h3>
+<p><em>Sends a FDCAN message (but safe from isr context).</em> </p>
+<pre><code class="language-C++">can_status_t can_fd_send_isr (
+    FDCAN_HandleTypeDef * handle,
+    FDCAN_TxHeaderTypeDef * header,
+    uint8_t data,
+    BaseType_t * higherPriorityTaskWoken
+) 
+</code></pre>
+<p>Adds it to the send queue for later transmission.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>handle</code> Pointer to the FDCAN handle structure. </li>
+<li><code>header</code> Pointer to the FDCAN transmit header structure. </li>
+<li><code>data</code> Array containing the data to send. </li>
+<li><code>higherPriorityTaskWoken</code> Signals if ISR woke higher-priority task</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<p>can_status_t Returns CAN_OK if message was successfully sent or queued, CAN_ERR on failure. </p>
+<hr>
+
 <h3 id="function-can_fd_start">function can_fd_start</h3>
 <p><em>Starts the FDCAN peripheral.</em> </p>
 <pre><code class="language-C++">can_status_t can_fd_start (
@@ -1639,6 +1805,22 @@
     const can_tx_payload_t * payload
 ) 
 </code></pre>
+<hr>
+<h2 id="macro-definition-documentation">Macro Definition Documentation</h2>
+<h3 id="define-fdcan_bytes_from_dlc">define FDCAN_BYTES_FROM_DLC</h3>
+<pre><code class="language-C++">#define FDCAN_BYTES_FROM_DLC (
+    dlc
+) `/* multi line expression */`
+</code></pre>
+<p>A macro to convert an fdcan dlc to length </p>
+<hr>
+
+<h3 id="define-fdcan_dlc_bytes">define FDCAN_DLC_BYTES</h3>
+<pre><code class="language-C++">#define FDCAN_DLC_BYTES (
+    len
+) `/* multi line expression */`
+</code></pre>
+<p>A macro to convert a length into the encoding used by fdcan </p>
 <hr>
 
 <hr />

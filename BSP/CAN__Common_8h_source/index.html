@@ -1222,7 +1222,7 @@
 #include &quot;stm32xx_hal.h&quot;
 
 #if !defined(CAN1) &amp;&amp; !defined(FDCAN1)
-  #error &quot;[CONFIG] CAN not enabled on this chip.&quot;
+#error &quot;[CONFIG] CAN not enabled on this chip.&quot;
 #endif
 
 // Default statically allocated size per can payload
@@ -1233,17 +1233,15 @@
 
 // return code for can driver
 typedef enum {
-    CAN_ERR,   // unsuccessful operation
+    CAN_ERR,  // unsuccessful operation
     CAN_OK,
-    CAN_EMPTY, // recieved nothing with no errors
+    CAN_EMPTY,  // recieved nothing with no errors
 } can_status_t;
 
-
-#if ( configUSE_QUEUE_SETS == 1 )
+#if (configUSE_QUEUE_SETS == 1)
 // set to block on multiple IDs
-typedef struct
-{
-    const uint32_t *ids;
+typedef struct {
+    const uint32_t* ids;
     uint32_t id_count;
     QueueSetHandle_t queueSet;
 } can_id_set_t;
@@ -1254,7 +1252,7 @@ typedef struct {
     // If we're using FDCAN (stm32g4xx), use FDCAN_TxHeaderTypeDef
 #if defined(STM32G4xx)
     FDCAN_TxHeaderTypeDef header;
-#else 
+#else
     CAN_TxHeaderTypeDef header;
 #endif
     uint8_t data[MAX_CAN_DATA_SIZE];
@@ -1267,17 +1265,17 @@ typedef struct {
 #else
     CAN_RxHeaderTypeDef header;
 #endif
-  uint8_t data[MAX_CAN_DATA_SIZE];
+    uint8_t data[MAX_CAN_DATA_SIZE];
 } can_rx_payload_t;
 
 // metadata for recieve queues
 typedef struct {
-  uint32_t id;
-  uint16_t size;
-  QueueHandle_t queue;
-  uint8_t* storage;
-  bool circular;
-  StaticQueue_t buffer;
+    uint32_t id;
+    uint16_t size;
+    QueueHandle_t queue;
+    uint8_t* storage;
+    bool circular;
+    StaticQueue_t buffer;
 } can_recv_entry_t;
 
 #if defined(CAN1) || defined(FDCAN1)

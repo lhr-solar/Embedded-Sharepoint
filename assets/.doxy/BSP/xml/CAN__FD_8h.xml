@@ -2,14 +2,14 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
   <compounddef id="CAN__FD_8h" kind="file" language="C++">
     <compoundname>CAN_FD.h</compoundname>
-    <includes local="yes">stm32xx_hal.h</includes>
     <includes refid="CAN__Common_8h" local="yes">CAN_Common.h</includes>
     <includes local="yes">queue_ex.h</includes>
+    <includes local="yes">stm32xx_hal.h</includes>
     <incdepgraph>
-      <node id="3">
+      <node id="2">
         <label>CAN_Common.h</label>
         <link refid="CAN__Common_8h"/>
-        <childnode refid="2" relation="include">
+        <childnode refid="3" relation="include">
         </childnode>
       </node>
       <node id="1">
@@ -17,18 +17,78 @@
         <link refid="CAN__FD_8h"/>
         <childnode refid="2" relation="include">
         </childnode>
-        <childnode refid="3" relation="include">
-        </childnode>
         <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
         </childnode>
       </node>
       <node id="4">
         <label>queue_ex.h</label>
       </node>
-      <node id="2">
+      <node id="3">
         <label>stm32xx_hal.h</label>
       </node>
     </incdepgraph>
+    <sectiondef kind="define">
+      <memberdef kind="define" id="CAN__FD_8h_1a7a2b5605870ab782c6a5ca6cb48188a9" prot="public" static="no">
+        <name>FDCAN_DLC_BYTES</name>
+        <param><defname>len</defname></param>
+        <initializer>((len) == 0  ? FDCAN_DLC_BYTES_0  : \
+ (len) == 1  ? FDCAN_DLC_BYTES_1  : \
+ (len) == 2  ? FDCAN_DLC_BYTES_2  : \
+ (len) == 3  ? FDCAN_DLC_BYTES_3  : \
+ (len) == 4  ? FDCAN_DLC_BYTES_4  : \
+ (len) == 5  ? FDCAN_DLC_BYTES_5  : \
+ (len) == 6  ? FDCAN_DLC_BYTES_6  : \
+ (len) == 7  ? FDCAN_DLC_BYTES_7  : \
+ (len) == 8  ? FDCAN_DLC_BYTES_8  : \
+ (len) == 12 ? FDCAN_DLC_BYTES_12 : \
+ (len) == 16 ? FDCAN_DLC_BYTES_16 : \
+ (len) == 20 ? FDCAN_DLC_BYTES_20 : \
+ (len) == 24 ? FDCAN_DLC_BYTES_24 : \
+ (len) == 32 ? FDCAN_DLC_BYTES_32 : \
+ (len) == 48 ? FDCAN_DLC_BYTES_48 : \
+ (len) == 64 ? FDCAN_DLC_BYTES_64 : \
+ FDCAN_DLC_BYTES_0)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>A macro to convert a length into the encoding used by fdcan </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN_FD.h" line="27" column="9" bodyfile="bsp/Inc/CAN_FD.h" bodystart="27" bodyend="44"/>
+      </memberdef>
+      <memberdef kind="define" id="CAN__FD_8h_1a407a79d79b4ec645e2acf140bd07bbe4" prot="public" static="no">
+        <name>FDCAN_BYTES_FROM_DLC</name>
+        <param><defname>dlc</defname></param>
+        <initializer>((dlc) == FDCAN_DLC_BYTES_0  ? 0  : \
+ (dlc) == FDCAN_DLC_BYTES_1  ? 1  : \
+ (dlc) == FDCAN_DLC_BYTES_2  ? 2  : \
+ (dlc) == FDCAN_DLC_BYTES_3  ? 3  : \
+ (dlc) == FDCAN_DLC_BYTES_4  ? 4  : \
+ (dlc) == FDCAN_DLC_BYTES_5  ? 5  : \
+ (dlc) == FDCAN_DLC_BYTES_6  ? 6  : \
+ (dlc) == FDCAN_DLC_BYTES_7  ? 7  : \
+ (dlc) == FDCAN_DLC_BYTES_8  ? 8  : \
+ (dlc) == FDCAN_DLC_BYTES_12 ? 12 : \
+ (dlc) == FDCAN_DLC_BYTES_16 ? 16 : \
+ (dlc) == FDCAN_DLC_BYTES_20 ? 20 : \
+ (dlc) == FDCAN_DLC_BYTES_24 ? 24 : \
+ (dlc) == FDCAN_DLC_BYTES_32 ? 32 : \
+ (dlc) == FDCAN_DLC_BYTES_48 ? 48 : \
+ (dlc) == FDCAN_DLC_BYTES_64 ? 64 : \
+ 0)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>A macro to convert an fdcan dlc to length </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN_FD.h" line="49" column="9" bodyfile="bsp/Inc/CAN_FD.h" bodystart="49" bodyend="66"/>
+      </memberdef>
+    </sectiondef>
     <sectiondef kind="func">
       <memberdef kind="function" id="CAN__FD_8h_1ace263a51895d019f75a4cb6793abf6ac" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref></type>
@@ -71,7 +131,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bsp/Inc/CAN_FD.h" line="38" column="14" declfile="bsp/Inc/CAN_FD.h" declline="38" declcolumn="14"/>
+        <location file="bsp/Inc/CAN_FD.h" line="80" column="14" declfile="bsp/Inc/CAN_FD.h" declline="80" declcolumn="14"/>
       </memberdef>
       <memberdef kind="function" id="CAN__FD_8h_1a3c9b9d35e473506c11ebabd44210bcc3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref></type>
@@ -102,7 +162,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bsp/Inc/CAN_FD.h" line="49" column="14" declfile="bsp/Inc/CAN_FD.h" declline="49" declcolumn="14"/>
+        <location file="bsp/Inc/CAN_FD.h" line="91" column="14" declfile="bsp/Inc/CAN_FD.h" declline="91" declcolumn="14"/>
       </memberdef>
       <memberdef kind="function" id="CAN__FD_8h_1aba1a4136e01207ba7cccb5d2e0994276" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref></type>
@@ -133,7 +193,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bsp/Inc/CAN_FD.h" line="60" column="14" declfile="bsp/Inc/CAN_FD.h" declline="60" declcolumn="14"/>
+        <location file="bsp/Inc/CAN_FD.h" line="102" column="14" declfile="bsp/Inc/CAN_FD.h" declline="102" declcolumn="14"/>
       </memberdef>
       <memberdef kind="function" id="CAN__FD_8h_1a97b6f4d9057d197886b2af512cbbccc4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref></type>
@@ -201,7 +261,75 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bsp/Inc/CAN_FD.h" line="76" column="14" declfile="bsp/Inc/CAN_FD.h" declline="76" declcolumn="14"/>
+        <location file="bsp/Inc/CAN_FD.h" line="118" column="14" declfile="bsp/Inc/CAN_FD.h" declline="118" declcolumn="14"/>
+      </memberdef>
+      <memberdef kind="function" id="CAN__FD_8h_1af9312a3cd86bb0ac7affae8fa1405c50" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref></type>
+        <definition>can_status_t can_fd_send_isr</definition>
+        <argsstring>(FDCAN_HandleTypeDef *handle, FDCAN_TxHeaderTypeDef *header, uint8_t data[], BaseType_t *higherPriorityTaskWoken)</argsstring>
+        <name>can_fd_send_isr</name>
+        <param>
+          <type>FDCAN_HandleTypeDef *</type>
+          <declname>handle</declname>
+        </param>
+        <param>
+          <type>FDCAN_TxHeaderTypeDef *</type>
+          <declname>header</declname>
+        </param>
+        <param>
+          <type>uint8_t</type>
+          <declname>data</declname>
+          <array>[]</array>
+        </param>
+        <param>
+          <type>BaseType_t *</type>
+          <declname>higherPriorityTaskWoken</declname>
+        </param>
+        <briefdescription>
+<para>Sends a FDCAN message (but safe from isr context). </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Adds it to the send queue for later transmission.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>handle</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the FDCAN handle structure. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>header</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the FDCAN transmit header structure. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>data</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Array containing the data to send. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>higherPriorityTaskWoken</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Signals if ISR woke higher-priority task</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>can_status_t Returns CAN_OK if message was successfully sent or queued, CAN_ERR on failure. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN_FD.h" line="133" column="14" declfile="bsp/Inc/CAN_FD.h" declline="133" declcolumn="14"/>
       </memberdef>
       <memberdef kind="function" id="CAN__FD_8h_1a5c6036eb5103092e8c3c4f1c0b3066fb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref></type>
@@ -281,7 +409,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bsp/Inc/CAN_FD.h" line="94" column="14" declfile="bsp/Inc/CAN_FD.h" declline="94" declcolumn="14"/>
+        <location file="bsp/Inc/CAN_FD.h" line="152" column="14" declfile="bsp/Inc/CAN_FD.h" declline="152" declcolumn="14"/>
       </memberdef>
       <memberdef kind="function" id="CAN__FD_8h_1ad150cda00c529bf5f256d6c49525c199" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -302,7 +430,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bsp/Inc/CAN_FD.h" line="124" column="6" declfile="bsp/Inc/CAN_FD.h" declline="124" declcolumn="6"/>
+        <location file="bsp/Inc/CAN_FD.h" line="185" column="6" declfile="bsp/Inc/CAN_FD.h" declline="185" declcolumn="6"/>
       </memberdef>
       <memberdef kind="function" id="CAN__FD_8h_1af052a1ab45f4b3f7698a6081cbec3181" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -327,7 +455,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bsp/Inc/CAN_FD.h" line="126" column="6" declfile="bsp/Inc/CAN_FD.h" declline="126" declcolumn="6"/>
+        <location file="bsp/Inc/CAN_FD.h" line="187" column="6" declfile="bsp/Inc/CAN_FD.h" declline="187" declcolumn="6"/>
       </memberdef>
     </sectiondef>
     <briefdescription>
@@ -337,50 +465,92 @@
     <programlisting>
 <codeline lineno="1"><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="2"><highlight class="normal"></highlight></codeline>
-<codeline lineno="3"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;stm32xx_hal.h&quot;</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="CAN__Common_8h" kindref="compound">CAN_Common.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="5"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;queue_ex.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="CAN__Common_8h" kindref="compound">CAN_Common.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;queue_ex.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;stm32xx_hal.h&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="6"><highlight class="normal"></highlight></codeline>
 <codeline lineno="7"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>!defined(FDCAN1)</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="8"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/>#error<sp/>&quot;[CONFIG]<sp/>CAN<sp/>FD<sp/>not<sp/>enabled<sp/>on<sp/>this<sp/>chip.&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="preprocessor">#error<sp/>&quot;[CONFIG]<sp/>CAN<sp/>FD<sp/>not<sp/>enabled<sp/>on<sp/>this<sp/>chip.&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>FDCAN1<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="10"><highlight class="normal"></highlight></codeline>
-<codeline lineno="11"><highlight class="normal"></highlight></codeline>
-<codeline lineno="12"><highlight class="normal"></highlight><highlight class="comment">//<sp/>fdcan<sp/>handlers</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="13"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>FDCAN1</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="14"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>FDCAN_HandleTypeDef*<sp/>hfdcan1;</highlight></codeline>
-<codeline lineno="15"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>FDCAN1<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="16"><highlight class="normal"></highlight></codeline>
-<codeline lineno="17"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>FDCAN2</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="18"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>FDCAN_HandleTypeDef*<sp/>hfdcan2;</highlight></codeline>
-<codeline lineno="19"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>FDCAN2<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="20"><highlight class="normal"></highlight></codeline>
-<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>FDCAN3</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="22"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>FDCAN_HandleTypeDef*<sp/>hfdcan3;</highlight></codeline>
-<codeline lineno="23"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>FDCAN3<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="24"><highlight class="normal"></highlight></codeline>
-<codeline lineno="25"><highlight class="normal"></highlight></codeline>
-<codeline lineno="38" refid="CAN__FD_8h_1ace263a51895d019f75a4cb6793abf6ac" refkind="member"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN__FD_8h_1ace263a51895d019f75a4cb6793abf6ac" kindref="member">can_fd_init</ref>(FDCAN_HandleTypeDef*<sp/>handle,<sp/>FDCAN_FilterTypeDef*<sp/>filter);</highlight></codeline>
-<codeline lineno="39"><highlight class="normal"></highlight></codeline>
-<codeline lineno="49" refid="CAN__FD_8h_1a3c9b9d35e473506c11ebabd44210bcc3" refkind="member"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN__FD_8h_1a3c9b9d35e473506c11ebabd44210bcc3" kindref="member">can_fd_deinit</ref>(FDCAN_HandleTypeDef*<sp/>handle);</highlight></codeline>
-<codeline lineno="50"><highlight class="normal"></highlight></codeline>
-<codeline lineno="60" refid="CAN__FD_8h_1aba1a4136e01207ba7cccb5d2e0994276" refkind="member"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN__FD_8h_1aba1a4136e01207ba7cccb5d2e0994276" kindref="member">can_fd_start</ref>(FDCAN_HandleTypeDef*<sp/>handle);</highlight></codeline>
-<codeline lineno="61"><highlight class="normal"></highlight></codeline>
-<codeline lineno="76" refid="CAN__FD_8h_1a97b6f4d9057d197886b2af512cbbccc4" refkind="member"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN__FD_8h_1a97b6f4d9057d197886b2af512cbbccc4" kindref="member">can_fd_send</ref>(FDCAN_HandleTypeDef*<sp/>handle,<sp/>FDCAN_TxHeaderTypeDef*<sp/>header,<sp/>uint8_t<sp/>data[],<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
-<codeline lineno="77"><highlight class="normal"></highlight></codeline>
-<codeline lineno="94" refid="CAN__FD_8h_1a5c6036eb5103092e8c3c4f1c0b3066fb" refkind="member"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN__FD_8h_1a5c6036eb5103092e8c3c4f1c0b3066fb" kindref="member">can_fd_recv</ref>(FDCAN_HandleTypeDef*<sp/>handle,<sp/>uint32_t<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>FDCAN_RxHeaderTypeDef*<sp/>header,<sp/>uint8_t<sp/>data[],<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
-<codeline lineno="95"><highlight class="normal"></highlight></codeline>
-<codeline lineno="96"><highlight class="normal"></highlight></codeline>
-<codeline lineno="97"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>(<sp/>configUSE_QUEUE_SETS<sp/>==<sp/>1<sp/>)</highlight></codeline>
-<codeline lineno="108"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/>can_fd_register_id_set(FDCAN_HandleTypeDef*<sp/>handle,<sp/>can_id_set_t*<sp/>set);</highlight></codeline>
-<codeline lineno="109"><highlight class="normal"></highlight></codeline>
-<codeline lineno="120"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/>can_fd_recv_set(FDCAN_HandleTypeDef*<sp/>handle,<sp/>can_id_set_t*<sp/>set,<sp/>uint32_t<sp/>*</highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
-<codeline lineno="121"><highlight class="normal"></highlight></codeline>
-<codeline lineno="122"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>(<sp/>configUSE_QUEUE_SETS<sp/>==<sp/>1<sp/>)<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="123"><highlight class="normal"></highlight></codeline>
-<codeline lineno="124" refid="CAN__FD_8h_1ad150cda00c529bf5f256d6c49525c199" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="CAN__FD_8h_1ad150cda00c529bf5f256d6c49525c199" kindref="member">can_fd_tx_callback_hook</ref>(FDCAN_HandleTypeDef*<sp/>hfdcan,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="structcan__tx__payload__t" kindref="compound">can_tx_payload_t</ref>*<sp/>payload);</highlight></codeline>
-<codeline lineno="125"><highlight class="normal"></highlight></codeline>
-<codeline lineno="126" refid="CAN__FD_8h_1af052a1ab45f4b3f7698a6081cbec3181" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="CAN__FD_8h_1af052a1ab45f4b3f7698a6081cbec3181" kindref="member">can_fd_rx_callback_hook</ref>(FDCAN_HandleTypeDef<sp/>*hfdcan,<sp/>uint32_t<sp/>RxFifo0ITs,<sp/><ref refid="structcan__rx__payload__t" kindref="compound">can_rx_payload_t</ref><sp/>recv_payload);</highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="comment">//<sp/>fdcan<sp/>handlers</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>FDCAN1</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>FDCAN_HandleTypeDef*<sp/>hfdcan1;</highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>FDCAN1<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>FDCAN2</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>FDCAN_HandleTypeDef*<sp/>hfdcan2;</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>FDCAN2<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>FDCAN3</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>FDCAN_HandleTypeDef*<sp/>hfdcan3;</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>FDCAN3<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight></codeline>
+<codeline lineno="27" refid="CAN__FD_8h_1a7a2b5605870ab782c6a5ca6cb48188a9" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>FDCAN_DLC_BYTES(len)<sp/>\</highlight></codeline>
+<codeline lineno="28"><highlight class="preprocessor">((len)<sp/>==<sp/>0<sp/><sp/>?<sp/>FDCAN_DLC_BYTES_0<sp/><sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="29"><highlight class="preprocessor"><sp/>(len)<sp/>==<sp/>1<sp/><sp/>?<sp/>FDCAN_DLC_BYTES_1<sp/><sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="30"><highlight class="preprocessor"><sp/>(len)<sp/>==<sp/>2<sp/><sp/>?<sp/>FDCAN_DLC_BYTES_2<sp/><sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="31"><highlight class="preprocessor"><sp/>(len)<sp/>==<sp/>3<sp/><sp/>?<sp/>FDCAN_DLC_BYTES_3<sp/><sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="32"><highlight class="preprocessor"><sp/>(len)<sp/>==<sp/>4<sp/><sp/>?<sp/>FDCAN_DLC_BYTES_4<sp/><sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="33"><highlight class="preprocessor"><sp/>(len)<sp/>==<sp/>5<sp/><sp/>?<sp/>FDCAN_DLC_BYTES_5<sp/><sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="34"><highlight class="preprocessor"><sp/>(len)<sp/>==<sp/>6<sp/><sp/>?<sp/>FDCAN_DLC_BYTES_6<sp/><sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="35"><highlight class="preprocessor"><sp/>(len)<sp/>==<sp/>7<sp/><sp/>?<sp/>FDCAN_DLC_BYTES_7<sp/><sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="36"><highlight class="preprocessor"><sp/>(len)<sp/>==<sp/>8<sp/><sp/>?<sp/>FDCAN_DLC_BYTES_8<sp/><sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="37"><highlight class="preprocessor"><sp/>(len)<sp/>==<sp/>12<sp/>?<sp/>FDCAN_DLC_BYTES_12<sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="38"><highlight class="preprocessor"><sp/>(len)<sp/>==<sp/>16<sp/>?<sp/>FDCAN_DLC_BYTES_16<sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="39"><highlight class="preprocessor"><sp/>(len)<sp/>==<sp/>20<sp/>?<sp/>FDCAN_DLC_BYTES_20<sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="40"><highlight class="preprocessor"><sp/>(len)<sp/>==<sp/>24<sp/>?<sp/>FDCAN_DLC_BYTES_24<sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="41"><highlight class="preprocessor"><sp/>(len)<sp/>==<sp/>32<sp/>?<sp/>FDCAN_DLC_BYTES_32<sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="42"><highlight class="preprocessor"><sp/>(len)<sp/>==<sp/>48<sp/>?<sp/>FDCAN_DLC_BYTES_48<sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="43"><highlight class="preprocessor"><sp/>(len)<sp/>==<sp/>64<sp/>?<sp/>FDCAN_DLC_BYTES_64<sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="44"><highlight class="preprocessor"><sp/>FDCAN_DLC_BYTES_0)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight></codeline>
+<codeline lineno="49" refid="CAN__FD_8h_1a407a79d79b4ec645e2acf140bd07bbe4" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>FDCAN_BYTES_FROM_DLC(dlc)<sp/>\</highlight></codeline>
+<codeline lineno="50"><highlight class="preprocessor">((dlc)<sp/>==<sp/>FDCAN_DLC_BYTES_0<sp/><sp/>?<sp/>0<sp/><sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="51"><highlight class="preprocessor"><sp/>(dlc)<sp/>==<sp/>FDCAN_DLC_BYTES_1<sp/><sp/>?<sp/>1<sp/><sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="52"><highlight class="preprocessor"><sp/>(dlc)<sp/>==<sp/>FDCAN_DLC_BYTES_2<sp/><sp/>?<sp/>2<sp/><sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="53"><highlight class="preprocessor"><sp/>(dlc)<sp/>==<sp/>FDCAN_DLC_BYTES_3<sp/><sp/>?<sp/>3<sp/><sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="54"><highlight class="preprocessor"><sp/>(dlc)<sp/>==<sp/>FDCAN_DLC_BYTES_4<sp/><sp/>?<sp/>4<sp/><sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="55"><highlight class="preprocessor"><sp/>(dlc)<sp/>==<sp/>FDCAN_DLC_BYTES_5<sp/><sp/>?<sp/>5<sp/><sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="56"><highlight class="preprocessor"><sp/>(dlc)<sp/>==<sp/>FDCAN_DLC_BYTES_6<sp/><sp/>?<sp/>6<sp/><sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="57"><highlight class="preprocessor"><sp/>(dlc)<sp/>==<sp/>FDCAN_DLC_BYTES_7<sp/><sp/>?<sp/>7<sp/><sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="58"><highlight class="preprocessor"><sp/>(dlc)<sp/>==<sp/>FDCAN_DLC_BYTES_8<sp/><sp/>?<sp/>8<sp/><sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="59"><highlight class="preprocessor"><sp/>(dlc)<sp/>==<sp/>FDCAN_DLC_BYTES_12<sp/>?<sp/>12<sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="60"><highlight class="preprocessor"><sp/>(dlc)<sp/>==<sp/>FDCAN_DLC_BYTES_16<sp/>?<sp/>16<sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="61"><highlight class="preprocessor"><sp/>(dlc)<sp/>==<sp/>FDCAN_DLC_BYTES_20<sp/>?<sp/>20<sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="62"><highlight class="preprocessor"><sp/>(dlc)<sp/>==<sp/>FDCAN_DLC_BYTES_24<sp/>?<sp/>24<sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="63"><highlight class="preprocessor"><sp/>(dlc)<sp/>==<sp/>FDCAN_DLC_BYTES_32<sp/>?<sp/>32<sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="64"><highlight class="preprocessor"><sp/>(dlc)<sp/>==<sp/>FDCAN_DLC_BYTES_48<sp/>?<sp/>48<sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="65"><highlight class="preprocessor"><sp/>(dlc)<sp/>==<sp/>FDCAN_DLC_BYTES_64<sp/>?<sp/>64<sp/>:<sp/>\</highlight></codeline>
+<codeline lineno="66"><highlight class="preprocessor"><sp/>0)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight></codeline>
+<codeline lineno="80" refid="CAN__FD_8h_1ace263a51895d019f75a4cb6793abf6ac" refkind="member"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN__FD_8h_1ace263a51895d019f75a4cb6793abf6ac" kindref="member">can_fd_init</ref>(FDCAN_HandleTypeDef*<sp/>handle,<sp/>FDCAN_FilterTypeDef*<sp/>filter);</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"></highlight></codeline>
+<codeline lineno="91" refid="CAN__FD_8h_1a3c9b9d35e473506c11ebabd44210bcc3" refkind="member"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN__FD_8h_1a3c9b9d35e473506c11ebabd44210bcc3" kindref="member">can_fd_deinit</ref>(FDCAN_HandleTypeDef*<sp/>handle);</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"></highlight></codeline>
+<codeline lineno="102" refid="CAN__FD_8h_1aba1a4136e01207ba7cccb5d2e0994276" refkind="member"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN__FD_8h_1aba1a4136e01207ba7cccb5d2e0994276" kindref="member">can_fd_start</ref>(FDCAN_HandleTypeDef*<sp/>handle);</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"></highlight></codeline>
+<codeline lineno="118" refid="CAN__FD_8h_1a97b6f4d9057d197886b2af512cbbccc4" refkind="member"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN__FD_8h_1a97b6f4d9057d197886b2af512cbbccc4" kindref="member">can_fd_send</ref>(FDCAN_HandleTypeDef*<sp/>handle,<sp/>FDCAN_TxHeaderTypeDef*<sp/>header,<sp/>uint8_t<sp/>data[],</highlight></codeline>
+<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
+<codeline lineno="133" refid="CAN__FD_8h_1af9312a3cd86bb0ac7affae8fa1405c50" refkind="member"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN__FD_8h_1af9312a3cd86bb0ac7affae8fa1405c50" kindref="member">can_fd_send_isr</ref>(FDCAN_HandleTypeDef*<sp/>handle,<sp/>FDCAN_TxHeaderTypeDef*<sp/>header,<sp/></highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint8_t<sp/>data[],<sp/>BaseType_t*<sp/>higherPriorityTaskWoken);</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"></highlight></codeline>
+<codeline lineno="152" refid="CAN__FD_8h_1a5c6036eb5103092e8c3c4f1c0b3066fb" refkind="member"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/><ref refid="CAN__FD_8h_1a5c6036eb5103092e8c3c4f1c0b3066fb" kindref="member">can_fd_recv</ref>(FDCAN_HandleTypeDef*<sp/>handle,<sp/>uint32_t<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,<sp/>FDCAN_RxHeaderTypeDef*<sp/>header,</highlight></codeline>
+<codeline lineno="153"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint8_t<sp/>data[],<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
+<codeline lineno="154"><highlight class="normal"></highlight></codeline>
+<codeline lineno="155"><highlight class="normal"></highlight></codeline>
+<codeline lineno="156"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>(configUSE_QUEUE_SETS<sp/>==<sp/>1)</highlight></codeline>
+<codeline lineno="167"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/>can_fd_register_id_set(FDCAN_HandleTypeDef*<sp/>handle,<sp/>can_id_set_t*<sp/>set);</highlight></codeline>
+<codeline lineno="168"><highlight class="normal"></highlight></codeline>
+<codeline lineno="180"><highlight class="normal"><ref refid="CAN__Common_8h_1a507b4ed3fc531e0c40aa8812174e3e1d" kindref="member">can_status_t</ref><sp/>can_fd_recv_set(FDCAN_HandleTypeDef*<sp/>handle,<sp/>can_id_set_t*<sp/>set,<sp/>uint32_t*<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">,</highlight></codeline>
+<codeline lineno="181"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
+<codeline lineno="182"><highlight class="normal"></highlight></codeline>
+<codeline lineno="183"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>(<sp/>configUSE_QUEUE_SETS<sp/>==<sp/>1<sp/>)<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="184"><highlight class="normal"></highlight></codeline>
+<codeline lineno="185" refid="CAN__FD_8h_1ad150cda00c529bf5f256d6c49525c199" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="CAN__FD_8h_1ad150cda00c529bf5f256d6c49525c199" kindref="member">can_fd_tx_callback_hook</ref>(FDCAN_HandleTypeDef*<sp/>hfdcan,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="structcan__tx__payload__t" kindref="compound">can_tx_payload_t</ref>*<sp/>payload);</highlight></codeline>
+<codeline lineno="186"><highlight class="normal"></highlight></codeline>
+<codeline lineno="187" refid="CAN__FD_8h_1af052a1ab45f4b3f7698a6081cbec3181" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="CAN__FD_8h_1af052a1ab45f4b3f7698a6081cbec3181" kindref="member">can_fd_rx_callback_hook</ref>(FDCAN_HandleTypeDef*<sp/>hfdcan,<sp/>uint32_t<sp/>RxFifo0ITs,</highlight></codeline>
+<codeline lineno="188"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structcan__rx__payload__t" kindref="compound">can_rx_payload_t</ref><sp/>recv_payload);</highlight></codeline>
     </programlisting>
     <location file="bsp/Inc/CAN_FD.h"/>
   </compounddef>
