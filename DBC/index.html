@@ -2177,7 +2177,7 @@
 <td>Std</td>
 <td>Pedal_Status</td>
 <td>6</td>
-<td>AccelPedal_Main_Pos, AccelPedal_Redundant_Pos, BrakePedal_Main_Pos, BrakePedal_Redundant_Pos, AccelPedal_Main_Fault, AccelPedal_Redundant_Fault, BrakePedal_Main_Fault, BrakePedal_Redundant_Fault, FrameID_Pedals</td>
+<td>AccelPedal_Main_Pos, AccelPedal_Redundant_Pos, BrakePedal_Main_Pos, BrakePedal_Redundant_Pos, AccelPedal_Main_Fault, AccelPedal_Redundant_Fault, BrakePedal_Main_Fault, BrakePedal_Redundant_Fault, Brake_Pressure_1_Fault, Brake_Pressure_2_Fault, FrameID_Pedals</td>
 </tr>
 <tr>
 <td>0x060</td>
@@ -2400,15 +2400,15 @@
 <td>0x650</td>
 <td>Std</td>
 <td>Brake_Pressure_1</td>
-<td>6</td>
-<td>Brake_Pressure, Brake_Pressure_RawV, Brake_Pressure_Fault, FrameID_Pedals</td>
+<td>5</td>
+<td>Brake_Pressure, Brake_Pressure_RawV, FrameID_Pedals</td>
 </tr>
 <tr>
 <td>0x651</td>
 <td>Std</td>
 <td>Brake_Pressure_2</td>
-<td>6</td>
-<td>Brake_Pressure, Brake_Pressure_RawV, Brake_Pressure_Fault, FrameID_Pedals</td>
+<td>5</td>
+<td>Brake_Pressure, Brake_Pressure_RawV, FrameID_Pedals</td>
 </tr>
 <tr>
 <td>0x680</td>
@@ -3262,6 +3262,28 @@
 <td>BrakePedal_Redundant_Fault</td>
 <td>Pedal_Status</td>
 <td>[35:35]</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr>
+<td>Brake_Pressure_1_Fault</td>
+<td>Pedal_Status</td>
+<td>[36:36]</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>None</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr>
+<td>Brake_Pressure_2_Fault</td>
+<td>Pedal_Status</td>
+<td>[37:37]</td>
 <td>1</td>
 <td>1</td>
 <td>0</td>
@@ -4447,20 +4469,9 @@
 <td>V</td>
 </tr>
 <tr>
-<td>Brake_Pressure_Fault</td>
-<td>Brake_Pressure_1</td>
-<td>[32:32]</td>
-<td>1</td>
-<td>1</td>
-<td>0</td>
-<td>None</td>
-<td>None</td>
-<td></td>
-</tr>
-<tr>
 <td>FrameID_Pedals</td>
 <td>Brake_Pressure_1</td>
-<td>[40:47]</td>
+<td>[32:39]</td>
 <td>8</td>
 <td>1</td>
 <td>0</td>
@@ -4491,20 +4502,9 @@
 <td>V</td>
 </tr>
 <tr>
-<td>Brake_Pressure_Fault</td>
-<td>Brake_Pressure_2</td>
-<td>[32:32]</td>
-<td>1</td>
-<td>1</td>
-<td>0</td>
-<td>None</td>
-<td>None</td>
-<td></td>
-</tr>
-<tr>
 <td>FrameID_Pedals</td>
 <td>Brake_Pressure_2</td>
-<td>[40:47]</td>
+<td>[32:39]</td>
 <td>8</td>
 <td>1</td>
 <td>0</td>
