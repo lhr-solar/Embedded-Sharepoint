@@ -34,47 +34,48 @@ NS_ :
 BS_:
 
 BU_: Elcon ChargerInterface
-VAL_TABLE_ Elcon_MuxPage 5 "Page 5" 4 "Page 4" 3 "Page 3" 2 "Page 2" 1 "Page 1" ;
-VAL_TABLE_ Generic_OK 1 "OK" 0 "NOT OK" ;
-VAL_TABLE_ Generic_Fault 1 "FAULT" 0 "OK" ;
-VAL_TABLE_ BPS_Fault 17 "Discharging Overcurrent" 16 "Charging Overcurrent" 15 "Estop 3" 14 "Estop 2" 13 "Estop 1" 12 "Array Pchg Contactor Sense" 11 "Array Contactor Sense" 10 "HV Minus Contactor Sense" 9 "HV Plus Contactor Sense" 8 "Segment Watchdog" 7 "Internal Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "OK" 18 "Amperes Watchdog" ;
+VAL_TABLE_ Elcon_MuxPage 1 "Page 1" 2 "Page 2" 3 "Page 3" 4 "Page 4" 5 "Page 5" ;
+VAL_TABLE_ Generic_OK 0 "NOT OK" 1 "OK" ;
+VAL_TABLE_ Generic_Fault 0 "OK" 1 "FAULT" ;
 
+
+BO_ 2550588916 Elcon_Control: 5 ChargerInterface
+ SG_ Elcon_VOL_SET : 7|16@0+ (0.1,0) [0|6553.5] "V" Vector__XXX
+ SG_ Elcon_CUR_SET : 23|16@0+ (0.1,0) [0|6553.5] "A" Vector__XXX
+ SG_ Elcon_CONTROL_FLAG : 39|8@0+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 2550589172 Elcon_Control_Mux: 8 ChargerInterface
+ SG_ Elcon_AH_NOMINAL m2 : 7|16@0+ (0.1,0) [0|6553.5] "Ah" Vector__XXX
+ SG_ Elcon_BATTERY_VOL m4 : 7|16@0+ (0.1,0) [0|6553.5] "V" Vector__XXX
+ SG_ Elcon_MAX_CELL_VOL m3 : 7|16@0+ (0.001,0) [0|6553.5] "V" Vector__XXX
+ SG_ Elcon_NUM_CELLS_EXT m5 : 7|8@0+ (1,0) [0|255] "" Vector__XXX
+ SG_ Elcon_VOL_SET m1 : 7|16@0+ (0.1,0) [0|6553.5] "V" Vector__XXX
+ SG_ Elcon_AH_ACTUAL m2 : 23|16@0+ (0.1,0) [0|6553.5] "Ah" Vector__XXX
+ SG_ Elcon_BATTERY_CHARGE_CUR m4 : 23|16@0+ (0.1,0) [0|6553.5] "A" Vector__XXX
+ SG_ Elcon_CUR_SET m1 : 23|16@0+ (0.1,0) [0|6553.5] "A" Vector__XXX
+ SG_ Elcon_MIN_CELL_VOL m3 : 23|16@0+ (0.001,0) [0|6553.5] "V" Vector__XXX
+ SG_ Elcon_BATTERY_SOC m4 : 39|8@0+ (1,0) [0|100] "%" Vector__XXX
+ SG_ Elcon_CELL_OV_THRESH m2 : 39|16@0+ (0.001,0) [0|6553.5] "V" Vector__XXX
+ SG_ Elcon_CELL_UV_THRESH m3 : 39|16@0+ (0.001,0) [0|6553.5] "V" Vector__XXX
+ SG_ Elcon_CONTROL_FLAG m1 : 39|8@0+ (1,0) [0|255] "" Vector__XXX
+ SG_ Elcon_DISCUR_MAX m1 : 47|8@0+ (10,0) [0|2550] "A" Vector__XXX
+ SG_ Elcon_TEMP_MAX m4 : 47|8@0+ (1,-100) [0|255] "Â°C" Vector__XXX
+ SG_ Elcon_BATTERY_STATE_OV m3 : 48|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ Elcon_BATTERY_STATE_UV m3 : 49|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ Elcon_NUM_CELLS m2 : 55|8@0+ (1,0) [0|255] "" Vector__XXX
+ SG_ Elcon_TEMP_MIN m4 : 55|8@0+ (1,-100) [0|255] "Â°C" Vector__XXX
+ SG_ Elcon_MuxPage M : 63|8@0+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2566869221 Elcon_CCS_Status: 5 Elcon
  SG_ Elcon_VOL_OUT : 7|16@0+ (0.1,0) [0|6553.5] "V" Vector__XXX
- SG_ Elcon_START_STATE : 35|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ Elcon_CUR_OUT : 23|16@0+ (0.1,0) [0|6553.5] "A" Vector__XXX
+ SG_ Elcon_HW_FAULT : 32|1@0+ (1,0) [0|1] "" Vector__XXX
  SG_ Elcon_OVER_TEMPERATURE : 33|1@0+ (1,0) [0|1] "" Vector__XXX
  SG_ Elcon_INPUT_VOL_ERROR : 34|1@0+ (1,0) [0|1] "" Vector__XXX
- SG_ Elcon_HW_FAULT : 32|1@0+ (1,0) [0|1] "" Vector__XXX
- SG_ Elcon_CUR_OUT : 23|16@0+ (0.1,0) [0|6553.5] "A" Vector__XXX
+ SG_ Elcon_START_STATE : 35|1@0+ (1,0) [0|1] "" Vector__XXX
  SG_ Elcon_CMD_TIMEOUT : 36|1@0+ (1,0) [0|1] "" Vector__XXX
 
-BO_ 2550589172 Elcon_Control_Mux: 8 ChargerInterface
- SG_ Elcon_NUM_CELLS_EXT m5 : 7|8@0+ (1,0) [0|255] "" Vector__XXX
- SG_ Elcon_TEMP_MIN m4 : 55|8@0+ (1,-100) [0|255] "°C" Vector__XXX
- SG_ Elcon_TEMP_MAX m4 : 47|8@0+ (1,-100) [0|255] "°C" Vector__XXX
- SG_ Elcon_BATTERY_VOL m4 : 7|16@0+ (0.1,0) [0|6553.5] "V" Vector__XXX
- SG_ Elcon_BATTERY_SOC m4 : 39|8@0+ (1,0) [0|100] "%" Vector__XXX
- SG_ Elcon_BATTERY_CHARGE_CUR m4 : 23|16@0+ (0.1,0) [0|6553.5] "A" Vector__XXX
- SG_ Elcon_VOL_SET m1 : 7|16@0+ (0.1,0) [0|6553.5] "V" Vector__XXX
- SG_ Elcon_NUM_CELLS m2 : 55|8@0+ (1,0) [0|255] "" Vector__XXX
- SG_ Elcon_MIN_CELL_VOL m3 : 23|16@0+ (0.001,0) [0|6553.5] "V" Vector__XXX
- SG_ Elcon_MAX_CELL_VOL m3 : 7|16@0+ (0.001,0) [0|6553.5] "V" Vector__XXX
- SG_ Elcon_DISCUR_MAX m1 : 47|8@0+ (10,0) [0|2550] "A" Vector__XXX
- SG_ Elcon_CUR_SET m1 : 23|16@0+ (0.1,0) [0|6553.5] "A" Vector__XXX
- SG_ Elcon_CONTROL_FLAG m1 : 39|8@0+ (1,0) [0|255] "" Vector__XXX
- SG_ Elcon_CELL_UV_THRESH m3 : 39|16@0+ (0.001,0) [0|6553.5] "V" Vector__XXX
- SG_ Elcon_CELL_OV_THRESH m2 : 39|16@0+ (0.001,0) [0|6553.5] "V" Vector__XXX
- SG_ Elcon_BATTERY_STATE_UV m3 : 49|1@0+ (1,0) [0|1] "" Vector__XXX
- SG_ Elcon_BATTERY_STATE_OV m3 : 48|1@0+ (1,0) [0|1] "" Vector__XXX
- SG_ Elcon_AH_NOMINAL m2 : 7|16@0+ (0.1,0) [0|6553.5] "Ah" Vector__XXX
- SG_ Elcon_AH_ACTUAL m2 : 23|16@0+ (0.1,0) [0|6553.5] "Ah" Vector__XXX
- SG_ Elcon_MuxPage M : 63|8@0+ (1,0) [0|255] "" Vector__XXX
 
-BO_ 2550588916 Elcon_Control: 5 ChargerInterface
- SG_ Elcon_CONTROL_FLAG : 39|8@0+ (1,0) [0|255] "" Vector__XXX
- SG_ Elcon_VOL_SET : 7|16@0+ (0.1,0) [0|6553.5] "V" Vector__XXX
- SG_ Elcon_CUR_SET : 23|16@0+ (0.1,0) [0|6553.5] "A" Vector__XXX
 
 
 
@@ -95,12 +96,15 @@ BA_DEF_DEF_  "BusType" "";
 BA_ "MultiplexExtEnabled" 1;
 BA_ "BusType" "CAN";
 BA_ "DBName" "ElconCAN";
-BA_ "VFrameFormat" BO_ 2566869221 3;
-BA_ "VFrameFormat" BO_ 2550589172 3;
 BA_ "VFrameFormat" BO_ 2550588916 3;
-VAL_ 2566869221 Elcon_START_STATE 1 "OK" 0 "NOT OK" ;
-VAL_ 2566869221 Elcon_OVER_TEMPERATURE 17 "Discharging Overcurrent" 16 "Charging Overcurrent" 15 "Estop 3" 14 "Estop 2" 13 "Estop 1" 12 "Array Pchg Contactor Sense" 11 "Array Contactor Sense" 10 "HV Minus Contactor Sense" 9 "HV Plus Contactor Sense" 8 "Segment Watchdog" 7 "Internal Watchdog" 6 "Array Precharge Timeout" 5 "Elcon" 4 "Overtemperature" 3 "Regen" 2 "Undervoltage" 1 "Overvoltage" 0 "OK" 18 "Amperes Watchdog" ;
-VAL_ 2566869221 Elcon_INPUT_VOL_ERROR 1 "FAULT" 0 "OK" ;
-VAL_ 2566869221 Elcon_HW_FAULT 1 "FAULT" 0 "OK" ;
-VAL_ 2566869221 Elcon_CMD_TIMEOUT 1 "OK" 0 "NOT OK" ;
-VAL_ 2550589172 Elcon_MuxPage 5 "Page 5" 4 "Page 4" 3 "Page 3" 2 "Page 2" 1 "Page 1" ;
+BA_ "VFrameFormat" BO_ 2550589172 3;
+BA_ "VFrameFormat" BO_ 2566869221 3;
+VAL_ 2550589172 Elcon_MuxPage 1 "Page 1" 2 "Page 2" 3 "Page 3" 4 "Page 4" 5 "Page 5" ;
+VAL_ 2566869221 Elcon_HW_FAULT 0 "OK" 1 "FAULT" ;
+VAL_ 2566869221 Elcon_OVER_TEMPERATURE 0 "OK" 1 "FAULT" ;
+VAL_ 2566869221 Elcon_INPUT_VOL_ERROR 0 "OK" 1 "FAULT" ;
+VAL_ 2566869221 Elcon_START_STATE 0 "NOT OK" 1 "OK" ;
+VAL_ 2566869221 Elcon_CMD_TIMEOUT 0 "NOT OK" 1 "OK" ;
+
+
+
