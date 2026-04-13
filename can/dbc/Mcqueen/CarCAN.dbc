@@ -56,7 +56,6 @@ VAL_TABLE_ MPPT_Fault 0 "OK" 1 "Configuration Error" 2 "Input Over Voltage" 3 "O
 VAL_TABLE_ MPPT_Mode 0 "Constant Input Voltage" 1 "Constant Input Current" 2 "Minimum Input Current" 3 "Constant Output Voltage" 4 "Constant Output Current" 5 "Temperature De-Rating" 6 "FAULT" ;
 VAL_TABLE_ BPS_Fault 0 "OK" 1 "Overvoltage" 2 "Undervoltage" 3 "Regen" 4 "Overtemperature" 5 "Elcon" 6 "Array Precharge Timeout" 7 "Internal Watchdog" 8 "Segment Watchdog" 9 "HV Plus Contactor Sense" 10 "HV Minus Contactor Sense" 11 "Array Contactor Sense" 12 "Array Pchg Contactor Sense" 13 "Estop 1" 14 "Estop 2" 15 "Estop 3" 16 "Charging Overcurrent" 17 "Discharging Overcurrent" 18 "Amperes Watchdog" ;
 VAL_TABLE_ Controls_Leader_Fault 0 "OK" 1 "Bosch LWS Watchdog" 2 "BPS Watchdog" 3 "Invalid Driver Inputs" 4 "Lighting Board Fault" 5 "Lighting Board Watchdog" ;
-VAL_TABLE_ VCU_Fault 0 "No Fault" 1 "Motor Contactor Sense" 2 "Motor Pchg Contactor Sense" 3 "Motor Precharge Timeout" 4 "Motor Controller Fault" 5 "Motor HV Overvoltage" 6 "Motor HV Undervoltage" ;
 VAL_TABLE_ HSS_SetState 0 "Do Nothing" 1 "Toggle On" 2 "Toggle Off" ;
 
 
@@ -102,27 +101,46 @@ BO_ 14 ChargerInterface_Status: 5 ChargerInterface
  SG_ Elcon_CMD_TIMEOUT : 36|1@0+ (1,0) [0|1] "" Vector__XXX
  SG_ Elcon_Watchdog : 37|1@0+ (1,0) [0|1] "" Vector__XXX
 
-BO_ 24 VCU_Status: 4 VCU
- SG_ VCU_Fault : 0|8@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Motor_Contactor_State : 8|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Motor_Precharge_Contactor_State : 9|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ Motor_Ready : 10|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ VCU_Driver_Input_OK : 11|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ VCU_Pedals_OK : 12|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ VCU_Regen_OK : 13|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ VCU_Regen_Active : 14|1@1+ (1,0) [0|0] "" Vector__XXX
- SG_ VCU_Steering_Angle_OK : 15|1@1+ (1,0) [0|1] "" Vector__XXX
+BO_ 24 VCU_Status: 6 VCU
+ SG_ VCU_FSM_State : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ Motor_Ready : 4|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Motor_Precharge_Contactor_State : 5|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Motor_Contactor_State : 6|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ VCU_Driver_Input_Watchdog : 7|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ VCU_Pedals_Watchdog : 8|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ VCU_BPS_Watchdog : 9|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ VCU_Steering_Angle_Watchdog : 10|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_BPS_FAULT_DETECTED : 11|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_CONTROLS_FAULT_DETECTED : 12|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_MTR_FAULT_DETECTED : 13|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_PEDALS_FAULT_DETECTED : 14|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_STEERING_FAULT_DETECTED : 15|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ VCU_MotorCommandSource : 16|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ VCU_FSM_State : 19|4@1+ (1,0) [0|15] "" Vector__XXX
- SG_ VCU_FSM_IN_PCHG_OK : 23|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ VCU_FSM_IN_BRAKE : 24|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ VCU_FSM_IN_FORWARD : 25|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ VCU_FSM_IN_NEUTRAL : 26|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ VCU_FSM_IN_REVERSE : 27|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ VCU_FSM_IN_REGEN_RDY : 28|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ VCU_FSM_IN_REGEN_ENABLE : 29|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ VCU_FSM_IN_CRUISE_REQ : 30|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ VCU_FSM_IN_REGEN_REQ : 31|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_Regen_Active : 17|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ VCU_Regen_OK : 18|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ VCU_MTR_PCHG_TIMEOUT : 19|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_MTR_PCHG_CONT_TIMEOUT : 20|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_MTR_PCHG_CONT_MISMATCH : 21|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_MTR_CONT_MISMATCH : 22|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_MTR_CONT_TIMEOUT : 23|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_PCHG_OV : 24|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_PCHG_UV : 25|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_MTR_OV : 26|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_MTR_UV : 27|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_OTHER_FAULT : 28|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_MTR_DIR_CHANGE_LOCKOUT : 29|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_TIPPING_WARNING : 30|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_WARN_REGEN_NOT_ALLOW : 31|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_WARN_REGEN_NOT_EN : 32|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_FSM_INP_BRAKE : 33|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_FSM_INP_PCHG_OK : 34|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_FSM_INP_CRUISE_REQ : 35|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_FSM_INP_REGEN_REQ : 36|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_FSM_INP_REGEN_ENABLE : 37|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_FSM_INP_REGEN_RDY : 38|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_FSM_INP_FORWARD : 39|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_FSM_INP_NEUTRAL : 40|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VCU_FSM_INP_REVERSE : 41|1@1+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 25 Controls_Status: 6 Controls
  SG_ Controls_Leader_Fault : 0|8@1+ (1,0) [0|0] "" Vector__XXX
@@ -378,15 +396,34 @@ CM_ SG_ 11 BPS_Voltage_Tap_Data "Voltage tap measurement for the specified VoltT
 CM_ SG_ 11 BPS_Voltage_Tap_Fault "VoltTemp BQ Fault State (0 no fault, 1 fault)";
 CM_ SG_ 12 BPS_Temperature_Tap_Data "Temperature tap measurement for the specified VoltTemp and Tap ID";
 CM_ SG_ 12 BPS_Temperature_Tap_Fault "VoltTemp Temperature Tap Fault State (0 no fault, 1 fault)";
-CM_ SG_ 24 VCU_Fault "VCU Fault State (0 for all clear; see value table for specific faults)";
-CM_ SG_ 24 Motor_Contactor_State "Motor Main Contactor State (0 open, 1 closed)";
-CM_ SG_ 24 Motor_Precharge_Contactor_State "Motor Precharge Contactor State (0 open, 1 closed)";
-CM_ SG_ 24 Motor_Ready "VCU has determined the motor controller is ready to receive torque commands";
-CM_ SG_ 24 VCU_Driver_Input_OK "VCU is receiving valid data from driver inputs (dash/steering)";
-CM_ SG_ 24 VCU_Pedals_OK "VCU is receiving valid data from accel/brake pedal position sensors";
-CM_ SG_ 24 VCU_Regen_OK "VCU has determined regenerative braking can be applied";
-CM_ SG_ 24 VCU_Regen_Active "VCU is actively applying regenerative braking";
 CM_ SG_ 24 VCU_FSM_State "VCU finite state machine current state (TODO: value table when states finalized)";
+CM_ SG_ 24 Motor_Ready "VCU has determined the motor controller is ready to receive torque commands";
+CM_ SG_ 24 Motor_Precharge_Contactor_State "Motor Precharge Contactor State (0 open, 1 closed)";
+CM_ SG_ 24 Motor_Contactor_State "Motor Main Contactor State (0 open, 1 closed)";
+CM_ SG_ 24 VCU_Driver_Input_Watchdog "VCU is receiving valid data from driver inputs (dash/steering)";
+CM_ SG_ 24 VCU_Pedals_Watchdog "VCU is receiving valid data from accel/brake pedal position sensors";
+CM_ SG_ 24 VCU_BPS_Watchdog "VCU is receiving valid data from driver inputs (dash/steering)";
+CM_ SG_ 24 VCU_BPS_FAULT_DETECTED "VCU Fault State (0 for all clear; see value table for specific faults)";
+CM_ SG_ 24 VCU_CONTROLS_FAULT_DETECTED "VCU Fault State (0 for all clear; see value table for specific faults)";
+CM_ SG_ 24 VCU_MTR_FAULT_DETECTED "VCU Fault State (0 for all clear; see value table for specific faults)";
+CM_ SG_ 24 VCU_PEDALS_FAULT_DETECTED "VCU Fault State (0 for all clear; see value table for specific faults)";
+CM_ SG_ 24 VCU_STEERING_FAULT_DETECTED "VCU Fault State (0 for all clear; see value table for specific faults)";
+CM_ SG_ 24 VCU_Regen_Active "VCU is actively applying regenerative braking";
+CM_ SG_ 24 VCU_Regen_OK "VCU has determined regenerative braking can be applied";
+CM_ SG_ 24 VCU_MTR_PCHG_TIMEOUT "VCU Fault State (0 for all clear; see value table for specific faults)";
+CM_ SG_ 24 VCU_MTR_PCHG_CONT_TIMEOUT "VCU Fault State (0 for all clear; see value table for specific faults)";
+CM_ SG_ 24 VCU_MTR_PCHG_CONT_MISMATCH "VCU Fault State (0 for all clear; see value table for specific faults)";
+CM_ SG_ 24 VCU_MTR_CONT_MISMATCH "VCU Fault State (0 for all clear; see value table for specific faults)";
+CM_ SG_ 24 VCU_MTR_CONT_TIMEOUT "VCU Fault State (0 for all clear; see value table for specific faults)";
+CM_ SG_ 24 VCU_PCHG_OV "VCU Fault State (0 for all clear; see value table for specific faults)";
+CM_ SG_ 24 VCU_PCHG_UV "VCU Fault State (0 for all clear; see value table for specific faults)";
+CM_ SG_ 24 VCU_MTR_OV "VCU Fault State (0 for all clear; see value table for specific faults)";
+CM_ SG_ 24 VCU_MTR_UV "VCU Fault State (0 for all clear; see value table for specific faults)";
+CM_ SG_ 24 VCU_OTHER_FAULT "VCU Fault State (0 for all clear; see value table for specific faults)";
+CM_ SG_ 24 VCU_MTR_DIR_CHANGE_LOCKOUT "VCU Fault State (0 for all clear; see value table for specific faults)";
+CM_ SG_ 24 VCU_TIPPING_WARNING "VCU Fault State (0 for all clear; see value table for specific faults)";
+CM_ SG_ 24 VCU_WARN_REGEN_NOT_ALLOW "VCU Fault State (0 for all clear; see value table for specific faults)";
+CM_ SG_ 24 VCU_WARN_REGEN_NOT_EN "VCU Fault State (0 for all clear; see value table for specific faults)";
 CM_ SG_ 32 BPS_Precharge_Battery_Voltage "Battery voltage as measured by active precharge circuitry";
 CM_ SG_ 32 BPS_Precharge_Array_Voltage "Array voltage as measured by active precharge circuitry";
 CM_ SG_ 33 VCU_Precharge_Battery_Voltage "Battery voltage as measured by active precharge circuitry";
@@ -542,26 +579,45 @@ VAL_ 14 Elcon_INPUT_VOL_ERROR 0 "OK" 1 "FAULT" ;
 VAL_ 14 Elcon_START_STATE 0 "NOT OK" 1 "OK" ;
 VAL_ 14 Elcon_CMD_TIMEOUT 0 "NOT OK" 1 "OK" ;
 VAL_ 14 Elcon_Watchdog 0 "NOT OK" 1 "OK" ;
-VAL_ 24 VCU_Fault 0 "No Fault" 1 "Motor Contactor Sense" 2 "Motor Pchg Contactor Sense" 3 "Motor Precharge Timeout" 4 "Motor Controller Fault" 5 "Motor HV Overvoltage" 6 "Motor HV Undervoltage" ;
-VAL_ 24 Motor_Contactor_State 0 "Open" 1 "Closed" ;
-VAL_ 24 Motor_Precharge_Contactor_State 0 "Open" 1 "Closed" ;
-VAL_ 24 Motor_Ready 0 "NOT OK" 1 "OK" ;
-VAL_ 24 VCU_Driver_Input_OK 0 "NOT OK" 1 "OK" ;
-VAL_ 24 VCU_Pedals_OK 0 "NOT OK" 1 "OK" ;
-VAL_ 24 VCU_Regen_OK 0 "NOT OK" 1 "OK" ;
-VAL_ 24 VCU_Regen_Active 0 "Inactive" 1 "Active" ;
-VAL_ 24 VCU_Steering_Angle_OK 0 "NOT OK" 1 "OK" ;
-VAL_ 24 VCU_MotorCommandSource 0 "VCU" 1 "Tritium External" ;
 VAL_ 24 VCU_FSM_State 0 "INIT" 1 "FORWARD_DRIVE" 2 "NEUTRAL_DRIVE" 3 "REVERSE_DRIVE" 4 "REGEN" 5 "CRUISE_CONTROL" 6 "DISABLED" 7 "VEHICLE_NOT_READY" ;
-VAL_ 24 VCU_FSM_IN_PCHG_OK 0 "False" 1 "True" ;
-VAL_ 24 VCU_FSM_IN_BRAKE 0 "False" 1 "True" ;
-VAL_ 24 VCU_FSM_IN_FORWARD 0 "False" 1 "True" ;
-VAL_ 24 VCU_FSM_IN_NEUTRAL 0 "False" 1 "True" ;
-VAL_ 24 VCU_FSM_IN_REVERSE 0 "False" 1 "True" ;
-VAL_ 24 VCU_FSM_IN_REGEN_RDY 0 "False" 1 "True" ;
-VAL_ 24 VCU_FSM_IN_REGEN_ENABLE 0 "False" 1 "True" ;
-VAL_ 24 VCU_FSM_IN_CRUISE_REQ 0 "False" 1 "True" ;
-VAL_ 24 VCU_FSM_IN_REGEN_REQ 0 "False" 1 "True" ;
+VAL_ 24 Motor_Ready 0 "NOT OK" 1 "OK" ;
+VAL_ 24 Motor_Precharge_Contactor_State 0 "Open" 1 "Closed" ;
+VAL_ 24 Motor_Contactor_State 0 "Open" 1 "Closed" ;
+VAL_ 24 VCU_Driver_Input_Watchdog 0 "NOT OK" 1 "OK" ;
+VAL_ 24 VCU_Pedals_Watchdog 0 "NOT OK" 1 "OK" ;
+VAL_ 24 VCU_BPS_Watchdog 0 "NOT OK" 1 "OK" ;
+VAL_ 24 VCU_Steering_Angle_Watchdog 0 "NOT OK" 1 "OK" ;
+VAL_ 24 VCU_BPS_FAULT_DETECTED 0 "OK" 1 "FAULT" ;
+VAL_ 24 VCU_CONTROLS_FAULT_DETECTED 0 "OK" 1 "FAULT" ;
+VAL_ 24 VCU_MTR_FAULT_DETECTED 0 "OK" 1 "FAULT" ;
+VAL_ 24 VCU_PEDALS_FAULT_DETECTED 0 "OK" 1 "FAULT" ;
+VAL_ 24 VCU_STEERING_FAULT_DETECTED 0 "OK" 1 "FAULT" ;
+VAL_ 24 VCU_MotorCommandSource 0 "VCU" 1 "Tritium External" ;
+VAL_ 24 VCU_Regen_Active 0 "Inactive" 1 "Active" ;
+VAL_ 24 VCU_Regen_OK 0 "NOT OK" 1 "OK" ;
+VAL_ 24 VCU_MTR_PCHG_TIMEOUT 0 "OK" 1 "FAULT" ;
+VAL_ 24 VCU_MTR_PCHG_CONT_TIMEOUT 0 "OK" 1 "FAULT" ;
+VAL_ 24 VCU_MTR_PCHG_CONT_MISMATCH 0 "OK" 1 "FAULT" ;
+VAL_ 24 VCU_MTR_CONT_MISMATCH 0 "OK" 1 "FAULT" ;
+VAL_ 24 VCU_MTR_CONT_TIMEOUT 0 "OK" 1 "FAULT" ;
+VAL_ 24 VCU_PCHG_OV 0 "OK" 1 "FAULT" ;
+VAL_ 24 VCU_PCHG_UV 0 "OK" 1 "FAULT" ;
+VAL_ 24 VCU_MTR_OV 0 "OK" 1 "FAULT" ;
+VAL_ 24 VCU_MTR_UV 0 "OK" 1 "FAULT" ;
+VAL_ 24 VCU_OTHER_FAULT 0 "OK" 1 "FAULT" ;
+VAL_ 24 VCU_MTR_DIR_CHANGE_LOCKOUT 0 "Inactive" 1 "Active" ;
+VAL_ 24 VCU_TIPPING_WARNING 0 "Inactive" 1 "Active" ;
+VAL_ 24 VCU_WARN_REGEN_NOT_ALLOW 0 "Inactive" 1 "Active" ;
+VAL_ 24 VCU_WARN_REGEN_NOT_EN 0 "Inactive" 1 "Active" ;
+VAL_ 24 VCU_FSM_INP_BRAKE 0 "False" 1 "True" ;
+VAL_ 24 VCU_FSM_INP_PCHG_OK 0 "False" 1 "True" ;
+VAL_ 24 VCU_FSM_INP_CRUISE_REQ 0 "False" 1 "True" ;
+VAL_ 24 VCU_FSM_INP_REGEN_REQ 0 "False" 1 "True" ;
+VAL_ 24 VCU_FSM_INP_REGEN_ENABLE 0 "False" 1 "True" ;
+VAL_ 24 VCU_FSM_INP_REGEN_RDY 0 "False" 1 "True" ;
+VAL_ 24 VCU_FSM_INP_FORWARD 0 "False" 1 "True" ;
+VAL_ 24 VCU_FSM_INP_NEUTRAL 0 "False" 1 "True" ;
+VAL_ 24 VCU_FSM_INP_REVERSE 0 "False" 1 "True" ;
 VAL_ 25 Controls_Leader_Fault 0 "OK" 1 "Bosch LWS Watchdog" 2 "BPS Watchdog" 3 "Invalid Driver Inputs" 4 "Lighting Board Fault" 5 "Lighting Board Watchdog" ;
 VAL_ 25 LightingBoard_Front_Status 0 "OK" 1 "Addr LED Undercurrent" 2 "LED0 Undercurrent" 3 "LED1 Undercurrent" 4 "Addr LED Overcurrent" 5 "LED0 Overcurrent" 6 "LED1 Overcurrent" 7 "Light Command Watchdog" 8 "Watchdog" ;
 VAL_ 25 LightingBoard_Left_Status 0 "OK" 1 "Addr LED Undercurrent" 2 "LED0 Undercurrent" 3 "LED1 Undercurrent" 4 "Addr LED Overcurrent" 5 "LED0 Overcurrent" 6 "LED1 Overcurrent" 7 "Light Command Watchdog" 8 "Watchdog" ;
