@@ -639,3 +639,8 @@ void HAL_FDCAN_MspDeInit(FDCAN_HandleTypeDef* fdcanHandle) {
     HAL_NVIC_DisableIRQ(FDCAN3_IT1_IRQn);
   }
 }
+
+// Toggle LED on CAN error
+void can_fd_error_callback_hook(FDCAN_HandleTypeDef* hfdcan, uint32_t ErrorStatusITs) {
+  HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
+}
