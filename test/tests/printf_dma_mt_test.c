@@ -6,6 +6,8 @@
 StaticTask_t initTaskBuffer;
 StackType_t initTaskStack[configMINIMAL_STACK_SIZE];
 
+DMA_HandleTypeDef hdma_usart2_tx;
+
 void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
     GPIO_InitTypeDef init = {0};
     UNUSED(init);
@@ -59,6 +61,12 @@ void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
 
 }
 
+#ifdef STM32F4xx
+void DMA1_Stream6_IRQHandler(void){
+  HAL_DMA_IRQHandler(&hdma_usart2_tx);
+}
+
+#endif
 #define THREAD_COUNT 15
 #define DUMP_SIZE 100
 
@@ -114,6 +122,14 @@ void DWT_Init(void)
 
 void InitTask(void *argument){
 #ifdef STM32F4xx
+    /* DMA controller clock enable */
+    __HAL_RCC_DMA1_CLK_ENABLE();
+
+    /* DMA interrupt init */
+    /* DMA1_Stream6_IRQn interrupt configuration */
+    HAL_NVIC_SetPriority(DMA1_Stream6_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(DMA1_Stream6_IRQn);
+
     husart2->Init.BaudRate = 115200;
     husart2->Init.WordLength = UART_WORDLENGTH_8B;
     husart2->Init.StopBits = UART_STOPBITS_1;
@@ -121,7 +137,19 @@ void InitTask(void *argument){
     husart2->Init.Mode = UART_MODE_TX_RX;
     husart2->Init.HwFlowCtl = UART_HWCONTROL_NONE;
     husart2->Init.OverSampling = UART_OVERSAMPLING_16;
-    printf_init(husart2);
+
+    hdma_usart2_tx.Instance = DMA1_Stream6;
+    hdma_usart2_tx.Init.Channel = DMA_CHANNEL_4;
+    hdma_usart2_tx.Init.Direction = DMA_MEMORY_TO_PERIPH;
+    hdma_usart2_tx.Init.PeriphInc = DMA_PINC_DISABLE;
+    hdma_usart2_tx.Init.MemInc = DMA_MINC_ENABLE;
+    hdma_usart2_tx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+    hdma_usart2_tx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
+    hdma_usart2_tx.Init.Mode = DMA_NORMAL;
+    hdma_usart2_tx.Init.Priority = DMA_PRIORITY_LOW;
+    hdma_usart2_tx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+
+    printf_init(husart2, &hdma_usart2_tx);
 #endif
 
 #ifdef STM32G4xx

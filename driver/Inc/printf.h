@@ -14,4 +14,4 @@
 int printf(const char *fmt, ...);
 int snprintf(char *buffer, size_t bufsz, char const *fmt, ...);
 
-bool printf_init(UART_HandleTypeDef *huart);
+bool printf_init(UART_HandleTypeDef *huart, DMA_HandleTypeDef *hdma_uart_tx);
