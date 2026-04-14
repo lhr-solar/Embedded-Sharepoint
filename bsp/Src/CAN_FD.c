@@ -120,8 +120,8 @@ can_status_t can_fd_start(FDCAN_HandleTypeDef* handle) {
         return CAN_ERR;
     }
 
-    // Interrupt triggers when a new message in the rx fifo, and when a tranmission is complete
-    if (HAL_FDCAN_ActivateNotification(handle, FDCAN_IT_RX_FIFO0_NEW_MESSAGE | FDCAN_IT_TX_COMPLETE,
+    // Interrupt triggers when a new message arrives in the rx fifo, a tranmission is complete, or the FDCAN peripheral experiences a Bus-Off event
+    if (HAL_FDCAN_ActivateNotification(handle, FDCAN_IT_RX_FIFO0_NEW_MESSAGE | FDCAN_IT_TX_COMPLETE | FDCAN_IT_BUS_OFF,
                                        0) != HAL_OK) {
         return CAN_ERR;
     }
@@ -534,6 +534,15 @@ void HAL_FDCAN_TxBufferCompleteCallback(FDCAN_HandleTypeDef* hfdcan, uint32_t Bu
 #endif
  
     portYIELD_FROM_ISR(higherPriorityTaskWoken);
+}
+
+// Automatically recover from Bus-Off event
+void HAL_FDCAN_ErrorStatusCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStatusITs)
+{
+    if ((ErrorStatusITs & FDCAN_IT_BUS_OFF) != 0)  // If Bus-Off error occurred
+    {
+        hfdcan->Instance->CCCR &= ~FDCAN_CCCR_INIT;  // Clear INIT bit to recover from Bus-Off
+    }
 }
 
 // defintions of FDCAN interrupt handlers

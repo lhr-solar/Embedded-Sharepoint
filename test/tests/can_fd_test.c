@@ -308,7 +308,7 @@ int main(void) {
   // internal loopback shorts the CAN RX and TX internally.
   // In production, this should be set to FDCAN_MODE_NORMAL
   hfdcan1->Init.Mode = FDCAN_MODE_NORMAL;
-  hfdcan1->Init.AutoRetransmission = DISABLE;
+  hfdcan1->Init.AutoRetransmission = ENABLE;
   hfdcan1->Init.TransmitPause = DISABLE;
   hfdcan1->Init.ProtocolException = DISABLE;
   hfdcan1->Init.NominalPrescaler = 20;
@@ -359,7 +359,7 @@ int main(void) {
   // internal loopback shorts the CAN RX and TX internally.
   // In production, this should be set to FDCAN_MODE_NORMAL
   hfdcan2->Init.Mode = FDCAN_MODE_INTERNAL_LOOPBACK;
-  hfdcan2->Init.AutoRetransmission = DISABLE;
+  hfdcan2->Init.AutoRetransmission = ENABLE;
   hfdcan2->Init.TransmitPause = DISABLE;
   hfdcan2->Init.ProtocolException = DISABLE;
   hfdcan2->Init.NominalPrescaler = 20;
@@ -411,7 +411,7 @@ int main(void) {
   // internal loopback shorts the CAN RX and TX internally.
   // In production, this should be set to FDCAN_MODE_NORMAL
   hfdcan3->Init.Mode = FDCAN_MODE_INTERNAL_LOOPBACK;
-  hfdcan3->Init.AutoRetransmission = DISABLE;
+  hfdcan3->Init.AutoRetransmission = ENABLE;
   hfdcan3->Init.TransmitPause = DISABLE;
   hfdcan3->Init.ProtocolException = DISABLE;
   hfdcan3->Init.NominalPrescaler = 20;
