@@ -536,11 +536,18 @@ void HAL_FDCAN_TxBufferCompleteCallback(FDCAN_HandleTypeDef* hfdcan, uint32_t Bu
     portYIELD_FROM_ISR(higherPriorityTaskWoken);
 }
 
+__weak void can_fd_error_callback_hook(FDCAN_HandleTypeDef* hfdcan, uint32_t ErrorStatusITs) {
+    /* Prevent unused argument(s) compilation warning */
+    UNUSED(hfdcan);
+    UNUSED(ErrorStatusITs);
+}
+
 // Automatically recover from Bus-Off event
 void HAL_FDCAN_ErrorStatusCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStatusITs) {
     if ((ErrorStatusITs & FDCAN_IT_BUS_OFF) != 0) { // If Bus-Off error occurred
         hfdcan->Instance->CCCR &= ~FDCAN_CCCR_INIT; // Clear INIT bit to recover from Bus-Off
     }
+    can_fd_error_callback_hook(hfdcan, ErrorStatusITs);
 }
 
 // defintions of FDCAN interrupt handlers
