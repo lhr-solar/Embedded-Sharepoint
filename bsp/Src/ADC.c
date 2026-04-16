@@ -47,13 +47,17 @@ adc_status_t adc_deinit(ADC_HandleTypeDef *h) {
     if (HAL_ADC_DeInit(h) != HAL_OK) return ADC_DEINIT_FAIL;
 
     return ADC_OK;
-} 
+}
 
+uint32_t adc_get_vref(void) {
+    // this wasn't my doing
+    return ADC_CHANNEL_VREFINT;
+}
 
 adc_status_t adc_read(ADC_HandleTypeDef *h, ADC_ChannelConfTypeDef* sConfig, QueueHandle_t q) {
     if (sConfig == NULL || h == NULL || q == NULL) {
         return ADC_CHANNEL_CONFIG_FAIL;
-    }
+    }   
 
     // BSP only configures channel ranks 
     #if defined(STM32F4xx)

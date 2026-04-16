@@ -102,6 +102,9 @@ void TestADC1(void *pvParameters) {
     #endif
     };
 
+    // read reference voltage
+    volatile uint32_t vref=adc_get_vref();
+
     // read once
     for (int i = 0; i < 10; i++) {
         adc_status_t stat = adc_read(hadc1, &sConfig, xReadings);
@@ -111,9 +114,13 @@ void TestADC1(void *pvParameters) {
         }
     }
 
+    volatile uint32_t scaled_reading;
     for (int i = 0; i < 10; i++) {
         xQueueReceive(xReadings, &reading, 0);
     }
+
+    UNUSED(vref);
+    UNUSED(scaled_reading);
     
     success_handler();
 }

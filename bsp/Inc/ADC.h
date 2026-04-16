@@ -114,4 +114,23 @@ adc_status_t adc_read(ADC_HandleTypeDef *h, ADC_ChannelConfTypeDef* sConfig, Que
  */
 adc_status_t adc_deinit(ADC_HandleTypeDef *h);
 
+/**
+ * @brief Returns the ADC reference voltage.
+ *
+ * This function retrieves the reference voltage (Vref) used by the ADC
+ * for conversion scaling. The value represents the voltage against which
+ * all ADC input measurements are compared.
+ *
+ * @note The returned value is typically in millivolts (mV), but this depends
+ *       on the implementation. Ensure unit consistency when using it in
+ *       calculations.
+ *
+ * @return uint32_t
+ *         The ADC reference voltage value.
+ *
+ * @warning The ADC must be initialized and properly configured before
+ *          calling this function, otherwise the returned value may be invalid.
+ */
+uint32_t adc_get_vref(void);
+
 #endif

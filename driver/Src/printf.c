@@ -23,7 +23,7 @@ int __io_getchar() {
     return -1;
 }
 
-// Called by _write in syscalls.c
+// Called by _write in syscalls.c   
 int __io_putchar(int data) {
     if (printf_huart != NULL) {
         uart_status_t ret = uart_send(printf_huart, (const uint8_t *)&data, 1, portMAX_DELAY);

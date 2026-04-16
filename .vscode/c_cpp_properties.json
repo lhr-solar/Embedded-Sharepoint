@@ -1,14 +1,32 @@
 {
     "configurations": [
         {
-            "name": "Linux",
+            "name": "Linux-ARM",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",                 // Your project headers
+                "/usr/include",                          // System headers
+                "/usr/local/include",                    // Extra system headers
+                "/opt/arm-toolchain/include"             // Toolchain headers (adjust path)
             ],
-            "defines": [],
+            "defines": [
+                "STM32F407xx",                           // Example MCU macro, adjust as needed
+                "USE_HAL_DRIVER",                        // HAL driver macro if using STM32 HAL
+                "__GNUC__"                               // Compiler macros
+            ],
             "cStandard": "c99",
-            "intelliSenseMode": "linux-gcc-arm",
-            "compileCommands": "${workspaceFolder}/build/compile_commands.json"
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-gcc-arm",       // Use ARM GCC IntelliSense
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}/**",
+                    "/usr/include",
+                    "/usr/local/include",
+                    "/opt/arm-toolchain/include"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            }
         }
     ],
     "version": 4
