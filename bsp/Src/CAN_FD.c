@@ -544,10 +544,10 @@ __weak void can_fd_error_callback_hook(FDCAN_HandleTypeDef* hfdcan, uint32_t Err
 
 // Automatically recover from Bus-Off event
 void HAL_FDCAN_ErrorStatusCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStatusITs) {
+    can_fd_error_callback_hook(hfdcan, ErrorStatusITs);
     if ((ErrorStatusITs & FDCAN_IT_BUS_OFF) != 0) { // If Bus-Off error occurred
         hfdcan->Instance->CCCR &= ~FDCAN_CCCR_INIT; // Clear INIT bit to recover from Bus-Off
     }
-    can_fd_error_callback_hook(hfdcan, ErrorStatusITs);
 }
 
 // defintions of FDCAN interrupt handlers
