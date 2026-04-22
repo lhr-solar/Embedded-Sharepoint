@@ -22,6 +22,7 @@
 * **can\_stop** ([**CAN.h**](CAN_8h.md))
 * **can\_tx\_callback\_hook** ([**CAN.h**](CAN_8h.md))
 * **can\_fd\_deinit** ([**CAN\_FD.h**](CAN__FD_8h.md))
+* **can\_fd\_error\_callback\_hook** ([**CAN\_FD.h**](CAN__FD_8h.md))
 * **can\_fd\_init** ([**CAN\_FD.h**](CAN__FD_8h.md))
 * **can\_fd\_recv** ([**CAN\_FD.h**](CAN__FD_8h.md))
 * **can\_fd\_rx\_callback\_hook** ([**CAN\_FD.h**](CAN__FD_8h.md))

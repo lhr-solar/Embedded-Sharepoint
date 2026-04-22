@@ -59,6 +59,7 @@
     <member refid="CAN__FD_8h_1a5c6036eb5103092e8c3c4f1c0b3066fb" kind="function"><name>can_fd_recv</name></member>
     <member refid="CAN__FD_8h_1ad150cda00c529bf5f256d6c49525c199" kind="function"><name>can_fd_tx_callback_hook</name></member>
     <member refid="CAN__FD_8h_1af052a1ab45f4b3f7698a6081cbec3181" kind="function"><name>can_fd_rx_callback_hook</name></member>
+    <member refid="CAN__FD_8h_1a3a2ff0aeaeb25f0bf3998aa34684b730" kind="function"><name>can_fd_error_callback_hook</name></member>
   </compound>
   <compound refid="UART_8h" kind="file"><name>UART.h</name>
     <member refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kind="enum"><name>uart_status_t</name></member>

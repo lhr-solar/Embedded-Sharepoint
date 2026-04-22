@@ -457,6 +457,27 @@
         </inbodydescription>
         <location file="bsp/Inc/CAN_FD.h" line="187" column="6" declfile="bsp/Inc/CAN_FD.h" declline="187" declcolumn="6"/>
       </memberdef>
+      <memberdef kind="function" id="CAN__FD_8h_1a3a2ff0aeaeb25f0bf3998aa34684b730" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void can_fd_error_callback_hook</definition>
+        <argsstring>(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStatusITs)</argsstring>
+        <name>can_fd_error_callback_hook</name>
+        <param>
+          <type>FDCAN_HandleTypeDef *</type>
+          <declname>hfdcan</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>ErrorStatusITs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="bsp/Inc/CAN_FD.h" line="190" column="6" declfile="bsp/Inc/CAN_FD.h" declline="190" declcolumn="6"/>
+      </memberdef>
     </sectiondef>
     <briefdescription>
     </briefdescription>
@@ -551,6 +572,8 @@
 <codeline lineno="186"><highlight class="normal"></highlight></codeline>
 <codeline lineno="187" refid="CAN__FD_8h_1af052a1ab45f4b3f7698a6081cbec3181" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="CAN__FD_8h_1af052a1ab45f4b3f7698a6081cbec3181" kindref="member">can_fd_rx_callback_hook</ref>(FDCAN_HandleTypeDef*<sp/>hfdcan,<sp/>uint32_t<sp/>RxFifo0ITs,</highlight></codeline>
 <codeline lineno="188"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structcan__rx__payload__t" kindref="compound">can_rx_payload_t</ref><sp/>recv_payload);</highlight></codeline>
+<codeline lineno="189"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="190" refid="CAN__FD_8h_1a3a2ff0aeaeb25f0bf3998aa34684b730" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="CAN__FD_8h_1a3a2ff0aeaeb25f0bf3998aa34684b730" kindref="member">can_fd_error_callback_hook</ref>(FDCAN_HandleTypeDef*<sp/>hfdcan,<sp/>uint32_t<sp/>ErrorStatusITs);</highlight></codeline>
     </programlisting>
     <location file="bsp/Inc/CAN_FD.h"/>
   </compounddef>

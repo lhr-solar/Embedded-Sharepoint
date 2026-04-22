@@ -1234,6 +1234,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#function-can_fd_error_callback_hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function can_fd_error_callback_hook
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#function-can_fd_init" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1470,6 +1481,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#function-can_fd_error_callback_hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function can_fd_error_callback_hook
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#function-can_fd_init" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1629,6 +1651,10 @@
 <td style="text-align: left;"><a href="#function-can_fd_deinit"><strong>can_fd_deinit</strong></a> (FDCAN_HandleTypeDef * handle) <br><em>Deinitializes the FDCAN peripheral.</em></td>
 </tr>
 <tr>
+<td style="text-align: right;">void</td>
+<td style="text-align: left;"><a href="#function-can_fd_error_callback_hook"><strong>can_fd_error_callback_hook</strong></a> (FDCAN_HandleTypeDef * hfdcan, uint32_t ErrorStatusITs) <br></td>
+</tr>
+<tr>
 <td style="text-align: right;"><a href="../CAN__Common_8h/#enum-can_status_t"><strong>can_status_t</strong></a></td>
 <td style="text-align: left;"><a href="#function-can_fd_init"><strong>can_fd_init</strong></a> (FDCAN_HandleTypeDef * handle, FDCAN_FilterTypeDef * filter) <br><em>Initializes the FDCAN peripheral.</em></td>
 </tr>
@@ -1691,6 +1717,14 @@
 </ul>
 <p><strong>Returns:</strong></p>
 <p>can_status_t Returns CAN_OK on success, CAN_ERR on failure. </p>
+<hr>
+
+<h3 id="function-can_fd_error_callback_hook">function can_fd_error_callback_hook</h3>
+<pre><code class="language-C++">void can_fd_error_callback_hook (
+    FDCAN_HandleTypeDef * hfdcan,
+    uint32_t ErrorStatusITs
+) 
+</code></pre>
 <hr>
 
 <h3 id="function-can_fd_init">function can_fd_init</h3>

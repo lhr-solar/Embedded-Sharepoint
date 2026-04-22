@@ -1305,6 +1305,8 @@ void can_fd_tx_callback_hook(FDCAN_HandleTypeDef* hfdcan, const can_tx_payload_t
 
 void can_fd_rx_callback_hook(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs,
                              can_rx_payload_t recv_payload);
+
+void can_fd_error_callback_hook(FDCAN_HandleTypeDef* hfdcan, uint32_t ErrorStatusITs);
 </code></pre>
 
 
