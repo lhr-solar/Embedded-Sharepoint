@@ -108,11 +108,11 @@ BO_ 1065 MC_3V3_19V_RailMeasurement: 8 Prohelion_WaveSculptor22
  SG_ MC_Supply3V3 : 32|32@1- (1,0) [0|0] "V" Vector__XXX
 
 BO_ 1067 MC_Motor_TempMeasurement: 8 Prohelion_WaveSculptor22
- SG_ MC_MotorTemp : 0|32@1- (1,0) [0|0] "°C" Vector__XXX
- SG_ MC_HeatsinkTemp : 32|32@1- (1,0) [0|0] "°C" Vector__XXX
+ SG_ MC_MotorTemp : 0|32@1- (1,0) [0|0] "Â°C" Vector__XXX
+ SG_ MC_HeatsinkTemp : 32|32@1- (1,0) [0|0] "Â°C" Vector__XXX
 
 BO_ 1068 MC_DspBoardTempMeasurement: 8 Prohelion_WaveSculptor22
- SG_ MC_DspBoardTemp : 0|32@1- (1,0) [0|0] "°C" Vector__XXX
+ SG_ MC_DspBoardTemp : 0|32@1- (1,0) [0|0] "Â°C" Vector__XXX
 
 BO_ 1070 MC_OdometerBusAhMeasurement: 8 Prohelion_WaveSculptor22
  SG_ MC_TripOdometer : 0|32@1- (1,0) [0|0] "m" Vector__XXX

@@ -69,7 +69,7 @@ BO_ 1 BPS_Status: 8 BPS
  SG_ Array_Contactor_State : 12|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ Array_Precharge_Contactor_State : 13|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ Main_Battery_Voltage : 16|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
- SG_ Main_Battery_Avg_Temperature : 40|16@1- (0.01,0) [-327.68|327.67] "°C" Vector__XXX
+ SG_ Main_Battery_Avg_Temperature : 40|16@1- (0.01,0) [-327.68|327.67] "Â°C" Vector__XXX
  SG_ BPS_Segment0_Status : 56|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Segment1_Status : 57|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ BPS_Segment2_Status : 58|1@1+ (1,0) [0|0] "" Vector__XXX
@@ -87,7 +87,7 @@ BO_ 11 BPS_Voltage_Aggregate_Arr: 6 BPS
 
 BO_ 12 BPS_Temperature_Aggregate_Arr: 8 BPS
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
- SG_ BPS_Temperature_Tap_Data : 8|24@1- (0.001,0) [-8388.608|8388.607] "°C" Vector__XXX
+ SG_ BPS_Temperature_Tap_Data : 8|24@1- (0.001,0) [-8388.608|8388.607] "Â°C" Vector__XXX
  SG_ BPS_Temperature_Tap_Fault : 32|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ BPS_Temperature_Tap_Age : 40|16@1+ (1,0) [0|65535] "ms" Vector__XXX
  SG_ FrameID_BPS_Temperature : 56|8@1+ (1,0) [0|255] "" Vector__XXX
@@ -199,8 +199,8 @@ BO_ 513 MPPT_A_Status: 5 TPEE_MPPT_A
  SG_ MPPT_Mode : 7|8@0+ (1,0) [0|0] "" Vector__XXX
  SG_ MPPT_Fault : 15|8@0+ (1,0) [0|0] "" Vector__XXX
  SG_ MPPT_Enabled : 23|8@0- (1,0) [0|2] "" Vector__XXX
- SG_ MPPT_AmbientTemperature : 31|8@0- (1,0) [-128|127] "°C" Vector__XXX
- SG_ MPPT_HeatsinkTemperature : 39|8@0- (1,0) [-128|127] "°C" Vector__XXX
+ SG_ MPPT_AmbientTemperature : 31|8@0- (1,0) [-128|127] "Â°C" Vector__XXX
+ SG_ MPPT_HeatsinkTemperature : 39|8@0- (1,0) [-128|127] "Â°C" Vector__XXX
 
 BO_ 514 MPPT_A_SweepMeasurements: 6 TPEE_MPPT_A
  SG_ MPPT_Sweep_Data_cnt : 7|8@0+ (1,0) [0|127] "" Vector__XXX
@@ -231,8 +231,8 @@ BO_ 545 MPPT_B_Status: 5 TPEE_MPPT_B
  SG_ MPPT_Mode : 7|8@0+ (1,0) [0|0] "" Vector__XXX
  SG_ MPPT_Fault : 15|8@0+ (1,0) [0|0] "" Vector__XXX
  SG_ MPPT_Enabled : 23|8@0- (1,0) [0|2] "" Vector__XXX
- SG_ MPPT_AmbientTemperature : 31|8@0- (1,0) [-128|127] "°C" Vector__XXX
- SG_ MPPT_HeatsinkTemperature : 39|8@0- (1,0) [-128|127] "°C" Vector__XXX
+ SG_ MPPT_AmbientTemperature : 31|8@0- (1,0) [-128|127] "Â°C" Vector__XXX
+ SG_ MPPT_HeatsinkTemperature : 39|8@0- (1,0) [-128|127] "Â°C" Vector__XXX
 
 BO_ 546 MPPT_B_SweepMeasurements: 6 TPEE_MPPT_B
  SG_ MPPT_Sweep_Data_cnt : 7|8@0+ (1,0) [0|127] "" Vector__XXX
@@ -263,8 +263,8 @@ BO_ 577 MPPT_C_Status: 5 TPEE_MPPT_C
  SG_ MPPT_Mode : 7|8@0+ (1,0) [0|0] "" Vector__XXX
  SG_ MPPT_Fault : 15|8@0+ (1,0) [0|0] "" Vector__XXX
  SG_ MPPT_Enabled : 23|8@0- (1,0) [0|2] "" Vector__XXX
- SG_ MPPT_AmbientTemperature : 31|8@0- (1,0) [-128|127] "°C" Vector__XXX
- SG_ MPPT_HeatsinkTemperature : 39|8@0- (1,0) [-128|127] "°C" Vector__XXX
+ SG_ MPPT_AmbientTemperature : 31|8@0- (1,0) [-128|127] "Â°C" Vector__XXX
+ SG_ MPPT_HeatsinkTemperature : 39|8@0- (1,0) [-128|127] "Â°C" Vector__XXX
 
 BO_ 578 MPPT_C_SweepMeasurements: 6 TPEE_MPPT_C
  SG_ MPPT_Sweep_Data_cnt : 7|8@0+ (1,0) [0|127] "" Vector__XXX
@@ -326,8 +326,8 @@ BO_ 1280 Pump_Status: 6 Pump
  SG_ FlowRate_2 : 32|16@1+ (0.001,0) [0|65.535] "L/min" Vector__XXX
 
 BO_ 1281 Coolant_Temperature: 4 Pump
- SG_ Coolant_Temperature_1 : 0|16@1- (0.01,0) [-327.68|327.67] "°C" Vector__XXX
- SG_ Coolant_Temperature_2 : 16|16@1- (0.01,0) [-327.68|327.67] "°C" Vector__XXX
+ SG_ Coolant_Temperature_1 : 0|16@1- (0.01,0) [-327.68|327.67] "Â°C" Vector__XXX
+ SG_ Coolant_Temperature_2 : 16|16@1- (0.01,0) [-327.68|327.67] "Â°C" Vector__XXX
 
 BO_ 1282 Radiator_FanSpeed: 8 Pump
  SG_ Radiator_Fan_Speed_Measurement_1 : 0|16@1+ (1,0) [0|65535] "rpm" Vector__XXX
