@@ -601,6 +601,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#release-automation-action" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Release Automation Action
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1750,6 +1761,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#release-automation-action" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Release Automation Action
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1891,7 +1913,7 @@ PROJECT_C_SOURCES  = core/Src/main.c drivers/Src/can.c
 <h2 id="7-creating-github-actions">7. Creating GitHub Actions</h2>
 <p>A GitHub Action is an automated workflow that runs on GitHub’s servers in response to repository events such as pushing code, opening a pull request, or merging into a branch. Actions are commonly used to run checks like builds, tests, formatting, and static analysis so that issues are caught before code is merged.</p>
 <h3 id="writing-a-test-compilation-script">Writing a test compilation script</h3>
-<p>We primarily use GitHub Actions to run build checks on code before we merge it in, your GitHub action should make sure your main and all tests compile. There is a template python script to compile all test files located in <code>/template</code>, where lines with <code>#❗ CHANGE THIS ❗</code> show where you should change the script to run. </p>
+<p>We primarily use GitHub Actions to run build checks on code before we merge it in, your GitHub action should make sure your main and all tests compile. There is a template python script to compile all test files located in <code>Embedded-Sharepoint/template</code>, where lines with <code>#❗ CHANGE THIS ❗</code> show where you should change the script to run. </p>
 <h3 id="creating-the-build-action">Creating the build action</h3>
 <p>To create a GitHub action, you need to make a <code>workflows</code> folder in the <code>.github</code> folder and create a <code>.yml</code> file that defines your GitHub action. GitHub will then run your action whenever the event your action specifies happens.</p>
 <h3 id="examples-of-github-actions">Examples of GitHub Actions</h3>
@@ -1899,6 +1921,11 @@ PROJECT_C_SOURCES  = core/Src/main.c drivers/Src/can.c
 <li><a href="https://github.com/lhr-solar/PS-VehicleControlUnit/blob/main/.github/workflows/build-tests.yml">VCU</a></li>
 <li><a href="https://github.com/lhr-solar/Embedded-Sharepoint/tree/main/.github/workflows">Embedded-Sharepoint</a></li>
 </ul>
+<h3 id="release-automation-action">Release Automation Action</h3>
+<p>There is a release automation action in <code>Embedded-Sharepoint/template/template-release_artifacts.yml</code> that will include all submodules in your release. </p>
+<p>By default, when you publish a GitHub release, the generated ZIP doesn’t include the actual contents of submodules. It just includes references to them, which can be annoying if you're trying to get a compilable version of the source. This workflow fixes that by automatically checking out all submodules and turning them into regular folders so their contents are included directly.</p>
+<p>When you publish a release, the workflow runs in the background, flattens all submodules, and packages everything into a single ZIP file named after your repo and release tag. That ZIP is then uploaded to the release page. The end result is a fully self-contained download that anyone can use right away.</p>
+<p>To use the automation, copy the file into your <code>.github/workflows</code> folder of your top-level repository.</p>
 <h2 id="examples-of-projects-that-use-embedded-sharepoint">Examples of projects that use Embedded Sharepoint</h2>
 <ul>
 <li><a href="https://github.com/lhr-solar/BPS-Leader">BPS-Leader</a></li>
