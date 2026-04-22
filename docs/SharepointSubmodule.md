@@ -152,8 +152,7 @@ A README.md file is very important for onboarding instructions, and to outline w
 A GitHub Action is an automated workflow that runs on GitHub’s servers in response to repository events such as pushing code, opening a pull request, or merging into a branch. Actions are commonly used to run checks like builds, tests, formatting, and static analysis so that issues are caught before code is merged.
 
 ### Writing a test compilation script
-
-We primarily use GitHub Actions to run build checks on code before we merge it in, your GitHub action should make sure your main and all tests compile. There is a template python script to compile all test files located in `/template`, where lines with `#❗ CHANGE THIS ❗` show where you should change the script to run. 
+We primarily use GitHub Actions to run build checks on code before we merge it in, your GitHub action should make sure your main and all tests compile. There is a template python script to compile all test files located in `Embedded-Sharepoint/template`, where lines with `#❗ CHANGE THIS ❗` show where you should change the script to run. 
 
 ### Creating the build action
 To create a GitHub action, you need to make a `workflows` folder in the `.github` folder and create a `.yml` file that defines your GitHub action. GitHub will then run your action whenever the event your action specifies happens.
@@ -161,6 +160,15 @@ To create a GitHub action, you need to make a `workflows` folder in the `.github
 ### Examples of GitHub Actions
 * [VCU](https://github.com/lhr-solar/PS-VehicleControlUnit/blob/main/.github/workflows/build-tests.yml)
 * [Embedded-Sharepoint](https://github.com/lhr-solar/Embedded-Sharepoint/tree/main/.github/workflows)
+
+### Release Automation Action
+There is a release automation action in `Embedded-Sharepoint/template/template-release_artifacts.yml` that will include all submodules in your release. 
+
+By default, when you publish a GitHub release, the generated ZIP doesn’t include the actual contents of submodules. It just includes references to them, which can be annoying if you're trying to get a compilable version of the source. This workflow fixes that by automatically checking out all submodules and turning them into regular folders so their contents are included directly.
+
+When you publish a release, the workflow runs in the background, flattens all submodules, and packages everything into a single ZIP file named after your repo and release tag. That ZIP is then uploaded to the release page. The end result is a fully self-contained download that anyone can use right away.
+
+To use the automation, copy the file into your `.github/workflows` folder of your top-level repository.
 
 ## Examples of projects that use Embedded Sharepoint
 * [BPS-Leader](https://github.com/lhr-solar/BPS-Leader)
