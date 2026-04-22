@@ -207,7 +207,7 @@ int main(void) {
   hcan1->Init.TimeSeg2 = CAN_BS2_2TQ;
   hcan1->Init.Mode = CAN_MODE_LOOPBACK;
   hcan1->Init.TimeTriggeredMode = DISABLE;
-  hcan1->Init.AutoBusOff = DISABLE;
+  hcan1->Init.AutoBusOff = ENABLE;
   hcan1->Init.AutoWakeUp = DISABLE;
   hcan1->Init.AutoRetransmission = ENABLE;
   hcan1->Init.ReceiveFifoLocked = DISABLE;
@@ -229,7 +229,7 @@ int main(void) {
   hcan2->Init.TimeSeg2 = CAN_BS2_2TQ;
   hcan2->Init.Mode = CAN_MODE_LOOPBACK;
   hcan2->Init.TimeTriggeredMode = DISABLE;
-  hcan2->Init.AutoBusOff = DISABLE;
+  hcan2->Init.AutoBusOff = ENABLE;
   hcan2->Init.AutoWakeUp = DISABLE;
   hcan2->Init.AutoRetransmission = ENABLE;
   hcan2->Init.ReceiveFifoLocked = DISABLE;
