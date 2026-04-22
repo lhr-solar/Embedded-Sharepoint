@@ -157,10 +157,6 @@ We primarily use GitHub Actions to run build checks on code before we merge it i
 ### Creating the build action
 To create a GitHub action, you need to make a `workflows` folder in the `.github` folder and create a `.yml` file that defines your GitHub action. GitHub will then run your action whenever the event your action specifies happens.
 
-### Examples of GitHub Actions
-* [VCU](https://github.com/lhr-solar/PS-VehicleControlUnit/blob/main/.github/workflows/build-tests.yml)
-* [Embedded-Sharepoint](https://github.com/lhr-solar/Embedded-Sharepoint/tree/main/.github/workflows)
-
 ### Release Automation Action
 There is a release automation action in `Embedded-Sharepoint/template/template-release_artifacts.yml` that will include all submodules in your release. 
 
@@ -169,6 +165,10 @@ By default, when you publish a GitHub release, the generated ZIP doesn’t inclu
 When you publish a release, the workflow runs in the background, flattens all submodules, and packages everything into a single ZIP file named after your repo and release tag. That ZIP is then uploaded to the release page. The end result is a fully self-contained download that anyone can use right away.
 
 To use the automation, copy the file into your `.github/workflows` folder of your top-level repository.
+
+### Examples of GitHub Actions
+* [VCU](https://github.com/lhr-solar/PS-VehicleControlUnit/blob/main/.github/workflows/build-tests.yml)
+* [Embedded-Sharepoint](https://github.com/lhr-solar/Embedded-Sharepoint/tree/main/.github/workflows)
 
 ## Examples of projects that use Embedded Sharepoint
 * [BPS-Leader](https://github.com/lhr-solar/BPS-Leader)
