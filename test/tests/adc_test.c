@@ -103,7 +103,8 @@ void TestADC1(void *pvParameters) {
     };
 
     // read reference voltage
-    volatile uint32_t vref=adc_get_vref();
+    uint32_t vref;
+    adc_get_vref(hadc1, &vref);
 
     // read once
     for (int i = 0; i < 10; i++) {
