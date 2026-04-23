@@ -16,8 +16,9 @@ Usage (non-interactive):
   python3 reorder_dbc.py --vehicle Mcqueen --all
   python3 reorder_dbc.py --vehicle Daybreak --only bps.dbc,controls.dbc
 
-By default writes <name>.reordered.dbc next to the source. Use --in-place to
-overwrite the original. Use --backup with --in-place to copy each source to
+By default overwrites the original .dbc in place.
+Use --no-overwrite to write <name>.reordered.dbc next to the source instead.
+Use --backup (default overwrite mode only) to copy each source to
 <name>.dbc.bak before overwriting.
 """
 
@@ -160,18 +161,18 @@ def run_batch(
     vehicle_dir: Path,
     dbcs: list[Path],
     *,
-    in_place: bool,
+    no_overwrite: bool,
     backup: bool,
 ) -> None:
     for src in dbcs:
-        if in_place:
+        if no_overwrite:
+            dest = src.with_name(src.stem + ".reordered" + src.suffix)
+        else:
             if backup:
                 bak = src.with_suffix(src.suffix + ".bak")
                 bak.write_bytes(src.read_bytes())
                 print(f"Backup: {bak}")
             dest = src
-        else:
-            dest = src.with_name(src.stem + ".reordered" + src.suffix)
         reorder_one_dbc(src, dest)
         print(f"Wrote: {dest}")
 
@@ -192,19 +193,19 @@ def main() -> None:
         help="Comma-separated DBC file names in the vehicle folder (non-interactive)",
     )
     ap.add_argument(
-        "--in-place",
+        "--no-overwrite",
         action="store_true",
-        help="Overwrite each selected .dbc (default: write *.reordered.dbc alongside)",
+        help="Do not overwrite source .dbc files; write *.reordered.dbc alongside instead",
     )
     ap.add_argument(
         "--backup",
         action="store_true",
-        help="With --in-place only: copy each source to <name>.dbc.bak before overwriting",
+        help="In default overwrite mode: copy each source to <name>.dbc.bak before overwriting",
     )
     args = ap.parse_args()
 
-    if args.backup and not args.in_place:
-        print("reorder_dbc: --backup only applies with --in-place", file=sys.stderr)
+    if args.backup and args.no_overwrite:
+        print("reorder_dbc: --backup cannot be used with --no-overwrite", file=sys.stderr)
         raise SystemExit(1)
 
     root: Path = args.root.resolve()
@@ -261,7 +262,7 @@ def main() -> None:
     run_batch(
         vehicle_dir,
         chosen,
-        in_place=bool(args.in_place),
+        no_overwrite=bool(args.no_overwrite),
         backup=bool(args.backup),
     )
 
