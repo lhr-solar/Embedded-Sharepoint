@@ -53,6 +53,7 @@
 
 | Type | Name |
 | ---: | :--- |
+|  char \* | [**fgets**](#function-fgets) (char \* buffer, size\_t maxsz) <br> |
 |  int | [**printf**](#function-printf) (const char \* fmt, ...) <br> |
 |  bool | [**printf\_init**](#function-printf_init) (UART\_HandleTypeDef \* huart) <br> |
 |  int | [**snprintf**](#function-snprintf) (char \* buffer, size\_t bufsz, char const \* fmt, ...) <br> |
@@ -97,6 +98,22 @@
 
 ## Public Functions Documentation
 
+
+
+
+### function fgets 
+
+```C++
+char * fgets (
+    char * buffer,
+    size_t maxsz
+) 
+```
+
+
+
+
+<hr>
 
 
 

@@ -32,20 +32,13 @@
           <detaileddescription>
           </detaileddescription>
         </enumvalue>
-        <enumvalue id="UART_8h_1af7d6a356f1601c95992ab6990320fd35ac2ecba679f3dca11555b66d448198d0c" prot="public">
-          <name>UART_EMPTY</name>
-          <briefdescription>
-          </briefdescription>
-          <detaileddescription>
-          </detaileddescription>
-        </enumvalue>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bsp/Inc/UART.h" line="53" column="1" bodyfile="bsp/Inc/UART.h" bodystart="53" bodyend="57"/>
+        <location file="bsp/Inc/UART.h" line="53" column="1" bodyfile="bsp/Inc/UART.h" bodystart="53" bodyend="56"/>
       </memberdef>
     </sectiondef>
     <sectiondef kind="func">
@@ -77,7 +70,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bsp/Inc/UART.h" line="90" column="15" declfile="bsp/Inc/UART.h" declline="90" declcolumn="15"/>
+        <location file="bsp/Inc/UART.h" line="89" column="15" declfile="bsp/Inc/UART.h" declline="89" declcolumn="15"/>
       </memberdef>
       <memberdef kind="function" id="UART_8h_1a3e4de921d10fbf0a69f2e9466530e732" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref></type>
@@ -107,7 +100,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bsp/Inc/UART.h" line="98" column="15" declfile="bsp/Inc/UART.h" declline="98" declcolumn="15"/>
+        <location file="bsp/Inc/UART.h" line="97" column="15" declfile="bsp/Inc/UART.h" declline="97" declcolumn="15"/>
       </memberdef>
       <memberdef kind="function" id="UART_8h_1a3b013c9a7a26a463352564c3148f6a34" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref></type>
@@ -173,7 +166,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bsp/Inc/UART.h" line="109" column="15" declfile="bsp/Inc/UART.h" declline="109" declcolumn="15"/>
+        <location file="bsp/Inc/UART.h" line="108" column="15" declfile="bsp/Inc/UART.h" declline="108" declcolumn="15"/>
       </memberdef>
       <memberdef kind="function" id="UART_8h_1aadc671fb204494f58eec13b6d6f2f6bf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref></type>
@@ -239,7 +232,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="bsp/Inc/UART.h" line="120" column="15" declfile="bsp/Inc/UART.h" declline="120" declcolumn="15"/>
+        <location file="bsp/Inc/UART.h" line="119" column="15" declfile="bsp/Inc/UART.h" declline="119" declcolumn="15"/>
       </memberdef>
     </sectiondef>
     <briefdescription>
@@ -294,43 +287,42 @@
 <codeline lineno="53" refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>{</highlight></codeline>
 <codeline lineno="54" refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35a6a641fc3fa375d4bf149fb18fc290b55" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35a6a641fc3fa375d4bf149fb18fc290b55" kindref="member">UART_ERR</ref>,</highlight></codeline>
 <codeline lineno="55" refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35a525187963c0aaa465f2a35b30b894d07" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35a525187963c0aaa465f2a35b30b894d07" kindref="member">UART_OK</ref>,</highlight></codeline>
-<codeline lineno="56" refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35ac2ecba679f3dca11555b66d448198d0c" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35ac2ecba679f3dca11555b66d448198d0c" kindref="member">UART_EMPTY</ref>,</highlight></codeline>
-<codeline lineno="57"><highlight class="normal">}<sp/><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref>;</highlight></codeline>
-<codeline lineno="58"><highlight class="normal"></highlight></codeline>
-<codeline lineno="59"><highlight class="normal"></highlight><highlight class="comment">//<sp/>uart<sp/>handlers</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="60"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>UART4</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="61"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>UART_HandleTypeDef*<sp/>huart4;</highlight></codeline>
-<codeline lineno="62"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>UART4<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="63"><highlight class="normal"></highlight></codeline>
-<codeline lineno="64"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>UART5</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="65"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>UART_HandleTypeDef*<sp/>huart5;</highlight></codeline>
-<codeline lineno="66"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>UART5<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="67"><highlight class="normal"></highlight></codeline>
-<codeline lineno="68"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>USART1</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="69"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>UART_HandleTypeDef*<sp/>husart1;</highlight></codeline>
-<codeline lineno="70"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>USART1<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="71"><highlight class="normal"></highlight></codeline>
-<codeline lineno="72"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>USART2</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="73"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>UART_HandleTypeDef*<sp/>husart2;</highlight></codeline>
-<codeline lineno="74"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>USART2<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="75"><highlight class="normal"></highlight></codeline>
-<codeline lineno="76"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>USART3</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="77"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>UART_HandleTypeDef*<sp/>husart3;</highlight></codeline>
-<codeline lineno="78"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>USART3<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="79"><highlight class="normal"></highlight></codeline>
-<codeline lineno="80"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>LPUART1</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="81"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>UART_HandleTypeDef*<sp/>hlpuart1;</highlight></codeline>
-<codeline lineno="82"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>LPUART1<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="83"><highlight class="normal"></highlight></codeline>
-<codeline lineno="90" refid="UART_8h_1a1847d0a7e7670fccc3a7ffac3ba1e016" refkind="member"><highlight class="normal"><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref><sp/><ref refid="UART_8h_1a1847d0a7e7670fccc3a7ffac3ba1e016" kindref="member">uart_init</ref>(UART_HandleTypeDef*<sp/>handle);</highlight></codeline>
-<codeline lineno="91"><highlight class="normal"></highlight></codeline>
-<codeline lineno="98" refid="UART_8h_1a3e4de921d10fbf0a69f2e9466530e732" refkind="member"><highlight class="normal"><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref><sp/><ref refid="UART_8h_1a3e4de921d10fbf0a69f2e9466530e732" kindref="member">uart_deinit</ref>(UART_HandleTypeDef*<sp/>handle);</highlight></codeline>
-<codeline lineno="99"><highlight class="normal"></highlight></codeline>
-<codeline lineno="109" refid="UART_8h_1a3b013c9a7a26a463352564c3148f6a34" refkind="member"><highlight class="normal"><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref><sp/><ref refid="UART_8h_1a3b013c9a7a26a463352564c3148f6a34" kindref="member">uart_send</ref>(UART_HandleTypeDef*<sp/>handle,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint8_t*<sp/>data,<sp/>uint16_t<sp/>length,<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
-<codeline lineno="110"><highlight class="normal"></highlight></codeline>
-<codeline lineno="120" refid="UART_8h_1aadc671fb204494f58eec13b6d6f2f6bf" refkind="member"><highlight class="normal"><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref><sp/><ref refid="UART_8h_1aadc671fb204494f58eec13b6d6f2f6bf" kindref="member">uart_recv</ref>(UART_HandleTypeDef*<sp/>handle,<sp/>uint8_t*<sp/>data,<sp/>uint16_t<sp/>length,<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
-<codeline lineno="121"><highlight class="normal"></highlight></codeline>
-<codeline lineno="122"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>UART_H_<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
+<codeline lineno="56"><highlight class="normal">}<sp/><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref>;</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="normal"></highlight><highlight class="comment">//<sp/>uart<sp/>handlers</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>UART4</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>UART_HandleTypeDef*<sp/>huart4;</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>UART4<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight></codeline>
+<codeline lineno="63"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>UART5</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>UART_HandleTypeDef*<sp/>huart5;</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>UART5<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>USART1</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="68"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>UART_HandleTypeDef*<sp/>husart1;</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>USART1<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight></codeline>
+<codeline lineno="71"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>USART2</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>UART_HandleTypeDef*<sp/>husart2;</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>USART2<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight></codeline>
+<codeline lineno="75"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>USART3</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>UART_HandleTypeDef*<sp/>husart3;</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>USART3<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="78"><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>LPUART1</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>UART_HandleTypeDef*<sp/>hlpuart1;</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>LPUART1<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="82"><highlight class="normal"></highlight></codeline>
+<codeline lineno="89" refid="UART_8h_1a1847d0a7e7670fccc3a7ffac3ba1e016" refkind="member"><highlight class="normal"><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref><sp/><ref refid="UART_8h_1a1847d0a7e7670fccc3a7ffac3ba1e016" kindref="member">uart_init</ref>(UART_HandleTypeDef*<sp/>handle);</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"></highlight></codeline>
+<codeline lineno="97" refid="UART_8h_1a3e4de921d10fbf0a69f2e9466530e732" refkind="member"><highlight class="normal"><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref><sp/><ref refid="UART_8h_1a3e4de921d10fbf0a69f2e9466530e732" kindref="member">uart_deinit</ref>(UART_HandleTypeDef*<sp/>handle);</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"></highlight></codeline>
+<codeline lineno="108" refid="UART_8h_1a3b013c9a7a26a463352564c3148f6a34" refkind="member"><highlight class="normal"><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref><sp/><ref refid="UART_8h_1a3b013c9a7a26a463352564c3148f6a34" kindref="member">uart_send</ref>(UART_HandleTypeDef*<sp/>handle,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint8_t*<sp/>data,<sp/>uint16_t<sp/>length,<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"></highlight></codeline>
+<codeline lineno="119" refid="UART_8h_1aadc671fb204494f58eec13b6d6f2f6bf" refkind="member"><highlight class="normal"><ref refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kindref="member">uart_status_t</ref><sp/><ref refid="UART_8h_1aadc671fb204494f58eec13b6d6f2f6bf" kindref="member">uart_recv</ref>(UART_HandleTypeDef*<sp/>handle,<sp/>uint8_t*<sp/>data,<sp/>uint16_t<sp/>length,<sp/>TickType_t<sp/>delay_ticks);</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"></highlight></codeline>
+<codeline lineno="121"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>UART_H_<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
     </programlisting>
     <location file="bsp/Inc/UART.h"/>
   </compounddef>

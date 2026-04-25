@@ -160,8 +160,7 @@ This file contains the API for working with UART (Universal Asynchronous Receive
 ```C++
 enum uart_status_t {
     UART_ERR,
-    UART_OK,
-    UART_EMPTY
+    UART_OK
 };
 ```
 

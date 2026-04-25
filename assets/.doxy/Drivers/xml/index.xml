@@ -234,6 +234,7 @@
     <member refid="printf_8h_1a5c54aafcec32891c82590bf7448c4594" kind="define"><name>NANOPRINTF_USE_WRITEBACK_FORMAT_SPECIFIERS</name></member>
     <member refid="printf_8h_1a55f3d956bb2ba20b5059e9e25484a47f" kind="function"><name>printf</name></member>
     <member refid="printf_8h_1a72c2943bdd02b80ed36ec32142d01c7b" kind="function"><name>snprintf</name></member>
+    <member refid="printf_8h_1a5f149d1f05b183c983276eaa6270815b" kind="function"><name>fgets</name></member>
     <member refid="printf_8h_1a553be9d5cfd229f0ce30075aee33ea28" kind="function"><name>printf_init</name></member>
   </compound>
   <compound refid="sdcard_8h" kind="file"><name>sdcard.h</name>

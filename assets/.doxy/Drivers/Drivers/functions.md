@@ -34,6 +34,11 @@
 * **EMC2305\_WriteReg** ([**EMC2305.h**](EMC2305_8h.md))
 
 
+## f
+
+* **fgets** ([**printf.h**](printf_8h.md))
+
+
 ## o
 
 * **off\_SevenSegment** ([**SevenSegment.h**](SevenSegment_8h.md))

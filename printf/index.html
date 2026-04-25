@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#printf-documentation" class="md-skip">
+        <a href="#printffgets-documentation" class="md-skip">
           Skip to content
         </a>
       
@@ -746,12 +746,12 @@
   <a href="#printf-initialization" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Printf Initialization
+        printf Initialization
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Printf Initialization">
+    <nav class="md-nav" aria-label="printf Initialization">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -785,7 +785,18 @@
   <a href="#about-printf" class="md-nav__link">
     <span class="md-ellipsis">
       
-        About Printf
+        About printf
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#about-fgets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        About fgets
       
     </span>
   </a>
@@ -1323,12 +1334,12 @@
   <a href="#printf-initialization" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Printf Initialization
+        printf Initialization
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Printf Initialization">
+    <nav class="md-nav" aria-label="printf Initialization">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1362,7 +1373,18 @@
   <a href="#about-printf" class="md-nav__link">
     <span class="md-ellipsis">
       
-        About Printf
+        About printf
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#about-fgets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        About fgets
       
     </span>
   </a>
@@ -1397,9 +1419,9 @@
 
 
 
-<h1 id="printf-documentation">Printf Documentation</h1>
+<h1 id="printffgets-documentation">printf/fgets Documentation</h1>
 <p>So, you wanna know how to use printf huh? Well you've come to the right place. </p>
-<h2 id="printf-initialization">Printf Initialization</h2>
+<h2 id="printf-initialization">printf Initialization</h2>
 <h3 id="uart-handle-initiailization">UART Handle Initiailization</h3>
 <p>First, make sure to initialize your desired UART handle. Then, call <code>printf_init</code> with the UART handle. An example is shown below for a STM32G473xx:</p>
 <pre><code class="language-c">    husart3-&gt;Init.BaudRate = 115200;
@@ -1426,7 +1448,7 @@
     init.Alternate = GPIO_AF7_USART3;
     HAL_GPIO_Init(GPIOC, &amp;init);
 </code></pre>
-<h2 id="about-printf">About Printf</h2>
+<h2 id="about-printf">About printf</h2>
 <p><code>printf</code> is a library function provided by newlib, but we've replaced it with <a href="https://github.com/charlesnicholson/nanoprintf"><code>nanoprintf</code></a>, a more lightweight implementation that uses less stack space and probably runs faster. <code>nanoprintf</code> handles all the format specifier replacement and puts our final string into a buffer of <code>MAX_PRINTF_SIZE</code>, which can be redefined if need be in the Makefile (default value is 256 bytes).</p>
 <p>To use our <code>printf</code> implementation, <strong>please include "printf.h" rather than <stdio.h></strong>.</p>
 <p>We also have some extra memory management on top of the <code>nanoprintf</code> implementation that keeps our memory usage lower. Upon calling <code>printf</code>, if your thread does not have a buffer assigned to it, a Task Local Variable will be stored with a pointer to your thread's designated <code>printf</code> buffer. This is where your thread will do any necessary <code>printf</code> processing and spit out the final strings it needs to <code>uart_send</code>. </p>
@@ -1434,6 +1456,11 @@
 <p>You can also change the <code>MAX_PRINTF_SIZE</code> if you feel like you need a little more space.</p>
 <p><code>printf</code> latency is pretty horrendous the more threads you have. Most of the time using a logic analyzer and a pin toggle will be better for debug, especially if you have access to the base board. A logging thread is another option; having one low-prio thread do all your printfs at some low frequency and just sending stuff there is a good way to reduce contention. For reference, the lowest worst-case latency I got with 15 threads was 118ms.</p>
 <p>Finally, <strong>never</strong> <code>printf</code> from an interrupt. Please defer <code>printf</code> to a thread; the UART driver is not designed to be called from an interrupt (also it will explode interrupt latency).</p>
+<h2 id="about-fgets">About fgets</h2>
+<p><code>fgets</code> provides a simple way to read a line of input from the UART, blocking until either <code>maxsz-1</code> characters are received or the user hits Enter. It is null-terminated on return. Include <code>"printf.h"</code> to use it.</p>
+<pre><code class="language-c">char *fgets(char *buffer, size_t maxsz);
+</code></pre>
+<p><code>fgets</code> returns <code>buffer</code> on success, or <code>NULL</code> on a UART error. It handles backspace/DEL correctly, removing the previous character from the buffer. Note that <code>fgets</code> must <strong>never</strong> be called from an interrupt — like <code>printf</code>, it relies on the UART driver which is thread-only.</p>
 <h2 id="examples-of-projects-that-use-this-printf-driver">Examples of projects that use this printf driver</h2>
 <ul>
 <li><a href="https://github.com/lhr-solar/PS-LVCarrierPCB/blob/main/Firmware/drivers/Src/commandLine.c">PS-LVCarrier</a></li>

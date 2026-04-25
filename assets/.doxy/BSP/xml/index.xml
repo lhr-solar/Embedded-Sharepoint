@@ -65,7 +65,6 @@
     <member refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35" kind="enum"><name>uart_status_t</name></member>
     <member refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35a6a641fc3fa375d4bf149fb18fc290b55" kind="enumvalue"><name>UART_ERR</name></member>
     <member refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35a525187963c0aaa465f2a35b30b894d07" kind="enumvalue"><name>UART_OK</name></member>
-    <member refid="UART_8h_1af7d6a356f1601c95992ab6990320fd35ac2ecba679f3dca11555b66d448198d0c" kind="enumvalue"><name>UART_EMPTY</name></member>
     <member refid="UART_8h_1a1847d0a7e7670fccc3a7ffac3ba1e016" kind="function"><name>uart_init</name></member>
     <member refid="UART_8h_1a3e4de921d10fbf0a69f2e9466530e732" kind="function"><name>uart_deinit</name></member>
     <member refid="UART_8h_1a3b013c9a7a26a463352564c3148f6a34" kind="function"><name>uart_send</name></member>
