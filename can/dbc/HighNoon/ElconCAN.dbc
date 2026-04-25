@@ -59,11 +59,11 @@ BO_ 2550589172 Elcon_Control_Mux: 8 ChargerInterface
  SG_ Elcon_CELL_UV_THRESH m3 : 39|16@0+ (0.001,0) [0|6553.5] "V" Vector__XXX
  SG_ Elcon_CONTROL_FLAG m1 : 39|8@0+ (1,0) [0|255] "" Vector__XXX
  SG_ Elcon_DISCUR_MAX m1 : 47|8@0+ (10,0) [0|2550] "A" Vector__XXX
- SG_ Elcon_TEMP_MAX m4 : 47|8@0+ (1,-100) [0|255] "°C" Vector__XXX
+ SG_ Elcon_TEMP_MAX m4 : 47|8@0+ (1,-100) [0|255] "Â°C" Vector__XXX
  SG_ Elcon_BATTERY_STATE_OV m3 : 48|1@0+ (1,0) [0|1] "" Vector__XXX
  SG_ Elcon_BATTERY_STATE_UV m3 : 49|1@0+ (1,0) [0|1] "" Vector__XXX
  SG_ Elcon_NUM_CELLS m2 : 55|8@0+ (1,0) [0|255] "" Vector__XXX
- SG_ Elcon_TEMP_MIN m4 : 55|8@0+ (1,-100) [0|255] "°C" Vector__XXX
+ SG_ Elcon_TEMP_MIN m4 : 55|8@0+ (1,-100) [0|255] "Â°C" Vector__XXX
  SG_ Elcon_MuxPage M : 63|8@0+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 2566869221 Elcon_CCS_Status: 5 Elcon

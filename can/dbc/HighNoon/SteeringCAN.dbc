@@ -34,15 +34,15 @@ NS_ :
 BS_:
 
 BU_: Bosch_LWS Controls
-VAL_TABLE_ LWS_Config 3 "Sets the signal LWS_Angle to 0°" 5 "Resets calibration status" ;
+VAL_TABLE_ LWS_Config 3 "Sets the signal LWS_Angle to 0Â°" 5 "Resets calibration status" ;
 VAL_TABLE_ LWS_TrimmingStatus 0 "FAULT - Sensor Not Trimmed" 1 "Sensor Trimmed" ;
 VAL_TABLE_ LWS_Fault 0 "OK" 1 "Internal Fault" ;
 VAL_TABLE_ LWS_CalibrationStatus 0 "Sensor Not Calibrated" 1 "Sensor Calibrated" ;
 
 
 BO_ 688 LWS_Standard: 5 Bosch_LWS
- SG_ LWS_Angle : 0|16@1- (0.1,0) [-780|780] "°" Vector__XXX
- SG_ LWS_Speed : 16|8@1+ (4,0) [0|1016] "°/s" Vector__XXX
+ SG_ LWS_Angle : 0|16@1- (0.1,0) [-780|780] "Â°" Vector__XXX
+ SG_ LWS_Speed : 16|8@1+ (4,0) [0|1016] "Â°/s" Vector__XXX
  SG_ LWS_Fault : 24|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ LWS_CalibrationStaus : 25|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ LWS_Trimming_Status : 26|1@1+ (1,0) [0|1] "" Vector__XXX
@@ -79,7 +79,7 @@ BA_ "VFrameFormat" BO_ 1984 0;
 VAL_ 688 LWS_Fault 0 "OK" 1 "Internal Fault" ;
 VAL_ 688 LWS_CalibrationStaus 0 "Sensor Not Calibrated" 1 "Sensor Calibrated" ;
 VAL_ 688 LWS_Trimming_Status 0 "FAULT - Sensor Not Trimmed" 1 "Sensor Trimmed" ;
-VAL_ 1984 LWS_CCW 3 "Sets the signal LWS_Angle to 0°" 5 "Resets calibration status" ;
+VAL_ 1984 LWS_CCW 3 "Sets the signal LWS_Angle to 0Â°" 5 "Resets calibration status" ;
 
 
 
