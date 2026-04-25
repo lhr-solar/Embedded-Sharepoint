@@ -1,5 +1,6 @@
 #include "printf.h"
 #include "UART.h"
+#include "portmacro.h"
 #include "stm32xx_hal.h"
 #include <string.h>
 
@@ -94,4 +95,28 @@ int printf(const char *fmt, ...) {
     uart_status_t status = uart_send(printf_huart, (const uint8_t *)pbuf->buffer, (rv > MAX_PRINTF_SIZE)?MAX_PRINTF_SIZE:rv, portMAX_DELAY);
     xSemaphoreGive(pbuf->buffer_mtx);
     return (status == UART_OK)?rv:-1;
+}
+
+char *fgets(char *buffer, size_t maxsz){
+    if(maxsz == 0 || buffer == NULL) return NULL;
+
+    char c;
+    size_t i = 0;
+    while(i < maxsz-1){
+        uart_status_t status = uart_recv(printf_huart, (uint8_t*)&c, 1, portMAX_DELAY);
+        if(status == UART_ERR) return NULL;
+
+        // We check for \r instead of \n because that's what picocom and putty output on hitting enter key
+        if(c == '\r'){
+            buffer[i] = 0;
+            return buffer;
+        } else if(c == '\b' || c == 0x7F){  // handle backspace and DEL
+            if(i > 0) i--;  // just move index back, will be overwritten
+        } else {
+            buffer[i++] = c;
+        }
+    }
+
+    buffer[maxsz-1] = 0;
+    return buffer;
 }

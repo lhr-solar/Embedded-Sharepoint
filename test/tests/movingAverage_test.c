@@ -1,6 +1,5 @@
 #include "movingAverage.h"
 #include "stm32xx_hal.h"
-#include "stdio.h"
 #include "UART.h"
 #include "printf.h"
 

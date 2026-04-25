@@ -13,5 +13,6 @@
 
 int printf(const char *fmt, ...);
 int snprintf(char *buffer, size_t bufsz, char const *fmt, ...);
+char *fgets(char *buffer, size_t maxsz);
 
 bool printf_init(UART_HandleTypeDef *huart);

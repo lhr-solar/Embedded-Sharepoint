@@ -1,8 +1,8 @@
-# Printf Documentation
+# printf/fgets Documentation
 
 So, you wanna know how to use printf huh? Well you've come to the right place. 
 
-## Printf Initialization
+## printf Initialization
 
 ### UART Handle Initiailization
 First, make sure to initialize your desired UART handle. Then, call `printf_init` with the UART handle. An example is shown below for a STM32G473xx:
@@ -35,7 +35,7 @@ __HAL_RCC_GPIOC_CLK_ENABLE();
     HAL_GPIO_Init(GPIOC, &init);
 ```
 
-## About Printf
+## About printf
 
 `printf` is a library function provided by newlib, but we've replaced it with [`nanoprintf`](https://github.com/charlesnicholson/nanoprintf), a more lightweight implementation that uses less stack space and probably runs faster. `nanoprintf` handles all the format specifier replacement and puts our final string into a buffer of `MAX_PRINTF_SIZE`, which can be redefined if need be in the Makefile (default value is 256 bytes).
 
@@ -52,6 +52,14 @@ You can also change the `MAX_PRINTF_SIZE` if you feel like you need a little mor
 
 Finally, **never** `printf` from an interrupt. Please defer `printf` to a thread; the UART driver is not designed to be called from an interrupt (also it will explode interrupt latency).
 
+## About fgets
+`fgets` provides a simple way to read a line of input from the UART, blocking until either `maxsz-1` characters are received or the user hits Enter. It is null-terminated on return. Include `"printf.h"` to use it.
+
+```c
+char *fgets(char *buffer, size_t maxsz);
+```
+
+`fgets` returns `buffer` on success, or `NULL` on a UART error. It handles backspace/DEL correctly, removing the previous character from the buffer. Note that `fgets` must **never** be called from an interrupt — like `printf`, it relies on the UART driver which is thread-only.
 
 ## Examples of projects that use this printf driver
 * [PS-LVCarrier](https://github.com/lhr-solar/PS-LVCarrierPCB/blob/main/Firmware/drivers/Src/commandLine.c)

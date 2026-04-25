@@ -226,7 +226,7 @@ void RxTask(void *argument)
         rxCount++;
       }
     }
-    else if(status == UART_EMPTY) {
+    else if(status == UART_ERR) {
       rxEmptyCount++;
     }
     

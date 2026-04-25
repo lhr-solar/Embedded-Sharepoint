@@ -9,9 +9,10 @@
 #define UART_TX_DATA_SIZE (64)
 #endif
 
-#ifndef UART_RX_DATA_SIZE
-#define UART_RX_DATA_SIZE (32)
-#endif
+// This should not be redefinable by user, or bytes will be lost while receiving
+// If any value > 1 is put here, and a uart_recv is initiated with length < UART_RX_DATA_SIZE, 
+// the remaining bytes dequeued will be lost
+#define UART_RX_DATA_SIZE (1)
 
 #ifndef UART_SINGLE_TX_SIZE
 #define UART_SINGLE_TX_SIZE (64)
@@ -82,7 +83,7 @@ UART_HandleTypeDef *h##uart_name = &uart_name.huart;
 
 // fallback UART4 RX queue size
 #ifndef UART4_RX_QUEUE_SIZE
-#define UART4_RX_QUEUE_SIZE (20)
+#define UART4_RX_QUEUE_SIZE (128)
 #endif
 
 // UART4 peripheral
@@ -98,7 +99,7 @@ UART_STRUCTURE(uart4, UART4, UART4_TX_QUEUE_SIZE, UART4_RX_QUEUE_SIZE)
 
 // fallback UART5 RX queue size
 #ifndef UART5_RX_QUEUE_SIZE
-#define UART5_RX_QUEUE_SIZE (20)
+#define UART5_RX_QUEUE_SIZE (128)
 #endif
 
 // UART5 peripheral
@@ -114,7 +115,7 @@ UART_STRUCTURE(uart5, UART5, UART5_TX_QUEUE_SIZE, UART5_RX_QUEUE_SIZE)
 
 // fallback USART1 RX queue size
 #ifndef USART1_RX_QUEUE_SIZE
-#define USART1_RX_QUEUE_SIZE (20)
+#define USART1_RX_QUEUE_SIZE (128)
 #endif
 
 // USART1 peripheral
@@ -130,7 +131,7 @@ UART_STRUCTURE(usart1, USART1, USART1_TX_QUEUE_SIZE, USART1_RX_QUEUE_SIZE)
 
 // fallback USART2 RX queue size
 #ifndef USART2_RX_QUEUE_SIZE
-#define USART2_RX_QUEUE_SIZE (20)
+#define USART2_RX_QUEUE_SIZE (128)
 #endif
 
 // USART2 peripheral
@@ -146,7 +147,7 @@ UART_STRUCTURE(usart2, USART2, USART2_TX_QUEUE_SIZE, USART2_RX_QUEUE_SIZE)
 
 // fallback USART3 RX queue size
 #ifndef USART3_RX_QUEUE_SIZE
-#define USART3_RX_QUEUE_SIZE (20)
+#define USART3_RX_QUEUE_SIZE (128)
 #endif
 
 // USART3 peripheral
@@ -160,7 +161,7 @@ UART_STRUCTURE(usart3, USART3, USART3_TX_QUEUE_SIZE, USART3_RX_QUEUE_SIZE)
 #endif  
 
 #ifndef LPUART1_RX_QUEUE_SIZE
-#define LPUART1_RX_QUEUE_SIZE (20)
+#define LPUART1_RX_QUEUE_SIZE (128)
 #endif 
 
 // LPUART1 peripheral
@@ -630,12 +631,12 @@ uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint16_t leng
 
     // Receive all requested bytes
     while (bytes_received < length) {
-        if (xQueueReceive(uart_periph->rx_queue, &receivedPayload, delay_ticks) == errQUEUE_EMPTY) {
-            return UART_EMPTY;  // Queue empty, no more data to receive
+        if (xQueueReceive(uart_periph->rx_queue, &receivedPayload, delay_ticks) != pdTRUE) {
+            return UART_ERR;  // Queue empty, no more data to receive
         }
 
         // Calculate how many bytes to copy from the payload based on UART_RX_DATA_SIZE
-        uint8_t copy_length = (length - bytes_received) >= UART_RX_DATA_SIZE ? UART_RX_DATA_SIZE : (length - bytes_received);
+        uint16_t copy_length = (length - bytes_received) >= UART_RX_DATA_SIZE ? UART_RX_DATA_SIZE : (length - bytes_received);
 
         // Copy the data from the payload to the user's data buffer
         memcpy(&data[bytes_received], receivedPayload.data, copy_length);
