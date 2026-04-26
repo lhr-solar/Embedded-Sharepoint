@@ -118,4 +118,16 @@ uart_status_t uart_send(UART_HandleTypeDef* handle, const uint8_t* data, uint16_
  */
 uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint16_t length, TickType_t delay_ticks);
 
+/**
+ * @brief Services the UART bootloader command parser.
+ *
+ * Reads one byte from the UART RX queue and resets into the bootloader if the
+ * configured bootloader magic command is received.
+ *
+ * @param handle Pointer to the UART handle.
+ * @param delay_ticks Ticks to wait for one byte.
+ * @return uart_status_t UART_OK when a byte was serviced, UART_ERR otherwise.
+ */
+uart_status_t uart_bootloader_service(UART_HandleTypeDef* handle, TickType_t delay_ticks);
+
 #endif /* UART_H_ */

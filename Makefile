@@ -105,6 +105,7 @@ $(filter-out $(addprefix bsp/Src/,$(addsuffix .c,$(BSP_DISABLE))),$(wildcard bsp
 
 BOOTLOADER_ROLE_SOURCES = \
 $(wildcard bootloader/Src/*.c) \
+common/Src/uart_bootloader.c \
 common/Src/stubs.c
 
 ifeq ($(FIRMWARE_ROLE),bootloader)

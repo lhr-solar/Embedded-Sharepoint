@@ -2,6 +2,7 @@
 #include "bootloader_indicator.h"
 #include "bootloader_runtime.h"
 #include "bootloader_hal.h"
+#include "uart_bootloader.h"
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -479,10 +480,12 @@ int main(void) {
     bootloader_indicator_init();
     bootloader_runtime_init();
 
+    bool forced_bootloader = uart_bootloader_consume_request();
     bool app_valid = bootloader_runtime_is_app_valid();
     bootloader_indicator_set_mode(app_valid ? BOOTLOADER_INDICATOR_APP_PRESENT : BOOTLOADER_INDICATOR_NO_APP);
 
-    uint32_t startup_wait_ms = app_valid ? BOOTLOADER_APP_STARTUP_WAIT_MS : BOOTLOADER_HANDSHAKE_TIMEOUT_MS;
+    uint32_t startup_wait_ms = (app_valid && !forced_bootloader) ?
+        BOOTLOADER_APP_STARTUP_WAIT_MS : BOOTLOADER_HANDSHAKE_TIMEOUT_MS;
     if (!bl_wait_for_sync_with_indicator(startup_wait_ms)) {
         if (app_valid) {
             bootloader_runtime_jump_to_app();
