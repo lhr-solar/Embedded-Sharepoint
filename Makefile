@@ -31,6 +31,36 @@ CLANG_INPUTS := $(filter-out $(IGNORED_CLANG_INPUTS), $(CLANG_INPUTS))
 MAKEFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 BEAR_ENABLE ?= 1
 
+# Firmware type selects the default memory map and flashing behavior.
+#   firmware   Standalone image at 0x08000000. This is the default.
+#   app        App image linked after the resident bootloader.
+#   bootloader Resident bootloader image at 0x08000000.
+ifeq ($(origin FIRMWARE_TYPE), undefined)
+ifeq ($(origin FIRMWARE_ROLE), undefined)
+FIRMWARE_TYPE := firmware
+else
+FIRMWARE_TYPE := $(FIRMWARE_ROLE)
+endif
+endif
+
+ifeq ($(filter $(FIRMWARE_TYPE),firmware app bootloader),)
+$(error FIRMWARE_TYPE must be one of: firmware, app, bootloader)
+endif
+
+# Keep legacy FIRMWARE_ROLE invocations working internally and for child makes.
+FIRMWARE_ROLE := $(FIRMWARE_TYPE)
+
+ifeq ($(origin BOOTLOADER_SIZE_KB), undefined)
+ifeq ($(FIRMWARE_TYPE),firmware)
+BOOTLOADER_SIZE_KB := 0
+else
+BOOTLOADER_SIZE_KB := 64
+endif
+endif
+
+FLASH_BASE ?= 0x08000000
+BOOTLOADER_APP_BASE ?= $(shell python3 -c 'base=int("$(FLASH_BASE)", 0); size=int("$(BOOTLOADER_SIZE_KB)"); print("0x%08x" % (base + size * 1024))')
+
 ######################################
 # target
 ######################################
@@ -47,27 +77,9 @@ SERIES_GENERIC_CAP = STM32$(SERIES_CAP)xx
 SERIES_LINE = stm32$(SERIES)$(LINE)
 SERIES_LINE_CAP = STM32$(SERIES_CAP)$(LINE)
 
-# Generate a list of STM32 variant patterns:
-# 1. Remove the '.h' extension from filenames.
-# 2. Replace 'x' with '.' for regex matching.
-MCU_MATCHES = $(shell ls stm/$(SERIES_GENERIC)/CMSIS/Device/ST/$(SERIES_GENERIC_CAP)/Include \
-                | sed 's/\.h//g; s/x/./g')
+SERIES_LINE_GENERIC = $(SERIES_LINE)xx
 
-# Find the generic STM32 series variant:
-# 1. Iterate over MCU_MATCHES.
-# 2. Check if the entry is exactly 11 characters long.
-# 3. Match it against the pattern 'stm32$(SERIES_LINE)$(EXTRA_CUT)'.
-# 4. Replace '.' with 'x' in the matched entry.
-# 5. Break on the first valid match.
-SERIES_LINE_GENERIC = $(shell \
-    for match in $(MCU_MATCHES); do \
-        if [ $${#match} -eq 11 ] && echo "stm32$(SERIES_LINE)$(EXTRA_CUT)" | grep -qE "$$match"; then \
-            echo "$${match//./x}"; \
-            break; \
-        fi; \
-    done)
-
-SERIES_LINE_GENERIC_CAP = $(shell echo $(SERIES_LINE_GENERIC) | sed 's/[^x]/\U&/g')
+SERIES_LINE_GENERIC_CAP = $(shell python3 -c 's="$(SERIES_LINE_GENERIC)"; print(s[:-2].upper() + s[-2:])')
 
 ifeq ($(strip $(SERIES_LINE_GENERIC)),)
 $(error SERIES_LINE_GENERIC is not found in stm/$(SERIES_GENERIC)/CMSIS/Device/ST/$(SERIES_GENERIC_CAP)/Include. Please check the target configuration.)
@@ -104,18 +116,32 @@ FATFS_PATH := middleware/FatFs
 # source
 ######################################
 # C sources
-C_SOURCES =  \
-$(PROJECT_C_SOURCES) \
+COMMON_STM_SOURCES = \
 $(filter-out %template.c, $(wildcard stm/$(SERIES_GENERIC)/$(SERIES_GENERIC_CAP)_HAL_Driver/Src/*.c)) \
 stm/$(SERIES_GENERIC)/system_$(SERIES_GENERIC).c \
 stm/$(SERIES_GENERIC)/$(SERIES_GENERIC)_hal_init.c \
-stm/$(SERIES_GENERIC)/$(SERIES_GENERIC)_hal_timebase_tim.c \
+stm/$(SERIES_GENERIC)/$(SERIES_GENERIC)_hal_timebase_tim.c
+
+APP_ROLE_SOURCES = \
+$(PROJECT_C_SOURCES) \
 $(wildcard $(FREERTOS_PATH)/*.c) \
 $(FREERTOS_PATH)/portable/GCC/ARM_CM4F/port.c \
 $(wildcard common/Src/*.c) \
 $(wildcard driver/Src/*.c) \
 $(wildcard $(FATFS_PATH)/Src/*.c) \
 $(filter-out $(addprefix bsp/Src/,$(addsuffix .c,$(BSP_DISABLE))),$(wildcard bsp/Src/*.c))
+
+BOOTLOADER_ROLE_SOURCES = \
+$(wildcard bootloader/Src/*.c) \
+common/Src/hardfault.c \
+common/Src/bootloader_command.c \
+common/Src/stubs.c
+
+ifeq ($(FIRMWARE_TYPE),bootloader)
+C_SOURCES = $(BOOTLOADER_ROLE_SOURCES) $(COMMON_STM_SOURCES)
+else
+C_SOURCES = $(APP_ROLE_SOURCES) $(COMMON_STM_SOURCES)
+endif
 
 
 # ASM sources
@@ -171,6 +197,34 @@ USE_HAL_DRIVER \
 $(SERIES_LINE_GENERIC_CAP) \
 $(SERIES_GENERIC_CAP)
 
+ifeq ($(FIRMWARE_TYPE),bootloader)
+C_DEFS += FIRMWARE_ROLE_BOOTLOADER
+endif
+
+ifeq ($(FIRMWARE_TYPE),firmware)
+C_DEFS += FIRMWARE_TYPE_FIRMWARE
+else ifeq ($(FIRMWARE_TYPE),app)
+C_DEFS += FIRMWARE_TYPE_APP
+else ifeq ($(FIRMWARE_TYPE),bootloader)
+C_DEFS += FIRMWARE_TYPE_BOOTLOADER
+endif
+
+ifneq ($(filter $(FIRMWARE_TYPE),app bootloader),)
+C_DEFS += BOOTLOADER_APP_BASE=$(BOOTLOADER_APP_BASE)
+endif
+
+ifeq ($(FIRMWARE_TYPE),app)
+ifneq ($(BOOTLOADER_SIZE_KB),0)
+C_DEFS += FIRMWARE_USES_BOOTLOADER
+endif
+endif
+
+ifeq ($(FIRMWARE_TYPE),app)
+ifeq ($(BOOTLOADER_SIZE_KB),0)
+$(error FIRMWARE_TYPE=app requires BOOTLOADER_SIZE_KB to be nonzero)
+endif
+endif
+
 C_DEFS := $(addprefix -D,$(C_DEFS))
 
 # AS includes
@@ -190,6 +244,10 @@ driver/Inc \
 bsp/Inc \
 middleware
 
+ifneq ($(filter $(FIRMWARE_TYPE),bootloader),)
+C_INCLUDES += bootloader/Inc
+endif
+
 C_INCLUDES := $(addprefix -I,$(C_INCLUDES))
 
 # compile gcc flags
@@ -208,7 +266,13 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 # LDFLAGS
 #######################################
 # link script
-LDSCRIPT = stm/$(SERIES_GENERIC)/$(SERIES_LINE)/$(SERIES_LINE_CAP)$(EXTRA_CAP)x_FLASH.ld
+ORIG_LDSCRIPT = stm/$(SERIES_GENERIC)/$(SERIES_LINE)/$(SERIES_LINE_CAP)$(EXTRA_CAP)x_FLASH.ld
+GENERATED_LDSCRIPT = $(BUILD_DIR)/$(TARGET)_$(FIRMWARE_ROLE).ld
+LDSCRIPT = $(ORIG_LDSCRIPT)
+
+ifeq ($(FIRMWARE_TYPE),app)
+LDSCRIPT = $(GENERATED_LDSCRIPT)
+endif
 
 # libraries
 LIBS = 
@@ -274,7 +338,7 @@ else
 	@echo "AS $< -> $@"
 endif
 
-$(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
+$(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile $(LDSCRIPT)
 	@if ls $(BUILD_DIR)/*.elf 1> /dev/null 2>&1; then \
 	rm -rf $(BUILD_DIR)/stm*.elf; \
 	fi
@@ -290,6 +354,7 @@ else
 	@$(CC) $(OBJECTS) $(LDFLAGS) -o $@
 	@echo "LD $@"
 endif
+	@echo "FIRMWARE_TYPE=$(FIRMWARE_TYPE) BOOTLOADER_SIZE_KB=$(BOOTLOADER_SIZE_KB) BOOTLOADER_APP_BASE=$(BOOTLOADER_APP_BASE) FLASH_ADDRESS=$(FLASH_ADDRESS)"
 	@$(SZ) $@
 	@echo "Finished compiling. Jolly good!"
 
@@ -320,6 +385,10 @@ endif
 $(BUILD_DIR):
 	mkdir -p $@		
 
+$(GENERATED_LDSCRIPT): $(ORIG_LDSCRIPT) Makefile | $(BUILD_DIR)
+	@python3 -c 'import pathlib; ld = pathlib.Path("$(ORIG_LDSCRIPT)").read_text(); size_kb = int("$(BOOTLOADER_SIZE_KB)"); flash_origin = int("$(FLASH_BASE)", 0) + size_kb * 1024; flash_length_kb = 512 - size_kb; ld = ld.replace("FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 512K", f"FLASH (rx)      : ORIGIN = 0x{flash_origin:08x}, LENGTH = {flash_length_kb}K"); pathlib.Path("$(GENERATED_LDSCRIPT)").write_text(ld)'
+	@echo "LD_SCRIPT $(ORIG_LDSCRIPT) -> $(GENERATED_LDSCRIPT) ($(FIRMWARE_TYPE), FLASH=$(BOOTLOADER_APP_BASE), LENGTH=$$((512-$(BOOTLOADER_SIZE_KB)))K)"
+
 #######################################
 # clean up
 #######################################
@@ -330,8 +399,13 @@ clean:
 #######################################
 # flash
 #######################################
-FLASH_ADDRESS ?= 0x8000000
-FLASH_FILE = $(shell find $(BUILD_DIR) -name 'stm*.bin' -exec basename {} \;)
+ifeq ($(FIRMWARE_TYPE),app)
+FLASH_ADDRESS ?= $(BOOTLOADER_APP_BASE)
+else
+FLASH_ADDRESS ?= $(FLASH_BASE)
+endif
+
+FLASH_FILE = $(notdir $(firstword $(wildcard $(BUILD_DIR)/stm*.bin)))
 
 .PHONY: flash
 flash:
@@ -340,7 +414,13 @@ flash:
 
 .PHONY: flash-uart
 flash-uart:
+ifeq ($(FIRMWARE_TYPE),bootloader)
+	./bootloader/scripts/flash_bootloader.py --bin $(BUILD_DIR)/$(FLASH_FILE) --address $(FLASH_ADDRESS)
+else ifeq ($(FIRMWARE_TYPE),app)
+	./bootloader/scripts/uart_bootloader_flash.py --bin $(BUILD_DIR)/$(FLASH_FILE) --address $(FLASH_ADDRESS)
+else
 	./flash-uart.sh $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
+endif
 
 #######################################
 # format
@@ -363,11 +443,17 @@ help:
 	@echo "Available targets:"
 	@echo "  all          - Build the project."
 	@echo "  clean        - Remove build artifacts."
-	@echo "  flash        - Flash the target device."
+	@echo "  flash        - Flash with ST-Link at the default address for FIRMWARE_TYPE."
+	@echo "  flash-uart   - Flash over UART using the default workflow for FIRMWARE_TYPE."
 	@echo "  tidy         - Run clang-tidy."
 	@echo "  tidy-fix     - Run clang-tidy with fixes."
 	@echo "  format       - Run clang-format."
 	@echo "  format-fix   - Run clang-format and apply fixes."
+	@echo ""
+	@echo "Firmware types:"
+	@echo "  FIRMWARE_TYPE=firmware   Standalone image at 0x08000000 (default)."
+	@echo "  FIRMWARE_TYPE=bootloader Bootloader image at 0x08000000."
+	@echo "  FIRMWARE_TYPE=app        App linked after bootloader."
 
 
 #######################################

@@ -189,6 +189,20 @@ can_status_t can_recv(CAN_HandleTypeDef* handle, uint32_t id, CAN_RxHeaderTypeDe
                       uint8_t data[], TickType_t delay_ticks);
 
 /**
+ * @brief Services one bxCAN bootloader command frame.
+ *
+ * Parent applications normally do not call this directly; the CAN RX ISR hook
+ * invokes it for every received frame. It is exposed for tests or custom CAN
+ * integrations that bypass this BSP driver.
+ *
+ * @param id Standard CAN identifier.
+ * @param data CAN frame payload.
+ * @param len Number of payload bytes.
+ * @return true if the frame matched the bootloader command.
+ */
+bool can_bootloader_service(uint32_t id, const uint8_t data[], uint8_t len);
+
+/**
  * @brief Sends a CAN message from an ISR context.
  *
  * Places a CAN message into the transmit send queue for later transmission
