@@ -8,6 +8,14 @@
 
 #include <stddef.h>
 
+#if defined(FIRMWARE_TYPE_APP) && !defined(FIRMWARE_USES_BOOTLOADER)
+#error "FIRMWARE_TYPE=app requires FIRMWARE_USES_BOOTLOADER. Check BOOTLOADER_SIZE_KB."
+#endif
+
+#if defined(FIRMWARE_USES_BOOTLOADER) && !defined(BOOTLOADER_APP_BASE)
+#error "FIRMWARE_USES_BOOTLOADER requires BOOTLOADER_APP_BASE."
+#endif
+
 static size_t s_command_match_len = 0U;
 static volatile bool s_entry_allowed = true;
 
@@ -60,6 +68,14 @@ void uart_bootloader_set_entry_allowed(bool allowed) {
 
 bool uart_bootloader_is_entry_allowed(void) {
     return s_entry_allowed;
+}
+
+void uart_bootloader_init_app_vector_table(void) {
+#if defined(FIRMWARE_USES_BOOTLOADER) && defined(BOOTLOADER_APP_BASE)
+    SCB->VTOR = BOOTLOADER_APP_BASE;
+    __DSB();
+    __ISB();
+#endif
 }
 
 void uart_bootloader_request_reset(void) {

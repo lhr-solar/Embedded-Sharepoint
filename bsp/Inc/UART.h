@@ -121,8 +121,9 @@ uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint16_t leng
 /**
  * @brief Services the UART bootloader command parser.
  *
- * Reads one byte from the UART RX queue and resets into the bootloader if the
- * configured bootloader magic command is received.
+ * Waits for one byte from the UART RX queue, then drains any queued bytes so
+ * burst-sent bootloader commands are parsed before the UART RX queue can fill.
+ * Resets into the bootloader if the configured magic command is received.
  *
  * @param handle Pointer to the UART handle.
  * @param delay_ticks Ticks to wait for one byte.

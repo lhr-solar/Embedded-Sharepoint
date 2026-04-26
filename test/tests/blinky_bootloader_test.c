@@ -1,5 +1,6 @@
 #include "stm32xx_hal.h"
 #include "UART.h"
+#include "uart_bootloader.h"
 
 #if defined(STM32L432xx)
 #define LED_PIN GPIO_PIN_3
@@ -25,10 +26,6 @@
 #error "No UART available for bootloader command test."
 #endif
 
-#ifndef APP_VECTOR_TABLE_BASE
-#define APP_VECTOR_TABLE_BASE (0x08010000UL)
-#endif
-
 static StaticTask_t s_blinky_task_buffer;
 static StaticTask_t s_uart_task_buffer;
 static StackType_t s_blinky_task_stack[configMINIMAL_STACK_SIZE];
@@ -44,13 +41,6 @@ static void heartbeat_clock_init(void) {
     } else if (LED_PORT == GPIOD) {
         __HAL_RCC_GPIOD_CLK_ENABLE();
     }
-}
-
-static void vectortable_init(void) {
-    /* App is linked after bootloader, so move VTOR accordingly. */
-    SCB->VTOR = APP_VECTOR_TABLE_BASE;
-    __DSB();
-    __ISB();
 }
 
 static void led_init(void) {
@@ -99,7 +89,7 @@ static void uart_task(void *argument) {
 }
 
 int main(void) {
-    vectortable_init();
+    uart_bootloader_init_app_vector_table();
     HAL_Init();
     SystemClock_Config();
 

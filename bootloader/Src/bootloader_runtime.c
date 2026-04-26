@@ -230,7 +230,9 @@ void bootloader_runtime_jump_to_app(void) {
     void (*app_reset_handler)(void) = (void (*)(void))app_reset;
 
     __disable_irq();
+    (void)HAL_UART_DeInit(&s_huart);
     HAL_DeInit();
+    HAL_RCC_DeInit();
     bootloader_runtime_clear_interrupt_state();
 
     SCB->VTOR = BOOTLOADER_APP_BASE;

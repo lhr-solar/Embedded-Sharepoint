@@ -219,6 +219,12 @@ C_DEFS += FIRMWARE_USES_BOOTLOADER
 endif
 endif
 
+ifeq ($(FIRMWARE_TYPE),app)
+ifeq ($(BOOTLOADER_SIZE_KB),0)
+$(error FIRMWARE_TYPE=app requires BOOTLOADER_SIZE_KB to be nonzero)
+endif
+endif
+
 C_DEFS := $(addprefix -D,$(C_DEFS))
 
 # AS includes
@@ -348,6 +354,7 @@ else
 	@$(CC) $(OBJECTS) $(LDFLAGS) -o $@
 	@echo "LD $@"
 endif
+	@echo "FIRMWARE_TYPE=$(FIRMWARE_TYPE) BOOTLOADER_SIZE_KB=$(BOOTLOADER_SIZE_KB) BOOTLOADER_APP_BASE=$(BOOTLOADER_APP_BASE) FLASH_ADDRESS=$(FLASH_ADDRESS)"
 	@$(SZ) $@
 	@echo "Finished compiling. Jolly good!"
 
@@ -410,7 +417,7 @@ flash-uart:
 ifeq ($(FIRMWARE_TYPE),bootloader)
 	./scripts/flash_bootloader.py --bin $(BUILD_DIR)/$(FLASH_FILE) --address $(FLASH_ADDRESS)
 else ifeq ($(FIRMWARE_TYPE),app)
-	./scripts/uart_bootloader_flash.py --bin $(BUILD_DIR)/$(FLASH_FILE) --address $(FLASH_ADDRESS) --boot
+	./scripts/uart_bootloader_flash.py --bin $(BUILD_DIR)/$(FLASH_FILE) --address $(FLASH_ADDRESS)
 else
 	./flash-uart.sh $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
 endif
