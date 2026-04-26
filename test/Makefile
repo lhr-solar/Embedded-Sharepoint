@@ -12,7 +12,13 @@ _PROJECT_C_SOURCES = $(wildcard Src/*.c)
 _PROJECT_C_INCLUDES = Inc
 
 # build and driver directories
+ifeq ($(FIRMWARE_ROLE),bootloader)
+_PROJECT_BUILD_DIR ?= ../build/bootloader
+else ifeq ($(FIRMWARE_ROLE),app)
+_PROJECT_BUILD_DIR ?= ../build/app
+else
 _PROJECT_BUILD_DIR ?= ../build
+endif
 BUILD_MAKEFILE_DIR = ../
 
 # ensure all paths are absolute
