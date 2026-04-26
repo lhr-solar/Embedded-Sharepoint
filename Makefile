@@ -415,9 +415,9 @@ flash:
 .PHONY: flash-uart
 flash-uart:
 ifeq ($(FIRMWARE_TYPE),bootloader)
-	./scripts/flash_bootloader.py --bin $(BUILD_DIR)/$(FLASH_FILE) --address $(FLASH_ADDRESS)
+	./bootloader/scripts/flash_bootloader.py --bin $(BUILD_DIR)/$(FLASH_FILE) --address $(FLASH_ADDRESS)
 else ifeq ($(FIRMWARE_TYPE),app)
-	./scripts/uart_bootloader_flash.py --bin $(BUILD_DIR)/$(FLASH_FILE) --address $(FLASH_ADDRESS)
+	./bootloader/scripts/uart_bootloader_flash.py --bin $(BUILD_DIR)/$(FLASH_FILE) --address $(FLASH_ADDRESS)
 else
 	./flash-uart.sh $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
 endif

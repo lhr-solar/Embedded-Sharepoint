@@ -3,6 +3,7 @@ mkdocs
 mkdocs-material
 mkdoxy
 pyserial
+python-can
 cantools
 mkdocs-redirects
 mkdocs-macros-plugin

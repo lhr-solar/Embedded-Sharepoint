@@ -230,7 +230,8 @@ The bring-up app should:
 - Initialize the same UART pins and instance used by the resident bootloader if
   using UART app-to-bootloader entry.
 - Run `uart_boot_command_service()` in a task or main-loop path if using UART, so
-  `uart_bootloader_flash.py --enter --boot` can return the board to update mode.
+  `bootloader/scripts/uart_bootloader_flash.py --enter --boot` can return the
+  board to update mode.
 - Initialize/start CAN or FDCAN and accept `BOOTLOADER_CAN_COMMAND_ID` if using
   CAN app-to-bootloader entry.
 - Blink an LED or use another board-local indicator so you can confirm the app
@@ -256,32 +257,32 @@ make -C test flash TEST=blinky PROJECT_TARGET=stm32g473xx BEAR_ENABLE=0
 Install the resident bootloader once using STM32 ROM boot mode:
 
 ```bash
-./scripts/flash_bootloader.py
+./bootloader/scripts/flash_bootloader.py
 ```
 
 If autodetection picks the wrong UART, pass the port explicitly:
 
 ```bash
-./scripts/flash_bootloader.py --port /dev/cu.usbserial-310
+./bootloader/scripts/flash_bootloader.py --port /dev/cu.usbserial-310
 ```
 
 Flash an app through the resident bootloader:
 
 ```bash
-./scripts/uart_bootloader_flash.py --boot
+./bootloader/scripts/uart_bootloader_flash.py --boot
 ```
 
 If the app is already running and supports the ES_BLT magic packet, ask it to
 reset into the bootloader first:
 
 ```bash
-./scripts/uart_bootloader_flash.py --enter --boot
+./bootloader/scripts/uart_bootloader_flash.py --enter --boot
 ```
 
 Only enter bootloader without flashing:
 
 ```bash
-./scripts/uart_bootloader_enter.py
+./bootloader/scripts/uart_bootloader_enter.py
 ```
 
 All UART scripts accept `--port` and `--baud`; the flash script also accepts
@@ -301,6 +302,32 @@ Default bitrate: 125 kbit/s target timing, configurable in bootloader_config.h
 
 The CAN implementation uses the HAL directly inside the resident bootloader. It
 does not depend on the FreeRTOS CAN BSP queues used by normal applications.
+
+For PEAK PCAN or other `python-can` backends, use the custom CAN flashing
+script:
+
+```bash
+./bootloader/scripts/can_bootloader_flash.py --bin build/app/stm32l431cbt.bin --boot
+```
+
+The default backend is `pcan` on `PCAN_USBBUS1` at `125000` bit/s. Override
+those when needed:
+
+```bash
+./bootloader/scripts/can_bootloader_flash.py --interface socketcan --channel can0 --bitrate 125000 --boot
+```
+
+If the app is still running, send the app-side CAN boot-control value first:
+
+```bash
+./bootloader/scripts/can_bootloader_flash.py --enter-value 0x12 --bin build/app/stm32l431cbt.bin --boot
+```
+
+Send reset-all without flashing:
+
+```bash
+./bootloader/scripts/can_bootloader_flash.py --reset-all
+```
 
 ## Runtime Entry Policy
 
