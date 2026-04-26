@@ -1,5 +1,5 @@
 {
-  description = "LHRs STM32 Embedded Dev";
+  description = "LHRs Embedded Dev";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/23.05";
@@ -23,6 +23,7 @@
             pkgs.gcc
             pkgs.clang
             pkgs.clang-tools
+            pkgs.arduino-cli
             pkgs.lld
             pkgs.bear
             pkgs.cmake
@@ -86,6 +87,9 @@
               echo "Run: lsusb (Linux USB info)"
             fi
 
+            # ignore Pip version checks
+            export PIP_DISABLE_PIP_VERSION_CHECK=1
+
             if [ ! -d .venv ]; then
               python3 -m venv .venv
               echo "Creating python venv"
@@ -93,8 +97,22 @@
             source .venv/bin/activate
             echo "Installing python requirements"
             if [ -f requirements.txt ]; then
-              pip install -r requirements.txt
+              pip install -q -r requirements.txt
             fi
+
+            # Ensure arduino-cli is configured and cores are installed
+            if [ ! -f ~/.arduino15/arduino-cli.yaml ]; then
+              echo "Initializing arduino-cli"
+              arduino-cli config init > /dev/null
+            fi
+
+            # Check if ESP32 core is installed
+            if ! arduino-cli core list | grep -q "esp32"; then
+              echo "Installing ESP32 core"
+              arduino-cli core update-index
+              arduino-cli core install esp32:esp32
+            fi
+
             echo "Dev environment loaded for ${system}!"
           '';
         };
