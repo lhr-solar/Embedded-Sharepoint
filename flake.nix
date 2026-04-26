@@ -90,14 +90,29 @@
             # ignore Pip version checks
             export PIP_DISABLE_PIP_VERSION_CHECK=1
 
-            if [ ! -d .venv ]; then
-              python3 -m venv .venv
-              echo "Creating python venv"
+            SENTINEL="$VENV_PATH/.pip_installed"
+
+            SUBMODULE_DIR="Embedded-Sharepoint"
+            
+            # Check if we are in the parent or already inside the submodule
+            if [ -d "$SUBMODULE_DIR" ]; then
+              VENV_PATH="$SUBMODULE_DIR/.venv"
+              REQ_PATH="$SUBMODULE_DIR/requirements.txt"
+            else
+              VENV_PATH=".venv"
+              REQ_PATH="requirements.txt"
             fi
-            source .venv/bin/activate
-            echo "Installing python requirements"
-            if [ -f requirements.txt ]; then
-              pip install -q -r requirements.txt
+
+            if [ ! -d "$VENV_PATH" ]; then
+              echo "Creating python venv at $VENV_PATH"
+              python3 -m venv "$VENV_PATH"
+            fi
+            
+            source "$VENV_PATH/bin/activate"
+
+            if [ -f "$REQ_PATH" ]; then
+              echo "Installing python requirements from $REQ_PATH"
+              pip install -q -r "$REQ_PATH"
             fi
 
             # Ensure arduino-cli is configured and cores are installed
