@@ -1,86 +1,209 @@
 # UART Bootloader
 
-This bootloader is designed for the shared Embedded Sharepoint repo so each firmware project can reuse the same UART flashing flow.
+This bootloader lets a board update its app over UART after the bootloader has
+been installed once. Normal firmware builds still work the old way by default:
+if you do not specify a firmware type, the image is linked and flashed at
+`0x08000000`.
 
-## Behavior
+## Firmware Types
 
-- Runs from flash start (`0x08000000` by default).
-- Listens on the configured bootloader UART at `115200 8E1`.
-- LED behavior in bootloader:
-  - Waiting for host connection: fade in/out.
-  - Flashing: rapid blink.
-- If no handshake arrives before timeout and a valid app exists, it jumps to the app.
-- Speaks the STM32 AN3155 UART bootloader protocol subset used by STM32CubeProgrammer.
+Use `FIRMWARE_TYPE` to select the memory map and default flash address:
 
-## Memory Map
+- `firmware`: standalone application at `0x08000000`. This is the default.
+- `bootloader`: resident bootloader at `0x08000000`, default size `64 KB`.
+- `app`: app linked after the resident bootloader, default base `0x08010000`.
 
-- Bootloader region: `0x08000000` .. `0x0800FFFF` (default 64 KB).
-- App region: `0x08010000` .. end of flash.
+Legacy `FIRMWARE_ROLE=app` and `FIRMWARE_ROLE=bootloader` invocations still work,
+but new commands should use `FIRMWARE_TYPE`.
 
-Override by build variables:
+Defaults can be overridden:
 
-- `BOOTLOADER_SIZE_KB`
-- `BOOTLOADER_APP_BASE` (compile-time macro)
-- `BOOTLOADER_APP_MAX_SIZE` (compile-time macro)
+- `BOOTLOADER_SIZE_KB`: default `0` for `firmware`, `64` for `app` and `bootloader`.
+- `BOOTLOADER_APP_BASE`: default `FLASH_BASE + BOOTLOADER_SIZE_KB * 1024`.
+- `FLASH_ADDRESS`: default `0x08000000` for `firmware` and `bootloader`,
+  default `BOOTLOADER_APP_BASE` for `app`.
+- `FLASH_BASE`: default `0x08000000`.
 
 ## Build
+
+Standalone firmware, no bootloader:
+
+```bash
+make -C test clean TEST=blinky PROJECT_TARGET=stm32g473xx BEAR_ENABLE=0
+make -C test TEST=blinky PROJECT_TARGET=stm32g473xx BEAR_ENABLE=0
+```
 
 Bootloader image:
 
 ```bash
-make -C test clean TEST=main PROJECT_TARGET=stm32g473xx FIRMWARE_ROLE=bootloader BEAR_ENABLE=0
-make -C test TEST=main PROJECT_TARGET=stm32g473xx FIRMWARE_ROLE=bootloader BEAR_ENABLE=0
+make -C test clean TEST=main PROJECT_TARGET=stm32g473xx FIRMWARE_TYPE=bootloader BEAR_ENABLE=0
+make -C test TEST=main PROJECT_TARGET=stm32g473xx FIRMWARE_TYPE=bootloader BEAR_ENABLE=0
 ```
 
-App image (linked after bootloader):
+App image for a board using the resident bootloader:
 
 ```bash
-make -C test clean TEST=blinky_bootloader PROJECT_TARGET=stm32g473xx FIRMWARE_ROLE=app BOOTLOADER_SIZE_KB=64 BEAR_ENABLE=0
-make -C test TEST=blinky_bootloader PROJECT_TARGET=stm32g473xx FIRMWARE_ROLE=app BOOTLOADER_SIZE_KB=64 BEAR_ENABLE=0
+make -C test clean TEST=blinky_bootloader PROJECT_TARGET=stm32g473xx FIRMWARE_TYPE=app BEAR_ENABLE=0
+make -C test TEST=blinky_bootloader PROJECT_TARGET=stm32g473xx FIRMWARE_TYPE=app BEAR_ENABLE=0
 ```
 
-## Flash Flow
+## Parent Repo Integration
 
-### 1) Initial bootloader flash
+Application repos usually live outside this shared embedded repo. The shared
+Makefile is designed for that: the parent repo passes absolute app sources,
+include paths, target, build directory, and firmware type into this repo.
 
-Use STM32 ROM boot mode (BOOT pin/switch) and flash bootloader at `0x08000000`.
+Required variables:
 
-You can use existing helper:
+- `PROJECT_TARGET`: MCU target, for example `stm32g473xx`.
+- `PROJECT_C_SOURCES`: app source files from the parent repo.
+- `PROJECT_C_INCLUDES`: app include directories from the parent repo.
+- `PROJECT_BUILD_DIR`: output directory for objects, ELF, HEX, and BIN.
+- `FIRMWARE_TYPE`: optional. Defaults to `firmware`; use `app` for a
+  bootloader-linked image.
+
+Example parent repo layout:
+
+```text
+my-app/
+  Makefile
+  Src/main.c
+  Inc/app_config.h
+  vendor/ES_BLT/
+```
+
+Example parent `Makefile`:
+
+```make
+ES_BLT_DIR := vendor/ES_BLT
+PROJECT_TARGET ?= stm32g473xx
+FIRMWARE_TYPE ?= firmware
+
+PROJECT_C_SOURCES := $(abspath Src/main.c)
+PROJECT_C_INCLUDES := $(abspath Inc)
+
+ifeq ($(FIRMWARE_TYPE),app)
+PROJECT_BUILD_DIR := $(abspath build/app)
+else
+PROJECT_BUILD_DIR := $(abspath build)
+endif
+
+export PROJECT_TARGET
+export PROJECT_C_SOURCES
+export PROJECT_C_INCLUDES
+export PROJECT_BUILD_DIR
+export FIRMWARE_TYPE
+
+.PHONY: all clean flash flash-uart
+all:
+	$(MAKE) -C $(ES_BLT_DIR) all
+
+clean:
+	$(MAKE) -C $(ES_BLT_DIR) clean
+
+flash:
+	$(MAKE) -C $(ES_BLT_DIR) flash
+
+flash-uart:
+	$(MAKE) -C $(ES_BLT_DIR) flash-uart
+```
+
+With that wrapper:
 
 ```bash
-./flash-uart.sh build/stm32g473xx.bin 0x08000000
+# Old behavior: standalone app linked and flashed at 0x08000000.
+make
+make flash
+
+# Bootloader app: linked at 0x08010000 by default.
+make clean FIRMWARE_TYPE=app
+make FIRMWARE_TYPE=app
+make flash-uart FIRMWARE_TYPE=app
 ```
 
-### 2) Subsequent app updates through bootloader
-
-With board running bootloader (or reset into bootloader), run:
+For a custom bootloader size, override only `BOOTLOADER_SIZE_KB`; the app base
+and flash address follow automatically:
 
 ```bash
-python3 scripts/uart_bootloader_flash.py --port /dev/tty.usbserial-310 --bin build/app/stm32g473xx.bin --boot
+make FIRMWARE_TYPE=app BOOTLOADER_SIZE_KB=96
 ```
 
-## Wire Protocol (host <-> bootloader)
+If a parent repo needs a fixed nonstandard app base, override
+`BOOTLOADER_APP_BASE` directly.
 
-- Handshake:
-  - Host sends `0x7F`
-  - Bootloader replies `ACK(0x79)`
-- UART format:
-  - `115200 8E1`
-- Command packets follow AN3155:
-  - `CMD`, then bitwise-complement command byte.
-  - Multi-byte addresses are sent MSB first.
-  - Checksums are XOR bytes, matching AN3155.
+## Flash
 
-Commands:
+Standalone firmware uses the normal ST-Link flow and flashes to `0x08000000`:
 
-- `0x00`: Get
-- `0x01`: Get Version
-- `0x02`: Get ID
-- `0x11`: Read Memory
-- `0x21`: Go
-- `0x31`: Write Memory
-- `0x43`: Erase
-- `0x44`: Extended Erase
+```bash
+make -C test flash TEST=blinky PROJECT_TARGET=stm32g473xx BEAR_ENABLE=0
+```
 
-The implementation constrains erase and write operations to the app region so the resident
+Install the resident bootloader once using STM32 ROM boot mode:
+
+```bash
+./scripts/flash_bootloader.py
+```
+
+If autodetection picks the wrong UART, pass the port explicitly:
+
+```bash
+./scripts/flash_bootloader.py --port /dev/cu.usbserial-310
+```
+
+Flash an app through the resident bootloader:
+
+```bash
+./scripts/uart_bootloader_flash.py --boot
+```
+
+If the app is already running and supports the ES_BLT magic packet, ask it to
+reset into the bootloader first:
+
+```bash
+./scripts/uart_bootloader_flash.py --enter --boot
+```
+
+Only enter bootloader without flashing:
+
+```bash
+./scripts/uart_bootloader_enter.py
+```
+
+All UART scripts accept `--port`, `--baud`, and path/address overrides.
+
+## Runtime Entry Policy
+
+Apps can deny command-based bootloader entry while they are in an unsafe state:
+
+```c
+uart_bootloader_set_entry_allowed(false);
+```
+
+Set it back to true when the app is safe to reset:
+
+```c
+uart_bootloader_set_entry_allowed(true);
+```
+
+Hard faults still force bootloader entry for apps built with `FIRMWARE_TYPE=app`.
+Standalone `FIRMWARE_TYPE=firmware` apps keep the normal debug hardfault handler.
+
+## Wire Protocol
+
+The resident bootloader speaks the STM32 AN3155 UART protocol subset used by
+STM32CubeProgrammer:
+
+- UART format: `115200 8E1`.
+- Handshake: host sends `0x7F`, bootloader replies `ACK(0x79)`.
+- Supported commands: Get, Get Version, Get ID, Read Memory, Go, Write Memory,
+  Erase, and Extended Erase.
+
+Erase and write operations are constrained to the app region so the resident
 bootloader is not erased by CubeProgrammer special erase requests.
+
+Apps enter the bootloader through the common UART command packet:
+
+```text
+ESBLT_BOOT\n
+```

@@ -9,6 +9,7 @@
 #include <stddef.h>
 
 static size_t s_command_match_len = 0U;
+static volatile bool s_entry_allowed = true;
 
 static volatile uint32_t *uart_bootloader_magic_register(void) {
 #if defined(TAMP) && defined(TAMP_BKP0R)
@@ -51,6 +52,14 @@ bool uart_bootloader_feed_command_byte(uint8_t byte) {
 
 void uart_bootloader_command_reset(void) {
     s_command_match_len = 0U;
+}
+
+void uart_bootloader_set_entry_allowed(bool allowed) {
+    s_entry_allowed = allowed;
+}
+
+bool uart_bootloader_is_entry_allowed(void) {
+    return s_entry_allowed;
 }
 
 void uart_bootloader_request_reset(void) {

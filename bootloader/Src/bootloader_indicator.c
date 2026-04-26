@@ -1,55 +1,30 @@
 #include "bootloader_indicator.h"
 
+#include "bootloader_board.h"
 #include "bootloader_hal.h"
 
 #include <stdbool.h>
 
-#if defined(STM32L432xx)
-#define LED_PIN GPIO_PIN_3
-#define LED_PORT GPIOB
-#elif defined(STM32L431xx)
-#define LED_PIN GPIO_PIN_11
-#define LED_PORT GPIOB
-#elif defined(STM32G473xx)
-#define LED_PIN GPIO_PIN_3
-#define LED_PORT GPIOC
-#else
-#define LED_PIN GPIO_PIN_5
-#define LED_PORT GPIOA
-#endif
-
 static bootloader_indicator_mode_t s_mode = BOOTLOADER_INDICATOR_NO_APP;
-
-static void bootloader_indicator_enable_port_clock(void) {
-    if (LED_PORT == GPIOA) {
-        __HAL_RCC_GPIOA_CLK_ENABLE();
-    } else if (LED_PORT == GPIOB) {
-        __HAL_RCC_GPIOB_CLK_ENABLE();
-    } else if (LED_PORT == GPIOC) {
-        __HAL_RCC_GPIOC_CLK_ENABLE();
-    } else if (LED_PORT == GPIOD) {
-        __HAL_RCC_GPIOD_CLK_ENABLE();
-    }
-}
 
 void bootloader_indicator_init(void) {
     GPIO_InitTypeDef init = {0};
-    bootloader_indicator_enable_port_clock();
+    bootloader_board_enable_led_port_clock();
 
-    init.Pin = LED_PIN;
+    init.Pin = BOOTLOADER_LED_PIN;
     init.Mode = GPIO_MODE_OUTPUT_PP;
     init.Pull = GPIO_NOPULL;
     init.Speed = GPIO_SPEED_FREQ_LOW;
-    HAL_GPIO_Init(LED_PORT, &init);
-    HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_RESET);
+    HAL_GPIO_Init(BOOTLOADER_LED_PORT, &init);
+    HAL_GPIO_WritePin(BOOTLOADER_LED_PORT, BOOTLOADER_LED_PIN, GPIO_PIN_RESET);
 }
 
 void bootloader_indicator_set_mode(bootloader_indicator_mode_t mode) {
     s_mode = mode;
     if (s_mode == BOOTLOADER_INDICATOR_CONNECTED) {
-        HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET);
+        HAL_GPIO_WritePin(BOOTLOADER_LED_PORT, BOOTLOADER_LED_PIN, GPIO_PIN_SET);
     } else {
-        HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(BOOTLOADER_LED_PORT, BOOTLOADER_LED_PIN, GPIO_PIN_RESET);
     }
 }
 
@@ -76,5 +51,5 @@ void bootloader_indicator_update(uint32_t tick_ms) {
         led_on = (tick_ms % 500U) < 250U;
     }
 
-    HAL_GPIO_WritePin(LED_PORT, LED_PIN, led_on ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(BOOTLOADER_LED_PORT, BOOTLOADER_LED_PIN, led_on ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }

@@ -655,7 +655,7 @@ uart_status_t uart_bootloader_service(UART_HandleTypeDef* handle, TickType_t del
         return UART_ERR;
     }
 
-    if (uart_bootloader_feed_command_byte(byte)) {
+    if (uart_bootloader_feed_command_byte(byte) && uart_bootloader_is_entry_allowed()) {
         uart_bootloader_request_reset();
     }
 
