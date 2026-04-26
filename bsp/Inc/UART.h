@@ -123,12 +123,12 @@ uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint16_t leng
  *
  * Waits for one byte from the UART RX queue, then drains any queued bytes so
  * burst-sent bootloader commands are parsed before the UART RX queue can fill.
- * Resets into the bootloader if the configured magic command is received.
+ * Resets into the bootloader if the configured boot command is received.
  *
  * @param handle Pointer to the UART handle.
  * @param delay_ticks Ticks to wait for one byte.
  * @return uart_status_t UART_OK when a byte was serviced, UART_ERR otherwise.
  */
-uart_status_t uart_bootloader_service(UART_HandleTypeDef* handle, TickType_t delay_ticks);
+uart_status_t uart_boot_command_service(UART_HandleTypeDef* handle, TickType_t delay_ticks);
 
 #endif /* UART_H_ */

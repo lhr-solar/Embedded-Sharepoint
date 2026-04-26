@@ -1,6 +1,7 @@
 #include <string.h>
 
 #include "CAN.h"
+#include "bootloader_command.h"
 #include "queue_ex.h"
 
 #ifdef CAN1
@@ -324,6 +325,10 @@ can_status_t can_send_isr(CAN_HandleTypeDef* handle, const CAN_TxHeaderTypeDef* 
     return CAN_OK;
 }
 
+bool can_bootloader_service(uint32_t id, const uint8_t data[], uint8_t len) {
+    return bootloader_command_handle_can_message(id, data, len);
+}
+
 __weak void can_tx_callback_hook(CAN_HandleTypeDef* hcan, const can_tx_payload_t* payload) {
     UNUSED(hcan);
     UNUSED(payload);
@@ -394,6 +399,10 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
 
     // recieve messages from queue till empty and put into recieve queues
     while (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &payload.header, payload.data) == HAL_OK) {
+        if ((payload.header.IDE == CAN_ID_STD) && (payload.header.RTR == CAN_RTR_DATA)) {
+            (void)can_bootloader_service(payload.header.StdId, payload.data, payload.header.DLC);
+        }
+
         // Optional callback for user to implement
         can_rx_callback_hook(hcan, &payload);
 

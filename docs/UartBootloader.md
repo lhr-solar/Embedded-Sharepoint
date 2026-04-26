@@ -1,9 +1,10 @@
-# UART Bootloader
+# UART/CAN Bootloader
 
-This bootloader lets a board update its app over UART after the bootloader has
-been installed once. Normal firmware builds still work the old way by default:
-if you do not specify a firmware type, the image is linked and flashed at
-`0x08000000`.
+This bootloader lets a board update its app over UART, or over classic CAN on
+CAN-capable targets, after the bootloader has been installed once. Apps can
+return to the bootloader through either the UART magic packet or a CAN/FDCAN boot
+command frame. Normal firmware builds still work the old way by default: if you
+do not specify a firmware type, the image is linked and flashed at `0x08000000`.
 
 ## Firmware Types
 
@@ -84,6 +85,11 @@ Bootloader-related overrides:
   `BOOTLOADER_SIZE_KB`; only set this directly for a nonstandard memory map.
 - `FLASH_ADDRESS`: normally derived from `FIRMWARE_TYPE`; only set this for a
   custom flash operation.
+- `BOOTLOADER_CAN_ENABLE`: defaults to enabled when a classic `CAN1` peripheral
+  exists. Set to `0` to build a UART-only resident bootloader.
+- `BOOTLOADER_CAN_STARTUP_PRESCALER`, `BOOTLOADER_CAN_TIME_SEG1`,
+  `BOOTLOADER_CAN_TIME_SEG2`, and `BOOTLOADER_CAN_SJW`: override the resident
+  classic CAN startup timing. Defaults target the AN3154 startup behavior.
 
 Parent Makefiles should not export empty bootloader override variables. For
 example, do not export `BOOTLOADER_APP_BASE` unless you actually assign it,
@@ -161,31 +167,50 @@ If a parent repo needs a fixed nonstandard app base, override
 
 ## App Requirements
 
-Apps that run behind the resident bootloader need three pieces:
+Apps that run behind the resident bootloader need these pieces:
 
 - Build with `FIRMWARE_TYPE=app` so the linker script starts flash at
   `BOOTLOADER_APP_BASE`.
 - Use the standard Embedded-Sharepoint startup files, which set `SCB->VTOR` to
   `BOOTLOADER_APP_BASE` during `SystemInit()` for bootloader app builds.
-- Optionally call `uart_bootloader_init_app_vector_table()` at the start of
+- Optionally call `bootloader_command_init_app_vector_table()` at the start of
   `main()` as an explicit second set.
-- Service the UART bootloader command parser on the same UART used by the
-  bootloader:
+- Initialize whichever command interfaces the app supports.
+
+For UART entry, service the UART bootloader command parser on the same UART used
+by the bootloader:
 
 ```c
 while (1) {
-    (void)uart_bootloader_service(husart3, portMAX_DELAY);
+    (void)uart_boot_command_service(husart3, portMAX_DELAY);
 }
 ```
 
-`uart_bootloader_service()` waits for one byte, then drains any bytes already
+`uart_boot_command_service()` waits for one byte, then drains any bytes already
 queued by the UART ISR. This keeps parent apps tolerant of host tools that send
 the `ESBLT_BOOT\n` command as a short burst.
+
+For CAN or FDCAN entry, initialize and start the normal BSP driver. The boot
+command is handled in the CAN/FDCAN RX ISR path before normal queue delivery, so
+the app does not need to register a receive queue for the command ID:
+
+```c
+// G4 FDCAN apps
+can_fd_init(hfdcan1, &filter);
+can_fd_start(hfdcan1);
+
+// L4 bxCAN apps
+can_init(hcan1, &filter);
+can_start(hcan1);
+```
+
+The app's CAN filter must allow `BOOTLOADER_CAN_COMMAND_ID`, which defaults to
+standard ID `0x000`.
 
 If the app cannot safely reset at some point, gate command entry:
 
 ```c
-uart_bootloader_set_entry_allowed(false);
+bootloader_command_set_entry_allowed(false);
 ```
 
 Hard faults still force bootloader entry for apps built with
@@ -200,11 +225,14 @@ The bring-up app should:
 
 - Use the standard Embedded-Sharepoint startup files so `SystemInit()` sets the
   app vector table before `main()`.
-- Optionally call `uart_bootloader_init_app_vector_table()` before `HAL_Init()`
+- Optionally call `bootloader_command_init_app_vector_table()` before `HAL_Init()`
   as an explicit second set.
-- Initialize the same UART pins and instance used by the resident bootloader.
-- Run `uart_bootloader_service()` in a task or main-loop path so
+- Initialize the same UART pins and instance used by the resident bootloader if
+  using UART app-to-bootloader entry.
+- Run `uart_boot_command_service()` in a task or main-loop path if using UART, so
   `uart_bootloader_flash.py --enter --boot` can return the board to update mode.
+- Initialize/start CAN or FDCAN and accept `BOOTLOADER_CAN_COMMAND_ID` if using
+  CAN app-to-bootloader entry.
 - Blink an LED or use another board-local indicator so you can confirm the app
   jumped successfully.
 - Keep only peripherals needed for bench validation. Gate or stub hardware
@@ -214,8 +242,8 @@ The bring-up app should:
   that peripheral is part of the bootloader update path or early board bring-up.
 
 After the minimal app can be flashed, reset, and re-enter the bootloader, move
-the same `FIRMWARE_TYPE=app`, vector-table init, and UART service changes into
-the normal application startup path.
+the same `FIRMWARE_TYPE=app`, vector-table init, and command-interface changes
+into the normal application startup path.
 
 ## Flash
 
@@ -261,18 +289,31 @@ path/address overrides. The entry scripts send `ESBLT_BOOT\n` byte-by-byte by
 default to avoid overrunning simple app-side UART command paths. Use
 `--byte-delay <seconds>` if a board needs a different spacing.
 
+Classic CAN flashing is handled by the resident bootloader using the STM32
+AN3154 protocol. Use STM32CubeProgrammer's CAN bootloader flow for CAN-capable
+targets such as L4:
+
+```text
+Protocol: STM32 CAN bootloader / AN3154
+Startup:  standard ID 0x079
+Default bitrate: 125 kbit/s target timing, configurable in bootloader_config.h
+```
+
+The CAN implementation uses the HAL directly inside the resident bootloader. It
+does not depend on the FreeRTOS CAN BSP queues used by normal applications.
+
 ## Runtime Entry Policy
 
 Apps can deny command-based bootloader entry while they are in an unsafe state:
 
 ```c
-uart_bootloader_set_entry_allowed(false);
+bootloader_command_set_entry_allowed(false);
 ```
 
 Set it back to true when the app is safe to reset:
 
 ```c
-uart_bootloader_set_entry_allowed(true);
+bootloader_command_set_entry_allowed(true);
 ```
 
 Hard faults still force bootloader entry for apps built with `FIRMWARE_TYPE=app`.
@@ -291,8 +332,44 @@ STM32CubeProgrammer:
 Erase and write operations are constrained to the app region so the resident
 bootloader is not erased by CubeProgrammer special erase requests.
 
+On targets with classic CAN enabled, the resident bootloader also speaks the
+STM32 AN3154 CAN protocol subset:
+
+- Startup sync: host sends a standard CAN frame with ID `0x079`.
+- ACK/NACK: one-byte data frames with `0x79` or `0x1F`.
+- Commands: Get, Get Version, Get ID, Read Memory, Go, Write Memory, and Erase.
+- Data chunks: up to 8 bytes per classic CAN data frame.
+
+Erase and write operations are still constrained to the app region.
+
 Apps enter the bootloader through the common UART command packet:
 
 ```text
 ESBLT_BOOT\n
 ```
+
+Apps can also react to a boot-control CAN data frame, received by either L4
+bxCAN or G4 FDCAN. The node-ID decision is made only in the application; the
+resident bootloader only consumes the persisted magic value written by the app.
+
+```text
+Standard ID: BOOTLOADER_CAN_COMMAND_ID, default 0x000
+Byte 0:      0x00                      app clears magic and resets normally
+Byte 0:      BOOTLOADER_CAN_NODE_ID    app writes flash magic and resets
+Byte 0:      any other nonzero value   app writes hold-only magic and resets
+```
+
+`BOOTLOADER_CAN_NODE_ID` is intended to be overridden by the parent application
+or build system from the board ID value table in the DBC. The default `0xFF`
+keeps bench tests simple because it is the maximum 8-bit value.
+
+The hold-only mode is useful when flashing one node on a shared CAN bus. All
+boards can be silenced into their resident bootloader so normal application
+traffic stops, but only the board whose `BOOTLOADER_CAN_NODE_ID` matches the
+command value writes the flashable bootloader magic. The bootloader itself is
+ID-agnostic and only distinguishes normal boot, hold-only bootloader entry, and
+flashable bootloader entry by the magic value stored before reset.
+
+While the resident bootloader is idle waiting for a host connection, it also
+honors the reset-all form (`0x000` with byte `0x00`) and resets back to normal
+boot. It does not process that control frame during an active flashing session.

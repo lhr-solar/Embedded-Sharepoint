@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdint.h>
 #include "stm32xx_hal.h"
-#include "uart_bootloader.h"
+#include "bootloader_command.h"
 
 // Define the size of the data to be transmitted
 // may need to be configured for support for packets less more than 8 bits
@@ -649,22 +649,22 @@ uart_status_t uart_recv(UART_HandleTypeDef* handle, uint8_t* data, uint16_t leng
     return status;
 }
 
-static void uart_bootloader_service_byte(uint8_t byte) {
-    if (uart_bootloader_feed_command_byte(byte) && uart_bootloader_is_entry_allowed()) {
-        uart_bootloader_request_reset();
+static void uart_boot_command_service_byte(uint8_t byte) {
+    if (bootloader_command_feed_uart_byte(byte) && bootloader_command_is_entry_allowed()) {
+        bootloader_command_request_reset();
     }
 }
 
-uart_status_t uart_bootloader_service(UART_HandleTypeDef* handle, TickType_t delay_ticks) {
+uart_status_t uart_boot_command_service(UART_HandleTypeDef* handle, TickType_t delay_ticks) {
     uint8_t byte = 0U;
     if (uart_recv(handle, &byte, 1U, delay_ticks) != UART_OK) {
         return UART_ERR;
     }
 
-    uart_bootloader_service_byte(byte);
+    uart_boot_command_service_byte(byte);
 
     while (uart_recv(handle, &byte, 1U, 0U) == UART_OK) {
-        uart_bootloader_service_byte(byte);
+        uart_boot_command_service_byte(byte);
     }
 
     return UART_OK;

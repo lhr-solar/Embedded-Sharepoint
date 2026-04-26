@@ -3,7 +3,7 @@
 #if defined(FIRMWARE_ROLE_BOOTLOADER)
 #include "bootloader_board.h"
 #elif defined(FIRMWARE_USES_BOOTLOADER)
-#include "uart_bootloader.h"
+#include "bootloader_command.h"
 #endif
 
 #if defined(FIRMWARE_ROLE_BOOTLOADER) || defined(FIRMWARE_USES_BOOTLOADER)
@@ -25,7 +25,7 @@ void HardFault_Handler(void) {
         }
     }
 #elif defined(FIRMWARE_USES_BOOTLOADER)
-    uart_bootloader_request_reset();
+    bootloader_command_request_reset();
     while (1) {}
 #endif
 }

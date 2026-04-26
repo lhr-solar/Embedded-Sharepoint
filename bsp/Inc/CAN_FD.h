@@ -152,6 +152,20 @@ can_status_t can_fd_send_isr(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef*
 can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint32_t id, FDCAN_RxHeaderTypeDef* header,
                          uint8_t data[], TickType_t delay_ticks);
 
+/**
+ * @brief Services one FDCAN bootloader command frame.
+ *
+ * Parent applications normally do not call this directly; the FDCAN RX ISR hook
+ * invokes it for every received frame. It is exposed for tests or custom FDCAN
+ * integrations that bypass this BSP driver.
+ *
+ * @param id Standard CAN identifier.
+ * @param data CAN frame payload.
+ * @param len Number of payload bytes.
+ * @return true if the frame matched the bootloader command.
+ */
+bool can_fd_bootloader_service(uint32_t id, const uint8_t data[], uint8_t len);
+
 
 #if (configUSE_QUEUE_SETS == 1)
 /**

@@ -1,5 +1,6 @@
 #include "CAN_Common.h"
 #include "CAN_FD.h"
+#include "bootloader_command.h"
 #include <string.h>
 
 // Define CAN FD handles
@@ -308,6 +309,10 @@ can_status_t can_fd_recv(FDCAN_HandleTypeDef* handle, uint32_t id, FDCAN_RxHeade
     return CAN_ERR;
 }
 
+bool can_fd_bootloader_service(uint32_t id, const uint8_t data[], uint8_t len) {
+    return bootloader_command_handle_can_message(id, data, len);
+}
+
 
 #if (configUSE_QUEUE_SETS == 1)
 can_status_t can_fd_register_id_set(FDCAN_HandleTypeDef* handle, can_id_set_t* set) {
@@ -433,6 +438,12 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs)
     if ((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET) {
         while (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &payload.header, payload.data) ==
                HAL_OK) {
+            if ((payload.header.IdType == FDCAN_STANDARD_ID) &&
+                (payload.header.RxFrameType == FDCAN_DATA_FRAME)) {
+                (void)can_fd_bootloader_service(payload.header.Identifier, payload.data,
+                                                FDCAN_BYTES_FROM_DLC(payload.header.DataLength));
+            }
+
             can_fd_rx_callback_hook(hfdcan, RxFifo0ITs, payload);
  
             // placeholder if no FDCAN peripherals are enabled

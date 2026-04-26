@@ -2,7 +2,7 @@
 #include "bootloader_indicator.h"
 #include "bootloader_runtime.h"
 #include "bootloader_hal.h"
-#include "uart_bootloader.h"
+#include "bootloader_command.h"
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -41,6 +41,16 @@ static const uint8_t s_supported_cmds[] = {
     BL_CMD_WRITE_MEMORY,
     BL_CMD_ERASE,
     BL_CMD_EXT_ERASE,
+};
+
+static const uint8_t s_can_supported_cmds[] = {
+    BL_CMD_GET,
+    BL_CMD_GET_VERSION,
+    BL_CMD_GET_ID,
+    BL_CMD_READ_MEMORY,
+    BL_CMD_GO,
+    BL_CMD_WRITE_MEMORY,
+    BL_CMD_ERASE,
 };
 
 static bool s_app_write_seen = false;
@@ -96,6 +106,25 @@ static void bl_send_ack(void) {
 static void bl_send_nack(void) {
     uint8_t b = BL_NACK;
     (void)bootloader_runtime_send_bytes(&b, 1U);
+}
+
+static void bl_can_send_ack(uint32_t id) {
+    uint8_t b = BL_ACK;
+    (void)bootloader_runtime_can_send(id, &b, 1U);
+}
+
+static void bl_can_send_nack(uint32_t id) {
+    uint8_t b = BL_NACK;
+    (void)bootloader_runtime_can_send(id, &b, 1U);
+}
+
+static bool bl_can_send_data(uint32_t id, const uint8_t *data, uint8_t len) {
+    return bootloader_runtime_can_send(id, data, len);
+}
+
+static uint32_t bl_addr_from_can_data(const uint8_t *data) {
+    return ((uint32_t)data[0] << 24) | ((uint32_t)data[1] << 16) |
+           ((uint32_t)data[2] << 8) | ((uint32_t)data[3]);
 }
 
 static bool bl_read_cmd(uint8_t *cmd) {
@@ -459,6 +488,217 @@ static bool bl_dispatch_cmd(uint8_t cmd) {
     return false;
 }
 
+static void bl_can_handle_get(void) {
+    bl_can_send_ack(BL_CMD_GET);
+
+    uint8_t count = (uint8_t)sizeof(s_can_supported_cmds);
+    (void)bl_can_send_data(BL_CMD_GET, &count, 1U);
+
+    uint8_t version = BL_VERSION;
+    (void)bl_can_send_data(BL_CMD_GET, &version, 1U);
+
+    for (size_t i = 0U; i < sizeof(s_can_supported_cmds); i++) {
+        (void)bl_can_send_data(BL_CMD_GET, &s_can_supported_cmds[i], 1U);
+    }
+
+    bl_can_send_ack(BL_CMD_GET);
+}
+
+static void bl_can_handle_get_version(void) {
+    bl_can_send_ack(BL_CMD_GET_VERSION);
+
+    uint8_t version = BL_VERSION;
+    (void)bl_can_send_data(BL_CMD_GET_VERSION, &version, 1U);
+
+    const uint8_t dummy[2] = {0U, 0U};
+    (void)bl_can_send_data(BL_CMD_GET_VERSION, dummy, sizeof(dummy));
+
+    bl_can_send_ack(BL_CMD_GET_VERSION);
+}
+
+static void bl_can_handle_get_id(void) {
+    bl_can_send_ack(BL_CMD_GET_ID);
+
+    uint8_t out[2] = {(uint8_t)(BL_DEVICE_ID >> 8), (uint8_t)BL_DEVICE_ID};
+    (void)bl_can_send_data(BL_CMD_GET_ID, out, sizeof(out));
+
+    bl_can_send_ack(BL_CMD_GET_ID);
+}
+
+static void bl_can_send_memory(uint32_t id, uint32_t addr, uint32_t read_len) {
+    uint8_t filler[8];
+    uint32_t sent = 0U;
+
+    while (sent < read_len) {
+        uint8_t chunk = (uint8_t)(((read_len - sent) > 8U) ? 8U : (read_len - sent));
+        const uint8_t *src = NULL;
+
+        if (bl_range_in_app(addr + sent, chunk) || bl_range_in_option_bytes(addr + sent, chunk)) {
+            src = (const uint8_t *)(addr + sent);
+        } else {
+            for (uint8_t i = 0U; i < chunk; i++) {
+                filler[i] = 0xFFU;
+            }
+            src = filler;
+        }
+
+        (void)bl_can_send_data(id, src, chunk);
+        sent += chunk;
+    }
+}
+
+static void bl_can_handle_read_memory(const bootloader_can_frame_t *frame) {
+    if (frame->dlc != 5U) {
+        bl_can_send_nack(BL_CMD_READ_MEMORY);
+        return;
+    }
+
+    uint32_t addr = bl_addr_from_can_data(frame->data);
+    uint32_t read_len = (uint32_t)frame->data[4] + 1U;
+    uint32_t end = addr + read_len;
+    if (end < addr) {
+        bl_can_send_nack(BL_CMD_READ_MEMORY);
+        return;
+    }
+
+    bl_can_send_ack(BL_CMD_READ_MEMORY);
+    bl_can_send_memory(BL_CMD_READ_MEMORY, addr, read_len);
+    bl_can_send_ack(BL_CMD_READ_MEMORY);
+}
+
+static void bl_can_handle_go(const bootloader_can_frame_t *frame) {
+    if (frame->dlc != 4U) {
+        bl_can_send_nack(BL_CMD_GO);
+        return;
+    }
+
+    uint32_t addr = bl_addr_from_can_data(frame->data);
+    if (addr != bl_app_start() || !bootloader_runtime_is_app_valid()) {
+        bl_can_send_nack(BL_CMD_GO);
+        return;
+    }
+
+    bl_can_send_ack(BL_CMD_GO);
+    HAL_Delay(20U);
+    bootloader_runtime_jump_to_app();
+}
+
+static void bl_can_handle_write_memory(const bootloader_can_frame_t *frame) {
+    if (frame->dlc != 5U) {
+        bl_can_send_nack(BL_CMD_WRITE_MEMORY);
+        return;
+    }
+
+    uint32_t addr = bl_addr_from_can_data(frame->data);
+    uint32_t data_len = (uint32_t)frame->data[4] + 1U;
+    if (!bl_range_in_app(addr, data_len)) {
+        bl_can_send_nack(BL_CMD_WRITE_MEMORY);
+        return;
+    }
+
+    bl_can_send_ack(BL_CMD_WRITE_MEMORY);
+
+    uint8_t data[256];
+    uint32_t received = 0U;
+    while (received < data_len) {
+        bootloader_can_frame_t data_frame = {0};
+        if (!bootloader_runtime_can_recv(&data_frame, 1000U) || data_frame.dlc == 0U ||
+            data_frame.id > 0xFFU || ((received + data_frame.dlc) > data_len)) {
+            bl_can_send_nack(BL_CMD_WRITE_MEMORY);
+            return;
+        }
+
+        for (uint8_t i = 0U; i < data_frame.dlc; i++) {
+            data[received + i] = data_frame.data[i];
+        }
+        received += data_frame.dlc;
+
+        if (received == data_len) {
+            bootloader_indicator_set_mode(BOOTLOADER_INDICATOR_FLASHING);
+            bootloader_indicator_update(HAL_GetTick());
+            bool ok = bootloader_runtime_write_app(addr - bl_app_start(), data, data_len);
+            bootloader_indicator_set_mode(BOOTLOADER_INDICATOR_CONNECTED);
+            if (!ok) {
+                bl_can_send_nack(BL_CMD_WRITE_MEMORY);
+                return;
+            }
+            s_app_write_seen = true;
+        }
+
+        bl_can_send_ack(BL_CMD_WRITE_MEMORY);
+    }
+}
+
+static bool bl_can_page_in_app(uint32_t page) {
+    uint32_t app_first_page = (bl_app_start() - BL_FLASH_BASE) / BL_FLASH_PAGE_SIZE;
+    uint32_t app_last_page = (bl_app_end_exclusive() - 1U - BL_FLASH_BASE) / BL_FLASH_PAGE_SIZE;
+    return page >= app_first_page && page <= app_last_page;
+}
+
+static void bl_can_handle_erase(const bootloader_can_frame_t *frame) {
+    if (frame->dlc == 0U) {
+        bl_can_send_nack(BL_CMD_ERASE);
+        return;
+    }
+
+    if (frame->dlc == 1U && frame->data[0] == 0xFFU) {
+        bootloader_indicator_set_mode(BOOTLOADER_INDICATOR_FLASHING);
+        bootloader_indicator_update(HAL_GetTick());
+        bool ok = bootloader_runtime_erase_app();
+        bootloader_indicator_set_mode(BOOTLOADER_INDICATOR_CONNECTED);
+        if (ok) {
+            bl_can_send_ack(BL_CMD_ERASE);
+        } else {
+            bl_can_send_nack(BL_CMD_ERASE);
+        }
+        return;
+    }
+
+    for (uint8_t i = 0U; i < frame->dlc; i++) {
+        if (!bl_can_page_in_app(frame->data[i])) {
+            bl_can_send_nack(BL_CMD_ERASE);
+            return;
+        }
+    }
+
+    bootloader_indicator_set_mode(BOOTLOADER_INDICATOR_FLASHING);
+    bootloader_indicator_update(HAL_GetTick());
+    bool ok = bootloader_runtime_erase_app();
+    bootloader_indicator_set_mode(BOOTLOADER_INDICATOR_CONNECTED);
+    if (ok) {
+        bl_can_send_ack(BL_CMD_ERASE);
+    } else {
+        bl_can_send_nack(BL_CMD_ERASE);
+    }
+}
+
+static void bl_can_dispatch_frame(const bootloader_can_frame_t *frame) {
+    uint8_t cmd = (uint8_t)(frame->id & 0xFFU);
+
+    if (frame->id > 0xFFU) {
+        bl_can_send_nack(frame->id);
+        return;
+    }
+
+    if (cmd == BL_CMD_GET) {
+        bl_can_handle_get();
+    } else if (cmd == BL_CMD_GET_VERSION) {
+        bl_can_handle_get_version();
+    } else if (cmd == BL_CMD_GET_ID) {
+        bl_can_handle_get_id();
+    } else if (cmd == BL_CMD_READ_MEMORY) {
+        bl_can_handle_read_memory(frame);
+    } else if (cmd == BL_CMD_GO) {
+        bl_can_handle_go(frame);
+    } else if (cmd == BL_CMD_WRITE_MEMORY) {
+        bl_can_handle_write_memory(frame);
+    } else if (cmd == BL_CMD_ERASE) {
+        bl_can_handle_erase(frame);
+    } else {
+        bl_can_send_nack(frame->id);
+    }
+}
+
 static bool bl_wait_for_sync_with_indicator(uint32_t timeout_ms) {
     uint32_t start = HAL_GetTick();
     while ((timeout_ms == 0U) || ((HAL_GetTick() - start) < timeout_ms)) {
@@ -466,11 +706,35 @@ static bool bl_wait_for_sync_with_indicator(uint32_t timeout_ms) {
 
         if (bootloader_runtime_poll_sync(5U)) {
             bootloader_indicator_set_mode(BOOTLOADER_INDICATOR_CONNECTED);
-            bl_send_ack();
+            if (bootloader_runtime_active_transport() == BOOTLOADER_TRANSPORT_CAN) {
+                bl_can_send_ack(BOOTLOADER_CAN_SYNC_ID);
+            } else {
+                bl_send_ack();
+            }
             return true;
         }
     }
     return false;
+}
+
+static void bl_reset_to_normal_boot(void) {
+    bootloader_command_clear_request();
+    __DSB();
+    NVIC_SystemReset();
+}
+
+static void bl_hold_without_flashing(void) {
+    bootloader_indicator_set_mode(BOOTLOADER_INDICATOR_CONNECTED);
+
+    while (1) {
+        bootloader_indicator_update(HAL_GetTick());
+
+        bootloader_can_frame_t frame = {0};
+        if (bootloader_runtime_can_recv(&frame, 100U) &&
+            bootloader_command_is_can_reset_message(frame.id, frame.data, frame.dlc)) {
+            bl_reset_to_normal_boot();
+        }
+    }
 }
 
 int main(void) {
@@ -480,9 +744,14 @@ int main(void) {
     bootloader_indicator_init();
     bootloader_runtime_init();
 
-    bool forced_bootloader = uart_bootloader_consume_request();
+    bootloader_command_request_t boot_request = bootloader_command_consume_request();
+    bool forced_bootloader = boot_request != BOOTLOADER_COMMAND_REQUEST_NONE;
     bool app_valid = bootloader_runtime_is_app_valid();
     bootloader_indicator_set_mode(app_valid ? BOOTLOADER_INDICATOR_APP_PRESENT : BOOTLOADER_INDICATOR_NO_APP);
+
+    if (boot_request == BOOTLOADER_COMMAND_REQUEST_HOLD) {
+        bl_hold_without_flashing();
+    }
 
     uint32_t startup_wait_ms = (app_valid && !forced_bootloader) ?
         BOOTLOADER_APP_STARTUP_WAIT_MS : BOOTLOADER_HANDSHAKE_TIMEOUT_MS;
@@ -494,6 +763,22 @@ int main(void) {
 
     while (1) {
         bootloader_indicator_update(HAL_GetTick());
+
+        if (bootloader_runtime_active_transport() == BOOTLOADER_TRANSPORT_CAN) {
+            bootloader_can_frame_t frame = {0};
+            if (!bootloader_runtime_can_recv(&frame, 1000U)) {
+                if (s_app_write_seen && bootloader_runtime_is_app_valid() &&
+                    ((HAL_GetTick() - s_last_command_tick) >= BOOTLOADER_POST_FLASH_BOOT_DELAY_MS)) {
+                    bootloader_runtime_jump_to_app();
+                }
+                continue;
+            }
+
+            s_last_command_tick = HAL_GetTick();
+            bl_can_dispatch_frame(&frame);
+            continue;
+        }
+
         uint8_t cmd = 0U;
         if (!bl_read_cmd(&cmd)) {
             if (s_app_write_seen && bootloader_runtime_is_app_valid() &&
