@@ -52,7 +52,7 @@ typedef enum {
     ADC_INTERRUPT_BUSY,
     ADC_INTERRUPT_TIMEOUT,
     ADC_INTERRUPT_ERROR,
-    ADC_QUEUE_FULL,
+    ADC_QUEUE_FULL
 
 } adc_status_t;
 
@@ -131,6 +131,6 @@ adc_status_t adc_deinit(ADC_HandleTypeDef *h);
  * @warning The ADC must be initialized and properly configured before
  *          calling this function, otherwise the returned value may be invalid.
  */
-uint32_t adc_get_vref(void);
+adc_status_t adc_get_vref(ADC_HandleTypeDef *h, uint32_t *vref);
 
 #endif

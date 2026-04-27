@@ -49,9 +49,39 @@ adc_status_t adc_deinit(ADC_HandleTypeDef *h) {
     return ADC_OK;
 }
 
-uint32_t adc_get_vref(void) {
-    // this wasn't my doing
-    return ADC_CHANNEL_VREFINT;
+adc_status_t adc_get_vref(ADC_HandleTypeDef *h, uint32_t *vref) {
+    /* Blocking ADC conversion to get internal VREF */
+
+    if (h == NULL) return ADC_INIT_FAIL;
+    
+    uint16_t vref_charac, vrefint_cal, vrefint_data;
+    // vref =  vref_charac * (vrefint_cal / vrefint_data)
+    vref_charac = VREFINT_CAL_VREF;    
+    vrefint_cal = *( VREFINT_CAL_ADDR ); // 0x1FFF 75AA - 0x1FFF 75AB
+    
+
+    ADC_ChannelConfTypeDef sConfig = {
+        .Channel = ADC_CHANNEL_VREFINT,
+        .Rank    = 1,
+    // #ifdef ADC_SAMPLETIME_3CYCLES
+    //     .SamplingTime = ADC_SAMPLETIME_3CYCLES
+    // #else
+        .SamplingTime = ADC_SAMPLETIME_247CYCLES_5
+    // #endif
+    };
+
+    if (HAL_ADC_ConfigChannel(h, &sConfig) != HAL_OK)
+    {
+      return ADC_CHANNEL_CONFIG_FAIL;
+    }
+    
+    HAL_ADC_Start(h);
+    HAL_ADC_PollForConversion(h, HAL_MAX_DELAY);
+    vrefint_data = HAL_ADC_GetValue(h);     
+    
+    *vref = (vref_charac) * (vrefint_cal / vrefint_data);
+
+    return ADC_OK;
 }
 
 adc_status_t adc_read(ADC_HandleTypeDef *h, ADC_ChannelConfTypeDef* sConfig, QueueHandle_t q) {

@@ -94,12 +94,12 @@ void TestADC1(void *pvParameters) {
     uint32_t reading = 0;
 
     ADC_ChannelConfTypeDef sConfig = {
-        .Channel = ADC_CHANNEL_1,
-    #ifdef ADC_SAMPLETIME_3CYCLES
-        .SamplingTime = ADC_SAMPLETIME_3CYCLES
-    #else
-        .SamplingTime = ADC_SAMPLETIME_2CYCLES_5
-    #endif
+        .Channel = ADC_CHANNEL_VREFINT,
+    // #ifdef ADC_SAMPLETIME_3CYCLES
+    //     .SamplingTime = ADC_SAMPLETIME_3CYCLES
+    // #else
+        .SamplingTime = ADC_SAMPLETIME_247CYCLES_5
+    // #endif
     };
 
     // read reference voltage
@@ -120,6 +120,9 @@ void TestADC1(void *pvParameters) {
         xQueueReceive(xReadings, &reading, 0);
     }
 
+    uint16_t vref_in_mem = *( VREFINT_CAL_ADDR ); 
+
+    UNUSED(vref_in_mem);
     UNUSED(vref);
     UNUSED(scaled_reading);
     
@@ -249,6 +252,10 @@ int main() {
     {
     Error_Handler();
     }
+
+    HAL_ADCEx_Calibration_Start(hadc1, ADC_SINGLE_ENDED);
+    // HAL_SYSCFG_EnableVREFBUF();
+
     #endif
 
     
