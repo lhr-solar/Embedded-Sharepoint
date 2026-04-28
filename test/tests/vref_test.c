@@ -12,6 +12,11 @@ int main() {
 
     MX_GPIO_Init();
     MX_ADC1_Init();
+    
+    if (HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED) == HAL_OK) {
+      volatile uint32_t val = HAL_ADCEx_Calibration_GetValue(&hadc1, ADC_SINGLE_ENDED);
+      UNUSED(val);
+    }
 
     while (1) {
         HAL_ADC_Start_IT(&hadc1);
@@ -27,7 +32,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
 
   vref_charac = VREFINT_CAL_VREF;    
   vrefint_cal = *( VREFINT_CAL_ADDR );
-  vref = (vref_charac) * (vrefint_cal / vrefint_data);
+  vref = (vref_charac * vrefint_cal) / vrefint_data;
 
 
   UNUSED(vref);
