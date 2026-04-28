@@ -57,5 +57,3 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     ls_stm32_dev_port() { ls /dev/cu.*; }
     export -f ls_stm32_dev_port
 fi
-
-echo "Dev environment loaded!"
