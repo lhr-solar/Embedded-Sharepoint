@@ -34,19 +34,11 @@ fi
 
 # --- Arduino Setup ---
 # Isolate Arduino data to the project folder
-export ARDUINO_DIRECTORIES_DATA="$SCRIPT_DIR/.arduino15"
-export ARDUINO_DIRECTORIES_USER="$SCRIPT_DIR/.arduino15"
-
-if [ ! -f "$ARDUINO_DIRECTORIES_DATA/arduino-cli.yaml" ]; then
-    echo "Initializing isolated arduino-cli config..."
-    arduino-cli config init > /dev/null 2>&1
-    arduino-cli config add board_manager.additional_urls https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json > /dev/null
-fi
 
 if ! arduino-cli core list | grep -q "esp32" > /dev/null; then
     echo "Installing ESP32 core..."
     arduino-cli core update-index > /dev/null
-    # arduino-cli core install esp32:esp32 > /dev/null
+    arduino-cli core install esp32:esp32 > /dev/null
 fi
 
 # --- Helpers ---
