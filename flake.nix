@@ -70,62 +70,10 @@
             echo "${armGccMessage}"
             ${if armGcc != null then "export PATH=$PATH:${armGcc}/bin" else ""}
 
-            # Provide lsusb-mac alias
-            if [[ "$OSTYPE" == "darwin"* ]]; then
-              lsusb_mac() {
-                system_profiler SPUSBDataType
-              }
-              export -f lsusb_mac
-              echo "Run: lsusb_mac (macOS USB info)"
-            
-              ls_stm32_dev_port() {
-                  ls /dev/cu.*
-              }
-              export -f ls_stm32_dev_port
-              echo "On Mac run: ls_stm32_dev_port (to list STM32 serial port)"
-            else
-              echo "Run: lsusb (Linux USB info)"
-            fi
-
-            # ignore Pip version checks
-            export PIP_DISABLE_PIP_VERSION_CHECK=1
-
-            SENTINEL="$VENV_PATH/.pip_installed"
-
-            SUBMODULE_DIR="Embedded-Sharepoint"
-            
-            # Check if we are in the parent or already inside the submodule
-            if [ -d "$SUBMODULE_DIR" ]; then
-              VENV_PATH="$SUBMODULE_DIR/.venv"
-              REQ_PATH="$SUBMODULE_DIR/requirements.txt"
-            else
-              VENV_PATH=".venv"
-              REQ_PATH="requirements.txt"
-            fi
-
-            if [ ! -d "$VENV_PATH" ]; then
-              echo "Creating python venv at $VENV_PATH"
-              python3 -m venv "$VENV_PATH"
-            fi
-            
-            source "$VENV_PATH/bin/activate"
-
-            if [ -f "$REQ_PATH" ]; then
-              echo "Installing python requirements from $REQ_PATH"
-              pip install -q -r "$REQ_PATH"
-            fi
-
-            # Ensure arduino-cli is configured and cores are installed
-            if [ ! -f ~/.arduino15/arduino-cli.yaml ]; then
-              echo "Initializing arduino-cli"
-              arduino-cli config init > /dev/null
-            fi
-
-            # Check if ESP32 core is installed
-            if ! arduino-cli core list | grep -q "esp32"; then
-              echo "Installing ESP32 core"
-              arduino-cli core update-index
-              arduino-cli core install esp32:esp32
+            if [ -f "./nix-hook.sh" ]; then
+              # Make it executable
+              chmod +x ./nix-hook.sh
+              source ./nix-hook.sh
             fi
 
             echo "Dev environment loaded for ${system}!"
