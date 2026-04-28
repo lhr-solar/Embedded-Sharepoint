@@ -39,21 +39,18 @@
             pkgs.parallel
             pkgs.sl
             pkgs.gcc-arm-embedded
-            pkgs.picocom
             python
+            pkgs.openocd
           ];
 
           # Extra debug/flash tools, only if available
           debugPackages =
             if pkgs.stdenv.isLinux then [
               pkgs.gdb
-              pkgs.openocd
               pkgs.stlink
             ] else if pkgs.stdenv.isDarwin then [
-              pkgs.openocd
               pkgs.stlink
               pkgs.lldb
-              pkgs.openocd or null
             ] else [];
 
           # Remove nulls
