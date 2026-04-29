@@ -52,7 +52,8 @@ typedef enum {
     ADC_INTERRUPT_BUSY,
     ADC_INTERRUPT_TIMEOUT,
     ADC_INTERRUPT_ERROR,
-    ADC_QUEUE_FULL
+    ADC_QUEUE_FULL,
+    ADC_VREF_ERROR
 
 } adc_status_t;
 

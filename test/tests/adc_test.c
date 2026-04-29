@@ -93,24 +93,18 @@ void TestADC1(void *pvParameters) {
     // Set bkpt in error_handler();
     uint32_t reading = 0;
 
-    ADC12_COMMON->CCR = ADC12_COMMON->CCR |= (1 << 22);
-
     ADC_ChannelConfTypeDef sConfig = {
         .Channel = ADC_CHANNEL_VREFINT,
-    // #ifdef ADC_SAMPLETIME_3CYCLES
-    //     .SamplingTime = ADC_SAMPLETIME_3CYCLES
-    // #else
-        .SamplingTime = ADC_SAMPLETIME_247CYCLES_5
-    // #endif
-    
+        .SamplingTime = ADC_SAMPLETIME_247CYCLES_5,
+        .SingleDiff = ADC_SINGLE_ENDED
+        // .OffsetNumber = ADC_OFFSET_NONE,
+        // .Offset = 0    
     };
 
-    // read reference voltage
-    uint32_t vref;
-    // adc_get_vref(hadc1, &vref);
-
-    volatile uint32_t ccr = ADC12_COMMON->CCR;
-    UNUSED(ccr);
+    uint32_t a_vref=0;
+    adc_status_t vref_stat =adc_get_vref(hadc1, &a_vref);
+    if (vref_stat != ADC_OK) error_handler(vref_stat);
+    if (a_vref > 3200) success_handler();
 
     // read once
     for (int i = 0; i < 10; i++) {
@@ -121,18 +115,9 @@ void TestADC1(void *pvParameters) {
         }
     }
 
-    volatile uint32_t scaled_reading;
     for (int i = 0; i < 10; i++) {
         xQueueReceive(xReadings, &reading, 0);
     }
-
-    uint16_t vref_in_mem = *( VREFINT_CAL_ADDR ); 
-
-    UNUSED(vref_in_mem);
-    UNUSED(vref);
-    UNUSED(scaled_reading);
-    
-    success_handler();
 }
 
 #ifdef ADC2
@@ -220,32 +205,33 @@ int main() {
     ADC_InitTypeDef adc_init_1 = {0};
 
     // Testing F4 Init
-    adc_init_1.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
-    adc_init_1.Resolution = ADC_RESOLUTION_12B;
-    adc_init_1.DataAlign = ADC_DATAALIGN_RIGHT;
-    adc_init_1.EOCSelection = ADC_EOC_SINGLE_CONV;
-    adc_init_1.ContinuousConvMode = DISABLE;
-    adc_init_1.NbrOfConversion = 1;
-    adc_init_1.DiscontinuousConvMode = DISABLE;
-    adc_init_1.ExternalTrigConv = ADC_SOFTWARE_START;
-    adc_init_1.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
-    adc_init_1.DMAContinuousRequests = DISABLE;
-
-    // Testing G4 Init
     // adc_init_1.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
     // adc_init_1.Resolution = ADC_RESOLUTION_12B;
     // adc_init_1.DataAlign = ADC_DATAALIGN_RIGHT;
-    // adc_init_1.ScanConvMode = ADC_SCAN_DISABLE;
     // adc_init_1.EOCSelection = ADC_EOC_SINGLE_CONV;
-    // adc_init_1.LowPowerAutoWait = DISABLE;
     // adc_init_1.ContinuousConvMode = DISABLE;
     // adc_init_1.NbrOfConversion = 1;
     // adc_init_1.DiscontinuousConvMode = DISABLE;
     // adc_init_1.ExternalTrigConv = ADC_SOFTWARE_START;
     // adc_init_1.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
     // adc_init_1.DMAContinuousRequests = DISABLE;
-    // adc_init_1.Overrun = ADC_OVR_DATA_PRESERVED;
-    // adc_init_1.OversamplingMode = DISABLE;
+
+    // Testing G4 Init
+    adc_init_1.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
+    adc_init_1.Resolution = ADC_RESOLUTION_12B;
+    adc_init_1.DataAlign = ADC_DATAALIGN_RIGHT;
+    adc_init_1.GainCompensation = 0;
+    adc_init_1.ScanConvMode = ADC_SCAN_DISABLE;
+    adc_init_1.EOCSelection = ADC_EOC_SINGLE_CONV;
+    adc_init_1.LowPowerAutoWait = DISABLE;
+    adc_init_1.ContinuousConvMode = DISABLE;
+    adc_init_1.NbrOfConversion = 1;
+    adc_init_1.DiscontinuousConvMode = DISABLE;
+    adc_init_1.ExternalTrigConv = ADC_SOFTWARE_START;
+    adc_init_1.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+    adc_init_1.DMAContinuousRequests = DISABLE;
+    adc_init_1.Overrun = ADC_OVR_DATA_PRESERVED;
+    adc_init_1.OversamplingMode = DISABLE;
 
     volatile adc_status_t s = adc_init(&adc_init_1, hadc1);
     s+=0;

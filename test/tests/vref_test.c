@@ -34,7 +34,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
   vrefint_cal = *( VREFINT_CAL_ADDR );
   vref = (vref_charac * vrefint_cal) / vrefint_data;
 
-
+  
   UNUSED(vref);
 }
 
