@@ -20,6 +20,8 @@ Defaults can be overridden:
 
 - `BOOTLOADER_SIZE_KB`: default `0` for `firmware`, `64` for `app` and `bootloader`.
 - `BOOTLOADER_APP_BASE`: default `FLASH_BASE + BOOTLOADER_SIZE_KB * 1024`.
+- `BOOTLOADER_APP_MAX_SIZE`: default target flash size minus `BOOTLOADER_SIZE_KB`.
+  This is derived from the target linker script.
 - `FLASH_ADDRESS`: default `0x08000000` for `firmware` and `bootloader`,
   default `BOOTLOADER_APP_BASE` for `app`.
 - `FLASH_BASE`: default `0x08000000`.
@@ -82,6 +84,7 @@ Bootloader-related overrides:
 - `BOOTLOADER_SIZE_KB`: default `64` for `app` and `bootloader`.
 - `BOOTLOADER_APP_BASE`: normally derived from `FLASH_BASE` and
   `BOOTLOADER_SIZE_KB`; only set this directly for a nonstandard memory map.
+- `BOOTLOADER_APP_MAX_SIZE`: normally derived from the target linker script.
 - `FLASH_ADDRESS`: normally derived from `FIRMWARE_TYPE`; only set this for a
   custom flash operation.
 
@@ -170,7 +173,9 @@ Apps that run behind the resident bootloader need three pieces:
 - Optionally call `uart_bootloader_init_app_vector_table()` at the start of
   `main()` as an explicit second set.
 - Service the UART bootloader command parser on the same UART used by the
-  bootloader:
+  bootloader. The resident bootloader chooses `USART3`, then `USART2`, then
+  `USART1` by default, but parent apps can override the resident UART with a
+  compile definition such as `BOOTLOADER_UART_INSTANCE=USART2`.
 
 ```c
 while (1) {
@@ -181,6 +186,11 @@ while (1) {
 `uart_bootloader_service()` waits for one byte, then drains any bytes already
 queued by the UART ISR. This keeps parent apps tolerant of host tools that send
 the `ESBLT_BOOT\n` command as a short burst.
+
+The app-side command UART uses the normal BSP UART configuration chosen by the
+app, commonly `115200 8N1`. After reset, the resident bootloader speaks the
+STM32 AN3155 UART protocol at `115200 8E1`; the flashing scripts and
+STM32CubeProgrammer handle that transition.
 
 If the app cannot safely reset at some point, gate command entry:
 
@@ -237,6 +247,37 @@ If autodetection picks the wrong UART, pass the port explicitly:
 ./scripts/flash_bootloader.py --port /dev/cu.usbserial-310
 ```
 
+The scripts are portable across macOS, Linux, WSL, and Windows. They use
+`pyserial` port discovery when available, with fallback globs for common Unix
+device names. Typical port arguments are:
+
+```bash
+./scripts/flash_bootloader.py --port /dev/cu.usbmodem1101     # macOS
+./scripts/flash_bootloader.py --port /dev/ttyACM0             # Linux
+./scripts/flash_bootloader.py --port /dev/ttyUSB0             # WSL after usbipd attach
+python scripts/flash_bootloader.py --port COM4                # Windows
+```
+
+Set `STM32_PROGRAMMER_CLI` if STM32CubeProgrammer is installed somewhere
+non-standard. Otherwise the scripts check `PATH`, the default macOS app bundle,
+common Linux install directories, and Windows `Program Files`. When running from
+WSL, attach the USB-UART adapter to WSL with `usbipd` and use the Linux device
+that appears inside WSL, typically `/dev/ttyUSB<N>` or `/dev/ttyACM<N>`.
+
+Typical WSL setup from an administrator PowerShell:
+
+```powershell
+usbipd list
+usbipd bind --busid <BUSID>
+usbipd attach --wsl --busid <BUSID>
+```
+
+Then check the device from WSL:
+
+```bash
+ls /dev/ttyUSB* /dev/ttyACM*
+```
+
 Flash an app through the resident bootloader:
 
 ```bash
@@ -257,9 +298,13 @@ Only enter bootloader without flashing:
 ```
 
 All UART scripts accept `--port` and `--baud`; the flash script also accepts
-path/address overrides. The entry scripts send `ESBLT_BOOT\n` byte-by-byte by
-default to avoid overrunning simple app-side UART command paths. Use
-`--byte-delay <seconds>` if a board needs a different spacing.
+path/address overrides. By default, the flash scripts use the first matching
+`build/bootloader/stm*.bin` or `build/app/stm*.bin`, so they work across targets
+without editing the script. The entry scripts send `ESBLT_BOOT\n` byte-by-byte
+by default to avoid overrunning simple app-side UART command paths. Use
+`--byte-delay <seconds>` if a board needs a different spacing. On Windows,
+install the Python dependencies from `requirements.txt`; `pyserial` is required
+there because the Unix `termios` fallback is not available.
 
 ## Runtime Entry Policy
 

@@ -25,10 +25,12 @@ void SystemClock_Config(void);
 #define BL_CMD_EXT_ERASE ((uint8_t)0x44U)
 
 #define BL_VERSION ((uint8_t)0x10U)
-#define BL_DEVICE_ID ((uint16_t)0x0469U)
-
 #define BL_FLASH_BASE ((uint32_t)0x08000000UL)
-#define BL_FLASH_PAGE_SIZE ((uint32_t)0x800UL) /* 2KB pages on STM32G473 */
+#if defined(FLASH_PAGE_SIZE)
+#define BL_FLASH_PAGE_SIZE ((uint32_t)FLASH_PAGE_SIZE)
+#else
+#define BL_FLASH_PAGE_SIZE ((uint32_t)0x800UL)
+#endif
 #define BL_OPTION_BYTES_BASE ((uint32_t)0x1FFF7800UL)
 #define BL_OPTION_BYTES_SIZE ((uint32_t)0x80UL)
 
@@ -86,6 +88,14 @@ static bool bl_xor_ok(const uint8_t *data, size_t len, uint8_t expected) {
         crc ^= data[i];
     }
     return crc == expected;
+}
+
+static uint16_t bl_device_id(void) {
+#if defined(DBGMCU)
+    return (uint16_t)(DBGMCU->IDCODE & 0x0FFFU);
+#else
+    return 0U;
+#endif
 }
 
 static void bl_send_ack(void) {
@@ -152,7 +162,8 @@ static bool bl_handle_get_version(void) {
 
 static bool bl_handle_get_id(void) {
     bl_send_ack();
-    uint8_t out[3] = {0x01U, (uint8_t)(BL_DEVICE_ID >> 8), (uint8_t)BL_DEVICE_ID};
+    uint16_t device_id = bl_device_id();
+    uint8_t out[3] = {0x01U, (uint8_t)(device_id >> 8), (uint8_t)device_id};
     if (!bootloader_runtime_send_bytes(out, sizeof(out))) {
         return false;
     }

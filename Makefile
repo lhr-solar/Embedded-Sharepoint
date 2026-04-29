@@ -108,6 +108,17 @@ VERBOSE ?= 0
 #######################################
 # Build path
 BUILD_DIR = $(PROJECT_BUILD_DIR)
+ORIG_LDSCRIPT = stm/$(SERIES_GENERIC)/$(SERIES_LINE)/$(SERIES_LINE_CAP)$(EXTRA_CAP)x_FLASH.ld
+GENERATED_LDSCRIPT = $(BUILD_DIR)/$(TARGET)_$(FIRMWARE_ROLE).ld
+FLASH_SIZE_KB ?= $(shell python3 -c 'import pathlib,re,sys; ld=pathlib.Path("$(ORIG_LDSCRIPT)").read_text(); m=re.search(r"FLASH\s*\(rx\)\s*:\s*ORIGIN\s*=\s*0x[0-9a-fA-F]+,\s*LENGTH\s*=\s*([0-9]+)K", ld); sys.exit(1) if m is None else print(m.group(1))')
+BOOTLOADER_APP_MAX_SIZE ?= $(shell python3 -c 'flash=int("$(FLASH_SIZE_KB)"); boot=int("$(BOOTLOADER_SIZE_KB)"); print((flash - boot) * 1024)')
+
+ifneq ($(filter $(FIRMWARE_TYPE),app bootloader),)
+ifeq ($(shell python3 -c 'print(int("$(BOOTLOADER_SIZE_KB)") < int("$(FLASH_SIZE_KB)"))'),False)
+$(error BOOTLOADER_SIZE_KB ($(BOOTLOADER_SIZE_KB)) must be smaller than target flash size ($(FLASH_SIZE_KB) KB))
+endif
+endif
+
 # FreeRTOS path
 FREERTOS_PATH := middleware/FreeRTOS-Kernel
 FATFS_PATH := middleware/FatFs
@@ -211,6 +222,7 @@ endif
 
 ifneq ($(filter $(FIRMWARE_TYPE),app bootloader),)
 C_DEFS += BOOTLOADER_APP_BASE=$(BOOTLOADER_APP_BASE)
+C_DEFS += BOOTLOADER_APP_MAX_SIZE=$(BOOTLOADER_APP_MAX_SIZE)
 endif
 
 ifeq ($(FIRMWARE_TYPE),app)
@@ -266,8 +278,6 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 # LDFLAGS
 #######################################
 # link script
-ORIG_LDSCRIPT = stm/$(SERIES_GENERIC)/$(SERIES_LINE)/$(SERIES_LINE_CAP)$(EXTRA_CAP)x_FLASH.ld
-GENERATED_LDSCRIPT = $(BUILD_DIR)/$(TARGET)_$(FIRMWARE_ROLE).ld
 LDSCRIPT = $(ORIG_LDSCRIPT)
 
 ifeq ($(FIRMWARE_TYPE),app)
@@ -386,8 +396,8 @@ $(BUILD_DIR):
 	mkdir -p $@		
 
 $(GENERATED_LDSCRIPT): $(ORIG_LDSCRIPT) Makefile | $(BUILD_DIR)
-	@python3 -c 'import pathlib; ld = pathlib.Path("$(ORIG_LDSCRIPT)").read_text(); size_kb = int("$(BOOTLOADER_SIZE_KB)"); flash_origin = int("$(FLASH_BASE)", 0) + size_kb * 1024; flash_length_kb = 512 - size_kb; ld = ld.replace("FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 512K", f"FLASH (rx)      : ORIGIN = 0x{flash_origin:08x}, LENGTH = {flash_length_kb}K"); pathlib.Path("$(GENERATED_LDSCRIPT)").write_text(ld)'
-	@echo "LD_SCRIPT $(ORIG_LDSCRIPT) -> $(GENERATED_LDSCRIPT) ($(FIRMWARE_TYPE), FLASH=$(BOOTLOADER_APP_BASE), LENGTH=$$((512-$(BOOTLOADER_SIZE_KB)))K)"
+	@python3 -c 'import pathlib,re,sys; ld_path=pathlib.Path("$(ORIG_LDSCRIPT)"); ld=ld_path.read_text(); size_kb=int("$(BOOTLOADER_SIZE_KB)"); flash_kb=int("$(FLASH_SIZE_KB)"); flash_origin=int("$(FLASH_BASE)", 0) + size_kb * 1024; flash_length_kb=flash_kb - size_kb; pattern=r"FLASH\s*\(rx\)\s*:\s*ORIGIN\s*=\s*0x[0-9a-fA-F]+,\s*LENGTH\s*=\s*[0-9]+K"; repl="FLASH (rx)      : ORIGIN = 0x%08x, LENGTH = %dK" % (flash_origin, flash_length_kb); ld, count=re.subn(pattern, repl, ld, count=1); sys.exit("Could not find FLASH region in %s" % ld_path) if count != 1 else pathlib.Path("$(GENERATED_LDSCRIPT)").write_text(ld)'
+	@echo "LD_SCRIPT $(ORIG_LDSCRIPT) -> $(GENERATED_LDSCRIPT) ($(FIRMWARE_TYPE), FLASH=$(BOOTLOADER_APP_BASE), LENGTH=$$(( $(FLASH_SIZE_KB)-$(BOOTLOADER_SIZE_KB) ))K)"
 
 #######################################
 # clean up

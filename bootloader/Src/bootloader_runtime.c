@@ -107,7 +107,7 @@ static uint32_t bootloader_app_end_addr(void) {
     return BOOTLOADER_APP_BASE + BOOTLOADER_APP_MAX_SIZE;
 }
 
-static bool bootloader_flash_is_dual_bank(void) {
+static bool __attribute__((unused)) bootloader_flash_is_dual_bank(void) {
 #if defined(FLASH_OPTR_DBANK)
     return READ_BIT(FLASH->OPTR, FLASH_OPTR_DBANK) != 0U;
 #else
@@ -178,7 +178,8 @@ bool bootloader_runtime_erase_app(void) {
 }
 
 bool bootloader_runtime_write_app(uint32_t app_offset, const uint8_t *data, size_t len) {
-    if ((app_offset + len) > BOOTLOADER_APP_MAX_SIZE) {
+    if ((data == NULL) || (app_offset > BOOTLOADER_APP_MAX_SIZE) ||
+        (len > (BOOTLOADER_APP_MAX_SIZE - app_offset))) {
         return false;
     }
 

@@ -1,26 +1,14 @@
 #!/usr/bin/env python3
 import argparse
-import glob
 import os
 import sys
 import time
 
+from bootloader_script_utils import detect_port, normalize_port_for_pyserial, port_help
+
 
 BOOTLOADER_PACKET = b"ESBLT_BOOT\n"
 BOOTLOADER_BYTE_DELAY_SECONDS = 0.005
-
-
-def detect_port() -> str | None:
-    patterns = (
-        "/dev/cu.usbserial*",
-        "/dev/cu.SLAB_USBtoUART*",
-        "/dev/ttyUSB*",
-    )
-    for pattern in patterns:
-        ports = sorted(glob.glob(pattern))
-        if ports:
-            return ports[0]
-    return None
 
 
 def send_packet_termios(port: str, baud: int, delay: float, byte_delay: float) -> None:
@@ -57,6 +45,8 @@ def send_packet(port: str, baud: int, timeout: float, delay: float, byte_delay: 
     try:
         import serial
     except ImportError:
+        if sys.platform == "win32":
+            raise RuntimeError("pyserial is required to send the bootloader packet on Windows")
         send_packet_termios(port, baud, delay, byte_delay)
         return
 
@@ -86,11 +76,12 @@ def main() -> int:
 
     port = args.port or detect_port()
     if port is None:
-        print("No serial port found. Pass --port /dev/cu... or /dev/ttyUSB...", file=sys.stderr)
+        print(port_help(), file=sys.stderr)
         return 1
 
     try:
-        send_packet(port, args.baud, args.timeout, args.delay, args.byte_delay)
+        serial_port = normalize_port_for_pyserial(port)
+        send_packet(serial_port, args.baud, args.timeout, args.delay, args.byte_delay)
     except Exception as exc:
         print(f"Failed to send bootloader packet: {exc}", file=sys.stderr)
         return 1
