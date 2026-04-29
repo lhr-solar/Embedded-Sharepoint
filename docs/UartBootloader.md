@@ -205,7 +205,8 @@ can_start(hcan1);
 ```
 
 The app's CAN filter must allow `BOOTLOADER_CAN_COMMAND_ID`, which defaults to
-standard ID `0x000`.
+standard ID `0x6F0`. This keeps the app-side boot-control frame out of the
+AN3154 command/data ID range.
 
 If the app cannot safely reset at some point, gate command entry:
 
@@ -323,6 +324,21 @@ If the app is still running, send the app-side CAN boot-control value first:
 ./bootloader/scripts/can_bootloader_flash.py --enter-value 0x12 --bin build/app/stm32l431cbt.bin --boot
 ```
 
+After `--enter-value`, the script waits for a resident bootloader health
+handshake before starting AN3154 sync. The bootloader sends 50 frames on
+`BOOTLOADER_CAN_HANDSHAKE_ID` (`0x6F1` by default), spaced 10 ms apart, with
+byte 0 set to the requested board ID. The script reports time to first
+handshake frame, frames received out of 50, average interval, and average jitter.
+If the board is already in bootloader because no valid app exists, the handshake
+value is `0x00` and flashing can still proceed.
+
+If the board is already in bootloader and you want the health check without
+sending a boot-control frame:
+
+```bash
+./bootloader/scripts/can_bootloader_flash.py --wait-handshake --bin build/app/stm32l431cbt.bin --boot
+```
+
 Send reset-all without flashing:
 
 ```bash
@@ -380,7 +396,7 @@ bxCAN or G4 FDCAN. The node-ID decision is made only in the application; the
 resident bootloader only consumes the persisted magic value written by the app.
 
 ```text
-Standard ID: BOOTLOADER_CAN_COMMAND_ID, default 0x000
+Standard ID: BOOTLOADER_CAN_COMMAND_ID, default 0x6F0
 Byte 0:      0x00                      app clears magic and resets normally
 Byte 0:      BOOTLOADER_CAN_NODE_ID    app writes flash magic and resets
 Byte 0:      any other nonzero value   app writes hold-only magic and resets
@@ -398,5 +414,15 @@ ID-agnostic and only distinguishes normal boot, hold-only bootloader entry, and
 flashable bootloader entry by the magic value stored before reset.
 
 While the resident bootloader is idle waiting for a host connection, it also
-honors the reset-all form (`0x000` with byte `0x00`) and resets back to normal
+honors the reset-all form (`0x6F0` with byte `0x00`) and resets back to normal
 boot. It does not process that control frame during an active flashing session.
+
+On bootloader entry, the resident bootloader emits a CAN health handshake before
+AN3154 sync:
+
+```text
+Standard ID: BOOTLOADER_CAN_HANDSHAKE_ID, default 0x6F1
+Count:       BOOTLOADER_CAN_HANDSHAKE_COUNT, default 50
+Spacing:     BOOTLOADER_CAN_HANDSHAKE_INTERVAL_MS, default 10 ms
+Byte 0:      requested board ID, or 0x00 when no app/default bootloader entry
+```

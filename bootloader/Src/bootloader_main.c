@@ -717,6 +717,16 @@ static bool bl_wait_for_sync_with_indicator(uint32_t timeout_ms) {
     return false;
 }
 
+static void bl_send_can_handshake(uint8_t value) {
+    uint8_t payload = value;
+
+    for (uint32_t i = 0U; i < BOOTLOADER_CAN_HANDSHAKE_COUNT; i++) {
+        (void)bootloader_runtime_can_send(BOOTLOADER_CAN_HANDSHAKE_ID, &payload, 1U);
+        bootloader_indicator_update(HAL_GetTick());
+        HAL_Delay(BOOTLOADER_CAN_HANDSHAKE_INTERVAL_MS);
+    }
+}
+
 static void bl_reset_to_normal_boot(void) {
     bootloader_command_clear_request();
     __DSB();
@@ -745,9 +755,14 @@ int main(void) {
     bootloader_runtime_init();
 
     bootloader_command_request_t boot_request = bootloader_command_consume_request();
+    uint8_t can_handshake_value = bootloader_command_consume_can_handshake_value();
     bool forced_bootloader = boot_request != BOOTLOADER_COMMAND_REQUEST_NONE;
     bool app_valid = bootloader_runtime_is_app_valid();
     bootloader_indicator_set_mode(app_valid ? BOOTLOADER_INDICATOR_APP_PRESENT : BOOTLOADER_INDICATOR_NO_APP);
+
+    if (boot_request != BOOTLOADER_COMMAND_REQUEST_NONE || !app_valid) {
+        bl_send_can_handshake(can_handshake_value);
+    }
 
     if (boot_request == BOOTLOADER_COMMAND_REQUEST_HOLD) {
         bl_hold_without_flashing();

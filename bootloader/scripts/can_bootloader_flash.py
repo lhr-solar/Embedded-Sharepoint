@@ -18,7 +18,11 @@ BL_CMD_WRITE_MEMORY = 0x31
 BL_CMD_ERASE = 0x43
 
 BOOTLOADER_CAN_SYNC_ID = 0x079
-BOOTLOADER_CAN_COMMAND_ID = 0x000
+BOOTLOADER_CAN_COMMAND_ID = 0x6F0
+BOOTLOADER_CAN_HANDSHAKE_ID = BOOTLOADER_CAN_COMMAND_ID + 1
+BOOTLOADER_CAN_HANDSHAKE_COUNT = 50
+BOOTLOADER_CAN_HANDSHAKE_INTERVAL_MS = 10
+BOOTLOADER_CAN_HANDSHAKE_FIRST_TIMEOUT = 1.0
 
 
 class BootloaderError(RuntimeError):
@@ -136,15 +140,82 @@ def make_bus(interface: str, channel: str, bitrate: int):
     return can.Bus(interface=interface, channel=channel, bitrate=bitrate, receive_own_messages=False)
 
 
+def send_control_frame_on_bus(bus, value: int) -> None:
+    can = load_can_module()
+    msg = can.Message(
+        arbitration_id=BOOTLOADER_CAN_COMMAND_ID,
+        data=bytes((value & 0xFF,)),
+        is_extended_id=False,
+    )
+    bus.send(msg, timeout=1.0)
+
+
 def send_control_frame(interface: str, channel: str, bitrate: int, value: int) -> None:
     with make_bus(interface, channel, bitrate) as bus:
-        can = load_can_module()
-        msg = can.Message(
-            arbitration_id=BOOTLOADER_CAN_COMMAND_ID,
-            data=bytes((value & 0xFF,)),
-            is_extended_id=False,
+        send_control_frame_on_bus(bus, value)
+
+
+def recv_handshake_frame(bus, expected_value: int | None, timeout: float):
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        msg = bus.recv(timeout=max(0.0, deadline - time.monotonic()))
+        if msg is None:
+            continue
+        if msg.is_extended_id or getattr(msg, "is_remote_frame", False):
+            continue
+        if msg.arbitration_id != BOOTLOADER_CAN_HANDSHAKE_ID or not msg.data:
+            continue
+        value = int(msg.data[0])
+        if expected_value is None or value == expected_value or value == 0:
+            return time.monotonic(), value
+    return None
+
+
+def wait_for_bootloader_handshake(bus, expected_value: int | None) -> None:
+    send_time = time.monotonic()
+    first = recv_handshake_frame(bus, expected_value, BOOTLOADER_CAN_HANDSHAKE_FIRST_TIMEOUT)
+    if first is None:
+        raise BootloaderError(
+            f"No bootloader handshake on 0x{BOOTLOADER_CAN_HANDSHAKE_ID:03X} within "
+            f"{BOOTLOADER_CAN_HANDSHAKE_FIRST_TIMEOUT * 1000:.0f} ms"
         )
-        bus.send(msg, timeout=1.0)
+
+    timestamps = [first[0]]
+    values = [first[1]]
+    first_latency_ms = (timestamps[0] - send_time) * 1000.0
+
+    remaining_timeout = (
+        ((BOOTLOADER_CAN_HANDSHAKE_COUNT - 1) * BOOTLOADER_CAN_HANDSHAKE_INTERVAL_MS) / 1000.0
+    ) + 0.25
+    deadline = time.monotonic() + remaining_timeout
+    while len(timestamps) < BOOTLOADER_CAN_HANDSHAKE_COUNT and time.monotonic() < deadline:
+        frame = recv_handshake_frame(bus, expected_value, max(0.0, deadline - time.monotonic()))
+        if frame is None:
+            break
+        timestamps.append(frame[0])
+        values.append(frame[1])
+
+    intervals_ms = [
+        (timestamps[i] - timestamps[i - 1]) * 1000.0
+        for i in range(1, len(timestamps))
+    ]
+    avg_interval_ms = sum(intervals_ms) / len(intervals_ms) if intervals_ms else 0.0
+    avg_jitter_ms = (
+        sum(abs(interval - BOOTLOADER_CAN_HANDSHAKE_INTERVAL_MS) for interval in intervals_ms) /
+        len(intervals_ms)
+        if intervals_ms else 0.0
+    )
+
+    unique_values = sorted(set(values))
+    values_text = ", ".join(f"0x{value:02X}" for value in unique_values)
+    print(
+        "Bootloader handshake: "
+        f"first={first_latency_ms:.1f} ms, "
+        f"received={len(timestamps)}/{BOOTLOADER_CAN_HANDSHAKE_COUNT}, "
+        f"avg_interval={avg_interval_ms:.2f} ms, "
+        f"avg_jitter={avg_jitter_ms:.2f} ms, "
+        f"value(s)={values_text}"
+    )
 
 
 def flash(args: argparse.Namespace) -> None:
@@ -156,12 +227,14 @@ def flash(args: argparse.Namespace) -> None:
     if not image:
         raise BootloaderError(f"Binary is empty: {args.bin}")
 
-    if args.enter_value is not None:
-        print(f"Sending CAN boot-control value 0x{args.enter_value & 0xFF:02X}")
-        send_control_frame(args.interface, args.channel, args.bitrate, args.enter_value)
-        time.sleep(args.enter_delay)
-
     with make_bus(args.interface, args.channel, args.bitrate) as bus:
+        if args.enter_value is not None:
+            print(f"Sending CAN boot-control value 0x{args.enter_value & 0xFF:02X}")
+            send_control_frame_on_bus(bus, args.enter_value)
+            wait_for_bootloader_handshake(bus, args.enter_value & 0xFF)
+        elif args.wait_handshake:
+            wait_for_bootloader_handshake(bus, None)
+
         bl = CanBootloader(bus, args.timeout)
 
         print("Synchronizing with CAN bootloader")
@@ -207,9 +280,21 @@ def main() -> int:
     parser.add_argument("--timeout", default=1.0, type=float, help="CAN response timeout in seconds")
     parser.add_argument("--sync-retries", default=10, type=int, help="CAN sync retry count")
     parser.add_argument("--chunk-size", default=256, type=int, choices=range(1, 257), metavar="[1-256]")
-    parser.add_argument("--enter-value", type=parse_int, help="Send app boot-control value on CAN ID 0x000 before flashing")
-    parser.add_argument("--enter-delay", default=0.75, type=float, help="Delay after --enter-value before sync")
-    parser.add_argument("--reset-all", action="store_true", help="Send CAN ID 0x000 byte 0x00 and exit")
+    parser.add_argument(
+        "--enter-value",
+        type=parse_int,
+        help=f"Send app boot-control value on CAN ID 0x{BOOTLOADER_CAN_COMMAND_ID:03X} before flashing",
+    )
+    parser.add_argument(
+        "--wait-handshake",
+        action="store_true",
+        help=f"Wait for bootloader handshake on CAN ID 0x{BOOTLOADER_CAN_HANDSHAKE_ID:03X} without sending --enter-value",
+    )
+    parser.add_argument(
+        "--reset-all",
+        action="store_true",
+        help=f"Send CAN ID 0x{BOOTLOADER_CAN_COMMAND_ID:03X} byte 0x00 and exit",
+    )
     parser.add_argument("--no-erase", action="store_true", help="Skip app erase before writing")
     parser.add_argument("--no-verify", dest="verify", action="store_false", help="Skip readback verification")
     parser.add_argument("--get", action="store_true", help="Print bootloader version and supported commands")

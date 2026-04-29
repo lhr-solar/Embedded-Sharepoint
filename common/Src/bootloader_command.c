@@ -27,6 +27,16 @@ static volatile uint32_t *bootloader_command_magic_register(void) {
 #endif
 }
 
+static volatile uint32_t *bootloader_command_can_handshake_register(void) {
+#if defined(TAMP) && defined(TAMP_BKP1R)
+    return &TAMP->BKP1R;
+#elif defined(RTC) && defined(RTC_BKP1R)
+    return &RTC->BKP1R;
+#else
+    return NULL;
+#endif
+}
+
 static void bootloader_command_enable_backup_access(void) {
 #if defined(__HAL_RCC_PWR_CLK_ENABLE)
     __HAL_RCC_PWR_CLK_ENABLE();
@@ -37,6 +47,15 @@ static void bootloader_command_enable_backup_access(void) {
 #elif defined(__HAL_RCC_RTC_CLK_ENABLE)
     __HAL_RCC_RTC_CLK_ENABLE();
 #endif
+}
+
+static void bootloader_command_set_can_handshake_value(uint8_t value) {
+    bootloader_command_enable_backup_access();
+
+    volatile uint32_t *handshake = bootloader_command_can_handshake_register();
+    if (handshake != NULL) {
+        *handshake = value;
+    }
 }
 
 static void bootloader_command_set_magic_and_reset(uint32_t magic_word) {
@@ -92,6 +111,8 @@ bool bootloader_command_handle_can_message(uint32_t id, const uint8_t *data, siz
         return false;
     }
 
+    bootloader_command_set_can_handshake_value(data[0]);
+
     if (data[0] == (uint8_t)BOOTLOADER_CAN_NODE_ID) {
         bootloader_command_request_reset();
     } else {
@@ -132,6 +153,11 @@ void bootloader_command_clear_request(void) {
     if (magic != NULL) {
         *magic = 0U;
     }
+
+    volatile uint32_t *handshake = bootloader_command_can_handshake_register();
+    if (handshake != NULL) {
+        *handshake = 0U;
+    }
 }
 
 bootloader_command_request_t bootloader_command_consume_request(void) {
@@ -153,4 +179,17 @@ bootloader_command_request_t bootloader_command_consume_request(void) {
     }
 
     return BOOTLOADER_COMMAND_REQUEST_NONE;
+}
+
+uint8_t bootloader_command_consume_can_handshake_value(void) {
+    bootloader_command_enable_backup_access();
+
+    volatile uint32_t *handshake = bootloader_command_can_handshake_register();
+    if (handshake == NULL) {
+        return 0U;
+    }
+
+    uint8_t value = (uint8_t)(*handshake & 0xFFU);
+    *handshake = 0U;
+    return value;
 }

@@ -10,11 +10,23 @@
 #define BOOTLOADER_HOLD_MAGIC_WORD (0x45534248UL)
 
 #ifndef BOOTLOADER_CAN_COMMAND_ID
-#define BOOTLOADER_CAN_COMMAND_ID (0x000U)
+#define BOOTLOADER_CAN_COMMAND_ID (0x6F0U)
 #endif
 
 #ifndef BOOTLOADER_CAN_NODE_ID
 #define BOOTLOADER_CAN_NODE_ID (0xFFU)
+#endif
+
+#ifndef BOOTLOADER_CAN_HANDSHAKE_ID
+#define BOOTLOADER_CAN_HANDSHAKE_ID (BOOTLOADER_CAN_COMMAND_ID + 1U)
+#endif
+
+#ifndef BOOTLOADER_CAN_HANDSHAKE_COUNT
+#define BOOTLOADER_CAN_HANDSHAKE_COUNT (50U)
+#endif
+
+#ifndef BOOTLOADER_CAN_HANDSHAKE_INTERVAL_MS
+#define BOOTLOADER_CAN_HANDSHAKE_INTERVAL_MS (10U)
 #endif
 
 typedef enum {
@@ -34,5 +46,6 @@ void bootloader_command_request_reset(void);
 void bootloader_command_request_hold_reset(void);
 void bootloader_command_clear_request(void);
 bootloader_command_request_t bootloader_command_consume_request(void);
+uint8_t bootloader_command_consume_can_handshake_value(void);
 
 #endif /* BOOTLOADER_COMMAND_H_ */
