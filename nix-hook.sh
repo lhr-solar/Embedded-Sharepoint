@@ -32,9 +32,30 @@ if [ -f "$REQ_PATH" ]; then
     fi
 fi
 
-# --- Arduino Setup ---
-# Isolate Arduino data to the project folder
 
+# Define potential global paths including the macOS Library path
+GLOBAL_LINUX_DOT="$HOME/.arduino15"
+GLOBAL_MAC_LIBRARY="$HOME/Library/Arduino15"
+GLOBAL_MAC_LOCAL="$HOME/Arduino15"
+
+if [ -d "$GLOBAL_LINUX_DOT" ]; then
+    echo "Using existing Arduino data at $GLOBAL_LINUX_DOT"
+    export ARDUINO_DIRECTORIES_DATA="$GLOBAL_LINUX_DOT"
+elif [ -d "$GLOBAL_MAC_LIBRARY" ]; then
+    echo "Using existing Arduino data at $GLOBAL_MAC_LIBRARY"
+    export ARDUINO_DIRECTORIES_DATA="$GLOBAL_MAC_LIBRARY"
+elif [ -d "$GLOBAL_MAC_LOCAL" ]; then
+    echo "Using existing Arduino data at $GLOBAL_MAC_LOCAL"
+    export ARDUINO_DIRECTORIES_DATA="$GLOBAL_MAC_LOCAL"
+else
+    echo "No global Arduino folder found. Using local project storage."
+    export ARDUINO_DIRECTORIES_DATA="$SCRIPT_DIR/.arduino15"
+fi
+
+# Ensure the directory exists
+mkdir -p "$ARDUINO_DIRECTORIES_DATA"
+
+# Now proceed with the core check
 if ! arduino-cli core list | grep -q "esp32" > /dev/null; then
     echo "Installing ESP32 core..."
     arduino-cli core update-index > /dev/null
