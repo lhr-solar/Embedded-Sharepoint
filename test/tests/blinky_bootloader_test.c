@@ -32,15 +32,25 @@ static StackType_t s_blinky_task_stack[configMINIMAL_STACK_SIZE];
 static StackType_t s_uart_task_stack[configMINIMAL_STACK_SIZE];
 
 static void heartbeat_clock_init(void) {
-    if (LED_PORT == GPIOA) {
+    if(0){
+
+    }
+    else if (LED_PORT == GPIOA) {
         __HAL_RCC_GPIOA_CLK_ENABLE();
-    } else if (LED_PORT == GPIOB) {
+    } 
+
+    else if (LED_PORT == GPIOB) {
         __HAL_RCC_GPIOB_CLK_ENABLE();
-    } else if (LED_PORT == GPIOC) {
+    } 
+    else if (LED_PORT == GPIOC) {
         __HAL_RCC_GPIOC_CLK_ENABLE();
-    } else if (LED_PORT == GPIOD) {
+    } 
+#ifdef GPIOD
+    else if (LED_PORT == GPIOD) {
         __HAL_RCC_GPIOD_CLK_ENABLE();
     }
+#endif
+
 }
 
 static void led_init(void) {

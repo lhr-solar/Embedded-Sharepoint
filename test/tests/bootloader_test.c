@@ -168,8 +168,8 @@ static void boot_command_uart_init(void) {
     BOOT_COMMAND_UART->Init.OverSampling = UART_OVERSAMPLING_16;
 #if defined(STM32L4xx) || defined(STM32G4xx)
     BOOT_COMMAND_UART->Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-#endif
     BOOT_COMMAND_UART->AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+#endif
 
     if (uart_init(BOOT_COMMAND_UART) != UART_OK) {
         Error_Handler();
