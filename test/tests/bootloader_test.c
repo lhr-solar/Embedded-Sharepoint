@@ -342,6 +342,9 @@ int main(void) {
     SystemClock_Config();
 #endif
 
+    /* Resident bootloader jumps with IRQs globally masked; turn them on before UART/CAN ISRs. */
+    __enable_irq();
+
     led_init();
     boot_command_uart_init();
 

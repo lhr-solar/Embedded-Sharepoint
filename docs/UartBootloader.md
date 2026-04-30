@@ -172,6 +172,12 @@ Apps that run behind the resident bootloader need three pieces:
   `BOOTLOADER_APP_BASE` during `SystemInit()` for bootloader app builds.
 - Optionally call `uart_bootloader_init_app_vector_table()` at the start of
   `main()` as an explicit second set.
+- After the resident bootloader jumps to your app, **the CPU is still in the
+  same state as a ROM boot with interrupts globally disabled** (`PRIMASK` set).
+  Standard `startup_*.s` / `SystemInit` / `HAL_Init` / RTOS startup will enable
+  interrupts when your app is ready—same as a normal power-on reset. Do not
+  assume IRQs are on before that path runs (if you have custom startup, call
+  `__enable_irq()` when appropriate).
 - Service the UART bootloader command parser on the same UART used by the
   bootloader. The resident bootloader chooses `USART3`, then `USART2`, then
   `USART1` by default, but parent apps can override the resident UART with a
@@ -228,6 +234,10 @@ the same `FIRMWARE_TYPE=app`, vector-table init, and UART service changes into
 the normal application startup path.
 
 ## Flash
+
+Programming uses **64-bit (doubleword) writes** on STM32L4/STM32G4 and the
+supported STM32F4 configuration. The host **must** use write addresses that are
+**8-byte aligned** to `BOOTLOADER_APP_BASE`; unaligned addresses are rejected.
 
 Standalone firmware uses the normal ST-Link flow and flashes to `0x08000000`:
 

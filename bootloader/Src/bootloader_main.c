@@ -9,6 +9,15 @@
 #include <stdint.h>
 
 void SystemClock_Config(void);
+void Error_Handler(void);
+
+/* AN3155 command bytes: short poll while idle (keeps indicator smooth), longer wait for 2nd byte. */
+#ifndef BL_CMD_POLL_IDLE_TIMEOUT_MS
+#define BL_CMD_POLL_IDLE_TIMEOUT_MS (20U)
+#endif
+#ifndef BL_CMD_FOLLOW_BYTE_TIMEOUT_MS
+#define BL_CMD_FOLLOW_BYTE_TIMEOUT_MS (1000U)
+#endif
 
 #define BL_SOF ((uint8_t)0x5AU)
 #define BL_ACK ((uint8_t)0x79U)
@@ -110,7 +119,10 @@ static void bl_send_nack(void) {
 
 static bool bl_read_cmd(uint8_t *cmd) {
     uint8_t raw[2];
-    if (!bootloader_runtime_read_bytes(raw, sizeof(raw), 1000U)) {
+    if (!bootloader_runtime_read_bytes(&raw[0], 1U, BL_CMD_POLL_IDLE_TIMEOUT_MS)) {
+        return false;
+    }
+    if (!bootloader_runtime_read_bytes(&raw[1], 1U, BL_CMD_FOLLOW_BYTE_TIMEOUT_MS)) {
         return false;
     }
     if ((uint8_t)(raw[0] ^ raw[1]) != 0xFFU) {

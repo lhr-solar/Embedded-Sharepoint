@@ -108,6 +108,90 @@ static uint32_t bootloader_app_end_addr(void) {
     return BOOTLOADER_APP_BASE + BOOTLOADER_APP_MAX_SIZE;
 }
 
+#if defined(STM32F446xx) || (defined(STM32F401xx) && (FLASH_END == 0x0807FFFFUL))
+
+/* 512 KiB single-bank layout: 4×16 KiB + 64 KiB + 3×128 KiB (STM32F446xx, STM32F401xE). */
+
+static uint32_t bootloader_f4_sector_of_addr(uint32_t addr) {
+    uint32_t off = addr - FLASH_BASE;
+    if (off < 0x10000U) {
+        return off >> 14;
+    }
+    if (off < 0x20000U) {
+        return (uint32_t)FLASH_SECTOR_4;
+    }
+    off -= 0x20000U;
+    return (uint32_t)FLASH_SECTOR_5 + (off >> 17);
+}
+
+static uint32_t bootloader_f4_next_addr_after_sector(uint32_t sector) {
+    if (sector <= (uint32_t)FLASH_SECTOR_3) {
+        return FLASH_BASE + ((sector + 1U) << 14);
+    }
+    if (sector == (uint32_t)FLASH_SECTOR_4) {
+        return FLASH_BASE + 0x20000U;
+    }
+    return FLASH_BASE + 0x20000U + ((sector - (uint32_t)FLASH_SECTOR_5 + 1U) << 17);
+}
+
+bool bootloader_runtime_erase_app(void) {
+    uint32_t erase_addr = BOOTLOADER_APP_BASE;
+    uint32_t erase_end = bootloader_app_end_addr();
+
+    HAL_FLASH_Unlock();
+    bool ok = true;
+    while (erase_addr < erase_end) {
+        bootloader_indicator_update(HAL_GetTick());
+        uint32_t sec = bootloader_f4_sector_of_addr(erase_addr);
+        FLASH_EraseInitTypeDef erase = {0};
+        erase.TypeErase = FLASH_TYPEERASE_SECTORS;
+        erase.VoltageRange = FLASH_VOLTAGE_RANGE_3;
+        erase.Sector = sec;
+        erase.NbSectors = 1U;
+        erase.Banks = FLASH_BANK_1;
+        uint32_t sector_error = 0U;
+        if (HAL_FLASHEx_Erase(&erase, &sector_error) != HAL_OK) {
+            ok = false;
+            break;
+        }
+        erase_addr = bootloader_f4_next_addr_after_sector(sec);
+    }
+    HAL_FLASH_Lock();
+    return ok;
+}
+
+bool bootloader_runtime_write_app(uint32_t app_offset, const uint8_t *data, size_t len) {
+    if ((data == NULL) || (app_offset > BOOTLOADER_APP_MAX_SIZE) ||
+        (len > (BOOTLOADER_APP_MAX_SIZE - app_offset))) {
+        return false;
+    }
+
+    uint32_t write_addr = BOOTLOADER_APP_BASE + app_offset;
+    if ((write_addr & 7U) != 0U) {
+        return false;
+    }
+
+    HAL_FLASH_Unlock();
+    for (size_t i = 0; i < len; i += 8U) {
+        bootloader_indicator_update(HAL_GetTick());
+        uint64_t dword = 0xFFFFFFFFFFFFFFFFULL;
+        size_t chunk = ((len - i) >= 8U) ? 8U : (len - i);
+        bootloader_copy_bytes((uint8_t *)&dword, &data[i], chunk);
+        if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, write_addr + i, dword) != HAL_OK) {
+            HAL_FLASH_Lock();
+            return false;
+        }
+    }
+    HAL_FLASH_Lock();
+    return true;
+}
+
+#elif defined(STM32F4xx)
+
+#error "Resident bootloader flash erase is only implemented for STM32F446xx and STM32F401xE (512 KiB). Add a sector map in bootloader_runtime.c for this F4 part."
+
+#elif defined(STM32L4xx) || defined(STM32G4xx)
+
 static bool __attribute__((unused)) bootloader_flash_is_dual_bank(void) {
 #if defined(FLASH_OPTR_DBANK)
     return READ_BIT(FLASH->OPTR, FLASH_OPTR_DBANK) != 0U;
@@ -186,6 +270,10 @@ bool bootloader_runtime_write_app(uint32_t app_offset, const uint8_t *data, size
     }
 
     uint32_t write_addr = BOOTLOADER_APP_BASE + app_offset;
+    if ((write_addr & 7U) != 0U) {
+        return false;
+    }
+
     HAL_FLASH_Unlock();
 
     for (size_t i = 0; i < len; i += 8U) {
@@ -202,6 +290,12 @@ bool bootloader_runtime_write_app(uint32_t app_offset, const uint8_t *data, size
     HAL_FLASH_Lock();
     return true;
 }
+
+#else
+
+#error "Unsupported STM32 series for resident bootloader flash (see bootloader_runtime.c)."
+
+#endif
 
 bool bootloader_runtime_is_app_valid(void) {
     uint32_t stack = *(volatile uint32_t *)BOOTLOADER_APP_BASE;
@@ -245,6 +339,7 @@ void bootloader_runtime_jump_to_app(void) {
     __set_MSP(app_stack);
     __DSB();
     __ISB();
-    __enable_irq();
+    /* Leave interrupts disabled; the app's startup (as with a cold boot from ROM)
+     * enables them when SystemInit / HAL / RTOS is ready. */
     app_reset_handler();
 }

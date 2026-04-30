@@ -93,6 +93,9 @@ int main(void) {
     HAL_Init();
     SystemClock_Config();
 
+    /* Resident bootloader jumps with IRQs globally masked; enable before UART / FreeRTOS. */
+    __enable_irq();
+
     led_init();
     boot_command_uart_init();
 
