@@ -16,7 +16,10 @@
 #endif
 
 #ifndef BOOTLOADER_UART_INSTANCE
-#if defined(USART3)
+/* PSOM L431: same console USART as test UART apps (husart1 / PA9, PA10). */
+#if defined(STM32L431xx) && defined(USART1)
+#define BOOTLOADER_UART_INSTANCE USART1
+#elif defined(USART3)
 #define BOOTLOADER_UART_INSTANCE USART3
 #elif defined(USART2)
 #define BOOTLOADER_UART_INSTANCE USART2
@@ -36,7 +39,7 @@
 #endif
 
 #ifndef BOOTLOADER_APP_STARTUP_WAIT_MS
-#define BOOTLOADER_APP_STARTUP_WAIT_MS (3000U)
+#define BOOTLOADER_APP_STARTUP_WAIT_MS (0U)
 #endif
 
 #ifndef BOOTLOADER_POST_FLASH_BOOT_DELAY_MS

@@ -34,7 +34,7 @@ void bootloader_indicator_update(uint32_t tick_ms) {
     if (s_mode == BOOTLOADER_INDICATOR_CONNECTED) {
         led_on = true;
     } else if (s_mode == BOOTLOADER_INDICATOR_FLASHING) {
-        led_on = (tick_ms % 600U) < 300U;
+        led_on = (tick_ms % 200U) < 100U;
     } else if (s_mode == BOOTLOADER_INDICATOR_APP_PRESENT) {
         uint32_t phase = tick_ms % 1000U;
         led_on = (phase < 100U) || ((phase >= 200U) && (phase < 300U));
