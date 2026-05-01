@@ -53,10 +53,10 @@
 
 | Type | Name |
 | ---: | :--- |
-|  char \* | [**fgets**](#function-fgets) (char \* buffer, size\_t maxsz) <br> |
 |  int | [**printf**](#function-printf) (const char \* fmt, ...) <br> |
 |  bool | [**printf\_init**](#function-printf_init) (UART\_HandleTypeDef \* huart) <br> |
 |  int | [**snprintf**](#function-snprintf) (char \* buffer, size\_t bufsz, char const \* fmt, ...) <br> |
+|  char \* | [**uart\_fgets**](#function-uart_fgets) (char \* buffer, size\_t maxsz) <br> |
 
 
 
@@ -101,22 +101,6 @@
 
 
 
-### function fgets 
-
-```C++
-char * fgets (
-    char * buffer,
-    size_t maxsz
-) 
-```
-
-
-
-
-<hr>
-
-
-
 ### function printf 
 
 ```C++
@@ -156,6 +140,22 @@ int snprintf (
     size_t bufsz,
     char const * fmt,
     ...
+) 
+```
+
+
+
+
+<hr>
+
+
+
+### function uart\_fgets 
+
+```C++
+char * uart_fgets (
+    char * buffer,
+    size_t maxsz
 ) 
 ```
 

@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#printffgets-documentation" class="md-skip">
+        <a href="#printfuart_fgets-documentation" class="md-skip">
           Skip to content
         </a>
       
@@ -793,10 +793,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#about-fgets" class="md-nav__link">
+  <a href="#about-uart_fgets" class="md-nav__link">
     <span class="md-ellipsis">
       
-        About fgets
+        About uart_fgets
       
     </span>
   </a>
@@ -1381,10 +1381,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#about-fgets" class="md-nav__link">
+  <a href="#about-uart_fgets" class="md-nav__link">
     <span class="md-ellipsis">
       
-        About fgets
+        About uart_fgets
       
     </span>
   </a>
@@ -1419,7 +1419,7 @@
 
 
 
-<h1 id="printffgets-documentation">printf/fgets Documentation</h1>
+<h1 id="printfuart_fgets-documentation">printf/uart_fgets Documentation</h1>
 <p>So, you wanna know how to use printf huh? Well you've come to the right place. </p>
 <h2 id="printf-initialization">printf Initialization</h2>
 <h3 id="uart-handle-initiailization">UART Handle Initiailization</h3>
@@ -1456,11 +1456,11 @@
 <p>You can also change the <code>MAX_PRINTF_SIZE</code> if you feel like you need a little more space.</p>
 <p><code>printf</code> latency is pretty horrendous the more threads you have. Most of the time using a logic analyzer and a pin toggle will be better for debug, especially if you have access to the base board. A logging thread is another option; having one low-prio thread do all your printfs at some low frequency and just sending stuff there is a good way to reduce contention. For reference, the lowest worst-case latency I got with 15 threads was 118ms.</p>
 <p>Finally, <strong>never</strong> <code>printf</code> from an interrupt. Please defer <code>printf</code> to a thread; the UART driver is not designed to be called from an interrupt (also it will explode interrupt latency).</p>
-<h2 id="about-fgets">About fgets</h2>
-<p><code>fgets</code> provides a simple way to read a line of input from the UART, blocking until either <code>maxsz-1</code> characters are received or the user hits Enter. It is null-terminated on return. Include <code>"printf.h"</code> to use it.</p>
-<pre><code class="language-c">char *fgets(char *buffer, size_t maxsz);
+<h2 id="about-uart_fgets">About uart_fgets</h2>
+<p><code>uart_fgets</code> provides a simple way to read a line of input from the UART, blocking until either <code>maxsz-1</code> characters are received or the user hits Enter. It is null-terminated on return. Include <code>"printf.h"</code> to use it. It's different from the <code>stdio.h</code> implementation of <code>fgets</code> to allow you to include both <code>stdio.h</code> and <code>printf.h</code></p>
+<pre><code class="language-c">char *uart_fgets(char *buffer, size_t maxsz);
 </code></pre>
-<p><code>fgets</code> returns <code>buffer</code> on success, or <code>NULL</code> on a UART error. It handles backspace/DEL correctly, removing the previous character from the buffer. Note that <code>fgets</code> must <strong>never</strong> be called from an interrupt — like <code>printf</code>, it relies on the UART driver which is thread-only.</p>
+<p><code>uart_fgets</code> returns <code>buffer</code> on success, or <code>NULL</code> on a UART error. It handles backspace/DEL correctly, removing the previous character from the buffer. Note that <code>uart_fgets</code> must <strong>never</strong> be called from an interrupt — like <code>printf</code>, it relies on the UART driver which is thread-only.</p>
 <h2 id="examples-of-projects-that-use-this-printf-driver">Examples of projects that use this printf driver</h2>
 <ul>
 <li><a href="https://github.com/lhr-solar/PS-LVCarrierPCB/blob/main/Firmware/drivers/Src/commandLine.c">PS-LVCarrier</a></li>

@@ -973,17 +973,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#function-fgets" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        function fgets
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#function-printf" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1010,6 +999,17 @@
     <span class="md-ellipsis">
       
         function snprintf
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-uart_fgets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function uart_fgets
       
     </span>
   </a>
@@ -1470,17 +1470,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#function-fgets" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        function fgets
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#function-printf" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1507,6 +1496,17 @@
     <span class="md-ellipsis">
       
         function snprintf
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-uart_fgets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        function uart_fgets
       
     </span>
   </a>
@@ -1646,10 +1646,6 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align: right;">char *</td>
-<td style="text-align: left;"><a href="#function-fgets"><strong>fgets</strong></a> (char * buffer, size_t maxsz) <br></td>
-</tr>
-<tr>
 <td style="text-align: right;">int</td>
 <td style="text-align: left;"><a href="#function-printf"><strong>printf</strong></a> (const char * fmt, ...) <br></td>
 </tr>
@@ -1660,6 +1656,10 @@
 <tr>
 <td style="text-align: right;">int</td>
 <td style="text-align: left;"><a href="#function-snprintf"><strong>snprintf</strong></a> (char * buffer, size_t bufsz, char const * fmt, ...) <br></td>
+</tr>
+<tr>
+<td style="text-align: right;">char *</td>
+<td style="text-align: left;"><a href="#function-uart_fgets"><strong>uart_fgets</strong></a> (char * buffer, size_t maxsz) <br></td>
 </tr>
 </tbody>
 </table>
@@ -1703,14 +1703,6 @@
 </tbody>
 </table>
 <h2 id="public-functions-documentation">Public Functions Documentation</h2>
-<h3 id="function-fgets">function fgets</h3>
-<pre><code class="language-C++">char * fgets (
-    char * buffer,
-    size_t maxsz
-) 
-</code></pre>
-<hr>
-
 <h3 id="function-printf">function printf</h3>
 <pre><code class="language-C++">int printf (
     const char * fmt,
@@ -1732,6 +1724,14 @@
     size_t bufsz,
     char const * fmt,
     ...
+) 
+</code></pre>
+<hr>
+
+<h3 id="function-uart_fgets">function uart_fgets</h3>
+<pre><code class="language-C++">char * uart_fgets (
+    char * buffer,
+    size_t maxsz
 ) 
 </code></pre>
 <hr>

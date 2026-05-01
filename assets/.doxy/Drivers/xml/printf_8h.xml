@@ -148,11 +148,11 @@
         </inbodydescription>
         <location file="driver/Inc/printf.h" line="15" column="5" declfile="driver/Inc/printf.h" declline="15" declcolumn="5"/>
       </memberdef>
-      <memberdef kind="function" id="printf_8h_1a5f149d1f05b183c983276eaa6270815b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="printf_8h_1a19e2fe9af0fb6cd1d6832e8e91d48b0a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>char *</type>
-        <definition>char * fgets</definition>
+        <definition>char * uart_fgets</definition>
         <argsstring>(char *buffer, size_t maxsz)</argsstring>
-        <name>fgets</name>
+        <name>uart_fgets</name>
         <param>
           <type>char *</type>
           <declname>buffer</declname>
@@ -207,7 +207,7 @@
 <codeline lineno="13"><highlight class="normal"></highlight></codeline>
 <codeline lineno="14" refid="printf_8h_1a55f3d956bb2ba20b5059e9e25484a47f" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="printf_8h_1a55f3d956bb2ba20b5059e9e25484a47f" kindref="member">printf</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*fmt,<sp/>...);</highlight></codeline>
 <codeline lineno="15" refid="printf_8h_1a72c2943bdd02b80ed36ec32142d01c7b" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="printf_8h_1a72c2943bdd02b80ed36ec32142d01c7b" kindref="member">snprintf</ref>(</highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*buffer,<sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>bufsz,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>*fmt,<sp/>...);</highlight></codeline>
-<codeline lineno="16" refid="printf_8h_1a5f149d1f05b183c983276eaa6270815b" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*<ref refid="printf_8h_1a5f149d1f05b183c983276eaa6270815b" kindref="member">fgets</ref>(</highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*buffer,<sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>maxsz);</highlight></codeline>
+<codeline lineno="16" refid="printf_8h_1a19e2fe9af0fb6cd1d6832e8e91d48b0a" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*<ref refid="printf_8h_1a19e2fe9af0fb6cd1d6832e8e91d48b0a" kindref="member">uart_fgets</ref>(</highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*buffer,<sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>maxsz);</highlight></codeline>
 <codeline lineno="17"><highlight class="normal"></highlight></codeline>
 <codeline lineno="18" refid="printf_8h_1a553be9d5cfd229f0ce30075aee33ea28" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="printf_8h_1a553be9d5cfd229f0ce30075aee33ea28" kindref="member">printf_init</ref>(UART_HandleTypeDef<sp/>*huart);</highlight></codeline>
     </programlisting>

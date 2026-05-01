@@ -34,11 +34,6 @@
 * **EMC2305\_WriteReg** ([**EMC2305.h**](EMC2305_8h.md))
 
 
-## f
-
-* **fgets** ([**printf.h**](printf_8h.md))
-
-
 ## o
 
 * **off\_SevenSegment** ([**SevenSegment.h**](SevenSegment_8h.md))
@@ -62,6 +57,7 @@
 
 ## u
 
+* **uart\_fgets** ([**printf.h**](printf_8h.md))
 * **USER\_SD\_Card\_Init** ([**sdcard.h**](sdcard_8h.md))
 * **USER\_SD\_Card\_Worker\_Task** ([**sdcard.h**](sdcard_8h.md))
 * **USER\_SD\_Card\_Write\_Async** ([**sdcard.h**](sdcard_8h.md))
