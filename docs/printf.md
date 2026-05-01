@@ -59,7 +59,7 @@ Finally, **never** `printf` from an interrupt. Please defer `printf` to a thread
 char *uart_fgets(char *buffer, size_t maxsz);
 ```
 
-`uart_fgets` returns `buffer` on success, or `NULL` on a UART error. It handles backspace/DEL correctly, removing the previous character from the buffer. Note that `fgets` must **never** be called from an interrupt — like `printf`, it relies on the UART driver which is thread-only.
+`uart_fgets` returns `buffer` on success, or `NULL` on a UART error. It handles backspace/DEL correctly, removing the previous character from the buffer. Note that `uart_fgets` must **never** be called from an interrupt — like `printf`, it relies on the UART driver which is thread-only.
 
 ## Examples of projects that use this printf driver
 * [PS-LVCarrier](https://github.com/lhr-solar/PS-LVCarrierPCB/blob/main/Firmware/drivers/Src/commandLine.c)
