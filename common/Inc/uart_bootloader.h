@@ -1,5 +1,4 @@
-#ifndef UART_BOOTLOADER_H_
-#define UART_BOOTLOADER_H_
+#pragma once
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -14,5 +13,3 @@ bool uart_bootloader_is_entry_allowed(void);
 void uart_bootloader_init_app_vector_table(void);
 void uart_bootloader_request_reset(void);
 bool uart_bootloader_consume_request(void);
-
-#endif /* UART_BOOTLOADER_H_ */
