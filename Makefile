@@ -422,12 +422,15 @@ flash:
 	@echo "🔦 Flashing $(FLASH_FILE) to $(FLASH_ADDRESS)"
 	st-flash write $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
 
+# Optional extra args for uart_bootloader_flash.py (e.g. --enter, --boot). Parent makefiles may set this.
+UART_BOOTLOADER_FLASH_FLAGS ?=
+
 .PHONY: flash-uart
 flash-uart:
 ifeq ($(FIRMWARE_TYPE),bootloader)
 	./scripts/flash_bootloader.py --bin $(BUILD_DIR)/$(FLASH_FILE) --address $(FLASH_ADDRESS)
 else ifeq ($(FIRMWARE_TYPE),app)
-	./scripts/uart_bootloader_flash.py --bin $(BUILD_DIR)/$(FLASH_FILE) --address $(FLASH_ADDRESS)
+	./scripts/uart_bootloader_flash.py $(UART_BOOTLOADER_FLASH_FLAGS) --bin $(BUILD_DIR)/$(FLASH_FILE) --address $(FLASH_ADDRESS)
 else
 	./flash-uart.sh $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
 endif
