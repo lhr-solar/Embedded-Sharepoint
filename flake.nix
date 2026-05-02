@@ -1,5 +1,5 @@
 {
-  description = "LHRs STM32 Embedded Dev";
+  description = "LHRs Embedded Dev";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/23.05";
@@ -23,6 +23,7 @@
             pkgs.gcc
             pkgs.clang
             pkgs.clang-tools
+            pkgs.arduino-cli
             pkgs.lld
             pkgs.bear
             pkgs.cmake
@@ -38,21 +39,18 @@
             pkgs.parallel
             pkgs.sl
             pkgs.gcc-arm-embedded
-            pkgs.picocom
             python
+            pkgs.openocd
           ];
 
           # Extra debug/flash tools, only if available
           debugPackages =
             if pkgs.stdenv.isLinux then [
               pkgs.gdb
-              pkgs.openocd
               pkgs.stlink
             ] else if pkgs.stdenv.isDarwin then [
-              pkgs.openocd
               pkgs.stlink
               pkgs.lldb
-              pkgs.openocd or null
             ] else [];
 
           # Remove nulls
@@ -69,32 +67,12 @@
             echo "${armGccMessage}"
             ${if armGcc != null then "export PATH=$PATH:${armGcc}/bin" else ""}
 
-            # Provide lsusb-mac alias
-            if [[ "$OSTYPE" == "darwin"* ]]; then
-              lsusb_mac() {
-                system_profiler SPUSBDataType
-              }
-              export -f lsusb_mac
-              echo "Run: lsusb_mac (macOS USB info)"
-            
-              ls_stm32_dev_port() {
-                  ls /dev/cu.*
-              }
-              export -f ls_stm32_dev_port
-              echo "On Mac run: ls_stm32_dev_port (to list STM32 serial port)"
-            else
-              echo "Run: lsusb (Linux USB info)"
+            if [ -f "./nix-hook.sh" ]; then
+              # Make it executable
+              chmod +x ./nix-hook.sh
+              source ./nix-hook.sh
             fi
 
-            if [ ! -d .venv ]; then
-              python3 -m venv .venv
-              echo "Creating python venv"
-            fi
-            source .venv/bin/activate
-            echo "Installing python requirements"
-            if [ -f requirements.txt ]; then
-              pip install -r requirements.txt
-            fi
             echo "Dev environment loaded for ${system}!"
           '';
         };
