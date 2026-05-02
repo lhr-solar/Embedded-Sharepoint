@@ -2,7 +2,6 @@
 
 #include "bootloader_config.h"
 #include "bootloader_hal.h"
-#include "bootloader_indicator.h"
 
 static UART_HandleTypeDef s_huart = {
     .Instance = BOOTLOADER_UART_INSTANCE,
@@ -141,7 +140,6 @@ bool bootloader_runtime_erase_app(void) {
     HAL_FLASH_Unlock();
     bool ok = true;
     while (erase_addr < erase_end) {
-        bootloader_indicator_update(HAL_GetTick());
         uint32_t sec = bootloader_f4_sector_of_addr(erase_addr);
         FLASH_EraseInitTypeDef erase = {0};
         erase.TypeErase = FLASH_TYPEERASE_SECTORS;
@@ -173,7 +171,6 @@ bool bootloader_runtime_write_app(uint32_t app_offset, const uint8_t *data, size
 
     HAL_FLASH_Unlock();
     for (size_t i = 0; i < len; i += 8U) {
-        bootloader_indicator_update(HAL_GetTick());
         uint64_t dword = 0xFFFFFFFFFFFFFFFFULL;
         size_t chunk = ((len - i) >= 8U) ? 8U : (len - i);
         bootloader_copy_bytes((uint8_t *)&dword, &data[i], chunk);
@@ -229,7 +226,6 @@ bool bootloader_runtime_erase_app(void) {
 
     bool ok = true;
     while (erase_addr < erase_end) {
-        bootloader_indicator_update(HAL_GetTick());
         uint32_t bank = bootloader_addr_to_bank(erase_addr);
         uint32_t segment_end = erase_end;
 
@@ -277,7 +273,6 @@ bool bootloader_runtime_write_app(uint32_t app_offset, const uint8_t *data, size
     HAL_FLASH_Unlock();
 
     for (size_t i = 0; i < len; i += 8U) {
-        bootloader_indicator_update(HAL_GetTick());
         uint64_t dword = 0xFFFFFFFFFFFFFFFFULL;
         size_t chunk = ((len - i) >= 8U) ? 8U : (len - i);
         bootloader_copy_bytes((uint8_t *)&dword, &data[i], chunk);

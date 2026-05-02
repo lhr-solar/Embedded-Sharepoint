@@ -284,10 +284,8 @@ static bool bl_handle_write_memory(void) {
         return false;
     }
 
-    bootloader_indicator_set_mode(BOOTLOADER_INDICATOR_FLASHING);
-    bootloader_indicator_update(HAL_GetTick());
-    bool ok = bootloader_runtime_write_app(addr - bl_app_start(), data, data_len);
     bootloader_indicator_set_mode(BOOTLOADER_INDICATOR_CONNECTED);
+    bool ok = bootloader_runtime_write_app(addr - bl_app_start(), data, data_len);
     if (!ok) {
         bl_send_nack();
         return false;
@@ -314,10 +312,8 @@ static bool bl_handle_erase(void) {
             bl_send_nack();
             return false;
         }
-        bootloader_indicator_set_mode(BOOTLOADER_INDICATOR_FLASHING);
-        bootloader_indicator_update(HAL_GetTick());
-        bool ok = bootloader_runtime_erase_app();
         bootloader_indicator_set_mode(BOOTLOADER_INDICATOR_CONNECTED);
+        bool ok = bootloader_runtime_erase_app();
         if (!ok) {
             bl_send_nack();
             return false;
@@ -359,10 +355,8 @@ static bool bl_handle_erase(void) {
         }
     }
 
-    bootloader_indicator_set_mode(BOOTLOADER_INDICATOR_FLASHING);
-    bootloader_indicator_update(HAL_GetTick());
-    bool ok = bootloader_runtime_erase_app();
     bootloader_indicator_set_mode(BOOTLOADER_INDICATOR_CONNECTED);
+    bool ok = bootloader_runtime_erase_app();
     if (!ok) {
         bl_send_nack();
         return false;
@@ -394,10 +388,8 @@ static bool bl_handle_ext_erase(void) {
          * 0xFFFD bank 2 erase. This bootloader constrains all special erase
          * requests to the app region so the resident bootloader survives.
          */
-        bootloader_indicator_set_mode(BOOTLOADER_INDICATOR_FLASHING);
-        bootloader_indicator_update(HAL_GetTick());
-        bool ok = bootloader_runtime_erase_app();
         bootloader_indicator_set_mode(BOOTLOADER_INDICATOR_CONNECTED);
+        bool ok = bootloader_runtime_erase_app();
         if (!ok) {
             bl_send_nack();
             return false;
@@ -440,10 +432,8 @@ static bool bl_handle_ext_erase(void) {
         }
     }
 
-    bootloader_indicator_set_mode(BOOTLOADER_INDICATOR_FLASHING);
-    bootloader_indicator_update(HAL_GetTick());
-    bool ok = bootloader_runtime_erase_app();
     bootloader_indicator_set_mode(BOOTLOADER_INDICATOR_CONNECTED);
+    bool ok = bootloader_runtime_erase_app();
     if (!ok) {
         bl_send_nack();
         return false;
@@ -507,12 +497,22 @@ int main(void) {
     bool app_valid = bootloader_runtime_is_app_valid();
     bootloader_indicator_set_mode(app_valid ? BOOTLOADER_INDICATOR_APP_PRESENT : BOOTLOADER_INDICATOR_NO_APP);
 
-    uint32_t startup_wait_ms = (app_valid && !forced_bootloader) ?
-        BOOTLOADER_APP_STARTUP_WAIT_MS : BOOTLOADER_HANDSHAKE_TIMEOUT_MS;
-    if (!bl_wait_for_sync_with_indicator(startup_wait_ms)) {
-        if (app_valid) {
-            bootloader_runtime_jump_to_app();
+    /*
+     * poll_sync uses timeout==0 to mean "wait forever". For a valid app that is
+     * not forced into the bootloader, BOOTLOADER_APP_STARTUP_WAIT_MS == 0 must
+     * mean "no initial handshake window" so we fall through and jump;
+     * otherwise reset never reaches jump (only the post-flash main-loop path would).
+     */
+    bool host_sync = false;
+    if (app_valid && !forced_bootloader) {
+        if (BOOTLOADER_APP_STARTUP_WAIT_MS != 0U) {
+            host_sync = bl_wait_for_sync_with_indicator(BOOTLOADER_APP_STARTUP_WAIT_MS);
         }
+    } else {
+        host_sync = bl_wait_for_sync_with_indicator(BOOTLOADER_HANDSHAKE_TIMEOUT_MS);
+    }
+    if (!host_sync && app_valid) {
+        bootloader_runtime_jump_to_app();
     }
 
     while (1) {

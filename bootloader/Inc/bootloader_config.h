@@ -38,6 +38,7 @@
 #define BOOTLOADER_HANDSHAKE_TIMEOUT_MS (0U)
 #endif
 
+/* 0 = skip UART listen and boot app immediately when valid (see bootloader_main). */
 #ifndef BOOTLOADER_APP_STARTUP_WAIT_MS
 #define BOOTLOADER_APP_STARTUP_WAIT_MS (0U)
 #endif

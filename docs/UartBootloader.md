@@ -64,6 +64,87 @@ Always run `make clean` when switching between `firmware`, `bootloader`, and
 `app`; each mode uses a different flash map and stale build outputs can flash
 the wrong image.
 
+## STM32G4: resident bootloader and `bootloader_test`
+
+Supported targets: `PROJECT_TARGET=stm32g473xx` or `stm32g474xx`. Replace one
+with the other in the commands below if your board uses the other G4 part.
+
+All commands assume the **repository root** is `ES_BLT` (this tree) and use
+`BEAR_ENABLE=0` only to skip `compile_commands` generation; omit it if you
+use the default.
+
+### Build the resident bootloader (G4)
+
+From repo root:
+
+```bash
+make -C test clean TEST=main PROJECT_TARGET=stm32g473xx FIRMWARE_TYPE=bootloader BEAR_ENABLE=0
+make -C test TEST=main PROJECT_TARGET=stm32g473xx FIRMWARE_TYPE=bootloader BEAR_ENABLE=0
+```
+
+Artifact: `build/bootloader/stm32g473xx.bin` (ELF/HEX beside it). The name
+matches `PROJECT_TARGET`.
+
+### Flash the resident bootloader (G4)
+
+**One-time install via STM32 ROM UART** (board in UART bootloader / `BOOT0`,
+per ST AN2606). From repo root; set your serial device:
+
+```bash
+./scripts/flash_bootloader.py --port /dev/cu.YOURPORT --bin build/bootloader/stm32g473xx.bin
+```
+
+(Default `--address` is `0x08000000`.)
+
+**ST-Link** (writes the same image to flash start):
+
+```bash
+make -C test flash TEST=main PROJECT_TARGET=stm32g473xx FIRMWARE_TYPE=bootloader BEAR_ENABLE=0
+```
+
+(`Makefile` uses `st-flash` and `FLASH_ADDRESS=0x08000000` for
+`FIRMWARE_TYPE=bootloader`.)
+
+### Build `bootloader_test` app (G4)
+
+Integration test: breathe LED, UART spam, FDCAN classic frames, UART magic
+reboot command. Link address is `BOOTLOADER_APP_BASE` (default `0x08010000`).
+
+```bash
+make -C test clean TEST=bootloader PROJECT_TARGET=stm32g473xx FIRMWARE_TYPE=app BEAR_ENABLE=0
+make -C test TEST=bootloader PROJECT_TARGET=stm32g473xx FIRMWARE_TYPE=app BEAR_ENABLE=0
+```
+
+Artifact: `build/app/stm32g473xx.bin`.
+
+### Flash `bootloader_test` (G4)
+
+**ST-Link** (app region after the bootloader):
+
+```bash
+make -C test flash TEST=bootloader PROJECT_TARGET=stm32g473xx FIRMWARE_TYPE=app BEAR_ENABLE=0
+```
+
+(`FLASH_ADDRESS` defaults to `BOOTLOADER_APP_BASE`, e.g. `0x08010000`.)
+
+**Over UART through the resident bootloader** (STM32CubeProgrammer /
+`uart_bootloader_flash.py`). With the board already in the resident bootloader
+or after `--enter` if the running app handles the magic packet:
+
+```bash
+./scripts/uart_bootloader_flash.py --port /dev/cu.YOURPORT --bin build/app/stm32g473xx.bin --address 0x08010000 --boot
+```
+
+Shorter form if the default app glob picks up this binary (typical single-target
+tree):
+
+```bash
+./scripts/uart_bootloader_flash.py --port /dev/cu.YOURPORT --enter --boot
+```
+
+If you use **`nix develop`**, run the same `make` and script commands inside
+that shell so the toolchain and Python env match CI.
+
 ## Parent Repo Integration
 
 Application repos usually live outside this shared embedded repo. The shared
