@@ -84,6 +84,25 @@ After that run ``lsusb`` and make sure you see an ST-Link Debug device is seen b
 make flash
 ```
 
+## Bootloader Build Check
+
+If your project will use the UART bootloader, also verify that both bootloader
+build modes compile in the Nix shell:
+
+```sh
+cd Embedded-Sharepoint
+make -C test clean TEST=main PROJECT_TARGET=stm32g473xx FIRMWARE_TYPE=bootloader BEAR_ENABLE=0
+make -C test TEST=main PROJECT_TARGET=stm32g473xx FIRMWARE_TYPE=bootloader BEAR_ENABLE=0
+
+make -C test clean TEST=blinky_bootloader PROJECT_TARGET=stm32g473xx FIRMWARE_TYPE=app BEAR_ENABLE=0
+make -C test TEST=blinky_bootloader PROJECT_TARGET=stm32g473xx FIRMWARE_TYPE=app BEAR_ENABLE=0
+```
+
+Use the `PROJECT_TARGET` for your board. The `app` build should report a flash
+origin after the bootloader, usually `0x08010000` for the default `64 KB`
+bootloader region. See [UART Bootloader](./UartBootloader.md) for flashing,
+parent Makefile setup, and bring-up procedure.
+
 # Common Errors
 ## Could not open USB device
 if you're getting:

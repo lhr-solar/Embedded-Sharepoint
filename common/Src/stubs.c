@@ -3,6 +3,7 @@
 // This is load bearing
 void _init(){}
 
+#if !defined(FIRMWARE_ROLE_BOOTLOADER) && !defined(FIRMWARE_USES_BOOTLOADER)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 void HardFault_Handler(){
@@ -29,4 +30,4 @@ void HardFault_Handler(){
     __asm("BKPT #0\n") ; // Break into the debugger
 }
 #pragma GCC diagnostic pop
-
+#endif
