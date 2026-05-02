@@ -19,6 +19,8 @@ APP_BASE = "0x08010000"
 DEFAULT_APP_BIN_GLOB = "build/app/stm*.bin"
 BOOTLOADER_PACKET = b"ESBLT_BOOT\n"
 BOOTLOADER_BYTE_DELAY_SECONDS = 0.005
+# Time to wait after ESBLT_BOOT so the MCU can reset into the resident bootloader before STM32_Programmer connects.
+ENTER_TO_FLASH_DELAY_S = 0.2
 
 
 def default_app_bin() -> str:
@@ -104,7 +106,7 @@ def main() -> int:
     try:
         if args.enter:
             request_bootloader(normalize_port_for_pyserial(port), args.baud, args.byte_delay)
-            time.sleep(0.5)
+            time.sleep(ENTER_TO_FLASH_DELAY_S)
         run_stm32prog(args.stm32prog, ["-c", *conn, "-w", args.bin, args.address, "-v"])
         if args.boot:
             run_stm32prog(args.stm32prog, ["-c", *conn, "-g", args.address])
