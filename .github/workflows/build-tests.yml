@@ -9,28 +9,71 @@ on:
       - "**/*.py"
 
 jobs:
-  build:
+  # Matrix job to run all port+test combinations in parallel
+  build-tests:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # STM32F4 Family
+          - port: stm32f401
+          - port: stm32f413
+          - port: stm32f446
+          - port: stm32f429
+          # STM32G4 Family
+          - port: stm32g473
+          - port: stm32g474
+          # STM32L4 Family
+          - port: stm32l431
+          - port: stm32l432
+          - port: stm32l476
+    
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Cache Nix
-        uses: actions/cache@v3
+      - name: Cache Nix store
+        uses: actions/cache@v4
         with:
           path: |
             ~/.cache/nix
-          key: nix-${{ runner.os }}-${{ hashFiles('flake.lock') }}
+            ~/.config/nix
+          key: nix-${{ runner.os }}-${{ matrix.port }}-${{ hashFiles('flake.lock') }}
           restore-keys: |
+            nix-${{ runner.os }}-${{ matrix.port }}-
             nix-${{ runner.os }}-
 
-      - name: Install Nix Action
+      - name: Install Nix
         uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
 
-      - name: Clean & Build tests
+      - name: Build tests for ${{ matrix.port }}
         run: |
           nix develop --accept-flake-config --command bash -c '
               cd test
-              make clean
-              python3 makeAllTests.py
+              python3 makeAllTests.py --ports ${{ matrix.port }}
           '
+
+      - name: Upload build artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.port }}
+          path: build/${{ matrix.port }}/
+          retention-days: 5
+
+  # Summary job that waits for all matrix jobs to complete
+  build-summary:
+    runs-on: ubuntu-latest
+    needs: build-tests
+    if: always()
+    steps:
+      - name: Check build status
+        run: |
+          if [ "${{ needs.build-tests.result }}" != "success" ]; then
+            echo "One or more builds failed"
+            exit 1
+          fi
+          echo "All builds completed successfully!"
