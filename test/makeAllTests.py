@@ -120,19 +120,19 @@ def main():
     if args.ports is not None:
         invalid_ports = set(args.ports) - set(found_ports)
         if invalid_ports:
-            error(f"Invalid port(s): {', '.join(sorted(invalid_ports))}. Available ports: {', '.join(sorted(found_ports))}")
-        ports = args.ports
+            error(f"Invalid port(s): {', '.join(sorted(invalid_ports))}. Available ports: {', '.join(sorted(set(found_ports)))}")
+        ports = sorted(set(args.ports))
     else:
-        ports = found_ports
+        ports = sorted(set(found_ports))
 
     # Validate specified tests
     if args.tests is not None:
         invalid_tests = set(args.tests) - set(found_tests)
         if invalid_tests:
-            error(f"Invalid test(s): {', '.join(sorted(invalid_tests))}. Available tests: {', '.join(sorted(found_tests))}")
-        tests = args.tests
+            error(f"Invalid test(s): {', '.join(sorted(invalid_tests))}. Available tests: {', '.join(sorted(set(found_tests)))}")
+        tests = sorted(set(args.tests))
     else:
-        tests = found_tests
+        tests = sorted(set(found_tests))
 
     info("Compiling all tests for the following ports:")
     for p in ports:
