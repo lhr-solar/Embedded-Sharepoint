@@ -9,25 +9,33 @@ on:
       - "**/*.py"
 
 jobs:
+  # Discover available ports dynamically
+  discover-ports:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Discover ports
+        id: set-matrix
+        run: |
+          # Find all linker scripts and extract port names (matching makeAllTests.py logic)
+          ports=$(find stm -name "*.ld" -type f | xargs -I {} basename {} | sed 's/_FLASH\.ld//' | sed 's/x//g' | sed 's/_//g' | tr '[:upper:]' '[:lower:]' | sort -u)
+          
+          # Convert to JSON format for matrix
+          matrix=$(echo "$ports" | awk 'BEGIN{printf "["}NF{if(NR>1)printf ","; printf "{\"port\":\"%s\"}", $0}END{printf "]"}')
+          echo "matrix=$matrix" >> $GITHUB_OUTPUT
+          echo "Discovered ports: $matrix"
+
   # Matrix job to run all port+test combinations in parallel
   build-tests:
+    needs: discover-ports
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          # STM32F4 Family
-          - port: stm32f401
-          - port: stm32f413
-          - port: stm32f446
-          - port: stm32f429
-          # STM32G4 Family
-          - port: stm32g473
-          - port: stm32g474
-          # STM32L4 Family
-          - port: stm32l431
-          - port: stm32l432
-          - port: stm32l476
+      matrix: ${{ fromJson(needs.discover-ports.outputs.matrix) }}
     
     steps:
       - name: Checkout repository
