@@ -116,8 +116,23 @@ def main():
     found_ports = find_ports(script_dir / "../stm")
     found_tests = find_tests(script_dir / "tests")
 
-    ports = list(set(found_ports) & set(args.ports if args.ports is not None else found_ports))
-    tests = list(set(found_tests) & set(args.tests if args.tests is not None else found_tests))
+    # Validate specified ports
+    if args.ports is not None:
+        invalid_ports = set(args.ports) - set(found_ports)
+        if invalid_ports:
+            error(f"Invalid port(s): {', '.join(sorted(invalid_ports))}. Available ports: {', '.join(sorted(found_ports))}")
+        ports = args.ports
+    else:
+        ports = found_ports
+
+    # Validate specified tests
+    if args.tests is not None:
+        invalid_tests = set(args.tests) - set(found_tests)
+        if invalid_tests:
+            error(f"Invalid test(s): {', '.join(sorted(invalid_tests))}. Available tests: {', '.join(sorted(found_tests))}")
+        tests = args.tests
+    else:
+        tests = found_tests
 
     info("Compiling all tests for the following ports:")
     for p in ports:
@@ -154,4 +169,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
