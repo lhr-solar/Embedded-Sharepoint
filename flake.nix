@@ -23,7 +23,6 @@
             pkgs.gcc
             pkgs.clang
             pkgs.clang-tools
-            pkgs.arduino-cli
             pkgs.lld
             pkgs.bear
             pkgs.cmake
