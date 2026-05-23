@@ -9,25 +9,28 @@ on:
       - "**/*.py"
 
 jobs:
+  # Setup job to generate the build matrix dynamically
+  setup-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.generate-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate build matrix
+        id: generate-matrix
+        run: |
+          MATRIX=$(python3 .github/generate-build-matrix.py)
+          echo "matrix=${MATRIX}" >> $GITHUB_OUTPUT
+
   # Matrix job to run all port+test combinations in parallel
   build-tests:
     runs-on: ubuntu-latest
+    needs: setup-matrix
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          # STM32F4 Family
-          - port: stm32f401re
-          - port: stm32f413rht
-          - port: stm32f446ret
-          - port: stm32f429zit
-          # STM32G4 Family
-          - port: stm32g473xx
-          - port: stm32g474xx
-          # STM32L4 Family
-          - port: stm32l431cbt
-          - port: stm32l432kcu
-          - port: stm32l476rgt
+      matrix: ${{ fromJson(needs.setup-matrix.outputs.matrix) }}
     
     steps:
       - name: Checkout repository

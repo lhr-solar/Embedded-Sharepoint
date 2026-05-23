@@ -34,11 +34,7 @@ void Heartbeat_Clock_Init() {
 }
 
 int main(){
-#if defined(STM32L432xx)
-    HAL_Init()
-#else
     HAL_Init();
-#endif
 
     GPIO_InitTypeDef led_config = {
         .Mode = GPIO_MODE_OUTPUT_PP,
