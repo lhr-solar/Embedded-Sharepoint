@@ -80,7 +80,7 @@ jobs:
     steps:
       - name: Check build status
         run: |
-          if [ "${{ needs.build-tests.result }}" != "success" ]; then
+          if [ "${{ needs.build-tests.result }}" == "failure" ]; then
             echo "One or more builds failed"
             exit 1
           fi
