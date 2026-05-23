@@ -27,7 +27,7 @@ if [ -f "$REQ_PATH" ]; then
             touch "$SENTINEL"
         else
             echo "Error: pip install failed."
-            exit 1
+            return 1
         fi
     fi
 fi
