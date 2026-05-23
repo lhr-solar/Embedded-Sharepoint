@@ -1915,7 +1915,7 @@ PROJECT_C_SOURCES  = core/Src/main.c drivers/Src/can.c
 <h3 id="writing-a-test-compilation-script">Writing a test compilation script</h3>
 <p>We primarily use GitHub Actions to run build checks on code before we merge it in, your GitHub action should make sure your main and all tests compile. There is a template python script to compile all test files located in <code>Embedded-Sharepoint/template</code>, where lines with <code>#❗ CHANGE THIS ❗</code> show where you should change the script to run. </p>
 <h3 id="creating-the-build-action">Creating the build action</h3>
-<p>To create a GitHub action, you need to make a <code>workflows</code> folder in the <code>.github</code> folder and create a <code>.yml</code> file that defines your GitHub action. GitHub will then run your action whenever the event your action specifies happens.</p>
+<p>To create a GitHub action, you need to make a <code>workflows</code> folder in the <code>.github</code> folder and create a <code>.yml</code> file that defines your GitHub action. GitHub will then run your action whenever the event your action specifies happens. There is a build action that Embedded-Sharepoint uses, but it is not a great example since it has a lot of logic for compiling multiple stm32 targets in parallel.</p>
 <h3 id="release-automation-action">Release Automation Action</h3>
 <p>There is a release automation action in <code>Embedded-Sharepoint/template/template-release_artifacts.yml</code> that will include all submodules in your release. </p>
 <p>By default, when you publish a GitHub release, the generated ZIP doesn’t include the actual contents of submodules. It just includes references to them, which can be annoying if you're trying to get a compilable version of the source. This workflow fixes that by automatically checking out all submodules and turning them into regular folders so their contents are included directly.</p>
@@ -1924,12 +1924,17 @@ PROJECT_C_SOURCES  = core/Src/main.c drivers/Src/can.c
 <h3 id="examples-of-github-actions">Examples of GitHub Actions</h3>
 <ul>
 <li><a href="https://github.com/lhr-solar/PS-VehicleControlUnit/blob/main/.github/workflows/build-tests.yml">VCU</a></li>
+<li><a href="https://github.com/lhr-solar/BPS-Leader/blob/main/.github/workflows/build-tests.yml">BPS-Leader</a></li>
+<li><a href="https://github.com/lhr-solar/PS-VoltTemp/blob/main/.github/workflows/build-tests.yml">VoltTemp</a></li>
 <li><a href="https://github.com/lhr-solar/Embedded-Sharepoint/tree/main/.github/workflows">Embedded-Sharepoint</a></li>
+<li><a href="https://github.com/lhr-solar/PS-LVCarrierPCB/blob/main/.github/workflows/compile_code.yml">LV-Carrier</a></li>
 </ul>
 <h2 id="examples-of-projects-that-use-embedded-sharepoint">Examples of projects that use Embedded Sharepoint</h2>
 <ul>
-<li><a href="https://github.com/lhr-solar/BPS-Leader">BPS-Leader</a></li>
 <li><a href="https://github.com/lhr-solar/PS-VehicleControlUnit">VCU</a></li>
+<li><a href="https://github.com/lhr-solar/BPS-Leader">BPS-Leader</a></li>
+<li><a href="https://github.com/lhr-solar/PS-VoltTemp/tree/main">VoltTemp</a></li>
+<li><a href="https://github.com/lhr-solar/PS-LVCarrierPCB">LV-Carrier</a></li>
 </ul>
 
 
