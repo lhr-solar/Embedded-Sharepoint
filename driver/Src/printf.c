@@ -97,7 +97,7 @@ int printf(const char *fmt, ...) {
     return (status == UART_OK)?rv:-1;
 }
 
-char *fgets(char *buffer, size_t maxsz){
+char *uart_fgets(char *buffer, size_t maxsz){
     if(maxsz == 0 || buffer == NULL) return NULL;
 
     char c;

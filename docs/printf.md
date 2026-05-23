@@ -1,4 +1,4 @@
-# printf/fgets Documentation
+# printf/uart_fgets Documentation
 
 So, you wanna know how to use printf huh? Well you've come to the right place. 
 
@@ -52,14 +52,14 @@ You can also change the `MAX_PRINTF_SIZE` if you feel like you need a little mor
 
 Finally, **never** `printf` from an interrupt. Please defer `printf` to a thread; the UART driver is not designed to be called from an interrupt (also it will explode interrupt latency).
 
-## About fgets
-`fgets` provides a simple way to read a line of input from the UART, blocking until either `maxsz-1` characters are received or the user hits Enter. It is null-terminated on return. Include `"printf.h"` to use it.
+## About uart_fgets
+`uart_fgets` provides a simple way to read a line of input from the UART, blocking until either `maxsz-1` characters are received or the user hits Enter. It is null-terminated on return. Include `"printf.h"` to use it. It's different from the `stdio.h` implementation of `fgets` to allow you to include both `stdio.h` and `printf.h`
 
 ```c
-char *fgets(char *buffer, size_t maxsz);
+char *uart_fgets(char *buffer, size_t maxsz);
 ```
 
-`fgets` returns `buffer` on success, or `NULL` on a UART error. It handles backspace/DEL correctly, removing the previous character from the buffer. Note that `fgets` must **never** be called from an interrupt — like `printf`, it relies on the UART driver which is thread-only.
+`uart_fgets` returns `buffer` on success, or `NULL` on a UART error. It handles backspace/DEL correctly, removing the previous character from the buffer. Note that `uart_fgets` must **never** be called from an interrupt — like `printf`, it relies on the UART driver which is thread-only.
 
 ## Examples of projects that use this printf driver
 * [PS-LVCarrier](https://github.com/lhr-solar/PS-LVCarrierPCB/blob/main/Firmware/drivers/Src/commandLine.c)

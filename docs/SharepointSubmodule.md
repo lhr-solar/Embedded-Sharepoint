@@ -155,7 +155,7 @@ A GitHub Action is an automated workflow that runs on GitHub’s servers in resp
 We primarily use GitHub Actions to run build checks on code before we merge it in, your GitHub action should make sure your main and all tests compile. There is a template python script to compile all test files located in `Embedded-Sharepoint/template`, where lines with `#❗ CHANGE THIS ❗` show where you should change the script to run. 
 
 ### Creating the build action
-To create a GitHub action, you need to make a `workflows` folder in the `.github` folder and create a `.yml` file that defines your GitHub action. GitHub will then run your action whenever the event your action specifies happens.
+To create a GitHub action, you need to make a `workflows` folder in the `.github` folder and create a `.yml` file that defines your GitHub action. GitHub will then run your action whenever the event your action specifies happens. There is a build action that Embedded-Sharepoint uses, but it is not a great example since it has a lot of logic for compiling multiple stm32 targets in parallel.
 
 ### Release Automation Action
 There is a release automation action in `Embedded-Sharepoint/template/template-release_artifacts.yml` that will include all submodules in your release. 
@@ -168,8 +168,13 @@ To use the automation, copy the file into your `.github/workflows` folder of you
 
 ### Examples of GitHub Actions
 * [VCU](https://github.com/lhr-solar/PS-VehicleControlUnit/blob/main/.github/workflows/build-tests.yml)
+* [BPS-Leader](https://github.com/lhr-solar/BPS-Leader/blob/main/.github/workflows/build-tests.yml)
+* [VoltTemp](https://github.com/lhr-solar/PS-VoltTemp/blob/main/.github/workflows/build-tests.yml)
 * [Embedded-Sharepoint](https://github.com/lhr-solar/Embedded-Sharepoint/tree/main/.github/workflows)
+* [LV-Carrier](https://github.com/lhr-solar/PS-LVCarrierPCB/blob/main/.github/workflows/compile_code.yml)
 
 ## Examples of projects that use Embedded Sharepoint
-* [BPS-Leader](https://github.com/lhr-solar/BPS-Leader)
 * [VCU](https://github.com/lhr-solar/PS-VehicleControlUnit)
+* [BPS-Leader](https://github.com/lhr-solar/BPS-Leader)
+* [VoltTemp](https://github.com/lhr-solar/PS-VoltTemp/tree/main)
+* [LV-Carrier](https://github.com/lhr-solar/PS-LVCarrierPCB)
