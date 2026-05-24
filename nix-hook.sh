@@ -3,17 +3,18 @@
 # Exit on error
 set -e
 
-# Get the directory where this script is located
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# Fallback to current script directory if the Nix variable isn't set
+# (e.g., if someone runs the script manually outside of the Nix shell)
+BASE_DIR="${EMBEDDED_SHAREPOINT_PATH:-$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )}"
 
 # --- Python Setup ---
 export PIP_DISABLE_PIP_VERSION_CHECK=1
-VENV_PATH="$SCRIPT_DIR/.venv"
-REQ_PATH="$SCRIPT_DIR/requirements.txt"
+VENV_PATH="$BASE_DIR/.venv"
+REQ_PATH="$BASE_DIR/requirements.txt"
 SENTINEL="$VENV_PATH/.pip_installed"
 
 if [ ! -d "$VENV_PATH" ]; then
-    echo "Creating virtual environment..."
+    echo "Creating virtual environment at $VENV_PATH..."
     python3 -m venv "$VENV_PATH"
 fi
 
