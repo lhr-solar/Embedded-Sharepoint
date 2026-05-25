@@ -16,7 +16,7 @@
           # arm-none-eabi toolchain (may not exist everywhere)
           armGcc = pkgs.gcc-arm-embedded or null;
 
-          python = pkgs.python310.withPackages (ps: with ps; [ ]);
+          python = pkgs.python310.withPackages (ps: with ps; [ ps.pip ]);
 
           # Base packages (common to all)
           basePackages = [

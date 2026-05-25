@@ -23,11 +23,13 @@ if [ -f "$REQ_PATH" ]; then
     # Only install if the sentinel doesn't exist OR requirements.txt is newer than the sentinel
     if [ ! -f "$SENTINEL" ] || [ "$REQ_PATH" -nt "$SENTINEL" ]; then
         echo "Updating python requirements..."
-        if pip install -q -r "$REQ_PATH"; then
+        
+        # Explicitly use the venv's python binary to avoid hitting the read-only /nix/store
+        if "$VENV_PATH/bin/python" -m pip install -q -r "$REQ_PATH"; then
             touch "$SENTINEL"
         else
             echo "Error: pip install failed."
-            return 1
+            exit 1
         fi
     fi
 fi
