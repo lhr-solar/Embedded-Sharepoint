@@ -66,10 +66,10 @@
             echo "${armGccMessage}"
             ${if armGcc != null then "export PATH=$PATH:${armGcc}/bin" else ""}
 
-            # Always locate the hook relative to this flake's absolute root
-            if [ -f "$EMBEDDED_SHAREPOINT_PATH/nix-hook.sh" ]; then
-              chmod +x "$EMBEDDED_SHAREPOINT_PATH/nix-hook.sh"
-              source "$EMBEDDED_SHAREPOINT_PATH/nix-hook.sh"
+            if [ -f "./nix-hook.sh" ]; then
+              # Make it executable
+              chmod +x ./nix-hook.sh
+              source ./nix-hook.sh
             fi
 
             echo "Dev environment loaded for ${system}!"
