@@ -1,0 +1,50 @@
+#ifndef BOOTLOADER_CONFIG_H_
+#define BOOTLOADER_CONFIG_H_
+
+#include "bootloader_hal.h"
+
+#ifndef BOOTLOADER_APP_BASE
+#define BOOTLOADER_APP_BASE (0x08010000UL)
+#endif
+
+#ifndef BOOTLOADER_APP_MAX_SIZE
+#define BOOTLOADER_APP_MAX_SIZE (448UL * 1024UL)
+#endif
+
+#ifndef BOOTLOADER_UART_BAUD
+#define BOOTLOADER_UART_BAUD (115200U)
+#endif
+
+#ifndef BOOTLOADER_UART_INSTANCE
+/* PSOM L431: same console USART as test UART apps (husart1 / PA9, PA10). */
+#if defined(STM32L431xx) && defined(USART1)
+#define BOOTLOADER_UART_INSTANCE USART1
+#elif defined(USART3)
+#define BOOTLOADER_UART_INSTANCE USART3
+#elif defined(USART2)
+#define BOOTLOADER_UART_INSTANCE USART2
+#elif defined(USART1)
+#define BOOTLOADER_UART_INSTANCE USART1
+#else
+#error "No supported UART instance available for bootloader."
+#endif
+#endif
+
+#ifndef BOOTLOADER_WRITE_CHUNK_MAX
+#define BOOTLOADER_WRITE_CHUNK_MAX (128U)
+#endif
+
+#ifndef BOOTLOADER_HANDSHAKE_TIMEOUT_MS
+#define BOOTLOADER_HANDSHAKE_TIMEOUT_MS (0U)
+#endif
+
+/* 0 = skip UART listen and boot app immediately when valid (see bootloader_main). */
+#ifndef BOOTLOADER_APP_STARTUP_WAIT_MS
+#define BOOTLOADER_APP_STARTUP_WAIT_MS (0U)
+#endif
+
+#ifndef BOOTLOADER_POST_FLASH_BOOT_DELAY_MS
+#define BOOTLOADER_POST_FLASH_BOOT_DELAY_MS (2000U)
+#endif
+
+#endif

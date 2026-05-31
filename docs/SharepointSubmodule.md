@@ -93,7 +93,16 @@ Below are several variables that the Embedded-Sharepoint Makefile uses to compil
 * `PROJECT_C_SOURCES`: List of your C source files
 * `PROJECT_C_INCLUDES`: List of your include directories
 * `PROJECT_BUILD_DIR`: Where to place build outputs
+* `FIRMWARE_TYPE`: Optional firmware memory map. Defaults to `firmware`; use
+  `app` when building an application that runs behind the UART bootloader.
+* `BOOTLOADER_SIZE_KB`: Optional bootloader size override. Defaults to `64` for
+  `FIRMWARE_TYPE=app` and `FIRMWARE_TYPE=bootloader`.
 * `BEAR_ENABLE` to make VSCode not mad at you (the red error squiggles). Bear is by default enabled, but you can set it to 0 to turn it off
+
+Do not export empty bootloader override variables from your parent Makefile.
+Only export `BOOTLOADER_APP_BASE`, `BOOTLOADER_SIZE_KB`, or `FLASH_ADDRESS` if
+you assign a real value. Empty exported values override the defaults computed by
+the Embedded-Sharepoint Makefile.
 
 ### Creating a test folder
 It's good to be able to test independent portions of your code instead of your whole code base at once. For example, if I have a driver just for controlling lights I should have a test file that just runs some code for my lights driver instead of the whole codebase which could be running a lot of things other than lights.
@@ -142,6 +151,24 @@ Once you're in the nix shell, run
 make
 ```
 in the same directory as your new Makefile.
+
+If your project uses the UART bootloader, compile the application with
+`FIRMWARE_TYPE=app` so it links after the resident bootloader:
+
+```sh
+make clean FIRMWARE_TYPE=app
+make FIRMWARE_TYPE=app
+```
+
+Flash a bootloader-linked app through the resident bootloader with:
+
+```sh
+make flash-uart FIRMWARE_TYPE=app
+```
+
+When switching between standalone firmware and bootloader-linked app builds,
+always run `make clean` first because the linker script and flash address change.
+For full bootloader setup and bring-up steps, see [UART Bootloader](./UartBootloader.md).
 
 If you do not want to type that out everytime, you can create a bash script that runs the nix develop command and hardcodes the directory where the nix file is. See this example in [VCU](https://github.com/lhr-solar/PS-VehicleControlUnit/blob/main/Firmware/run_nix.sh)
 

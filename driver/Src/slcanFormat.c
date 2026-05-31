@@ -15,6 +15,8 @@ int can_to_slcan(uint16_t id,
                  uint8_t out_size)
 {
     if (dlc > 8) return -1;
+    if (out == NULL) return -1;
+    if ((dlc > 0U) && (data == NULL)) return -1;
 
     uint8_t needed = 1 + 3 + 1 + (dlc * 2) + 1;
     if (out_size < needed) return -1;

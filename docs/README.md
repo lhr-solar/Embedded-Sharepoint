@@ -53,6 +53,10 @@ make flash
 ## Adding Embedded Sharepoint to your project
 Follow these [instructions](./SharepointSubmodule.md) on how to add Embedded Sharepoint to your project
 
+## UART Bootloader
+For resident UART bootloader setup, app offset builds, parent Makefile changes,
+and generic board bring-up procedure, see [UART Bootloader](./UartBootloader.md).
+
 ## Contributing
 See our [Issues](https://github.com/lhr-solar/Embedded-Sharepoint/issues) to see what you can work on!  
 Once you're ready for a review please open a pull request to merge into main. [Pull Requests explained](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) 
