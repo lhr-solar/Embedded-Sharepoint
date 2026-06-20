@@ -39,19 +39,17 @@ static void error_handler(adc_status_t err) {
 static void success_handler(void) {
     // blinky
 
-    // a5 on nucleo
-
     GPIO_InitTypeDef led_config = {
         .Mode = GPIO_MODE_OUTPUT_PP,
         .Pull = GPIO_NOPULL,
-        .Pin = GPIO_PIN_3
+        .Pin = GPIO_PIN_5
     };
     
      // enable clock for GPIOA
-    HAL_GPIO_Init(GPIOC, &led_config); // initialize GPIOA with led_config
+    HAL_GPIO_Init(GPIOA, &led_config); // initialize GPIOA with led_config
 
     while(1){
-        HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_3);
+        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
         HAL_Delay(500);
     }
   }
@@ -93,26 +91,29 @@ void TestQueueFull(void *pvParameters) {
 
 void TestADC1(void *pvParameters) {
     // Set bkpt in error_handler();
-    HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_3);
     uint32_t reading = 0;
 
-    ADC_ChannelConfTypeDef sConfig = {
-        .Channel = ADC_CHANNEL_VREFINT,
-        /* G4, L4 sample time */
-        #ifdef ADC_SAMPLETIME_247CYCLES_5
-        .SamplingTime = ADC_SAMPLETIME_247CYCLES_5,
-        /* F4 sample time */
-        #else
-        .SamplingTime = ADC_SAMPLETIME_144CYCLES,
-        #endif
-    };
-
+    /* Read ADC internal VREF with adc_get_vref() */
     uint32_t a_vref=0;
     adc_status_t vref_stat =adc_get_vref(hadc1, &a_vref);
     if (vref_stat != ADC_OK) error_handler(vref_stat);
-    if (a_vref > 2960) success_handler();
+    // Check if its 3V3
+    if (a_vref > 3200) success_handler();
 
-    // read once
+    /* Read ADC channel using adc_read() */
+    ADC_ChannelConfTypeDef sConfig = {
+        .Channel = ADC_CHANNEL_1,
+        #if defined(STM32G4xx) || defined(STM32L4xx)
+        .SamplingTime = ADC_SAMPLETIME_247CYCLES_5,
+        #else
+        .SamplingTime = ADC_SAMPLETIME_144CYCLES,
+        #endif
+        #if defined(STM32G4xx) || defined(STM32L4xx)
+        .SingleDiff = ADC_SINGLE_ENDED
+        #endif
+    };
+
+    // Read 10x
     for (int i = 0; i < 10; i++) {
         adc_status_t stat = adc_read(hadc1, &sConfig, xReadings);
         
@@ -193,7 +194,7 @@ int main() {
     HAL_Init();
     SystemClock_Config(); // 
     
-    __HAL_RCC_GPIOC_CLK_ENABLE();
+    __HAL_RCC_GPIOA_CLK_ENABLE();
 
     GPIO_InitTypeDef input =  {
         .Pin = GPIO_PIN_0,
@@ -226,14 +227,18 @@ int main() {
     adc_init_1.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
     adc_init_1.Resolution = ADC_RESOLUTION_12B;
     adc_init_1.DataAlign = ADC_DATAALIGN_RIGHT;
+    // adc_init_1.GainCompensation = 0;
     adc_init_1.ScanConvMode = DISABLE;
     adc_init_1.EOCSelection = ADC_EOC_SINGLE_CONV;
+    // adc_init_1.LowPowerAutoWait = DISABLE;
     adc_init_1.ContinuousConvMode = DISABLE;
     adc_init_1.NbrOfConversion = 1;
     adc_init_1.DiscontinuousConvMode = DISABLE;
     adc_init_1.ExternalTrigConv = ADC_SOFTWARE_START;
     adc_init_1.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
     adc_init_1.DMAContinuousRequests = DISABLE;
+    // adc_init_1.Overrun = ADC_OVR_DATA_PRESERVED;
+    // adc_init_1.OversamplingMode = DISABLE;
 
     volatile adc_status_t s = adc_init(&adc_init_1, hadc1);
     s+=0;
@@ -247,22 +252,13 @@ int main() {
     Error_Handler();
     }
 
-    #if defined(STM32G4xx)
+    #if defined(STM32G4xx) || defined(STM32L4xx)
     HAL_ADCEx_Calibration_Start(hadc1, ADC_SINGLE_ENDED);
     #endif
     // HAL_SYSCFG_EnableVREFBUF();
 
     #endif
 
-    GPIO_InitTypeDef led_config = {
-        .Mode = GPIO_MODE_OUTPUT_PP,
-        .Pull = GPIO_NOPULL,
-        .Pin = GPIO_PIN_3
-    };
-    
-     // enable clock for GPIOA
-    HAL_GPIO_Init(GPIOC, &led_config);
-    HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_3);
     
     #ifdef ADC2
     ADC_InitTypeDef adc_init_2 = {0};

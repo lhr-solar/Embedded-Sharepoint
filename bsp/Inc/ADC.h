@@ -117,7 +117,14 @@ adc_status_t adc_deinit(ADC_HandleTypeDef *h);
 
 /**
  * @brief Returns the ADC reference voltage.
- *
+ * 
+ * MUST CALIBRATE ADC BEFORE!!!! 
+ * MUST CALIBRATE ADC BEFORE!!!!
+ * MUST CALIBRATE ADC BEFORE!!!!
+ * MUST CALIBRATE ADC BEFORE!!!!
+ * MUST CALIBRATE ADC BEFORE!!!!
+ * (see adc_test)
+ * 
  * This function retrieves the reference voltage (Vref) used by the ADC
  * for conversion scaling. The value represents the voltage against which
  * all ADC input measurements are compared.

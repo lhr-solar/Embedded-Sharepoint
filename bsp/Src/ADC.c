@@ -59,6 +59,7 @@ adc_status_t adc_get_vref(ADC_HandleTypeDef *h, uint32_t *vref) {
     if (h == NULL) return ADC_INIT_FAIL;
 
     /* Init RTOS primitives*/
+    // 1 element queue for Vref read
     vref_readings = xQueueCreateStatic(1, 
                                        sizeof ( uint32_t ), 
                                        vrefqStorage, 
@@ -71,13 +72,14 @@ adc_status_t adc_get_vref(ADC_HandleTypeDef *h, uint32_t *vref) {
     
     ADC_ChannelConfTypeDef sConfig = {
         .Channel = ADC_CHANNEL_VREFINT,
-        /* G4, L4 sample time */
-        #ifdef ADC_SAMPLETIME_247CYCLES_5
-        .SamplingTime = ADC_SAMPLETIME_247CYCLES_5,
-        /* F4 sample time */
+        #if defined(STM32G4xx) || defined(STM32L4xx)
+        .SamplingTime = ADC_SAMPLETIME_247CYCLES_5, // sample time needs to be long for vref
         #else
         .SamplingTime = ADC_SAMPLETIME_144CYCLES,
         #endif
+        #if defined(STM32G4xx) || defined(STM32L4xx)
+        .SingleDiff = ADC_SINGLE_ENDED
+        #endif    
     };
 
     if (HAL_ADC_ConfigChannel(h, &sConfig) != HAL_OK)
