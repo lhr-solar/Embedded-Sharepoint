@@ -33,7 +33,7 @@ QueueHandle_t adc5_q;
 
 static uint8_t vrefqStorage[ 1 * sizeof( uint32_t ) ];
 static StaticQueue_t xVREFStaticQueue;
-QueueHandle_t vref_readings;
+static QueueHandle_t vref_readings;
 
 // Hardware ADC error code
 uint32_t adc_err_code = 0;
@@ -57,18 +57,22 @@ adc_status_t adc_get_vref(ADC_HandleTypeDef *h, uint32_t *vref) {
     /* Blocking ADC conversion to get internal VREF */
 
     if (h == NULL) return ADC_INIT_FAIL;
-
+        
     /* Init RTOS primitives*/
     // 1 element queue for Vref read
-    vref_readings = xQueueCreateStatic(1, 
-                                       sizeof ( uint32_t ), 
-                                       vrefqStorage, 
-                                       &xVREFStaticQueue);
+    if (vref_readings == NULL) {
+        vref_readings = xQueueCreateStatic(1, 
+                                           sizeof(uint32_t), 
+                                           vrefqStorage, 
+                                           &xVREFStaticQueue);
+    } else {
+        xQueueReset(vref_readings);
+    }
 
-    uint16_t vref_charac, vrefint_data;
+    uint32_t vref_charac, vrefint_data;
     // vref =  vref_charac * (vrefint_cal / vrefint_data)
     vref_charac = VREFINT_CAL_VREF;    
-    volatile uint16_t vrefint_cal = *( VREFINT_CAL_ADDR ); // 0x1FFF 75AA - 0x1FFF 75AB
+    volatile uint32_t vrefint_cal = *( VREFINT_CAL_ADDR ); // 0x1FFF 75AA - 0x1FFF 75AB
     
     ADC_ChannelConfTypeDef sConfig = {
         .Channel = ADC_CHANNEL_VREFINT,
@@ -88,7 +92,10 @@ adc_status_t adc_get_vref(ADC_HandleTypeDef *h, uint32_t *vref) {
     }
 
     if (adc_read(h, &sConfig, vref_readings) != ADC_OK) return ADC_VREF_ERROR;
-    if ( xQueueReceive(vref_readings, &vrefint_data, pdMS_TO_TICKS(100) ) != pdPASS) return ADC_VREF_ERROR;;
+    if ( xQueueReceive(vref_readings, &vrefint_data, pdMS_TO_TICKS(100) ) != pdPASS) return ADC_VREF_ERROR;
+
+    // Check so no division by zero
+    if (vrefint_data == 0) return ADC_VREF_ERROR;
     
     *vref = (vref_charac * vrefint_cal) / vrefint_data;
 

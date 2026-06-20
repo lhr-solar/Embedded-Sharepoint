@@ -98,25 +98,23 @@ void TestADC1(void *pvParameters) {
     adc_status_t vref_stat =adc_get_vref(hadc1, &a_vref);
     if (vref_stat != ADC_OK) error_handler(vref_stat);
     // Check if its 3V3
-    if (a_vref > 3200) success_handler();
+    if (a_vref < 3200) error_handler(ADC_VREF_ERROR);
 
     /* Read ADC channel using adc_read() */
     ADC_ChannelConfTypeDef sConfig = {
         .Channel = ADC_CHANNEL_1,
-        #if defined(STM32G4xx) || defined(STM32L4xx)
-        .SamplingTime = ADC_SAMPLETIME_247CYCLES_5,
-        #else
-        .SamplingTime = ADC_SAMPLETIME_144CYCLES,
-        #endif
-        #if defined(STM32G4xx) || defined(STM32L4xx)
-        .SingleDiff = ADC_SINGLE_ENDED
-        #endif
+    #ifdef ADC_SAMPLETIME_3CYCLES
+        .SamplingTime = ADC_SAMPLETIME_3CYCLES
+    #else
+        .SamplingTime = ADC_SAMPLETIME_2CYCLES_5
+    #endif
     };
 
     // Read 10x
     for (int i = 0; i < 10; i++) {
         adc_status_t stat = adc_read(hadc1, &sConfig, xReadings);
         
+        if (stat == ADC_QUEUE_FULL) break;
         if (stat != ADC_OK) {
             error_handler(stat);
         }
@@ -125,6 +123,8 @@ void TestADC1(void *pvParameters) {
     for (int i = 0; i < 10; i++) {
         xQueueReceive(xReadings, &reading, 0);
     }
+
+    success_handler();
 }
 
 #ifdef ADC2
