@@ -71,8 +71,13 @@ adc_status_t adc_get_vref(ADC_HandleTypeDef *h, uint32_t *vref) {
     
     ADC_ChannelConfTypeDef sConfig = {
         .Channel = ADC_CHANNEL_VREFINT,
+        /* G4, L4 sample time */
+        #ifdef ADC_SAMPLETIME_247CYCLES_5
         .SamplingTime = ADC_SAMPLETIME_247CYCLES_5,
-        .SingleDiff = ADC_SINGLE_ENDED 
+        /* F4 sample time */
+        #else
+        .SamplingTime = ADC_SAMPLETIME_144CYCLES,
+        #endif
     };
 
     if (HAL_ADC_ConfigChannel(h, &sConfig) != HAL_OK)

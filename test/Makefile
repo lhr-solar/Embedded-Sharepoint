@@ -2,7 +2,7 @@
 TEST ?= main
 
 # default is the LSOM MCU
-PROJECT_TARGET ?= stm32g473xx
+PROJECT_TARGET ?= stm32f446ret
 
 BEAR_ENABLE ?= 1
 VERBOSE ?= 0

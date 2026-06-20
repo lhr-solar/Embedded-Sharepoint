@@ -98,10 +98,13 @@ void TestADC1(void *pvParameters) {
 
     ADC_ChannelConfTypeDef sConfig = {
         .Channel = ADC_CHANNEL_VREFINT,
+        /* G4, L4 sample time */
+        #ifdef ADC_SAMPLETIME_247CYCLES_5
         .SamplingTime = ADC_SAMPLETIME_247CYCLES_5,
-        .SingleDiff = ADC_SINGLE_ENDED
-        // .OffsetNumber = ADC_OFFSET_NONE,
-        // .Offset = 0    
+        /* F4 sample time */
+        #else
+        .SamplingTime = ADC_SAMPLETIME_144CYCLES,
+        #endif
     };
 
     uint32_t a_vref=0;
@@ -223,18 +226,14 @@ int main() {
     adc_init_1.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
     adc_init_1.Resolution = ADC_RESOLUTION_12B;
     adc_init_1.DataAlign = ADC_DATAALIGN_RIGHT;
-    adc_init_1.GainCompensation = 0;
-    adc_init_1.ScanConvMode = ADC_SCAN_DISABLE;
+    adc_init_1.ScanConvMode = DISABLE;
     adc_init_1.EOCSelection = ADC_EOC_SINGLE_CONV;
-    adc_init_1.LowPowerAutoWait = DISABLE;
     adc_init_1.ContinuousConvMode = DISABLE;
     adc_init_1.NbrOfConversion = 1;
     adc_init_1.DiscontinuousConvMode = DISABLE;
     adc_init_1.ExternalTrigConv = ADC_SOFTWARE_START;
     adc_init_1.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
     adc_init_1.DMAContinuousRequests = DISABLE;
-    adc_init_1.Overrun = ADC_OVR_DATA_PRESERVED;
-    adc_init_1.OversamplingMode = DISABLE;
 
     volatile adc_status_t s = adc_init(&adc_init_1, hadc1);
     s+=0;
@@ -248,7 +247,9 @@ int main() {
     Error_Handler();
     }
 
+    #if defined(STM32G4xx)
     HAL_ADCEx_Calibration_Start(hadc1, ADC_SINGLE_ENDED);
+    #endif
     // HAL_SYSCFG_EnableVREFBUF();
 
     #endif
@@ -312,51 +313,6 @@ int main() {
     HAL_ADC_MspDeInit(hadc1);
 
     return 0;
-}
-
-void SystemClock_Config(void)
-{
-  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-
-  /** Configure the main internal regulator output voltage
-  */
-  __HAL_RCC_SYSCFG_CLK_ENABLE();
-  __HAL_RCC_PWR_CLK_ENABLE();
-  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
-  HAL_SYSCFG_EnableVREFBUF();
-
-  /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV1;
-  RCC_OscInitStruct.PLL.PLLN = 10;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
-  RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  /** Initializes the CPU, AHB and APB buses clocks
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
-
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
-  {
-    Error_Handler();
-  }
 }
 
 
