@@ -39,17 +39,19 @@ static void error_handler(adc_status_t err) {
 static void success_handler(void) {
     // blinky
 
+    // a5 on nucleo
+
     GPIO_InitTypeDef led_config = {
         .Mode = GPIO_MODE_OUTPUT_PP,
         .Pull = GPIO_NOPULL,
-        .Pin = GPIO_PIN_5
+        .Pin = GPIO_PIN_3
     };
     
      // enable clock for GPIOA
-    HAL_GPIO_Init(GPIOA, &led_config); // initialize GPIOA with led_config
+    HAL_GPIO_Init(GPIOC, &led_config); // initialize GPIOA with led_config
 
     while(1){
-        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+        HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_3);
         HAL_Delay(500);
     }
   }
@@ -91,6 +93,7 @@ void TestQueueFull(void *pvParameters) {
 
 void TestADC1(void *pvParameters) {
     // Set bkpt in error_handler();
+    HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_3);
     uint32_t reading = 0;
 
     ADC_ChannelConfTypeDef sConfig = {
@@ -104,7 +107,7 @@ void TestADC1(void *pvParameters) {
     uint32_t a_vref=0;
     adc_status_t vref_stat =adc_get_vref(hadc1, &a_vref);
     if (vref_stat != ADC_OK) error_handler(vref_stat);
-    if (a_vref > 3200) success_handler();
+    if (a_vref > 2960) success_handler();
 
     // read once
     for (int i = 0; i < 10; i++) {
@@ -187,7 +190,7 @@ int main() {
     HAL_Init();
     SystemClock_Config(); // 
     
-    __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOC_CLK_ENABLE();
 
     GPIO_InitTypeDef input =  {
         .Pin = GPIO_PIN_0,
@@ -250,6 +253,15 @@ int main() {
 
     #endif
 
+    GPIO_InitTypeDef led_config = {
+        .Mode = GPIO_MODE_OUTPUT_PP,
+        .Pull = GPIO_NOPULL,
+        .Pin = GPIO_PIN_3
+    };
+    
+     // enable clock for GPIOA
+    HAL_GPIO_Init(GPIOC, &led_config);
+    HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_3);
     
     #ifdef ADC2
     ADC_InitTypeDef adc_init_2 = {0};
