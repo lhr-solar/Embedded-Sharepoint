@@ -5,13 +5,13 @@
  * Reuses mdc/lib/busload.mjs (canonical formula) and tools/lib/mdc-load.mjs.
  * Usage: node tools/mdc-busload.mjs <project-dir|project.mdc.json> [--self-check]
  */
-import { loadProject } from "./lib/mdc-load.mjs";
+import { loadProject } from "../lib/mdc-load.mjs";
 import {
   STANDARD_SPEEDS,
   bitsPerFrame,
   loadPercentAt,
   computeBusLoad,
-} from "../mdc/lib/busload.mjs";
+} from "../lib/busload.mjs";
 
 export { STANDARD_SPEEDS, bitsPerFrame, loadPercentAt, computeBusLoad };
 

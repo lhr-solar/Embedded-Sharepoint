@@ -12,7 +12,7 @@ import $RefParser from "@apidevtools/json-schema-ref-parser";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = join(__dirname, "..");
-const schemaRoot = join(repoRoot, "mdc/schema");
+const schemaRoot = join(repoRoot, "schema");
 const input = join(schemaRoot, "mdc.schema.json");
 const output = join(schemaRoot, "mdc.schema.bundle.json");
 

@@ -1,6 +1,6 @@
 /**
  * Shared semantic checks for MDC messages — array integrity and multiplexing.
- * Used by tools/mdc-validate.mjs and the editor's live validate.js.
+ * Used by mdc/tools/mdc-validate.mjs and the editor's live validate.js.
  */
 import { occupiedBits } from "./mdc-bits.mjs";
 

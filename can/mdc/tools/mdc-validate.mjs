@@ -12,12 +12,12 @@
  * Exit codes: 0 = clean, 1 = violations found, 2 = usage/IO error.
  */
 import { readFile } from "node:fs/promises";
-import { loadProject, compileSchema, formatErrors, DEFAULT_SCHEMA } from "./lib/mdc-load.mjs";
-import { STANDARD_SPEEDS } from "../mdc/lib/busload.mjs";
+import { loadProject, compileSchema, formatErrors, DEFAULT_SCHEMA } from "../lib/mdc-load.mjs";
+import { STANDARD_SPEEDS } from "../lib/busload.mjs";
 import {
   validateArrayBlock,
   validateBitOverlaps,
-} from "./lib/mdc-validate-shared.mjs";
+} from "../lib/mdc-validate-shared.mjs";
 
 const argv = process.argv.slice(2);
 

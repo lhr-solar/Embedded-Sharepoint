@@ -16,7 +16,7 @@ import { fileURLToPath } from "node:url";
 import $RefParser from "@apidevtools/json-schema-ref-parser";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
-import { iterMessages, resolveValueEntries, resolveChoices } from "../../mdc/lib/model.mjs";
+import { iterMessages, resolveValueEntries, resolveChoices } from "./model.mjs";
 
 export { iterMessages, resolveValueEntries, resolveChoices };
 

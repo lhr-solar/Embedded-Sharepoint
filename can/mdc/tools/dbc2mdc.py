@@ -6,13 +6,13 @@ rather than parsing DBC by hand. One DBC file → one MDC network; a folder of
 `<vehicle>/<network>.dbc` → one vehicle with several networks.
 
 Output validates against mdc/schema/mdc.schema.json. Validate the result with:
-    node tools/mdc-validate.mjs --schema-only mdc/schema/mdc.schema.bundle.json <out.mdc.json>
+    node mdc/tools/mdc-validate.mjs --schema-only mdc/schema/mdc.schema.bundle.json <out.mdc.json>
 
 Usage:
     # one DBC -> a single-network project on stdout (or -o file)
-    python3 tools/dbc2mdc.py path/to/MotorCAN.dbc [-o out.mdc.json]
+    python3 mdc/tools/dbc2mdc.py path/to/MotorCAN.dbc [-o out.mdc.json]
     # a vehicle folder of DBCs -> one vehicle with multiple networks
-    python3 tools/dbc2mdc.py path/to/HighNoon/ --vehicle-id high_noon [-o out.mdc.json]
+    python3 mdc/tools/dbc2mdc.py path/to/HighNoon/ --vehicle-id high_noon [-o out.mdc.json]
 """
 from __future__ import annotations
 

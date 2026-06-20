@@ -9,7 +9,7 @@
  * Usage: node tools/mdc2cheaders.mjs <project-dir|project.mdc.json> [-o out.h]
  */
 import { writeFile } from "node:fs/promises";
-import { loadProject, iterMessages, resolveChoices } from "./lib/mdc-load.mjs";
+import { loadProject, iterMessages, resolveChoices } from "../lib/mdc-load.mjs";
 
 const args = process.argv.slice(2);
 const projectPath = args[0];

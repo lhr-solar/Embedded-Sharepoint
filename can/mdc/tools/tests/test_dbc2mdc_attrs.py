@@ -1,6 +1,6 @@
 """dbc2mdc Wave 1 attribute-import tests (BA_DEF_/BA_ → MDC v2).
 
-Run from repo root: pytest tools/tests
+Run from can/mdc: pytest tools/tests
 """
 from __future__ import annotations
 
@@ -13,10 +13,11 @@ from pathlib import Path
 import pytest
 
 REPO = Path(__file__).resolve().parents[2]
+CAN = REPO.parent
 TOOLS = REPO / "tools"
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
-ELCON_DBC = REPO / "Embedded-Sharepoint" / "can" / "dbc" / "HighNoon" / "ElconCAN.dbc"
-SCHEMA = REPO / "mdc" / "schema" / "mdc.schema.bundle.json"
+ELCON_DBC = CAN / "dbc" / "HighNoon" / "ElconCAN.dbc"
+SCHEMA = REPO / "schema" / "mdc.schema.bundle.json"
 
 _spec = importlib.util.spec_from_file_location("dbc2mdc", TOOLS / "dbc2mdc.py")
 dbc2mdc = importlib.util.module_from_spec(_spec)
