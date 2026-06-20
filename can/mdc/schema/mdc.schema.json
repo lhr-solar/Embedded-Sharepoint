@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lhr.dev/mdc/2025-06/mdc.schema.json",
+  "title": "MDC — Modular Description for CAN",
+  "description": "Canonical JSON contract for the LHR CAN telemetry platform. A DBC superset describing the full hierarchy Project → Vehicle → Network/Bus → Message → Signal, plus first-class metadata MDC adds over DBC: typed attribute definitions, display/viz hints, fault/alarm definitions, and computed (virtual) signals. Consumed by the C++ engine (decode), the app (mdc-editor), and the tools (dbc2mdc, mdc2cheaders, mdc2grafana, mdc-validate). A project on disk is a folder: a `project.mdc.json` plus optional per-network `*.mdc.json` files merged into `vehicles[].networks[]`.",
+  "type": "object",
+  "required": ["schemaVersion", "vehicles"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "$ref": "./defs/primitives.json#/$defs/semver",
+      "description": "MDC contract version this document targets, e.g. \"2.0.0\". Major version is breaking; minor/patch are additive. Tools must reject a document whose major version they do not understand."
+    },
+    "metadata": {
+      "$ref": "./defs/project-meta.json#/$defs/metadata",
+      "description": "Project-level provenance and free-form descriptive fields. Never semantically load-bearing for decode."
+    },
+    "attributeDefinitions": {
+      "type": "array",
+      "description": "Typed declarations for entries that may appear in any `attributes` map. Mirrors DBC attribute definitions (BA_DEF_) but adds an explicit `scopes` list and richer types. Tools use these for validation, editor widgets, and round-tripping back to DBC.",
+      "items": { "$ref": "./defs/project-meta.json#/$defs/attributeDefinition" }
+    },
+    "valueTables": {
+      "type": "array",
+      "description": "Project-wide shared enumerations (DBC VAL_TABLE_ equivalent). A signal references one by name via `valueTableRef`; resolution is network-local first, then this project-shared list.",
+      "items": { "$ref": "./defs/enumerations.json#/$defs/valueTable" }
+    },
+    "vehicles": {
+      "type": "array",
+      "description": "One or more vehicles in a single document. Enables multi-vehicle fleets and cross-vehicle comparison; each vehicle namespaces its networks.",
+      "minItems": 1,
+      "items": { "$ref": "./defs/hierarchy.json#/$defs/vehicle" }
+    }
+  }
+}

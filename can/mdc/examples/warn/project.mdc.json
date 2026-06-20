@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "2.0.0",
+  "metadata": {
+    "name": "Warning-only MDC",
+    "description": "Fixture for mdc-validate warnings: a non-standard network bitrate and a cyclic message with a non-positive cycleTimeMs. Schema-valid and semantically clean — these produce WARN lines, not errors (exit 0).",
+    "source": "hand-authored"
+  },
+  "vehicles": [
+    {
+      "id": "warn_vehicle",
+      "networks": [
+        {
+          "id": "oddbus",
+          "protocol": "can",
+          "bitrate": 333333,
+          "messages": [
+            {
+              "name": "BadCycle",
+              "id": 200,
+              "length": 1,
+              "transmissionType": "cyclic",
+              "cycleTimeMs": 0,
+              "signals": [
+                {
+                  "name": "Flag",
+                  "startBit": 0,
+                  "lengthBits": 1,
+                  "byteOrder": "little_endian",
+                  "kind": "unsigned",
+                  "conversion": { "kind": "identity" }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

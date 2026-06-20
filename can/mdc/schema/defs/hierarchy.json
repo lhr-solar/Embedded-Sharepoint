@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lhr.dev/mdc/2025-06/defs/hierarchy.json",
+  "$defs": {
+    "arraySpec": {
+      "type": "object",
+      "description": "Post-decode array/indexed-message semantics: one message id is sent repeatedly, each frame carrying an index signal plus per-element data, and the consumer reconstructs an array. This is a STORAGE/ingest hint layered on top of the wire layout — an array message will typically also use `multiplexing` to describe how the bits are packed; the two coexist. Index and element roles are DERIVED from this block (no redundant per-signal field).",
+      "additionalProperties": false,
+      "required": ["indexSignal", "elementSignals"],
+      "properties": {
+        "indexSignal": {
+          "type": "string",
+          "description": "Name of the signal in this message that carries the element index (e.g. `cell_index`). Must reference a signal in the same message."
+        },
+        "size": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "description": "Total element count (e.g. number of cells). Use `null` for a dynamic or unknown count.",
+          "default": null
+        },
+        "elementSignals": {
+          "type": "array",
+          "description": "Names of the per-element data signals — the values that repeat once per index (e.g. `cell_voltage`, `cell_temp`). Each must reference a signal in the same message and must not be the `indexSignal`.",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "storage": {
+          "type": "string",
+          "description": "Typed hint that drives sink/ingest behavior when reconstructing the array. `series_per_index`: emit one independent time series per index value (e.g. cell_voltage[0], cell_voltage[1], …) — best for per-element trending. `array_column`: store each full frame's elements as a single array/vector column (one row per timestamp holding the whole vector) — best for snapshots you query as a unit. `snapshot`: keep only the latest fully-populated array, overwriting prior values — best for a current-state view with no history.",
+          "enum": ["series_per_index", "array_column", "snapshot"],
+          "default": "series_per_index"
+        }
+      }
+    },
+
+    "node": {
+      "type": "object",
+      "description": "An ECU/participant on the bus.",
+      "required": ["name"],
+      "allOf": [
+        { "$ref": "./annotations.json#/$defs/annotations" }
+      ],
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "description": "Node name as referenced by `senders`/`receivers`." },
+        "description": { "type": "string" }
+      },
+      "unevaluatedProperties": false
+    },
+
+    "message": {
+      "type": "object",
+      "description": "A CAN(-FD) frame definition and its signals. Modeled on canspec-ui CanMessage.",
+      "required": ["name", "id", "length", "signals"],
+      "allOf": [
+        { "$ref": "./annotations.json#/$defs/annotations" }
+      ],
+      "properties": {
+        "name": { "$ref": "./primitives.json#/$defs/identifier", "description": "Message name, unique within its network." },
+        "description": { "type": "string", "description": "Free-form description (DBC comment)." },
+        "id": { "type": "integer", "minimum": 0, "maximum": 536870911, "description": "Arbitration/frame id. Max 0x1FFFFFFF (29-bit). Standard frames must be <= 0x7FF." },
+        "isExtended": { "type": "boolean", "description": "True for 29-bit extended identifiers, false for 11-bit standard.", "default": false },
+        "isFd": { "type": "boolean", "description": "True for CAN FD frames.", "default": false },
+        "length": { "type": "integer", "minimum": 0, "maximum": 64, "description": "Payload length (DLC) in bytes. Classic CAN <= 8; CAN FD <= 64." },
+        "transport": { "$ref": "./primitives.json#/$defs/transport", "default": "single" },
+        "transmissionType": {
+          "type": "string",
+          "enum": ["cyclic", "triggered"],
+          "default": "cyclic",
+          "description": "How the message is sent. `cyclic` = periodic at `cycleTimeMs`; counts toward bus load. `triggered` = event/on-change; EXCLUDED from bus-load calculation. Maps from DBC GenMsgSendType (cyclic/cyclicIfActive→cyclic; ifActive/triggered/event/noSig→triggered)."
+        },
+        "cycleTimeMs": { "type": ["number", "null"], "minimum": 0, "default": 1000, "description": "Nominal transmit period in milliseconds. For `cyclic` messages this is the period used by the bus-load calculation (default 1000). For `triggered` messages it is optional and ignored by bus-load; null for purely event-driven messages." },
+        "senders": {
+          "type": "array",
+          "description": "Transmitting nodes.",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "multiplexing": { "$ref": "./multiplexing.json#/$defs/multiplexing" },
+        "array": { "$ref": "#/$defs/arraySpec" },
+        "signals": {
+          "type": "array",
+          "description": "Signals packed into this message.",
+          "items": { "$ref": "./signals.json#/$defs/signal" }
+        },
+        "computedSignals": {
+          "type": "array",
+          "description": "Virtual signals derived from signals of this message.",
+          "items": { "$ref": "./signals.json#/$defs/computedSignal" }
+        },
+        "display": { "$ref": "./presentation.json#/$defs/displayHints" }
+      },
+      "unevaluatedProperties": false
+    },
+
+    "network": {
+      "type": "object",
+      "description": "A CAN/CAN-FD bus within a vehicle (one DBC ≈ one network). Modeled on canspec-ui CanNetwork.",
+      "required": ["id", "protocol", "messages"],
+      "allOf": [
+        { "$ref": "./annotations.json#/$defs/annotations" }
+      ],
+      "properties": {
+        "id": { "$ref": "./primitives.json#/$defs/identifier", "description": "Network id, unique within its vehicle; the namespace for its messages." },
+        "name": { "type": "string", "description": "Display name." },
+        "description": { "type": "string" },
+        "filename": { "type": "string", "description": "Source filename when split into a per-network file, for round-tripping." },
+        "protocol": {
+          "type": "string",
+          "description": "Bus protocol.",
+          "enum": ["can", "canfd"]
+        },
+        "bitrate": { "type": "integer", "minimum": 1, "description": "Nominal/arbitration bitrate in bits per second." },
+        "dataBitrate": { "type": "integer", "minimum": 1, "description": "CAN FD data-phase bitrate in bits per second (canfd only)." },
+        "samplePoint": { "type": "number", "minimum": 0, "maximum": 100, "description": "Nominal-phase sample point as a percentage (e.g. 87.5)." },
+        "nodes": {
+          "type": "array",
+          "description": "ECUs on this bus.",
+          "items": { "$ref": "#/$defs/node" }
+        },
+        "valueTables": {
+          "type": "array",
+          "description": "Network-local shared enumerations (resolved before project-shared tables).",
+          "items": { "$ref": "./enumerations.json#/$defs/valueTable" }
+        },
+        "messages": {
+          "type": "array",
+          "description": "Messages on this bus.",
+          "items": { "$ref": "#/$defs/message" }
+        },
+        "computedSignals": {
+          "type": "array",
+          "description": "Virtual signals derived from signals across messages on this network (cross-message expressions).",
+          "items": { "$ref": "./signals.json#/$defs/computedSignal" }
+        }
+      },
+      "unevaluatedProperties": false
+    },
+
+    "vehicle": {
+      "type": "object",
+      "description": "A vehicle owning one or more networks. Modeled on canspec-ui Vehicle.",
+      "required": ["id", "networks"],
+      "allOf": [
+        { "$ref": "./annotations.json#/$defs/annotations" }
+      ],
+      "properties": {
+        "id": { "$ref": "./primitives.json#/$defs/identifier", "description": "Vehicle id, unique within the project; the top namespace for cross-refs." },
+        "name": { "type": "string", "description": "Display name." },
+        "description": { "type": "string" },
+        "networks": {
+          "type": "array",
+          "description": "Networks/buses in this vehicle.",
+          "items": { "$ref": "#/$defs/network" }
+        }
+      },
+      "unevaluatedProperties": false
+    }
+  }
+}

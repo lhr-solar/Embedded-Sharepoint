@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lhr.dev/mdc/2025-06/defs/project-meta.json",
+  "$defs": {
+    "metadata": {
+      "type": "object",
+      "description": "Provenance and descriptive metadata.",
+      "additionalProperties": true,
+      "properties": {
+        "name": { "type": "string", "description": "Human-readable project name." },
+        "description": { "type": "string", "description": "Free-form project description." },
+        "author": { "type": "string", "description": "Author or owning team." },
+        "revision": { "type": "string", "description": "Project revision/version, independent of `schemaVersion`." },
+        "source": { "type": "string", "description": "Origin of the data, e.g. \"dbc2mdc\", \"hand-authored\"." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "ISO 8601 creation timestamp." },
+        "modifiedAt": { "type": "string", "format": "date-time", "description": "ISO 8601 last-modified timestamp." }
+      }
+    },
+
+    "attributeType": {
+      "type": "string",
+      "description": "Value type of a declared attribute.",
+      "enum": ["enum", "int", "float", "string", "bool", "hex"]
+    },
+
+    "scope": {
+      "type": "string",
+      "description": "Hierarchy level an attribute may be attached to.",
+      "enum": ["project", "vehicle", "network", "node", "message", "signal"]
+    },
+
+    "attributeDefinition": {
+      "type": "object",
+      "description": "Typed attribute declaration (DBC BA_DEF_ superset).",
+      "additionalProperties": false,
+      "required": ["name", "type"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "description": "Attribute key as used in `attributes` maps." },
+        "type": { "$ref": "#/$defs/attributeType" },
+        "description": { "type": "string" },
+        "scopes": {
+          "type": "array",
+          "description": "Levels at which this attribute is allowed. Omit to allow all levels.",
+          "items": { "$ref": "#/$defs/scope" },
+          "uniqueItems": true
+        },
+        "default": { "$ref": "./primitives.json#/$defs/scalar", "description": "Default value applied when an entity omits this attribute." },
+        "min": { "type": "number", "description": "Minimum (int/float/hex only)." },
+        "max": { "type": "number", "description": "Maximum (int/float/hex only)." },
+        "enumValues": {
+          "type": "array",
+          "description": "Allowed values when `type` is \"enum\".",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}

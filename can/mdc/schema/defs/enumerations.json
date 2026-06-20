@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lhr.dev/mdc/2025-06/defs/enumerations.json",
+  "$defs": {
+    "choiceEntry": {
+      "type": "object",
+      "description": "One enumerated raw-value → label mapping (DBC VAL_ entry).",
+      "additionalProperties": false,
+      "required": ["value", "label"],
+      "properties": {
+        "value": { "type": "integer", "description": "Raw integer value." },
+        "label": { "type": "string", "minLength": 1, "description": "Human-readable label for the value." },
+        "description": { "type": "string", "description": "Optional longer explanation of the state." }
+      }
+    },
+
+    "choices": {
+      "type": "array",
+      "description": "Inline enumeration of raw values to labels.",
+      "items": { "$ref": "#/$defs/choiceEntry" }
+    },
+
+    "valueTable": {
+      "type": "object",
+      "description": "Named, reusable enumeration referenced by `valueTableRef`.",
+      "additionalProperties": false,
+      "required": ["name", "entries"],
+      "properties": {
+        "name": { "$ref": "./primitives.json#/$defs/identifier", "description": "Table name; the reference key for `valueTableRef`." },
+        "description": { "type": "string" },
+        "entries": { "$ref": "#/$defs/choices" }
+      }
+    }
+  }
+}

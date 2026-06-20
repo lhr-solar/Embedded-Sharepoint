@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lhr.dev/mdc/2025-06/defs/presentation.json",
+  "$defs": {
+    "displayHints": {
+      "type": "object",
+      "description": "Presentation hints for the app and mdc2grafana. Purely advisory — never affects decode.",
+      "additionalProperties": false,
+      "properties": {
+        "precision": { "type": "integer", "minimum": 0, "maximum": 15, "description": "Decimal places to render." },
+        "format": {
+          "type": "string",
+          "description": "Value formatting style.",
+          "enum": ["decimal", "hex", "binary", "scientific", "percent", "duration", "bytes", "enum", "boolean"]
+        },
+        "chartType": {
+          "type": "string",
+          "description": "Preferred visualization for this signal.",
+          "enum": ["line", "gauge", "bar", "table", "state", "scatter", "stat", "heatmap"]
+        },
+        "color": { "$ref": "./primitives.json#/$defs/color", "description": "Preferred trace/series color." },
+        "dashboardGroup": { "type": "string", "description": "Logical panel/row grouping in a dashboard." },
+        "unitOverride": { "type": "string", "description": "Display unit that differs from the physical `unit` (e.g. show km/h while storing m/s)." },
+        "scaleMin": { "type": "number", "description": "Suggested axis/gauge lower bound." },
+        "scaleMax": { "type": "number", "description": "Suggested axis/gauge upper bound." },
+        "visible": { "type": "boolean", "description": "Whether the signal is shown by default.", "default": true }
+      }
+    },
+
+    "alarm": {
+      "type": "object",
+      "description": "A fault/alarm rule evaluated against a signal's physical value. The engine and app raise alerts from these.",
+      "additionalProperties": false,
+      "required": ["id", "op", "severity"],
+      "properties": {
+        "id": { "$ref": "./primitives.json#/$defs/identifier", "description": "Alarm identifier, unique within its signal." },
+        "name": { "type": "string", "description": "Human-readable alarm name." },
+        "op": {
+          "type": "string",
+          "description": "Comparison operator. `between`/`outside` use `thresholds` (a [low, high] pair); all others use the scalar `threshold`. `change` fires on any value change.",
+          "enum": ["lt", "le", "gt", "ge", "eq", "ne", "between", "outside", "change"]
+        },
+        "threshold": { "type": "number", "description": "Comparison value for scalar operators." },
+        "thresholds": {
+          "type": "array",
+          "description": "Inclusive [low, high] bounds for `between`/`outside`.",
+          "items": { "type": "number" },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "severity": {
+          "type": "string",
+          "description": "Alert severity.",
+          "enum": ["info", "warning", "critical"]
+        },
+        "message": { "type": "string", "description": "Message shown when the alarm is active." },
+        "hysteresis": { "type": "number", "description": "Dead-band to avoid flapping; alarm clears only after the value moves back past threshold by this amount.", "minimum": 0 }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "op": { "enum": ["between", "outside"] } } },
+          "then": { "required": ["thresholds"] }
+        },
+        {
+          "if": { "properties": { "op": { "enum": ["lt", "le", "gt", "ge", "eq", "ne"] } } },
+          "then": { "required": ["threshold"] }
+        }
+      ]
+    },
+
+    "signalValueCommon": {
+      "type": "object",
+      "description": "Value semantics and presentation shared by decoded signals and computed signals: physical unit/range, enumeration (inline `choices` or a referenced `valueTableRef` — mutually exclusive), numeric `kind`, display hints, and alarm rules.",
+      "properties": {
+        "kind": { "$ref": "./primitives.json#/$defs/signalKind", "description": "Numeric interpretation of the value (unsigned/signed integer or IEEE-754 float). Defaults to float.", "default": "float" },
+        "unit": { "type": "string", "description": "Physical unit, e.g. \"km/h\". Empty string if dimensionless." },
+        "min": { "type": ["number", "null"], "description": "Minimum physical value (advisory range, DBC min)." },
+        "max": { "type": ["number", "null"], "description": "Maximum physical value (advisory range, DBC max)." },
+        "choices": { "$ref": "./enumerations.json#/$defs/choices", "description": "Inline enumeration. Mutually exclusive with `valueTableRef`." },
+        "valueTableRef": { "$ref": "./primitives.json#/$defs/identifier", "description": "Name of a network-local or project-shared `valueTable`. Mutually exclusive with `choices`." },
+        "display": { "$ref": "#/$defs/displayHints" },
+        "alarms": {
+          "type": "array",
+          "description": "Fault/alarm rules for this value.",
+          "items": { "$ref": "#/$defs/alarm" }
+        }
+      },
+      "not": {
+        "required": ["choices", "valueTableRef"]
+      }
+    }
+  }
+}

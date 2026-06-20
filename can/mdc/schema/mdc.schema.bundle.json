@@ -1,0 +1,981 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lhr.dev/mdc/2025-06/mdc.schema.json",
+  "title": "MDC — Modular Description for CAN",
+  "description": "Canonical JSON contract for the LHR CAN telemetry platform. A DBC superset describing the full hierarchy Project → Vehicle → Network/Bus → Message → Signal, plus first-class metadata MDC adds over DBC: typed attribute definitions, display/viz hints, fault/alarm definitions, and computed (virtual) signals. Consumed by the C++ engine (decode), the app (mdc-editor), and the tools (dbc2mdc, mdc2cheaders, mdc2grafana, mdc-validate). A project on disk is a folder: a `project.mdc.json` plus optional per-network `*.mdc.json` files merged into `vehicles[].networks[]`.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "vehicles"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "description": "MDC contract version this document targets, e.g. \"2.0.0\". Major version is breaking; minor/patch are additive. Tools must reject a document whose major version they do not understand.",
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "metadata": {
+      "description": "Project-level provenance and free-form descriptive fields. Never semantically load-bearing for decode.",
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Human-readable project name."
+        },
+        "description": {
+          "type": "string",
+          "description": "Free-form project description."
+        },
+        "author": {
+          "type": "string",
+          "description": "Author or owning team."
+        },
+        "revision": {
+          "type": "string",
+          "description": "Project revision/version, independent of `schemaVersion`."
+        },
+        "source": {
+          "type": "string",
+          "description": "Origin of the data, e.g. \"dbc2mdc\", \"hand-authored\"."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 creation timestamp."
+        },
+        "modifiedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 last-modified timestamp."
+        }
+      }
+    },
+    "attributeDefinitions": {
+      "type": "array",
+      "description": "Typed declarations for entries that may appear in any `attributes` map. Mirrors DBC attribute definitions (BA_DEF_) but adds an explicit `scopes` list and richer types. Tools use these for validation, editor widgets, and round-tripping back to DBC.",
+      "items": {
+        "type": "object",
+        "description": "Typed attribute declaration (DBC BA_DEF_ superset).",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "type"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Attribute key as used in `attributes` maps."
+          },
+          "type": {
+            "type": "string",
+            "description": "Value type of a declared attribute.",
+            "enum": [
+              "enum",
+              "int",
+              "float",
+              "string",
+              "bool",
+              "hex"
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "scopes": {
+            "type": "array",
+            "description": "Levels at which this attribute is allowed. Omit to allow all levels.",
+            "items": {
+              "type": "string",
+              "description": "Hierarchy level an attribute may be attached to.",
+              "enum": [
+                "project",
+                "vehicle",
+                "network",
+                "node",
+                "message",
+                "signal"
+              ]
+            },
+            "uniqueItems": true
+          },
+          "default": {
+            "$ref": "#/properties/vehicles/items/allOf/0/properties/attributes/additionalProperties",
+            "description": "Default value applied when an entity omits this attribute."
+          },
+          "min": {
+            "type": "number",
+            "description": "Minimum (int/float/hex only)."
+          },
+          "max": {
+            "type": "number",
+            "description": "Maximum (int/float/hex only)."
+          },
+          "enumValues": {
+            "type": "array",
+            "description": "Allowed values when `type` is \"enum\".",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        }
+      }
+    },
+    "valueTables": {
+      "type": "array",
+      "description": "Project-wide shared enumerations (DBC VAL_TABLE_ equivalent). A signal references one by name via `valueTableRef`; resolution is network-local first, then this project-shared list.",
+      "items": {
+        "type": "object",
+        "description": "Named, reusable enumeration referenced by `valueTableRef`.",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "entries"
+        ],
+        "properties": {
+          "name": {
+            "$ref": "#/properties/vehicles/items/properties/id",
+            "description": "Table name; the reference key for `valueTableRef`."
+          },
+          "description": {
+            "type": "string"
+          },
+          "entries": {
+            "type": "array",
+            "description": "Inline enumeration of raw values to labels.",
+            "items": {
+              "type": "object",
+              "description": "One enumerated raw-value → label mapping (DBC VAL_ entry).",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "label"
+              ],
+              "properties": {
+                "value": {
+                  "type": "integer",
+                  "description": "Raw integer value."
+                },
+                "label": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Human-readable label for the value."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Optional longer explanation of the state."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "vehicles": {
+      "type": "array",
+      "description": "One or more vehicles in a single document. Enables multi-vehicle fleets and cross-vehicle comparison; each vehicle namespaces its networks.",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "description": "A vehicle owning one or more networks. Modeled on canspec-ui Vehicle.",
+        "required": [
+          "id",
+          "networks"
+        ],
+        "allOf": [
+          {
+            "type": "object",
+            "description": "Shared metadata cluster available on every entity (node, signal, computedSignal, message, network, vehicle). Composed via `allOf` in `hierarchy.json` so the set stays uniform: typed `attributes` (DBC BA_/BA_DEF_ system).",
+            "properties": {
+              "attributes": {
+                "type": "object",
+                "description": "Typed key/value map (DBC BA_ equivalent). Keys should match a declared `attributeDefinitions[].name`; values are scalars validated against that definition by tooling, not by this schema.",
+                "additionalProperties": {
+                  "description": "A primitive value: string, number, boolean, or null.",
+                  "type": [
+                    "string",
+                    "number",
+                    "boolean",
+                    "null"
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "properties": {
+          "id": {
+            "description": "Vehicle id, unique within the project; the top namespace for cross-refs.",
+            "type": "string",
+            "pattern": "^[A-Za-z_][A-Za-z0-9_-]*$",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name."
+          },
+          "description": {
+            "type": "string"
+          },
+          "networks": {
+            "type": "array",
+            "description": "Networks/buses in this vehicle.",
+            "items": {
+              "type": "object",
+              "description": "A CAN/CAN-FD bus within a vehicle (one DBC ≈ one network). Modeled on canspec-ui CanNetwork.",
+              "required": [
+                "id",
+                "protocol",
+                "messages"
+              ],
+              "allOf": [
+                {
+                  "$ref": "#/properties/vehicles/items/allOf/0"
+                }
+              ],
+              "properties": {
+                "id": {
+                  "$ref": "#/properties/vehicles/items/properties/id",
+                  "description": "Network id, unique within its vehicle; the namespace for its messages."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Display name."
+                },
+                "description": {
+                  "type": "string"
+                },
+                "filename": {
+                  "type": "string",
+                  "description": "Source filename when split into a per-network file, for round-tripping."
+                },
+                "protocol": {
+                  "type": "string",
+                  "description": "Bus protocol.",
+                  "enum": [
+                    "can",
+                    "canfd"
+                  ]
+                },
+                "bitrate": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "Nominal/arbitration bitrate in bits per second."
+                },
+                "dataBitrate": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "CAN FD data-phase bitrate in bits per second (canfd only)."
+                },
+                "samplePoint": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Nominal-phase sample point as a percentage (e.g. 87.5)."
+                },
+                "nodes": {
+                  "type": "array",
+                  "description": "ECUs on this bus.",
+                  "items": {
+                    "type": "object",
+                    "description": "An ECU/participant on the bus.",
+                    "required": [
+                      "name"
+                    ],
+                    "allOf": [
+                      {
+                        "$ref": "#/properties/vehicles/items/allOf/0"
+                      }
+                    ],
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Node name as referenced by `senders`/`receivers`."
+                      },
+                      "description": {
+                        "type": "string"
+                      }
+                    },
+                    "unevaluatedProperties": false
+                  }
+                },
+                "valueTables": {
+                  "type": "array",
+                  "description": "Network-local shared enumerations (resolved before project-shared tables).",
+                  "items": {
+                    "$ref": "#/properties/valueTables/items"
+                  }
+                },
+                "messages": {
+                  "type": "array",
+                  "description": "Messages on this bus.",
+                  "items": {
+                    "type": "object",
+                    "description": "A CAN(-FD) frame definition and its signals. Modeled on canspec-ui CanMessage.",
+                    "required": [
+                      "name",
+                      "id",
+                      "length",
+                      "signals"
+                    ],
+                    "allOf": [
+                      {
+                        "$ref": "#/properties/vehicles/items/allOf/0"
+                      }
+                    ],
+                    "properties": {
+                      "name": {
+                        "$ref": "#/properties/vehicles/items/properties/id",
+                        "description": "Message name, unique within its network."
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "Free-form description (DBC comment)."
+                      },
+                      "id": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 536870911,
+                        "description": "Arbitration/frame id. Max 0x1FFFFFFF (29-bit). Standard frames must be <= 0x7FF."
+                      },
+                      "isExtended": {
+                        "type": "boolean",
+                        "description": "True for 29-bit extended identifiers, false for 11-bit standard.",
+                        "default": false
+                      },
+                      "isFd": {
+                        "type": "boolean",
+                        "description": "True for CAN FD frames.",
+                        "default": false
+                      },
+                      "length": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 64,
+                        "description": "Payload length (DLC) in bytes. Classic CAN <= 8; CAN FD <= 64."
+                      },
+                      "transport": {
+                        "default": "single",
+                        "type": "string",
+                        "description": "Frame transport. `single` = one CAN(-FD) frame; `isotp` = ISO 15765-2 segmented; `multiframe` = other application-layer multi-frame assembly.",
+                        "enum": [
+                          "single",
+                          "isotp",
+                          "multiframe"
+                        ]
+                      },
+                      "transmissionType": {
+                        "type": "string",
+                        "enum": [
+                          "cyclic",
+                          "triggered"
+                        ],
+                        "default": "cyclic",
+                        "description": "How the message is sent. `cyclic` = periodic at `cycleTimeMs`; counts toward bus load. `triggered` = event/on-change; EXCLUDED from bus-load calculation. Maps from DBC GenMsgSendType (cyclic/cyclicIfActive→cyclic; ifActive/triggered/event/noSig→triggered)."
+                      },
+                      "cycleTimeMs": {
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "minimum": 0,
+                        "default": 1000,
+                        "description": "Nominal transmit period in milliseconds. For `cyclic` messages this is the period used by the bus-load calculation (default 1000). For `triggered` messages it is optional and ignored by bus-load; null for purely event-driven messages."
+                      },
+                      "senders": {
+                        "type": "array",
+                        "description": "Transmitting nodes.",
+                        "items": {
+                          "type": "string"
+                        },
+                        "uniqueItems": true
+                      },
+                      "multiplexing": {
+                        "type": "object",
+                        "description": "Message-level multiplexing summary. Per-signal detail lives in each signal's `multiplexer`.",
+                        "additionalProperties": false,
+                        "properties": {
+                          "multiplexed": {
+                            "type": "boolean",
+                            "description": "Whether the message uses multiplexing.",
+                            "default": false
+                          },
+                          "multiplexorSignal": {
+                            "type": "string",
+                            "description": "Name of the selector signal."
+                          },
+                          "extended": {
+                            "type": "boolean",
+                            "description": "Whether extended/nested multiplexing is used.",
+                            "default": false
+                          }
+                        }
+                      },
+                      "array": {
+                        "type": "object",
+                        "description": "Post-decode array/indexed-message semantics: one message id is sent repeatedly, each frame carrying an index signal plus per-element data, and the consumer reconstructs an array. This is a STORAGE/ingest hint layered on top of the wire layout — an array message will typically also use `multiplexing` to describe how the bits are packed; the two coexist. Index and element roles are DERIVED from this block (no redundant per-signal field).",
+                        "additionalProperties": false,
+                        "required": [
+                          "indexSignal",
+                          "elementSignals"
+                        ],
+                        "properties": {
+                          "indexSignal": {
+                            "type": "string",
+                            "description": "Name of the signal in this message that carries the element index (e.g. `cell_index`). Must reference a signal in the same message."
+                          },
+                          "size": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ],
+                            "minimum": 1,
+                            "description": "Total element count (e.g. number of cells). Use `null` for a dynamic or unknown count.",
+                            "default": null
+                          },
+                          "elementSignals": {
+                            "type": "array",
+                            "description": "Names of the per-element data signals — the values that repeat once per index (e.g. `cell_voltage`, `cell_temp`). Each must reference a signal in the same message and must not be the `indexSignal`.",
+                            "items": {
+                              "type": "string"
+                            },
+                            "minItems": 1,
+                            "uniqueItems": true
+                          },
+                          "storage": {
+                            "type": "string",
+                            "description": "Typed hint that drives sink/ingest behavior when reconstructing the array. `series_per_index`: emit one independent time series per index value (e.g. cell_voltage[0], cell_voltage[1], …) — best for per-element trending. `array_column`: store each full frame's elements as a single array/vector column (one row per timestamp holding the whole vector) — best for snapshots you query as a unit. `snapshot`: keep only the latest fully-populated array, overwriting prior values — best for a current-state view with no history.",
+                            "enum": [
+                              "series_per_index",
+                              "array_column",
+                              "snapshot"
+                            ],
+                            "default": "series_per_index"
+                          }
+                        }
+                      },
+                      "signals": {
+                        "type": "array",
+                        "description": "Signals packed into this message.",
+                        "items": {
+                          "type": "object",
+                          "description": "A bit-field within a message and its raw→physical interpretation. Modeled on canspec-ui CanSignal, with kind/conversion consolidated and MDC display/alarm value-adds.",
+                          "required": [
+                            "name",
+                            "startBit",
+                            "lengthBits",
+                            "byteOrder",
+                            "kind",
+                            "conversion"
+                          ],
+                          "allOf": [
+                            {
+                              "$ref": "#/properties/vehicles/items/properties/networks/items/properties/computedSignals/items/allOf/0"
+                            },
+                            {
+                              "$ref": "#/properties/vehicles/items/allOf/0"
+                            }
+                          ],
+                          "properties": {
+                            "name": {
+                              "$ref": "#/properties/vehicles/items/properties/id",
+                              "description": "Signal name, unique within its message."
+                            },
+                            "description": {
+                              "type": "string",
+                              "description": "Free-form description (DBC comment)."
+                            },
+                            "startBit": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 511,
+                              "description": "Start bit position. Numbering convention depends on `byteOrder`; see mdc-overview.md. Max 511 = bit 7 of byte 63 in a 64-byte CAN FD frame."
+                            },
+                            "lengthBits": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 64,
+                              "description": "Width in bits. Floats must be 16, 32, or 64 (enforced by tooling)."
+                            },
+                            "byteOrder": {
+                              "type": "string",
+                              "description": "Bit/byte ordering. Canonical values are `little_endian` (Intel) and `big_endian` (Motorola / sawtooth). startBit numbering follows the cantools/DBC convention — see mdc-overview.md.",
+                              "enum": [
+                                "little_endian",
+                                "big_endian"
+                              ]
+                            },
+                            "conversion": {
+                              "description": "Raw → physical conversion. Selected by `kind`. See mdc-overview.md for the exact math of each kind.",
+                              "oneOf": [
+                                {
+                                  "type": "object",
+                                  "title": "identity",
+                                  "description": "physical = raw. No scaling.",
+                                  "additionalProperties": false,
+                                  "required": [
+                                    "kind"
+                                  ],
+                                  "properties": {
+                                    "kind": {
+                                      "const": "identity"
+                                    }
+                                  }
+                                },
+                                {
+                                  "type": "object",
+                                  "title": "linear",
+                                  "description": "physical = factor * raw + offset (DBC factor/offset).",
+                                  "additionalProperties": false,
+                                  "required": [
+                                    "kind",
+                                    "factor",
+                                    "offset"
+                                  ],
+                                  "properties": {
+                                    "kind": {
+                                      "const": "linear"
+                                    },
+                                    "factor": {
+                                      "type": "number",
+                                      "description": "Scale applied to the raw value.",
+                                      "default": 1
+                                    },
+                                    "offset": {
+                                      "type": "number",
+                                      "description": "Added after scaling.",
+                                      "default": 0
+                                    }
+                                  }
+                                },
+                                {
+                                  "type": "object",
+                                  "title": "rational",
+                                  "description": "physical = (numerator polynomial in raw) / (denominator polynomial in raw) + offset. Coefficients are ordered highest power first.",
+                                  "additionalProperties": false,
+                                  "required": [
+                                    "kind",
+                                    "numerator",
+                                    "denominator"
+                                  ],
+                                  "properties": {
+                                    "kind": {
+                                      "const": "rational"
+                                    },
+                                    "numerator": {
+                                      "type": "array",
+                                      "description": "Numerator polynomial coefficients, highest power first (e.g. [a, b, c] = a*raw^2 + b*raw + c).",
+                                      "items": {
+                                        "type": "number"
+                                      },
+                                      "minItems": 1
+                                    },
+                                    "denominator": {
+                                      "type": "array",
+                                      "description": "Denominator polynomial coefficients, highest power first. Must not evaluate to zero over the signal's range.",
+                                      "items": {
+                                        "type": "number"
+                                      },
+                                      "minItems": 1
+                                    },
+                                    "offset": {
+                                      "type": "number",
+                                      "description": "Added after the division.",
+                                      "default": 0
+                                    }
+                                  }
+                                },
+                                {
+                                  "type": "object",
+                                  "title": "table",
+                                  "description": "Enumerated mapping: the raw value is categorical and rendered via `choices` or `valueTableRef` on the signal. The numeric physical value equals raw.",
+                                  "additionalProperties": false,
+                                  "required": [
+                                    "kind"
+                                  ],
+                                  "properties": {
+                                    "kind": {
+                                      "const": "table"
+                                    }
+                                  }
+                                }
+                              ]
+                            },
+                            "multiplexer": {
+                              "description": "Multiplexing role. Omit for plain always-present signals.",
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "role"
+                              ],
+                              "properties": {
+                                "role": {
+                                  "type": "string",
+                                  "description": "`multiplexor` = the selector signal; `multiplexed` = present only for specific selector values listed in `ids`; `none` = always present.",
+                                  "enum": [
+                                    "none",
+                                    "multiplexor",
+                                    "multiplexed"
+                                  ]
+                                },
+                                "multiplexorName": {
+                                  "type": "string",
+                                  "description": "Name of the multiplexor signal that gates this one (when role = multiplexed)."
+                                },
+                                "ids": {
+                                  "type": "array",
+                                  "description": "Multiplexor values for which this signal is present (when role = multiplexed).",
+                                  "items": {
+                                    "type": "integer",
+                                    "minimum": 0
+                                  }
+                                }
+                              },
+                              "allOf": [
+                                {
+                                  "if": {
+                                    "properties": {
+                                      "role": {
+                                        "const": "multiplexed"
+                                      }
+                                    },
+                                    "required": [
+                                      "role"
+                                    ]
+                                  },
+                                  "then": {
+                                    "required": [
+                                      "ids"
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            "spn": {
+                              "type": [
+                                "integer",
+                                "null"
+                              ],
+                              "description": "SAE J1939 Suspect Parameter Number, if applicable."
+                            },
+                            "initial": {
+                              "type": [
+                                "number",
+                                "null"
+                              ],
+                              "description": "Initial/default physical value."
+                            },
+                            "invalid": {
+                              "type": [
+                                "number",
+                                "null"
+                              ],
+                              "description": "Physical value that denotes \"signal not available / invalid\"."
+                            },
+                            "receivers": {
+                              "type": "array",
+                              "description": "Nodes that consume this signal (DBC receivers).",
+                              "items": {
+                                "type": "string"
+                              },
+                              "uniqueItems": true
+                            }
+                          },
+                          "unevaluatedProperties": false
+                        }
+                      },
+                      "computedSignals": {
+                        "type": "array",
+                        "description": "Virtual signals derived from signals of this message.",
+                        "items": {
+                          "$ref": "#/properties/vehicles/items/properties/networks/items/properties/computedSignals/items"
+                        }
+                      },
+                      "display": {
+                        "type": "object",
+                        "description": "Presentation hints for the app and mdc2grafana. Purely advisory — never affects decode.",
+                        "additionalProperties": false,
+                        "properties": {
+                          "precision": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 15,
+                            "description": "Decimal places to render."
+                          },
+                          "format": {
+                            "type": "string",
+                            "description": "Value formatting style.",
+                            "enum": [
+                              "decimal",
+                              "hex",
+                              "binary",
+                              "scientific",
+                              "percent",
+                              "duration",
+                              "bytes",
+                              "enum",
+                              "boolean"
+                            ]
+                          },
+                          "chartType": {
+                            "type": "string",
+                            "description": "Preferred visualization for this signal.",
+                            "enum": [
+                              "line",
+                              "gauge",
+                              "bar",
+                              "table",
+                              "state",
+                              "scatter",
+                              "stat",
+                              "heatmap"
+                            ]
+                          },
+                          "color": {
+                            "description": "Preferred trace/series color.",
+                            "type": "string",
+                            "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                          },
+                          "dashboardGroup": {
+                            "type": "string",
+                            "description": "Logical panel/row grouping in a dashboard."
+                          },
+                          "unitOverride": {
+                            "type": "string",
+                            "description": "Display unit that differs from the physical `unit` (e.g. show km/h while storing m/s)."
+                          },
+                          "scaleMin": {
+                            "type": "number",
+                            "description": "Suggested axis/gauge lower bound."
+                          },
+                          "scaleMax": {
+                            "type": "number",
+                            "description": "Suggested axis/gauge upper bound."
+                          },
+                          "visible": {
+                            "type": "boolean",
+                            "description": "Whether the signal is shown by default.",
+                            "default": true
+                          }
+                        }
+                      }
+                    },
+                    "unevaluatedProperties": false
+                  }
+                },
+                "computedSignals": {
+                  "type": "array",
+                  "description": "Virtual signals derived from signals across messages on this network (cross-message expressions).",
+                  "items": {
+                    "type": "object",
+                    "description": "A virtual signal derived from other signals via an expression rather than decoded from frame bits. Evaluated by the engine after decode. Has no startBit/lengthBits. Shares value semantics (unit/range/enumeration/display/alarms) with `signal` via `signalValueCommon`, including the `choices`/`valueTableRef` mutual exclusion.",
+                    "required": [
+                      "name",
+                      "expr"
+                    ],
+                    "allOf": [
+                      {
+                        "type": "object",
+                        "description": "Value semantics and presentation shared by decoded signals and computed signals: physical unit/range, enumeration (inline `choices` or a referenced `valueTableRef` — mutually exclusive), numeric `kind`, display hints, and alarm rules.",
+                        "properties": {
+                          "kind": {
+                            "description": "Numeric interpretation of the value (unsigned/signed integer or IEEE-754 float). Defaults to float.",
+                            "default": "float",
+                            "type": "string",
+                            "enum": [
+                              "unsigned",
+                              "signed",
+                              "float"
+                            ]
+                          },
+                          "unit": {
+                            "type": "string",
+                            "description": "Physical unit, e.g. \"km/h\". Empty string if dimensionless."
+                          },
+                          "min": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Minimum physical value (advisory range, DBC min)."
+                          },
+                          "max": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "description": "Maximum physical value (advisory range, DBC max)."
+                          },
+                          "choices": {
+                            "$ref": "#/properties/valueTables/items/properties/entries",
+                            "description": "Inline enumeration. Mutually exclusive with `valueTableRef`."
+                          },
+                          "valueTableRef": {
+                            "$ref": "#/properties/vehicles/items/properties/id",
+                            "description": "Name of a network-local or project-shared `valueTable`. Mutually exclusive with `choices`."
+                          },
+                          "display": {
+                            "$ref": "#/properties/vehicles/items/properties/networks/items/properties/messages/items/properties/display"
+                          },
+                          "alarms": {
+                            "type": "array",
+                            "description": "Fault/alarm rules for this value.",
+                            "items": {
+                              "type": "object",
+                              "description": "A fault/alarm rule evaluated against a signal's physical value. The engine and app raise alerts from these.",
+                              "additionalProperties": false,
+                              "required": [
+                                "id",
+                                "op",
+                                "severity"
+                              ],
+                              "properties": {
+                                "id": {
+                                  "$ref": "#/properties/vehicles/items/properties/id",
+                                  "description": "Alarm identifier, unique within its signal."
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "description": "Human-readable alarm name."
+                                },
+                                "op": {
+                                  "type": "string",
+                                  "description": "Comparison operator. `between`/`outside` use `thresholds` (a [low, high] pair); all others use the scalar `threshold`. `change` fires on any value change.",
+                                  "enum": [
+                                    "lt",
+                                    "le",
+                                    "gt",
+                                    "ge",
+                                    "eq",
+                                    "ne",
+                                    "between",
+                                    "outside",
+                                    "change"
+                                  ]
+                                },
+                                "threshold": {
+                                  "type": "number",
+                                  "description": "Comparison value for scalar operators."
+                                },
+                                "thresholds": {
+                                  "type": "array",
+                                  "description": "Inclusive [low, high] bounds for `between`/`outside`.",
+                                  "items": {
+                                    "type": "number"
+                                  },
+                                  "minItems": 2,
+                                  "maxItems": 2
+                                },
+                                "severity": {
+                                  "type": "string",
+                                  "description": "Alert severity.",
+                                  "enum": [
+                                    "info",
+                                    "warning",
+                                    "critical"
+                                  ]
+                                },
+                                "message": {
+                                  "type": "string",
+                                  "description": "Message shown when the alarm is active."
+                                },
+                                "hysteresis": {
+                                  "type": "number",
+                                  "description": "Dead-band to avoid flapping; alarm clears only after the value moves back past threshold by this amount.",
+                                  "minimum": 0
+                                }
+                              },
+                              "allOf": [
+                                {
+                                  "if": {
+                                    "properties": {
+                                      "op": {
+                                        "enum": [
+                                          "between",
+                                          "outside"
+                                        ]
+                                      }
+                                    }
+                                  },
+                                  "then": {
+                                    "required": [
+                                      "thresholds"
+                                    ]
+                                  }
+                                },
+                                {
+                                  "if": {
+                                    "properties": {
+                                      "op": {
+                                        "enum": [
+                                          "lt",
+                                          "le",
+                                          "gt",
+                                          "ge",
+                                          "eq",
+                                          "ne"
+                                        ]
+                                      }
+                                    }
+                                  },
+                                  "then": {
+                                    "required": [
+                                      "threshold"
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        "not": {
+                          "required": [
+                            "choices",
+                            "valueTableRef"
+                          ]
+                        }
+                      },
+                      {
+                        "$ref": "#/properties/vehicles/items/allOf/0"
+                      }
+                    ],
+                    "properties": {
+                      "name": {
+                        "$ref": "#/properties/vehicles/items/properties/id",
+                        "description": "Virtual signal name, unique within its scope."
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "expr": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Expression over other signals' physical values, referenced by name (and optionally `message.signal` for cross-message). Grammar defined by the engine evaluator; see mdc-overview.md."
+                      },
+                      "dependsOn": {
+                        "type": "array",
+                        "description": "Explicit list of signals the expression reads, for dependency ordering and validation. Tools may also infer this from `expr`.",
+                        "items": {
+                          "type": "string"
+                        },
+                        "uniqueItems": true
+                      }
+                    },
+                    "unevaluatedProperties": false
+                  }
+                }
+              },
+              "unevaluatedProperties": false
+            }
+          }
+        },
+        "unevaluatedProperties": false
+      }
+    }
+  }
+}

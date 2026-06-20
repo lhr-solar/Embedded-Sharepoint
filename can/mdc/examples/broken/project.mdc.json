@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "2.0.0",
+  "metadata": {
+    "name": "Intentionally broken MDC",
+    "description": "Fixture for mdc-validate: overlapping signal bits, a duplicate message id, and an array block with an unresolved indexSignal. Schema-valid but semantically wrong.",
+    "source": "hand-authored"
+  },
+  "vehicles": [
+    {
+      "id": "broken_vehicle",
+      "networks": [
+        {
+          "id": "bus0",
+          "protocol": "can",
+          "messages": [
+            {
+              "name": "Overlap",
+              "id": 100,
+              "length": 8,
+              "signals": [
+                {
+                  "name": "SigA",
+                  "startBit": 0,
+                  "lengthBits": 16,
+                  "byteOrder": "little_endian",
+                  "kind": "unsigned",
+                  "conversion": { "kind": "identity" }
+                },
+                {
+                  "name": "SigB",
+                  "startBit": 8,
+                  "lengthBits": 16,
+                  "byteOrder": "little_endian",
+                  "kind": "unsigned",
+                  "conversion": { "kind": "identity" }
+                }
+              ]
+            },
+            {
+              "name": "DuplicateId",
+              "id": 100,
+              "length": 1,
+              "signals": [
+                {
+                  "name": "Flag",
+                  "startBit": 0,
+                  "lengthBits": 1,
+                  "byteOrder": "little_endian",
+                  "kind": "unsigned",
+                  "conversion": { "kind": "identity" }
+                }
+              ]
+            },
+            {
+              "name": "BadArray",
+              "id": 101,
+              "length": 4,
+              "array": {
+                "indexSignal": "NotASignal",
+                "elementSignals": ["CellValue"]
+              },
+              "signals": [
+                {
+                  "name": "CellValue",
+                  "startBit": 0,
+                  "lengthBits": 16,
+                  "byteOrder": "little_endian",
+                  "kind": "unsigned",
+                  "conversion": { "kind": "identity" }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

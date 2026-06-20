@@ -1,0 +1,98 @@
+/**
+ * Shared semantic checks for MDC messages — array integrity and multiplexing.
+ * Used by tools/mdc-validate.mjs and the editor's live validate.js.
+ */
+import { occupiedBits } from "./mdc-bits.mjs";
+
+export function setsIntersect(a, b) {
+  const [small, large] = a.size <= b.size ? [a, b] : [b, a];
+  for (const x of small) if (large.has(x)) return true;
+  return false;
+}
+
+/**
+ * Two signals can be present in the same frame unless both are multiplexed on
+ * disjoint selector ids. A null muxIds means "always present".
+ */
+export function simultaneouslyPresent(aIds, bIds) {
+  if (!aIds || !bIds) return true;
+  return setsIntersect(aIds, bIds);
+}
+
+/**
+ * Validate a message-level `array` block. `report(severity, message)` is called
+ * for each finding (severity: 'error' | 'warning').
+ */
+export function validateArrayBlock(message, report) {
+  const array = message.array;
+  if (!array) return;
+
+  const sigByName = new Map((message.signals ?? []).map((s) => [s.name, s]));
+
+  const indexSig = sigByName.get(array.indexSignal);
+  if (!array.indexSignal) report("error", "array.indexSignal is required");
+  else if (!indexSig)
+    report("error", `array.indexSignal "${array.indexSignal}" does not resolve to a signal in this message`);
+
+  if (!Array.isArray(array.elementSignals) || array.elementSignals.length === 0)
+    report("error", "array.elementSignals must list at least one signal");
+
+  for (const elemName of array.elementSignals ?? []) {
+    if (!sigByName.has(elemName))
+      report("error", `array.elementSignals entry "${elemName}" does not resolve to a signal in this message`);
+    if (elemName === array.indexSignal)
+      report("error", `array.indexSignal "${array.indexSignal}" must not also be an elementSignals entry`);
+  }
+
+  if (typeof array.size === "number" && indexSig) {
+    const capacity = 2 ** indexSig.lengthBits;
+    if (array.size > capacity)
+      report(
+        "error",
+        `array.size ${array.size} cannot fit index signal "${indexSig.name}" (${indexSig.lengthBits} bits, max ${capacity} values)`,
+      );
+  }
+}
+
+/**
+ * Bit-overlap check using occupied-bit Sets (correct for Motorola sawtooth).
+ * `report(severity, message)` per finding.
+ */
+export function validateBitOverlaps(message, report, { includeMultiplexed = true } = {}) {
+  const frameBits = (message.length ?? 0) * 8;
+  const muxNames = new Set();
+  for (const sig of message.signals ?? []) {
+    if (sig.multiplexer?.role === "multiplexor") muxNames.add(sig.name);
+  }
+
+  const placed = [];
+  for (const sig of message.signals ?? []) {
+    if (!includeMultiplexed && sig.multiplexer?.role === "multiplexed") continue;
+
+    const bits = occupiedBits(sig);
+    const highBit = bits.length ? Math.max(...bits) : -1;
+    if (highBit >= frameBits && frameBits > 0)
+      report("warning", `${sig.name} overflows the ${message.length}-byte payload (bit ${highBit})`);
+
+    const muxIds =
+      sig.multiplexer?.role === "multiplexed" ? new Set(sig.multiplexer.ids ?? []) : null;
+    const bitSet = new Set(bits);
+    for (const prior of placed) {
+      if (!setsIntersect(prior.bits, bitSet)) continue;
+      if (!simultaneouslyPresent(prior.muxIds, muxIds)) continue;
+      const shared = [...bitSet].find((b) => prior.bits.has(b));
+      report("warning", `bit overlap: ${prior.name} and ${sig.name} share bit ${shared}`);
+      break;
+    }
+    placed.push({ name: sig.name, bits: bitSet, muxIds });
+  }
+
+  if (message.multiplexing?.multiplexed && muxNames.size === 0)
+    report("error", 'multiplexing.multiplexed is true but no signal has role "multiplexor"');
+
+  for (const sig of message.signals ?? []) {
+    const mux = sig.multiplexer;
+    if (mux?.role === "multiplexed" && mux.multiplexorName && !muxNames.has(mux.multiplexorName))
+      report("error", `multiplexorName "${mux.multiplexorName}" has no matching multiplexor signal`);
+  }
+}

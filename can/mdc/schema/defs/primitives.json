@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lhr.dev/mdc/2025-06/defs/primitives.json",
+  "$defs": {
+    "semver": {
+      "type": "string",
+      "description": "Semantic version string `MAJOR.MINOR.PATCH`.",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+
+    "identifier": {
+      "type": "string",
+      "description": "Stable, URL/code-safe identifier used for cross-references and namespacing. Letters, digits, underscore, dash; must start with a letter or underscore.",
+      "pattern": "^[A-Za-z_][A-Za-z0-9_-]*$",
+      "minLength": 1,
+      "maxLength": 128
+    },
+
+    "scalar": {
+      "description": "A primitive value: string, number, boolean, or null.",
+      "type": ["string", "number", "boolean", "null"]
+    },
+
+    "color": {
+      "type": "string",
+      "description": "CSS color, typically a hex string like \"#1f77b4\".",
+      "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+    },
+
+    "byteOrder": {
+      "type": "string",
+      "description": "Bit/byte ordering. Canonical values are `little_endian` (Intel) and `big_endian` (Motorola / sawtooth). startBit numbering follows the cantools/DBC convention — see mdc-overview.md.",
+      "enum": ["little_endian", "big_endian"]
+    },
+
+    "signalKind": {
+      "type": "string",
+      "description": "Raw bit-field interpretation: unsigned/signed two's-complement integer or IEEE-754 float.",
+      "enum": ["unsigned", "signed", "float"]
+    },
+
+    "transport": {
+      "type": "string",
+      "description": "Frame transport. `single` = one CAN(-FD) frame; `isotp` = ISO 15765-2 segmented; `multiframe` = other application-layer multi-frame assembly.",
+      "enum": ["single", "isotp", "multiframe"]
+    }
+  }
+}
