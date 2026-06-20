@@ -1,0 +1,110 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: Elcon ChargerInterface
+VAL_TABLE_ Elcon_MuxPage 1 "Page 1" 2 "Page 2" 3 "Page 3" 4 "Page 4" 5 "Page 5" ;
+VAL_TABLE_ Generic_OK 0 "NOT OK" 1 "OK" ;
+VAL_TABLE_ Generic_Fault 0 "OK" 1 "FAULT" ;
+
+
+BO_ 2550588916 Elcon_Control: 5 ChargerInterface
+ SG_ Elcon_VOL_SET : 7|16@0+ (0.1,0) [0|6553.5] "V" Vector__XXX
+ SG_ Elcon_CUR_SET : 23|16@0+ (0.1,0) [0|6553.5] "A" Vector__XXX
+ SG_ Elcon_CONTROL_FLAG : 39|8@0+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 2550589172 Elcon_Control_Mux: 8 ChargerInterface
+ SG_ Elcon_AH_NOMINAL m2 : 7|16@0+ (0.1,0) [0|6553.5] "Ah" Vector__XXX
+ SG_ Elcon_BATTERY_VOL m4 : 7|16@0+ (0.1,0) [0|6553.5] "V" Vector__XXX
+ SG_ Elcon_MAX_CELL_VOL m3 : 7|16@0+ (0.001,0) [0|6553.5] "V" Vector__XXX
+ SG_ Elcon_NUM_CELLS_EXT m5 : 7|8@0+ (1,0) [0|255] "" Vector__XXX
+ SG_ Elcon_VOL_SET m1 : 7|16@0+ (0.1,0) [0|6553.5] "V" Vector__XXX
+ SG_ Elcon_AH_ACTUAL m2 : 23|16@0+ (0.1,0) [0|6553.5] "Ah" Vector__XXX
+ SG_ Elcon_BATTERY_CHARGE_CUR m4 : 23|16@0+ (0.1,0) [0|6553.5] "A" Vector__XXX
+ SG_ Elcon_CUR_SET m1 : 23|16@0+ (0.1,0) [0|6553.5] "A" Vector__XXX
+ SG_ Elcon_MIN_CELL_VOL m3 : 23|16@0+ (0.001,0) [0|6553.5] "V" Vector__XXX
+ SG_ Elcon_BATTERY_SOC m4 : 39|8@0+ (1,0) [0|100] "%" Vector__XXX
+ SG_ Elcon_CELL_OV_THRESH m2 : 39|16@0+ (0.001,0) [0|6553.5] "V" Vector__XXX
+ SG_ Elcon_CELL_UV_THRESH m3 : 39|16@0+ (0.001,0) [0|6553.5] "V" Vector__XXX
+ SG_ Elcon_CONTROL_FLAG m1 : 39|8@0+ (1,0) [0|255] "" Vector__XXX
+ SG_ Elcon_DISCUR_MAX m1 : 47|8@0+ (10,0) [0|2550] "A" Vector__XXX
+ SG_ Elcon_TEMP_MAX m4 : 47|8@0+ (1,-100) [0|255] "Â°C" Vector__XXX
+ SG_ Elcon_BATTERY_STATE_OV m3 : 48|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ Elcon_BATTERY_STATE_UV m3 : 49|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ Elcon_NUM_CELLS m2 : 55|8@0+ (1,0) [0|255] "" Vector__XXX
+ SG_ Elcon_TEMP_MIN m4 : 55|8@0+ (1,-100) [0|255] "Â°C" Vector__XXX
+ SG_ Elcon_MuxPage M : 63|8@0+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 2566869221 Elcon_CCS_Status: 5 Elcon
+ SG_ Elcon_VOL_OUT : 7|16@0+ (0.1,0) [0|6553.5] "V" Vector__XXX
+ SG_ Elcon_CUR_OUT : 23|16@0+ (0.1,0) [0|6553.5] "A" Vector__XXX
+ SG_ Elcon_HW_FAULT : 32|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ Elcon_OVER_TEMPERATURE : 33|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ Elcon_INPUT_VOL_ERROR : 34|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ Elcon_START_STATE : 35|1@0+ (1,0) [0|1] "" Vector__XXX
+ SG_ Elcon_CMD_TIMEOUT : 36|1@0+ (1,0) [0|1] "" Vector__XXX
+
+
+
+
+
+BA_DEF_  "DBName" STRING ;
+BA_DEF_ SG_  "SPN" INT 0 524287;
+BA_DEF_ BO_  "GenMsgCycleTime" INT 0 100000;
+BA_DEF_ BO_  "GenMsgSendType" ENUM  "Cyclic","Event","CyclicAndEvent","CyclicAndEventNoRepetition","None","Spontaneous";
+BA_DEF_ BO_  "VFrameFormat" ENUM  "StandardCAN","ExtendedCAN","reserved","J1939PG","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","StandardCAN_FD","ExtendedCAN_FD";
+BA_DEF_  "MultiplexExtEnabled" ENUM  "No","Yes";
+BA_DEF_  "BusType" STRING ;
+BA_DEF_DEF_  "DBName" "";
+BA_DEF_DEF_  "SPN" 0;
+BA_DEF_DEF_  "GenMsgCycleTime" 0;
+BA_DEF_DEF_  "GenMsgSendType" "Cyclic";
+BA_DEF_DEF_  "VFrameFormat" "StandardCAN";
+BA_DEF_DEF_  "MultiplexExtEnabled" "No";
+BA_DEF_DEF_  "BusType" "";
+BA_ "MultiplexExtEnabled" 1;
+BA_ "BusType" "CAN";
+BA_ "DBName" "ElconCAN";
+BA_ "VFrameFormat" BO_ 2550588916 3;
+BA_ "VFrameFormat" BO_ 2550589172 3;
+BA_ "VFrameFormat" BO_ 2566869221 3;
+VAL_ 2550589172 Elcon_MuxPage 1 "Page 1" 2 "Page 2" 3 "Page 3" 4 "Page 4" 5 "Page 5" ;
+VAL_ 2566869221 Elcon_HW_FAULT 0 "OK" 1 "FAULT" ;
+VAL_ 2566869221 Elcon_OVER_TEMPERATURE 0 "OK" 1 "FAULT" ;
+VAL_ 2566869221 Elcon_INPUT_VOL_ERROR 0 "OK" 1 "FAULT" ;
+VAL_ 2566869221 Elcon_START_STATE 0 "NOT OK" 1 "OK" ;
+VAL_ 2566869221 Elcon_CMD_TIMEOUT 0 "NOT OK" 1 "OK" ;
+
+
+
