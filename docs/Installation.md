@@ -62,7 +62,7 @@ chmod +x ./nix_install.sh
 
 Run the script to install the needed nix dependencies.
 ```sh
-sudo ./nix_install.sh
+sudo ./nix-install.sh
 ```
 
 Enter the nix shell and download dependencies for Embedded-Sharepoint

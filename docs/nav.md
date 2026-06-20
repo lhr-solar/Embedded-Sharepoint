@@ -5,6 +5,7 @@
 * [CubeMX](CubeMX.md)
 * [STM32 Ports](STM32_Ports.md)
 * CAN Messages
+    * [CAN Spec](CAN-Spec/index.md)
     * [Editing DBC Files](dbcEditor.md)
     * [Signals & Messages](DBC.md)
     * [Generating DBC Headers](usingDBCs.md)
@@ -12,5 +13,6 @@
     * [EMC2305 Usage Guide](EMC2305.md)
     * [WS2812B Usage Guide](WS2812B.md)
     * [CAN Usage Guide](CanSetup.md)
+    * [Printf Usage Guide](printf.md)
     * [SDCARD Usage Guide](sdcard.md)
     * [Moving Average Usage Guide](MovingAverage.md)

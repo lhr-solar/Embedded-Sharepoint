@@ -1,0 +1,41 @@
+# Copy this to your .github/workflows directory
+name: Include Submodules in Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  flatten-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Remove submodule metadata
+        run: |
+          git submodule foreach --quiet '
+            echo "Flattening $name at $path..."
+            git rm --cached -r "$path" || true
+            rm -rf ".git/modules/$path"
+          '
+          rm -f .gitmodules
+
+      - name: Create release zip
+        run: |
+          REPO_NAME=${{ github.event.repository.name }}
+          TAG_NAME=${{ github.event.release.tag_name }}
+          ZIP_NAME="${REPO_NAME}-${TAG_NAME}.zip"
+          echo "Creating zip: $ZIP_NAME"
+          zip -r "$ZIP_NAME" . -x ".git/*" -x ".github/*"
+          echo "ZIP created: $ZIP_NAME"
+
+      - name: Upload zip to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: "${{ github.event.repository.name }}-${{ github.event.release.tag_name }}.zip"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

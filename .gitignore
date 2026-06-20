@@ -28,3 +28,9 @@ docs/doxygen/
 site/*
 !site/empty.a
 Zone.Identifier
+
+#Vector Lock File
+can/dbc/**/*.ldb
+
+# Arduino-cli files
+.arduino*

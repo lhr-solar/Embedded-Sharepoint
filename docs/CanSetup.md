@@ -142,6 +142,8 @@ can_status_t can_fd_send(FDCAN_HandleTypeDef* handle, FDCAN_TxHeaderTypeDef* hea
 can_status_t can_send(CAN_HandleTypeDef* handle, const CAN_TxHeaderTypeDef* header, const uint8_t data[], TickType_t delay_ticks)
 ```
 
+Important to note, the header DataLength field is encoded. That it, use the `FDCAN_DLC_BYTES` macro to encode an int length (like 1,2,3....16,32,64). To get length from the header, use the `FDCAN_BYTES_FROM_DLC` macro. 
+
 
 ## Recieving CAN messages
 Please read the following sections on DBC files and how to use them before moving on.

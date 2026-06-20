@@ -3,7 +3,7 @@
  * @brief CAN peripheral driver for LHRS embedded systems.
  *
  * @details
- * This driver provides initialization, deinitialization, start/stop, 
+ * This driver provides initialization, deinitialization, start/stop,
  * sending, and receiving functionality for CAN peripherals.
  *
  * Function Descriptions:
@@ -15,7 +15,8 @@
  *
  *  - Start: Starts the CAN peripheral, enabling interrupts and message handling.
  *
- *  - Stop: Stops the CAN peripheral; configuration is unchanged, but interrupts and message handling are disabled.
+ *  - Stop: Stops the CAN peripheral; configuration is unchanged, but interrupts and message
+ * handling are disabled.
  *
  *  - Send: Prepares a message to be sent when the CAN peripheral is ready (puts it into a queue).
  *
@@ -33,23 +34,25 @@
  *
  * Usage Notes:
  *
- *  - CAN2 is usually a slave CAN, sharing transistors with CAN1. Ensure CAN1 is initialized before CAN2.
+ *  - CAN2 is usually a slave CAN, sharing transistors with CAN1. Ensure CAN1 is initialized before
+ * CAN2.
  *
- *  - CAN2 often shares filter banks with CAN1; carefully consider filter configurations passed to can_init.
+ *  - CAN2 often shares filter banks with CAN1; carefully consider filter configurations passed to
+ * can_init.
  *
  *  - CAN3 is usually a master CAN; no sharing considerations are needed.
  *
- *  - This driver uses a macro to define which messages a CAN interface should receive. 
+ *  - This driver uses a macro to define which messages a CAN interface should receive.
  *    See can1_recv_entries.h for examples. Ensure entries align with filter configurations.
  */
 
 #pragma once
 
-#include "stm32xx_hal.h"
 #include "CAN_Common.h"
+#include "stm32xx_hal.h"
 
 #if !defined(CAN1)
-  #error "[CONFIG] CAN not enabled on this chip."
+#error "[CONFIG] CAN not enabled on this chip."
 #endif /* CAN1 */
 
 /* Function Descriptions:
@@ -80,14 +83,13 @@
  * CAN2 usually shares the filter banks with CAN1, since it
  is a slave CAN. Thus, consider the filter configs you pass
  to the can_init function, when initializing CAN1 and CAN2.
- * CAN3 is usually a master CAN, meaning you don't have to 
+ * CAN3 is usually a master CAN, meaning you don't have to
  worry about sharing.
  * This driver uses a macro to define which entries a CAN
  interface should receive on. Look at can1_recv_entries.h
  for an example. Make sure these entries line up with the
  filter config.
  */
-
 
 // can handlers
 #ifdef CAN1
@@ -106,7 +108,7 @@ extern CAN_HandleTypeDef* hcan3;
  * @brief Initializes the bxCAN peripheral.
  *
  * This function initializes the CAN peripheral, sets up send/receive queues,
- * configures the HAL CAN driver, applies the filter configuration, and 
+ * configures the HAL CAN driver, applies the filter configuration, and
  * enables CAN interrupts.
  *
  * @param handle Pointer to the CAN handle structure.
@@ -164,9 +166,8 @@ can_status_t can_stop(CAN_HandleTypeDef* handle);
  * @return can_status_t Returns CAN_OK if message was successfully sent or queued,
  *                      CAN_ERR on failure.
  */
-can_status_t can_send(CAN_HandleTypeDef* handle,
-                      const CAN_TxHeaderTypeDef* header, const uint8_t data[],
-                      TickType_t delay_ticks);
+can_status_t can_send(CAN_HandleTypeDef* handle, const CAN_TxHeaderTypeDef* header,
+                      const uint8_t data[], TickType_t delay_ticks);
 
 /**
  * @brief Receives a CAN message.
@@ -184,9 +185,32 @@ can_status_t can_send(CAN_HandleTypeDef* handle,
  *                      CAN_EMPTY if the queue was empty,
  *                      CAN_ERR on failure or invalid ID.
  */
-can_status_t can_recv(CAN_HandleTypeDef* handle, uint32_t id,
-                      CAN_RxHeaderTypeDef* header, uint8_t data[],
-                      TickType_t delay_ticks);
+can_status_t can_recv(CAN_HandleTypeDef* handle, uint32_t id, CAN_RxHeaderTypeDef* header,
+                      uint8_t data[], TickType_t delay_ticks);
+
+/**
+ * @brief Sends a CAN message from an ISR context.
+ *
+ * Places a CAN message into the transmit send queue for later transmission
+ * by the TX complete interrupt. Must only be called from an ISR.
+ *
+ * @note Unlike can_send(), this function does not attempt direct mailbox
+ *       insertion. The caller is responsible for calling portYIELD_FROM_ISR()
+ *       with the updated higherPriorityTaskWoken value after this function
+ *       returns.
+ *
+ * @param handle                    Pointer to the CAN handle structure.
+ * @param header                    Pointer to the CAN transmit header structure.
+ * @param data                      Array containing the data to send.
+ * @param higherPriorityTaskWoken   Pointer to a BaseType_t variable that will
+ *                                  be set to pdTRUE if queuing the message
+ *                                  unblocks a higher priority task.
+ *
+ * @return can_status_t Returns CAN_OK if the message was successfully queued,
+ *                      CAN_ERR if the queue is full or a parameter is invalid.
+ */
+can_status_t can_send_isr(CAN_HandleTypeDef* handle, const CAN_TxHeaderTypeDef* header,
+                          const uint8_t data[], BaseType_t* higherPriorityTaskWoken);
 
 /**
  * @brief Weakly defined hook function.
@@ -202,7 +226,7 @@ void can_tx_callback_hook(CAN_HandleTypeDef* hcan, const can_tx_payload_t* paylo
  */
 void can_rx_callback_hook(CAN_HandleTypeDef* hcan, const can_rx_payload_t* payload);
 
-#if ( configUSE_QUEUE_SETS == 1 )
+#if (configUSE_QUEUE_SETS == 1)
 /**
  * @brief Adds a set of IDs to a user-defined queue set
  *
@@ -223,8 +247,10 @@ can_status_t can_register_id_set(CAN_HandleTypeDef* handle, can_id_set_t* set);
  * @param id           Pointer to a variable to store the CAN ID of the ready queue.
  * @param delay_ticks  Maximum delay to wait if no message is available (FreeRTOS ticks).
  *
- * @return can_status_t Returns CAN_OK if an ID was retrieved, CAN_EMPTY on timeout, or CAN_ERR on failure.
+ * @return can_status_t Returns CAN_OK if an ID was retrieved, CAN_EMPTY on timeout, or CAN_ERR on
+ * failure.
  */
-can_status_t can_recv_set(CAN_HandleTypeDef* handle, can_id_set_t* set, uint32_t *id, TickType_t delay_ticks);
+can_status_t can_recv_set(CAN_HandleTypeDef* handle, can_id_set_t* set, uint32_t* id,
+                          TickType_t delay_ticks);
 
 #endif /* ( configUSE_QUEUE_SETS == 1 ) */
