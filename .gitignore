@@ -30,7 +30,7 @@ site/*
 Zone.Identifier
 
 #Vector Lock File
-can/dbc/**/*.ldb
+can/vehicles/**/*.ldb
 
 # Arduino-cli files
 .arduino*

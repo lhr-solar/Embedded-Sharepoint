@@ -16,7 +16,7 @@ REPO = Path(__file__).resolve().parents[2]
 CAN = REPO.parent
 TOOLS = REPO / "tools"
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
-ELCON_DBC = CAN / "dbc" / "HighNoon" / "ElconCAN.dbc"
+ELCON_DBC = CAN / "vehicles" / "HighNoon" / "ElconCAN.dbc"
 SCHEMA = REPO / "schema" / "mdc.schema.bundle.json"
 
 _spec = importlib.util.spec_from_file_location("dbc2mdc", TOOLS / "dbc2mdc.py")

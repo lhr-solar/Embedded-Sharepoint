@@ -38,7 +38,7 @@ the bundle before committing or validating in CI:
 
 ```bash
 node tools/bundle-mdc-schema.mjs
-node tools/validate-mdc.mjs mdc/schema/mdc.schema.bundle.json mdc/examples/lhr-ev1/project.mdc.json
+node tools/validate-mdc.mjs mdc/schema/mdc.schema.bundle.json vehicles/lhr-ev1/project.mdc.json
 ```
 
 Downstream consumers (engine, editor, codegen) should load
