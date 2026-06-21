@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+# pre-push hook: enforce branch naming convention "<type>/<desc>".
+#
+# Enabled via:  git config core.hooksPath .githooks   (done by install.sh)
+# Bypass once:  git push --no-verify
+#
+# No external dependencies; uses only bash builtins.
+set -u
+
+# type ∈ {feat, fix, dev, chore, docs, refactor, test}
+# desc  = one or more lowercase letters, digits, '-', '_', '/'
+types='feat|fix|dev|chore|docs|refactor|test'
+branch_regex="^(${types})/[a-z0-9_/-]+$"
+
+is_valid() {
+  local name="$1"
+  # main/master/HEAD are always allowed.
+  case "$name" in
+    main|master|HEAD) return 0 ;;
+  esac
+  [[ "$name" =~ $branch_regex ]]
+}
+
+reject() {
+  local name="$1"
+  cat >&2 <<EOF
+✗ Push rejected: branch '$name' does not match the naming convention.
+
+  Expected:  <type>/<desc>
+    type ∈ {feat, fix, dev, chore, docs, refactor, test}
+    desc  = lowercase letters, digits, '-', '_', '/'
+
+  Examples:
+    feat/foo-bar
+    fix/issue_12
+
+  ('main', 'master' and 'HEAD' are always allowed.)
+  Emergency bypass:  git push --no-verify
+EOF
+  exit 1
+}
+
+# git feeds one line per ref on stdin:
+#   <local ref> <local sha> <remote ref> <remote sha>
+# The trailing "|| [ -n ... ]" handles a final line with no newline.
+while read -r local_ref local_sha remote_ref remote_sha || [ -n "$local_ref" ]; do
+  # Branch deletion: empty local ref / zero sha -> nothing to validate.
+  if [ -z "$local_ref" ]; then
+    continue
+  fi
+  # Only branch refs carry the naming convention (skip tags, notes, etc.).
+  case "$local_ref" in
+    refs/heads/*) branch="${local_ref#refs/heads/}" ;;
+    *) continue ;;
+  esac
+  if ! is_valid "$branch"; then
+    reject "$branch"
+  fi
+done
+
+exit 0

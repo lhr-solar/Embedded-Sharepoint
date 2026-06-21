@@ -109,7 +109,7 @@ def main():
     # If it's an LSOM then do - stm32g473xx
     # If it's a PSOM then do - stm32l431cbt
     ####
-    ports = ["stm32g473xx"]
+    ports = ["stm32g491vet"]
     ####
 
     # ❗ CHANGE THIS ❗

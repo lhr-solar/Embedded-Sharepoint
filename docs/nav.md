@@ -4,6 +4,7 @@
 * [Adding Embedded Sharepoint](SharepointSubmodule.md)
 * [CubeMX](CubeMX.md)
 * [STM32 Ports](STM32_Ports.md)
+* [Bootloader: Fault Recovery & LED](Bootloader.md)
 * CAN Messages
     * [CAN Spec](CAN-Spec/index.md)
     * [Editing DBC Files](dbcEditor.md)

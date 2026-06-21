@@ -15,21 +15,6 @@ void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
     GPIO_InitTypeDef init = {0};
     UNUSED(init);
 
-#ifdef STM32F4xx
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-
-    /* enable port A USART2 gpio
-    PA2 -> USART2_TX
-    PA3 -> USART2_RX
-    */
-    init.Pin = GPIO_PIN_2|GPIO_PIN_3;
-    init.Mode = GPIO_MODE_AF_PP;
-    init.Pull = GPIO_NOPULL;
-    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    init.Alternate = GPIO_AF7_USART2;
-    HAL_GPIO_Init(GPIOA, &init);
-#endif
-
 #ifdef STM32G4xx
     __HAL_RCC_GPIOC_CLK_ENABLE();
 
@@ -43,23 +28,6 @@ void HAL_UART_MspGPIOInit(UART_HandleTypeDef *huart){
     init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     init.Alternate = GPIO_AF7_USART3;
     HAL_GPIO_Init(GPIOC, &init);
-#endif
-
-#ifdef STM32L4xx
- /* Peripheral clock enable */
-    __HAL_RCC_USART1_CLK_ENABLE();
-
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-    /**USART1 GPIO Configuration
-    PA9     ------> USART1_TX
-    PA10     ------> USART1_RX
-    */
-    init.Pin = GPIO_PIN_9 | GPIO_PIN_10;
-    init.Mode = GPIO_MODE_AF_PP;
-    init.Pull = GPIO_NOPULL;
-    init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    init.Alternate = GPIO_AF7_USART1;
-    HAL_GPIO_Init(GPIOA, &init);
 #endif
 }
 
@@ -90,17 +58,6 @@ void TermTask(void *argument){
 }
 
 void InitTask(void *argument){
-#ifdef STM32F4xx
-    husart2->Init.BaudRate = 115200;
-    husart2->Init.WordLength = UART_WORDLENGTH_8B;
-    husart2->Init.StopBits = UART_STOPBITS_1;
-    husart2->Init.Parity = UART_PARITY_NONE;
-    husart2->Init.Mode = UART_MODE_TX_RX;
-    husart2->Init.HwFlowCtl = UART_HWCONTROL_NONE;
-    husart2->Init.OverSampling = UART_OVERSAMPLING_16;
-    printf_init(husart2);
-#endif
-
 #ifdef STM32G4xx
     husart3->Init.BaudRate = 115200;
     husart3->Init.WordLength = UART_WORDLENGTH_8B;
@@ -110,18 +67,6 @@ void InitTask(void *argument){
     husart3->Init.HwFlowCtl = UART_HWCONTROL_NONE;
     husart3->Init.OverSampling = UART_OVERSAMPLING_16;
     printf_init(husart3);
-#endif
-
-#ifdef STM32L4xx
-    husart1->Init.BaudRate = 115200;
-    husart1->Init.WordLength = UART_WORDLENGTH_8B;
-    husart1->Init.StopBits = UART_STOPBITS_1;
-    husart1->Init.Parity = UART_PARITY_NONE;
-    husart1->Init.Mode = UART_MODE_TX_RX;
-    husart1->Init.HwFlowCtl = UART_HWCONTROL_NONE;
-    husart1->Init.OverSampling = UART_OVERSAMPLING_16;
-
-    printf_init(husart1);
 #endif
 
     xTaskCreateStatic(TermTask, 

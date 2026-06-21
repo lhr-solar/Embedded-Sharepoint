@@ -1,0 +1,393 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://embedded-sharepoint.local/bootloader/contract/bl_protocol.schema.json",
+  "title": "BL Protocol Descriptor",
+  "description": "Canonical CAN bootloader protocol constants and frame layout. Transport is classic CAN 2.0 (8-byte frames). CAN-FD may be considered in a future revision; not implemented here.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "transport",
+    "frame_payload_bytes",
+    "can_ids",
+    "device_id",
+    "cmd_opcodes",
+    "response_codes",
+    "data_block_bytes",
+    "cmd_frame",
+    "data_frame",
+    "verify_crc32",
+    "response_frame"
+  ],
+  "properties": {
+    "transport": {
+      "type": "string",
+      "const": "classic_can_2.0",
+      "description": "Classic CAN 2.0 only. CAN-FD is a future option."
+    },
+    "frame_payload_bytes": {
+      "type": "integer",
+      "const": 8
+    },
+    "can_ids": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cmd", "data", "resp_base", "status_base"],
+      "properties": {
+        "cmd": {
+          "description": "Host to all bootloaders: command frame (0x010)",
+          "type": "integer",
+          "const": 16
+        },
+        "data": {
+          "description": "Host to all bootloaders: data stream (0x011)",
+          "type": "integer",
+          "const": 17
+        },
+        "resp_base": {
+          "description": "Bootloader to host: response ID = resp_base + device_id (0x100)",
+          "type": "integer",
+          "const": 256
+        },
+        "status_base": {
+          "description": "Bootloader to host: fault/status ID = status_base + device_id (0x180)",
+          "type": "integer",
+          "const": 384
+        }
+      }
+    },
+    "device_id": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["min", "max"],
+      "properties": {
+        "min": { "type": "integer", "const": 0 },
+        "max": { "type": "integer", "const": 119 }
+      }
+    },
+    "cmd_opcodes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ENTER",
+        "ERASE",
+        "SET_ADDR",
+        "WRITE_BLOCK",
+        "VERIFY_CRC32",
+        "COMMIT",
+        "RESET",
+        "GET_INFO"
+      ],
+      "properties": {
+        "ENTER": { "$ref": "#/$defs/opcode", "const": 1 },
+        "ERASE": { "$ref": "#/$defs/opcode", "const": 2 },
+        "SET_ADDR": { "$ref": "#/$defs/opcode", "const": 3 },
+        "WRITE_BLOCK": { "$ref": "#/$defs/opcode", "const": 4 },
+        "VERIFY_CRC32": { "$ref": "#/$defs/opcode", "const": 5 },
+        "COMMIT": { "$ref": "#/$defs/opcode", "const": 6 },
+        "RESET": { "$ref": "#/$defs/opcode", "const": 7 },
+        "GET_INFO": { "$ref": "#/$defs/opcode", "const": 8 }
+      }
+    },
+    "response_codes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ACK", "NACK", "BUSY", "ERR", "CRC_OK", "CRC_FAIL"],
+      "properties": {
+        "ACK": { "$ref": "#/$defs/response_code", "const": 0 },
+        "NACK": { "$ref": "#/$defs/response_code", "const": 1 },
+        "BUSY": { "$ref": "#/$defs/response_code", "const": 2 },
+        "ERR": { "$ref": "#/$defs/response_code", "const": 3 },
+        "CRC_OK": { "$ref": "#/$defs/response_code", "const": 16 },
+        "CRC_FAIL": { "$ref": "#/$defs/response_code", "const": 17 }
+      }
+    },
+    "data_block_bytes": {
+      "type": "integer",
+      "const": 256,
+      "description": "DATA frames accumulate into 256-byte blocks; WRITE_BLOCK programs the block at the current address."
+    },
+    "cmd_frame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["can_id", "layout"],
+      "properties": {
+        "can_id": { "const": "cmd" },
+        "layout": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["byte0", "byte1"],
+          "properties": {
+            "byte0": {
+              "type": "string",
+              "const": "opcode (cmd_opcodes value)"
+            },
+            "byte1": {
+              "type": "string",
+              "const": "target device_id (0-119); 0xFF = broadcast"
+            },
+            "byte2_7": {
+              "type": "string",
+              "const": "opcode-specific arguments (little-endian where multi-byte)"
+            }
+          }
+        }
+      }
+    },
+    "data_frame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["can_id", "layout"],
+      "properties": {
+        "can_id": { "const": "data" },
+        "layout": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["payload"],
+          "properties": {
+            "payload": {
+              "type": "string",
+              "const": "0-8 bytes per frame; accumulate into data_block_bytes buffer"
+            }
+          }
+        }
+      }
+    },
+    "verify_crc32": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["args", "device_behavior", "responses"],
+      "properties": {
+        "args": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["expected_crc32", "length"],
+          "properties": {
+            "expected_crc32": {
+              "type": "object",
+              "required": ["bytes", "offset"],
+              "properties": {
+                "bytes": { "const": 4 },
+                "offset": { "const": 0 },
+                "encoding": { "const": "uint32 little-endian" }
+              }
+            },
+            "length": {
+              "type": "object",
+              "required": ["bytes", "offset"],
+              "properties": {
+                "bytes": { "const": 4 },
+                "offset": { "const": 4 },
+                "encoding": { "const": "uint32 little-endian" }
+              }
+            }
+          }
+        },
+        "device_behavior": {
+          "type": "string",
+          "const": "Read back flashed region [current_slot_base, current_slot_base+length), compute CRC32 (poly 0x04C11DB7, init 0xFFFFFFFF), compare to expected_crc32."
+        },
+        "responses": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["match", "mismatch"],
+          "properties": {
+            "match": { "const": "CRC_OK (0x10) on RESP_BASE + device_id" },
+            "mismatch": { "const": "CRC_FAIL (0x11) on RESP_BASE + device_id; optional fault on STATUS_BASE + device_id" }
+          }
+        }
+      }
+    },
+    "response_frame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["can_id", "layout"],
+      "properties": {
+        "can_id": {
+          "type": "string",
+          "const": "resp_base + device_id"
+        },
+        "layout": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["byte0"],
+          "properties": {
+            "byte0": {
+              "type": "string",
+              "const": "response_codes value"
+            },
+            "byte1_7": {
+              "type": "string",
+              "const": "optional opcode echo or diagnostic data"
+            }
+          }
+        }
+      }
+    },
+    "write_block_behavior": {
+      "type": "string",
+      "const": "Program accumulated 256-byte block at current address; auto-advance address by 256."
+    },
+    "crc32": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["polynomial", "init", "reflect_in", "reflect_out", "xor_out", "byte_order", "scope"],
+      "properties": {
+        "polynomial": {
+          "type": "string",
+          "const": "0x04C11DB7"
+        },
+        "init": {
+          "type": "string",
+          "const": "0xFFFFFFFF"
+        },
+        "reflect_in": {
+          "type": "boolean",
+          "const": false,
+          "description": "No input reflection (STM32 HW CRC default; NOT zlib/Ethernet)."
+        },
+        "reflect_out": {
+          "type": "boolean",
+          "const": false,
+          "description": "No output reflection."
+        },
+        "xor_out": {
+          "type": "string",
+          "const": "0x00000000",
+          "description": "No final XOR."
+        },
+        "byte_order": {
+          "type": "string",
+          "const": "byte-wise, MSB-first, ascending flash address",
+          "description": "CRC-32/MPEG-2. Host must NOT use zlib.crc32."
+        },
+        "scope": {
+          "type": "string",
+          "const": "Application image region in active flash slot"
+        }
+      }
+    },
+    "backup_registers": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "App<->BL handoff via TAMP backup registers; persist across warm reset.",
+      "required": ["bkp0r_flags", "bkp1r", "bkp2r"],
+      "properties": {
+        "bkp0r_flags": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["UPDATE", "DFU", "FAULT", "SLOT_B"],
+          "properties": {
+            "UPDATE": { "type": "string", "const": "bit0: enter update mode" },
+            "DFU": { "type": "string", "const": "bit1: enter STM32 ROM DFU" },
+            "FAULT": { "type": "string", "const": "bit2: entry was fault-driven (set with UPDATE)" },
+            "SLOT_B": { "type": "string", "const": "bit8: active slot B (dual-bank only)" }
+          }
+        },
+        "bkp1r": { "type": "string", "const": "committed image length (bytes)" },
+        "bkp2r": { "type": "string", "const": "committed image CRC32" }
+      }
+    }
+  },
+  "$defs": {
+    "can_id": {
+      "oneOf": [
+        { "type": "integer", "minimum": 0, "maximum": 2047 },
+        { "type": "string", "pattern": "^0x[0-9A-Fa-f]+$" }
+      ]
+    },
+    "opcode": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 255
+    },
+    "response_code": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 255
+    }
+  },
+  "examples": [
+    {
+      "transport": "classic_can_2.0",
+      "frame_payload_bytes": 8,
+      "can_ids": {
+        "cmd": 16,
+        "data": 17,
+        "resp_base": 256,
+        "status_base": 384
+      },
+      "device_id": { "min": 0, "max": 119 },
+      "cmd_opcodes": {
+        "ENTER": 1,
+        "ERASE": 2,
+        "SET_ADDR": 3,
+        "WRITE_BLOCK": 4,
+        "VERIFY_CRC32": 5,
+        "COMMIT": 6,
+        "RESET": 7,
+        "GET_INFO": 8
+      },
+      "response_codes": {
+        "ACK": 0,
+        "NACK": 1,
+        "BUSY": 2,
+        "ERR": 3,
+        "CRC_OK": 16,
+        "CRC_FAIL": 17
+      },
+      "data_block_bytes": 256,
+      "cmd_frame": {
+        "can_id": "cmd",
+        "layout": {
+          "byte0": "opcode (cmd_opcodes value)",
+          "byte1": "target device_id (0-119); 0xFF = broadcast",
+          "byte2_7": "opcode-specific arguments (little-endian where multi-byte)"
+        }
+      },
+      "data_frame": {
+        "can_id": "data",
+        "layout": {
+          "payload": "0-8 bytes per frame; accumulate into data_block_bytes buffer"
+        }
+      },
+      "verify_crc32": {
+        "args": {
+          "expected_crc32": { "bytes": 4, "offset": 0, "encoding": "uint32 little-endian" },
+          "length": { "bytes": 4, "offset": 4, "encoding": "uint32 little-endian" }
+        },
+        "device_behavior": "Read back flashed region [current_slot_base, current_slot_base+length), compute CRC32 (poly 0x04C11DB7, init 0xFFFFFFFF), compare to expected_crc32.",
+        "responses": {
+          "match": "CRC_OK (0x10) on RESP_BASE + device_id",
+          "mismatch": "CRC_FAIL (0x11) on RESP_BASE + device_id; optional fault on STATUS_BASE + device_id"
+        }
+      },
+      "response_frame": {
+        "can_id": "resp_base + device_id",
+        "layout": {
+          "byte0": "response_codes value",
+          "byte1_7": "optional opcode echo or diagnostic data"
+        }
+      },
+      "write_block_behavior": "Program accumulated 256-byte block at current address; auto-advance address by 256.",
+      "crc32": {
+        "polynomial": "0x04C11DB7",
+        "init": "0xFFFFFFFF",
+        "reflect_in": false,
+        "reflect_out": false,
+        "xor_out": "0x00000000",
+        "byte_order": "byte-wise, MSB-first, ascending flash address",
+        "scope": "Application image region in active flash slot"
+      },
+      "backup_registers": {
+        "bkp0r_flags": {
+          "UPDATE": "bit0: enter update mode",
+          "DFU": "bit1: enter STM32 ROM DFU",
+          "FAULT": "bit2: entry was fault-driven (set with UPDATE)",
+          "SLOT_B": "bit8: active slot B (dual-bank only)"
+        },
+        "bkp1r": "committed image length (bytes)",
+        "bkp2r": "committed image CRC32"
+      }
+    }
+  ]
+}

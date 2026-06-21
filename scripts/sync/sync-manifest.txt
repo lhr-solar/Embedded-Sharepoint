@@ -1,0 +1,15 @@
+# Repo-relative paths exported to a parent superproject by sharepoint-sync.sh
+AGENTS.md
+CLAUDE.md
+.cursor/
+.claude/
+.agent/
+template/
+bootloader/contract/
+common/Inc/bootloader_hooks.h
+.clang-format
+.clang-tidy
+.pre-commit-config.yaml
+.githooks/
+.vscode/
+common/Inc/static_assert.h

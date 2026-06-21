@@ -9,6 +9,23 @@ on:
       - "**/*.py"
 
 jobs:
+  # The driver/ and bsp/ library layers are committed to STM32G4-only: peripheral
+  # init (clock/NVIC/pins) lives in per-MCU board files behind CMSIS instance
+  # guards, never behind STM32F4xx/STM32L4xx ifdefs. (Tests stay multi-board on
+  # purpose.) Fail fast if an F4/L4 reference creeps back into the library.
+  guard-g4-only:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: driver/ and bsp/ must be STM32G4-only
+        run: |
+          if grep -rnE 'STM32F4xx|STM32L4xx' driver/ test/bsp/; then
+            echo "::error::F4/L4 reference found in driver/ or test/bsp/ -- the library is STM32G4-only. Put device-specific init in a board file (CMSIS instance guards), not behind STM32F4xx/STM32L4xx."
+            exit 1
+          fi
+          echo "OK: driver/ and test/bsp/ are STM32G4-only."
+
   # Setup job to generate the build matrix dynamically
   setup-matrix:
     runs-on: ubuntu-latest

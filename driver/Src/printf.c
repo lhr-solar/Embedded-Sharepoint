@@ -1,5 +1,5 @@
 #include "printf.h"
-#include "UART.h"
+#include "uart.h"
 #include "portmacro.h"
 #include "stm32xx_hal.h"
 #include <string.h>

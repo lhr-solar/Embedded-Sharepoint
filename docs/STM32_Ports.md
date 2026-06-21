@@ -1,29 +1,23 @@
 # List of STM32 Port Names
 
-## L4
-
-- `STM32L431CBTx`
-    - `PROJECT_TARGET=stm32l431cbt`
-- `STM32L432KCUx`
-    - `PROJECT_TARGET=stm32l432kcu`
-- `STM32L476RGTx`
-    - `PROJECT_TARGET=stm32l476rgt`
-
-## F4
-
-- `STM32F401REx`
-    - `PROJECT_TARGET=stm32f401re`
-- `STM32F413RHTx`
-    - `PROJECT_TARGET=stm32f413rht`
-- `STM32F429ZITx`
-    - `PROJECT_TARGET=stm32f429zit`
-- `STM32F446RETx`
-    - `PROJECT_TARGET=stm32f446ret`
+Embedded Sharepoint supports two STM32G4 ports. Set `PROJECT_TARGET` to the lowercase port name below.
 
 ## G4
 
-- `STM32G473XXx`
-    - `PROJECT_TARGET=stm32g473xx`
-- `STM32G474XXx`
-    - `PROJECT_TARGET=stm32g474xx`
+- `STM32G491VETx` (100-pin)
+    - `PROJECT_TARGET=stm32g491vet`
+- `STM32G431CBTx` (48-pin)
+    - `PROJECT_TARGET=stm32g431cbt`
 
+## How the build resolves port files
+
+Given `PROJECT_TARGET=stm32g491vet`, `sharepoint.mk` parses the target string:
+
+- Series: `stm32g4xx` (characters 6–7 → `g4`)
+- Line: `stm32g491` (characters 8–9 → `91`)
+- Port directory: `stm/stm32g4xx/stm32g491/`
+- Linker script: `STM32G491VETx_FLASH.ld`
+- Startup: `startup_stm32g491xx.s`
+- BSP config: `stm32g491vet.cfg`
+
+The same pattern applies to `stm32g431cbt` under `stm/stm32g4xx/stm32g431/`.

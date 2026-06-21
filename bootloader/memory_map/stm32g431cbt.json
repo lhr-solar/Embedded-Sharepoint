@@ -1,0 +1,19 @@
+{
+  "mcu": "stm32g431cbt",
+  "flash_base": "0x08000000",
+  "flash_size": "0x20000",
+  "page_size": "0x800",
+  "bl_region": {
+    "base": "0x08000000",
+    "size": "0x2000"
+  },
+  "slots": [
+    {
+      "name": "APP",
+      "base": "0x08002000",
+      "size": "0x1E000"
+    }
+  ],
+  "app_vector_base": "0x08002000",
+  "bl_image_budget": "0x2000"
+}

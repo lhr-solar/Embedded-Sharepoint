@@ -1,6 +1,6 @@
-#include "movingAverage.h"
+#include "moving_average.h"
 #include "stm32xx_hal.h"
-#include "UART.h"
+#include "uart.h"
 #include "printf.h"
 
 StaticTask_t txTaskBuffer;

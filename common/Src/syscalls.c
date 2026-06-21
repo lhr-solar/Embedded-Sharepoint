@@ -30,7 +30,7 @@
 #include <sys/times.h>
 #include <time.h>
 
-#include "UART.h"
+#include "uart.h"
 #include "portmacro.h"
 
 extern int __io_putchar(int ch) __attribute__((weak));

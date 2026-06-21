@@ -6,6 +6,16 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+/*
+ * This multi-threaded FatFs demo (three RTOS task stacks + FatFs work areas)
+ * needs more RAM than the stm32g431 (32 KB) has. Emit the [CONFIG] marker so
+ * makeAllTests skips this target rather than failing the whole suite; the demo
+ * still builds/runs on larger parts (e.g. stm32g491, 128 KB).
+ */
+#if defined(STM32G431xx)
+#warning "[CONFIG] sdcard_mt: multi-threaded FatFs demo exceeds 32KB RAM on stm32g431 -- skipped"
+#endif
+
 /* handles */
 sd_handle_t sd;
 SPI_HandleTypeDef hspi_user;   
@@ -21,27 +31,7 @@ StaticTask_t xTask3Buffer;
 StackType_t xTask3Stack[512]; 
 
 /* pin def*/
-#if defined(STM32L476xx)
-    #define USER_SPI_INSTANCE  SPI2
-    #define USER_CS_PORT       GPIOB
-    #define USER_CS_PIN        GPIO_PIN_12
-
-    #define USER_SCK_PORT      GPIOB
-    #define USER_SCK_PIN       GPIO_PIN_10
-    #define USER_SCK_AF        GPIO_AF5_SPI2
-
-    #define USER_MISO_PORT     GPIOC
-    #define USER_MISO_PIN      GPIO_PIN_2
-    #define USER_MISO_AF       GPIO_AF5_SPI2
-
-    #define USER_MOSI_PORT     GPIOC
-    #define USER_MOSI_PIN      GPIO_PIN_3
-    #define USER_MOSI_AF       GPIO_AF5_SPI2
-
-    #define LED_PORT           GPIOA
-    #define LED_PIN            GPIO_PIN_5
-
-#elif defined(STM32G473xx) || defined(STM32G4xx)
+#if defined(STM32G473xx) || defined(STM32G4xx)
 
     #define USER_SPI_INSTANCE  SPI1
     #define USER_CS_PORT       GPIOA
@@ -202,43 +192,8 @@ void SystemClock_Config(void)
     RCC_OscInitTypeDef RCC_OscInitStruct = {0};
     RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
-    /* CONFIGURATION FOR L4 / G4 CHIPS             */
-    #if defined(STM32L4xx)
-
-        if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK) {
-            while(1); // Error Handler
-        }
-
-        RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-        RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-        RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-        RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-        RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-        RCC_OscInitStruct.PLL.PLLM = 1;
-        RCC_OscInitStruct.PLL.PLLN = 10;
-        
-        // L4 uses DIV7
-        RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV7; 
-        
-        RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
-        RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
-
-        if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
-            while(1); // Error Handler
-        }
-
-        RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
-                                    | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
-        RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-        RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-        RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
-        RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
-
-        if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK) {
-            while(1); // Error Handler
-        }
-
-    #elif defined(STM32G473xx) || defined(STM32G4xx)
+    /* CONFIGURATION FOR G4 CHIPS                  */
+    #if defined(STM32G473xx) || defined(STM32G4xx)
 
         if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK) {
             while(1); // Error Handler
@@ -275,40 +230,6 @@ void SystemClock_Config(void)
         }    
         HAL_RCCEx_EnableLSCO(RCC_LSCOSOURCE_LSI); //??
 
-
-    /* CONFIGURATION FOR F4 CHIPS (NEW)            */
-    #elif defined(STM32F4xx)
-
-        __HAL_RCC_PWR_CLK_ENABLE();
-        __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-
-        RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-        RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-        RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-        RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-        RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-        
-        // Standard F4 Config (HSI = 16MHz)
-        RCC_OscInitStruct.PLL.PLLM = 16;
-        RCC_OscInitStruct.PLL.PLLN = 336;
-        RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4; // F4 uses DIV4, not DIV7
-        RCC_OscInitStruct.PLL.PLLQ = 7;
-
-        if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
-            while(1); // Error Handler
-        }
-
-        RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
-                                    | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
-        RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-        RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-        RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
-        RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
-
-        if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK) {
-            while(1); // Error Handler
-        }
-
     #endif
 }
 
@@ -318,9 +239,7 @@ void User_Hardware_Init(void) {
     __HAL_RCC_GPIOC_CLK_ENABLE();
     
     // Force Clocks On
-    #if defined(STM32L476xx)
-        __HAL_RCC_SPI2_CLK_ENABLE(); 
-    #elif defined(STM32G473xx) || defined(STM32G4xx)
+    #if defined(STM32G473xx) || defined(STM32G4xx)
         __HAL_RCC_SPI1_CLK_ENABLE();
     #else
         __HAL_RCC_SPI1_CLK_ENABLE();
@@ -369,10 +288,7 @@ void User_Hardware_Init(void) {
     hspi_user.Init.TIMode = SPI_TIMODE_DISABLE;
     hspi_user.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
     
-    #if defined(STM32L4xx)
-       hspi_user.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
-       hspi_user.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
-    #elif defined(STM32G473xx) || defined(STM32G4xx)
+    #if defined(STM32G473xx) || defined(STM32G4xx)
        hspi_user.Init.CRCPolynomial = 7;
        hspi_user.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
        hspi_user.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
@@ -384,10 +300,7 @@ void User_Hardware_Init(void) {
     __HAL_SPI_ENABLE(&hspi_user);
 
     // ENABLE INTERRUPTS (Priority 10)
-    #if defined(STM32L476xx)
-        HAL_NVIC_SetPriority(SPI2_IRQn, 10, 0);
-        HAL_NVIC_EnableIRQ(SPI2_IRQn);
-    #elif defined(STM32G473xx) || defined(STM32G4xx)
+    #if defined(STM32G473xx) || defined(STM32G4xx)
         HAL_NVIC_SetPriority(SPI1_IRQn, 10, 0);
         HAL_NVIC_EnableIRQ(SPI1_IRQn);
     #else

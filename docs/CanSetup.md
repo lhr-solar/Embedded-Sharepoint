@@ -113,14 +113,24 @@ can_status_t can_start(CAN_HandleTypeDef* handle);
 
 For FDCAN, call:
 ```c
-can_status_t can_fd_init(FDCAN_HandleTypeDef* handle, FDCAN_FilterTypeDef* filter)
+can_status_t can_fd_init(FDCAN_HandleTypeDef* handle)
 ``` 
 and 
 ```c
 can_status_t can_fd_start(FDCAN_HandleTypeDef* handle);
 ```
 
-Make sure the filter config and handle are both configured before calling the init function.
+For FDCAN you do not build a filter yourself: `can_fd_init` derives the hardware
+acceptance filter from that instance's `can[X]_recv_entries.h` list (one
+standard-ID element per ID, every other ID rejected by the peripheral). Define
+`CAN_FILTER_ACCEPT_ALL` to instead accept every standard ID. Make sure the
+handle is configured before calling the init function.
+
+The bootloader host-command IDs `CMD` (`0x010`) and `DATA` (`0x011`) are
+registered on **FDCAN1 by default** (in addition to your `can1_recv_entries.h`),
+so a DFU/`ENTER` request always passes the hardware filter and reaches the app.
+Read them with `can_fd_recv(hfdcan1, BL_CAN_ID_CMD, ...)`; do not list
+`0x010`/`0x011` yourself. Opt out with `CAN_NO_BOOTLOADER_ENTRIES`.
 See the `can_fd` test in the `test/tests/` folder. The tests are both configured for `INTERNAL_LOOPBACK` mode which connects TX and RX each other. You should set it to `NORMAL` during production code.
 
 ## Sending CAN messages
@@ -243,6 +253,54 @@ void can_rx_callback_hook(CAN_HandleTypeDef *hcan, uint32_t RxFifo0ITs, can_rx_p
 ### Usage example:
 * [Mirroring CAN RX data over USB](https://github.com/lhr-solar/PS-VehicleControlUnit/blob/main/Firmware/Tasks/Src/MotorTelemetryTask.c)
 
+
+## CAN bootloader bridge (multi-FDCAN gateway)
+
+A board with more than one FDCAN bus can act as a *gateway*: it relays resident-bootloader traffic between a host-facing **main** bus and one or more **child** buses, so child nodes' bootloaders stay reachable from the host even though they sit on a different bus. The forwarding logic lives in `bootloader/Inc/bl_bridge.h` + `common/Src/bl_bridge.c` and runs entirely inside the CAN receive hook.
+
+Forwarding is one-directional, keyed off the fixed bootloader IDs in `bootloader/Inc/bl_protocol.h` (`CMD=0x010`, `DATA=0x011`, `RESP_BASE+id=0x100+id`, `STATUS_BASE+id=0x180+id`):
+
+* `CMD`/`DATA` received on the **main** bus → forwarded to **every child** bus.
+* `RESP_BASE+id`/`STATUS_BASE+id` received on a **child** bus → forwarded to the **main** bus.
+* `CMD`/`DATA` seen on a child are never relayed upstream, and `RESP`/`STATUS` are never pushed down (boot instructions must originate on the main bus). The ID ranges do not overlap, so direction is enforced by bus + ID range.
+
+### 1. Declare the topology
+Buses are named by their FDCAN peripheral **instance** (`FDCAN1`, `FDCAN2`, …), which is a compile-time constant, so the whole config is `const`. If a project never defines `bl_bridge_config`, the driver's `__weak` default (`{0}`) leaves the bridge disabled and `--gc-sections` strips it.
+```c
+#include "bl_bridge.h"
+
+static FDCAN_GlobalTypeDef* const bl_bridge_children[] = {FDCAN2 /*, FDCAN3 */};
+const bl_bridge_config_t bl_bridge_config = {
+    .main = FDCAN1,
+    .children = bl_bridge_children,
+    .child_count = 1,
+};
+```
+
+### 2. Wire it into the receive hook
+Call `bl_bridge_on_rx()` from your `can_fd_rx_callback_hook`. It ignores non-bootloader IDs and frames on unconfigured buses, so it is safe to call for every frame.
+```c
+void can_fd_rx_callback_hook(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs,
+                             can_rx_payload_t recv_payload) {
+    (void)RxFifo0ITs;
+    BaseType_t higherPriorityTaskWoken = pdFALSE;
+    bl_bridge_on_rx(hfdcan, &recv_payload, &higherPriorityTaskWoken);
+    portYIELD_FROM_ISR(higherPriorityTaskWoken);
+}
+```
+
+### 3. Accept the right IDs (hardware filter)
+The bridge can only forward frames the peripheral accepts, and acceptance is derived from each bus's `canX_recv_entries.h` (see [2. CAN Recieve Entries](#2-can-recieve-entries)). `bootloader/Inc/bl_can_filter.h` provides macros that expand to the needed `CAN_RECV_ENTRY` lines — add one `BL_RECV_ENTRIES_CHILD(dev)` per child node on the child bus's file:
+```c
+#include "bl_can_filter.h"
+
+// in can2_recv_entries.h (FDCAN2 carries child nodes 0 and 1):
+BL_RECV_ENTRIES_CHILD(0)   // accept RESP/STATUS for device id 0
+BL_RECV_ENTRIES_CHILD(1)   // ... and device id 1
+```
+`dev` must be a single token (an integer literal or a macro that expands to one). `FDCAN1` already auto-accepts `CMD`/`DATA` (see `CAN1_BL_RECV_ENTRIES` in `can_fd.c`), so do **not** add anything to `can1_recv_entries.h` for a main bus on FDCAN1 — `BL_RECV_ENTRIES_MAIN` exists only for the rare case of a main bus that is *not* FDCAN1.
+
+A complete gateway example (FDCAN1 main + FDCAN2 child) is in `test/tests/bl_bridge_test.c`.
 
 ## Codebases that use CAN
 * [VCU](https://github.com/lhr-solar/PS-VehicleControlUnit/blob/main/Firmware/Drivers/Src/CANbus.c)

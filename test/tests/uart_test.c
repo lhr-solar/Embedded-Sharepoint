@@ -4,7 +4,7 @@
 - Send messages and verify correctness
 */
 #include "stm32xx_hal.h"
-#include "UART.h"
+#include "uart.h"
 
 /* Private defines */
 #define LD2_Pin GPIO_PIN_5
@@ -39,11 +39,6 @@ int main(void) {
     huart->Init.Mode = UART_MODE_TX_RX;
     huart->Init.HwFlowCtl = UART_HWCONTROL_NONE;
     huart->Init.OverSampling = UART_OVERSAMPLING_16;
-
-    #ifdef STM32L4xx
-    huart->Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-    huart->AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-    #endif /* STM32L4xx */
     
     // Initialize UART BSP
     uart_status_t status = uart_init(huart);

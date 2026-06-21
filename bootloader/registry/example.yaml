@@ -1,0 +1,23 @@
+# Example node registry only. Real deployment registries live downstream in product repos.
+#
+# Validate:        python3 bootloader/registry/validate_registry.py <path>
+# With bridge xcheck (optional): add --recv FDCAN2=<path-to-can2_recv_entries.h>
+#   to confirm each child node on FDCAN2 has a BL_RECV_ENTRIES_CHILD(<device_id>) filter.
+
+nodes:
+  - device_id: 0
+    board_type: stm32g491vet
+    uid: "00112233445566778899AABB"
+    name: g491-main
+    bus: FDCAN1        # gateway, host-facing main bus
+
+  - device_id: 1
+    board_type: stm32g431cbt
+    name: g431-sensor
+    bus: FDCAN2        # child node behind the gateway
+
+  - device_id: 42
+    board_type: stm32g491vet
+    uid: "AABBCCDDEEFF001122334455"
+    name: g491-aux
+    bus: FDCAN2        # second child on the same child bus

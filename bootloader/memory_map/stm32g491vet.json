@@ -1,0 +1,25 @@
+{
+  "mcu": "stm32g491vet",
+  "flash_base": "0x08000000",
+  "flash_size": "0x80000",
+  "page_size": "0x800",
+  "bank_size": "0x40000",
+  "bl_region": {
+    "base": "0x08000000",
+    "size": "0x4000"
+  },
+  "slots": [
+    {
+      "name": "A",
+      "base": "0x08004000",
+      "size": "0x3C000"
+    },
+    {
+      "name": "B",
+      "base": "0x08040000",
+      "size": "0x40000"
+    }
+  ],
+  "app_vector_base": "0x08004000",
+  "bl_image_budget": "0x4000"
+}

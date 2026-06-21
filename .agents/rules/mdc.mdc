@@ -1,0 +1,12 @@
+---
+description: MDC protocol + tooling standards
+globs:
+  - Embedded-Sharepoint/can/mdc/**
+  - Embedded-Sharepoint/can/vehicles/**
+---
+- MDC is canonical JSON validated by JSON Schema (`Embedded-Sharepoint/can/mdc/schema/mdc.schema.bundle.json` for consumers; author via `Embedded-Sharepoint/can/mdc/schema/mdc.schema.json` + `defs/`). Run `node Embedded-Sharepoint/can/mdc/tools/bundle-mdc-schema.mjs` after schema edits. A project is a folder (`project.mdc.json` + optional per-network files). Version it via `schemaVersion`.
+- The schema is a CONTRACT consumed by the engine and app — keep it stable and well-documented; additive changes preferred.
+- Superset of DBC: first-class tags/labels, typed `attributeDefinitions`, display/viz hints, fault/alarm defs, computed/virtual signals, multi-network/multi-vehicle docs.
+- Tooling (`dbc2mdc`, `mdc2cheaders`, `mdc-validate`) under `Embedded-Sharepoint/can/mdc/tools/` shares ONE MDC load/validate module in `can/mdc/lib/` — no duplicated parsing logic across tools. Grafana dashboard generation (`mdc2grafana`) lives in the Electron repo at `deploy/mdc2grafana.mjs`.
+- Per-vehicle DBCs and MDC projects live under `Embedded-Sharepoint/can/vehicles/{Vehicle}/`.
+- Reuse cantools / existing `export_canspec_json.py` logic for DBC import rather than rewriting from scratch.

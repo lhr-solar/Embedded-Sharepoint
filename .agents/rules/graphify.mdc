@@ -1,0 +1,17 @@
+---
+description: graphify knowledge graph context
+alwaysApply: true
+---
+
+This project has a graphify knowledge graph at `graphify-out/`.
+
+**Before using Read, Grep, Glob, or Bash to explore the codebase, run graphify first:**
+- `graphify query "<question>"` — scoped subgraph for architecture questions
+- `graphify path "<A>" "<B>"` — dependency path between two symbols
+- `graphify explain "<concept>"` — all nodes related to a concept
+
+Include this in subagent prompts that involve code exploration. Skip only when `graphify-out/graph.json` does not exist yet, or graphify has already oriented you and you need specific line edits.
+
+- If `graphify-out/wiki/index.md` exists, navigate it instead of reading raw files
+- Read `graphify-out/GRAPH_REPORT.md` only when query/path/explain do not surface enough context
+- After modifying code files, run `graphify update .` to keep the graph current (AST-only, no API cost)

@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://embedded-sharepoint.local/bootloader/contract/node_registry.schema.json",
+  "title": "Bootloader Node Registry",
+  "description": "Deployment registry mapping device_id to board type and optional STM32 UID.",
+  "oneOf": [
+    {
+      "type": "array",
+      "items": { "$ref": "#/$defs/node" },
+      "minItems": 1
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nodes"],
+      "properties": {
+        "nodes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/node" },
+          "minItems": 1
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["device_id", "board_type"],
+      "properties": {
+        "device_id": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 119,
+          "description": "Unique per bus; used for RESP_BASE+id and STATUS_BASE+id."
+        },
+        "board_type": {
+          "type": "string",
+          "enum": ["stm32g491vet", "stm32g431cbt"]
+        },
+        "bus": {
+          "type": "string",
+          "description": "Optional CAN bus the node sits on (e.g. FDCAN1/FDCAN2). On a multi-FDCAN gateway, child nodes name their child bus; validate_registry.py --recv BUS=FILE cross-checks that each node's RESP/STATUS filter (BL_RECV_ENTRIES_CHILD) exists in that bus's recv-entries file."
+        },
+        "uid": {
+          "type": "string",
+          "pattern": "^[0-9A-Fa-f]{24}$",
+          "description": "Optional 96-bit STM32 unique device ID as 24 hex characters."
+        },
+        "name": {
+          "type": "string",
+          "description": "Optional human-readable label."
+        }
+      }
+    }
+  }
+}

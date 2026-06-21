@@ -2,14 +2,16 @@
 TEST ?= main
 
 # default is the LSOM MCU
-PROJECT_TARGET ?= stm32g473xx
+PROJECT_TARGET ?= stm32g491vet
 
 BEAR_ENABLE ?= 1
 VERBOSE ?= 0
 
 # source and include directories
-_PROJECT_C_SOURCES = $(wildcard Src/*.c)
-_PROJECT_C_INCLUDES = Inc
+# bsp/ is the example board layer (kept here so tests still build and so users
+# can copy it into their own project that submodules Embedded-Sharepoint).
+_PROJECT_C_SOURCES = $(wildcard Src/*.c) $(wildcard bsp/Src/*.c)
+_PROJECT_C_INCLUDES = Inc bsp/Inc
 
 # build and driver directories
 _PROJECT_BUILD_DIR ?= ../build
@@ -37,7 +39,7 @@ $(info $(PROJECT_BUILD_DIR))
 default: all
 .PHONY: all
 all:
-	$(MAKE) -C $(BUILD_MAKEFILE_DIR) all
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) -f sharepoint.mk all
 
 ifeq ($(BEAR_ENABLE), 1)
 ifeq ($(VERBOSE), 1)
@@ -50,7 +52,7 @@ endif
 
 .PHONY: clean
 clean:
-	$(MAKE) -C $(BUILD_MAKEFILE_DIR) clean
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) -f sharepoint.mk clean
 
 # generate documentation
 .PHONY: docs
@@ -60,18 +62,24 @@ docs:
 
 .PHONY: flash
 flash:
-	$(MAKE) -C $(BUILD_MAKEFILE_DIR) flash
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) -f sharepoint.mk flash
 
 .PHONY: flash-uart
 flash-uart:
-	$(MAKE) -C $(BUILD_MAKEFILE_DIR) flash-uart
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) -f sharepoint.mk flash-uart
+
+# clang-format: forwarded so the exported PROJECT_C_SOURCES (= CLANG_INPUTS) is
+# in scope. format-check is the non-mutating CI/pre-push gate; format-fix edits.
+.PHONY: format format-fix format-check
+format format-fix format-check:
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) -f sharepoint.mk $@
 
 # help
 .PHONY: help
 help:
 	@echo "Available targets:"
 	@echo "  docs     - Generate documentation using mkdocs."
-	$(MAKE) -C $(BUILD_MAKEFILE_DIR) help
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) -f sharepoint.mk help
 
 ifeq ($(OS),Windows_NT)
   OPEN_CMD = start
@@ -89,4 +97,4 @@ dbc-editor:
 
 .PHONY: debug
 debug:
-	$(MAKE) -C $(BUILD_MAKEFILE_DIR) debug
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) -f sharepoint.mk debug

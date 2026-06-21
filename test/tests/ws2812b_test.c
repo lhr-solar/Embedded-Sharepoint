@@ -1,5 +1,5 @@
 #include "stm32xx_hal.h"
-#include "WS2812B.h"
+#include "ws2812b.h"
 
 #define MAX_LED 8 // number of addressable leds on the LSOM
 
@@ -337,54 +337,5 @@ void HAL_TIM_PWM_MspDeInit(TIM_HandleTypeDef* tim_pwmHandle)
     /* TIM4 DMA DeInit */
     HAL_DMA_DeInit(tim_pwmHandle->hdma[TIM_DMA_ID_CC1]);
   }
-}
-#elif defined(STM32F4xx)
-void SystemClock_Config(void){
-}
-
-void MX_DMA_Init(void)
-{
-}
-
-void HAL_TIM_PWM_MspInit(TIM_HandleTypeDef* tim_pwmHandle)
-{
-
-}
-
-void MX_TIM4_Init(void){
-
-}
-
-void HAL_TIM_MspPostInit(TIM_HandleTypeDef* timHandle){
-
-}
-
-void HAL_TIM_PWM_MspDeInit(TIM_HandleTypeDef* tim_pwmHandle){
-
-}
-
-#elif defined(STM32L4xx)
-void SystemClock_Config(void){
-}
-
-void MX_DMA_Init(void)
-{
-}
-
-void HAL_TIM_PWM_MspInit(TIM_HandleTypeDef* tim_pwmHandle)
-{
-
-}
-
-void MX_TIM4_Init(void){
-
-}
-
-void HAL_TIM_MspPostInit(TIM_HandleTypeDef* timHandle){
-
-}
-
-void HAL_TIM_PWM_MspDeInit(TIM_HandleTypeDef* tim_pwmHandle){
-
 }
 #endif

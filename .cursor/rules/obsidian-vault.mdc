@@ -1,0 +1,15 @@
+---
+description: Obsidian agent vault context for electron-agent-vault
+alwaysApply: true
+---
+
+This project uses an Obsidian vault at `**-vault/` (obsidian-mind v6.2.1).
+
+- **Operating manual:** `electron-agent-vault/CLAUDE.md` (read before vault operations)
+- **Goals:** `electron-agent-vault/brain/North Star.md` at session start
+- **Search:** QMD (`qmd --index obsidian-mind query "..."`) before reading vault files
+- **Graph:** Maintain wikilinks between notes; folders group by purpose, links group by meaning
+- **Skills:** See `.cursor/skills/electron-agent-vault/SKILL.md` for vault setup, graphify export, and related skills
+- **Export codebase graph:** `graphify export obsidian --graph .graphify/graph.json --out electron-agent-vault/reference/graphify`
+
+When conversation produces decisions, lessons, or project updates worth keeping, save to the vault following `CLAUDE.md` conventions.

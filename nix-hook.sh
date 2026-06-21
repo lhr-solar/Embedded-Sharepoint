@@ -14,7 +14,11 @@ SENTINEL="$VENV_PATH/.pip_installed"
 
 if [ ! -d "$VENV_PATH" ]; then
     echo "Creating virtual environment..."
-    python3 -m venv "$VENV_PATH"
+    if command -v uv >/dev/null 2>&1; then
+        uv venv "$VENV_PATH"
+    else
+        python3 -m venv "$VENV_PATH"
+    fi
 fi
 
 source "$VENV_PATH/bin/activate"
@@ -23,9 +27,17 @@ if [ -f "$REQ_PATH" ]; then
     # Only install if the sentinel doesn't exist OR requirements.txt is newer than the sentinel
     if [ ! -f "$SENTINEL" ] || [ "$REQ_PATH" -nt "$SENTINEL" ]; then
         echo "Updating python requirements..."
-        
-        # Explicitly use the venv's python binary to avoid hitting the read-only /nix/store
-        if "$VENV_PATH/bin/python" -m pip install -q -r "$REQ_PATH"; then
+
+        # Prefer uv (fast); fall back to the venv's pip. Both target the active
+        # venv (VIRTUAL_ENV) so we never write to the read-only /nix/store.
+        if command -v uv >/dev/null 2>&1; then
+            if uv pip install -q -r "$REQ_PATH"; then
+                touch "$SENTINEL"
+            else
+                echo "Error: uv pip install failed."
+                exit 1
+            fi
+        elif "$VENV_PATH/bin/python" -m pip install -q -r "$REQ_PATH"; then
             touch "$SENTINEL"
         else
             echo "Error: pip install failed."

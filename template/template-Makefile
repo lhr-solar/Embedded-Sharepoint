@@ -33,7 +33,7 @@ TEST ?= main
 # If it's a PSOM then do - stm32l431cbt
 # Else pick whatever STM32 p/n it is (all options are in docs/STM32_Ports.md)
 ####
-PROJECT_TARGET ?= stm32g473xx
+PROJECT_TARGET ?= stm32g491vet
 ####
 
 # ❗ CHANGE THIS ❗
@@ -41,6 +41,8 @@ PROJECT_TARGET ?= stm32g473xx
 # If you don't want to change this then leave as is
 ####
 # source and include directories
+# Your board layer (pins/peripherals/clock) lives in your own bsp/ folder here;
+# copy Embedded-Sharepoint/test/bsp as a starting point. The globs below pick it up.
 PROJECT_C_INCLUDES = $(wildcard */Inc)
 PROJECT_C_SOURCES = $(wildcard */Src/*.c)
 ####
@@ -120,7 +122,7 @@ else ifeq ($(MAKECMDGOALS), all)
 all: build_code
 else
 %:
-	$(BEAR_PREFIX) $(MAKE) -C $(BUILD_MAKEFILE_DIR) $(MAKECMDGOALS)
+	$(BEAR_PREFIX) $(MAKE) -C $(BUILD_MAKEFILE_DIR) -f sharepoint.mk $(MAKECMDGOALS)
 endif
 
 
@@ -130,24 +132,24 @@ ifneq ($(TEST), main)
 else
 	@echo -e "Making ${PURPLE}$(PROJECT_TARGET)${NC}build with ${ORANGE}no test.${NC}"
 endif
-	$(BEAR_PREFIX) $(MAKE) -C $(BUILD_MAKEFILE_DIR) all -j
+	$(BEAR_PREFIX) $(MAKE) -C $(BUILD_MAKEFILE_DIR) -f sharepoint.mk all -j
 	@echo -e "${GREEN}Compiled! Splendid! Jolly Good!!${NC}"
 
 
 #-------------------------------
 # Flash
 flash: 	
-	$(MAKE) -C $(BUILD_MAKEFILE_DIR) flash
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) -f sharepoint.mk flash
 
 #-------------------------------
 # Flash via UART
 flash-uart: 	
-	$(MAKE) -C $(BUILD_MAKEFILE_DIR) flash-uart
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) -f sharepoint.mk flash-uart
 
 #-------------------------------
 # OpenOCD debug
 debug: 	
-	$(MAKE) -C $(BUILD_MAKEFILE_DIR) debug
+	$(MAKE) -C $(BUILD_MAKEFILE_DIR) -f sharepoint.mk debug
 
 #-------------- 
 # Documentation

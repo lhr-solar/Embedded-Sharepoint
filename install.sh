@@ -57,7 +57,7 @@ function install_packages() {
             add-apt-repository ppa:deadsnakes/ppa -y
             apt-get update
             apt-get install -y vim wget build-essential gdb-multiarch openocd stlink-tools \
-                libncurses-dev python3-pip git gnupg dirmngr bear picocom ca-certificates \
+                libncurses-dev python3-pip git gnupg dirmngr picocom ca-certificates \
                 openssh-client python3.10 python3.10-dev usbutils
             update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1
             pip3 install mkdocs pyserial
@@ -72,7 +72,7 @@ function install_packages() {
             dnf install -y python3.10 python3.10-devel
             dnf groupinstall -y "Development Tools" "Development Libraries"
             dnf install -y vim wget gdb openocd stlink ncurses-devel python3-pip git \
-                gnupg bear picocom ca-certificates openssh-clients usbutils
+                gnupg picocom ca-certificates openssh-clients usbutils
             alternatives --set python3 /usr/bin/python3.10
             pip3 install mkdocs pyserial
             dnf install -y clang clang-tools-extra lld
@@ -122,9 +122,22 @@ function arm_toolchain() {
     esac
 }
 
+function install_git_hooks() {
+    echo -e "${RED}\nEnabling repository git hooks...\n==================================\n${NC}"
+    local repo_root
+    repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    # core.hooksPath is repo-local and idempotent; never block install on failure.
+    if git -C "$repo_root" config --local core.hooksPath .githooks 2>/dev/null; then
+        echo "Enabled .githooks (pre-push branch-name check). Bypass with: git push --no-verify"
+    else
+        echo "Could not set core.hooksPath automatically. Run: git config core.hooksPath .githooks"
+    fi
+}
+
 # Main execution
 install_packages
 install_gh
 arm_toolchain install
+install_git_hooks
 
 echo -e "${RED}Installation completed successfully!${NC}"

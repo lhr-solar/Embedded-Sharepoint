@@ -1,0 +1,21 @@
+# Starting graphify config — refine as graphifyy schema stabilizes.
+# AST/code-only scope for assistant use; no LLM API key required for code files.
+# Consumed by scripts/graphify/run-graphify.sh
+
+mode: assistant
+
+include:
+  - bootloader/
+  - common/
+  - driver/
+  - stm/*/stm32g431/
+  - stm/*/stm32g491/
+  - test/
+  - scripts/
+
+exclude:
+  - "**/CMSIS/**"
+  - "**/STM32*_HAL_Driver/**"
+  - middleware/
+  - build/
+  - .venv/

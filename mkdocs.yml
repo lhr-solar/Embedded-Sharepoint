@@ -17,7 +17,7 @@ plugins:
   - mkdoxy:
       projects:
         BSP:
-          src-dirs: bsp/Inc
+          src-dirs: test/bsp/Inc
           full-doc: true
           doxy-cfg:
             RECURSIVE: true

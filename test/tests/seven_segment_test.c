@@ -1,5 +1,5 @@
 #include "stm32xx_hal.h"
-#include "SevenSegment.h"
+#include "seven_segment.h"
 
 int main1(){
 //count 0-10

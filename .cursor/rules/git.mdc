@@ -1,0 +1,11 @@
+---
+description: Git push/pull/branch policy — never push unless explicitly asked
+alwaysApply: true
+---
+
+# Git policy
+
+- **Never push** (`git push`, `gh` commands that push, force-push, etc.) unless the user **explicitly** asks in the current request or a standing user rule.
+- If a workflow would normally push (e.g. opening a PR), stop at commit or tell the user what to push — do not push on your own.
+- **Pull and branch switches are allowed** when useful: `git pull`, `git fetch`, `git checkout`, `git switch`, creating local branches, etc. Use judgment; no need to ask first.
+- **Commits** still follow the existing rule: only commit when the user explicitly asks.

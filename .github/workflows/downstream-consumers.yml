@@ -1,0 +1,121 @@
+# Non-blocking pre-monorepo guard.
+#
+# Compiles downstream consumer repos (VCU, BPS, ...) against the CURRENT
+# Embedded-Sharepoint commit (overlaid as their submodule) to surface breakage
+# before a monorepo migration. This workflow NEVER fails the pipeline: the
+# consumer list defaults to EMPTY (clean no-op) and every consumer leg runs with
+# continue-on-error so an inaccessible/broken consumer cannot block anything.
+name: Downstream Consumers (non-blocking)
+
+on:
+  workflow_dispatch:
+    inputs:
+      consumers:
+        description: >-
+          JSON array of consumers to compile (overrides the CONSUMERS default).
+          Each entry: {"repo":"owner/name","ref":"main",
+          "submodule_path":"Firmware/Embedded-Sharepoint","build":"<shell cmd>"}
+        required: false
+        default: ""
+  # Optional cadence; harmless because the default list is empty.
+  schedule:
+    - cron: "0 7 * * 1" # Mondays 07:00 UTC
+
+env:
+  # DEFAULT: empty -> the build job is skipped entirely (no-op).
+  # Populate this (or the workflow_dispatch input) to enable the guard, e.g.:
+  #   [
+  #     {
+  #       "repo": "lhr-solar/PS-VehicleControlUnit",
+  #       "ref": "main",
+  #       "submodule_path": "Firmware/Embedded-Sharepoint",
+  #       "build": "cd Firmware && nix develop ./Embedded-Sharepoint --accept-flake-config --command bash -c 'make'"
+  #     }
+  #   ]
+  CONSUMERS: "[]"
+
+jobs:
+  # Resolve the consumer list (input > env) into a matrix + a presence flag.
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set.outputs.matrix }}
+      has_consumers: ${{ steps.set.outputs.has_consumers }}
+    steps:
+      - name: Resolve consumer list
+        id: set
+        env:
+          INPUT_CONSUMERS: ${{ inputs.consumers }}
+        run: |
+          RAW="$INPUT_CONSUMERS"
+          [ -z "$RAW" ] && RAW="$CONSUMERS"
+          [ -z "$RAW" ] && RAW="[]"
+          # Invalid JSON degrades to empty rather than failing (non-blocking).
+          if ! printf '%s' "$RAW" | jq -e 'type == "array"' >/dev/null 2>&1; then
+            echo "::warning::CONSUMERS is not a valid JSON array; treating as empty."
+            RAW="[]"
+          fi
+          echo "matrix=$(printf '%s' "$RAW" | jq -c .)" >> "$GITHUB_OUTPUT"
+          if [ "$(printf '%s' "$RAW" | jq 'length')" -gt 0 ]; then
+            echo "has_consumers=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_consumers=false" >> "$GITHUB_OUTPUT"
+            echo "No consumers configured; nothing to do."
+          fi
+
+  # Skipped when the list is empty; otherwise one non-blocking leg per consumer.
+  build-consumers:
+    needs: prepare
+    if: needs.prepare.outputs.has_consumers == 'true'
+    runs-on: ubuntu-latest
+    continue-on-error: true # a broken/inaccessible consumer must not fail CI
+    strategy:
+      fail-fast: false
+      matrix:
+        consumer: ${{ fromJson(needs.prepare.outputs.matrix) }}
+    steps:
+      - name: Checkout Sharepoint (this commit)
+        uses: actions/checkout@v4
+        with:
+          path: sharepoint
+
+      - name: Checkout consumer ${{ matrix.consumer.repo }}
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ matrix.consumer.repo }}
+          ref: ${{ matrix.consumer.ref || 'main' }}
+          # Falls back to the default job token when the secret is unset, so a
+          # missing CONSUMER_CI_TOKEN never hard-fails (public repos still work).
+          token: ${{ secrets.CONSUMER_CI_TOKEN || github.token }}
+          submodules: recursive
+          path: consumer
+
+      - name: Overlay current Sharepoint as the consumer's submodule
+        continue-on-error: true
+        run: |
+          SUBPATH="${{ matrix.consumer.submodule_path }}"
+          if [ -z "$SUBPATH" ]; then
+            echo "::warning::No submodule_path for ${{ matrix.consumer.repo }}; skipping overlay."
+            exit 0
+          fi
+          DEST="consumer/$SUBPATH"
+          rm -rf "$DEST"
+          mkdir -p "$(dirname "$DEST")"
+          cp -a sharepoint "$DEST"
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      - name: Compile ${{ matrix.consumer.repo }}
+        continue-on-error: true
+        working-directory: consumer
+        run: |
+          BUILD="${{ matrix.consumer.build }}"
+          if [ -z "$BUILD" ]; then
+            echo "::warning::No build command for ${{ matrix.consumer.repo }}; skipping compile."
+            exit 0
+          fi
+          bash -c "$BUILD"

@@ -1,13 +1,6 @@
 #include "stm32xx_hal.h"
 
-// Heartbeat pin on stm32l432kcu is PB3
-#if defined(STM32L432xx)
-    #define LED_PIN GPIO_PIN_3
-    #define LED_PORT GPIOB
-#elif defined(STM32L431xx)
-    #define LED_PIN GPIO_PIN_11
-    #define LED_PORT GPIOB
-#elif defined(STM32G473xx)
+#if defined(STM32G473xx)
     // LSOM
     #define LED_PIN GPIO_PIN_3
     #define LED_PORT GPIOC

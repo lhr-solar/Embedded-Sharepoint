@@ -44,12 +44,12 @@ This section explains common Makefile syntax used in the template Makefile.
 #### Comments
 Any line becomes a comment by adding `#` When adding comments, it's suggested to make them on a separate line from actual Makefile code, i.e avoid
 ```make
-PROJECT_TARGET ?= stm32g473xx # this line contains the project target
+PROJECT_TARGET ?= stm32g491vet # this line contains the project target
 ``` 
 and instead do
 ```make
 # this line contaisn the project target
-PROJECT_TARGET ?= stm32g473xx 
+PROJECT_TARGET ?= stm32g491vet 
 ``` 
 This is because Makefiles can sometimes compile the comments into the command and break directories. 
 
@@ -58,18 +58,18 @@ The `?=` operator assigns a value **only if the variable is not already set**.
 This allows variables to be overridden from the command line.
 
 ```make
-PROJECT_TARGET ?= stm32g473xx
+PROJECT_TARGET ?= stm32g491vet
 ```
-This by default sets the `PROJECT_TARGET` to be `stm32g473xx`, but by running
+This by default sets the `PROJECT_TARGET` to be `stm32g491vet`, but by running
 ```sh
-make PROJECT_TARGET=stm32l432cbt
+make PROJECT_TARGET=stm32g431cbt
 ```
-The `PROJECT_TARGET` will be overridden to `stm32l432cbt`
+The `PROJECT_TARGET` will be overridden to `stm32g431cbt`
 
 #### Variable Expansion 
 Variables are referenced using `$(VAR)` or `${VAR}` (both are valid).
 ```make
-$(MAKE) -C $(BUILD_MAKEFILE_DIR) all
+$(MAKE) -C $(BUILD_MAKEFILE_DIR) -f sharepoint.mk all
 @echo "Building ${PROJECT_TARGET}"
 ```
 
@@ -89,7 +89,7 @@ This looks through all immediate subdirectories for a `Src` folder and adds all 
 ### Set Project Variables
 Below are several variables that the Embedded-Sharepoint Makefile uses to compile your code, these variables are used in the template Makefile, and you can update them.
 
-* `PROJECT_TARGET`: The STM32 part number (e.g., `stm32f446ret`)
+* `PROJECT_TARGET`: The STM32 part number (e.g., `stm32g491vet`)
 * `PROJECT_C_SOURCES`: List of your C source files
 * `PROJECT_C_INCLUDES`: List of your include directories
 * `PROJECT_BUILD_DIR`: Where to place build outputs
@@ -122,6 +122,9 @@ The `SystemClock_Config` function configures the clock that your STM32 runs on (
 We define the SystemClock_Config function as "weak", which means that the function can be overridden by a different implementation of the function. We have a default implementation in the stm32xx_hal_init.c file, which by default initializes the internal oscillator of some specific Nucleo's clock, but since we operate with a variety of Nucleos and processors you should redefine the function for your specific usecase.
 
 Generate a new SystemClock_Config in STM32CubeMX and add it to one of your files in your repository (suggested is your main.c). This should serve as a redefinition of the function and will override the default behavior. Make sure you are generating the code with the correct microcontroller part number in the software, and you are using an external oscillator (if generating code for one of our SOM PCBs). Instructions on how to use CubeMX and generate a SystemClock_Config can be found [here](./CubeMX.md).
+
+### Provide a board layer (bsp)
+Embedded-Sharepoint drivers are pin-agnostic: they handle everything inherent to the MCU (peripheral instances, clocks, NVIC) but delegate board-specific bring-up (pins, which instances are routed, bit timing) to your project. Create a `bsp/` folder in your repo that provides the strong `HAL_*_MspInit` pin maps and per-instance init (e.g. `board_init()`); the default `PROJECT_C_SOURCES`/`PROJECT_C_INCLUDES` globs pick it up automatically. Copy `Embedded-Sharepoint/test/bsp/` as a working starting point for the `stm32g491vet` and `stm32g431cbt` boards.
 
 
 ## 5. Compiling your repository

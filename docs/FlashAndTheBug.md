@@ -174,7 +174,7 @@ Or alternatively with UART:
 To debug we'll use **OpenOCD**. 
 
 1. Navigate to the root directory of Embedded Sharepoint.
-2. Run `openocd -f openocd-stm32f4x.cfg` if you're programming an F4 MCU or the corresponding `..l4x.cfg` if you're programming an L4.
+2. Run `openocd -f openocd-stm32g4x.cfg`.
 3. You should see a message that a GDB server was started on port `3333`.
 
 Open a second terminal session to use GDB

@@ -15,7 +15,7 @@
  * Refer to the `ADC.c` file for the default implementation.
  */
 
-#include "ADC.h"
+#include "adc.h"
 
 #define STACK_SIZE 200
 
@@ -234,14 +234,12 @@ int main() {
     s+=0;
     if (s != ADC_OK) error_handler(ADC_INIT_FAIL);
 
-    #if !defined(STM32L4xx)
     ADC_MultiModeTypeDef multimode = {0};
     multimode.Mode = ADC_MODE_INDEPENDENT;
     if (HAL_ADCEx_MultiModeConfigChannel(hadc1, &multimode) != HAL_OK)
     {
     Error_Handler();
     }
-    #endif
 
     
     #ifdef ADC2
@@ -309,13 +307,15 @@ static inline void HAL_ADC_MspG4Init(ADC_HandleTypeDef *h) {
         PeriphClkInit.Adc12ClockSelection = RCC_ADC12CLKSOURCE_SYSCLK;
         __HAL_RCC_ADC12_CLK_ENABLE(); 
         if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) Error_Handler();
-    }   
-    else if (h->Instance == ADC3 || h->Instance == ADC4 || h->Instance == ADC5) {
+    }
+#if defined(ADC3) || defined(ADC4) || defined(ADC5)
+    else {
         PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC345;
         PeriphClkInit.Adc345ClockSelection = RCC_ADC345CLKSOURCE_SYSCLK;
-        __HAL_RCC_ADC345_CLK_ENABLE(); 
+        __HAL_RCC_ADC345_CLK_ENABLE();
         if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) Error_Handler();
     }
+#endif
 
     #if defined(ADC1) || defined(ADC2)
     HAL_NVIC_SetPriority(ADC1_2_IRQn, ADC_PRIO, 0);
@@ -339,59 +339,16 @@ static inline void HAL_ADC_MspG4Init(ADC_HandleTypeDef *h) {
 }
 #endif
 
-#if defined(STM32L4xx)
-static inline void HAL_ADC_MspL4Init(ADC_HandleTypeDef *h) {
-
-    // L4 Clock
-    __HAL_RCC_ADC_CLK_ENABLE();
-
-    // L4 w/ one ADC
-    #if !defined(ADC2) && !defined(ADC3)
-    HAL_NVIC_SetPriority(ADC1_IRQn, ADC_PRIO, 0);
-    HAL_NVIC_EnableIRQ(ADC1_IRQn);
-
-    // L4 w/ more than one ADC
-    #elif defined(ADC2)
-    HAL_NVIC_SetPriority(ADC1_2_IRQn, ADC_PRIO, 0);
-    HAL_NVIC_EnableIRQ(ADC1_2_IRQn);
-
-    // L4 w/ more than one ADC
-    #elif defined(ADC3)
-    HAL_NVIC_SetPriority(ADC3_IRQn, ADC_PRIO, 0);
-    HAL_NVIC_EnableIRQ(ADC3_IRQn);
-
-    #endif
-}
-#endif
-
-#if defined(STM32F4xx)
-static inline void HAL_ADC_MspF4Init(ADC_HandleTypeDef *h) {
-    // GPIO Init
-
-    // F4 Clock
-    if (h->Instance == ADC1) __HAL_RCC_ADC1_CLK_ENABLE();
-
-    #ifdef ADC2
-    if (h->Instance == ADC2) __HAL_RCC_ADC2_CLK_ENABLE();
-    #endif
-
-    #ifdef ADC3
-    if (h->Instance == ADC3)__HAL_RCC_ADC3_CLK_ENABLE();
-    #endif
-
-    HAL_NVIC_SetPriority(ADC_IRQn, ADC_PRIO, 0);
-    HAL_NVIC_EnableIRQ(ADC_IRQn);
-}
-#endif
-
 #if defined(STM32G4xx)
 static inline void HAL_ADC_MspG4DeInit(ADC_HandleTypeDef *h) {
-    if (h->Instance == ADC1 || h->Instance == ADC2) { 
-        __HAL_RCC_ADC12_CLK_DISABLE(); 
-    }   
-    if (h->Instance == ADC3 || h->Instance == ADC4 || h->Instance == ADC5) {
-        __HAL_RCC_ADC345_CLK_DISABLE(); 
+    if (h->Instance == ADC1 || h->Instance == ADC2) {
+        __HAL_RCC_ADC12_CLK_DISABLE();
     }
+#if defined(ADC3) || defined(ADC4) || defined(ADC5)
+    else {
+        __HAL_RCC_ADC345_CLK_DISABLE();
+    }
+#endif
 
     #if defined(ADC1) || defined(ADC2)
     HAL_NVIC_DisableIRQ(ADC1_2_IRQn);
@@ -411,75 +368,10 @@ static inline void HAL_ADC_MspG4DeInit(ADC_HandleTypeDef *h) {
 }
 #endif
 
-#if defined(STM32L4xx)
-static inline void HAL_ADC_MspL4DeInit(ADC_HandleTypeDef *h) {
-    // GPIO Init
-
-    // L4 Clock
-    __HAL_RCC_ADC_CLK_DISABLE();
-
-    // L4 w/ one ADC
-    #if !defined(ADC2) && !defined(ADC3)
-    HAL_NVIC_DisableIRQ(ADC1_IRQn);
-
-    // L4 w/ more than one ADC
-    #elif defined(ADC2)
-    HAL_NVIC_DisableIRQ(ADC1_2_IRQn);
-
-    // L4 w/ more than one ADC
-    #elif defined(ADC3)
-    HAL_NVIC_DisableIRQ(ADC3_IRQn);
-
-    #endif
-}
-#endif
-
-#if defined(STM32F4xx)
-static inline void HAL_ADC_MspF4DeInit(ADC_HandleTypeDef *h) {
-    if (h->Instance == ADC1) __HAL_RCC_ADC1_CLK_DISABLE();
-
-    #ifdef ADC2
-    if (h->Instance == ADC2) __HAL_RCC_ADC2_CLK_DISABLE();
-    #endif
-
-    #ifdef ADC3
-    if (h->Instance == ADC3)__HAL_RCC_ADC3_CLK_DISABLE();
-    #endif
-
-    HAL_NVIC_DisableIRQ(ADC_IRQn);
-}
-#endif
-
 void HAL_ADC_MspInit(ADC_HandleTypeDef *h) {
-    // G4
-    #ifdef STM32G4xx
     HAL_ADC_MspG4Init(h);
-    #endif
-    
-    // L4
-    #ifdef STM32L4xx
-    HAL_ADC_MspL4Init(h);
-    #endif
-
-    // F4
-    #ifdef STM32F4xx
-    HAL_ADC_MspF4Init(h);
-    #endif
 }
 
 void HAL_ADC_MspDeInit(ADC_HandleTypeDef *h) {
-    // G4
-    #ifdef STM32G4xx
     HAL_ADC_MspG4DeInit(h);
-    #endif
-
-    // L4
-    #ifdef STM32L4xx
-    HAL_ADC_MspL4DeInit(h);
-    #endif
-
-    // F4
-    #ifdef STM32F4xx
-    HAL_ADC_MspF4DeInit(h);
-    #endif
 }

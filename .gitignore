@@ -34,3 +34,9 @@ can/dbc/**/*.ldb
 
 # Arduino-cli files
 .arduino*
+
+# Graphify knowledge graph output
+.graphify/
+
+# Agents
+.cursor/plans

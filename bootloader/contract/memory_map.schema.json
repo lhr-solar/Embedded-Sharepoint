@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://embedded-sharepoint.local/bootloader/contract/memory_map.schema.json",
+  "title": "Bootloader Memory Map",
+  "description": "Flash layout for a target MCU: bootloader region, application slot(s), and linker budgets.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "mcu",
+    "flash_base",
+    "flash_size",
+    "page_size",
+    "bl_region",
+    "slots",
+    "app_vector_base",
+    "bl_image_budget"
+  ],
+  "properties": {
+    "mcu": {
+      "type": "string",
+      "minLength": 1
+    },
+    "flash_base": {
+      "$ref": "#/$defs/address"
+    },
+    "flash_size": {
+      "$ref": "#/$defs/size"
+    },
+    "page_size": {
+      "$ref": "#/$defs/size"
+    },
+    "bank_size": {
+      "description": "Optional; present for dual-bank parts, omitted or null for single-bank.",
+      "oneOf": [
+        { "$ref": "#/$defs/size" },
+        { "type": "null" }
+      ]
+    },
+    "bl_region": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["base", "size"],
+      "properties": {
+        "base": { "$ref": "#/$defs/address" },
+        "size": { "$ref": "#/$defs/size" }
+      }
+    },
+    "slots": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "base", "size"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "base": { "$ref": "#/$defs/address" },
+          "size": { "$ref": "#/$defs/size" }
+        }
+      }
+    },
+    "app_vector_base": {
+      "$ref": "#/$defs/address",
+      "description": "VTOR address for the default running application."
+    },
+    "bl_image_budget": {
+      "$ref": "#/$defs/size",
+      "description": "Maximum resident bootloader image size (must be <= bl_region.size)."
+    }
+  },
+  "$defs": {
+    "address": {
+      "oneOf": [
+        { "type": "integer", "minimum": 0 },
+        { "type": "string", "pattern": "^0x[0-9A-Fa-f]+$" }
+      ]
+    },
+    "size": {
+      "oneOf": [
+        { "type": "integer", "minimum": 1 },
+        { "type": "string", "pattern": "^0x[0-9A-Fa-f]+$" }
+      ]
+    }
+  }
+}

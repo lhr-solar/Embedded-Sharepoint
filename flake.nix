@@ -16,15 +16,18 @@
           # arm-none-eabi toolchain (may not exist everywhere)
           armGcc = pkgs.gcc-arm-embedded or null;
 
-          python = pkgs.python310.withPackages (ps: with ps; [ ps.pip ]);
+          python = pkgs.python310.withPackages (ps: with ps; [ ps.pip ps.can ]);
 
           # Base packages (common to all)
           basePackages = [
             pkgs.gcc
-            pkgs.clang
-            pkgs.clang-tools
+            # Pin clang + clang-tools to LLVM 16 together. clang-format 16 matches
+            # the committed .clang-format (a modern dump: enum AlignConsecutiveMacros,
+            # AlignArrayOfStructures); the default LLVM 11 here is too old to parse
+            # it. Bumping both avoids the LLVM-11 clang shadowing clang-tools' 16.
+            pkgs.clang_16
+            pkgs.clang-tools_16
             pkgs.lld
-            pkgs.bear
             pkgs.cmake
             pkgs.pkg-config
             pkgs.ncurses
@@ -37,9 +40,15 @@
             pkgs.binutils
             pkgs.parallel
             pkgs.sl
-            pkgs.gcc-arm-embedded
+            # gcc-arm-embedded is added once via the platform-guarded `armGcc`
+            # below (it is not packaged on every system).
             python
+            # Fast pip/venv used by nix-hook.sh; only on nixpkgs that package it
+            # (filtered out below when null, e.g. the 23.05 pin). nix-hook falls
+            # back to pip, or uses a uv that's already on PATH.
+            (pkgs.uv or null)
             pkgs.openocd
+            pkgs.dfu-util
           ];
 
           # Extra debug/flash tools, only if available
