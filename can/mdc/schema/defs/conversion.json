@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lhr.dev/mdc/2025-06/defs/conversion.json",
+  "$defs": {
+    "conversion": {
+      "description": "Raw → physical conversion. Selected by `kind`. See mdc-overview.md for the exact math of each kind.",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "identity",
+          "description": "physical = raw. No scaling.",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": {
+            "kind": { "const": "identity" }
+          }
+        },
+        {
+          "type": "object",
+          "title": "linear",
+          "description": "physical = factor * raw + offset (DBC factor/offset).",
+          "additionalProperties": false,
+          "required": ["kind", "factor", "offset"],
+          "properties": {
+            "kind": { "const": "linear" },
+            "factor": { "type": "number", "description": "Scale applied to the raw value.", "default": 1 },
+            "offset": { "type": "number", "description": "Added after scaling.", "default": 0 }
+          }
+        },
+        {
+          "type": "object",
+          "title": "rational",
+          "description": "physical = (numerator polynomial in raw) / (denominator polynomial in raw) + offset. Coefficients are ordered highest power first.",
+          "additionalProperties": false,
+          "required": ["kind", "numerator", "denominator"],
+          "properties": {
+            "kind": { "const": "rational" },
+            "numerator": {
+              "type": "array",
+              "description": "Numerator polynomial coefficients, highest power first (e.g. [a, b, c] = a*raw^2 + b*raw + c).",
+              "items": { "type": "number" },
+              "minItems": 1
+            },
+            "denominator": {
+              "type": "array",
+              "description": "Denominator polynomial coefficients, highest power first. Must not evaluate to zero over the signal's range.",
+              "items": { "type": "number" },
+              "minItems": 1
+            },
+            "offset": { "type": "number", "description": "Added after the division.", "default": 0 }
+          }
+        },
+        {
+          "type": "object",
+          "title": "table",
+          "description": "Enumerated mapping: the raw value is categorical and rendered via `choices` or `valueTableRef` on the signal. The numeric physical value equals raw.",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": {
+            "kind": { "const": "table" }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,38 @@
+VERSION ""
+
+
+NS_ :
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	BA_DEF_DEF_
+
+BS_:
+
+BU_: ECU
+
+BO_ 2550588916 Test_Msg: 8 ECU
+ SG_ Test_Sig : 0|8@1+ (1,0) [0|255] "" ECU
+
+BA_DEF_ SG_ "SPN" INT 0 524287;
+BA_DEF_ BO_ "GenMsgCycleTime" INT 0 100000;
+BA_DEF_ BO_ "GenMsgSendType" ENUM "Cyclic","Event","Spontaneous";
+BA_DEF_ BO_ "VFrameFormat" ENUM "StandardCAN","ExtendedCAN","reserved","J1939PG","reserved","StandardCAN_FD";
+BA_DEF_ BU_ "NodeAttr" STRING;
+BA_DEF_ "CustomEnum" ENUM "A","B","A","C";
+
+BA_DEF_DEF_ "SPN" 0;
+BA_DEF_DEF_ "GenMsgCycleTime" 0;
+BA_DEF_DEF_ "GenMsgSendType" "Cyclic";
+BA_DEF_DEF_ "VFrameFormat" "StandardCAN";
+BA_DEF_DEF_ "CustomEnum" "A";
+BA_DEF_DEF_ "NodeAttr" "";
+
+BA_ "GenMsgSendType" BO_ 2550588916 2;
+BA_ "GenMsgCycleTime" BO_ 2550588916 250;
+BA_ "VFrameFormat" BO_ 2550588916 3;
+BA_ "SPN" SG_ 2550588916 Test_Sig 42;
+BA_ "NodeAttr" BU_ ECU "bench-ecu";
+BA_ "CustomEnum" 1;

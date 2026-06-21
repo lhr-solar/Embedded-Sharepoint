@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lhr.dev/mdc/2025-06/defs/annotations.json",
+  "$defs": {
+    "attributes": {
+      "type": "object",
+      "description": "Typed key/value map (DBC BA_ equivalent). Keys should match a declared `attributeDefinitions[].name`; values are scalars validated against that definition by tooling, not by this schema.",
+      "additionalProperties": { "$ref": "./primitives.json#/$defs/scalar" }
+    },
+    "annotations": {
+      "type": "object",
+      "description": "Shared metadata cluster available on every entity (node, signal, computedSignal, message, network, vehicle). Composed via `allOf` in `hierarchy.json` so the set stays uniform: typed `attributes` (DBC BA_/BA_DEF_ system).",
+      "properties": {
+        "attributes": { "$ref": "#/$defs/attributes" }
+      }
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lhr.dev/mdc/2025-06/defs/signals.json",
+  "$defs": {
+    "signal": {
+      "type": "object",
+      "description": "A bit-field within a message and its raw→physical interpretation. Modeled on canspec-ui CanSignal, with kind/conversion consolidated and MDC display/alarm value-adds.",
+      "required": ["name", "startBit", "lengthBits", "byteOrder", "kind", "conversion"],
+      "allOf": [
+        { "$ref": "./presentation.json#/$defs/signalValueCommon" },
+        { "$ref": "./annotations.json#/$defs/annotations" }
+      ],
+      "properties": {
+        "name": { "$ref": "./primitives.json#/$defs/identifier", "description": "Signal name, unique within its message." },
+        "description": { "type": "string", "description": "Free-form description (DBC comment)." },
+        "startBit": { "type": "integer", "minimum": 0, "maximum": 511, "description": "Start bit position. Numbering convention depends on `byteOrder`; see mdc-overview.md. Max 511 = bit 7 of byte 63 in a 64-byte CAN FD frame." },
+        "lengthBits": { "type": "integer", "minimum": 1, "maximum": 64, "description": "Width in bits. Floats must be 16, 32, or 64 (enforced by tooling)." },
+        "byteOrder": { "$ref": "./primitives.json#/$defs/byteOrder" },
+        "conversion": { "$ref": "./conversion.json#/$defs/conversion" },
+        "multiplexer": { "$ref": "./multiplexing.json#/$defs/multiplexerRole", "description": "Multiplexing role. Omit for plain always-present signals." },
+        "spn": { "type": ["integer", "null"], "description": "SAE J1939 Suspect Parameter Number, if applicable." },
+        "initial": { "type": ["number", "null"], "description": "Initial/default physical value." },
+        "invalid": { "type": ["number", "null"], "description": "Physical value that denotes \"signal not available / invalid\"." },
+        "receivers": {
+          "type": "array",
+          "description": "Nodes that consume this signal (DBC receivers).",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        }
+      },
+      "unevaluatedProperties": false
+    },
+
+    "computedSignal": {
+      "type": "object",
+      "description": "A virtual signal derived from other signals via an expression rather than decoded from frame bits. Evaluated by the engine after decode. Has no startBit/lengthBits. Shares value semantics (unit/range/enumeration/display/alarms) with `signal` via `signalValueCommon`, including the `choices`/`valueTableRef` mutual exclusion.",
+      "required": ["name", "expr"],
+      "allOf": [
+        { "$ref": "./presentation.json#/$defs/signalValueCommon" },
+        { "$ref": "./annotations.json#/$defs/annotations" }
+      ],
+      "properties": {
+        "name": { "$ref": "./primitives.json#/$defs/identifier", "description": "Virtual signal name, unique within its scope." },
+        "description": { "type": "string" },
+        "expr": { "type": "string", "minLength": 1, "description": "Expression over other signals' physical values, referenced by name (and optionally `message.signal` for cross-message). Grammar defined by the engine evaluator; see mdc-overview.md." },
+        "dependsOn": {
+          "type": "array",
+          "description": "Explicit list of signals the expression reads, for dependency ordering and validation. Tools may also infer this from `expr`.",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        }
+      },
+      "unevaluatedProperties": false
+    }
+  }
+}

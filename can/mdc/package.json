@@ -1,0 +1,17 @@
+{
+  "name": "mdc",
+  "private": true,
+  "type": "module",
+  "description": "MDC schema bundle and validation helpers",
+  "scripts": {
+    "bundle": "node tools/bundle-mdc-schema.mjs",
+    "validate": "node tools/mdc-validate.mjs --schema-only schema/mdc.schema.bundle.json ../vehicles/lhr-ev1/project.mdc.json",
+    "lint": "node tools/mdc-validate.mjs",
+    "cheaders": "node tools/mdc2cheaders.mjs"
+  },
+  "dependencies": {
+    "@apidevtools/json-schema-ref-parser": "^15.0.0",
+    "ajv": "^8.17.0",
+    "ajv-formats": "^3.0.0"
+  }
+}

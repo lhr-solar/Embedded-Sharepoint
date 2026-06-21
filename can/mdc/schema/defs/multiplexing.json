@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lhr.dev/mdc/2025-06/defs/multiplexing.json",
+  "$defs": {
+    "multiplexerRole": {
+      "type": "object",
+      "description": "A signal's role in message multiplexing.",
+      "additionalProperties": false,
+      "required": ["role"],
+      "properties": {
+        "role": {
+          "type": "string",
+          "description": "`multiplexor` = the selector signal; `multiplexed` = present only for specific selector values listed in `ids`; `none` = always present.",
+          "enum": ["none", "multiplexor", "multiplexed"]
+        },
+        "multiplexorName": { "type": "string", "description": "Name of the multiplexor signal that gates this one (when role = multiplexed)." },
+        "ids": {
+          "type": "array",
+          "description": "Multiplexor values for which this signal is present (when role = multiplexed).",
+          "items": { "type": "integer", "minimum": 0 }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "role": { "const": "multiplexed" } }, "required": ["role"] },
+          "then": { "required": ["ids"] }
+        }
+      ]
+    },
+
+    "multiplexing": {
+      "type": "object",
+      "description": "Message-level multiplexing summary. Per-signal detail lives in each signal's `multiplexer`.",
+      "additionalProperties": false,
+      "properties": {
+        "multiplexed": { "type": "boolean", "description": "Whether the message uses multiplexing.", "default": false },
+        "multiplexorSignal": { "type": "string", "description": "Name of the selector signal." },
+        "extended": { "type": "boolean", "description": "Whether extended/nested multiplexing is used.", "default": false }
+      }
+    }
+  }
+}
