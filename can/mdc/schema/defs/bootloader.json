@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lhrsolar.org/lhrs-mdc/3.0.0/defs/bootloader.json",
+  "$defs": {
+    "bootloader": {
+      "type": "object",
+      "description": "Resident CAN/DFU bootloader for this vehicle's nodes. Network-independent: cmd/data IDs are shared by every bootloader on the bus; replies are per-device offsets. Canonical source: Embedded-Sharepoint/bootloader/contract/{bl_protocol,node_registry}.schema.json. Electron labels BL frames and streams raw DATA; never part of signal decode.",
+      "additionalProperties": false,
+      "required": ["nodes"],
+      "properties": {
+        "protocol": { "$ref": "#/$defs/protocol" },
+        "nodes": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/node" } }
+      }
+    },
+    "protocol": {
+      "type": "object",
+      "description": "Shared bootloader CAN constants (mirror of bl_protocol.schema.json; do not diverge). All const so the schema is the lookup table Electron reads.",
+      "additionalProperties": false,
+      "properties": {
+        "transport": { "const": "classic_can_2.0" },
+        "frame_payload_bytes": { "const": 8 },
+        "data_block_bytes": { "const": 256, "description": "DATA frames accumulate into 256B blocks; payload is raw firmware, not decoded." },
+        "can_ids": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "cmd": { "const": 16, "description": "0x010 host->all: byte0 opcode, byte1 device_id (0xFF=broadcast)." },
+            "data": { "const": 17, "description": "0x011 host->all: raw firmware stream (shown raw, not decoded)." },
+            "resp_base": { "const": 256, "description": "0x100; response id = resp_base + device_id." },
+            "status_base": { "const": 384, "description": "0x180; fault/status id = status_base + device_id." }
+          }
+        },
+        "device_id_range": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "min": { "const": 0 }, "max": { "const": 119 } }
+        },
+        "cmd_opcodes": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "cmd byte0 -> operation; Electron labels these.",
+          "properties": {
+            "ENTER": { "const": 1 },
+            "ERASE": { "const": 2 },
+            "SET_ADDR": { "const": 3 },
+            "WRITE_BLOCK": { "const": 4 },
+            "VERIFY_CRC32": { "const": 5 },
+            "COMMIT": { "const": 6 },
+            "RESET": { "const": 7 },
+            "GET_INFO": { "const": 8 }
+          }
+        },
+        "response_codes": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "resp/status byte0 -> result; Electron labels these.",
+          "properties": {
+            "ACK": { "const": 0 },
+            "NACK": { "const": 1 },
+            "BUSY": { "const": 2 },
+            "ERR": { "const": 3 },
+            "CRC_OK": { "const": 16 },
+            "CRC_FAIL": { "const": 17 }
+          }
+        }
+      }
+    },
+    "node": {
+      "type": "object",
+      "description": "One flashable node (mirror of node_registry.schema.json).",
+      "additionalProperties": false,
+      "required": ["device_id", "board_type"],
+      "properties": {
+        "device_id": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 119,
+          "description": "Unique per bus; resp id = resp_base+device_id, status id = status_base+device_id."
+        },
+        "board_type": { "type": "string", "enum": ["stm32g491vet", "stm32g431cbt"] },
+        "bus": { "type": "string", "description": "Optional hardware CAN bus (e.g. FDCAN1); may align with a network.id." },
+        "uid": { "type": "string", "pattern": "^[0-9A-Fa-f]{24}$", "description": "Optional 96-bit STM32 UID (24 hex)." },
+        "name": { "type": "string", "description": "Optional human-readable label." }
+      }
+    }
+  }
+}

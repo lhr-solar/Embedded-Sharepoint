@@ -27,8 +27,8 @@ type MdcSignalV3 = {
   start: number;
   length: number;
   byte_order: string;
-  is_signed: boolean;
-  is_float: boolean;
+  is_signed?: boolean;
+  is_float?: boolean;
   scale?: number;
   offset?: number;
   minimum?: number | null;
@@ -51,8 +51,8 @@ type MdcMessageV3 = {
   name: string;
   comment?: string;
   frame_id: number;
-  is_extended_frame: boolean;
-  is_fd: boolean;
+  is_extended_frame?: boolean;
+  is_fd?: boolean;
   length: number;
   cycle_time?: number | null;
   send_type?: string;
@@ -155,8 +155,8 @@ function mapSignal(sig: MdcSignalV3, msg: MdcMessageV3, valueTables: Map<string,
     startBit: sig.start,
     lengthBits: sig.length,
     byteOrder: sig.byte_order,
-    isSigned: sig.is_signed,
-    isFloat: sig.is_float,
+    isSigned: sig.is_signed ?? false,
+    isFloat: sig.is_float ?? false,
     dataType: dataTypeFrom(sig),
     conversion: conv,
     choices,
@@ -185,12 +185,12 @@ function mapMessage(msg: MdcMessageV3, busName: string, valueTables: Map<string,
   return {
     name: msg.name,
     frameId: msg.frame_id,
-    hexId: fmtId(msg.frame_id, msg.is_extended_frame),
-    isExtended: msg.is_extended_frame,
+    hexId: fmtId(msg.frame_id, msg.is_extended_frame ?? false),
+    isExtended: msg.is_extended_frame ?? false,
     dlc: msg.length,
     senders: msg.senders ? [...msg.senders] : [],
     cycleTimeMs: msg.cycle_time ?? null,
-    isFd: msg.is_fd,
+    isFd: msg.is_fd ?? false,
     protocol: msg.protocol ?? null,
     busName,
     isMultiplexed: Boolean(msg.multiplexing?.multiplexed),

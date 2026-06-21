@@ -112,6 +112,48 @@ All modeled as first-class schema, not free-text:
 | Computed / virtual signals | `computedSignals[]` (message + network) | `expr` over other signals' physical values; no bit layout. |
 | Multi-network per vehicle | one document | with namespaced ids + cross-refs. |
 
+## Bootloader (network-independent)
+
+The optional root-level `bootloader` block describes the resident CAN/DFU
+bootloader for a vehicle's nodes. It is a **sibling of `networks`, not a
+network**: every bootloader on the bus listens on the same shared command/data
+IDs and replies on per-device offsets, so the protocol is global and does not
+belong under `networks[].messages[]`.
+
+```
+Vehicle (root)
+  ├─ networks[]            (normal message → signal decode)
+  └─ bootloader            (NEW, shared/global)
+       ├─ protocol         (const lookup tables: can_ids, cmd_opcodes,
+       │                     response_codes, device_id_range, data_block_bytes)
+       └─ nodes[]          (per-vehicle: device_id → board_type/bus/uid/name)
+```
+
+- **`protocol`** mirrors `bootloader/contract/bl_protocol.schema.json` as fixed
+  `const`s so the schema/bundle is itself the lookup table consumers read:
+  `cmd` `0x010`, `data` `0x011`, `resp_base` `0x100`, `status_base` `0x180`;
+  opcodes `ENTER..GET_INFO`; response codes `ACK/NACK/BUSY/ERR/CRC_OK/CRC_FAIL`.
+  It is optional in a document (the values are fixed); most docs only write
+  `nodes[]`.
+- **`nodes[]`** mirrors `bootloader/contract/node_registry.schema.json`:
+  `device_id` (0–119), `board_type` (`stm32g491vet`/`stm32g431cbt`), optional
+  `bus`, `uid` (24 hex), `name`.
+
+Both mirror the canonical bootloader contract — keep them in sync, do not
+diverge. Consumer behavior: the engine leaves these IDs untouched (no signal
+decode), and the app/Electron labels command/response/status frames (opcode,
+response code, device_id) and streams the raw `data` (firmware) frames as they
+arrive **without decoding the payload**.
+
+```json
+"bootloader": {
+  "nodes": [
+    { "device_id": 0, "board_type": "stm32g491vet", "name": "vcu", "bus": "powertrain" },
+    { "device_id": 1, "board_type": "stm32g431cbt", "name": "bms-sensor", "bus": "powertrain" }
+  ]
+}
+```
+
 ## Timing, send type & bus loading
 
 Two message-level fields describe transmit timing; network `baudrate` gives the

@@ -250,7 +250,15 @@ def main() -> None:
     out_dir = args.output or (args.input if args.input.is_dir() else args.input.parent)
     out_dir.mkdir(parents=True, exist_ok=True)
     for net in networks:
-        stem = net.get("filename", f"{net['id']}.dbc").replace(".dbc", "")
+        filename = net.get("filename", f"{net['id']}.dbc")
+        # filename may be a source name like "powertrain.mdc.json"; strip a known
+        # suffix so we don't emit "powertrain.mdc.json.dbc".
+        for suffix in (".mdc.json", ".json", ".dbc"):
+            if filename.endswith(suffix):
+                stem = filename[: -len(suffix)]
+                break
+        else:
+            stem = filename
         out_file = out_dir / f"{stem}.dbc"
         export_network(project, net, out_file)
 

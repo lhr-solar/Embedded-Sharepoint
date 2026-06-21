@@ -43,6 +43,10 @@
       "type": "array",
       "description": "Networks/buses in this vehicle.",
       "items": { "$ref": "./defs/hierarchy.json#/$defs/network" }
+    },
+    "bootloader": {
+      "$ref": "./defs/bootloader.json#/$defs/bootloader",
+      "description": "Optional resident CAN/DFU bootloader definition for this vehicle's nodes. Shared/global protocol IDs live here, not under a network."
     }
   }
 }

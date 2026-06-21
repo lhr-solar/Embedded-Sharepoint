@@ -5,6 +5,7 @@ import importlib.util
 import json
 import subprocess
 from pathlib import Path
+from types import SimpleNamespace
 
 import cantools
 import pytest
@@ -87,3 +88,36 @@ def test_output_validates_against_bundle(synthetic: dict, tmp_path: Path) -> Non
         text=True,
     )
     assert result.returncode == 0, result.stderr or result.stdout
+
+
+# --- review-fix regressions (PR #275 / #276) ---
+
+def test_value_table_with_scaling_keeps_linear_conversion() -> None:
+    """A value-table signal that also has real scale/offset must keep its scaling;
+    a 'table' conversion would discard it (physical == raw)."""
+    scaled = SimpleNamespace(scale=0.1, offset=2.0, choices={1: "A"})
+    out: dict = {}
+    dbc2mdc._apply_scale_offset(out, scaled)
+    assert out["scale"] == 0.1
+    assert out["offset"] == 2.0
+    assert "conversion" not in out
+
+    categorical = SimpleNamespace(scale=1.0, offset=0.0, choices={1: "A"})
+    out = {}
+    dbc2mdc._apply_scale_offset(out, categorical)
+    assert out["conversion"] == {"kind": "table"}
+    assert "scale" not in out and "offset" not in out
+
+
+def test_enum_default_resolves_dict_and_list_choices() -> None:
+    as_dict = SimpleNamespace(type_name="ENUM", choices={0: "No", 1: "Yes"})
+    as_list = SimpleNamespace(type_name="ENUM", choices=["No", "Yes"])
+    assert dbc2mdc._default_value(as_dict, 1) == "Yes"
+    assert dbc2mdc._default_value(as_list, 1) == "Yes"
+
+
+def test_contained_message_header_id_none_is_null() -> None:
+    cm = SimpleNamespace(
+        name="CM", header_id=None, length=8, signals=[], comment=None, senders=None, dbc=None
+    )
+    assert dbc2mdc._contained_message_to_mdc(cm, {})["header_id"] is None

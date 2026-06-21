@@ -11,11 +11,14 @@ export function setsIntersect(a, b) {
 }
 
 /**
- * Two signals can be present in the same frame unless both are multiplexed on
- * disjoint selector ids. A null muxIds means "always present".
+ * Two signals can be present in the same frame unless both are gated by the SAME
+ * multiplexer selector with disjoint ids. A null id set means "always present";
+ * signals gated by different selectors (extended multiplexing) can be active at
+ * the same time, so they count as potentially co-present.
  */
-export function simultaneouslyPresent(aIds, bIds) {
+export function simultaneouslyPresent(aName, aIds, bName, bIds) {
   if (!aIds || !bIds) return true;
+  if (aName !== bName) return true;
   return setsIntersect(aIds, bIds);
 }
 
@@ -55,10 +58,13 @@ export function validateArrayBlock(message, report) {
   }
 }
 
-function muxIdsForSignal(sig) {
-  if (sig.is_multiplexer) return null;
-  if (sig.multiplexer_ids?.length) return new Set(sig.multiplexer_ids);
-  return null;
+function muxGateForSignal(sig) {
+  // Selector signals and unconditional signals are always present (null id set).
+  // A gated signal carries the selector it answers to plus the ids that enable it.
+  if (sig.is_multiplexer) return { name: null, ids: null };
+  if (sig.multiplexer_ids?.length)
+    return { name: sig.multiplexer_signal ?? "", ids: new Set(sig.multiplexer_ids) };
+  return { name: null, ids: null };
 }
 
 /**
@@ -81,16 +87,16 @@ export function validateBitOverlaps(message, report, { includeMultiplexed = true
     if (highBit >= frameBits && frameBits > 0)
       report("warning", `${sig.name} overflows the ${message.length}-byte payload (bit ${highBit})`);
 
-    const muxIds = muxIdsForSignal(sig);
+    const gate = muxGateForSignal(sig);
     const bitSet = new Set(bits);
     for (const prior of placed) {
       if (!setsIntersect(prior.bits, bitSet)) continue;
-      if (!simultaneouslyPresent(prior.muxIds, muxIds)) continue;
+      if (!simultaneouslyPresent(prior.gate.name, prior.gate.ids, gate.name, gate.ids)) continue;
       const shared = [...bitSet].find((b) => prior.bits.has(b));
       report("warning", `bit overlap: ${prior.name} and ${sig.name} share bit ${shared}`);
       break;
     }
-    placed.push({ name: sig.name, bits: bitSet, muxIds });
+    placed.push({ name: sig.name, bits: bitSet, gate });
   }
 
   if (message.multiplexing?.multiplexed && muxNames.size === 0)

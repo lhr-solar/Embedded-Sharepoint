@@ -717,5 +717,11 @@
         }
       ]
     }
-  ]
+  ],
+  "bootloader": {
+    "nodes": [
+      { "device_id": 0, "board_type": "stm32g491vet", "name": "vcu", "bus": "powertrain" },
+      { "device_id": 1, "board_type": "stm32g431cbt", "name": "bms-sensor", "bus": "powertrain" }
+    ]
+  }
 }

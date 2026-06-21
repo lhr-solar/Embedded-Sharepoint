@@ -74,6 +74,8 @@ def _default_value(defn: Any, raw: Any) -> Any:
         return None
     if defn.type_name == "ENUM" and isinstance(raw, int) and defn.choices:
         choices = defn.choices
+        if isinstance(choices, dict):
+            return choices.get(raw, raw)
         if isinstance(choices, list) and 0 <= raw < len(choices):
             return choices[raw]
     if defn.type_name in ("INT", "HEX"):
@@ -169,7 +171,10 @@ def _apply_scale_offset(out: dict[str, Any], sig: Any) -> None:
         out["scale"] = scale
     if offset != 0.0:
         out["offset"] = offset
-    if sig.choices:
+    # A "table" conversion means physical == raw, so it would discard scale/offset.
+    # Only treat a value-table signal as categorical when scaling is identity; with a
+    # real scale/offset, keep the linear scaling and let `choices` carry the labels.
+    if sig.choices and scale == 1.0 and offset == 0.0:
         out["conversion"] = {"kind": "table"}
 
 
@@ -262,7 +267,7 @@ def _signal_groups(msg: Any) -> list[dict[str, Any]] | None:
 def _contained_message_to_mdc(cm: Any, attr_definitions: dict[str, Any]) -> dict[str, Any]:
     out: dict[str, Any] = {
         "name": sanitize_id(cm.name),
-        "header_id": int(cm.header_id),
+        "header_id": int(cm.header_id) if cm.header_id is not None else None,
         "length": int(cm.length),
         "signals": [_signal_to_mdc(s, attr_definitions) for s in sorted(cm.signals, key=lambda s: (s.start, s.name))],
     }
