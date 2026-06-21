@@ -1,0 +1,2075 @@
+{
+  "$schema": "https://lhrsolar.org/lhrs-mdc/3.0.0/mdc.schema.json",
+  "schemaVersion": "3.0.0",
+  "id": "Daybreak",
+  "name": "Daybreak",
+  "metadata": {
+    "name": "Daybreak",
+    "source": "dbc2mdc",
+    "createdAt": "2026-06-20T18:14:14Z",
+    "modifiedAt": "2026-06-20T18:14:14Z"
+  },
+  "networks": [
+    {
+      "id": "CarCAN",
+      "name": "CarCAN",
+      "filename": "CarCAN.dbc",
+      "messages": [
+        {
+          "name": "BPS_Trip",
+          "frame_id": 2,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 1,
+          "signals": [
+            {
+              "name": "BPS_Trip",
+              "start": 0,
+              "length": 1,
+              "byte_order": "big_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000,
+          "protocol": "j1939"
+        },
+        {
+          "name": "BPS_All_Clea",
+          "frame_id": 257,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 1,
+          "signals": [
+            {
+              "name": "BPS_All_Clear",
+              "start": 0,
+              "length": 1,
+              "byte_order": "big_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000,
+          "protocol": "j1939"
+        },
+        {
+          "name": "BPS_Contactor_State",
+          "frame_id": 258,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 1,
+          "signals": [
+            {
+              "name": "Array_Contactor",
+              "start": 0,
+              "length": 1,
+              "byte_order": "big_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "HV_Contactor",
+              "start": 2,
+              "length": 1,
+              "byte_order": "big_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000,
+          "protocol": "j1939"
+        },
+        {
+          "name": "BPS_Current",
+          "frame_id": 259,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 4,
+          "signals": [
+            {
+              "name": "Current",
+              "start": 0,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": false,
+              "unit": "mA",
+              "minimum": -20000.0,
+              "maximum": 100000.0,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000,
+          "protocol": "j1939"
+        },
+        {
+          "name": "BPS_Voltage_Array",
+          "frame_id": 260,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 5,
+          "signals": [
+            {
+              "name": "Voltage_idx",
+              "start": 0,
+              "length": 8,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 31.0,
+              "spn": 0
+            },
+            {
+              "name": "Voltage_Value",
+              "start": 8,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "mV",
+              "minimum": 0.0,
+              "maximum": 1000000.0,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000,
+          "protocol": "j1939"
+        },
+        {
+          "name": "BPS_Temperature_Array",
+          "frame_id": 261,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 5,
+          "signals": [
+            {
+              "name": "Temperature_idx",
+              "start": 0,
+              "length": 8,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 31.0,
+              "spn": 0
+            },
+            {
+              "name": "Temperature_Value",
+              "start": 8,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "mC",
+              "minimum": 0.0,
+              "maximum": 1000000.0,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000,
+          "protocol": "j1939"
+        },
+        {
+          "name": "BPS_SOC",
+          "frame_id": 262,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 4,
+          "signals": [
+            {
+              "name": "SoC",
+              "start": 0,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "%",
+              "minimum": 0.0,
+              "maximum": 100.0,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000,
+          "protocol": "j1939"
+        },
+        {
+          "name": "BPS_WDog_Trigger",
+          "frame_id": 263,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 1,
+          "signals": [
+            {
+              "name": "WDog_Trig",
+              "start": 0,
+              "length": 1,
+              "byte_order": "big_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000,
+          "protocol": "j1939"
+        },
+        {
+          "name": "BPS_CAN_Error",
+          "frame_id": 264,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 1,
+          "signals": [
+            {
+              "name": "BPS_CAN_Error",
+              "start": 0,
+              "length": 1,
+              "byte_order": "big_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000,
+          "protocol": "j1939"
+        },
+        {
+          "name": "BPS_Command",
+          "frame_id": 265,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 8,
+          "signals": [
+            {
+              "name": "BPS_Command",
+              "start": 0,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000,
+          "protocol": "j1939"
+        },
+        {
+          "name": "BPS_Supplemental_Voltage",
+          "frame_id": 267,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 2,
+          "signals": [
+            {
+              "name": "Supplemental_Voltage",
+              "start": 0,
+              "length": 16,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "mV",
+              "minimum": 0.0,
+              "maximum": 65535.0,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000,
+          "protocol": "j1939"
+        },
+        {
+          "name": "BPS_Charge_Enabled",
+          "frame_id": 268,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 1,
+          "signals": [
+            {
+              "name": "Charge_Enabled",
+              "start": 0,
+              "length": 1,
+              "byte_order": "big_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000,
+          "protocol": "j1939"
+        },
+        {
+          "name": "BPS_Voltage_Summary",
+          "frame_id": 269,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 8,
+          "signals": [
+            {
+              "name": "Pack_Voltage",
+              "start": 0,
+              "length": 24,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "mV",
+              "minimum": 0.0,
+              "maximum": 16777215.0,
+              "spn": 0
+            },
+            {
+              "name": "Voltage_Range",
+              "start": 24,
+              "length": 24,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "mV",
+              "minimum": 0.0,
+              "maximum": 16777215.0,
+              "spn": 0
+            },
+            {
+              "name": "Voltage_Timestamp",
+              "start": 48,
+              "length": 16,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "ms",
+              "minimum": 0.0,
+              "maximum": 65535.0,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000,
+          "protocol": "j1939"
+        },
+        {
+          "name": "BPS_Temperature_Summary",
+          "frame_id": 270,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 8,
+          "signals": [
+            {
+              "name": "Average_Temp",
+              "start": 0,
+              "length": 24,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "mC",
+              "spn": 0
+            },
+            {
+              "name": "Temperature_Range",
+              "start": 24,
+              "length": 24,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "mC",
+              "spn": 0
+            },
+            {
+              "name": "Temperature_Timestamp",
+              "start": 48,
+              "length": 16,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "ms",
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000,
+          "protocol": "j1939"
+        },
+        {
+          "name": "BPS_Fault_State",
+          "frame_id": 271,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 1,
+          "signals": [
+            {
+              "name": "BPS_Fault_State",
+              "start": 0,
+              "length": 8,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 12.0,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000,
+          "protocol": "j1939"
+        },
+        {
+          "name": "MPPT_32_0_Power",
+          "frame_id": 512,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 8,
+          "signals": [
+            {
+              "name": "MPPT_Vin",
+              "start": 7,
+              "length": 16,
+              "byte_order": "big_endian",
+              "is_signed": true,
+              "is_float": false,
+              "scale": 0.01,
+              "unit": "V",
+              "minimum": -327.68,
+              "maximum": 327.67,
+              "spn": 0
+            },
+            {
+              "name": "MPPT_Iin",
+              "start": 23,
+              "length": 16,
+              "byte_order": "big_endian",
+              "is_signed": true,
+              "is_float": false,
+              "scale": 0.0005,
+              "unit": "A",
+              "minimum": -16.384,
+              "maximum": 16.3835,
+              "spn": 0
+            },
+            {
+              "name": "MPPT_Vout",
+              "start": 39,
+              "length": 16,
+              "byte_order": "big_endian",
+              "is_signed": true,
+              "is_float": false,
+              "scale": 0.01,
+              "unit": "V",
+              "minimum": -327.68,
+              "maximum": 327.67,
+              "spn": 0
+            },
+            {
+              "name": "MPPT_Iout",
+              "start": 55,
+              "length": 16,
+              "byte_order": "big_endian",
+              "is_signed": true,
+              "is_float": false,
+              "scale": 0.0005,
+              "unit": "A",
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000
+        },
+        {
+          "name": "MPPT_32_0_Status",
+          "frame_id": 513,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 5,
+          "signals": [
+            {
+              "name": "MPPT_Mode",
+              "start": 0,
+              "length": 8,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "spn": 0
+            },
+            {
+              "name": "MPPT_Fault",
+              "start": 8,
+              "length": 8,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "spn": 0
+            },
+            {
+              "name": "MPPT_Enabled",
+              "start": 16,
+              "length": 8,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": false,
+              "spn": 0
+            },
+            {
+              "name": "MPPT_AmbientTemperature",
+              "start": 31,
+              "length": 8,
+              "byte_order": "big_endian",
+              "is_signed": true,
+              "is_float": false,
+              "unit": "C",
+              "minimum": -128.0,
+              "maximum": 127.0,
+              "spn": 0
+            },
+            {
+              "name": "MPPT_HeatsinkTemperature",
+              "start": 39,
+              "length": 8,
+              "byte_order": "big_endian",
+              "is_signed": true,
+              "is_float": false,
+              "unit": "C",
+              "minimum": -128.0,
+              "maximum": 127.0,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000
+        },
+        {
+          "name": "MPPT_32_0_SetMode",
+          "frame_id": 521,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 1,
+          "signals": [
+            {
+              "name": "Boost_Enable",
+              "start": 0,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000
+        },
+        {
+          "name": "MPPT_33_0_Power",
+          "frame_id": 528,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 8,
+          "signals": [
+            {
+              "name": "MPPT_Vin",
+              "start": 7,
+              "length": 16,
+              "byte_order": "big_endian",
+              "is_signed": true,
+              "is_float": false,
+              "scale": 0.01,
+              "unit": "V",
+              "minimum": -327.68,
+              "maximum": 327.67,
+              "spn": 0
+            },
+            {
+              "name": "MPPT_Iin",
+              "start": 23,
+              "length": 16,
+              "byte_order": "big_endian",
+              "is_signed": true,
+              "is_float": false,
+              "scale": 0.0005,
+              "unit": "A",
+              "minimum": -16.384,
+              "maximum": 16.3835,
+              "spn": 0
+            },
+            {
+              "name": "MPPT_Vout",
+              "start": 39,
+              "length": 16,
+              "byte_order": "big_endian",
+              "is_signed": true,
+              "is_float": false,
+              "scale": 0.01,
+              "unit": "V",
+              "minimum": -327.68,
+              "maximum": 327.67,
+              "spn": 0
+            },
+            {
+              "name": "MPPT_Iout",
+              "start": 55,
+              "length": 16,
+              "byte_order": "big_endian",
+              "is_signed": true,
+              "is_float": false,
+              "scale": 0.0005,
+              "unit": "A",
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000
+        },
+        {
+          "name": "MPPT_33_0_Status",
+          "frame_id": 529,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 5,
+          "signals": [
+            {
+              "name": "MPPT_Mode",
+              "start": 0,
+              "length": 8,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "spn": 0
+            },
+            {
+              "name": "MPPT_Fault",
+              "start": 8,
+              "length": 8,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "spn": 0
+            },
+            {
+              "name": "MPPT_Enabled",
+              "start": 16,
+              "length": 8,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": false,
+              "spn": 0
+            },
+            {
+              "name": "MPPT_AmbientTemperature",
+              "start": 31,
+              "length": 8,
+              "byte_order": "big_endian",
+              "is_signed": true,
+              "is_float": false,
+              "unit": "C",
+              "minimum": -128.0,
+              "maximum": 127.0,
+              "spn": 0
+            },
+            {
+              "name": "MPPT_HeatsinkTemperature",
+              "start": 39,
+              "length": 8,
+              "byte_order": "big_endian",
+              "is_signed": true,
+              "is_float": false,
+              "unit": "C",
+              "minimum": -128.0,
+              "maximum": 127.0,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000
+        },
+        {
+          "name": "MPPT_33_0_SetMode",
+          "frame_id": 537,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 1,
+          "signals": [
+            {
+              "name": "Boost_Enable",
+              "start": 0,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000
+        },
+        {
+          "name": "Contactor_Sense",
+          "frame_id": 1024,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 2,
+          "signals": [
+            {
+              "name": "Actual_Motor_Sense",
+              "start": 0,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "Expected_Motor_Sense",
+              "start": 1,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "spn": 0
+            },
+            {
+              "name": "Motor_Sense_Fault",
+              "start": 2,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "Motor_Precharge_Sense",
+              "start": 3,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "Expected_Motor_Precharge_Sense",
+              "start": 4,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "Motor_Precharge_Sense_Fault",
+              "start": 5,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "Array_Precharge_Sense",
+              "start": 6,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "Expected_Array_Precharge_Sense",
+              "start": 7,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "Array_Prechage_Sense_Fault",
+              "start": 8,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000,
+          "protocol": "j1939"
+        },
+        {
+          "name": "Precharge_Timeout",
+          "frame_id": 1025,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 1,
+          "signals": [
+            {
+              "name": "Motor_Precharge_Timeout",
+              "start": 0,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "Array_Precharge_Timeout",
+              "start": 1,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000,
+          "protocol": "j1939"
+        },
+        {
+          "name": "IO_State",
+          "frame_id": 1409,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 3,
+          "signals": [
+            {
+              "name": "Acceleration_Percentage",
+              "start": 0,
+              "length": 8,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "Percentage",
+              "minimum": 0.0,
+              "maximum": 100.0,
+              "spn": 0
+            },
+            {
+              "name": "Brake_Percentage",
+              "start": 8,
+              "length": 8,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "Percentage the brake is pressed",
+              "minimum": 0.0,
+              "maximum": 100.0,
+              "spn": 0
+            },
+            {
+              "name": "IGN_Array",
+              "start": 16,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "Array Ignition On",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "IGN_Motor",
+              "start": 17,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "Motor Ignition On",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "Regen_SW",
+              "start": 18,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "Regen Switched On",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "Forward_Gear",
+              "start": 19,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "Forward switch",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "Reverse_Gear",
+              "start": 20,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "Reverse switch",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "Cruz_EN",
+              "start": 21,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "Cruise Enable",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "Cruz_Set",
+              "start": 22,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "Cruise Set",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "Brake_Light",
+              "start": 23,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "Brakelight state",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            }
+          ],
+          "comment": "IO State of Controls",
+          "cycle_time": 1000,
+          "protocol": "j1939"
+        },
+        {
+          "name": "Controls_Fault",
+          "frame_id": 1411,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 1,
+          "signals": [
+            {
+              "name": "Controls_Fault",
+              "start": 0,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "Motor_Controller_Fault",
+              "start": 1,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "BPS_Fault",
+              "start": 2,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "Pedals_Fault",
+              "start": 3,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "spn": 0
+            },
+            {
+              "name": "CarCAN_Fault",
+              "start": 4,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "Internal_Controls_Fault",
+              "start": 5,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "OS_Fault",
+              "start": 6,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "Lakshay_Fault",
+              "start": 7,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            }
+          ],
+          "comment": "Controls Fault State",
+          "cycle_time": 1000,
+          "protocol": "j1939"
+        },
+        {
+          "name": "Motor_Controller_Safe",
+          "frame_id": 1412,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 1,
+          "signals": [
+            {
+              "name": "Motor_Safe",
+              "start": 0,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "Motor_Controller_Error",
+              "start": 1,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            }
+          ],
+          "comment": "Motor Safe State",
+          "cycle_time": 1000,
+          "protocol": "j1939"
+        },
+        {
+          "name": "Pedals_Raw_Voltage",
+          "frame_id": 1413,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 4,
+          "signals": [
+            {
+              "name": "Brake_Raw",
+              "start": 0,
+              "length": 15,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": false,
+              "unit": "mV",
+              "minimum": 0.0,
+              "maximum": 3300.0,
+              "spn": 0
+            },
+            {
+              "name": "Accel_Raw",
+              "start": 16,
+              "length": 15,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": false,
+              "unit": "mV",
+              "minimum": 0.0,
+              "maximum": 3300.0,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000,
+          "protocol": "j1939"
+        }
+      ],
+      "attributes": {
+        "ProtocolType": "J1939",
+        "BusType": "CAN",
+        "DatabaseCompiler": "CSS ELECTRONICS (WWW.CSSELECTRONICS.COM)",
+        "DatabaseVersion": "1.0.0"
+      }
+    },
+    {
+      "id": "MotorCAN",
+      "name": "MotorCAN",
+      "filename": "MotorCAN.dbc",
+      "messages": [
+        {
+          "name": "Motor_Drive_Command",
+          "frame_id": 545,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 8,
+          "signals": [
+            {
+              "name": "Motor_Velocity_Setpoint",
+              "start": 0,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": true,
+              "unit": "rpm",
+              "spn": 0
+            },
+            {
+              "name": "Motor_Current_Setpoint",
+              "start": 32,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": true,
+              "unit": "%",
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000,
+          "senders": [
+            "Driver"
+          ],
+          "protocol": "j1939"
+        },
+        {
+          "name": "Motor_Power_Command",
+          "frame_id": 546,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 8,
+          "signals": [
+            {
+              "name": "Motor_Power_Setpoint",
+              "start": 32,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": true,
+              "unit": "%",
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000,
+          "senders": [
+            "Driver"
+          ],
+          "protocol": "j1939"
+        },
+        {
+          "name": "IDInfo",
+          "frame_id": 576,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 8,
+          "signals": [
+            {
+              "name": "TritiumID",
+              "start": 0,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "comment": "Device identifier. 0x00004003",
+              "spn": 0
+            },
+            {
+              "name": "SerialNumber",
+              "start": 32,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "comment": "Device serial number, allocated at manufacture.",
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000,
+          "senders": [
+            "WaveSculptor22"
+          ]
+        },
+        {
+          "name": "Status",
+          "frame_id": 577,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 8,
+          "signals": [
+            {
+              "name": "LimitOutputVoltagePWM",
+              "start": 0,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "On / Off",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "LimitMotorCurrent",
+              "start": 1,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "On / Off",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "LimitVelocity",
+              "start": 2,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "On / Off",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "LimitBusCurrent",
+              "start": 3,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "On / Off",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "LimitBusVoltageUpper",
+              "start": 4,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "On / Off",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "LimitBusVoltageLower",
+              "start": 5,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "On / Off",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "LimitIpmOrMotorTemp",
+              "start": 6,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "On / Off",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "LimitReserved",
+              "start": 7,
+              "length": 9,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "On / Off",
+              "minimum": 0.0,
+              "maximum": 511.0,
+              "spn": 0
+            },
+            {
+              "name": "ErrorHardwareOverCurrent",
+              "start": 16,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "On / Off",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "ErrorSoftwareOverCurrent",
+              "start": 17,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "On / Off",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "ErrorDcBusOverVoltage",
+              "start": 18,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "On / Off",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "ErrorBadMotorPositionHallSeq",
+              "start": 19,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "On / Off",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "ErrorWatchdogCausedLastReset",
+              "start": 20,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "On / Off",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "ErrorConfigRead",
+              "start": 21,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "On / Off",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "Error15vRailUnderVoltage",
+              "start": 22,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "On / Off",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "ErrorDesaturationFault",
+              "start": 23,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "On / Off",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "ErrorMotorOverSpeed",
+              "start": 24,
+              "length": 1,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "On / Off",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "spn": 0
+            },
+            {
+              "name": "ErrorReserved",
+              "start": 25,
+              "length": 7,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "unit": "On / Off",
+              "spn": 0
+            },
+            {
+              "name": "ActiveMotor",
+              "start": 32,
+              "length": 16,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "comment": "The index of the active motor currently being used.",
+              "spn": 0
+            },
+            {
+              "name": "TxErrorCount",
+              "start": 48,
+              "length": 8,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "comment": "The DSP CAN transmission error counter (CAN 2.0)",
+              "spn": 0
+            },
+            {
+              "name": "RxErrorCount",
+              "start": 56,
+              "length": 8,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false,
+              "comment": "The DSP CAN receive error counter (CAN 2.0)",
+              "spn": 0
+            }
+          ],
+          "cycle_time": 200,
+          "senders": [
+            "WaveSculptor22"
+          ]
+        },
+        {
+          "name": "BusMeasurement",
+          "frame_id": 578,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 8,
+          "signals": [
+            {
+              "name": "BusVoltage",
+              "start": 0,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": true,
+              "unit": "V",
+              "minimum": 0.0,
+              "maximum": 100.0,
+              "spn": 0
+            },
+            {
+              "name": "BusCurrent",
+              "start": 32,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": true,
+              "unit": "A",
+              "minimum": 0.0,
+              "maximum": 1000.0,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 100,
+          "senders": [
+            "WaveSculptor22"
+          ]
+        },
+        {
+          "name": "VelocityMeasurement",
+          "frame_id": 579,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 8,
+          "signals": [
+            {
+              "name": "MotorVelocity",
+              "start": 0,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": true,
+              "unit": "rpm",
+              "spn": 0
+            },
+            {
+              "name": "VehicleVelocity",
+              "start": 32,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": true,
+              "scale": 2.237,
+              "unit": "mph",
+              "spn": 0
+            }
+          ],
+          "cycle_time": 100,
+          "senders": [
+            "WaveSculptor22"
+          ]
+        },
+        {
+          "name": "PhaseCurrentMeasurement",
+          "frame_id": 580,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 8,
+          "signals": [
+            {
+              "name": "PhaseCurrentB",
+              "start": 0,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": true,
+              "unit": "A_rms",
+              "spn": 0
+            },
+            {
+              "name": "PhaseCurrentC",
+              "start": 32,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": true,
+              "unit": "A_rms",
+              "spn": 0
+            }
+          ],
+          "cycle_time": 100,
+          "senders": [
+            "WaveSculptor22"
+          ]
+        },
+        {
+          "name": "MotorVoltageVectorMeasurement",
+          "frame_id": 581,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 8,
+          "signals": [
+            {
+              "name": "Vq",
+              "start": 0,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": true,
+              "unit": "V",
+              "spn": 0
+            },
+            {
+              "name": "Vd",
+              "start": 32,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": true,
+              "unit": "V",
+              "spn": 0
+            }
+          ],
+          "cycle_time": 100,
+          "senders": [
+            "WaveSculptor22"
+          ]
+        },
+        {
+          "name": "MotorCurrentVectorMeasurement",
+          "frame_id": 582,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 8,
+          "signals": [
+            {
+              "name": "Iq",
+              "start": 0,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": true,
+              "unit": "A",
+              "spn": 0
+            },
+            {
+              "name": "Id",
+              "start": 32,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": true,
+              "unit": "A",
+              "spn": 0
+            }
+          ],
+          "cycle_time": 100,
+          "senders": [
+            "WaveSculptor22"
+          ]
+        },
+        {
+          "name": "BackEMFMeasurementPrediction",
+          "frame_id": 583,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 8,
+          "signals": [
+            {
+              "name": "BEMFq",
+              "start": 0,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": true,
+              "unit": "V",
+              "spn": 0
+            },
+            {
+              "name": "BEMFd",
+              "start": 32,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": true,
+              "unit": "V",
+              "spn": 0
+            }
+          ],
+          "cycle_time": 100,
+          "senders": [
+            "WaveSculptor22"
+          ]
+        },
+        {
+          "name": "VoltageRail15VMeasurement",
+          "frame_id": 584,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 8,
+          "signals": [
+            {
+              "name": "ReservedSupply15V",
+              "start": 0,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": false,
+              "spn": 0
+            },
+            {
+              "name": "Supply15V",
+              "start": 32,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": true,
+              "unit": "V",
+              "spn": 0
+            }
+          ],
+          "cycle_time": 100,
+          "senders": [
+            "WaveSculptor22"
+          ]
+        },
+        {
+          "name": "VoltageRail3V31V9Measurement",
+          "frame_id": 585,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 8,
+          "signals": [
+            {
+              "name": "Supply1V9",
+              "start": 0,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": true,
+              "unit": "V",
+              "spn": 0
+            },
+            {
+              "name": "Supply3V3",
+              "start": 32,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": true,
+              "unit": "V",
+              "spn": 0
+            }
+          ],
+          "cycle_time": 100,
+          "senders": [
+            "WaveSculptor22"
+          ]
+        },
+        {
+          "name": "Reserved0A",
+          "frame_id": 586,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 8,
+          "signals": [
+            {
+              "name": "Reserved0A0",
+              "start": 0,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": false,
+              "spn": 0
+            },
+            {
+              "name": "Reserved0A1",
+              "start": 32,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": false,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 100,
+          "senders": [
+            "WaveSculptor22"
+          ]
+        },
+        {
+          "name": "HeatsinkMotorTempMeasurement",
+          "frame_id": 587,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 8,
+          "signals": [
+            {
+              "name": "MotorTemp",
+              "start": 0,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": true,
+              "unit": "C",
+              "spn": 0
+            },
+            {
+              "name": "HeatsinkTemp",
+              "start": 32,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": true,
+              "unit": "C",
+              "spn": 0
+            }
+          ],
+          "cycle_time": 100,
+          "senders": [
+            "WaveSculptor22"
+          ]
+        },
+        {
+          "name": "DspBoardTempMeasurement",
+          "frame_id": 588,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 8,
+          "signals": [
+            {
+              "name": "DspBoardTemp",
+              "start": 0,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": true,
+              "unit": "C",
+              "spn": 0
+            },
+            {
+              "name": "ReservedDspBoardTemp",
+              "start": 32,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": false,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 100,
+          "senders": [
+            "WaveSculptor22"
+          ]
+        },
+        {
+          "name": "Reserved0D",
+          "frame_id": 589,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 8,
+          "signals": [
+            {
+              "name": "Reserved0D0",
+              "start": 0,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": false,
+              "spn": 0
+            },
+            {
+              "name": "Reserved0D1",
+              "start": 32,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": false,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000,
+          "senders": [
+            "WaveSculptor22"
+          ]
+        },
+        {
+          "name": "OdometerBusAhMeasurement",
+          "frame_id": 590,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 8,
+          "signals": [
+            {
+              "name": "Odometer",
+              "start": 0,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": true,
+              "comment": "Distance the vehicle has travelled since reset.",
+              "unit": "m",
+              "spn": 0
+            },
+            {
+              "name": "DCBusAh",
+              "start": 32,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": true,
+              "comment": "Charge flow into the controller DC bus from the time of reset.",
+              "unit": "Ah",
+              "spn": 0
+            }
+          ],
+          "cycle_time": 1000,
+          "senders": [
+            "WaveSculptor22"
+          ]
+        },
+        {
+          "name": "SlipSpeedMeasurement",
+          "frame_id": 599,
+          "is_extended_frame": false,
+          "is_fd": false,
+          "length": 8,
+          "signals": [
+            {
+              "name": "SlipSpeed",
+              "start": 0,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": false,
+              "unit": "Hz",
+              "spn": 0
+            },
+            {
+              "name": "ReservedSlipSpeed",
+              "start": 32,
+              "length": 32,
+              "byte_order": "little_endian",
+              "is_signed": true,
+              "is_float": false,
+              "spn": 0
+            }
+          ],
+          "cycle_time": 100,
+          "senders": [
+            "WaveSculptor22"
+          ]
+        }
+      ],
+      "nodes": [
+        {
+          "name": "WaveSculptor22"
+        },
+        {
+          "name": "Driver"
+        }
+      ]
+    }
+  ],
+  "attributeDefinitions": [
+    {
+      "name": "BusType",
+      "type": "string",
+      "scopes": [
+        "network"
+      ]
+    },
+    {
+      "name": "DatabaseCompiler",
+      "type": "string",
+      "scopes": [
+        "network"
+      ]
+    },
+    {
+      "name": "DatabaseVersion",
+      "type": "string",
+      "scopes": [
+        "network"
+      ],
+      "default": "DEMO PLUS"
+    },
+    {
+      "name": "GenEnvVarEndingDsp",
+      "type": "string",
+      "scopes": [
+        "network"
+      ],
+      "default": "Dsp"
+    },
+    {
+      "name": "GenEnvVarEndingSnd",
+      "type": "string",
+      "scopes": [
+        "network"
+      ],
+      "default": "Snd"
+    },
+    {
+      "name": "GenEnvVarPrefix",
+      "type": "string",
+      "scopes": [
+        "network"
+      ],
+      "default": "Env"
+    },
+    {
+      "name": "GenNodAutoGenDsp",
+      "type": "enum",
+      "scopes": [
+        "node"
+      ],
+      "enumValues": [
+        "No",
+        "Yes"
+      ],
+      "default": "Yes"
+    },
+    {
+      "name": "GenNodAutoGenSnd",
+      "type": "enum",
+      "scopes": [
+        "node"
+      ],
+      "enumValues": [
+        "No",
+        "Yes"
+      ],
+      "default": "Yes"
+    },
+    {
+      "name": "MultiplexExtEnabled",
+      "type": "enum",
+      "scopes": [
+        "network"
+      ],
+      "enumValues": [
+        "No",
+        "Yes"
+      ],
+      "default": "No"
+    },
+    {
+      "name": "ProtocolType",
+      "type": "string",
+      "scopes": [
+        "network"
+      ]
+    }
+  ]
+}

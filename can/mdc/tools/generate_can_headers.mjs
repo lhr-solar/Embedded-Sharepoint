@@ -1,12 +1,10 @@
 #!/usr/bin/env node
 /**
- * mdc2cheaders — generate a C header from an MDC project.
+ * generate_can_headers — generate a C header from an MDC v3 project.
  *
- * Replaces Embedded-Sharepoint/can/generate_can_headers.py: emits CAN id +
- * DLC macros, value-table enums, and per-message structs. Consumes MDC through
- * the shared loader (one network = one header section, scoped by message name).
+ * Emits CAN id + DLC macros, value-table enums, and per-message structs.
  *
- * Usage: node tools/mdc2cheaders.mjs <project-dir|project.mdc.json> [-o out.h]
+ * Usage: node tools/generate_can_headers.mjs <project-dir|project.mdc.json> [-o out.h]
  */
 import { writeFile } from "node:fs/promises";
 import { loadProject, iterMessages, resolveChoices } from "../lib/mdc-load.mjs";
@@ -16,22 +14,20 @@ const projectPath = args[0];
 const outIdx = args.findIndex((a) => a === "-o" || a === "--output");
 const outFile = outIdx >= 0 ? args[outIdx + 1] : null;
 if (!projectPath) {
-  console.error("Usage: node tools/mdc2cheaders.mjs <project-dir|project.mdc.json> [-o out.h]");
+  console.error("Usage: node tools/generate_can_headers.mjs <project-dir|project.mdc.json> [-o out.h]");
   process.exit(2);
 }
 
-// Intentionally diverges from dbc2mdc.py sanitize_id (MDC identifiers allow `-`, 128-cap).
 const sanitize = (name) => {
   let s = String(name).replace(/\W+/g, "_");
   if (/^[0-9]/.test(s)) s = "_" + s;
   return s;
 };
 
-/** Fixed-width C type for a signal, mirroring generate_can_headers.py. */
 function cType(sig) {
-  if (sig.kind === "float") return sig.lengthBits > 32 ? "double" : "float";
-  const signed = sig.kind === "signed";
-  const w = sig.lengthBits;
+  if (sig.is_float) return sig.length > 32 ? "double" : "float";
+  const signed = sig.is_signed;
+  const w = sig.length;
   const base = w <= 8 ? "8" : w <= 16 ? "16" : w <= 32 ? "32" : "64";
   return `${signed ? "int" : "uint"}${base}_t`;
 }
@@ -43,10 +39,10 @@ const lenMacros = [];
 const enums = [];
 const structs = [];
 
-const messages = [...iterMessages(project)].sort((a, b) => a.message.id - b.message.id);
+const messages = [...iterMessages(project)].sort((a, b) => a.message.frame_id - b.message.frame_id);
 for (const { network, message } of messages) {
   const macro = sanitize(message.name.toUpperCase());
-  idMacros.push(`#define CAN_ID_${macro} 0x${message.id.toString(16).toUpperCase()}`);
+  idMacros.push(`#define CAN_ID_${macro} 0x${message.frame_id.toString(16).toUpperCase()}`);
   lenMacros.push(`#define CAN_DLC_${macro} ${message.length}`);
 
   const structName = sanitize(message.name.toLowerCase() + "_t");

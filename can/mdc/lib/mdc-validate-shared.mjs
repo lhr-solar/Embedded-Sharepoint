@@ -45,13 +45,20 @@ export function validateArrayBlock(message, report) {
   }
 
   if (typeof array.size === "number" && indexSig) {
-    const capacity = 2 ** indexSig.lengthBits;
+    const bitLen = indexSig.length ?? indexSig.lengthBits;
+    const capacity = 2 ** bitLen;
     if (array.size > capacity)
       report(
         "error",
-        `array.size ${array.size} cannot fit index signal "${indexSig.name}" (${indexSig.lengthBits} bits, max ${capacity} values)`,
+        `array.size ${array.size} cannot fit index signal "${indexSig.name}" (${bitLen} bits, max ${capacity} values)`,
       );
   }
+}
+
+function muxIdsForSignal(sig) {
+  if (sig.is_multiplexer) return null;
+  if (sig.multiplexer_ids?.length) return new Set(sig.multiplexer_ids);
+  return null;
 }
 
 /**
@@ -62,20 +69,19 @@ export function validateBitOverlaps(message, report, { includeMultiplexed = true
   const frameBits = (message.length ?? 0) * 8;
   const muxNames = new Set();
   for (const sig of message.signals ?? []) {
-    if (sig.multiplexer?.role === "multiplexor") muxNames.add(sig.name);
+    if (sig.is_multiplexer) muxNames.add(sig.name);
   }
 
   const placed = [];
   for (const sig of message.signals ?? []) {
-    if (!includeMultiplexed && sig.multiplexer?.role === "multiplexed") continue;
+    if (!includeMultiplexed && sig.multiplexer_ids?.length) continue;
 
     const bits = occupiedBits(sig);
     const highBit = bits.length ? Math.max(...bits) : -1;
     if (highBit >= frameBits && frameBits > 0)
       report("warning", `${sig.name} overflows the ${message.length}-byte payload (bit ${highBit})`);
 
-    const muxIds =
-      sig.multiplexer?.role === "multiplexed" ? new Set(sig.multiplexer.ids ?? []) : null;
+    const muxIds = muxIdsForSignal(sig);
     const bitSet = new Set(bits);
     for (const prior of placed) {
       if (!setsIntersect(prior.bits, bitSet)) continue;
@@ -88,11 +94,10 @@ export function validateBitOverlaps(message, report, { includeMultiplexed = true
   }
 
   if (message.multiplexing?.multiplexed && muxNames.size === 0)
-    report("error", 'multiplexing.multiplexed is true but no signal has role "multiplexor"');
+    report("error", 'multiplexing.multiplexed is true but no signal has is_multiplexer');
 
   for (const sig of message.signals ?? []) {
-    const mux = sig.multiplexer;
-    if (mux?.role === "multiplexed" && mux.multiplexorName && !muxNames.has(mux.multiplexorName))
-      report("error", `multiplexorName "${mux.multiplexorName}" has no matching multiplexor signal`);
+    if (sig.multiplexer_signal && !muxNames.has(sig.multiplexer_signal))
+      report("error", `multiplexer_signal "${sig.multiplexer_signal}" has no matching multiplexor signal`);
   }
 }

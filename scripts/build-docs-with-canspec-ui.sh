@@ -7,7 +7,7 @@ ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 CANSPEC_UI="$ROOT/can/canspec-ui"
 cd "$ROOT"
 
-python3 "$CANSPEC_UI/export_canspec_json.py"
+npm --prefix "$CANSPEC_UI" run copy-mdc
 mkdocs build
 
 cd "$CANSPEC_UI"

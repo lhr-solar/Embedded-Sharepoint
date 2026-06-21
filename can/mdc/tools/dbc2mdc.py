@@ -1,17 +1,14 @@
 #!/usr/bin/env python3
-"""dbc2mdc — import DBC files into an MDC project document.
+"""dbc2mdc — import DBC files into an MDC v3 project document.
 
-Reuses cantools (same loader as Embedded-Sharepoint/can/.../export_canspec_json.py)
-rather than parsing DBC by hand. One DBC file → one MDC network; a folder of
-`<vehicle>/<network>.dbc` → one vehicle with several networks.
+Reuses cantools rather than parsing DBC by hand. One DBC file → one MDC network;
+a folder of `<vehicle>/<network>.dbc` → one flat-root document with `networks[]`.
 
-Output validates against mdc/schema/mdc.schema.json. Validate the result with:
+Output validates against mdc/schema/mdc.schema.bundle.json. Validate with:
     node mdc/tools/mdc-validate.mjs --schema-only mdc/schema/mdc.schema.bundle.json <out.mdc.json>
 
 Usage:
-    # one DBC -> a single-network project on stdout (or -o file)
     python3 mdc/tools/dbc2mdc.py path/to/MotorCAN.dbc [-o out.mdc.json]
-    # a vehicle folder of DBCs -> one vehicle with multiple networks
     python3 mdc/tools/dbc2mdc.py path/to/HighNoon/ --vehicle-id high_noon [-o out.mdc.json]
 """
 from __future__ import annotations
@@ -30,17 +27,14 @@ except ImportError:
     print("dbc2mdc: install cantools (pip install cantools)", file=sys.stderr)
     sys.exit(1)
 
-SCHEMA_VERSION = "2.0.0"
+SCHEMA_VERSION = "3.0.0"
+SCHEMA_REF = "https://lhrsolar.org/lhrs-mdc/3.0.0/mdc.schema.json"
 _FLOAT_WIDTHS = {32, 64}  # ponytail: cantools never emits 16-bit float
 _DEFAULT_CYCLE_TIME_MS = 1000
 
-# DBC GenMsgSendType → MDC transmissionType. Periodic variants count toward bus
-# load; event/on-change variants are excluded. Unknown values default to cyclic.
-_SEND_TYPE_TRIGGERED = {"ifactive", "triggered", "event", "nosig", "nosigsend", "spontaneous"}
-
 # Consumed into native MDC fields — not stored in per-entity attributes.
 _NATIVE_ATTRS = frozenset({"VFrameFormat", "GenMsgSendType", "GenMsgCycleTime"})
-_SKIP_ATTRS = _NATIVE_ATTRS | frozenset({"DBName"})
+_SKIP_ATTRS = _NATIVE_ATTRS | frozenset({"DBName", "SPN"})
 
 _DBC_TYPE_TO_MDC = {
     "INT": "int",
@@ -57,12 +51,16 @@ _KIND_TO_SCOPES = {
     "BU_": ["node"],
 }
 
+_ENV_TYPE_MAP = {
+    0: "integer",
+    1: "float",
+    2: "string",
+    3: "data",
+}
+
 
 def sanitize_id(name: str) -> str:
-    """Coerce to the MDC `identifier` pattern: ^[A-Za-z_][A-Za-z0-9_-]*$.
-
-    Intentionally diverges from mdc2cheaders.mjs `sanitize` (C identifiers, no `-`, no 128-cap).
-    """
+    """Coerce to the MDC `identifier` pattern: ^[A-Za-z_][A-Za-z0-9_-]*$."""
     s = re.sub(r"[^A-Za-z0-9_-]", "_", str(name))
     if not s:
         s = "_"
@@ -89,8 +87,6 @@ def _default_value(defn: Any, raw: Any) -> Any:
 
 def _resolve_attr_value(attr: Any, definitions: dict[str, Any]) -> Any:
     val = attr.value if hasattr(attr, "value") else attr
-    # cantools Attribute objects always carry .definition; the definitions.get
-    # fallback only handles raw scalars passed without a definition.
     defn = attr.definition if hasattr(attr, "definition") else None
     if defn is None:
         return val
@@ -148,26 +144,6 @@ def _extended_mux_enabled(db: Any) -> bool:
     return val in ("Yes", 1, True)
 
 
-def _signal_kind(sig: Any) -> str:
-    if sig.is_float:
-        return "float"
-    return "signed" if sig.is_signed else "unsigned"
-
-
-def _conversion(sig: Any) -> dict[str, Any]:
-    """Map cantools scale/offset/choices to an MDC conversion object.
-
-    Table conversions intentionally omit scale/offset — only discrete value labels survive.
-    """
-    if sig.choices:
-        return {"kind": "table"}
-    scale = float(sig.scale)
-    offset = float(sig.offset)
-    if scale == 1.0 and offset == 0.0:
-        return {"kind": "identity"}
-    return {"kind": "linear", "factor": scale, "offset": offset}
-
-
 def _choices(sig: Any) -> list[dict[str, Any]]:
     items = [{"value": int(k), "label": str(v)} for k, v in sig.choices.items()]
     items.sort(key=lambda x: x["value"])
@@ -186,52 +162,67 @@ def _expand_mux_ids(ids: Any) -> list[int]:
     return out
 
 
-def _multiplexer(sig: Any) -> dict[str, Any] | None:
+def _apply_scale_offset(out: dict[str, Any], sig: Any) -> None:
+    scale = float(sig.scale)
+    offset = float(sig.offset)
+    if scale != 1.0:
+        out["scale"] = scale
+    if offset != 0.0:
+        out["offset"] = offset
+    if sig.choices:
+        out["conversion"] = {"kind": "table"}
+
+
+def _apply_multiplexer(out: dict[str, Any], sig: Any) -> None:
     if getattr(sig, "is_multiplexer", False):
-        return {"role": "multiplexor"}
+        out["is_multiplexer"] = True
+        return
     ids = getattr(sig, "multiplexer_ids", None)
     if ids:
-        role: dict[str, Any] = {"role": "multiplexed", "ids": _expand_mux_ids(ids)}
+        out["multiplexer_ids"] = _expand_mux_ids(ids)
         mux_signal = getattr(sig, "multiplexer_signal", None)
         if mux_signal:
             mux_name = mux_signal if isinstance(mux_signal, str) else mux_signal.name
-            role["multiplexorName"] = sanitize_id(mux_name)
-        return role
-    return None
+            out["multiplexer_signal"] = sanitize_id(mux_name)
 
 
 def _signal_to_mdc(sig: Any, attr_definitions: dict[str, Any]) -> dict[str, Any]:
     out: dict[str, Any] = {
         "name": sanitize_id(sig.name),
-        "startBit": int(sig.start),
-        "lengthBits": int(sig.length),
-        "byteOrder": str(sig.byte_order),
-        "kind": _signal_kind(sig),
-        "conversion": _conversion(sig),
+        "start": int(sig.start),
+        "length": int(sig.length),
+        "byte_order": str(sig.byte_order),
+        "is_signed": bool(sig.is_signed),
+        "is_float": bool(sig.is_float),
     }
-    if out["kind"] == "float" and out["lengthBits"] not in _FLOAT_WIDTHS:
+    if out["is_float"] and out["length"] not in _FLOAT_WIDTHS:
         print(
-            f"dbc2mdc: warning: signal {sig.name!r} float width {out['lengthBits']} "
-            f"not in {_FLOAT_WIDTHS}; downgrading to unsigned identity",
+            f"dbc2mdc: warning: signal {sig.name!r} float width {out['length']} "
+            f"not in {_FLOAT_WIDTHS}; downgrading to unsigned",
             file=sys.stderr,
         )
-        out["kind"] = "unsigned"
-        out["conversion"] = {"kind": "identity"}
+        out["is_float"] = False
+        out["is_signed"] = False
+    _apply_scale_offset(out, sig)
     if sig.comment:
-        out["description"] = str(sig.comment)
+        out["comment"] = str(sig.comment)
     if sig.unit:
         out["unit"] = str(sig.unit)
     if sig.minimum is not None:
-        out["min"] = float(sig.minimum)
+        out["minimum"] = float(sig.minimum)
     if sig.maximum is not None:
-        out["max"] = float(sig.maximum)
+        out["maximum"] = float(sig.maximum)
     if sig.choices:
         out["choices"] = _choices(sig)
     if sig.receivers:
         out["receivers"] = list(sig.receivers)
-    mux = _multiplexer(sig)
-    if mux:
-        out["multiplexer"] = mux
+    if getattr(sig, "spn", None) is not None:
+        out["spn"] = int(sig.spn)
+    if getattr(sig, "raw_initial", None) is not None:
+        out["raw_initial"] = float(sig.raw_initial)
+    if getattr(sig, "raw_invalid", None) is not None:
+        out["raw_invalid"] = float(sig.raw_invalid)
+    _apply_multiplexer(out, sig)
     if sig.dbc and getattr(sig.dbc, "attributes", None):
         attrs = _serialize_attributes(sig.dbc.attributes, attr_definitions)
         if attrs:
@@ -239,16 +230,7 @@ def _signal_to_mdc(sig: Any, attr_definitions: dict[str, Any]) -> dict[str, Any]
     return out
 
 
-def _transmission_type(msg: Any) -> str:
-    """Map DBC GenMsgSendType to MDC transmissionType (default cyclic)."""
-    send_type = getattr(msg, "send_type", None)
-    if send_type and str(send_type).lower() in _SEND_TYPE_TRIGGERED:
-        return "triggered"
-    return "cyclic"
-
-
 def _message_multiplexing(msg: Any, ext_mux: bool) -> dict[str, Any] | None:
-    """Build message.multiplexing when a multiplexor signal is present."""
     mux_signal = next((s for s in msg.signals if getattr(s, "is_multiplexer", False)), None)
     if mux_signal is None:
         return None
@@ -261,26 +243,63 @@ def _message_multiplexing(msg: Any, ext_mux: bool) -> dict[str, Any] | None:
     return mux_block
 
 
+def _signal_groups(msg: Any) -> list[dict[str, Any]] | None:
+    groups = getattr(msg, "signal_groups", None)
+    if not groups:
+        return None
+    out: list[dict[str, Any]] = []
+    for g in groups:
+        entry: dict[str, Any] = {
+            "name": sanitize_id(g.name),
+            "signal_names": list(g.signal_names),
+        }
+        if getattr(g, "repetitions", 1) != 1:
+            entry["repetitions"] = int(g.repetitions)
+        out.append(entry)
+    return out or None
+
+
+def _contained_message_to_mdc(cm: Any, attr_definitions: dict[str, Any]) -> dict[str, Any]:
+    out: dict[str, Any] = {
+        "name": sanitize_id(cm.name),
+        "header_id": int(cm.header_id),
+        "length": int(cm.length),
+        "signals": [_signal_to_mdc(s, attr_definitions) for s in sorted(cm.signals, key=lambda s: (s.start, s.name))],
+    }
+    if cm.comment:
+        out["comment"] = str(cm.comment)
+    if cm.senders:
+        out["senders"] = list(cm.senders)
+    if cm.dbc and getattr(cm.dbc, "attributes", None):
+        attrs = _serialize_attributes(cm.dbc.attributes, attr_definitions)
+        if attrs:
+            out["attributes"] = attrs
+    return out
+
+
 def _message_to_mdc(
     msg: Any, attr_definitions: dict[str, Any], ext_mux: bool = False
 ) -> dict[str, Any]:
     signals = sorted(msg.signals, key=lambda s: (s.start, s.name))
-    transmission_type = _transmission_type(msg)
     out: dict[str, Any] = {
         "name": sanitize_id(msg.name),
-        "id": int(msg.frame_id),
-        "isExtended": bool(msg.is_extended_frame),
-        "isFd": bool(msg.is_fd),
+        "frame_id": int(msg.frame_id),
+        "is_extended_frame": bool(msg.is_extended_frame),
+        "is_fd": bool(msg.is_fd),
         "length": int(msg.length),
-        "transmissionType": transmission_type,
         "signals": [_signal_to_mdc(s, attr_definitions) for s in signals],
     }
     if msg.comment:
-        out["description"] = str(msg.comment)
+        out["comment"] = str(msg.comment)
+    send_type = getattr(msg, "send_type", None)
+    if send_type:
+        out["send_type"] = str(send_type)
     if msg.cycle_time is not None:
-        out["cycleTimeMs"] = int(msg.cycle_time)
-    elif transmission_type == "cyclic":
-        out["cycleTimeMs"] = _DEFAULT_CYCLE_TIME_MS
+        out["cycle_time"] = int(msg.cycle_time)
+    elif send_type is None or str(send_type).lower() not in {
+        "ifactive", "triggered", "event", "nosig", "nosigsend", "spontaneous",
+    }:
+        out["cycle_time"] = _DEFAULT_CYCLE_TIME_MS
     if msg.senders:
         out["senders"] = list(msg.senders)
     if msg.dbc and getattr(msg.dbc, "attributes", None):
@@ -290,7 +309,62 @@ def _message_to_mdc(
     mux_block = _message_multiplexing(msg, ext_mux)
     if mux_block is not None:
         out["multiplexing"] = mux_block
+    protocol = getattr(msg, "protocol", None)
+    if protocol == "j1939":
+        out["protocol"] = "j1939"
+    groups = _signal_groups(msg)
+    if groups:
+        out["signal_groups"] = groups
+    if getattr(msg, "is_container", False):
+        contained = getattr(msg, "contained_messages", None) or []
+        if contained:
+            out["contained_messages"] = [
+                _contained_message_to_mdc(cm, attr_definitions) for cm in contained
+            ]
+        header_id = getattr(msg, "header_id", None)
+        if header_id is not None:
+            out["header_id"] = int(header_id)
     return out
+
+
+def _env_var_to_mdc(ev: Any) -> dict[str, Any]:
+    out: dict[str, Any] = {"name": sanitize_id(ev.name)}
+    env_type = getattr(ev, "env_type", None)
+    if env_type is not None:
+        out["env_type"] = _ENV_TYPE_MAP.get(int(env_type), "integer")
+    if ev.minimum is not None:
+        out["minimum"] = float(ev.minimum)
+    if ev.maximum is not None:
+        out["maximum"] = float(ev.maximum)
+    if ev.unit:
+        out["unit"] = str(ev.unit)
+    if getattr(ev, "initial_value", None) is not None:
+        out["initial_value"] = float(ev.initial_value)
+    if getattr(ev, "env_id", None) is not None:
+        out["env_id"] = int(ev.env_id)
+    if getattr(ev, "access_type", None):
+        out["access_type"] = str(ev.access_type)
+    if getattr(ev, "access_node", None):
+        out["access_node"] = list(ev.access_node)
+    if ev.comment:
+        out["comment"] = str(ev.comment)
+    return out
+
+
+def _bus_bitrates(db: Any, is_fd: bool) -> tuple[int | None, int | None]:
+    baudrate: int | None = None
+    fd_baudrate: int | None = None
+    buses = getattr(db, "buses", None) or []
+    if buses:
+        bus = buses[0]
+        if getattr(bus, "baudrate", None):
+            baudrate = int(bus.baudrate)
+        if getattr(bus, "fd_baudrate", None):
+            fd_baudrate = int(bus.fd_baudrate)
+    if is_fd and fd_baudrate is None:
+        # ponytail: FD inferred from messages but no bus bitrate in DBC
+        pass
+    return baudrate, fd_baudrate
 
 
 def _network_from_dbc(dbc_path: Path) -> tuple[dict[str, Any], list[dict[str, Any]]]:
@@ -298,16 +372,23 @@ def _network_from_dbc(dbc_path: Path) -> tuple[dict[str, Any], list[dict[str, An
     attr_definitions = db.dbc.attribute_definitions if db.dbc else {}
     ext_mux = _extended_mux_enabled(db)
     is_fd = any(m.is_fd for m in db.messages)
+    baudrate, fd_baudrate = _bus_bitrates(db, is_fd)
     network: dict[str, Any] = {
         "id": sanitize_id(dbc_path.stem),
         "name": dbc_path.stem,
         "filename": dbc_path.name,
-        "protocol": "canfd" if is_fd else "can",
         "messages": sorted(
             (_message_to_mdc(m, attr_definitions, ext_mux) for m in db.messages),
-            key=lambda x: x["id"],
+            key=lambda x: x["frame_id"],
         ),
     }
+    if baudrate is not None:
+        network["baudrate"] = baudrate
+    if fd_baudrate is not None:
+        network["fd_baudrate"] = fd_baudrate
+    elif is_fd:
+        # ponytail: FD messages present but no fd_baudrate in DBC — omit
+        pass
     if db.dbc and getattr(db.dbc, "attributes", None):
         attrs = _serialize_attributes(db.dbc.attributes, attr_definitions)
         if attrs:
@@ -316,17 +397,21 @@ def _network_from_dbc(dbc_path: Path) -> tuple[dict[str, Any], list[dict[str, An
         nodes: list[dict[str, Any]] = []
         for n in db.nodes:
             node: dict[str, Any] = {"name": n.name}
+            if n.comment:
+                node["comment"] = str(n.comment)
             if n.dbc and getattr(n.dbc, "attributes", None):
                 node_attrs = _serialize_attributes(n.dbc.attributes, attr_definitions)
                 if node_attrs:
                     node["attributes"] = node_attrs
             nodes.append(node)
         network["nodes"] = nodes
+    env_vars = getattr(db, "environment_variables", None)
+    if env_vars:
+        network["environment_variables"] = [_env_var_to_mdc(ev) for ev in env_vars]
     return network, _attribute_definitions(db)
 
 
 def _merge_attr_definitions(def_lists: list[list[dict[str, Any]]]) -> list[dict[str, Any]]:
-    # ponytail: first network wins on name collision; upgrade path: warn or merge scopes.
     seen: dict[str, dict[str, Any]] = {}
     for defs in def_lists:
         for d in defs:
@@ -342,16 +427,17 @@ def build_project(
 ) -> dict[str, Any]:
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     project: dict[str, Any] = {
+        "$schema": SCHEMA_REF,
         "schemaVersion": SCHEMA_VERSION,
+        "id": sanitize_id(vehicle_id),
+        "name": name,
         "metadata": {
             "name": name,
             "source": "dbc2mdc",
             "createdAt": now,
             "modifiedAt": now,
         },
-        "vehicles": [
-            {"id": sanitize_id(vehicle_id), "name": name, "networks": networks}
-        ],
+        "networks": networks,
     }
     if attribute_definitions:
         project["attributeDefinitions"] = attribute_definitions
@@ -359,10 +445,10 @@ def build_project(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Import DBC file(s) into an MDC project.")
+    parser = argparse.ArgumentParser(description="Import DBC file(s) into an MDC v3 project.")
     parser.add_argument("input", type=Path, help="A .dbc file or a folder of .dbc files")
     parser.add_argument("-o", "--output", type=Path, help="Output MDC JSON (default: stdout)")
-    parser.add_argument("--vehicle-id", help="Vehicle id (default: derived from input name)")
+    parser.add_argument("--vehicle-id", help="Root document id (default: derived from input name)")
     args = parser.parse_args()
 
     if not args.input.exists():

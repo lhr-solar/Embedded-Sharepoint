@@ -16,7 +16,7 @@ const schemaRoot = join(repoRoot, "schema");
 const input = join(schemaRoot, "mdc.schema.json");
 const output = join(schemaRoot, "mdc.schema.bundle.json");
 
-const SCHEMA_ID_PREFIX = "https://schemas.lhr.dev/mdc/2025-06/";
+const SCHEMA_ID_PREFIX = "https://lhrsolar.org/lhrs-mdc/3.0.0/";
 
 /** Map published $id URLs to on-disk paths under mdc/schema/. */
 function localPathFromId(url) {

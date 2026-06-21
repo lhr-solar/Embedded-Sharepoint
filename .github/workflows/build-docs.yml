@@ -25,11 +25,10 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Optional: DBC → JSON for the React app only. Failure does not block docs or deploy.
-      - name: Export CAN spec JSON
+      - name: Stage MDC docs for CAN spec UI
         id: canspec_export
         continue-on-error: true
-        run: python3 can/canspec-ui/export_canspec_json.py
+        run: npm --prefix can/canspec-ui run copy-mdc
 
       - name: Build MkDocs site
         run: mkdocs build

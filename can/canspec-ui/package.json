@@ -3,11 +3,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "node scripts/copy-mdc.mjs && vite",
+    "copy-mdc": "node scripts/copy-mdc.mjs",
+    "smoke-map": "node scripts/smoke-map.mjs",
+    "build": "node scripts/copy-mdc.mjs && node scripts/smoke-map.mjs && tsc -b && vite build",
     "preview": "vite preview",
-    "preview:dist": "vite build && vite preview --host 127.0.0.1 --port 4173",
-    "export-data": "python3 export_canspec_json.py"
+    "preview:dist": "vite build && vite preview --host 127.0.0.1 --port 4173"
   },
   "dependencies": {
     "react": "^19.0.0",

@@ -14,7 +14,7 @@ Usage (interactive — pick vehicle, then DBCs or \"all\"):
 
 Usage (non-interactive):
   python3 reorder_dbc.py --vehicle Mcqueen --all
-  python3 reorder_dbc.py --vehicle Daybreak --only bps.dbc,controls.dbc
+  python3 reorder_dbc.py --vehicle Daybreak --only CarCAN.dbc,MotorCAN.dbc
 
 By default overwrites the original .dbc in place.
 Use --no-overwrite to write <name>.reordered.dbc next to the source instead.

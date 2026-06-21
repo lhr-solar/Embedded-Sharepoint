@@ -1,39 +1,35 @@
 {
-  "schemaVersion": "2.0.0",
-  "metadata": {
-    "name": "Warning-only MDC",
-    "description": "Fixture for mdc-validate warnings: a non-standard network bitrate and a cyclic message with a non-positive cycleTimeMs. Schema-valid and semantically clean — these produce WARN lines, not errors (exit 0).",
-    "source": "hand-authored"
-  },
-  "vehicles": [
+  "$schema": "https://lhrsolar.org/lhrs-mdc/3.0.0/mdc.schema.json",
+  "schemaVersion": "3.0.0",
+  "id": "warn_vehicle",
+  "networks": [
     {
-      "id": "warn_vehicle",
-      "networks": [
+      "id": "oddbus",
+      "baudrate": 333333,
+      "messages": [
         {
-          "id": "oddbus",
-          "protocol": "can",
-          "bitrate": 333333,
-          "messages": [
+          "name": "BadCycle",
+          "frame_id": 200,
+          "length": 1,
+          "send_type": "Cyclic",
+          "cycle_time": 0,
+          "signals": [
             {
-              "name": "BadCycle",
-              "id": 200,
+              "name": "Flag",
+              "start": 0,
               "length": 1,
-              "transmissionType": "cyclic",
-              "cycleTimeMs": 0,
-              "signals": [
-                {
-                  "name": "Flag",
-                  "startBit": 0,
-                  "lengthBits": 1,
-                  "byteOrder": "little_endian",
-                  "kind": "unsigned",
-                  "conversion": { "kind": "identity" }
-                }
-              ]
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false
             }
           ]
         }
       ]
     }
-  ]
+  ],
+  "metadata": {
+    "name": "Warning-only MDC",
+    "description": "Fixture for mdc-validate warnings: a non-standard network bitrate and a cyclic message with a non-positive cycleTimeMs. Schema-valid and semantically clean — these produce WARN lines, not errors (exit 0).",
+    "source": "hand-authored"
+  }
 }
