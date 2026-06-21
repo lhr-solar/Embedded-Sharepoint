@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.lhr.dev/mdc/2025-06/defs/presentation.json",
+  "$id": "https://lhrsolar.org/lhrs-mdc/3.0.0/defs/presentation.json",
   "$defs": {
     "displayHints": {
       "type": "object",
@@ -70,12 +70,13 @@
 
     "signalValueCommon": {
       "type": "object",
-      "description": "Value semantics and presentation shared by decoded signals and computed signals: physical unit/range, enumeration (inline `choices` or a referenced `valueTableRef` — mutually exclusive), numeric `kind`, display hints, and alarm rules.",
+      "description": "Value semantics and presentation shared by decoded signals and computed signals: physical unit/range, enumeration (inline `choices` or a referenced `valueTableRef` — mutually exclusive), numeric type flags, display hints, and alarm rules.",
       "properties": {
-        "kind": { "$ref": "./primitives.json#/$defs/signalKind", "description": "Numeric interpretation of the value (unsigned/signed integer or IEEE-754 float). Defaults to float.", "default": "float" },
+        "is_signed": { "type": "boolean", "default": false, "description": "Two's-complement signed integer interpretation." },
+        "is_float": { "type": "boolean", "default": false, "description": "IEEE-754 float interpretation (16/32/64-bit)." },
         "unit": { "type": "string", "description": "Physical unit, e.g. \"km/h\". Empty string if dimensionless." },
-        "min": { "type": ["number", "null"], "description": "Minimum physical value (advisory range, DBC min)." },
-        "max": { "type": ["number", "null"], "description": "Maximum physical value (advisory range, DBC max)." },
+        "minimum": { "type": ["number", "null"], "description": "Minimum physical value (advisory range, DBC min)." },
+        "maximum": { "type": ["number", "null"], "description": "Maximum physical value (advisory range, DBC max)." },
         "choices": { "$ref": "./enumerations.json#/$defs/choices", "description": "Inline enumeration. Mutually exclusive with `valueTableRef`." },
         "valueTableRef": { "$ref": "./primitives.json#/$defs/identifier", "description": "Name of a network-local or project-shared `valueTable`. Mutually exclusive with `choices`." },
         "display": { "$ref": "#/$defs/displayHints" },

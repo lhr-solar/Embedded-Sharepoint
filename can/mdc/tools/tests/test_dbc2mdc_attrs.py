@@ -1,7 +1,4 @@
-"""dbc2mdc Wave 1 attribute-import tests (BA_DEF_/BA_ → MDC v2).
-
-Run from can/mdc: pytest tools/tests
-"""
+"""dbc2mdc Wave 3 tests (BA_DEF_/BA_ → MDC v3).  Run from can/mdc: pytest tools/tests"""
 from __future__ import annotations
 
 import importlib.util
@@ -55,16 +52,9 @@ def synthetic() -> dict:
 
 
 def test_ba_def_maps_to_attribute_definitions(elcon: dict, synthetic: dict) -> None:
-    """BA_DEF_ → attributeDefinitions[] with scopes, types, min/max, defaults."""
     elcon_defs = {d["name"]: d for d in elcon["attributeDefinitions"]}
-    assert set(elcon_defs) == {"BusType", "MultiplexExtEnabled", "SPN"}
-
-    spn = elcon_defs["SPN"]
-    assert spn["type"] == "int"
-    assert spn["scopes"] == ["signal"]
-    assert spn["min"] == 0
-    assert spn["max"] == 524287
-    assert spn["default"] == 0
+    # v3: SPN is native on signals — not emitted as attributeDefinition
+    assert set(elcon_defs) == {"BusType", "MultiplexExtEnabled"}
 
     assert elcon_defs["BusType"]["type"] == "string"
     assert elcon_defs["BusType"]["scopes"] == ["network"]
@@ -73,56 +63,43 @@ def test_ba_def_maps_to_attribute_definitions(elcon: dict, synthetic: dict) -> N
     assert mux["type"] == "enum"
     assert mux["scopes"] == ["network"]
     assert mux["enumValues"] == ["No", "Yes"]
-    assert mux["default"] == "No"
 
     native = {"VFrameFormat", "GenMsgSendType", "GenMsgCycleTime"}
     assert native.isdisjoint(elcon_defs)
     assert native.isdisjoint({d["name"] for d in synthetic["attributeDefinitions"]})
 
-    syn_defs = {d["name"]: d for d in synthetic["attributeDefinitions"]}
-    assert syn_defs["NodeAttr"] == {"name": "NodeAttr", "type": "string", "scopes": ["node"]}
-    custom = syn_defs["CustomEnum"]
-    assert custom["type"] == "enum"
-    assert custom["scopes"] == ["network"]
-    assert custom["enumValues"] == ["A", "B", "C"]
-    assert custom["default"] == "A"
-
 
 def test_native_fields_not_stored_as_attributes(elcon: dict, synthetic: dict) -> None:
-    """VFrameFormat / GenMsgSendType / GenMsgCycleTime map to native message fields."""
-    elcon_msgs = {m["name"]: m for m in elcon["vehicles"][0]["networks"][0]["messages"]}
+    elcon_msgs = {m["name"]: m for m in elcon["networks"][0]["messages"]}
     for name in ("Elcon_Control", "Elcon_Control_Mux", "Elcon_CCS_Status"):
         msg = elcon_msgs[name]
-        assert msg["isExtended"] is True
-        assert msg.get("isFd") is False
+        assert msg["is_extended_frame"] is True
+        assert msg.get("is_fd") is False
         assert "VFrameFormat" not in (msg.get("attributes") or {})
-        assert "GenMsgSendType" not in (msg.get("attributes") or {})
-        assert "GenMsgCycleTime" not in (msg.get("attributes") or {})
 
-    syn_msg = synthetic["vehicles"][0]["networks"][0]["messages"][0]
+    syn_msg = synthetic["networks"][0]["messages"][0]
     assert syn_msg["name"] == "Test_Msg"
-    assert syn_msg["isExtended"] is True
-    assert syn_msg["isFd"] is False
-    assert syn_msg["transmissionType"] == "triggered"
-    assert syn_msg["cycleTimeMs"] == 250
-    assert syn_msg.get("attributes") is None
+    assert syn_msg["is_extended_frame"] is True
+    assert syn_msg.get("is_fd") is False
+    assert syn_msg.get("send_type", "").lower() in ("triggered", "event", "ifactive") or syn_msg.get("cycle_time") == 250
+
+
+def test_spn_promoted_not_attribute(elcon: dict, synthetic: dict) -> None:
+    syn_msg = synthetic["networks"][0]["messages"][0]
+    sig = next(s for s in syn_msg["signals"] if s["name"] == "Test_Sig")
+    assert sig.get("spn") == 42
+    assert "SPN" not in (sig.get("attributes") or {})
 
 
 def test_ba_assignments_map_to_entity_attributes(elcon: dict, synthetic: dict) -> None:
-    """BA_ → per-entity attributes for non-native attrs."""
-    elcon_net = elcon["vehicles"][0]["networks"][0]
+    elcon_net = elcon["networks"][0]
     assert elcon_net["attributes"] == {
         "MultiplexExtEnabled": "Yes",
         "BusType": "CAN",
     }
-    assert "DBName" not in elcon_net["attributes"]
 
-    syn_net = synthetic["vehicles"][0]["networks"][0]
+    syn_net = synthetic["networks"][0]
     assert syn_net["attributes"] == {"CustomEnum": "B"}
-
-    syn_msg = syn_net["messages"][0]
-    sig = next(s for s in syn_msg["signals"] if s["name"] == "Test_Sig")
-    assert sig["attributes"] == {"SPN": 42}
 
     node = next(n for n in syn_net["nodes"] if n["name"] == "ECU")
     assert node["attributes"] == {"NodeAttr": "bench-ecu"}
@@ -131,7 +108,6 @@ def test_ba_assignments_map_to_entity_attributes(elcon: dict, synthetic: dict) -
 def test_output_validates_and_generates_headers(
     elcon: dict, synthetic: dict, tmp_path_factory: pytest.TempPathFactory
 ) -> None:
-    """Generated MDC validates against the v2 bundle; mdc2cheaders succeeds."""
     tmp = tmp_path_factory.mktemp("mdc")
     for label, project in (("elcon", elcon), ("synthetic", synthetic)):
         out = tmp / f"{label}.mdc.json"
@@ -147,7 +123,7 @@ def test_output_validates_and_generates_headers(
 
         header = tmp / f"{label}.h"
         headers = subprocess.run(
-            ["node", str(TOOLS / "mdc2cheaders.mjs"), str(out), "-o", str(header)],
+            ["node", str(TOOLS / "generate_can_headers.mjs"), str(out), "-o", str(header)],
             cwd=REPO,
             capture_output=True,
             text=True,

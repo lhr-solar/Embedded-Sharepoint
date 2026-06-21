@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.lhr.dev/mdc/2025-06/defs/hierarchy.json",
+  "$id": "https://lhrsolar.org/lhrs-mdc/3.0.0/defs/hierarchy.json",
   "$defs": {
     "arraySpec": {
       "type": "object",
@@ -34,6 +34,70 @@
       }
     },
 
+    "signalGroup": {
+      "type": "object",
+      "description": "DBC SIG_GROUP_ metadata grouping signals within a message.",
+      "additionalProperties": false,
+      "required": ["name", "signal_names"],
+      "properties": {
+        "name": { "$ref": "./primitives.json#/$defs/identifier" },
+        "repetitions": { "type": "integer", "minimum": 1, "default": 1 },
+        "signal_names": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    },
+
+    "containedMessage": {
+      "type": "object",
+      "description": "A sub-PDU inside a container message (ISO-TP / AUTOSAR PDU container). No nested containers.",
+      "required": ["name", "length", "signals"],
+      "allOf": [
+        { "$ref": "./annotations.json#/$defs/annotations" }
+      ],
+      "properties": {
+        "name": { "$ref": "./primitives.json#/$defs/identifier" },
+        "header_id": { "type": ["integer", "null"], "minimum": 0 },
+        "length": { "type": "integer", "minimum": 0, "maximum": 64 },
+        "comment": { "type": "string" },
+        "senders": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "signals": {
+          "type": "array",
+          "items": { "$ref": "./signals.json#/$defs/signal" }
+        }
+      },
+      "unevaluatedProperties": false
+    },
+
+    "environmentVariable": {
+      "type": "object",
+      "description": "DBC EV_ environment variable on a network/bus.",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "$ref": "./primitives.json#/$defs/identifier" },
+        "env_type": { "type": "string", "enum": ["integer", "float", "string", "data"] },
+        "minimum": { "type": ["number", "null"] },
+        "maximum": { "type": ["number", "null"] },
+        "initial_value": { "type": ["number", "null"] },
+        "unit": { "type": "string" },
+        "env_id": { "type": "integer" },
+        "access_type": { "type": "string" },
+        "access_node": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "comment": { "type": "string" }
+      }
+    },
+
     "node": {
       "type": "object",
       "description": "An ECU/participant on the bus.",
@@ -43,33 +107,31 @@
       ],
       "properties": {
         "name": { "type": "string", "minLength": 1, "description": "Node name as referenced by `senders`/`receivers`." },
-        "description": { "type": "string" }
+        "comment": { "type": "string" }
       },
       "unevaluatedProperties": false
     },
 
     "message": {
       "type": "object",
-      "description": "A CAN(-FD) frame definition and its signals. Modeled on canspec-ui CanMessage.",
-      "required": ["name", "id", "length", "signals"],
+      "description": "A CAN(-FD) frame definition and its signals.",
+      "required": ["name", "frame_id", "length", "signals"],
       "allOf": [
         { "$ref": "./annotations.json#/$defs/annotations" }
       ],
       "properties": {
         "name": { "$ref": "./primitives.json#/$defs/identifier", "description": "Message name, unique within its network." },
-        "description": { "type": "string", "description": "Free-form description (DBC comment)." },
-        "id": { "type": "integer", "minimum": 0, "maximum": 536870911, "description": "Arbitration/frame id. Max 0x1FFFFFFF (29-bit). Standard frames must be <= 0x7FF." },
-        "isExtended": { "type": "boolean", "description": "True for 29-bit extended identifiers, false for 11-bit standard.", "default": false },
-        "isFd": { "type": "boolean", "description": "True for CAN FD frames.", "default": false },
+        "comment": { "type": "string", "description": "Free-form description (DBC comment)." },
+        "frame_id": { "type": "integer", "minimum": 0, "maximum": 536870911, "description": "Arbitration/frame id. Max 0x1FFFFFFF (29-bit). Standard frames must be <= 0x7FF." },
+        "is_extended_frame": { "type": "boolean", "description": "True for 29-bit extended identifiers, false for 11-bit standard.", "default": false },
+        "is_fd": { "type": "boolean", "description": "True for CAN FD frames.", "default": false },
         "length": { "type": "integer", "minimum": 0, "maximum": 64, "description": "Payload length (DLC) in bytes. Classic CAN <= 8; CAN FD <= 64." },
         "transport": { "$ref": "./primitives.json#/$defs/transport", "default": "single" },
-        "transmissionType": {
+        "send_type": {
           "type": "string",
-          "enum": ["cyclic", "triggered"],
-          "default": "cyclic",
-          "description": "How the message is sent. `cyclic` = periodic at `cycleTimeMs`; counts toward bus load. `triggered` = event/on-change; EXCLUDED from bus-load calculation. Maps from DBC GenMsgSendType (cyclic/cyclicIfActive→cyclic; ifActive/triggered/event/noSig→triggered)."
+          "description": "Raw DBC GenMsgSendType; bus-load classification in contract §7."
         },
-        "cycleTimeMs": { "type": ["number", "null"], "minimum": 0, "default": 1000, "description": "Nominal transmit period in milliseconds. For `cyclic` messages this is the period used by the bus-load calculation (default 1000). For `triggered` messages it is optional and ignored by bus-load; null for purely event-driven messages." },
+        "cycle_time": { "type": ["number", "null"], "minimum": 0, "default": 1000, "description": "Nominal transmit period in milliseconds. For cyclic messages this is the period used by the bus-load calculation (default 1000). For triggered messages it is optional and ignored by bus-load; null for purely event-driven messages." },
         "senders": {
           "type": "array",
           "description": "Transmitting nodes.",
@@ -78,6 +140,16 @@
         },
         "multiplexing": { "$ref": "./multiplexing.json#/$defs/multiplexing" },
         "array": { "$ref": "#/$defs/arraySpec" },
+        "protocol": { "type": ["string", "null"], "enum": ["j1939", null] },
+        "signal_groups": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/signalGroup" }
+        },
+        "header_id": { "type": ["integer", "null"], "minimum": 0 },
+        "contained_messages": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/containedMessage" }
+        },
         "signals": {
           "type": "array",
           "description": "Signals packed into this message.",
@@ -95,23 +167,18 @@
 
     "network": {
       "type": "object",
-      "description": "A CAN/CAN-FD bus within a vehicle (one DBC ≈ one network). Modeled on canspec-ui CanNetwork.",
-      "required": ["id", "protocol", "messages"],
+      "description": "A CAN/CAN-FD bus within a vehicle (one DBC ≈ one network).",
+      "required": ["id", "messages"],
       "allOf": [
         { "$ref": "./annotations.json#/$defs/annotations" }
       ],
       "properties": {
         "id": { "$ref": "./primitives.json#/$defs/identifier", "description": "Network id, unique within its vehicle; the namespace for its messages." },
         "name": { "type": "string", "description": "Display name." },
-        "description": { "type": "string" },
+        "comment": { "type": "string" },
         "filename": { "type": "string", "description": "Source filename when split into a per-network file, for round-tripping." },
-        "protocol": {
-          "type": "string",
-          "description": "Bus protocol.",
-          "enum": ["can", "canfd"]
-        },
-        "bitrate": { "type": "integer", "minimum": 1, "description": "Nominal/arbitration bitrate in bits per second." },
-        "dataBitrate": { "type": "integer", "minimum": 1, "description": "CAN FD data-phase bitrate in bits per second (canfd only)." },
+        "baudrate": { "type": "integer", "minimum": 1, "description": "Nominal/arbitration bitrate in bits per second." },
+        "fd_baudrate": { "type": "integer", "minimum": 1, "description": "CAN FD data-phase bitrate in bits per second; present ⇒ CAN FD." },
         "samplePoint": { "type": "number", "minimum": 0, "maximum": 100, "description": "Nominal-phase sample point as a percentage (e.g. 87.5)." },
         "nodes": {
           "type": "array",
@@ -132,26 +199,11 @@
           "type": "array",
           "description": "Virtual signals derived from signals across messages on this network (cross-message expressions).",
           "items": { "$ref": "./signals.json#/$defs/computedSignal" }
-        }
-      },
-      "unevaluatedProperties": false
-    },
-
-    "vehicle": {
-      "type": "object",
-      "description": "A vehicle owning one or more networks. Modeled on canspec-ui Vehicle.",
-      "required": ["id", "networks"],
-      "allOf": [
-        { "$ref": "./annotations.json#/$defs/annotations" }
-      ],
-      "properties": {
-        "id": { "$ref": "./primitives.json#/$defs/identifier", "description": "Vehicle id, unique within the project; the top namespace for cross-refs." },
-        "name": { "type": "string", "description": "Display name." },
-        "description": { "type": "string" },
-        "networks": {
+        },
+        "environment_variables": {
           "type": "array",
-          "description": "Networks/buses in this vehicle.",
-          "items": { "$ref": "#/$defs/network" }
+          "description": "DBC EV_ environment variables on this bus.",
+          "items": { "$ref": "#/$defs/environmentVariable" }
         }
       },
       "unevaluatedProperties": false

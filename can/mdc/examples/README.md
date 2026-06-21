@@ -8,7 +8,9 @@ Intentionally invalid or warning-producing MDC documents for `mdc-validate` regr
 
 ## Vehicle projects
 
-Real vehicle MDC specs live under [`../../vehicles/`](../../vehicles/) (e.g. `../../vehicles/lhr-ev1/project.mdc.json`).
+Canonical v3 example: [`lhr-ev1/project.mdc.json`](lhr-ev1/project.mdc.json) (migrated from [`../../vehicles/lhr-ev1/project.mdc.json`](../../vehicles/lhr-ev1/project.mdc.json)).
+
+Other vehicle MDC specs may live under [`../../vehicles/`](../../vehicles/).
 
 ## Validate
 
@@ -18,8 +20,8 @@ From `can/mdc` (requires `npm install` once):
 # Regenerate bundle after editing schema/defs/*.json
 node tools/bundle-mdc-schema.mjs
 
-# Validate the lhr-ev1 vehicle project
-node tools/mdc-validate.mjs --schema-only schema/mdc.schema.bundle.json ../vehicles/lhr-ev1/project.mdc.json
+# Validate the v3 lhr-ev1 example
+node tools/mdc-validate.mjs --schema-only schema/mdc.schema.bundle.json examples/lhr-ev1/project.mdc.json
 ```
 
 The modular root (`schema/mdc.schema.json` + `defs/`) is for authoring;

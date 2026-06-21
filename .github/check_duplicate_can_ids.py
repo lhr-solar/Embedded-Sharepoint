@@ -1,73 +1,57 @@
 #!/usr/bin/env python3
+"""Check for duplicate CAN frame IDs across MDC vehicle databases."""
 
+import json
 import sys
-import os
-import cantools
-from collections import defaultdict
 from pathlib import Path
 
 
-def find_dbc_files(root_dir):
-    """
-    Recursively find all .dbc files under root_dir.
-    """
-    return sorted(Path(root_dir).rglob("*.dbc"))
+def find_mdc_files(root_dir):
+    return sorted(Path(root_dir).rglob("*.mdc.json"))
 
 
-def load_dbc_messages(dbc_path):
-    """
-    Load a DBC file and return a list of (can_id, message_name).
-    """
+def load_mdc_messages(mdc_path: Path):
     try:
-        db = cantools.database.load_file(str(dbc_path))
+        doc = json.loads(mdc_path.read_text(encoding="utf-8"))
     except Exception as e:
-        print(f"ERROR: Failed to load {dbc_path}: {e}")
+        print(f"ERROR: Failed to load {mdc_path}: {e}")
         sys.exit(1)
 
-    return [(msg.frame_id, msg.name) for msg in db.messages]
+    messages = []
+    for network in doc.get("networks", []):
+        net_id = network.get("id", "?")
+        for msg in network.get("messages", []):
+            messages.append((net_id, int(msg["frame_id"]), msg.get("name", "?")))
+    return messages
 
 
-def main(dbc_root):
-    dbc_files = find_dbc_files(dbc_root)
-
-    if not dbc_files:
-        print(f"ERROR: No .dbc files found in {dbc_root}")
+def main(mdc_root):
+    # Cross-file duplicates are not checked; each file is a separate vehicle and
+    # cross-vehicle ID collision is allowed.
+    mdc_files = find_mdc_files(mdc_root)
+    if not mdc_files:
+        print(f"ERROR: No .mdc.json files found in {mdc_root}")
         sys.exit(1)
 
-    print(f"Found {len(dbc_files)} DBC file(s):")
-    for f in dbc_files:
+    print(f"Found {len(mdc_files)} MDC file(s):")
+    for f in mdc_files:
         print(f"  - {f}")
 
-    # Maps CAN ID -> list of (dbc_file, message_name)
-    can_id_map = defaultdict(list)
     duplicates_found = False
 
-    for dbc in dbc_files:
-        messages = load_dbc_messages(dbc)
-
-        # Check duplicates within the same file
+    for mdc in mdc_files:
+        messages = load_mdc_messages(mdc)
         seen_in_file = {}
-        for can_id, msg_name in messages:
-            if can_id in seen_in_file:
+        for net_id, can_id, msg_name in messages:
+            key = f"{net_id}:{can_id}"
+            if key in seen_in_file:
                 print("\n[DUPLICATE IN FILE]")
-                print(f"  File: {dbc}")
-                print(f"  CAN ID: 0x{can_id:X}")
-                print(f"  Messages: {seen_in_file[can_id]}, {msg_name}")
+                print(f"  File: {mdc}")
+                print(f"  Network/CAN ID: {net_id} / 0x{can_id:X}")
+                print(f"  Messages: {seen_in_file[key]}, {msg_name}")
                 duplicates_found = True
             else:
-                seen_in_file[can_id] = msg_name
-
-            can_id_map[can_id].append((dbc, msg_name))
-
-    # Check duplicates across files
-    for can_id, entries in can_id_map.items():
-        dbc_set = {dbc for dbc, _ in entries}
-        if len(dbc_set) > 1:
-            print("\n[DUPLICATE ACROSS FILES]")
-            print(f"  CAN ID: 0x{can_id:X}")
-            for dbc, msg_name in entries:
-                print(f"    {dbc}: {msg_name}")
-            duplicates_found = True
+                seen_in_file[key] = msg_name
 
     if duplicates_found:
         print("\nERROR: Duplicate CAN IDs detected.")
@@ -79,7 +63,6 @@ def main(dbc_root):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: check_duplicate_can_ids.py <dbc_directory>")
+        print("Usage: check_duplicate_can_ids.py <vehicles_directory>")
         sys.exit(1)
-
     main(sys.argv[1])

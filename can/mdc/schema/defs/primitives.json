@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.lhr.dev/mdc/2025-06/defs/primitives.json",
+  "$id": "https://lhrsolar.org/lhrs-mdc/3.0.0/defs/primitives.json",
   "$defs": {
     "semver": {
       "type": "string",
@@ -29,14 +29,8 @@
 
     "byteOrder": {
       "type": "string",
-      "description": "Bit/byte ordering. Canonical values are `little_endian` (Intel) and `big_endian` (Motorola / sawtooth). startBit numbering follows the cantools/DBC convention — see mdc-overview.md.",
+      "description": "Bit/byte ordering. Canonical values are `little_endian` (Intel) and `big_endian` (Motorola / sawtooth). start numbering follows the cantools/DBC convention — see mdc-overview.md.",
       "enum": ["little_endian", "big_endian"]
-    },
-
-    "signalKind": {
-      "type": "string",
-      "description": "Raw bit-field interpretation: unsigned/signed two's-complement integer or IEEE-754 float.",
-      "enum": ["unsigned", "signed", "float"]
     },
 
     "transport": {

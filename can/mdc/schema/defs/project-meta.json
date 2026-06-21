@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.lhr.dev/mdc/2025-06/defs/project-meta.json",
+  "$id": "https://lhrsolar.org/lhrs-mdc/3.0.0/defs/project-meta.json",
   "$defs": {
     "metadata": {
       "type": "object",

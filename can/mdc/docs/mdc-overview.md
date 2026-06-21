@@ -1,12 +1,17 @@
-# MDC — Modular Description for CAN
+# MDC — Multi CAN Database (v3)
 
 MDC is the canonical JSON contract describing CAN/CAN-FD networks for the LHR
 telemetry platform. It is a **superset of DBC**: it carries everything a DBC
 carries plus first-class metadata DBC cannot express. It is validated by
 [`../schema/mdc.schema.bundle.json`](../schema/mdc.schema.bundle.json) (JSON
 Schema draft 2020-12) and consumed by the C++ engine (decode), the app
-(`mdc-editor`), and the `tools/` (`dbc2mdc`, `mdc2cheaders`, `mdc2grafana`,
+(`mdc-editor`), and the `tools/` (`dbc2mdc`, `generate_can_headers`, `mdc2grafana`,
 `mdc-validate`).
+
+**v3** adopts cantools field names, flattens the document root (one vehicle per
+file), and bumps `schemaVersion` to `3.0.0`. Schema `$id`:
+`https://lhrsolar.org/lhrs-mdc/3.0.0/mdc.schema.json`. Title: **MDC - Multi CAN
+Database**.
 
 The schema is a stable **contract**. Changes are additive within a major
 version; `schemaVersion` (semver) gates compatibility. A consumer must reject a
@@ -19,17 +24,17 @@ contract:
 
 ```
 mdc/schema/
-  mdc.schema.json           # thin root — project-level properties only
+  mdc.schema.json           # thin root — vehicle-level properties
   defs/                     # domain-scoped $defs (edit here)
     primitives.json         # semver, identifier, byteOrder, transport, …
     annotations.json        # typed attributes (DBC BA_/BA_DEF_)
     project-meta.json       # metadata, attributeDefinitions
     enumerations.json       # choices, valueTables
-    conversion.json         # raw→physical conversion kinds
-    presentation.json       # display hints, alarms
-    multiplexing.json       # mux roles
+    conversion.json         # optional rational/table conversion
+    presentation.json       # display hints, alarms, is_signed/is_float
+    multiplexing.json       # message-level mux summary
     signals.json            # signal, computedSignal
-    hierarchy.json          # node, message, network, vehicle
+    hierarchy.json          # node, message, network (+ signalGroup, EV, containers)
   mdc.schema.bundle.json    # generated single-file artifact (for consumers)
 ```
 
@@ -38,36 +43,62 @@ the bundle before committing or validating in CI:
 
 ```bash
 node tools/bundle-mdc-schema.mjs
-node tools/validate-mdc.mjs mdc/schema/mdc.schema.bundle.json vehicles/lhr-ev1/project.mdc.json
+node tools/mdc-validate.mjs --schema-only schema/mdc.schema.bundle.json examples/lhr-ev1/project.mdc.json
 ```
 
 Downstream consumers (engine, editor, codegen) should load
 `mdc.schema.bundle.json`. The modular root is for authoring only.
 
-## Hierarchy
+## Hierarchy (v3 — flattened root)
+
+**One MDC document = one vehicle.** The root *is* the vehicle; `vehicles[]` is
+gone.
 
 ```
-Project                 (schemaVersion, metadata,
-  │                      attributeDefinitions[], shared valueTables[])
-  └─ Vehicle[]          (id, name, attributes)
-       └─ Network/Bus[] (id, protocol can|canfd, bitrate, dataBitrate,
-            │            samplePoint, nodes[], valueTables[], attributes)
-            ├─ Message[] (name, id, isExtended, isFd, length, transport,
-            │   │         transmissionType, cycleTimeMs, senders[],
-            │   │         multiplexing, array, attributes)
-            │   ├─ Signal[]          (bit-packed, decoded from frame bytes)
-            │   └─ computedSignal[]  (virtual, derived from this message)
-            └─ computedSignal[]      (virtual, cross-message on this network)
+Vehicle (root)          ($schema, schemaVersion, id, name, description,
+  │                      metadata?, attributeDefinitions[], valueTables[],
+  │                      attributes?, networks[] — required: schemaVersion, id, networks)
+  └─ Network/Bus[]      (id, baudrate, fd_baudrate?, samplePoint, nodes[],
+       │                 valueTables[], environment_variables[], attributes)
+       ├─ Message[]      (name, frame_id, is_extended_frame, is_fd, length,
+       │   │              transport, send_type, cycle_time, senders[],
+       │   │              multiplexing, array, signal_groups[], header_id?,
+       │   │              contained_messages[], protocol?, attributes)
+       │   ├─ Signal[]          (bit-packed, decoded from frame bytes)
+       │   └─ computedSignal[]  (virtual, derived from this message)
+       └─ computedSignal[]      (virtual, cross-message on this network)
 ```
 
-One document can hold **multiple vehicles and multiple networks**. Identifiers
-namespace downward: a signal is addressed `vehicle.network.message.signal`, and
-cross-references (e.g. computed-signal `expr`/`dependsOn`) use the
-`message.signal` form within a network.
+Identifiers namespace downward: a signal is addressed
+`vehicle.network.message.signal`, and cross-references (e.g. computed-signal
+`expr`/`dependsOn`) use the `message.signal` form within a network.
 
-On disk a project is a **folder**: `project.mdc.json` plus optional per-network
-`*.mdc.json` files merged into `vehicles[].networks[]` by `network.id`. See
+On disk a vehicle project is typically a single `*.mdc.json` (or a folder with
+`project.mdc.json` plus optional per-network fragments). See
 [`../examples/README.md`](../examples/README.md).
+
+### cantools-shaped field names
+
+v3 renames wire/layout fields to match cantools / DBC round-trip:
+
+| Entity | Key renames (v2 → v3) |
+|---|---|
+| Signal | `startBit`→`start`, `lengthBits`→`length`, `byteOrder`→`byte_order`, `description`→`comment`, `kind`→`is_signed`+`is_float`, `min`/`max`→`minimum`/`maximum`, `multiplexer{}`→`is_multiplexer`/`multiplexer_signal`/`multiplexer_ids` |
+| Message | `id`→`frame_id`, `isExtended`→`is_extended_frame`, `isFd`→`is_fd`, `transmissionType`→`send_type`, `cycleTimeMs`→`cycle_time`, `description`→`comment` |
+| Network | `bitrate`→`baudrate`, `dataBitrate`→`fd_baudrate`, `description`→`comment`; `protocol` enum **removed** (CAN FD implied by `fd_baudrate`) |
+| Node | `description`→`comment` |
+
+Root keeps `description` (doc-level); entities use `comment` (DBC convention).
+
+### New v3 objects
+
+- **`signal_groups[]`** on message — DBC `SIG_GROUP_` metadata (`name`,
+  `repetitions`, `signal_names`).
+- **`environment_variables[]`** on network — DBC `EV_` metadata (`name`,
+  `env_type`, `minimum`/`maximum`, `initial_value`, `unit`, `env_id`,
+  `access_type`, `access_node`, `comment`).
+- **`contained_messages[]`** + **`header_id`** on message — ISO-TP / AUTOSAR PDU
+  container sub-PDUs (decode-load-bearing; coexists with `transport`).
 
 ## What MDC adds over DBC
 
@@ -79,36 +110,29 @@ All modeled as first-class schema, not free-text:
 | Display / viz hints | `signal.display` | precision, format, chartType, color, dashboardGroup, unitOverride, scale bounds, visible. Advisory — never affects decode. |
 | Fault / alarm rules | `signal.alarms[]` | op (lt/le/gt/ge/eq/ne/between/outside/change), threshold(s), severity, message, hysteresis. |
 | Computed / virtual signals | `computedSignals[]` (message + network) | `expr` over other signals' physical values; no bit layout. |
-| Multi-network / multi-vehicle | one document | with namespaced ids + cross-refs. |
+| Multi-network per vehicle | one document | with namespaced ids + cross-refs. |
 
-## Timing, transmission type & bus loading
+## Timing, send type & bus loading
 
-Two message-level fields describe transmit timing; one network field gives the
+Two message-level fields describe transmit timing; network `baudrate` gives the
 bus its speed. Together they drive the bus-load budget.
 
-### Transmission type & cycle time
+### Send type & cycle time
 
-- **`transmissionType`** — `cyclic` (default) or `triggered`.
-  - `cyclic` = periodic; the frame goes out every `cycleTimeMs` and **counts
-    toward bus load**.
-  - `triggered` = event / on-change; sent only when something changes and is
-    **excluded from bus-load** (you cannot budget unpredictable traffic).
-- **`cycleTimeMs`** — nominal transmit period in milliseconds.
-  - Schema default is `1000` for `cyclic` messages (used by the bus-load formula).
-  - For `triggered` messages it is optional and ignored by bus-load; use `null`
-    for purely event-driven frames.
+- **`send_type`** — free string preserving raw DBC `GenMsgSendType` (e.g.
+  `Cyclic`, `Triggered`, `Event`). Bus-load tooling classifies it: labels in a
+  triggered set are **excluded** from bus load; others with a positive
+  **`cycle_time`** count as cyclic.
+- **`cycle_time`** — nominal transmit period in milliseconds (cantools
+  `Message.cycle_time`). Schema default is `1000` when used for cyclic bus-load.
 
-DBC import (`dbc2mdc`) maps `GenMsgSendType` → `transmissionType`
-(`Cyclic`/`CyclicAndEvent`/`CyclicAndEventNoRepetition` → `cyclic`;
-`Event`/`Spontaneous`/`None` → `triggered`) and `GenMsgCycleTime` →
-`cycleTimeMs`. When the DBC omits both, the **importer** (not the schema)
-defaults to `cyclic` with `cycleTimeMs: 1000`.
-`VFrameFormat` sets native `isExtended`/`isFd` via cantools and is not stored
-in `attributes`.
+DBC import (`dbc2mdc`) maps `GenMsgSendType` → `send_type` verbatim and
+`GenMsgCycleTime` → `cycle_time`. `VFrameFormat` sets native `is_extended_frame` /
+`is_fd` via cantools and is not stored in `attributes`.
 
 ## Typed attribute library
 
-MDC v2 replaces free-form tags with a **typed attribute system** mirroring DBC
+MDC replaces free-form tags with a **typed attribute system** mirroring DBC
 `BA_DEF_` / `BA_` / `BA_DEF_DEF_`.
 
 ### Project-level declarations (`attributeDefinitions[]`)
@@ -117,31 +141,24 @@ Each entry declares one attribute key and its value type:
 
 ```json
 {
-  "name": "SPN",
-  "type": "int",
-  "description": "J1939 Suspect Parameter Number.",
-  "scopes": ["signal"],
-  "min": 0,
-  "max": 524287,
-  "default": 0
+  "name": "SystemOwner",
+  "type": "string",
+  "description": "Owning subsystem team.",
+  "scopes": ["network", "message"]
 }
 ```
 
 - **`name`** (required) — key used in per-entity `attributes` maps.
 - **`type`** (required) — one of `enum`, `int`, `float`, `string`, `bool`, `hex`.
-  `hex` is an integer stored as a JSON number, displayed in hexadecimal (CAN id /
-  SPN / mask). `min`/`max` apply like `int`.
 - **`scopes`** (optional) — levels where the attribute is allowed:
   `project`, `vehicle`, `network`, `node`, `message`, `signal`. Omit to allow all.
-- **`default`**, **`min`/`max`** (optional), **`enumValues`** (for `type: enum`,
-  `uniqueItems: true`).
 
 ### Per-entity values (`attributes{}`)
 
-On any entity (vehicle, network, node, message, signal):
+On any entity (vehicle root, network, node, message, signal):
 
 ```json
-"attributes": { "BusType": "CAN", "SPN": 1234 }
+"attributes": { "BusType": "CAN FD" }
 ```
 
 Keys match `attributeDefinitions[].name`; values are scalars (string, number,
@@ -149,186 +166,103 @@ boolean).
 
 ### Native-field mapping (not stored in `attributes`)
 
-Some DBC attributes set **native MDC fields** the engine decodes from:
-
 | DBC attribute | MDC native field(s) |
 |---|---|
-| `VFrameFormat` | `message.isExtended`, `message.isFd` |
-| `GenMsgSendType` | `message.transmissionType` (`cyclic` \| `triggered`) |
-| `GenMsgCycleTime` | `message.cycleTimeMs` |
+| `VFrameFormat` | `message.is_extended_frame`, `message.is_fd` |
+| `GenMsgSendType` | `message.send_type` |
+| `GenMsgCycleTime` | `message.cycle_time` |
+| `SPN` | `signal.spn` (v3: native, not an attribute) |
 | `DBName` | skipped (redundant with `network.id`/`name`) |
 
-All other `BA_DEF_` / `BA_` pairs import as `attributeDefinitions[]` +
-per-entity `attributes`. `dbc2mdc` deduplicates repeated `enumValues` entries
-(e.g. DBC `VFrameFormat` lists `"reserved"` many times) to satisfy
-`uniqueItems: true`.
+### Network baudrate
 
-### Network bitrate
-
-`network.bitrate` is an **integer in bits per second** — intentionally *not* an
-enum, because odd/non-standard rates exist in the wild. The standard set is:
-
-| Tier | Bitrates (bps) |
-|---|---|
-| Common | `125000`, `250000`, `500000`, `1000000` |
-| Also common | `33333`, `50000`, `800000` |
-
-`mdc-validate` **warns** (does not error) when a `bitrate` is outside this set,
-and when a `cyclic` message has `cycleTimeMs <= 0`.
+`network.baudrate` is an **integer in bits per second**. CAN FD is implied when
+`fd_baudrate` is present. `mdc-validate` warns when `baudrate` is outside the
+standard set.
 
 ### Bus-load formula
 
 For each network, bus load is the fraction of bus time consumed by **cyclic**
-traffic:
+traffic (messages whose lowercased `send_type` is not in the triggered set and
+have a positive `cycle_time`):
 
 ```
 loadPercent = Σ over cyclic messages of
-    (1000 / cycleTimeMs) * bitsPerFrame / bitrate * 100
+    (1000 / cycle_time) * bitsPerFrame / baudrate * 100
 ```
 
-`triggered` messages are excluded. `bitsPerFrame` is the worst-case on-wire bit
-count:
+## byte_order convention
 
-- **Classic CAN, 11-bit id:** `47 + 8·DLC` base + stuffing `ceil((34 + 8·DLC)/4)`.
-- **Classic CAN, 29-bit id:** `67 + 8·DLC` base + stuffing `ceil((39 + 8·DLC)/4)`.
-- **CAN FD:** no bit-stuffing in the data phase; fixed overhead + `8·DLC` + a
-  CRC sized by DLC (CRC17 for DLC ≤ 16, CRC21 above) + fixed stuff bits.
+`byte_order` is one of **`little_endian`** (Intel) or **`big_endian`**
+(Motorola / "sawtooth"). These names match cantools' output.
 
-**Worst-case caveat:** the classic-CAN model assumes maximum bit-stuffing on
-every stuffable field, so reported load is an upper bound (conservative for
-headroom budgeting). Real load is lower because stuffing is data-dependent. The
-per-frame model lives in one documented function (`bitsPerFrame` in
-`tools/mdc-busload.mjs`) with a `// ponytail:` note and an upgrade path to an
-average-case estimate.
+`start` follows the **cantools/DBC bit-numbering convention**:
 
-### `mdc-busload` output (app contract)
+- **little_endian (Intel):** `start` is the LSB of the signal.
+- **big_endian (Motorola):** `start` is the MSB in DBC sawtooth numbering.
 
-`tools/mdc-busload.mjs <project>` prints a per-network table and exports
-`computeBusLoad(project)`, returning the structured result the app consumes —
-load computed at **all** standard speeds (plus the configured one) for each
-network, with the configured speed marked and sorted first:
+`start` max is 511 (bit 7 of byte 63) to support 64-byte CAN FD frames.
 
-```jsonc
-{
-  "networks": [
-    {
-      "vehicle": "lhr_ev1",
-      "network": "powertrain",
-      "protocol": "canfd",
-      "bitrate": 500000,
-      "cyclicMessageCount": 3,
-      "speeds": [
-        { "speed": 500000,  "loadPercent": 4.96, "isConfigured": true },  // configured first
-        { "speed": 33333,   "loadPercent": 74.37, "isConfigured": false }, // then ascending
-        { "speed": 50000,   "loadPercent": 49.58, "isConfigured": false }
-        // … 125000, 250000, 800000, 1000000
-      ]
-    }
-  ]
-}
-```
+## Conversion math (v3)
 
-## byteOrder convention
+**Native linear (cantools-shaped):**
 
-`byteOrder` is one of **`little_endian`** (Intel) or **`big_endian`**
-(Motorola / "sawtooth"). These names are chosen to match cantools' output and
-the v0 `canspec-ui` exporter, so DBC import is loss-free.
+- `scale` (default `1`) and `offset` (default `0`) on the signal.
+- Identity = omit both or `scale: 1, offset: 0`.
 
-`startBit` follows the **cantools/DBC bit-numbering convention** (the same one
-`export_canspec_json.py` emits via `sig.start`):
+**Optional `conversion` extension — non-linear only:**
 
-- **little_endian (Intel):** `startBit` is the LSB of the signal. The signal
-  grows toward higher bit numbers. Bit numbering is standard: byte `n` occupies
-  bits `8n … 8n+7`, with bit `8n` the LSB of that byte.
-- **big_endian (Motorola):** `startBit` is the MSB of the signal in DBC
-  sawtooth numbering. The signal grows toward lower bit numbers within the
-  cantools start-bit scheme.
+- **rational** — polynomial ratio + offset.
+- **table** — categorical; render via `choices` or `valueTableRef`.
 
-`startBit` max is 511 (bit 7 of byte 63) to support 64-byte CAN FD frames.
-Importers and the engine share one bit-extraction routine; do not re-derive it
-per tool.
+When `conversion` is present it governs raw→physical math; `scale`/`offset` are
+ignored.
 
-## Conversion math
+`is_signed` / `is_float` (booleans) replace v2 `kind`:
 
-`signal.conversion.kind` selects the raw→physical mapping. `raw` is the integer
-(or IEEE-754 float, when `kind` = `float`) extracted from the bits.
+| v2 `kind` | `is_signed` | `is_float` |
+|---|---|---|
+| `unsigned` | `false` | `false` |
+| `signed` | `true` | `false` |
+| `float` | `false` | `true` |
 
-- **identity** — `physical = raw`.
-- **linear** — `physical = factor * raw + offset` (the DBC factor/offset).
-- **rational** — `physical = N(raw) / D(raw) + offset`, where `N` and `D` are
-  polynomials given as coefficient arrays **highest power first**. Example:
-  `numerator = [1, 0]`, `denominator = [10]` ⇒ `(1·raw + 0) / 10 = raw / 10`.
-  `D(raw)` must be non-zero over the signal's range.
-- **table** — the raw value is categorical; render it via the signal's
-  `choices[]` or `valueTableRef`. The numeric physical value equals `raw`.
-
-`signal.kind` (`unsigned` | `signed` | `float`) governs how the bit-field is
-interpreted before conversion: unsigned integer, two's-complement signed
-integer, or IEEE-754 float (16/32/64-bit).
+Computed signals default `is_float: true`, `is_signed: false`.
 
 ### Value tables
 
 `choices[]` is an inline enumeration; `valueTableRef` names a reusable table.
-Resolution is **network-local `valueTables` first, then project shared
+Resolution is **network-local `valueTables` first, then root shared
 `valueTables`**. `choices` and `valueTableRef` are mutually exclusive on a
 signal.
 
-## Computed (virtual) signals
+## Multiplexing (v3)
 
-A `computedSignal` has no bit layout. `expr` is an arithmetic/logical expression
-over other signals' **physical** values, referenced by name (or
-`message.signal` for cross-message on a network). `dependsOn[]` lists the inputs
-for ordering and validation; tools may also infer it from `expr`. The exact
-expression grammar is owned by the engine evaluator (the schema only stores the
-string).
+Per-signal mux is three flat fields (cantools-shaped):
 
-## Arrays / indexed messages
+- `is_multiplexer: true` — selector signal.
+- `multiplexer_signal` + `multiplexer_ids` — gated signals.
 
-Some ECUs send **one message id repeatedly**, each frame carrying an *index*
-signal plus the per-element data for that index — the classic battery-cell
-pattern: a single `BMS_CellArray` frame describes cell *N* via `CellVoltage` /
-`CellTemp`, and 96 successive frames reconstruct the full array.
+Message-level `multiplexing` summary (`multiplexed`, `multiplexorSignal`,
+`extended`) is retained as an MDC extension.
 
-The optional message-level **`array`** object captures the post-decode/storage
-semantics that the wire bits alone cannot:
+## Migration v2 → v3
 
-```jsonc
-"array": {
-  "indexSignal": "CellIndex",                 // signal in this message carrying the element index
-  "size": 96,                                  // total elements; null for dynamic/unknown
-  "elementSignals": ["CellVoltage", "CellTemp"], // per-element data signals (repeat per index)
-  "storage": "series_per_index"               // sink/ingest behavior (see below)
-}
+Use `tools/mdc-v2-to-v3.mjs` to flatten a v2 project (with `vehicles[]`) into
+one v3 file per vehicle with renamed fields and conversion mapping:
+
+```bash
+node tools/mdc-v2-to-v3.mjs --vehicle lhr_ev1 ../vehicles/lhr-ev1/project.mdc.json examples/lhr-ev1/project.mdc.json
 ```
-
-`indexSignal` and every `elementSignals` entry must name a signal **in the same
-message**, and the index signal must not also be an element signal. Index and
-element roles are **derived from this block** — there is intentionally no
-redundant per-signal `arrayRole` field.
-
-`array` is the **storage semantic layered on top of the wire layout**. An array
-message will typically *also* use `multiplexing` (the index is the multiplexor;
-element signals are multiplexed on it) to describe how the bits are packed; the
-two constructs coexist and describe different layers.
-
-`storage` is a typed hint that drives sink/ingest behavior:
-
-| Value | Behavior | Use when |
-|---|---|---|
-| `series_per_index` (default) | One independent time series per index value (`cell_voltage[0]`, `cell_voltage[1]`, …). | Per-element trending over time. |
-| `array_column` | Each full frame's elements stored as one array/vector column (one row per timestamp holding the whole vector). | Snapshots queried as a unit. |
-| `snapshot` | Keep only the latest fully-populated array, overwriting prior values. | Current-state view with no history. |
 
 ## How each consumer uses MDC
 
-- **Engine (decode):** reads networks → messages → signals; uses `id`,
-  `isExtended`, `length`, bit layout, `kind`, `conversion`, multiplexing to turn
-  frames into physical values; evaluates `computedSignals`; raises `alarms`.
-  Bit-extraction and conversion live in one shared module.
+- **Engine (decode):** reads networks → messages → signals; uses `frame_id`,
+  `is_extended_frame`, `length`, bit layout, `is_signed`/`is_float`, `scale`/
+  `offset`/`conversion`, multiplexing to turn frames into physical values;
+  evaluates `computedSignals`; raises `alarms`.
 - **App (`mdc-editor` + telemetry/analytics):** edits the document; uses
   `display` hints, typed `attributes`, `valueTables`, and `alarms` for
   rendering and validation.
-- **Tools:** `dbc2mdc` imports DBC (reusing `cantools` / `export_canspec_json.py`
-  logic), `mdc2cheaders` generates C headers, `mdc2grafana` builds dashboards
-  from `display`/`dashboardGroup`/`chartType`, `mdc-validate` runs this schema
-  plus semantic checks. All share **one** MDC load/validate module.
+- **Tools:** `dbc2mdc` imports DBC (cantools-backed), `generate_can_headers` generates
+  C headers, `mdc2grafana` builds dashboards from `display`/`dashboardGroup`/
+  `chartType`, `mdc-validate` runs this schema plus semantic checks.

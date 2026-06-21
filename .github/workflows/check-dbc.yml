@@ -1,4 +1,4 @@
-name: Run checks on CAN DBCs
+name: Run checks on CAN databases
 
 on:
   push:
@@ -19,14 +19,25 @@ jobs:
         with:
           python-version: 3.12
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
       - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
+          cd can/mdc && npm ci
 
-      - name: Check duplicate CAN IDs
+      - name: Check duplicate CAN IDs in MDC
         run: |
-          python .github/check_duplicate_can_ids.py can/dbc/HighNoon
-      - name: Check CAN header generation
+          python .github/check_duplicate_can_ids.py can/vehicles/HighNoon
+
+      - name: Check MDC header generation
         run: |
-          python .github/validate_dbc_generation.py can/dbc/HighNoon can/generate_can_headers.py
+          python .github/validate_dbc_generation.py can/vehicles/HighNoon can/mdc/tools/generate_can_headers.mjs
+
+      - name: mdc-busload self-check
+        run: |
+          node can/mdc/tools/mdc-busload.mjs --self-check

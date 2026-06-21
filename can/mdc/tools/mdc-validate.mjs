@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * mdc-validate — semantic linter for MDC projects.
+ * mdc-validate — semantic linter for MDC v3 projects.
  *
  * Runs JSON Schema validation FIRST, then semantic checks via shared modules.
- * Schema-only mode (replaces validate-mdc.mjs):
+ * Schema-only mode:
  *   node tools/mdc-validate.mjs --schema-only <schema.json> <data.mdc.json>
  *
  * Full lint:
@@ -13,7 +13,7 @@
  */
 import { readFile } from "node:fs/promises";
 import { loadProject, compileSchema, formatErrors, DEFAULT_SCHEMA } from "../lib/mdc-load.mjs";
-import { STANDARD_SPEEDS } from "../lib/busload.mjs";
+import { STANDARD_SPEEDS, SEND_TYPE_TRIGGERED, networkProtocolLabel } from "../lib/busload.mjs";
 import {
   validateArrayBlock,
   validateBitOverlaps,
@@ -62,45 +62,45 @@ if (!validate(project)) {
   process.exit(1);
 }
 
-for (const vehicle of project.vehicles ?? []) {
-  const seenNetworkIds = new Set();
-  for (const network of vehicle.networks ?? []) {
-    const netRef = `${vehicle.id}/${network.id}`;
-    if (seenNetworkIds.has(network.id)) add(netRef, `duplicate network id "${network.id}"`);
-    seenNetworkIds.add(network.id);
+const vehicleId = project.id ?? "project";
+const seenNetworkIds = new Set();
+for (const network of project.networks ?? []) {
+  const netRef = `${vehicleId}/${network.id}`;
+  if (seenNetworkIds.has(network.id)) add(netRef, `duplicate network id "${network.id}"`);
+  seenNetworkIds.add(network.id);
 
-    if (typeof network.bitrate === "number" && !STANDARD_SPEEDS.includes(network.bitrate)) {
-      warn(netRef, `bitrate ${network.bitrate} is not a standard CAN speed (${STANDARD_SPEEDS.join(", ")})`);
+  if (typeof network.baudrate === "number" && !STANDARD_SPEEDS.includes(network.baudrate)) {
+    warn(netRef, `baudrate ${network.baudrate} is not a standard CAN speed (${STANDARD_SPEEDS.join(", ")})`);
+  }
+
+  const seenMsgIds = new Map();
+  const maxDlc = network.fd_baudrate != null ? 64 : 8;
+
+  for (const message of network.messages ?? []) {
+    const msgRef = `${netRef}/${message.name}`;
+    const idKey = `${message.frame_id}:${message.is_extended_frame ? "ext" : "std"}`;
+    if (seenMsgIds.has(idKey)) {
+      add(msgRef, `message id 0x${message.frame_id.toString(16)} collides with "${seenMsgIds.get(idKey)}"`);
+    }
+    seenMsgIds.set(idKey, message.name);
+
+    if (message.length > maxDlc) {
+      const proto = networkProtocolLabel(network);
+      add(msgRef, `length ${message.length} exceeds ${proto} max DLC ${maxDlc}`);
     }
 
-    const seenMsgIds = new Map();
-    const maxDlc = network.protocol === "canfd" ? 64 : 8;
-
-    for (const message of network.messages ?? []) {
-      const msgRef = `${netRef}/${message.name}`;
-      const idKey = `${message.id}:${message.isExtended ? "ext" : "std"}`;
-      if (seenMsgIds.has(idKey)) {
-        add(msgRef, `message id 0x${message.id.toString(16)} collides with "${seenMsgIds.get(idKey)}"`);
-      }
-      seenMsgIds.set(idKey, message.name);
-
-      if (message.length > maxDlc) {
-        add(msgRef, `length ${message.length} exceeds ${network.protocol} max DLC ${maxDlc}`);
-      }
-
-      const transmissionType = message.transmissionType ?? "cyclic";
-      if (transmissionType === "cyclic" && typeof message.cycleTimeMs === "number" && message.cycleTimeMs <= 0) {
-        warn(msgRef, `cyclic message has cycleTimeMs ${message.cycleTimeMs} (must be > 0)`);
-      }
-
-      validateBitOverlaps(message, (severity, msg) => {
-        (severity === "error" ? add : warn)(msgRef, msg);
-      });
-
-      validateArrayBlock(message, (severity, msg) => {
-        (severity === "error" ? add : warn)(msgRef, msg);
-      });
+    const sendType = (message.send_type ?? "").toLowerCase();
+    if (!SEND_TYPE_TRIGGERED.has(sendType) && typeof message.cycle_time === "number" && message.cycle_time <= 0) {
+      warn(msgRef, `cyclic message has cycle_time ${message.cycle_time} (must be > 0)`);
     }
+
+    validateBitOverlaps(message, (severity, msg) => {
+      (severity === "error" ? add : warn)(msgRef, msg);
+    });
+
+    validateArrayBlock(message, (severity, msg) => {
+      (severity === "error" ? add : warn)(msgRef, msg);
+    });
   }
 }
 

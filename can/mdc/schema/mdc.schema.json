@@ -1,19 +1,29 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.lhr.dev/mdc/2025-06/mdc.schema.json",
-  "title": "MDC — Modular Description for CAN",
-  "description": "Canonical JSON contract for the LHR CAN telemetry platform. A DBC superset describing the full hierarchy Project → Vehicle → Network/Bus → Message → Signal, plus first-class metadata MDC adds over DBC: typed attribute definitions, display/viz hints, fault/alarm definitions, and computed (virtual) signals. Consumed by the C++ engine (decode), the app (mdc-editor), and the tools (dbc2mdc, mdc2cheaders, mdc2grafana, mdc-validate). A project on disk is a folder: a `project.mdc.json` plus optional per-network `*.mdc.json` files merged into `vehicles[].networks[]`.",
+  "$id": "https://lhrsolar.org/lhrs-mdc/3.0.0/mdc.schema.json",
+  "title": "MDC - Multi CAN Database",
+  "description": "Canonical JSON contract for the LHR CAN telemetry platform. A DBC superset describing the full hierarchy Vehicle (root) → Network/Bus → Message → Signal, plus first-class metadata MDC adds over DBC: typed attribute definitions, display/viz hints, fault/alarm definitions, and computed (virtual) signals. Consumed by the C++ engine (decode), the app (mdc-editor), and the tools (dbc2mdc, generate_can_headers, mdc2grafana, mdc-validate). One MDC document = one vehicle; the root is the vehicle with its networks[].",
   "type": "object",
-  "required": ["schemaVersion", "vehicles"],
+  "required": ["schemaVersion", "id", "networks"],
   "additionalProperties": false,
   "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema meta-reference; typically https://lhrsolar.org/lhrs-mdc/3.0.0/mdc.schema.json"
+    },
     "schemaVersion": {
       "$ref": "./defs/primitives.json#/$defs/semver",
-      "description": "MDC contract version this document targets, e.g. \"2.0.0\". Major version is breaking; minor/patch are additive. Tools must reject a document whose major version they do not understand."
+      "description": "MDC contract version this document targets, e.g. \"3.0.0\". Major version is breaking; minor/patch are additive. Tools must reject a document whose major version they do not understand."
     },
+    "id": {
+      "$ref": "./defs/primitives.json#/$defs/identifier",
+      "description": "Vehicle/document identity, unique within a fleet when comparing files."
+    },
+    "name": { "type": "string", "description": "Human-readable vehicle name." },
+    "description": { "type": "string", "description": "Doc-level vehicle description." },
     "metadata": {
       "$ref": "./defs/project-meta.json#/$defs/metadata",
-      "description": "Project-level provenance and free-form descriptive fields. Never semantically load-bearing for decode."
+      "description": "Provenance and free-form descriptive fields. Never semantically load-bearing for decode."
     },
     "attributeDefinitions": {
       "type": "array",
@@ -25,11 +35,14 @@
       "description": "Project-wide shared enumerations (DBC VAL_TABLE_ equivalent). A signal references one by name via `valueTableRef`; resolution is network-local first, then this project-shared list.",
       "items": { "$ref": "./defs/enumerations.json#/$defs/valueTable" }
     },
-    "vehicles": {
+    "attributes": {
+      "$ref": "./defs/annotations.json#/$defs/attributes",
+      "description": "Vehicle-level typed attribute values (DBC BA_ on the vehicle)."
+    },
+    "networks": {
       "type": "array",
-      "description": "One or more vehicles in a single document. Enables multi-vehicle fleets and cross-vehicle comparison; each vehicle namespaces its networks.",
-      "minItems": 1,
-      "items": { "$ref": "./defs/hierarchy.json#/$defs/vehicle" }
+      "description": "Networks/buses in this vehicle.",
+      "items": { "$ref": "./defs/hierarchy.json#/$defs/network" }
     }
   }
 }

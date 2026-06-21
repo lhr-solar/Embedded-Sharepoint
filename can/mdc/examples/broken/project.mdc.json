@@ -1,78 +1,76 @@
 {
-  "schemaVersion": "2.0.0",
-  "metadata": {
-    "name": "Intentionally broken MDC",
-    "description": "Fixture for mdc-validate: overlapping signal bits, a duplicate message id, and an array block with an unresolved indexSignal. Schema-valid but semantically wrong.",
-    "source": "hand-authored"
-  },
-  "vehicles": [
+  "$schema": "https://lhrsolar.org/lhrs-mdc/3.0.0/mdc.schema.json",
+  "schemaVersion": "3.0.0",
+  "id": "broken_vehicle",
+  "networks": [
     {
-      "id": "broken_vehicle",
-      "networks": [
+      "id": "bus0",
+      "messages": [
         {
-          "id": "bus0",
-          "protocol": "can",
-          "messages": [
+          "name": "Overlap",
+          "frame_id": 100,
+          "length": 8,
+          "signals": [
             {
-              "name": "Overlap",
-              "id": 100,
-              "length": 8,
-              "signals": [
-                {
-                  "name": "SigA",
-                  "startBit": 0,
-                  "lengthBits": 16,
-                  "byteOrder": "little_endian",
-                  "kind": "unsigned",
-                  "conversion": { "kind": "identity" }
-                },
-                {
-                  "name": "SigB",
-                  "startBit": 8,
-                  "lengthBits": 16,
-                  "byteOrder": "little_endian",
-                  "kind": "unsigned",
-                  "conversion": { "kind": "identity" }
-                }
-              ]
+              "name": "SigA",
+              "start": 0,
+              "length": 16,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false
             },
             {
-              "name": "DuplicateId",
-              "id": 100,
+              "name": "SigB",
+              "start": 8,
+              "length": 16,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false
+            }
+          ]
+        },
+        {
+          "name": "DuplicateId",
+          "frame_id": 100,
+          "length": 1,
+          "signals": [
+            {
+              "name": "Flag",
+              "start": 0,
               "length": 1,
-              "signals": [
-                {
-                  "name": "Flag",
-                  "startBit": 0,
-                  "lengthBits": 1,
-                  "byteOrder": "little_endian",
-                  "kind": "unsigned",
-                  "conversion": { "kind": "identity" }
-                }
-              ]
-            },
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false
+            }
+          ]
+        },
+        {
+          "name": "BadArray",
+          "frame_id": 101,
+          "length": 4,
+          "array": {
+            "indexSignal": "NotASignal",
+            "elementSignals": [
+              "CellValue"
+            ]
+          },
+          "signals": [
             {
-              "name": "BadArray",
-              "id": 101,
-              "length": 4,
-              "array": {
-                "indexSignal": "NotASignal",
-                "elementSignals": ["CellValue"]
-              },
-              "signals": [
-                {
-                  "name": "CellValue",
-                  "startBit": 0,
-                  "lengthBits": 16,
-                  "byteOrder": "little_endian",
-                  "kind": "unsigned",
-                  "conversion": { "kind": "identity" }
-                }
-              ]
+              "name": "CellValue",
+              "start": 0,
+              "length": 16,
+              "byte_order": "little_endian",
+              "is_signed": false,
+              "is_float": false
             }
           ]
         }
       ]
     }
-  ]
+  ],
+  "metadata": {
+    "name": "Intentionally broken MDC",
+    "description": "Fixture for mdc-validate: overlapping signal bits, a duplicate message id, and an array block with an unresolved indexSignal. Schema-valid but semantically wrong.",
+    "source": "hand-authored"
+  }
 }

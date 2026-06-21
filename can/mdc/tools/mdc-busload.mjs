@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * mdc-busload — compute per-network CAN bus load from an MDC project.
+ * mdc-busload — compute per-network CAN bus load from an MDC v3 project.
  *
- * Reuses mdc/lib/busload.mjs (canonical formula) and tools/lib/mdc-load.mjs.
+ * Reuses mdc/lib/busload.mjs (canonical formula) and lib/mdc-load.mjs.
  * Usage: node tools/mdc-busload.mjs <project-dir|project.mdc.json> [--self-check]
  */
 import { loadProject } from "../lib/mdc-load.mjs";
@@ -17,7 +17,7 @@ export { STANDARD_SPEEDS, bitsPerFrame, loadPercentAt, computeBusLoad };
 
 function printTable(result) {
   for (const net of result.networks) {
-    const cfg = net.bitrate != null ? `${net.bitrate} bps` : "unset";
+    const cfg = net.baudrate != null ? `${net.baudrate} bps` : "unset";
     console.log(
       `\n${net.vehicle}/${net.network} (${net.protocol}, configured ${cfg}, ${net.cyclicMessageCount} cyclic msgs)`,
     );
@@ -36,12 +36,12 @@ function assertClose(actual, expected, tol, label) {
 }
 
 function selfCheck() {
-  const bits = bitsPerFrame({ length: 8, isExtended: false, isFd: false });
+  const bits = bitsPerFrame({ length: 8, is_extended_frame: false, is_fd: false });
   assertClose(bits, 136, 0, "bitsPerFrame(8B std)");
-  const load = loadPercentAt([{ length: 8, cycleTimeMs: 100 }], 500000);
+  const load = loadPercentAt([{ length: 8, cycle_time: 100 }], 500000);
   assertClose(load, 0.272, 1e-6, "loadPercentAt(8B@100ms, 500k)");
   const triggered = loadPercentAt(
-    [{ length: 8, cycleTimeMs: 100, transmissionType: "triggered" }],
+    [{ length: 8, cycle_time: 100, send_type: "Event" }],
     500000,
   );
   assertClose(triggered, 0, 1e-9, "triggered excluded");

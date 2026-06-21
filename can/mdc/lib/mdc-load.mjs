@@ -2,13 +2,13 @@
 /**
  * Single source of truth for loading and validating MDC projects.
  *
- * Every MDC tool that consumes a project (mdc2cheaders, mdc2grafana,
+ * Every MDC tool that consumes a project (generate_can_headers, mdc2grafana,
  * mdc-validate) imports from here so parsing/merging/schema-validation logic
  * lives in exactly one place (DRY contract from .cursor/rules/mdc.mdc).
  *
- * A project on disk is a folder: a required `project.mdc.json` plus optional
- * per-network `*.mdc.json` fragments merged into `vehicles[].networks[]`,
- * keyed by `network.id`. A bare `project.mdc.json` file is also accepted.
+ * A project is either a single `*.mdc.json` (preferred v3 layout) or a folder with
+ * `project.mdc.json` plus optional per-network `*.mdc.json` fragments merged into
+ * root `networks[]`, keyed by `network.id`.
  */
 import { readFile, readdir, stat } from "node:fs/promises";
 import { basename, dirname, join } from "node:path";
@@ -23,14 +23,19 @@ export { iterMessages, resolveValueEntries, resolveChoices };
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = join(__dirname, "..", "..");
 const schemaRoot = join(repoRoot, "mdc/schema");
-const SCHEMA_ID_PREFIX = "https://schemas.lhr.dev/mdc/2025-06/";
+const SCHEMA_ID_PREFIXES = [
+  "https://lhrsolar.org/lhrs-mdc/3.0.0/",
+  "https://schemas.lhr.dev/mdc/2025-06/",
+];
 
 export const DEFAULT_SCHEMA = join(schemaRoot, "mdc.schema.bundle.json");
 
 /** Map published $id URLs to on-disk paths under mdc/schema/. */
 function localPathFromId(url) {
-  if (!url.startsWith(SCHEMA_ID_PREFIX)) return null;
-  return join(schemaRoot, url.slice(SCHEMA_ID_PREFIX.length));
+  for (const prefix of SCHEMA_ID_PREFIXES) {
+    if (url.startsWith(prefix)) return join(schemaRoot, url.slice(prefix.length));
+  }
+  return null;
 }
 
 const refParserOptions = {
@@ -38,7 +43,7 @@ const refParserOptions = {
     http: {
       order: 1,
       canRead(file) {
-        return file.url.startsWith(SCHEMA_ID_PREFIX);
+        return SCHEMA_ID_PREFIXES.some((p) => file.url.startsWith(p));
       },
       async read(file) {
         const path = localPathFromId(file.url);
@@ -72,15 +77,15 @@ function mergeNetworkFragment(project, fragment, originFile) {
   if (!net?.id) {
     throw new Error(`${originFile}: network fragment has no "id"`);
   }
-  for (const vehicle of project.vehicles ?? []) {
-    const idx = (vehicle.networks ?? []).findIndex((n) => n.id === net.id);
-    if (idx >= 0) {
-      vehicle.networks[idx] = { ...net, filename: basename(originFile) };
-      return;
-    }
+  const networks = project.networks ?? [];
+  const idx = networks.findIndex((n) => n.id === net.id);
+  if (idx >= 0) {
+    networks[idx] = { ...net, filename: basename(originFile) };
+    project.networks = networks;
+    return;
   }
   throw new Error(
-    `${originFile}: no vehicles[].networks[] entry with id "${net.id}" to merge into`,
+    `${originFile}: no networks[] entry with id "${net.id}" to merge into`,
   );
 }
 

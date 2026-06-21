@@ -1,6 +1,6 @@
 /**
- * Motorola/Intel bit-position math — shared by mdc-validate, the editor grid, and
- * live validation. Follows the cantools/DBC startBit convention encoded in MDC.
+ * Motorola/Intel bit-position math — shared by mdc-validate, the editor grid,
+ * generate_can_headers, and live validation. Follows the cantools `start` field convention.
  */
 
 /** Bit positions occupied by a little-endian (Intel) field. */
@@ -26,11 +26,12 @@ function bigEndianBits(startBit, length) {
   return bits;
 }
 
-/** Absolute bit indices a signal occupies, endianness-aware. */
+/** Absolute bit indices a signal occupies, endianness-aware (v3: start/length/byte_order). */
 export function signalBitIndices(signal) {
-  const start = signal.startBit ?? 0;
-  const len = signal.lengthBits ?? 0;
-  return signal.byteOrder === "big_endian"
+  const start = signal.start ?? 0;
+  const len = signal.length ?? 0;
+  const order = signal.byte_order ?? "little_endian";
+  return order === "big_endian"
     ? bigEndianBits(start, len)
     : littleEndianBits(start, len);
 }

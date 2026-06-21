@@ -1,15 +1,13 @@
 /**
  * Browser-safe MDC document helpers — shared by the app editor and Node tools.
- * (loadProject/compileSchema stay in tools/lib/mdc-load.mjs — Node only.)
  */
 
-/** Iterate every (vehicle, network, message) tuple. */
+/** Iterate every (project, network, message) tuple. v3: flat root, no vehicles[]. */
 export function* iterMessages(project) {
-  for (const vehicle of project?.vehicles ?? []) {
-    for (const network of vehicle.networks ?? []) {
-      for (const message of network.messages ?? []) {
-        yield { vehicle, network, message };
-      }
+  const vehicle = { id: project?.id ?? "project" };
+  for (const network of project?.networks ?? []) {
+    for (const message of network.messages ?? []) {
+      yield { vehicle, network, message };
     }
   }
 }
