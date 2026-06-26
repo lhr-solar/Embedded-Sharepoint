@@ -19,6 +19,12 @@
 #define BOOTLOADER_TASK_PRIORITY (tskIDLE_PRIORITY + 1U)
 #endif
 
+/* Upper bound on how long we wait for the ACK to drain before resetting. Way
+ * more than "BOOTACK\r\n" needs even at slow baud (9 bytes @ 1200 baud ~75ms). */
+#ifndef BOOTLOADER_ACK_DRAIN_MS
+#define BOOTLOADER_ACK_DRAIN_MS 500U
+#endif
+
 static UART_HandleTypeDef *s_uart;
 
 static void Task_Bootloader(void *pvParameters) {
@@ -33,11 +39,26 @@ static void Task_Bootloader(void *pvParameters) {
         }
         if (bootloader_lite_feed_byte(byte)) {
             /* Acknowledge so the host knows we heard it... */
-            (void)uart_send(s_uart, (const uint8_t *)BOOTLOADER_LITE_ACK,
-                            (uint16_t)(sizeof(BOOTLOADER_LITE_ACK) - 1U), pdMS_TO_TICKS(200));
-            /* ...let the ACK drain, then jump into the ROM bootloader. */
-            vTaskDelay(pdMS_TO_TICKS(100));
-            bootloader_lite_enter_rom();
+            if (uart_send(s_uart, (const uint8_t *)BOOTLOADER_LITE_ACK,
+                          (uint16_t)(sizeof(BOOTLOADER_LITE_ACK) - 1U),
+                          pdMS_TO_TICKS(200)) == UART_OK) {
+                /* ...wait for the ACK to actually leave the wire before we reset
+                 * (the reboot kills the UART). First let the driver's queued/IT
+                 * transmit finish, then wait for the shift register (TC flag) --
+                 * no blind delay that a low baud / busy system could outrun. The
+                 * deadline keeps a chatty console from wedging us here. */
+                const TickType_t start = xTaskGetTickCount();
+                const TickType_t timeout = pdMS_TO_TICKS(BOOTLOADER_ACK_DRAIN_MS);
+                while (s_uart->gState == HAL_UART_STATE_BUSY_TX &&
+                       (xTaskGetTickCount() - start) < timeout) {
+                    vTaskDelay(1);
+                }
+                while (!__HAL_UART_GET_FLAG(s_uart, UART_FLAG_TC) &&
+                       (xTaskGetTickCount() - start) < timeout) {
+                    /* last byte still shifting out; microseconds, then reset */
+                }
+            }
+            bootloader_lite_reboot_to_rom();
         }
     }
 }
