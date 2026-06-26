@@ -114,6 +114,7 @@ $(wildcard $(FREERTOS_PATH)/*.c) \
 $(FREERTOS_PATH)/portable/GCC/ARM_CM4F/port.c \
 $(wildcard common/Src/*.c) \
 $(wildcard driver/Src/*.c) \
+$(wildcard bootloader_lite/Src/*.c) \
 $(wildcard $(FATFS_PATH)/Src/*.c) \
 $(filter-out $(addprefix bsp/Src/,$(addsuffix .c,$(BSP_DISABLE))),$(wildcard bsp/Src/*.c))
 
@@ -188,6 +189,7 @@ $(FATFS_PATH)/Inc \
 common/Inc \
 driver/Inc \
 bsp/Inc \
+bootloader_lite/Inc \
 middleware
 
 C_INCLUDES := $(addprefix -I,$(C_INCLUDES))
@@ -343,6 +345,24 @@ flash-uart:
 	./flash-uart.sh $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
 
 #######################################
+# bl-lite: escape to the STM32 ROM bootloader over UART (see bootloader_lite/README.md)
+#######################################
+BL_LITE_BAUD ?= 115200
+BL_LITE_ADDRESS ?= 0x08000000
+# BL_LITE_PORT is autodetected when empty; override e.g. make flash-lite BL_LITE_PORT=/dev/cu.usbserial-XXXX
+BL_LITE_PORT_ARG = $(if $(BL_LITE_PORT),--port $(BL_LITE_PORT),)
+
+# Send "BOOT" so a running app jumps into the ROM bootloader (no flashing).
+.PHONY: bl-send
+bl-send:
+	python3 scripts/bootloader_lite_flash.py $(BL_LITE_PORT_ARG) --baud $(BL_LITE_BAUD)
+
+# Send "BOOT", then flash the built image over the ROM UART bootloader.
+.PHONY: flash-lite
+flash-lite:
+	python3 scripts/bootloader_lite_flash.py $(BL_LITE_PORT_ARG) --baud $(BL_LITE_BAUD) --bin $(BUILD_DIR)/$(FLASH_FILE) --address $(BL_LITE_ADDRESS)
+
+#######################################
 # format
 #######################################
 FORMAT_CONFIG ?= --style=file:../.clang-format
@@ -364,6 +384,8 @@ help:
 	@echo "  all          - Build the project."
 	@echo "  clean        - Remove build artifacts."
 	@echo "  flash        - Flash the target device."
+	@echo "  bl-send      - Send 'BOOT' so the app jumps to the ROM bootloader (bootloader_lite)."
+	@echo "  flash-lite   - bl-send, then flash the built image over the ROM UART bootloader."
 	@echo "  tidy         - Run clang-tidy."
 	@echo "  tidy-fix     - Run clang-tidy with fixes."
 	@echo "  format       - Run clang-format."
