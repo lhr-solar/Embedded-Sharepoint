@@ -15,9 +15,11 @@ does nothing unless you call into it, and anything you don't call is removed by
 `--gc-sections`. So a project that doesn't use it builds and behaves exactly as
 before — adopting it is purely additive.
 
-## Opt in (one call + feed your UART)
+## Opt in
 
-1. Early in `main()` (before the scheduler), route faults to the bootloader:
+Two calls, no task code to write:
+
+1. Early in `main()`, route faults to the bootloader:
 
 ```c
 #include "bootloader_lite.h"
@@ -30,28 +32,31 @@ int main(void) {
 }
 ```
 
-2. Feed received UART bytes to the matcher wherever you read the console UART.
-   On a match, optionally reply so the host can confirm, then jump:
+2. Start the ready-made UART listener on your console UART (e.g. where you create
+   your tasks):
 
 ```c
-// e.g. a small FreeRTOS task using the Embedded-Sharepoint bsp UART:
-void Task_BootListen(void *unused) {
-    (void)unused;
-    uint8_t b;
-    for (;;) {
-        if (uart_recv(husart3, &b, 1, portMAX_DELAY) == UART_OK &&
-            bootloader_lite_feed_byte(b)) {
-            uart_send(husart3, (const uint8_t *)BOOTLOADER_LITE_ACK,
-                      sizeof(BOOTLOADER_LITE_ACK) - 1, pdMS_TO_TICKS(200));
-            vTaskDelay(pdMS_TO_TICKS(100));   // let the ACK drain
-            bootloader_lite_enter_rom();      // never returns
-        }
-    }
-}
+#include "BootloaderTask.h"
+
+BootloaderTask_Init(husart3);   // waits for "BOOT", replies "BOOTACK", enters the bootloader
 ```
 
-`bootloader_lite_feed_byte()` and `enter_rom()` have no RTOS/BSP dependency — feed
-bytes from any UART source you like.
+That's it — sending `BOOT` makes the board reply `BOOTACK` and jump to the ROM
+bootloader. `BootloaderTask` works with static or dynamic FreeRTOS allocation;
+override `BOOTLOADER_TASK_STACK_SIZE` / `BOOTLOADER_TASK_PRIORITY` if needed.
+
+### Custom UART handling (optional)
+
+If you don't use the bsp UART (or want your own RX loop), skip `BootloaderTask`
+and feed bytes yourself — `bootloader_lite_feed_byte()` / `enter_rom()` have no
+RTOS/BSP dependency:
+
+```c
+if (bootloader_lite_feed_byte(rx)) {
+    /* optionally send BOOTLOADER_LITE_ACK first */
+    bootloader_lite_enter_rom();   // never returns
+}
+```
 
 ## Opt out
 
@@ -85,7 +90,8 @@ never arrives, then (with `--bin`) flashes over the ROM UART bootloader.
 | Symbol | Purpose |
 | --- | --- |
 | `bootloader_lite_init()` | Opt in: route faults to the ROM bootloader (call once, early in `main`). |
-| `bootloader_lite_feed_byte(b)` | Feed UART RX bytes; returns `true` when `"BOOT"` is matched. |
+| `BootloaderTask_Init(uart)` | Start the ready-made UART listener task (no task code to write). |
+| `bootloader_lite_feed_byte(b)` | Feed UART RX bytes; returns `true` when `"BOOT"` is matched (for custom loops). |
 | `bootloader_lite_enter_rom()` | Deinit + jump to the ROM bootloader (never returns). |
 | `BOOTLOADER_LITE_COMMAND` / `BOOTLOADER_LITE_ACK` | Magic word `"BOOT"` / reply `"BOOTACK\r\n"`. |
 

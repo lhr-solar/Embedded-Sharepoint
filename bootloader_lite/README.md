@@ -7,16 +7,14 @@ without a resident bootloader.
 Inert unless you call it (pure CMSIS/HAL, no symbol overrides, removed by
 `--gc-sections` when unused), so it's safe to adopt incrementally.
 
-Quick opt-in:
+Quick opt-in (no task code to write):
 
 ```c
 #include "bootloader_lite.h"
+#include "BootloaderTask.h"
 
-bootloader_lite_init();                 /* in main(): faults -> ROM bootloader */
-if (bootloader_lite_feed_byte(rx)) {    /* feed your UART RX bytes            */
-    /* optional: uart_send(..., BOOTLOADER_LITE_ACK, ...) */
-    bootloader_lite_enter_rom();
-}
+bootloader_lite_init();          /* main(): HardFault/etc -> ROM bootloader */
+BootloaderTask_Init(husart3);    /* ready-made UART "BOOT" listener          */
 ```
 
 Flashing from the host: `make flash-lite` (or `make bl-send`), or
