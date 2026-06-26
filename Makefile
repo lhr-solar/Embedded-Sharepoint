@@ -345,7 +345,7 @@ flash-uart:
 	./flash-uart.sh $(BUILD_DIR)/$(FLASH_FILE) $(FLASH_ADDRESS)
 
 #######################################
-# bl-lite: escape to the STM32 ROM bootloader over UART (see bootloader_lite/README.md)
+# bootloader_lite: escape to the STM32 ROM bootloader over UART (see docs/BootloaderLite.md)
 #######################################
 BL_LITE_BAUD ?= 115200
 BL_LITE_ADDRESS ?= 0x08000000

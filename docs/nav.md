@@ -1,6 +1,7 @@
 * [README](README.md)
 * [Installation](Installation.md)
 * [Flashing and Debugging](FlashAndTheBug.md)
+* [Bootloader Lite](BootloaderLite.md)
 * [Adding Embedded Sharepoint](SharepointSubmodule.md)
 * [CubeMX](CubeMX.md)
 * [STM32 Ports](STM32_Ports.md)
