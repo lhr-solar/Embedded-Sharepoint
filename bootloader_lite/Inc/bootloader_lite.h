@@ -18,14 +18,16 @@
  * don't use it build and behave exactly as before (unused code is
  * --gc-sections'd away).
  *
- * Typical opt-in (no listener code to write):
- *   - bootloader_lite_init();        // early in main(): faults -> ROM bootloader
- *   - BootloaderTask_Init(huartX);   // ready-made UART "BOOT" listener (BootloaderTask.h)
+ * Typical opt-in (no listener code to write) via BootloaderTask.h macros:
+ *   #define USE_BOOTLOADER
+ *   #define BOOTLOADER_ON_HARDFAULT   // optional; requires USE_BOOTLOADER
+ *   #include "BootloaderTask.h"
+ *   ... BOOTLOADER_LITE_SETUP(huartX);
  *
- * Custom UART handling (no RTOS/BSP) instead of BootloaderTask: feed bytes yourself
- *   - if (bootloader_lite_feed_byte(rx)) { bootloader_lite_enter_rom(); }
+ * Or call directly: bootloader_lite_init() (faults) + BootloaderTask_Init(huartX) (UART).
+ * Custom UART handling (no RTOS/BSP): if (bootloader_lite_feed_byte(rx)) bootloader_lite_enter_rom();
  *
- * Opt out: don't call anything. Full guide: docs/BootloaderLite.md.
+ * Opt out: don't enable it. Full guide: docs/BootloaderLite.md.
  */
 
 /** UART magic word the host sends to request the bootloader. */

@@ -15,41 +15,46 @@ does nothing unless you call into it, and anything you don't call is removed by
 `--gc-sections`. So a project that doesn't use it builds and behaves exactly as
 before — adopting it is purely additive.
 
-## Opt in
+## Opt in (macros)
 
-Two calls, no task code to write:
-
-1. Early in `main()`, route faults to the bootloader:
+Define the opt-in macros in your `main` **before** including `BootloaderTask.h`,
+then call the setup once during startup:
 
 ```c
-#include "bootloader_lite.h"
+#define USE_BOOTLOADER             // enable the UART "BOOT" -> ROM bootloader
+#define BOOTLOADER_ON_HARDFAULT    // also enter the bootloader on a hard fault
+#include "BootloaderTask.h"
 
 int main(void) {
     HAL_Init();
     SystemClock_Config();
-    bootloader_lite_init();   // HardFault/MemManage/BusFault/UsageFault -> ROM bootloader
+    BOOTLOADER_LITE_SETUP(husart3);   // pass your console UART handle
     ...
 }
 ```
 
-2. Start the ready-made UART listener on your console UART (e.g. where you create
-   your tasks):
+- `USE_BOOTLOADER` alone → just the UART "BOOT" listener.
+- `+ BOOTLOADER_ON_HARDFAULT` → also routes HardFault/MemManage/BusFault/UsageFault
+  to the bootloader. It **requires** `USE_BOOTLOADER` (defining it alone is a
+  compile error — you can't route faults to a bootloader that isn't enabled).
+- Neither → `BOOTLOADER_LITE_SETUP` expands to nothing and the whole module is
+  `--gc-sections`'d away.
+
+`BootloaderTask` works with static or dynamic FreeRTOS allocation; override
+`BOOTLOADER_TASK_STACK_SIZE` / `BOOTLOADER_TASK_PRIORITY` if needed.
+
+### Without the macro (direct calls / custom UART)
+
+You can call the functions directly instead of the macro:
 
 ```c
-#include "BootloaderTask.h"
-
-BootloaderTask_Init(husart3);   // waits for "BOOT", replies "BOOTACK", enters the bootloader
+bootloader_lite_init();          // faults -> ROM bootloader
+BootloaderTask_Init(husart3);    // UART "BOOT" listener
 ```
 
-That's it — sending `BOOT` makes the board reply `BOOTACK` and jump to the ROM
-bootloader. `BootloaderTask` works with static or dynamic FreeRTOS allocation;
-override `BOOTLOADER_TASK_STACK_SIZE` / `BOOTLOADER_TASK_PRIORITY` if needed.
-
-### Custom UART handling (optional)
-
-If you don't use the bsp UART (or want your own RX loop), skip `BootloaderTask`
-and feed bytes yourself — `bootloader_lite_feed_byte()` / `enter_rom()` have no
-RTOS/BSP dependency:
+Or, if you don't use the bsp UART (or want your own RX loop), skip
+`BootloaderTask` and feed bytes yourself — `bootloader_lite_feed_byte()` /
+`enter_rom()` have no RTOS/BSP dependency:
 
 ```c
 if (bootloader_lite_feed_byte(rx)) {
@@ -89,6 +94,8 @@ never arrives, then (with `--bin`) flashes over the ROM UART bootloader.
 
 | Symbol | Purpose |
 | --- | --- |
+| `USE_BOOTLOADER` / `BOOTLOADER_ON_HARDFAULT` | Compile-time opt-in macros; define before `#include "BootloaderTask.h"`. |
+| `BOOTLOADER_LITE_SETUP(uart)` | One-call setup driven by those macros (no-op when not enabled). |
 | `bootloader_lite_init()` | Opt in: route faults to the ROM bootloader (call once, early in `main`). |
 | `BootloaderTask_Init(uart)` | Start the ready-made UART listener task (no task code to write). |
 | `bootloader_lite_feed_byte(b)` | Feed UART RX bytes; returns `true` when `"BOOT"` is matched (for custom loops). |

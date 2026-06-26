@@ -27,6 +27,8 @@ static void Task_Bootloader(void *pvParameters) {
     uint8_t byte = 0U;
     for (;;) {
         if (uart_recv(s_uart, &byte, 1U, portMAX_DELAY) != UART_OK) {
+            /* UART not initialised yet (or a transient error): don't busy-spin. */
+            vTaskDelay(pdMS_TO_TICKS(10));
             continue;
         }
         if (bootloader_lite_feed_byte(byte)) {
