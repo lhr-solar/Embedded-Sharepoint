@@ -8,22 +8,24 @@
  * @brief Tiny, opt-in "escape to the ROM bootloader" helper.
  *
  * A lightweight, interim way to recover/reflash a board over UART without a
- * resident bootloader. On request (UART magic word) or on a hard fault, the
- * app jumps to the STM32 built-in system-memory (ROM) bootloader, after which
- * the chip is reflashable with STM32CubeProgrammer / stm32flash on the same UART.
+ * resident bootloader. On request (UART magic word "BOOT") or on a hard fault,
+ * the app jumps to the STM32 built-in system-memory (ROM) bootloader, after
+ * which the chip is reflashable with STM32CubeProgrammer / stm32flash on the
+ * same UART.
  *
- * It is pure CMSIS/HAL (no RTOS, no BSP dependency) and does nothing unless you
- * call into it, so bumping a project's Embedded-Sharepoint to this branch is a
- * no-op until you opt in. See bootloader_lite/README.md.
+ * This core is pure CMSIS/HAL (no RTOS, no BSP dependency) and does nothing
+ * unless you call into it, so adopting it is purely additive: projects that
+ * don't use it build and behave exactly as before (unused code is
+ * --gc-sections'd away).
  *
- * Opt in (3 lines):
- *   1) bootloader_lite_init();                      // early in main()
- *   2) if (bootloader_lite_feed_byte(rx)) {         // feed your UART RX bytes
- *          // (optional) send BOOTLOADER_LITE_ACK back, then:
- *          bootloader_lite_enter_rom();
- *      }
+ * Typical opt-in (no listener code to write):
+ *   - bootloader_lite_init();        // early in main(): faults -> ROM bootloader
+ *   - BootloaderTask_Init(huartX);   // ready-made UART "BOOT" listener (BootloaderTask.h)
  *
- * Opt out: don't call anything (the code is --gc-sections'd away).
+ * Custom UART handling (no RTOS/BSP) instead of BootloaderTask: feed bytes yourself
+ *   - if (bootloader_lite_feed_byte(rx)) { bootloader_lite_enter_rom(); }
+ *
+ * Opt out: don't call anything. Full guide: docs/BootloaderLite.md.
  */
 
 /** UART magic word the host sends to request the bootloader. */
@@ -45,6 +47,7 @@ bool bootloader_lite_feed_byte(uint8_t byte);
 
 /**
  * @brief Jump straight into the STM32 system-memory ROM bootloader. Never returns.
- * @note Safe to call from a normal (thread-mode) context, e.g. your UART task.
+ * @note Intended to be called from a task/thread-mode context (e.g. your UART
+ *       handler). The fault handler installed by bootloader_lite_init() also uses it.
  */
 void bootloader_lite_enter_rom(void);
