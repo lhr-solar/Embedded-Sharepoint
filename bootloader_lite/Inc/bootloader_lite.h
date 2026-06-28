@@ -12,13 +12,16 @@
  * the chip reboots into the STM32 built-in system-memory (ROM) bootloader, after
  * which it is reflashable with STM32CubeProgrammer / stm32flash on the same UART.
  *
- * How it works (and why): you can't reliably jump to the ROM bootloader from a
- * running app -- especially not from a fault handler, where the active exception
- * keeps the maskable interrupts the ROM bootloader needs permanently blocked. So
- * instead of jumping, we stash a magic value in a backup register and trigger a
- * system reset (NVIC_SystemReset). That guarantees a pristine, thread-mode state.
- * The actual jump happens at the very start of the next boot, in
- * bootloader_lite_check(), before any peripherals are touched.
+ * How it works (and why): from normal thread context (e.g. a UART "BOOT" task)
+ * we tear the app's clocks/peripherals/interrupts back to a reset-like state and
+ * jump straight into the ROM bootloader -- immediate, and with no dependence on
+ * backup-register retention across a reset. But you can't jump from a fault
+ * handler: the active exception keeps the maskable interrupts the ROM bootloader
+ * needs permanently blocked. So the fault path instead stashes a magic value in a
+ * backup register and triggers a system reset (NVIC_SystemReset); the jump then
+ * happens at the very start of the next boot, in bootloader_lite_check(), from a
+ * pristine thread-mode state. bootloader_lite_reboot_to_rom() picks the right
+ * path automatically based on the caller's context (thread vs. exception).
  *
  * This core is pure CMSIS/HAL (no RTOS, no BSP dependency) and does nothing
  * unless you call into it, so adopting it is purely additive: projects that
@@ -60,12 +63,17 @@
 void bootloader_lite_check(void);
 
 /**
- * @brief Request the ROM bootloader: stash a magic value and system-reset.
+ * @brief Enter the ROM bootloader. Never returns. Safe from any context.
  *
- * Never returns. Safe from any context (thread, ISR, or fault handler) because
- * it doesn't jump -- it reboots, and bootloader_lite_check() finishes the jump
- * on the next boot from a clean state. Send any UART ack/handshake and wait for
- * it to drain *before* calling this (the reset kills the UART mid-byte).
+ * - From thread mode (e.g. a UART "BOOT" task): tears the app's clocks,
+ *   peripherals and interrupts back down and jumps straight into the ROM
+ *   bootloader. Immediate; no reset and no dependence on backup-register
+ *   retention. Send any UART ack/handshake and wait for it to drain *before*
+ *   calling this (the jump tears the UART down).
+ * - From handler/exception mode (e.g. the hard-fault path): cannot jump (the
+ *   active exception masks the interrupts the ROM bootloader needs), so it
+ *   stashes a magic value in a backup register and system-resets;
+ *   bootloader_lite_check() finishes the jump on the next boot.
  */
 void bootloader_lite_reboot_to_rom(void);
 

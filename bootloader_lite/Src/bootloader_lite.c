@@ -56,10 +56,12 @@ static void bl_backup_access(void) {
 #endif
 }
 
-/* Jump straight into the ROM bootloader. Only safe from a pristine, post-reset
- * state (thread mode, peripherals in reset) -- i.e. only from bootloader_lite_check().
- * Jumping from an exception (e.g. a fault handler) deadlocks the ROM bootloader,
- * which needs maskable interrupts that stay blocked while a fault is active. */
+/* Jump straight into the ROM bootloader. Only safe from thread mode with a
+ * clean hardware state: either right after a reset (bootloader_lite_check()) or
+ * after bootloader_lite_reboot_to_rom() has torn the app's clocks/peripherals/
+ * interrupts back down. Jumping from an exception (e.g. a fault handler)
+ * deadlocks the ROM bootloader, which needs maskable interrupts that stay
+ * blocked while a fault is active -- that path must reset instead. */
 static void bl_jump_to_rom(void) {
     /* Read the bootloader's initial SP and entry point before switching stacks. */
     const uint32_t boot_sp = *(volatile uint32_t *)(BOOTLOADER_LITE_SYSMEM_BASE);
@@ -86,11 +88,43 @@ static void bl_jump_to_rom(void) {
 }
 
 void bootloader_lite_reboot_to_rom(void) {
+    /* Thread mode (e.g. the UART "BOOT" listener task): jump straight into the
+     * ROM bootloader. This is the normal, immediate path -- no reset round-trip,
+     * no dependency on backup-register retention. Return the clocks, peripherals
+     * and interrupts to a reset-like state first: a "dirty" app state (a running
+     * SysTick/DMA/timer, a pending IRQ) can wedge the ROM bootloader the instant
+     * we re-enable interrupts. */
+    if (__get_IPSR() == 0U) {
+        __disable_irq();
+
+        /* Stop the RTOS tick so no SysTick exception fires mid-jump. */
+        SysTick->CTRL = 0U;
+        SysTick->LOAD = 0U;
+        SysTick->VAL = 0U;
+
+        /* Disable and clear every maskable interrupt so nothing left armed by the
+         * app fires into the ROM bootloader's vector table. */
+        for (uint32_t i = 0U; i < (sizeof(NVIC->ICER) / sizeof(NVIC->ICER[0])); i++) {
+            NVIC->ICER[i] = 0xFFFFFFFFU;
+            NVIC->ICPR[i] = 0xFFFFFFFFU;
+        }
+
+        /* Put clocks/peripherals back to their reset state for a clean handoff. */
+        HAL_RCC_DeInit();
+        HAL_DeInit();
+
+        bl_jump_to_rom(); /* sets VTOR/MSP, re-enables IRQ, jumps; never returns */
+    }
+
+    /* Exception/handler mode (e.g. the HardFault path): we cannot jump now -- the
+     * active exception keeps the maskable interrupts the ROM bootloader needs
+     * permanently masked. Park a magic value and reset; bootloader_lite_check()
+     * finishes the jump on the next boot from a clean thread-mode state. */
     bl_backup_access();
     BOOTLOADER_LITE_BKP_REG = BOOTLOADER_LITE_MAGIC;
     __DSB();
 
-    NVIC_SystemReset(); /* clean hardware state; bootloader_lite_check() finishes the jump */
+    NVIC_SystemReset();
 
     for (;;) {
         /* NVIC_SystemReset() never returns. */

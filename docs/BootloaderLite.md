@@ -7,27 +7,30 @@ resident bootloader. It triggers on a UART magic word (`BOOT`) or on a hard faul
 It is an **interim backup** flashing path — deliberately simple — while a more
 robust bootloader is developed.
 
-## How it works (magic flag + software reset)
+## How it works (context-aware: direct jump vs. reset)
 
-You can't safely jump straight to the ROM bootloader from a running app. From a
-**fault handler** it's actually broken: the fault is still an active exception
-(priority `-1`), which masks every normal interrupt (SysTick/UART/USB). The ROM
-bootloader waits forever on interrupts that can't fire. A "dirty" peripheral or
-clock state from the running app can also wedge the ROM bootloader.
+`bootloader_lite_reboot_to_rom()` picks how to reach the ROM bootloader based on
+the **caller's CPU context** (`IPSR`):
 
-So `bootloader_lite` never jumps from the running app. Instead, both triggers do
-the same robust thing:
+- **Thread mode** (the normal case — e.g. the UART `"BOOT"` listener task): it
+  tears the app's clocks/peripherals/interrupts back to a reset-like state
+  (`__disable_irq()`, stop SysTick, disable+clear every NVIC IRQ, `HAL_RCC_DeInit()`,
+  `HAL_DeInit()`) and **jumps straight** into the ROM bootloader. This is
+  immediate and doesn't depend on a backup register surviving a reset. The
+  teardown matters: a still-running SysTick/DMA/timer or a pending IRQ can wedge
+  the ROM bootloader the instant interrupts are re-enabled.
+- **Handler/exception mode** (e.g. the **hard-fault** path): you *can't* jump —
+  the fault is an active exception (priority `-1`) that masks every normal
+  interrupt (SysTick/UART/USB), so the ROM bootloader would wait forever on
+  interrupts that can't fire. Instead it:
+  1. Writes a **magic value** to a **backup register** (survives a reset, no
+     linker changes — works the same on F4/G4/L4).
+  2. Calls **`NVIC_SystemReset()`** for a completely clean, power-on-like state.
+  3. At the **very start of the next boot**, `bootloader_lite_check()` sees the
+     magic, clears it, and jumps to the ROM bootloader — now in thread mode with
+     peripherals in reset, exactly what the ROM bootloader expects.
 
-1. Write a **magic value** to a **backup register** (survives a reset, no linker
-   changes — works the same on F4/G4/L4).
-2. Call **`NVIC_SystemReset()`** — this gives a completely clean, power-on-like
-   hardware state.
-3. At the **very start of the next boot**, `bootloader_lite_check()` sees the
-   magic, clears it, and jumps to the ROM bootloader — now in thread mode with
-   peripherals in reset, exactly what the ROM bootloader expects.
-
-That single pattern fixes the hard-fault deadlock and the peripheral-state issues
-at once. The only thing you must add is the `bootloader_lite_check()` call (via
+For the reset path you must add the `bootloader_lite_check()` call (via
 `BOOTLOADER_LITE_CHECK()`) as the **first** line of `main()`.
 
 ## Safe by default (zero cost unless you opt in)
@@ -112,9 +115,9 @@ Serial-port and `STM32_Programmer_CLI` detection match the other flash tooling
 
 ```bash
 make bl-send        # send "BOOT": a running app jumps into the ROM bootloader
-make flash-lite     # send "BOOT", then flash the built image @ 0x08000000
+make flash-bl       # send "BOOT", then flash the built image @ 0x08000000
 # override the port if autodetect picks the wrong one:
-make flash-lite BL_LITE_PORT=/dev/cu.usbserial-XXXX
+make flash-bl BL_LITE_PORT=/dev/cu.usbserial-XXXX
 ```
 
 Or call the script directly:

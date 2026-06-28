@@ -349,7 +349,7 @@ flash-uart:
 #######################################
 BL_LITE_BAUD ?= 115200
 BL_LITE_ADDRESS ?= 0x08000000
-# BL_LITE_PORT is autodetected when empty; override e.g. make flash-lite BL_LITE_PORT=/dev/cu.usbserial-XXXX
+# BL_LITE_PORT is autodetected when empty; override e.g. make flash-bl BL_LITE_PORT=/dev/cu.usbserial-XXXX
 BL_LITE_PORT_ARG = $(if $(BL_LITE_PORT),--port $(BL_LITE_PORT),)
 
 # Send "BOOT" so a running app jumps into the ROM bootloader (no flashing).
@@ -358,8 +358,8 @@ bl-send:
 	python3 scripts/bootloader_lite_flash.py $(BL_LITE_PORT_ARG) --baud $(BL_LITE_BAUD)
 
 # Send "BOOT", then flash the built image over the ROM UART bootloader.
-.PHONY: flash-lite
-flash-lite:
+.PHONY: flash-bl
+flash-bl:
 	python3 scripts/bootloader_lite_flash.py $(BL_LITE_PORT_ARG) --baud $(BL_LITE_BAUD) --bin $(BUILD_DIR)/$(FLASH_FILE) --address $(BL_LITE_ADDRESS)
 
 #######################################
@@ -383,9 +383,10 @@ help:
 	@echo "Available targets:"
 	@echo "  all          - Build the project."
 	@echo "  clean        - Remove build artifacts."
-	@echo "  flash        - Flash the target device."
+	@echo "  flash        - Flash the target device (ST-Link / SWD)."
+	@echo "  flash-uart   - Flash over UART (chip already in the ROM bootloader)."
 	@echo "  bl-send      - Send 'BOOT' so the app jumps to the ROM bootloader (bootloader_lite)."
-	@echo "  flash-lite   - bl-send, then flash the built image over the ROM UART bootloader."
+	@echo "  flash-bl     - bl-send, then flash the built image over the ROM UART bootloader."
 	@echo "  tidy         - Run clang-tidy."
 	@echo "  tidy-fix     - Run clang-tidy with fixes."
 	@echo "  format       - Run clang-format."
