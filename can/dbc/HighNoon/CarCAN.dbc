@@ -195,8 +195,12 @@ BO_ 96 Driver_Input_Status: 2 Controls
  SG_ Regen_Activate : 13|1@1+ (1,0) [0|0] ""  VCU
  SG_ Regen_Enable : 14|1@1+ (1,0) [0|0] ""  VCU
 
-BO_ 103 BPS_Override: 8 Controls
- SG_ BPS_Drive_Override : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+BO_ 103 BPS_Command: 1 Controls
+ SG_ BPS_Drive_Profile_Enable_Master : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ BPS_Regen_Allow : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ BPS_Adv_MPPT_Control : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ BPS_Soft_Shdn : 3|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ BPS_Vsag_Compensation : 4|1@1+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 105 BPS_Module_Override: 8 Controls
  SG_ Module0_Override : 0|2@1+ (1,0) [0|3] "" Vector__XXX
@@ -398,8 +402,12 @@ BO_ 1617 Brake_Pressure_2: 5 Pedals
  SG_ Brake_Pressure_ADC : 16|12@1+ (1,0) [0|4095] "" Vector__XXX
  SG_ FrameID_Pedals : 32|8@1+ (1,0) [0|255] "" Vector__XXX
 
-BO_ 1639 BPS_Override_Ack: 8 BPS
- SG_ BPS_Drive_Override : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+BO_ 1639 BPS_Command_Ack: 1 BPS
+ SG_ BPS_Drive_Profile_Enable_Master : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ BPS_Regen_Allow : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ BPS_Adv_MPPT_Control : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ BPS_Soft_Shdn : 3|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ BPS_Vsag_Compensation : 4|1@1+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 1641 BPS_Module_Override_Ack: 8 BPS
  SG_ Module0_Override : 0|2@1+ (1,0) [0|3] "" Vector__XXX
@@ -735,7 +743,11 @@ VAL_ 96 Blinker_Right 0 "-" 1 "Selected" ;
 VAL_ 96 PushToTalk_Pressed 0 "-" 1 "Pressed" ;
 VAL_ 96 Regen_Activate 0 "-" 1 "Pressed" ;
 VAL_ 96 Regen_Enable 0 "Disabled" 1 "Enabled" ;
-VAL_ 103 BPS_Drive_Override 0 "Disabled" 1 "Enabled" ;
+VAL_ 103 BPS_Drive_Profile_Enable_Master 0 "Disabled" 1 "Enabled" ;
+VAL_ 103 BPS_Regen_Allow 0 "False" 1 "True" ;
+VAL_ 103 BPS_Adv_MPPT_Control 0 "Disabled" 1 "Enabled" ;
+VAL_ 103 BPS_Soft_Shdn 0 "Disabled" 1 "Enabled" ;
+VAL_ 103 BPS_Vsag_Compensation 0 "Disabled" 1 "Enabled" ;
 VAL_ 105 Module0_Override 0 "NORMAL_OPERATION" 1 "VOLTAGE_OVERRIDE" 2 "TEMP_OVERRIDE" 3 "OVERRIDE_ALL" ;
 VAL_ 105 Module1_Override 0 "NORMAL_OPERATION" 1 "VOLTAGE_OVERRIDE" 2 "TEMP_OVERRIDE" 3 "OVERRIDE_ALL" ;
 VAL_ 105 Module2_Override 0 "NORMAL_OPERATION" 1 "VOLTAGE_OVERRIDE" 2 "TEMP_OVERRIDE" 3 "OVERRIDE_ALL" ;
@@ -799,7 +811,11 @@ VAL_ 1536 LTC4421_SuppBatt_Fault 0 "OK" 1 "FAULT" ;
 VAL_ 1536 LTC4421_SuppBatt_Valid 0 "NOT OK" 1 "OK" ;
 VAL_ 1536 LV_EN_SupplementalBattery 0 "Disabled" 1 "Enabled" ;
 VAL_ 1536 LV_EN_PowerSupply 0 "Disabled" 1 "Enabled" ;
-VAL_ 1639 BPS_Drive_Override 0 "Disabled" 1 "Enabled" ;
+VAL_ 1639 BPS_Drive_Profile_Enable_Master 0 "Disabled" 1 "Enabled" ;
+VAL_ 1639 BPS_Regen_Allow 0 "False" 1 "True" ;
+VAL_ 1639 BPS_Adv_MPPT_Control 0 "Disabled" 1 "Enabled" ;
+VAL_ 1639 BPS_Soft_Shdn 0 "Disabled" 1 "Enabled" ;
+VAL_ 1639 BPS_Vsag_Compensation 0 "Disabled" 1 "Enabled" ;
 VAL_ 1641 Module0_Override 0 "NORMAL_OPERATION" 1 "VOLTAGE_OVERRIDE" 2 "TEMP_OVERRIDE" 3 "OVERRIDE_ALL" ;
 VAL_ 1641 Module1_Override 0 "NORMAL_OPERATION" 1 "VOLTAGE_OVERRIDE" 2 "TEMP_OVERRIDE" 3 "OVERRIDE_ALL" ;
 VAL_ 1641 Module2_Override 0 "NORMAL_OPERATION" 1 "VOLTAGE_OVERRIDE" 2 "TEMP_OVERRIDE" 3 "OVERRIDE_ALL" ;
