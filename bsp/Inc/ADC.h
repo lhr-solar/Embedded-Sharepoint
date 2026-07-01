@@ -53,6 +53,7 @@ typedef enum {
     ADC_INTERRUPT_TIMEOUT,
     ADC_INTERRUPT_ERROR,
     ADC_QUEUE_FULL,
+    ADC_VREF_ERROR
 
 } adc_status_t;
 
@@ -113,5 +114,31 @@ adc_status_t adc_read(ADC_HandleTypeDef *h, ADC_ChannelConfTypeDef* sConfig, Que
  * @return adc_status_t  Returns ADC_OK on success or an appropriate error code.
  */
 adc_status_t adc_deinit(ADC_HandleTypeDef *h);
+
+/**
+ * @brief Returns the ADC reference voltage.
+ * 
+ * MUST CALIBRATE ADC BEFORE!!!! 
+ * MUST CALIBRATE ADC BEFORE!!!!
+ * MUST CALIBRATE ADC BEFORE!!!!
+ * MUST CALIBRATE ADC BEFORE!!!!
+ * MUST CALIBRATE ADC BEFORE!!!!
+ * (see adc_test)
+ * 
+ * This function retrieves the reference voltage (Vref) used by the ADC
+ * for conversion scaling. The value represents the voltage against which
+ * all ADC input measurements are compared.
+ *
+ * @note The returned value is typically in millivolts (mV), but this depends
+ *       on the implementation. Ensure unit consistency when using it in
+ *       calculations.
+ *
+ * @return uint32_t
+ *         The ADC reference voltage value.
+ *
+ * @warning The ADC must be initialized and properly configured before
+ *          calling this function, otherwise the returned value may be invalid.
+ */
+adc_status_t adc_get_vref(ADC_HandleTypeDef *h, uint32_t *vref);
 
 #endif

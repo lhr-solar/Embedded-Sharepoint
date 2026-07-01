@@ -93,6 +93,14 @@ void TestADC1(void *pvParameters) {
     // Set bkpt in error_handler();
     uint32_t reading = 0;
 
+    /* Read ADC internal VREF with adc_get_vref() */
+    uint32_t a_vref=0;
+    adc_status_t vref_stat =adc_get_vref(hadc1, &a_vref);
+    if (vref_stat != ADC_OK) error_handler(vref_stat);
+    // Check if its 3V3
+    if (a_vref < 3200) error_handler(ADC_VREF_ERROR);
+
+    /* Read ADC channel using adc_read() */
     ADC_ChannelConfTypeDef sConfig = {
         .Channel = ADC_CHANNEL_1,
     #ifdef ADC_SAMPLETIME_3CYCLES
@@ -102,10 +110,11 @@ void TestADC1(void *pvParameters) {
     #endif
     };
 
-    // read once
+    // Read 10x
     for (int i = 0; i < 10; i++) {
         adc_status_t stat = adc_read(hadc1, &sConfig, xReadings);
         
+        if (stat == ADC_QUEUE_FULL) break;
         if (stat != ADC_OK) {
             error_handler(stat);
         }
@@ -114,7 +123,7 @@ void TestADC1(void *pvParameters) {
     for (int i = 0; i < 10; i++) {
         xQueueReceive(xReadings, &reading, 0);
     }
-    
+
     success_handler();
 }
 
@@ -183,7 +192,7 @@ void TestADC3(void *pvParameters) {
 int main() {
     // GPIO Init
     HAL_Init();
-    SystemClock_Config();
+    SystemClock_Config(); // 
     
     __HAL_RCC_GPIOA_CLK_ENABLE();
 
@@ -203,30 +212,31 @@ int main() {
     ADC_InitTypeDef adc_init_1 = {0};
 
     // Testing F4 Init
-    adc_init_1.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
-    adc_init_1.Resolution = ADC_RESOLUTION_12B;
-    adc_init_1.DataAlign = ADC_DATAALIGN_RIGHT;
-    adc_init_1.EOCSelection = ADC_EOC_SINGLE_CONV;
-    adc_init_1.ContinuousConvMode = DISABLE;
-    adc_init_1.NbrOfConversion = 1;
-    adc_init_1.DiscontinuousConvMode = DISABLE;
-    adc_init_1.ExternalTrigConv = ADC_SOFTWARE_START;
-    adc_init_1.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
-    adc_init_1.DMAContinuousRequests = DISABLE;
-
-    // Testing G4 Init
     // adc_init_1.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
     // adc_init_1.Resolution = ADC_RESOLUTION_12B;
     // adc_init_1.DataAlign = ADC_DATAALIGN_RIGHT;
-    // adc_init_1.ScanConvMode = ADC_SCAN_DISABLE;
     // adc_init_1.EOCSelection = ADC_EOC_SINGLE_CONV;
-    // adc_init_1.LowPowerAutoWait = DISABLE;
     // adc_init_1.ContinuousConvMode = DISABLE;
     // adc_init_1.NbrOfConversion = 1;
     // adc_init_1.DiscontinuousConvMode = DISABLE;
     // adc_init_1.ExternalTrigConv = ADC_SOFTWARE_START;
     // adc_init_1.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
     // adc_init_1.DMAContinuousRequests = DISABLE;
+
+    // Testing G4 Init
+    adc_init_1.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
+    adc_init_1.Resolution = ADC_RESOLUTION_12B;
+    adc_init_1.DataAlign = ADC_DATAALIGN_RIGHT;
+    // adc_init_1.GainCompensation = 0;
+    adc_init_1.ScanConvMode = DISABLE;
+    adc_init_1.EOCSelection = ADC_EOC_SINGLE_CONV;
+    // adc_init_1.LowPowerAutoWait = DISABLE;
+    adc_init_1.ContinuousConvMode = DISABLE;
+    adc_init_1.NbrOfConversion = 1;
+    adc_init_1.DiscontinuousConvMode = DISABLE;
+    adc_init_1.ExternalTrigConv = ADC_SOFTWARE_START;
+    adc_init_1.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+    adc_init_1.DMAContinuousRequests = DISABLE;
     // adc_init_1.Overrun = ADC_OVR_DATA_PRESERVED;
     // adc_init_1.OversamplingMode = DISABLE;
 
@@ -241,6 +251,12 @@ int main() {
     {
     Error_Handler();
     }
+
+    #if defined(STM32G4xx) || defined(STM32L4xx)
+    HAL_ADCEx_Calibration_Start(hadc1, ADC_SINGLE_ENDED);
+    #endif
+    // HAL_SYSCFG_EnableVREFBUF();
+
     #endif
 
     
@@ -294,6 +310,7 @@ int main() {
 
     return 0;
 }
+
 
 #define ADC_PRIO 5 /** can't make this 0 because FreeRTOS priorities */
 
