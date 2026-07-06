@@ -7,12 +7,27 @@ PROJECT_TARGET ?= stm32g473xx
 BEAR_ENABLE ?= 1
 VERBOSE ?= 0
 
+ifeq ($(origin FIRMWARE_TYPE), undefined)
+ifeq ($(origin FIRMWARE_ROLE), undefined)
+FIRMWARE_TYPE := firmware
+else
+FIRMWARE_TYPE := $(FIRMWARE_ROLE)
+endif
+endif
+FIRMWARE_ROLE := $(FIRMWARE_TYPE)
+
 # source and include directories
 _PROJECT_C_SOURCES = $(wildcard Src/*.c)
 _PROJECT_C_INCLUDES = Inc
 
 # build and driver directories
+ifeq ($(FIRMWARE_TYPE),bootloader)
+_PROJECT_BUILD_DIR ?= ../build/bootloader
+else ifeq ($(FIRMWARE_TYPE),app)
+_PROJECT_BUILD_DIR ?= ../build/app
+else
 _PROJECT_BUILD_DIR ?= ../build
+endif
 BUILD_MAKEFILE_DIR = ../
 
 # ensure all paths are absolute
@@ -27,6 +42,8 @@ export PROJECT_C_INCLUDES
 export PROJECT_BUILD_DIR
 export BEAR_ENABLE
 export VERBOSE
+export FIRMWARE_TYPE
+export FIRMWARE_ROLE
 
 ifeq ($(BEAR_ENABLE), 1)
 	COMPILE_COMMANDS_JSON := $(PROJECT_BUILD_DIR)/compile_commands.json

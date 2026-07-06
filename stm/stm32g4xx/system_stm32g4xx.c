@@ -166,7 +166,9 @@ void SystemInit(void)
   #endif
 
   /* Configure the Vector Table location add offset address ------------------*/
-#ifdef VECT_TAB_SRAM
+#if defined(FIRMWARE_USES_BOOTLOADER) && defined(BOOTLOADER_APP_BASE)
+  SCB->VTOR = BOOTLOADER_APP_BASE; /* App vector table after resident bootloader */
+#elif defined(VECT_TAB_SRAM)
   SCB->VTOR = SRAM_BASE | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal SRAM */
 #else
   SCB->VTOR = FLASH_BASE | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal FLASH */

@@ -75,11 +75,14 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
   uint32_t              pFLatency;
   HAL_StatusTypeDef     status;
 
-  /* Configure the TIM6 IRQ priority */
-  HAL_NVIC_SetPriority(TIM6_DAC_IRQn, TickPriority, 0U);
-
-  /* Enable the TIM6 global Interrupt */
-  HAL_NVIC_EnableIRQ(TIM6_DAC_IRQn);
+  /*
+   * A bootloader may leave a TIM6 interrupt pending before jumping to the app.
+   * Initialize the handle and clear stale IRQ state before enabling the NVIC
+   * line, otherwise the handler can run with an uninitialized TimHandle.
+   */
+  TimHandle.Instance = TIM6;
+  HAL_NVIC_DisableIRQ(TIM6_DAC_IRQn);
+  HAL_NVIC_ClearPendingIRQ(TIM6_DAC_IRQn);
 
   /* Enable TIM6 clock */
   __HAL_RCC_TIM6_CLK_ENABLE();
@@ -103,9 +106,6 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
   /* Compute the prescaler value to have TIM6 counter clock equal to 1MHz */
   uwPrescalerValue = (uint32_t)((uwTimclock / 1000000U) - 1U);
 
-  /* Initialize TIM6 */
-  TimHandle.Instance = TIM6;
-
   /* Initialize TIMx peripheral as follow:
   + Period = [(TIM6CLK/1000) - 1]. to have a (1/1000) s time base.
   + Prescaler = (uwTimclock/1000000 - 1) to have a 1MHz counter clock.
@@ -119,6 +119,16 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
   status = HAL_TIM_Base_Init(&TimHandle);
   if (status == HAL_OK)
   {
+    /* Configure the TIM6 IRQ priority */
+    HAL_NVIC_SetPriority(TIM6_DAC_IRQn, TickPriority, 0U);
+
+    /* Clear any pending update interrupt before enabling the NVIC line. */
+    __HAL_TIM_CLEAR_FLAG(&TimHandle, TIM_FLAG_UPDATE);
+    HAL_NVIC_ClearPendingIRQ(TIM6_DAC_IRQn);
+
+    /* Enable the TIM6 global Interrupt */
+    HAL_NVIC_EnableIRQ(TIM6_DAC_IRQn);
+
     /* Start the TIM time Base generation in interrupt mode */
     status = HAL_TIM_Base_Start_IT(&TimHandle);
     if (status == HAL_OK)
