@@ -449,7 +449,8 @@ BO_ 1664 Display_Status: 2 Dashboard_Display
  SG_ Camera_Status_Left : 9|1@1+ (1,0) [0|0] "" Vector__XXX
  SG_ Camera_Status_Right : 10|1@1+ (1,0) [0|0] "" Vector__XXX
 
-BO_ 1792 Telemetry_Status: 8 Telemetry
+BO_ 1792 Telemetry_Heartbeat: 1 Telemetry
+ SG_ Telemetry_Heartbeat : 0|8@1+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 1872 BPS_Temp_ADC_Aggregate_Arr: 4 BPS
  SG_ BPS_Tap_idx : 0|5@1+ (1,0) [0|31] "" Vector__XXX
