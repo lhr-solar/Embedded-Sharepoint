@@ -165,6 +165,10 @@ BO_ 33 VCU_Precharge_Voltages: 6 VCU
  SG_ VCU_Precharge_Battery_Voltage : 0|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
  SG_ VCU_Precharge_Motor_Voltage : 24|24@1+ (0.001,0) [0|16777.215] "V" Vector__XXX
 
+BO_ 34 VCU_Power_Request: 4 VCU
+ SG_ Power_Request : 0|16@1+ (1,0) [0|150] "A" Vector__XXX
+ SG_ Motor_Current_Request : 16|16@1+ (1,0) [0|200] "A" Vector__XXX
+
 BO_ 80 Pedal_Status: 6 Pedals
  SG_ AccelPedal_Main_Pos : 0|8@1+ (1,0) [0|100] "%"  VCU
  SG_ AccelPedal_Redundant_Pos : 8|8@1+ (1,0) [0|100] "%"  VCU
@@ -527,6 +531,8 @@ CM_ SG_ 32 BPS_Precharge_Battery_Voltage "Battery voltage as measured by active 
 CM_ SG_ 32 BPS_Precharge_Array_Voltage "Array voltage as measured by active precharge circuitry";
 CM_ SG_ 33 VCU_Precharge_Battery_Voltage "Battery voltage as measured by active precharge circuitry";
 CM_ SG_ 33 VCU_Precharge_Motor_Voltage "Motor controller DC bus voltage as measured by active precharge circuitry";
+CM_ SG_ 34 Power_Request "Requested power draw in Amps";
+CM_ SG_ 34 Motor_Current_Request "Requested motor current in Amps";
 CM_ SG_ 80 AccelPedal_Main_Pos "Accelerator Pedal Position (Main Sensor)";
 CM_ SG_ 80 AccelPedal_Redundant_Pos "Accelerator Pedal Position (Redundant Sensor)";
 CM_ SG_ 80 BrakePedal_Main_Pos "Brake Pedal Position (Main Sensor)";
@@ -613,6 +619,7 @@ BA_ "VFrameFormat" BO_ 24 0;
 BA_ "VFrameFormat" BO_ 25 0;
 BA_ "VFrameFormat" BO_ 32 0;
 BA_ "VFrameFormat" BO_ 33 0;
+BA_ "VFrameFormat" BO_ 34 0;
 BA_ "VFrameFormat" BO_ 80 0;
 BA_ "VFrameFormat" BO_ 96 0;
 BA_ "VFrameFormat" BO_ 512 0;

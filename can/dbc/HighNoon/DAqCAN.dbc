@@ -33,13 +33,122 @@ NS_ :
 
 BS_:
 
-BU_: 
+BU_: TelemLeader IMU_FR IMU_Back IMU_FL Suspension_FR Suspension_Back Suspension_FL Pitot_FR Pitot_FL WheelRPM_FR WheelRPM_FL RideHeight_FR RideHeight_Back RideHeight_FL Temp_Center
 
 
+BO_ 192 TelemLeader_Center: 8 TelemLeader
+ SG_ Timestamp : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 416 IMU_Accel_FR: 8 IMU_FR
+ SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Accel_X : 23|16@0+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Accel_Y : 39|16@0+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Accel_Z : 55|16@0+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 417 IMU_Gyro_FR: 8 IMU_FR
+ SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Gyro_X : 23|16@0+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Gyro_Y : 39|16@0+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Gyro_Z : 55|16@0+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 432 IMU_Accel_Back: 8 IMU_Back
+ SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Accel_X : 23|16@0+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Accel_Y : 39|16@0+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Accel_Z : 55|16@0+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 433 IMU_Gyro_Back: 8 IMU_Back
+ SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Gyro_X : 23|16@0+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Gyro_Y : 39|16@0+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Gyro_Z : 55|16@0+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 464 IMU_Accel_FL: 8 IMU_FL
+ SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Accel_X : 23|16@0+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Accel_Y : 39|16@0+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Accel_Z : 55|16@0+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 465 IMU_Gyro_FL: 8 IMU_FL
+ SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Gyro_X : 23|16@0+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Gyro_Y : 39|16@0+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Gyro_Z : 55|16@0+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 672 Suspension_FR: 8 Suspension_FR
+ SG_ SUS_Data1 : 23|12@0+ (1,0) [0|4095] "" Vector__XXX
+ SG_ SUS_Data2 : 27|12@0+ (1,0) [0|4095] "" Vector__XXX
+ SG_ SUS_Data3 : 47|12@0+ (1,0) [0|4095] "" Vector__XXX
+ SG_ SUS_Data4 : 51|12@0+ (1,0) [0|4095] "" Vector__XXX
+ SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 689 Suspension_Back: 8 Suspension_Back
+ SG_ SUS_Data1 : 23|12@0+ (1,0) [0|4095] "" Vector__XXX
+ SG_ SUS_Data2 : 27|12@0+ (1,0) [0|4095] "" Vector__XXX
+ SG_ SUS_Data3 : 47|12@0+ (1,0) [0|4095] "" Vector__XXX
+ SG_ SUS_Data4 : 51|12@0+ (1,0) [0|4095] "" Vector__XXX
+ SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 720 Suspension_FL: 8 Suspension_FL
+ SG_ SUS_Data1 : 23|12@0+ (1,0) [0|4095] "" Vector__XXX
+ SG_ SUS_Data2 : 27|12@0+ (1,0) [0|4095] "" Vector__XXX
+ SG_ SUS_Data3 : 47|12@0+ (1,0) [0|4095] "" Vector__XXX
+ SG_ SUS_Data4 : 51|12@0+ (1,0) [0|4095] "" Vector__XXX
+ SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 928 Pitot_FR: 8 Pitot_FR
+ SG_ Pitot_Data1 : 0|12@1+ (1,0) [0|4095] "" Vector__XXX
+ SG_ Pitot_Data2 : 12|12@1+ (1,0) [0|4095] "" Vector__XXX
+ SG_ Pitot_Data3 : 24|12@1+ (1,0) [0|4095] "" Vector__XXX
+ SG_ Pitot_Data4 : 36|12@1+ (1,0) [0|4095] "" Vector__XXX
+ SG_ Timestamp : 48|16@1+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 976 Pitot_FL: 8 Pitot_FL
+ SG_ Pitot_Data1 : 0|12@1+ (1,0) [0|4095] "" Vector__XXX
+ SG_ Pitot_Data2 : 12|12@1+ (1,0) [0|4095] "" Vector__XXX
+ SG_ Pitot_Data3 : 24|12@1+ (1,0) [0|4095] "" Vector__XXX
+ SG_ Pitot_Data4 : 36|12@1+ (1,0) [0|4095] "" Vector__XXX
+ SG_ Timestamp : 48|16@1+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 1184 WheelRPM_FR: 8 WheelRPM_FR
+ SG_ RPM : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Timestamp : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 1232 WheelRPM_FL: 8 WheelRPM_FL
+ SG_ RPM : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Timestamp : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 1440 RideHeight_FR: 8 RideHeight_FR
+ SG_ RH_Data1 : 48|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ RH_Data2 : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ RH_Data3 : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Timestamp : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 1456 RideHeight_Back: 8 RideHeight_Back
+ SG_ RH_Data1 : 48|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ RH_Data2 : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ RH_Data3 : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Timestamp : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 1488 RideHeight_FL: 8 RideHeight_FL
+ SG_ RH_Data1 : 48|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ RH_Data2 : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ RH_Data3 : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Timestamp : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 1985 Temp_1_Center: 8 Temp_Center
+ SG_ Temperature : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Humidity : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Timestamp : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 1986 Temp_2_Center: 8 Temp_Center
+ SG_ Temperature : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Humidity : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Timestamp : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
 
 
-
-
+CM_ BO_ 192 "Telem Leader Node";
+CM_ SG_ 192 Timestamp "Wheel-Based Vehicle Speed: Speed of the vehicle as calculated from wheel or tailshaft speed.";
 
 
 BA_DEF_  "DBName" STRING ;
@@ -58,7 +167,24 @@ BA_DEF_DEF_  "MultiplexExtEnabled" "No";
 BA_DEF_DEF_  "BusType" "";
 BA_ "BusType" "CAN";
 BA_ "DBName" "DAqCAN";
-
-
+BA_ "VFrameFormat" BO_ 192 0;
+BA_ "VFrameFormat" BO_ 416 0;
+BA_ "VFrameFormat" BO_ 417 0;
+BA_ "VFrameFormat" BO_ 432 0;
+BA_ "VFrameFormat" BO_ 433 0;
+BA_ "VFrameFormat" BO_ 464 0;
+BA_ "VFrameFormat" BO_ 465 0;
+BA_ "VFrameFormat" BO_ 672 0;
+BA_ "VFrameFormat" BO_ 689 0;
+BA_ "VFrameFormat" BO_ 720 0;
+BA_ "VFrameFormat" BO_ 928 0;
+BA_ "VFrameFormat" BO_ 976 0;
+BA_ "VFrameFormat" BO_ 1184 0;
+BA_ "VFrameFormat" BO_ 1232 0;
+BA_ "VFrameFormat" BO_ 1440 0;
+BA_ "VFrameFormat" BO_ 1456 0;
+BA_ "VFrameFormat" BO_ 1488 0;
+BA_ "VFrameFormat" BO_ 1985 0;
+BA_ "VFrameFormat" BO_ 1986 0;
 
 
