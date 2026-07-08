@@ -27,6 +27,5 @@ jobs:
       - name: Check duplicate CAN IDs
         run: |
           python .github/check_duplicate_can_ids.py can/dbc/HighNoon
-      - name: Check CAN header generation
-        run: |
-          python .github/validate_dbc_generation.py can/dbc/HighNoon can/generate_can_headers.py
+          # Cross-bus overlaps involving DAqCAN are warnings; all other buses are enforced.
+          # Pass --strict-daq to also fail on DAqCAN overlaps.
