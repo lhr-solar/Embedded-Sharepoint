@@ -36,7 +36,7 @@ BS_:
 BU_: TelemLeader IMU_FR IMU_Back IMU_FL Suspension_FR Suspension_Back Suspension_FL Suspension_Specials Pitot_FR Pitot_FL WheelRPM_FR WheelRPM_FL RideHeight_FR RideHeight_Back RideHeight_FL Temp_Center GPS
 
 
-BO_ 2147487744 TelemLeader_Center: 8 TelemLeader
+BO_ 2147487744 TelemLeader_Center: 2 TelemLeader
  SG_ Timestamp : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
 
 BO_ 2147488160 IMU_Accel_FR: 8 IMU_FR
@@ -165,7 +165,7 @@ BO_ 2147489729 Temp_2_Center: 8 Temp_Center
  SG_ Timestamp : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
 
 
-CM_ BO_ 4096 "Telem Leader Node. DAqCAN from Photon telem_rev1.dbc (UIPPlotsStaging); wire IDs = Photon base + 0x1000 (TelemLeader 0x1000). GPS telem IDs are Photon base then +0x1000 on wire.";
+CM_ BO_ 4096 "Telem Leader Node. DAqCAN from Photon telem_rev1.dbc (UIPPlotsStaging); IDs match wire (Photon base + 0x1000 / TelemLeader 0x1000).";
 CM_ SG_ 4096 Timestamp "Wheel-Based Vehicle Speed: Speed of the vehicle as calculated from wheel or tailshaft speed.";
 
 
