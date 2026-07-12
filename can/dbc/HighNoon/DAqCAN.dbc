@@ -33,7 +33,7 @@ NS_ :
 
 BS_:
 
-BU_: TelemLeader IMU_FR IMU_Back IMU_FL Suspension_FR Suspension_Back Suspension_FL Pitot_FR Pitot_FL WheelRPM_FR WheelRPM_FL RideHeight_FR RideHeight_Back RideHeight_FL Temp_Center
+BU_: TelemLeader IMU_FR IMU_Back IMU_FL Suspension_FR Suspension_Back Suspension_FL Suspension_Specials Pitot_FR Pitot_FL WheelRPM_FR WheelRPM_FL RideHeight_FR RideHeight_Back RideHeight_FL Temp_Center GPS
 
 
 BO_ 2147487744 TelemLeader_Center: 8 TelemLeader
@@ -110,6 +110,12 @@ BO_ 2147488720 Pitot_FL: 8 Pitot_FL
  SG_ Pitot_Data4 : 36|12@1+ (1,0) [0|4095] "" Vector__XXX
  SG_ Timestamp : 48|16@1+ (1,0) [0|65535] "" Vector__XXX
 
+BO_ 2147488772 Suspension_Specials: 8 Suspension_Specials
+ SG_ SUS_Sepcial_1 : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ SUS_Sepcial_2 : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ SUS_Sepcial_3 : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ SUS_Sepcial_4 : 48|16@1+ (1,0) [0|65535] "" Vector__XXX
+
 BO_ 2147488928 WheelRPM_FR: 8 WheelRPM_FR
  SG_ RPM : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
  SG_ Timestamp : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
@@ -136,6 +142,18 @@ BO_ 2147489232 RideHeight_FL: 8 RideHeight_FL
  SG_ RH_Data3 : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
  SG_ Timestamp : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
 
+BO_ 2147489536 GPS_Latitude: 4 GPS
+ SG_ GPS_Latitude : 0|32@1+ (1,0) [0|4294967295] "" Vector__XXX
+
+BO_ 2147489537 GPS_Longitude: 4 GPS
+ SG_ GPS_Longitude : 0|32@1+ (1,0) [0|4294967295] "" Vector__XXX
+
+BO_ 2147489538 GPS_Speed: 2 GPS
+ SG_ GPS_Speed : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 2147489539 GPS_Status: 1 GPS
+ SG_ GPS_Status : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
 BO_ 2147489728 Temp_1_Center: 8 Temp_Center
  SG_ Temperature : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
  SG_ Humidity : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
@@ -147,7 +165,7 @@ BO_ 2147489729 Temp_2_Center: 8 Temp_Center
  SG_ Timestamp : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
 
 
-CM_ BO_ 4096 "Telem Leader Node. DAqCAN IDs = Photon daq.dbc base ID + 0x1000 (TelemLeader wire ID 0x1000).";
+CM_ BO_ 4096 "Telem Leader Node. DAqCAN from Photon telem_rev1.dbc (UIPPlotsStaging); wire IDs = Photon base + 0x1000 (TelemLeader 0x1000). GPS telem IDs are Photon base then +0x1000 on wire.";
 CM_ SG_ 4096 Timestamp "Wheel-Based Vehicle Speed: Speed of the vehicle as calculated from wheel or tailshaft speed.";
 
 
@@ -179,11 +197,16 @@ BA_ "VFrameFormat" BO_ 4784 1;
 BA_ "VFrameFormat" BO_ 4816 1;
 BA_ "VFrameFormat" BO_ 5024 1;
 BA_ "VFrameFormat" BO_ 5072 1;
+BA_ "VFrameFormat" BO_ 5124 1;
 BA_ "VFrameFormat" BO_ 5280 1;
 BA_ "VFrameFormat" BO_ 5328 1;
 BA_ "VFrameFormat" BO_ 5536 1;
 BA_ "VFrameFormat" BO_ 5552 1;
 BA_ "VFrameFormat" BO_ 5584 1;
+BA_ "VFrameFormat" BO_ 5888 1;
+BA_ "VFrameFormat" BO_ 5889 1;
+BA_ "VFrameFormat" BO_ 5890 1;
+BA_ "VFrameFormat" BO_ 5891 1;
 BA_ "VFrameFormat" BO_ 6080 1;
 BA_ "VFrameFormat" BO_ 6081 1;
 
