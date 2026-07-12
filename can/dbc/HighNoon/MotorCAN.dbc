@@ -114,6 +114,10 @@ BO_ 1067 MC_Motor_TempMeasurement: 8 Prohelion_WaveSculptor22
 BO_ 1068 MC_DspBoardTempMeasurement: 8 Prohelion_WaveSculptor22
  SG_ MC_DspBoardTemp : 0|32@1- (1,0) [0|0] "°C" Vector__XXX
 
+BO_ 1069 MC_Reserved: 8 Prohelion_WaveSculptor22
+ SG_ MC_Reserved_Low : 0|32@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ MC_Reserved_High : 32|32@1+ (1,0) [0|0] "" Vector__XXX
+
 BO_ 1070 MC_OdometerBusAhMeasurement: 8 Prohelion_WaveSculptor22
  SG_ MC_TripOdometer : 0|32@1- (1,0) [0|0] "m" Vector__XXX
  SG_ MC_DCBusAh : 32|32@1- (1,0) [0|0] "Ah" Vector__XXX
@@ -150,6 +154,9 @@ CM_ SG_ 1065 MC_Supply3V3 "Actual voltage level of the 3.3V power rail.";
 CM_ SG_ 1067 MC_MotorTemp "Internal temperature of the motor";
 CM_ SG_ 1067 MC_HeatsinkTemp "Internal temperature of Heat-sink (case).";
 CM_ SG_ 1068 MC_DspBoardTemp "Temperature of the DSP board.";
+CM_ BO_ 1069 "Motor Controller Base Address + 0x0D (0x42D). Reserved; 1 s interval.";
+CM_ SG_ 1069 MC_Reserved_Low "Reserved bits 31..0.";
+CM_ SG_ 1069 MC_Reserved_High "Reserved bits 63..32.";
 CM_ SG_ 1070 MC_TripOdometer "Distance the vehicle has travelled since reset.";
 CM_ SG_ 1070 MC_DCBusAh "Charge flow into the controller DC bus from the time of reset.";
 CM_ SG_ 1079 MC_SlipSpeed "Slip speed when driving an induction motor.";
@@ -184,9 +191,11 @@ BA_ "VFrameFormat" BO_ 1064 0;
 BA_ "VFrameFormat" BO_ 1065 0;
 BA_ "VFrameFormat" BO_ 1067 0;
 BA_ "VFrameFormat" BO_ 1068 0;
+BA_ "VFrameFormat" BO_ 1069 0;
 BA_ "VFrameFormat" BO_ 1070 0;
 BA_ "VFrameFormat" BO_ 1079 0;
 BA_ "VFrameFormat" BO_ 1953 0;
+BA_ "GenMsgCycleTime" BO_ 1069 1000;
 VAL_ 1057 MC_LIMIT_OutputVoltagePWM 0 "OK" 1 "LIMIT" ;
 VAL_ 1057 MC_LIMIT_MotorCurrent 0 "OK" 1 "LIMIT" ;
 VAL_ 1057 MC_LIMIT_Velocity 0 "OK" 1 "LIMIT" ;
