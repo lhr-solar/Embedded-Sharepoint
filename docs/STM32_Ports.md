@@ -26,4 +26,5 @@
     - `PROJECT_TARGET=stm32g473xx`
 - `STM32G474XXx`
     - `PROJECT_TARGET=stm32g474xx`
-
+- `STM32G431CBTx`
+    - `PROJECT_TARGET=stm32g431cbt`
