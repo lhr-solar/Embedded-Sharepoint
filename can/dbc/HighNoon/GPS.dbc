@@ -1,0 +1,60 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: GPS
+
+
+BO_ 2147487936 GPS_Latitude: 4 GPS
+ SG_ Latitude : 0|32@1- (0.000001,0) [-90|90] "°" Vector__XXX
+
+BO_ 2147487937 GPS_Longitude: 4 GPS
+ SG_ Longitude : 0|32@1- (0.000001,0) [-180|180] "°" Vector__XXX
+
+
+CM_ "HighNoon GPS (Photon gps_car.dbc / staging HighNoon car IDs). Used by Live View and AWS TCP feed.";
+CM_ BO_ 4288 "Signed microdegree latitude from the car DAQ path";
+CM_ BO_ 4289 "Signed microdegree longitude from the car DAQ path";
+
+
+BA_DEF_  "DBName" STRING ;
+BA_DEF_ BO_  "VFrameFormat" ENUM  "StandardCAN","ExtendedCAN","reserved","J1939PG","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","StandardCAN_FD","ExtendedCAN_FD";
+BA_DEF_  "BusType" STRING ;
+BA_DEF_DEF_  "DBName" "";
+BA_DEF_DEF_  "VFrameFormat" "ExtendedCAN";
+BA_DEF_DEF_  "BusType" "";
+BA_ "BusType" "CAN";
+BA_ "DBName" "GPS";
+BA_ "VFrameFormat" BO_ 4288 1;
+BA_ "VFrameFormat" BO_ 4289 1;

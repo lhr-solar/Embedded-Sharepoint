@@ -33,47 +33,47 @@ NS_ :
 
 BS_:
 
-BU_: TelemLeader IMU_FR IMU_Back IMU_FL Suspension_FR Suspension_Back Suspension_FL Suspension_Specials Pitot_FR Pitot_FL WheelRPM_FR WheelRPM_FL RideHeight_FR RideHeight_Back RideHeight_FL Temp_Center GPS
+BU_: TelemLeader IMU_FR IMU_Back IMU_FL Suspension_FR Suspension_Back Suspension_FL Suspension_Specials Pitot_FR Pitot_FL WheelRPM_FR WheelRPM_FL RideHeight_FR RideHeight_Back RideHeight_FL Temp_Center
 
 
 BO_ 2147487744 TelemLeader_Center: 2 TelemLeader
  SG_ Timestamp : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
 
 BO_ 2147488160 IMU_Accel_FR: 8 IMU_FR
+ SG_ Accel_X : 23|16@0- (0.000122,0) [-3.997696|3.997574] "g" Vector__XXX
+ SG_ Accel_Y : 39|16@0- (0.000122,0) [-3.997696|3.997574] "g" Vector__XXX
+ SG_ Accel_Z : 55|16@0- (0.000122,0) [-3.997696|3.997574] "g" Vector__XXX
  SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
- SG_ Accel_X : 23|16@0+ (1,0) [0|65535] "" Vector__XXX
- SG_ Accel_Y : 39|16@0+ (1,0) [0|65535] "" Vector__XXX
- SG_ Accel_Z : 55|16@0+ (1,0) [0|65535] "" Vector__XXX
 
 BO_ 2147488161 IMU_Gyro_FR: 8 IMU_FR
+ SG_ Gyro_X : 23|16@0- (0.00875,0) [-286.72|286.71125] "dps" Vector__XXX
+ SG_ Gyro_Y : 39|16@0- (0.00875,0) [-286.72|286.71125] "dps" Vector__XXX
+ SG_ Gyro_Z : 55|16@0- (0.00875,0) [-286.72|286.71125] "dps" Vector__XXX
  SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
- SG_ Gyro_X : 23|16@0+ (1,0) [0|65535] "" Vector__XXX
- SG_ Gyro_Y : 39|16@0+ (1,0) [0|65535] "" Vector__XXX
- SG_ Gyro_Z : 55|16@0+ (1,0) [0|65535] "" Vector__XXX
 
 BO_ 2147488176 IMU_Accel_Back: 8 IMU_Back
+ SG_ Accel_X : 23|16@0- (0.000122,0) [-3.997696|3.997574] "" Vector__XXX
+ SG_ Accel_Y : 39|16@0- (0.000122,0) [-3.997696|3.997574] "" Vector__XXX
+ SG_ Accel_Z : 55|16@0- (0.000122,0) [-3.997696|3.997574] "" Vector__XXX
  SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
- SG_ Accel_X : 23|16@0+ (1,0) [0|65535] "" Vector__XXX
- SG_ Accel_Y : 39|16@0+ (1,0) [0|65535] "" Vector__XXX
- SG_ Accel_Z : 55|16@0+ (1,0) [0|65535] "" Vector__XXX
 
 BO_ 2147488177 IMU_Gyro_Back: 8 IMU_Back
+ SG_ Gyro_X : 23|16@0- (0.00875,0) [-286.72|286.71125] "" Vector__XXX
+ SG_ Gyro_Y : 39|16@0- (0.00875,0) [-286.72|286.71125] "" Vector__XXX
+ SG_ Gyro_Z : 55|16@0- (0.00875,0) [-286.72|286.71125] "" Vector__XXX
  SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
- SG_ Gyro_X : 23|16@0+ (1,0) [0|65535] "" Vector__XXX
- SG_ Gyro_Y : 39|16@0+ (1,0) [0|65535] "" Vector__XXX
- SG_ Gyro_Z : 55|16@0+ (1,0) [0|65535] "" Vector__XXX
 
 BO_ 2147488208 IMU_Accel_FL: 8 IMU_FL
+ SG_ Accel_X : 23|16@0- (0.000122,0) [-3.997696|3.997574] "" Vector__XXX
+ SG_ Accel_Y : 39|16@0- (0.000122,0) [-3.997696|3.997574] "" Vector__XXX
+ SG_ Accel_Z : 55|16@0- (0.000122,0) [-3.997696|3.997574] "" Vector__XXX
  SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
- SG_ Accel_X : 23|16@0+ (1,0) [0|65535] "" Vector__XXX
- SG_ Accel_Y : 39|16@0+ (1,0) [0|65535] "" Vector__XXX
- SG_ Accel_Z : 55|16@0+ (1,0) [0|65535] "" Vector__XXX
 
 BO_ 2147488209 IMU_Gyro_FL: 8 IMU_FL
+ SG_ Gyro_X : 23|16@0- (0.00875,0) [-286.72|286.71125] "" Vector__XXX
+ SG_ Gyro_Y : 39|16@0- (0.00875,0) [-286.72|286.71125] "" Vector__XXX
+ SG_ Gyro_Z : 55|16@0- (0.00875,0) [-286.72|286.71125] "" Vector__XXX
  SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
- SG_ Gyro_X : 23|16@0+ (1,0) [0|65535] "" Vector__XXX
- SG_ Gyro_Y : 39|16@0+ (1,0) [0|65535] "" Vector__XXX
- SG_ Gyro_Z : 55|16@0+ (1,0) [0|65535] "" Vector__XXX
 
 BO_ 2147488416 Suspension_FR: 8 Suspension_FR
  SG_ SUS_Data1 : 23|12@0+ (1,0) [0|4095] "" Vector__XXX
@@ -96,6 +96,12 @@ BO_ 2147488464 Suspension_FL: 8 Suspension_FL
  SG_ SUS_Data4 : 51|12@0+ (1,0) [0|4095] "" Vector__XXX
  SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
 
+BO_ 2147488772 Suspension_Specials: 8 Suspension_Specials
+ SG_ SUS_Sepcial_1 : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ SUS_Sepcial_2 : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ SUS_Sepcial_3 : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ SUS_Sepcial_4 : 48|16@1+ (1,0) [0|65535] "" Vector__XXX
+
 BO_ 2147488672 Pitot_FR: 8 Pitot_FR
  SG_ Pitot_Data1 : 0|12@1+ (1,0) [0|4095] "" Vector__XXX
  SG_ Pitot_Data2 : 12|12@1+ (1,0) [0|4095] "" Vector__XXX
@@ -110,18 +116,12 @@ BO_ 2147488720 Pitot_FL: 8 Pitot_FL
  SG_ Pitot_Data4 : 36|12@1+ (1,0) [0|4095] "" Vector__XXX
  SG_ Timestamp : 48|16@1+ (1,0) [0|65535] "" Vector__XXX
 
-BO_ 2147488772 Suspension_Specials: 8 Suspension_Specials
- SG_ SUS_Sepcial_1 : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
- SG_ SUS_Sepcial_2 : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
- SG_ SUS_Sepcial_3 : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
- SG_ SUS_Sepcial_4 : 48|16@1+ (1,0) [0|65535] "" Vector__XXX
-
 BO_ 2147488928 WheelRPM_FR: 8 WheelRPM_FR
- SG_ RPM : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ RPM : 0|16@1+ (1,0) [0|65535] "rpm" Vector__XXX
  SG_ Timestamp : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
 
 BO_ 2147488976 WheelRPM_FL: 8 WheelRPM_FL
- SG_ RPM : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ RPM : 0|16@1+ (1,0) [0|65535] "rpm" Vector__XXX
  SG_ Timestamp : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
 
 BO_ 2147489184 RideHeight_FR: 8 RideHeight_FR
@@ -142,31 +142,31 @@ BO_ 2147489232 RideHeight_FL: 8 RideHeight_FL
  SG_ RH_Data3 : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
  SG_ Timestamp : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
 
-BO_ 2147489536 GPS_Latitude: 4 GPS
- SG_ GPS_Latitude : 0|32@1+ (1,0) [0|4294967295] "" Vector__XXX
-
-BO_ 2147489537 GPS_Longitude: 4 GPS
- SG_ GPS_Longitude : 0|32@1+ (1,0) [0|4294967295] "" Vector__XXX
-
-BO_ 2147489538 GPS_Speed: 2 GPS
- SG_ GPS_Speed : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
-
-BO_ 2147489539 GPS_Status: 1 GPS
- SG_ GPS_Status : 0|8@1+ (1,0) [0|255] "" Vector__XXX
-
 BO_ 2147489728 Temp_1_Center: 8 Temp_Center
  SG_ Temperature : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
  SG_ Humidity : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
  SG_ Timestamp : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
 
-BO_ 2147489729 Temp_2_Center: 8 Temp_Center
- SG_ Temperature : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+BO_ 2147489729 Temp_2_Center: 6 Temp_Center
+ SG_ Temperature : 0|16@1- (1,0) [-32768|32767] "" Vector__XXX
  SG_ Humidity : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
  SG_ Timestamp : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
 
+BO_ 2147489730 FR_IMU_Temp: 4 IMU_FR
+ SG_ Temperature : 23|16@0- (0.00703125,77) [-40|180] "" Vector__XXX
+ SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
 
-CM_ BO_ 4096 "Telem Leader Node. DAqCAN from Photon telem_rev1.dbc (UIPPlotsStaging); IDs match wire (Photon base + 0x1000 / TelemLeader 0x1000).";
-CM_ SG_ 4096 Timestamp "Wheel-Based Vehicle Speed: Speed of the vehicle as calculated from wheel or tailshaft speed.";
+BO_ 2147489731 FL_IMU_Temp: 4 IMU_FL
+ SG_ Temperature : 23|16@0- (0.00703125,77) [-40|180] "" Vector__XXX
+ SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 2147489732 B_IMU_Temp: 4 IMU_Back
+ SG_ Temperature : 23|16@0- (0.00703125,77) [-40|180] "" Vector__XXX
+ SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
+
+
+CM_ BO_ 4096 "Telem Leader Node. GPS moved to HighNoon/GPS.dbc (Photon gps_car / staging 0x10C0/0x10C1).";
+CM_ "Merged from Photon UIPPlotsStaging HighNoon.dbc DAQ + telem_rev1 Suspension_Specials; IMU scales/temps from latest HighNoon telemetry.";
 
 
 BA_DEF_  "DBName" STRING ;
@@ -195,18 +195,16 @@ BA_ "VFrameFormat" BO_ 4561 1;
 BA_ "VFrameFormat" BO_ 4768 1;
 BA_ "VFrameFormat" BO_ 4784 1;
 BA_ "VFrameFormat" BO_ 4816 1;
+BA_ "VFrameFormat" BO_ 5124 1;
 BA_ "VFrameFormat" BO_ 5024 1;
 BA_ "VFrameFormat" BO_ 5072 1;
-BA_ "VFrameFormat" BO_ 5124 1;
 BA_ "VFrameFormat" BO_ 5280 1;
 BA_ "VFrameFormat" BO_ 5328 1;
 BA_ "VFrameFormat" BO_ 5536 1;
 BA_ "VFrameFormat" BO_ 5552 1;
 BA_ "VFrameFormat" BO_ 5584 1;
-BA_ "VFrameFormat" BO_ 5888 1;
-BA_ "VFrameFormat" BO_ 5889 1;
-BA_ "VFrameFormat" BO_ 5890 1;
-BA_ "VFrameFormat" BO_ 5891 1;
 BA_ "VFrameFormat" BO_ 6080 1;
 BA_ "VFrameFormat" BO_ 6081 1;
-
+BA_ "VFrameFormat" BO_ 6082 1;
+BA_ "VFrameFormat" BO_ 6083 1;
+BA_ "VFrameFormat" BO_ 6084 1;
