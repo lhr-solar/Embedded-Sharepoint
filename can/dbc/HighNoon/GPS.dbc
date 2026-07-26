@@ -42,10 +42,20 @@ BO_ 2147487936 GPS_Latitude: 4 GPS
 BO_ 2147487937 GPS_Longitude: 4 GPS
  SG_ Longitude : 0|32@1- (0.000001,0) [-180|180] "°" Vector__XXX
 
+BO_ 2147487938 GPS_Speed: 2 GPS
+ SG_ GPS_Speed : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
 
-CM_ "HighNoon GPS (Photon gps_car.dbc / staging HighNoon car IDs). Used by Live View and AWS TCP feed.";
+BO_ 2147487939 GPS_Status: 1 GPS
+ SG_ GPS_Status : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+
+CM_ "HighNoon GPS (Photon gps_car.dbc / staging HighNoon car IDs 0x10C0-0x10C3). Remapped from DAqCAN 0x1700-0x1703. Used by Live View and AWS TCP feed.";
 CM_ BO_ 4288 "Signed microdegree latitude from the car DAQ path";
 CM_ BO_ 4289 "Signed microdegree longitude from the car DAQ path";
+CM_ BO_ 4290 "GPS speed (same payload as legacy DAqCAN GPS_Speed 0x1702)";
+CM_ BO_ 4291 "GPS status (same payload as legacy DAqCAN GPS_Status 0x1703)";
+CM_ SG_ 4290 GPS_Speed "GPS speed raw count from telem/DAQ path";
+CM_ SG_ 4291 GPS_Status "GPS status byte from telem/DAQ path";
 
 
 BA_DEF_  "DBName" STRING ;
@@ -58,3 +68,5 @@ BA_ "BusType" "CAN";
 BA_ "DBName" "GPS";
 BA_ "VFrameFormat" BO_ 4288 1;
 BA_ "VFrameFormat" BO_ 4289 1;
+BA_ "VFrameFormat" BO_ 4290 1;
+BA_ "VFrameFormat" BO_ 4291 1;

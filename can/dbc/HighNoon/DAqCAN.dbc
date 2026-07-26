@@ -33,7 +33,7 @@ NS_ :
 
 BS_:
 
-BU_: TelemLeader IMU_FR IMU_Back IMU_FL Suspension_FR Suspension_Back Suspension_FL Suspension_Specials Pitot_FR Pitot_FL WheelRPM_FR WheelRPM_FL RideHeight_FR RideHeight_Back RideHeight_FL Temp_Center
+BU_: TelemLeader IMU_FR IMU_Back IMU_FL Suspension_FR Suspension_Back Suspension_FL Suspension_Specials Pitot_FR Pitot_FL WheelRPM_FR WheelRPM_Back WheelRPM_FL RideHeight_FR RideHeight_Back RideHeight_FL Temp_Center
 
 
 BO_ 2147487744 TelemLeader_Center: 2 TelemLeader
@@ -116,13 +116,17 @@ BO_ 2147488720 Pitot_FL: 8 Pitot_FL
  SG_ Pitot_Data4 : 36|12@1+ (1,0) [0|4095] "" Vector__XXX
  SG_ Timestamp : 48|16@1+ (1,0) [0|65535] "" Vector__XXX
 
-BO_ 2147488928 WheelRPM_FR: 8 WheelRPM_FR
- SG_ RPM : 0|16@1+ (1,0) [0|65535] "rpm" Vector__XXX
- SG_ Timestamp : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
+BO_ 2147488928 WheelRPM_FR: 6 WheelRPM_FR
+ SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
+ SG_ RPM : 23|32@0+ (1,0) [0|4294967295] "rpm" Vector__XXX
 
-BO_ 2147488976 WheelRPM_FL: 8 WheelRPM_FL
- SG_ RPM : 0|16@1+ (1,0) [0|65535] "rpm" Vector__XXX
- SG_ Timestamp : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
+BO_ 2147488960 WheelRPM_Back: 4 WheelRPM_Back
+ SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
+ SG_ RPM : 23|16@0+ (1,0) [0|65535] "rpm" Vector__XXX
+
+BO_ 2147488976 WheelRPM_FL: 6 WheelRPM_FL
+ SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
+ SG_ RPM : 23|32@0+ (1,0) [0|4294967295] "rpm" Vector__XXX
 
 BO_ 2147489184 RideHeight_FR: 8 RideHeight_FR
  SG_ RH_Data1 : 48|16@1+ (1,0) [0|65535] "" Vector__XXX
@@ -166,7 +170,10 @@ BO_ 2147489732 B_IMU_Temp: 4 IMU_Back
 
 
 CM_ BO_ 4096 "Telem Leader Node. GPS moved to HighNoon/GPS.dbc (Photon gps_car / staging 0x10C0/0x10C1).";
-CM_ "Merged from Photon UIPPlotsStaging HighNoon.dbc DAQ + telem_rev1 Suspension_Specials; IMU scales/temps from latest HighNoon telemetry.";
+CM_ "Merged from Photon UIPPlotsStaging HighNoon.dbc DAQ + telem_rev1 Suspension_Specials; IMU scales/temps from latest HighNoon telemetry. Server/DAqCAN IDs are telem-bus StdId + 0x1000 (extended). WheelRPM_* packing from VCAT-WheelsBoard-Software FixedWheelsCode (DLC6: ts u16 BE + rpm u32 BE); WheelRPM_Back 0x14C0 = bus 0x4C0, observed DLC4 ts u16 BE + rpm u16 BE.";
+CM_ BO_ 5280 "Wheel RPM front-right. Telem bus StdId 0x4A0 (FixedWheelsCode hallID) -> server 0x14A0.";
+CM_ BO_ 5312 "Wheel RPM back/rear. Telem bus StdId 0x4C0 -> server 0x14C0. Not in Photon daq.dbc; present on FSGP wire.";
+CM_ BO_ 5328 "Wheel RPM front-left. Telem bus StdId 0x4D0 (WheelsCodek CAN_ID_HALL) -> server 0x14D0.";
 
 
 BA_DEF_  "DBName" STRING ;
@@ -199,6 +206,7 @@ BA_ "VFrameFormat" BO_ 5124 1;
 BA_ "VFrameFormat" BO_ 5024 1;
 BA_ "VFrameFormat" BO_ 5072 1;
 BA_ "VFrameFormat" BO_ 5280 1;
+BA_ "VFrameFormat" BO_ 5312 1;
 BA_ "VFrameFormat" BO_ 5328 1;
 BA_ "VFrameFormat" BO_ 5536 1;
 BA_ "VFrameFormat" BO_ 5552 1;
