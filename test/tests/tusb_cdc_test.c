@@ -3,39 +3,25 @@
 #include "stm32xx_hal.h"
 #include "tusb.h"
 
-#include <ctype.h>
-
 static void MX_USB_PCD_Init(void);
 static void MX_GPIO_Init(void);
 
 PCD_HandleTypeDef hpcd_USB_FS;
 
 static void echo_serial_port(uint8_t itf, uint8_t buf[], uint32_t count) {
-  uint8_t const case_diff = 'a' - 'A';
-
   for (uint32_t i = 0; i < count; i++) {
-    if (itf == 0) {
-      // echo back 1st port as lower case
-      if (isupper(buf[i])) buf[i] += case_diff;
-    } else {
-      // echo back 2nd port as upper case
-      if (islower(buf[i])) buf[i] -= case_diff;
-    }
     tud_cdc_n_write_char(itf, buf[i]);
   }
-
   tud_cdc_n_write_flush(itf);
 }
 
 // Invoked when device is mounted
 void tud_mount_cb(void) {
-  //Do nothing for now
   HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
 }
 
 // Invoked when device is unmounted
 void tud_umount_cb(void) {
-  //Do nothing for now
   HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
 }
 
@@ -60,6 +46,65 @@ static void cdc_task(void) {
   }
 }
 
+void SystemClock_Config(void)
+{
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  RCC_CRSInitTypeDef pInit = {0};
+
+  /** Configure the main internal regulator output voltage
+  */
+  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
+
+  /** Initializes the RCC Oscillators according to the specified parameters
+  * in the RCC_OscInitTypeDef structure.
+  */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV1;
+  RCC_OscInitStruct.PLL.PLLN = 12;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+  RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV4;
+  RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Initializes the CPU, AHB and APB buses clocks
+  */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Enable the SYSCFG APB clock
+  */
+  __HAL_RCC_CRS_CLK_ENABLE();
+
+  /** Configures CRS
+  */
+  pInit.Prescaler = RCC_CRS_SYNC_DIV1;
+  pInit.Source = RCC_CRS_SYNC_SOURCE_USB;
+  pInit.Polarity = RCC_CRS_SYNC_POLARITY_RISING;
+  pInit.ReloadValue = __HAL_RCC_CRS_RELOADVALUE_CALCULATE(48000000,1000);
+  pInit.ErrorLimitValue = 34;
+  pInit.HSI48CalibrationValue = 32;
+
+  HAL_RCCEx_CRSConfig(&pInit);
+}
+
+
 int main() {
     HAL_Init();
     SystemClock_Config();
@@ -73,16 +118,10 @@ int main() {
         .speed = TUSB_SPEED_AUTO
     };
     tusb_init(BOARD_TUD_RHPORT, &dev_init);
-
-    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
-
     /* Random msg */
     while (1) {
         tud_task();
         cdc_task();
-
-        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
-        HAL_Delay(500);
     }
 
 }
@@ -114,6 +153,44 @@ static void MX_GPIO_Init(void) {
         .Pin = GPIO_PIN_0
     };
     HAL_GPIO_Init(GPIOA, &led_config);
+}
+
+void HAL_PCD_MspInit(PCD_HandleTypeDef* hpcd)
+{
+  RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
+  if(hpcd->Instance==USB)
+  {
+  /** Initializes the peripherals clocks
+  */
+    PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USB;
+    PeriphClkInit.UsbClockSelection = RCC_USBCLKSOURCE_PLL;
+    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
+    {
+      Error_Handler();
+    }
+
+    /* Peripheral clock enable */
+    __HAL_RCC_USB_CLK_ENABLE();
+    /* USB interrupt Init */
+    HAL_NVIC_SetPriority(USB_HP_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(USB_HP_IRQn);
+    HAL_NVIC_SetPriority(USB_LP_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(USB_LP_IRQn);
+  }
+
+}
+
+void HAL_PCD_MspDeInit(PCD_HandleTypeDef* hpcd)
+{
+  if(hpcd->Instance==USB)
+  {
+    /* Peripheral clock disable */
+    __HAL_RCC_USB_CLK_DISABLE();
+    /* USB interrupt DeInit */
+    HAL_NVIC_DisableIRQ(USB_HP_IRQn);
+    HAL_NVIC_DisableIRQ(USB_LP_IRQn);
+  }
+
 }
 
 void USBWakeUp_IRQHandler(void)
