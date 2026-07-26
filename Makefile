@@ -115,6 +115,8 @@ $(FREERTOS_PATH)/portable/GCC/ARM_CM4F/port.c \
 $(wildcard common/Src/*.c) \
 $(wildcard driver/Src/*.c) \
 $(wildcard $(FATFS_PATH)/Src/*.c) \
+$(shell find tinyusb/src -name '*.c') \
+tinyusb/hw/bsp/stm32g4/family.c \
 $(filter-out $(addprefix bsp/Src/,$(addsuffix .c,$(BSP_DISABLE))),$(wildcard bsp/Src/*.c))
 
 
@@ -188,7 +190,9 @@ $(FATFS_PATH)/Inc \
 common/Inc \
 driver/Inc \
 bsp/Inc \
-middleware
+middleware \
+$(shell find tinyusb/src -type d) \
+$(shell find tinyusb/hw -type d)
 
 C_INCLUDES := $(addprefix -I,$(C_INCLUDES))
 
