@@ -144,7 +144,7 @@ def pick_dbcs_interactive(dbcs: list[Path]) -> list[Path]:
 
 
 def reorder_one_dbc(src: Path, dest: Path) -> None:
-    db = cantools.database.load_file(str(src))
+    db = cantools.database.load_file(str(src), encoding="utf-8")
     db.messages.sort(key=lambda m: m.frame_id)
 
     text = db.as_dbc_string(

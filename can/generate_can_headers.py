@@ -75,7 +75,7 @@ def generate_struct(message):
 
 
 def generate_header(dbc_path: Path, output_file: Path | None):
-    db = cantools.database.load_file(str(dbc_path))
+    db = cantools.database.load_file(str(dbc_path), encoding="utf-8")
 
     if output_file is None:
         output_file = dbc_path.with_name(f"{dbc_path.stem}_can_msgs.h")

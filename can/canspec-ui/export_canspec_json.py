@@ -135,7 +135,7 @@ def _message_to_dict(msg: Any) -> dict[str, Any]:
 
 
 def _network_to_dict(dbc_path: Path) -> dict[str, Any]:
-    db = cantools.database.load_file(dbc_path)
+    db = cantools.database.load_file(dbc_path, encoding="utf-8")
     nodes = [{"name": n.name} for n in db.nodes]
     dbc_attrs: dict[str, Any] = {}
     value_tables: list[dict[str, Any]] = []

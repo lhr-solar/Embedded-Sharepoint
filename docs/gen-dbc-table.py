@@ -27,7 +27,7 @@ def format_can_id(msg):
 
 
 def dbc_to_markdown(dbc_path: Path) -> str:
-    db = cantools.database.load_file(dbc_path)
+    db = cantools.database.load_file(dbc_path, encoding="utf-8")
 
     anchor = dbc_path.stem.replace(" ", "-").replace(".", "-")
     github_link = f"{GITHUB_DBC_BASE}/{dbc_path.name}"
