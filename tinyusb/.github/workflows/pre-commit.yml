@@ -1,0 +1,47 @@
+name: pre-commit
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+    branches: [ master ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.0'
+
+    - name: Checkout TinyUSB
+      uses: actions/checkout@v6
+
+    - name: Get Dependencies
+      run: |
+        # pinned: 1.1.0 breaks mock preprocessing on this project ("Failed to read
+        # _build/test/preprocess/.../raw/*.h for comment stripping"); revisit on next release
+        gem install ceedling -v 1.0.1
+        #cd test/unit-test
+        #ceedling test:all
+
+    - name: Run pre-commit
+      uses: pre-commit/action@v3.0.1
+
+    - name: Build Fuzzer
+      run: |
+        sudo apt install libc++-dev libc++abi-dev
+        clang --version
+        export CC=clang
+        export CXX=clang++
+        fuzz_harness=$(ls -d test/fuzz/device/*/)
+        for h in $fuzz_harness
+        do
+          make -C $h get-deps
+          make -C $h all
+        done

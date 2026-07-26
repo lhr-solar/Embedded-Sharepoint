@@ -1,0 +1,17 @@
+attch
+busses
+dout
+endianess
+fro
+hsi
+inout
+mot
+ore
+pris
+ptd
+ser
+sie
+synopsys
+te
+thre
+tre
