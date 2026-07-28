@@ -33,7 +33,7 @@ NS_ :
 
 BS_:
 
-BU_: TelemLeader IMU_FR IMU_Back IMU_FL Suspension_FR Suspension_Back Suspension_FL Suspension_Specials Pitot_FR Pitot_FL WheelRPM_FR WheelRPM_Back WheelRPM_FL RideHeight_FR RideHeight_Back RideHeight_FL Temp_Center
+BU_: TelemLeader IMU_FR IMU_Back IMU_FL Suspension_FR Suspension_Back Suspension_FL Suspension_Specials Pitot_FR Pitot_FL WheelRPM_FR WheelRPM_Back WheelRPM_FL RideHeight_FR RideHeight_Back RideHeight_FL Temp_Center Array
 
 
 BO_ 2147487744 TelemLeader_Center: 2 TelemLeader
@@ -76,24 +76,24 @@ BO_ 2147488209 IMU_Gyro_FL: 8 IMU_FL
  SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
 
 BO_ 2147488416 Suspension_FR: 8 Suspension_FR
- SG_ SUS_Data1 : 23|12@0+ (1,0) [0|4095] "" Vector__XXX
- SG_ SUS_Data2 : 27|12@0+ (1,0) [0|4095] "" Vector__XXX
- SG_ SUS_Data3 : 47|12@0+ (1,0) [0|4095] "" Vector__XXX
- SG_ SUS_Data4 : 51|12@0+ (1,0) [0|4095] "" Vector__XXX
+ SG_ SUS_Data1 : 23|12@0+ (0.0188885,1) [0|78.367296] "mm" Vector__XXX
+ SG_ SUS_Data2 : 27|12@0+ (0.0188885,1) [0|78.367296] "mm" Vector__XXX
+ SG_ SUS_Data3 : 47|12@0+ (0.0188885,1) [0|78.367296] "mm" Vector__XXX
+ SG_ SUS_Data4 : 51|12@0+ (0.0188885,1) [0|78.367296] "mm" Vector__XXX
  SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
 
 BO_ 2147488432 Suspension_Back: 8 Suspension_Back
- SG_ SUS_Data1 : 23|12@0+ (1,0) [0|4095] "" Vector__XXX
- SG_ SUS_Data2 : 27|12@0+ (1,0) [0|4095] "" Vector__XXX
- SG_ SUS_Data3 : 47|12@0+ (1,0) [0|4095] "" Vector__XXX
- SG_ SUS_Data4 : 51|12@0+ (1,0) [0|4095] "" Vector__XXX
+ SG_ SUS_Data1 : 23|12@0+ (0.0188885,1) [0|78.367296] "mm" Vector__XXX
+ SG_ SUS_Data2 : 27|12@0+ (0.0188885,1) [0|78.367296] "mm" Vector__XXX
+ SG_ SUS_Data3 : 47|12@0+ (0.0188885,1) [0|78.367296] "mm" Vector__XXX
+ SG_ SUS_Data4 : 51|12@0+ (0.0188885,1) [0|78.367296] "mm" Vector__XXX
  SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
 
 BO_ 2147488464 Suspension_FL: 8 Suspension_FL
- SG_ SUS_Data1 : 23|12@0+ (1,0) [0|4095] "" Vector__XXX
- SG_ SUS_Data2 : 27|12@0+ (1,0) [0|4095] "" Vector__XXX
- SG_ SUS_Data3 : 47|12@0+ (1,0) [0|4095] "" Vector__XXX
- SG_ SUS_Data4 : 51|12@0+ (1,0) [0|4095] "" Vector__XXX
+ SG_ SUS_Data1 : 23|12@0+ (0.0188885,1) [0|78.367296] "mm" Vector__XXX
+ SG_ SUS_Data2 : 27|12@0+ (0.0188885,1) [0|78.367296] "mm" Vector__XXX
+ SG_ SUS_Data3 : 47|12@0+ (0.0188885,1) [0|78.367296] "mm" Vector__XXX
+ SG_ SUS_Data4 : 51|12@0+ (0.0188885,1) [0|78.367296] "mm" Vector__XXX
  SG_ Timestamp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
 
 BO_ 2147488772 Suspension_Specials: 8 Suspension_Specials
@@ -129,22 +129,27 @@ BO_ 2147488976 WheelRPM_FL: 8 WheelRPM_FL
  SG_ RPM : 23|16@0+ (1,0) [0|65535] "rpm" Vector__XXX
 
 BO_ 2147489184 RideHeight_FR: 8 RideHeight_FR
- SG_ RH_Data1 : 48|16@1+ (1,0) [0|65535] "" Vector__XXX
- SG_ RH_Data2 : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
- SG_ RH_Data3 : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ RH_Data1 : 48|16@1+ (0.01,0) [0|655.36] "cm" Vector__XXX
+ SG_ RH_Data2 : 32|16@1+ (0.01,0) [0|655.36] "cm" Vector__XXX
+ SG_ RH_Data3 : 16|16@1+ (0.01,0) [0|655.36] "cm" Vector__XXX
  SG_ Timestamp : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
 
 BO_ 2147489200 RideHeight_Back: 8 RideHeight_Back
- SG_ RH_Data1 : 48|16@1+ (1,0) [0|65535] "" Vector__XXX
- SG_ RH_Data2 : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
- SG_ RH_Data3 : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ RH_Data1 : 48|16@1+ (0.01,0) [0|655.36] "cm" Vector__XXX
+ SG_ RH_Data2 : 32|16@1+ (0.01,0) [0|655.36] "cm" Vector__XXX
+ SG_ RH_Data3 : 16|16@1+ (0.01,0) [0|655.36] "cm" Vector__XXX
  SG_ Timestamp : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
 
 BO_ 2147489232 RideHeight_FL: 8 RideHeight_FL
- SG_ RH_Data1 : 48|16@1+ (1,0) [0|65535] "" Vector__XXX
- SG_ RH_Data2 : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
- SG_ RH_Data3 : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ RH_Data1 : 48|16@1+ (0.01,0) [0|655.36] "cm" Vector__XXX
+ SG_ RH_Data2 : 32|16@1+ (0.01,0) [0|655.36] "cm" Vector__XXX
+ SG_ RH_Data3 : 16|16@1+ (0.01,0) [0|655.36] "cm" Vector__XXX
  SG_ Timestamp : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 2147489280 Array: 6 Array
+ SG_ WhiteLight : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ InfaredLight : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Temperature : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
 
 BO_ 2147489728 Temp_1_Center: 8 Temp_Center
  SG_ Temperature : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
@@ -170,7 +175,7 @@ BO_ 2147489732 B_IMU_Temp: 4 IMU_Back
 
 
 CM_ BO_ 4096 "Telem Leader Node. GPS moved to HighNoon/GPS.dbc (Photon gps_car / staging 0x10C0/0x10C1).";
-CM_ "Merged from Photon UIPPlotsStaging HighNoon.dbc DAQ + telem_rev1 Suspension_Specials; IMU scales/temps from latest HighNoon telemetry. Server/DAqCAN IDs are telem-bus StdId + 0x1000 (extended). WheelRPM_FR/FL set to FSGP last-day (2026-07-23) wire = VCAT-WheelsBoard-Software WheelsCodek DLC8: ts u16 BE (bytes 0-1) + rpm u16 BE (bytes 2-3), bytes 4-7 unused; older FixedWheelsCode DLC6 rpm-u32 frames are intentionally not matched. WheelRPM_Back 0x14C0 = bus 0x4C0, DLC4 ts u16 BE + rpm u16 BE. NOTE: on 2026-07-23 the FR/FL hall payload is a free-running counter (rpm sensor likely disconnected) so RPM decodes cleanly but is not physical.";
+CM_ "Merged from Photon UIPPlotsStaging HighNoon.dbc DAQ + telem_rev1 Suspension_Specials; IMU scales/temps from latest HighNoon telemetry. Server/DAqCAN IDs are telem-bus StdId + 0x1000 (extended). Suspension_* SUS_Data scale/offset/unit (mm) and RideHeight_* RH_Data scale/unit (cm) from CARCan+TelemCAN.dbc calibration; message/signal names kept. Array 0x1600 (WhiteLight/InfaredLight/Temperature) added from same source. WheelRPM_FR/FL kept as FSGP last-day wire = VCAT-WheelsBoard-Software WheelsCodek DLC8: ts u16 BE (bytes 0-1) + rpm u16 BE (bytes 2-3), bytes 4-7 unused — not the swapped DLC4 layout in CARCan+TelemCAN.dbc. WheelRPM_Back 0x14C0 = bus 0x4C0, DLC4 ts u16 BE + rpm u16 BE. NOTE: on 2026-07-23 the FR/FL hall payload is a free-running counter (rpm sensor likely disconnected) so RPM decodes cleanly but is not physical.";
 CM_ BO_ 5280 "Wheel RPM front-right. Telem bus StdId 0x4A0 (FixedWheelsCode hallID) -> server 0x14A0.";
 CM_ BO_ 5312 "Wheel RPM back/rear. Telem bus StdId 0x4C0 -> server 0x14C0. Not in Photon daq.dbc; present on FSGP wire.";
 CM_ BO_ 5328 "Wheel RPM front-left. Telem bus StdId 0x4D0 (WheelsCodek CAN_ID_HALL) -> server 0x14D0.";
@@ -211,6 +216,7 @@ BA_ "VFrameFormat" BO_ 5328 1;
 BA_ "VFrameFormat" BO_ 5536 1;
 BA_ "VFrameFormat" BO_ 5552 1;
 BA_ "VFrameFormat" BO_ 5584 1;
+BA_ "VFrameFormat" BO_ 5632 1;
 BA_ "VFrameFormat" BO_ 6080 1;
 BA_ "VFrameFormat" BO_ 6081 1;
 BA_ "VFrameFormat" BO_ 6082 1;
